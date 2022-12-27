@@ -1,0 +1,15 @@
+
+# Python
+__pycache__/
+/venv/
+/.tox/
+
+/build/
+
+# Python setuptools:
+/dist/
+
+# PyCharm
+/.idea/
+
+

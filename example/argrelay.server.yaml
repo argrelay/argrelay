@@ -1,0 +1,102 @@
+# Sample config for `argrelay` server.
+# To test, symlink this files as user dot file - see `dev-init.bash` script.
+
+connection_config:
+    server_host_name: localhost
+    server_port_number: 8787
+
+plugin_list:
+
+    -   plugin_id: FirstArgInterpFactory
+        plugin_module_name: argrelay.relay_server.line_interp.FirstArgInterpFactory
+        plugin_class_name: FirstArgInterpFactory
+        plugin_type: InterpFactoryPlugin
+        plugin_config:
+            first_arg_vals_to_next_interp_factory_ids:
+                # This binding uses existing script `try_relay`:
+                try_relay: ServiceInterpFactory
+                # Another equivalent binding (but `some_command` does not exist in this repo):
+                some_command: ServiceInterpFactory
+
+    -   plugin_id: ServiceInterpFactory
+        plugin_module_name: argrelay.demo_unit.ServiceInterpFactory
+        plugin_class_name: ServiceInterpFactory
+        plugin_type: InterpFactoryPlugin
+        plugin_config:
+            keys_to_types:
+                action: ActionType
+                code: CodeMaturity
+                stage: FlowStage
+                region: GeoRegion
+                host: HostName
+                access: AccessType
+                tag: ServerTag
+
+    -   plugin_id: NoopLoader
+        plugin_module_name: argrelay.misc_helper.NoopLoader
+        plugin_class_name: NoopLoader
+        plugin_type: LoaderPlugin
+        plugin_config: { }
+
+    -   plugin_id: ServiceLoader
+        plugin_module_name: argrelay.demo_unit.ServiceLoader
+        plugin_class_name: ServiceLoader
+        plugin_type: LoaderPlugin
+        plugin_config:
+
+            types_to_values:
+
+                ServerTag:
+                    - red
+                    - green
+
+# Statically defined `static_data` - and it is not a tautology!
+# This data is loaded as part of the config on start (and will be available even when all loader plugins removed).
+# Loader plugins are also supposed to add more data (but they also can modify or completely remove it).
+static_data:
+
+    first_interp_factory_id: FirstArgInterpFactory
+
+    types_to_values:
+
+        ActionType:
+            - goto
+            - desc
+            - list
+
+        CodeMaturity:
+            - dev
+            - qa
+            - prod
+
+        FlowStage:
+            - upstream
+            - downstream
+
+        GeoRegion:
+            - amer
+            - emea
+            - apac
+
+        # Host names are just some strings with prefixes for testing:
+        HostName:
+            - qw
+            - qwe
+            - qwer
+            - wert
+
+            - as
+            - asd
+            - asdf
+            - sdfg
+
+            - zx
+            - zxc
+            - zxcv
+            - xcvb
+
+        AccessType:
+            - ro
+            - rw
+
+        ServerTag: []
