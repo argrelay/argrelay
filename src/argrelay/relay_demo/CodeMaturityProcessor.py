@@ -1,7 +1,7 @@
 from argrelay.api_ext.relay_server import StaticData
 from argrelay.api_int.meta_data import ArgValue, ArgSource
 from argrelay.api_int.meta_data.RunMode import RunMode
-from argrelay.demo_unit.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_server.arg_processor.ArgProcessor import ArgProcessor
 from argrelay.relay_server.call_context import CommandContext
 

@@ -21,20 +21,20 @@ from argrelay.api_int.server_op import server_op_data_schemas, API_DOCS_UI_PATH
 from argrelay.relay_server.__main__ import create_app
 
 
-def load_example_server_config_dict() -> dict:
+def load_relay_demo_server_config_dict() -> dict:
     # Composing path to resource this way keeps its base directory always at this relative path:
-    test_server_config_path = pkg_resources.resource_filename(__name__, "../../example/argrelay.server.yaml")
+    test_server_config_path = pkg_resources.resource_filename(__name__, "../../demo/argrelay.server.yaml")
     return yaml.safe_load(open(test_server_config_path))
 
 
-def load_example_server_config_object() -> ServerConfig:
-    return server_config_desc.from_input_dict(load_example_server_config_dict())
+def load_relay_demo_server_config_object() -> ServerConfig:
+    return server_config_desc.from_input_dict(load_relay_demo_server_config_dict())
 
 
 class ThisTestCase(TestCase):
 
     def setUp(self):
-        server_config_yaml = yaml.dump(load_example_server_config_dict())
+        server_config_yaml = yaml.dump(load_relay_demo_server_config_dict())
         with patch("builtins.open", mock_open(read_data = server_config_yaml)) as mock_file:
             self.assertTrue(open(server_config_desc.default_file_path).read() == server_config_yaml)
 

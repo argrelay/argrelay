@@ -5,13 +5,13 @@ from unittest import TestCase
 
 from argrelay.api_ext.relay_server.StaticDataSchema import static_data_desc
 from argrelay.api_int.meta_data import CompType, ArgValue, ArgSource, RunMode
-from argrelay.demo_unit.ServiceArgType import ServiceArgType
-from argrelay.demo_unit.ServiceInterpFactory import ServiceInterpFactory, service_interp_config_desc
 from argrelay.relay_client.meta_data import TermColor
+from argrelay.relay_demo.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.ServiceInterpFactory import ServiceInterpFactory, service_interp_config_desc
 from argrelay.relay_server.call_context import ParsedContext, CommandContext
 from argrelay.relay_server.line_interp.FirstArgInterpFactory import FirstArgInterpFactory
 from argrelay.shared_unit.call_context import InputContext
-from relay_server.test_relay_server import load_example_server_config_dict
+from relay_server.test_relay_server import load_relay_demo_server_config_dict
 
 
 def line_no() -> int:
@@ -48,7 +48,7 @@ def default_test_parsed_context(command_line: str, cursor_cpos: int) -> ParsedCo
     )
 
 
-example_static_data_object = static_data_desc.from_input_dict(load_example_server_config_dict()["static_data"])
+relay_demo_static_data_object = static_data_desc.from_input_dict(load_relay_demo_server_config_dict()["static_data"])
 
 
 class ThisTestCase(TestCase):
@@ -79,7 +79,7 @@ class ThisTestCase(TestCase):
                         config_dict = service_interp_config_desc.dict_example,
                     ),
                 }
-                command_ctx = CommandContext(parsed_ctx, example_static_data_object, interp_factories)
+                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories)
                 command_ctx.interpret_command()
                 for arg_type, arg_value in expected_assignments.items():
                     if not arg_value:
@@ -133,7 +133,7 @@ class ThisTestCase(TestCase):
                         config_dict = service_interp_config_desc.dict_example,
                     ),
                 }
-                command_ctx = CommandContext(parsed_ctx, example_static_data_object, interp_factories)
+                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories)
                 command_ctx.interpret_command()
                 actual_suggestions = command_ctx.propose_auto_comp()
                 self.assertEqual(expected_suggestions, actual_suggestions)
@@ -169,7 +169,7 @@ class ThisTestCase(TestCase):
                         config_dict = service_interp_config_desc.dict_example,
                     ),
                 }
-                command_ctx = CommandContext(parsed_ctx, example_static_data_object, interp_factories)
+                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories)
                 command_ctx.interpret_command()
                 f = io.StringIO()
                 with contextlib.redirect_stderr(f):

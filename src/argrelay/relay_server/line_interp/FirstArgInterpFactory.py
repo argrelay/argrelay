@@ -1,8 +1,8 @@
 from marshmallow import RAISE, Schema, fields
 
 from argrelay.api_ext.relay_server.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.demo_unit.ServiceInterpFactory import ServiceInterpFactory
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.relay_demo.ServiceInterpFactory import ServiceInterpFactory
 from argrelay.relay_server.call_context import CommandContext
 from argrelay.relay_server.line_interp import FirstArgInterp
 

@@ -4,10 +4,10 @@ from copy import deepcopy
 from unittest import TestCase
 
 from argrelay.api_ext.relay_server.AbstractInterp import AbstractInterp
-from argrelay.demo_unit.ServiceInterpFactory import ServiceInterpFactory, service_interp_config_desc
+from argrelay.relay_demo.ServiceInterpFactory import ServiceInterpFactory, service_interp_config_desc
 from argrelay.relay_server.call_context import CommandContext
 from argrelay.relay_server.line_interp.FirstArgInterpFactory import FirstArgInterpFactory
-from test_argrelay import parse_line_and_cpos, default_test_parsed_context, example_static_data_object
+from test_argrelay import parse_line_and_cpos, default_test_parsed_context, relay_demo_static_data_object
 
 
 # noinspection PyMethodMayBeStatic
@@ -31,7 +31,7 @@ class ThisTestCase(TestCase):
                 config_dict = service_interp_config_desc.dict_example,
             ),
         }
-        command_ctx = CommandContext(parsed_ctx, deepcopy(example_static_data_object), interp_factories)
+        command_ctx = CommandContext(parsed_ctx, deepcopy(relay_demo_static_data_object), interp_factories)
         line_interp = interp_factories[FirstArgInterpFactory.__name__].create_interp(command_ctx)
         line_interp.consume_key_args()
         line_interp.consume_pos_args()

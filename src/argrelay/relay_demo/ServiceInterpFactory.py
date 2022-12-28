@@ -1,7 +1,7 @@
 from argrelay.api_ext.relay_server.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.demo_unit.ServiceArgType import ServiceArgType
-from argrelay.demo_unit.ServiceInterp import ServiceInterp
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.relay_demo.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.ServiceInterp import ServiceInterp
 from argrelay.relay_server.call_context import CommandContext
 from argrelay.relay_server.line_interp.GenericInterpFactory import GenericInterpConfigSchema
 

@@ -1,7 +1,7 @@
 
 # Python
 __pycache__/
-/venv/
+/venv/relay_demo/
 /.tox/
 
 /build/
@@ -12,4 +12,6 @@ __pycache__/
 # PyCharm
 /.idea/
 
+# Ignore `todo.md` = (temporary) notes shared across branch switching:
+/todo.md
 

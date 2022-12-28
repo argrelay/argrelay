@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from argrelay.api_ext.relay_server.AbstractLoader import AbstractLoader
 from argrelay.api_ext.relay_server.StaticData import StaticData
-from argrelay.demo_unit.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.ServiceArgType import ServiceArgType
 
 
 def _todo(self):

@@ -4,13 +4,12 @@
 # Instead, run `dev-shell.bash`.
 
 # The steps this script performs:
-# * Set up python venv.
+# * Set up python `venv/relay_demo`.
 # * Build `argrelay`.
 # * Install `argrelay` in editable mode.
-# * Bind command name `try_relay` with Bash auto-completion.
+# * Configure Bash auto-completion for command name `relay_demo` .
 #   The binding is temporarily (while `dev-shell.bash` is running).
-#   This step is what normally goes to `~/.bashrc` to make
-#   Bash auto-completion permanent.
+#   This step is what normally goes to `~/.bashrc` to make Bash auto-completion permanent.
 
 # Return first non-zero exit code from commands in a pipeline:
 set -o pipefail
@@ -50,11 +49,11 @@ then
     echo "ERROR: ${pythonX} command is not available in PATH - modify this script to fix it" 1>&2
 fi
 
-# Prepare venv - start with python of specific version:
-"${pythonX}" -m venv venv
-source venv/bin/activate
+# Prepare `venv/relay_demo` - start with python of specific version:
+"${pythonX}" -m venv venv/relay_demo
+source venv/relay_demo/bin/activate
 
-# Continue with python from venv:
+# Continue with python from `venv/relay_demo`:
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 
@@ -65,21 +64,22 @@ python -m pip install -e .
 # Build and test:
 python -m tox
 
-# Add `example` dir into PATH to make Bash pick up `try_relay` command:
-export PATH="${PATH}:$(pwd)/example"
+# Add `demo` dir into PATH to make Bash pick up `relay_demo` command:
+PATH="${PATH}:$(pwd)/demo"
+export PATH
 
-# Enable auto-completion for `try_relay` command:
+# Enable auto-completion for `relay_demo` command:
 if [[ "${BASH_VERSION}" == 5* ]]
 then
-    complete -o nosort -C "python -m argrelay.relay_client" try_relay
+    complete -o nosort -C "python -m argrelay.relay_client" relay_demo
 else
     # Old Bash versions do not support `nosort` option:
-    complete -C "python -m argrelay.relay_client" try_relay
+    complete -C "python -m argrelay.relay_client" relay_demo
 fi
 
 # Symlink sample config client and server files as user dot files:
-ln -snf "$(pwd)/example/argrelay.client.yaml" ~/".argrelay.client.yaml"
-ln -snf "$(pwd)/example/argrelay.server.yaml" ~/".argrelay.server.yaml"
+ln -snf "$(pwd)/demo/argrelay.client.yaml" ~/".argrelay.client.yaml"
+ln -snf "$(pwd)/demo/argrelay.server.yaml" ~/".argrelay.server.yaml"
 
 # Invoke completion programmatically:
 function invoke_completion {
@@ -99,32 +99,14 @@ function invoke_completion {
     )
 }
 
-if [[ "${BASH_VERSION}" == 5* ]]
-then
-    # TODO: Change it to F12:
-    # Bind F8 to invoke_completion:
-    bind -x '"\e[19~":"invoke_completion"'
-    # See this page for ANSI escape sequences:
-    # https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
-else
-    # Bind Alt + Shift + Q.
-    # Old Bash versions have poor support for some key shortcuts:
-    bind -x '"\eQ":"invoke_completion"'
-    # See limitation of `bind -x`:
-    # https://stackoverflow.com/a/4201274
-fi
+# Bind Alt+Shift+Q to `invoke_completion` function.
+bind -x '"\eQ":"invoke_completion"'
+# See limitation of `bind -x` (which might only be a limitation of older Bash versions):
+# https://stackoverflow.com/questions/4200800/in-bash-how-do-i-bind-a-function-key-to-a-command/4201274#4201274
 
-# List command paths:
-for cmd_item in python pip tox
-do
-    echo -n "${cmd_item}: "
-    which "${cmd_item}"
-done
+# Show what would be done for `relay_demo` auto-completion:
+complete -p relay_demo
 
-# Show what would be done for `try_relay` auto-completion:
-complete -p try_relay
-
-# Disable exit on errors for interactive shell:
+# Disable exit on errors for interactive shell (see enabling them for the duration of this script above):
 set +e
 set +u
-

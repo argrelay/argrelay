@@ -25,7 +25,7 @@ class ThisTestCase(TestCase):
 
     @skip
     def test_live_describe_line_args(self):
-        test_line = "try_relay pro|d whatever"
+        test_line = "some_command pro|d whatever"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         with mock.patch.dict(os.environ, {
             "COMP_LINE": command_line,
@@ -39,7 +39,7 @@ class ThisTestCase(TestCase):
 
     @skip
     def test_live_propose_arg_values(self):
-        test_line = "try_relay pro|d whatever"
+        test_line = "some_command pro|d whatever"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         with mock.patch.dict(os.environ, {
             "COMP_LINE": command_line,
@@ -55,7 +55,7 @@ class ThisTestCase(TestCase):
     def test_live_relay_line_args(self):
         test_argv = [
             "ignored/path/to/some.py",
-            "try_relay",
+            "some_command",
             "prod",
             "whatever",
         ]
@@ -68,7 +68,7 @@ class ThisTestCase(TestCase):
     def test_mocked_propose_arg_values(self):
         # given:
 
-        test_line = "try_relay pro|d whatever"
+        test_line = "some_comand pro|d whatever"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
         mock_rdp_auth = responses.Response(

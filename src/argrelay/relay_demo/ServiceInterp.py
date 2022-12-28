@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from argrelay.demo_unit.CodeMaturityProcessor import CodeMaturityProcessor
-from argrelay.demo_unit.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.CodeMaturityProcessor import CodeMaturityProcessor
+from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_server.arg_processor import ArgProcessor
 from argrelay.relay_server.call_context import CommandContext
 from argrelay.relay_server.line_interp import GenericInterp

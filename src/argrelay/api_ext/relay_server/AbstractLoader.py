@@ -2,7 +2,6 @@ from argrelay.api_ext.relay_server.StaticData import StaticData
 
 
 class AbstractLoader:
-
     config_dict: dict
 
     def __init__(self, config_dict: dict):

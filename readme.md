@@ -1,7 +1,7 @@
 
 TODO: project description.
 
-## Quick start
+## Quick demo
 
 To start both the server and the client, 2 terminal windows are required.
 
@@ -29,18 +29,18 @@ To start both the server and the client, 2 terminal windows are required.
     ./dev-shell.bash
     ```
 
-    This sub-shell is already configured with completion for `try_relay` command (temporarily) while it is running.
+    This sub-shell is already configured with completion for `relay_demo` command (temporarily) while it is running.
 
     FYI: client config: `~/.argrelay.client.yaml`
 
-*   Try to complete command `try_relay`:
+*   Try to complete command `relay_demo`:
 
     ```sh
-    try_relay prod        # press Tab one or multiple times
+    relay_demo prod         # press Tab one or multiple times
     ```
 
     ```sh
-    try_relay prod ro     # press keyboard shortcut (if configured correctly in `dev-shell.bash`)
+    relay_demo prod ro      # press Alt+Shift+Q shortcut to describe command line args
     ```
 
 *   To clean up, exit sub-shells:

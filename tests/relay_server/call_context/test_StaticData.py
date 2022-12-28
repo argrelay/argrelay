@@ -5,7 +5,7 @@ from jsonschema.exceptions import ValidationError
 from marshmallow import ValidationError
 
 from argrelay.api_ext.relay_server.StaticDataSchema import static_data_desc
-from relay_server.test_relay_server import load_example_server_config_dict
+from relay_server.test_relay_server import load_relay_demo_server_config_dict
 from test_argrelay import line_no
 
 
@@ -50,7 +50,7 @@ class ThisTestCase(TestCase):
             ),
             (
                 line_no(), "default test data: expanded (more realistic) sample",
-                yaml.dump(load_example_server_config_dict()["static_data"]),
+                yaml.dump(load_relay_demo_server_config_dict()["static_data"]),
                 {
                     "first_interp_factory_id": "FirstArgInterpFactory",
                 },
