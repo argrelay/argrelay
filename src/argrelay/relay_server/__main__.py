@@ -15,6 +15,7 @@ from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc
 from argrelay.api_int.const_int import API_SPEC
 from argrelay.api_int.server_op import API_DOCS_UI_PATH
 from argrelay.misc_helper import eprint
+from argrelay.mongo_data.MongoServer import MongoServer
 from argrelay.relay_server.path_config import create_blueprint
 
 # Set this here (because `require` function may fail in other contexts):
@@ -24,6 +25,8 @@ server_title = relay_server.__name__
 # Delay config load until `load_config()` is called.
 # This is to avoid loading it on import which, in turn, allows setting up test env with mocks for config file access.
 server_config: ServerConfig
+
+mongo_server = MongoServer()
 
 
 def load_config():
@@ -73,6 +76,7 @@ def create_app():
 
     load_config()
     run_plugins()
+    mongo_server.start_mongo_server(server_config.mongo_config)
 
     swagger_template = {
         "info": {
@@ -116,7 +120,8 @@ if __name__ == '__main__':
     app.run(
         # Contrary to the intention, if IDE debug is needed, set `debug` to `False` to avoid reloader:
         # https://stackoverflow.com/questions/28241989/flask-app-restarting-with-stat/53790400#53790400
-        debug = True,
+        # TODO: Disabled debug to make sure reloader does not restart server (which does not work with Mongo DB):
+        debug = False,
         host = server_config.connection_config.server_host_name,
         port = server_config.connection_config.server_port_number,
     )

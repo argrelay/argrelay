@@ -24,7 +24,10 @@ from argrelay.relay_server.__main__ import create_app
 def load_relay_demo_server_config_dict() -> dict:
     # Composing path to resource this way keeps its base directory always at this relative path:
     test_server_config_path = pkg_resources.resource_filename(__name__, "../../demo/argrelay.server.yaml")
-    return yaml.safe_load(open(test_server_config_path))
+    server_config = yaml.safe_load(open(test_server_config_path))
+    # Override loaded data - do not start mongo server during testing:
+    server_config["mongo_config"]["start_server"] = False
+    return server_config
 
 
 def load_relay_demo_server_config_object() -> ServerConfig:

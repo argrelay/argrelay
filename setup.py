@@ -50,6 +50,7 @@ setuptools.setup(
         "flasgger",
         "marshmallow",
         "apispec",
+        "pymongo",
     ],
     tests_require = tests_require,
     extras_require = extras_require,
