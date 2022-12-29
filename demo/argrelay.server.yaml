@@ -106,3 +106,5 @@ static_data:
             - rw
 
         ServerTag: [ ]
+
+    data_objects: [ ]

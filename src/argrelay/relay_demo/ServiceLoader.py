@@ -1,7 +1,15 @@
 from __future__ import annotations
 
+from argrelay.api_ext.meta_data.DataObjectSchema import (
+    object_data_,
+    object_id_,
+    object_class_,
+)
+from argrelay.api_ext.meta_data.FunctionObjectDataSchema import accept_object_classes_
+from argrelay.api_ext.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.api_ext.relay_server.AbstractLoader import AbstractLoader
 from argrelay.api_ext.relay_server.StaticData import StaticData
+from argrelay.api_ext.relay_server.StaticDataSchema import data_objects_, types_to_values_
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 
 
@@ -29,14 +37,43 @@ def _todo(self):
 class ServiceLoader(AbstractLoader):
 
     def update_static_data(self, static_data: StaticData) -> StaticData:
+
+        static_data = self.load_types_to_values(static_data)
+        static_data = self.load_data_objects(static_data)
+
+        return static_data
+
+    def load_types_to_values(self, static_data: StaticData) -> StaticData:
         """
         The loader simply merges content its `config_dict` into `static_data`.
         """
 
-        loaded_data: dict[str, dict[str, list[str]]] = self.config_dict["types_to_values"]
-        for type_name, values_list in loaded_data.items():
+        config_types_to_values: dict[str, list[str]] = self.config_dict[types_to_values_]
+        for type_name, values_list in config_types_to_values.items():
             if type_name in static_data.types_to_values:
-                static_data.types_to_values[type_name] + values_list
+                static_data.types_to_values[type_name].extend(values_list)
             else:
                 static_data.types_to_values[type_name] = values_list
+
+        return static_data
+
+    # noinspection PyMethodMayBeStatic
+    def load_data_objects(self, static_data: StaticData) -> StaticData:
+        """
+        The loader hard-codes samples into `static_data["data_objects"]`
+        """
+
+        static_data.data_objects.extend([
+            {
+                object_id_: "list",
+                object_class_: ReservedObjectClass.ClassFunction.name,
+                object_data_: {
+                    accept_object_classes_: [
+                        "ClassService",
+                        "ClassHost",
+                    ]
+                }
+            }
+        ])
+
         return static_data

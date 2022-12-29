@@ -1,10 +1,12 @@
+# @formatter:off
+from argrelay.misc_helper.ElapsedTime import ElapsedTime
+ElapsedTime.measure("after_program_entry")
+# @formatter:on
+
 from argrelay.api_ext.ConnectionConfig import ConnectionConfig
 from argrelay.api_ext.relay_server.ServerConfig import ServerConfig
 from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc
 from argrelay.api_ext.reley_client.ClientConfigSchema import client_config_desc
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
-
-ElapsedTime.measure("after_program_entry")
 
 from argrelay.api_int.meta_data import CompType, RunMode
 from argrelay.relay_client.command_impl.AbstractCommand import AbstractCommand

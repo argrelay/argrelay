@@ -5,12 +5,14 @@ from pymongo.database import Database
 
 from argrelay.mongo_data.MongoClient import get_mongo_client
 from argrelay.mongo_data.MongoConfigSchema import mongo_config_desc
+from argrelay.relay_demo.ServiceArgType import ServiceArgType
 
 
 class ThisTestCase(TestCase):
 
     @staticmethod
     def show_all_items(col_object: Collection):
+        print("show_all_items:")
         for item_object in col_object.find():
             print("item_object: ", item_object)
 
@@ -20,7 +22,11 @@ class ThisTestCase(TestCase):
 
     # noinspection PyMethodMayBeStatic
     @skip
-    def test_live_mongo(self):
+    def test_live_tutorial(self):
+        """
+        Inspired by: https://www.mongodb.com/languages/python
+        """
+
         mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
         mongo_client = get_mongo_client(mongo_config)
         print("list_database_names: ", mongo_client.list_database_names())
@@ -152,3 +158,82 @@ class ThisTestCase(TestCase):
         ])
 
         col_object.create_index("category")
+
+    # noinspection PyMethodMayBeStatic
+    @skip
+    def test_live_object_searched_by_multiple_typed_vals(self):
+        """
+        Example with data searched by multiple { type: value } pairs
+        """
+
+        mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
+        mongo_client = get_mongo_client(mongo_config)
+        print("list_database_names: ", mongo_client.list_database_names())
+
+        mongo_db: Database = mongo_client[mongo_config.database_name]
+        print("list_collection_names: ", mongo_db.list_collection_names())
+
+        col_name = "argrelay"
+        col_object: Collection = mongo_db[col_name]
+
+        self.remove_all_items(col_object)
+
+        item_001 = {
+            "object_data": {
+                "object_name": "item_001",
+            },
+            "types_to_values": {
+                ServiceArgType.AccessType.name: "ro",
+            },
+        }
+
+        item_002 = {
+            "object_data": {
+                "object_name": "item_002",
+            },
+            "types_to_values": {
+                ServiceArgType.AccessType.name: "rw",
+                ServiceArgType.ServerTag.name: "red",
+            },
+        }
+
+        item_003 = {
+            "object_data": {
+                "object_name": "item_003",
+            },
+            "types_to_values": {
+                ServiceArgType.AccessType.name: "rw",
+                ServiceArgType.ServerTag.name: "blue",
+            },
+        }
+
+        item_004 = {
+            "object_data": {
+                "object_name": "item_004",
+            },
+            "types_to_values": {
+                ServiceArgType.AccessType.name: "rw",
+                ServiceArgType.ServerTag.name: "red",
+                ServiceArgType.CodeMaturity.name: "prod",
+            },
+        }
+
+        col_object.insert_many([
+            item_001,
+            item_002,
+            item_003,
+            item_004,
+        ])
+
+        col_object.create_index("category")
+
+        print("query 1:")
+        for item_object in col_object.find(
+            {
+                f"types_to_values.{ServiceArgType.AccessType.name}": "rw",
+                f"types_to_values.{ServiceArgType.ServerTag.name}": "red",
+            }
+        ):
+            print("item_object: ", item_object)
+
+        self.remove_all_items(col_object)

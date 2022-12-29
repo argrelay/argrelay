@@ -7,7 +7,7 @@ from marshmallow import Schema
 @dataclass(frozen = True)
 class TypeDesc:
     """
-    Type descriptor: schema, example, methods instantiate from serialized form, etc.
+    Type descriptor: schema, example, etc.
     """
 
     object_schema: Schema
