@@ -92,7 +92,7 @@ class ThisTestCase(TestCase):
         test_cases = [
             (line_no(), "some_command prod amer upstream sdfg|  ", CompType.PrefixShown, "sdfg", "Still as expected with trailing space after cursor"),
             (line_no(), "some_command qa prod|", CompType.SubsequentHelp, "", "Another value from the same dimension with `SubsequentHelp` => no suggestions"),
-            (line_no(), "some_command qa upstream amer qw list ro |", CompType.PrefixShown, "", "No more suggestions when all coordinates specified"),
+            (line_no(), "some_command qa upstream amer qw list ro service_c |", CompType.PrefixShown, "", "No more suggestions when all coordinates specified"),
             (line_no(), "some_command qa list |", CompType.MenuCompletion, "upstream\ndownstream", "Suggestions for next coordinate show entire space"),
             (line_no(), "some_command upstream goto |", CompType.PrefixHidden, "dev\nqa\nprod", ""),
             (line_no(), "some_command upstream goto |",  CompType.SubsequentHelp, "dev\nqa\nprod", ""),
@@ -173,7 +173,7 @@ class ThisTestCase(TestCase):
                 command_ctx.interpret_command()
                 f = io.StringIO()
                 with contextlib.redirect_stderr(f):
-                    command_ctx.invoke_action()
+                    command_ctx.invoke_action(None)
                     self.maxDiff = None
                     self.assertEqual(
                         f"""
@@ -182,6 +182,7 @@ class ThisTestCase(TestCase):
 {TermColor.DARK_GREEN.value}FlowStage: upstream [ExplicitArg]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}GeoRegion: amer [ExplicitArg]{TermColor.RESET.value}
 {TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} qw|qwe|qwer|wert|as|asd|asdf|sdfg|zx|zxc|zxcv|xcvb
+{TermColor.BRIGHT_YELLOW.value}ServiceName: ?{TermColor.RESET.value} service_a|service_b|service_c
 {TermColor.BRIGHT_YELLOW.value}AccessType: ?{TermColor.RESET.value} ro|rw
 """,
                         f.getvalue()

@@ -23,7 +23,7 @@ class ThisTestCase(TestCase):
     def setUpClass(cls):
         cls.base_URL = BASE_URL_FORMAT.format(**connection_config_desc.dict_example)
 
-    @skip
+    @skip  # test again running server
     def test_live_describe_line_args(self):
         test_line = "some_command pro|d whatever"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -37,7 +37,7 @@ class ThisTestCase(TestCase):
 
         self.assertTrue(True)
 
-    @skip
+    @skip  # test again running server
     def test_live_propose_arg_values(self):
         test_line = "some_command pro|d whatever"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -51,7 +51,7 @@ class ThisTestCase(TestCase):
 
         self.assertTrue(True)
 
-    @skip
+    @skip  # test again running server
     def test_live_relay_line_args(self):
         test_argv = [
             "ignored/path/to/some.py",

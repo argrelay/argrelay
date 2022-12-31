@@ -3,6 +3,7 @@ from unittest import TestCase, skip
 from pymongo.collection import Collection
 from pymongo.database import Database
 
+from argrelay.api_ext.relay_server.StaticDataSchema import types_to_values_
 from argrelay.mongo_data.MongoClient import get_mongo_client
 from argrelay.mongo_data.MongoConfigSchema import mongo_config_desc
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
@@ -21,7 +22,7 @@ class ThisTestCase(TestCase):
         col_object.delete_many({})
 
     # noinspection PyMethodMayBeStatic
-    @skip
+    @skip  # test again running server
     def test_live_tutorial(self):
         """
         Inspired by: https://www.mongodb.com/languages/python
@@ -160,7 +161,7 @@ class ThisTestCase(TestCase):
         col_object.create_index("category")
 
     # noinspection PyMethodMayBeStatic
-    @skip
+    @skip  # test again running server
     def test_live_object_searched_by_multiple_typed_vals(self):
         """
         Example with data searched by multiple { type: value } pairs
@@ -182,7 +183,7 @@ class ThisTestCase(TestCase):
             "object_data": {
                 "object_name": "item_001",
             },
-            "types_to_values": {
+            types_to_values_: {
                 ServiceArgType.AccessType.name: "ro",
             },
         }
@@ -191,9 +192,9 @@ class ThisTestCase(TestCase):
             "object_data": {
                 "object_name": "item_002",
             },
-            "types_to_values": {
+            types_to_values_: {
                 ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.ServerTag.name: "red",
+                ServiceArgType.ColorTag.name: "red",
             },
         }
 
@@ -201,9 +202,9 @@ class ThisTestCase(TestCase):
             "object_data": {
                 "object_name": "item_003",
             },
-            "types_to_values": {
+            types_to_values_: {
                 ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.ServerTag.name: "blue",
+                ServiceArgType.ColorTag.name: "blue",
             },
         }
 
@@ -211,9 +212,9 @@ class ThisTestCase(TestCase):
             "object_data": {
                 "object_name": "item_004",
             },
-            "types_to_values": {
+            types_to_values_: {
                 ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.ServerTag.name: "red",
+                ServiceArgType.ColorTag.name: "red",
                 ServiceArgType.CodeMaturity.name: "prod",
             },
         }
@@ -225,13 +226,13 @@ class ThisTestCase(TestCase):
             item_004,
         ])
 
-        col_object.create_index("category")
+        col_object.create_index(types_to_values_)
 
         print("query 1:")
         for item_object in col_object.find(
             {
                 f"types_to_values.{ServiceArgType.AccessType.name}": "rw",
-                f"types_to_values.{ServiceArgType.ServerTag.name}": "red",
+                f"types_to_values.{ServiceArgType.ColorTag.name}": "red",
             }
         ):
             print("item_object: ", item_object)

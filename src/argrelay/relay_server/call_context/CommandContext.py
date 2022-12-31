@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from dataclasses import field, dataclass
 
+from pymongo.database import Database
+
 from argrelay.api_ext.relay_server import StaticData
 from argrelay.api_int.meta_data import ArgValue, CompType
 from argrelay.api_int.meta_data.RunMode import RunMode
 from argrelay.misc_helper import eprint
+from argrelay.mongo_data.MongoClient import get_mongo_client, find_objects
 from argrelay.relay_client.meta_data import TermColor
 from argrelay.relay_server.call_context import ParsedContext
 
@@ -74,20 +77,26 @@ class CommandContext:
             self.curr_interp = self.curr_interp.next_interp()
 
     # TODO: remove this: the result is returned from server to client for client to execute either print_help or print arg values
-    def invoke_action(self) -> None:
+    def invoke_action(self, mongo_db: Database) -> None:
         self.print_debug()
 
         if self.parsed_ctx.comp_type == CompType.DescribeArgs:
+            # TODO: send data to client to print this help:
             self.print_help()
             return
 
         if self.parsed_ctx.run_mode == RunMode.CompletionMode:
             auto_comp: str = self.propose_auto_comp()
+            # TODO: send data to client to print parguments:
             print(auto_comp, flush = True)
             return
-        else:
-            # TODO: invoke command:
+
+        if self.parsed_ctx.run_mode == RunMode.InvocationMode:
+            # TODO: send data to client to invoke command:
             eprint("no relay implemented yet")
+            # TODO: clean up: temporarily implemented to list all objects matching criteria:
+            for data_object in find_objects(mongo_db, self.assigned_types_to_values):
+                print(data_object)
 
     # TODO: clean up: single line was only useful for local requests:
     def propose_auto_comp(self) -> str:
@@ -154,3 +163,6 @@ class CommandContext:
         eprint(f"comp_key: {self.parsed_ctx.comp_key}", end = " ")
         eprint(f"comp_suggestions: {self.comp_suggestions}", end = " ")
         eprint(TermColor.RESET.value)
+
+    def list_objects(self):
+        mongo_client = get_mongo_client()

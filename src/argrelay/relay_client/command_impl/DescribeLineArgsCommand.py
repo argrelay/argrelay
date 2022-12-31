@@ -7,6 +7,6 @@ class DescribeLineArgsCommand(AbstractCommand):
     def __init__(self):
         super().__init__(
             server_path = DESCRIBE_LINE_ARGS_PATH,
-            # TODO:
+            # TODO: define data to be returned back from server to explain current command line interpretation:
             response_schema = None,
         )

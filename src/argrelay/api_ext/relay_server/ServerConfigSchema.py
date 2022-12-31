@@ -9,6 +9,9 @@ from argrelay.api_ext.relay_server.StaticDataSchema import static_data_desc
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.mongo_data.MongoConfigSchema import mongo_config_desc
 
+connection_config_ = "connection_config"
+mongo_config_ = "mongo_config"
+
 
 class ServerConfigSchema(Schema):
     class Meta:
@@ -37,8 +40,8 @@ class ServerConfigSchema(Schema):
     @post_load
     def make_object(self, input_dict, **kwargs):
         return ServerConfig(
-            connection_config = input_dict["connection_config"],
-            mongo_config = input_dict["mongo_config"],
+            connection_config = input_dict[connection_config_],
+            mongo_config = input_dict[mongo_config_],
             plugin_list = input_dict["plugin_list"],
             static_data = input_dict["static_data"],
         )
@@ -48,8 +51,8 @@ server_config_desc = TypeDesc(
     object_schema = ServerConfigSchema(),
     ref_name = ServerConfigSchema.__name__,
     dict_example = {
-        "connection_config": connection_config_desc.dict_example,
-        "mongo_config": mongo_config_desc.dict_example,
+        connection_config_: connection_config_desc.dict_example,
+        mongo_config_: mongo_config_desc.dict_example,
         "plugin_list": [
             plugin_entry_desc.dict_example,
         ],

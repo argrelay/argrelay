@@ -51,7 +51,11 @@ class ParsedContext(InputContext):
         ```
         some_command some_su|b_command some_arg
         ```
-
+        ```
+                            |                       # non-existing char placed to indicate cursor cpos
+        0            1                 2            # token ipos
+        01234567890123456789 01234567890123456789   # char cpos (the least significant digit)
+        ```
         Then function returns:
         (
             [                               # list of all tokens

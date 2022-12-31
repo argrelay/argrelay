@@ -7,6 +7,6 @@ class RelayLineArgsCommand(AbstractCommand):
     def __init__(self):
         super().__init__(
             server_path = RELAY_LINE_ARGS_PATH,
-            # TODO:
+            # TODO: define data to be returned back from server to execute function on client side:
             response_schema = None,
         )

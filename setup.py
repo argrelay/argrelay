@@ -5,6 +5,7 @@ with open("readme.md", "r", encoding = "utf-8") as fh:
 
 tests_require = [
     "responses",
+    "mongomock",
 ]
 
 extras_require = {

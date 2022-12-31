@@ -9,8 +9,9 @@ from argrelay.api_ext.meta_data.FunctionObjectDataSchema import accept_object_cl
 from argrelay.api_ext.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.api_ext.relay_server.AbstractLoader import AbstractLoader
 from argrelay.api_ext.relay_server.StaticData import StaticData
-from argrelay.api_ext.relay_server.StaticDataSchema import data_objects_, types_to_values_
+from argrelay.api_ext.relay_server.StaticDataSchema import types_to_values_
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.ServiceObjectClass import ServiceObjectClass
 
 
 def _todo(self):
@@ -22,7 +23,7 @@ def _todo(self):
     # host_name_to_args: dict[str, dict[ServiceArgType, str]]
     self.host_name_to_args = {
         "qwer": {
-            ServiceArgType.CodeMaturity: "uat",
+            ServiceArgType.CodeMaturity: "dev",
             ServiceArgType.FlowStage: "upstream",
             ServiceArgType.GeoRegion: "amer",
         }
@@ -64,16 +65,112 @@ class ServiceLoader(AbstractLoader):
         """
 
         static_data.data_objects.extend([
+
+            ############################################################################################################
+            # functions
+
+            {
+                object_id_: "goto",
+                object_class_: ReservedObjectClass.ClassFunction.name,
+                object_data_: {
+                    accept_object_classes_: [
+                        ServiceObjectClass.ClassService.name,
+                        ServiceObjectClass.ClassHost.name,
+                    ],
+                },
+            },
+            {
+                object_id_: "desc",
+                object_class_: ReservedObjectClass.ClassFunction.name,
+                object_data_: {
+                    accept_object_classes_: [
+                        ServiceObjectClass.ClassService.name,
+                        ServiceObjectClass.ClassHost.name,
+                    ],
+                },
+            },
             {
                 object_id_: "list",
                 object_class_: ReservedObjectClass.ClassFunction.name,
                 object_data_: {
                     accept_object_classes_: [
-                        "ClassService",
-                        "ClassHost",
-                    ]
-                }
-            }
+                        ServiceObjectClass.ClassService.name,
+                        ServiceObjectClass.ClassHost.name,
+                    ],
+                },
+            },
+
+            ############################################################################################################
+            # hosts
+
+            {
+                object_id_: "qwer",
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.GeoRegion.name: "amer",
+                ServiceArgType.HostName.name: "qwer",
+            },
+            {
+                object_id_: "asdf",
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.HostName.name: "asdf",
+            },
+            {
+                object_id_: "zxcv",
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.HostName.name: "zxcv",
+            },
+
+            ############################################################################################################
+            # services
+
+            {
+                object_id_: "qwer.service_a",
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.GeoRegion.name: "amer",
+                ServiceArgType.HostName.name: "qwer",
+                ServiceArgType.ServiceName.name: "service_a",
+            },
+            {
+                object_id_: "asdf.service_b",
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.HostName.name: "asdf",
+                ServiceArgType.ServiceName.name: "service_b",
+            },
+            {
+                object_id_: "zxcv.service_c",
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.HostName.name: "zxcv",
+                ServiceArgType.ServiceName.name: "service_c",
+            },
+
         ])
 
         return static_data

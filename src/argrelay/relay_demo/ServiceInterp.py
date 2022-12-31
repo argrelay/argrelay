@@ -72,13 +72,18 @@ class ServiceInterp(GenericInterp):
                 ),
                 ArgProcessor(
                     command_ctx.static_data,
+                    types_to_keys[ServiceArgType.ServiceName.name],
+                    ServiceArgType.ServiceName.name,
+                ),
+                ArgProcessor(
+                    command_ctx.static_data,
                     types_to_keys[ServiceArgType.AccessType.name],
                     ServiceArgType.AccessType.name,
                 ),
                 ArgProcessor(
                     command_ctx.static_data,
-                    types_to_keys[ServiceArgType.ServerTag.name],
-                    ServiceArgType.ServerTag.name,
+                    types_to_keys[ServiceArgType.ColorTag.name],
+                    ServiceArgType.ColorTag.name,
                 ),
             ],
         )

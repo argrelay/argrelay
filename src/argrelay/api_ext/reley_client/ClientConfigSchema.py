@@ -6,6 +6,8 @@ from argrelay.api_ext.ConnectionConfigSchema import connection_config_desc
 from argrelay.api_ext.reley_client.ClientConfig import ClientConfig
 from argrelay.misc_helper.TypeDesc import TypeDesc
 
+connection_config_ = "connection_config"
+
 
 class ClientConfigSchema(Schema):
     class Meta:
@@ -20,7 +22,7 @@ class ClientConfigSchema(Schema):
     def make_object(self, input_dict, **kwargs):
         return ClientConfig(
             use_local_requests = input_dict["use_local_requests"],
-            connection_config = input_dict["connection_config"],
+            connection_config = input_dict[connection_config_],
         )
 
 
@@ -29,7 +31,7 @@ client_config_desc = TypeDesc(
     ref_name = ClientConfigSchema.__name__,
     dict_example = {
         "use_local_requests": False,
-        "connection_config": connection_config_desc.dict_example,
+        connection_config_: connection_config_desc.dict_example,
     },
     default_file_path = os.path.expanduser("~") + "/" + ".argrelay.client.yaml",
 )

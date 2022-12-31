@@ -17,8 +17,9 @@ service_interp_config_example = {
         "stage": ServiceArgType.FlowStage.name,
         "region": ServiceArgType.GeoRegion.name,
         "host": ServiceArgType.HostName.name,
+        "service": ServiceArgType.ServiceName.name,
         "access": ServiceArgType.AccessType.name,
-        "tag": ServiceArgType.ServerTag.name,
+        "tag": ServiceArgType.ColorTag.name,
     },
 }
 

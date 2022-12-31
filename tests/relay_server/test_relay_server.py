@@ -4,11 +4,11 @@ from types import SimpleNamespace
 from unittest import TestCase
 from unittest.mock import patch, mock_open
 
+import mongomock
 import pkg_resources
 import yaml
 
-from argrelay.api_ext.relay_server.ServerConfig import ServerConfig
-from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc
+from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc, mongo_config_
 from argrelay.api_int.const_int import API_SPEC
 from argrelay.api_int.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
@@ -18,6 +18,8 @@ from argrelay.api_int.const_int import (
 from argrelay.api_int.data_schema.RequestContextSchema import request_context_desc
 from argrelay.api_int.meta_data import CompType
 from argrelay.api_int.server_op import server_op_data_schemas, API_DOCS_UI_PATH
+from argrelay.mongo_data import MongoClient
+from argrelay.mongo_data.MongoConfigSchema import mongo_config_desc
 from argrelay.relay_server.__main__ import create_app
 
 
@@ -30,21 +32,26 @@ def load_relay_demo_server_config_dict() -> dict:
     return server_config
 
 
-def load_relay_demo_server_config_object() -> ServerConfig:
-    return server_config_desc.from_input_dict(load_relay_demo_server_config_dict())
-
-
 class ThisTestCase(TestCase):
 
     def setUp(self):
-        server_config_yaml = yaml.dump(load_relay_demo_server_config_dict())
+        server_config_dict = load_relay_demo_server_config_dict()
+        server_config_yaml = yaml.dump(server_config_dict)
+        mongo_config_obj = mongo_config_desc.from_input_dict(server_config_dict[mongo_config_])
+
+        # mock access to server config file:
         with patch("builtins.open", mock_open(read_data = server_config_yaml)) as mock_file:
             self.assertTrue(open(server_config_desc.default_file_path).read() == server_config_yaml)
 
-            flask_app = create_app()
-            self.ctx = flask_app.app_context()
-            self.ctx.push()
-            self.client = flask_app.test_client()
+            # mock access to Mongo DB:
+            with patch("argrelay.mongo_data.MongoClient.get_mongo_client") as get_mongo_client_mock:
+                get_mongo_client_mock.return_value = mongomock.MongoClient()
+                print("get_mongo_client_mock: ", get_mongo_client_mock)
+                print("get_mongo_client(): ", MongoClient.get_mongo_client(mongo_config_obj))
+                flask_app = create_app()
+                self.ctx = flask_app.app_context()
+                self.ctx.push()
+                self.client = flask_app.test_client()
 
         mock_file.assert_called_with(server_config_desc.default_file_path)
 

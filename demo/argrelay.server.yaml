@@ -35,8 +35,9 @@ plugin_list:
                 stage: FlowStage
                 region: GeoRegion
                 host: HostName
+                service: ServiceName
                 access: AccessType
-                tag: ServerTag
+                tag: ColorTag
 
     -   plugin_id: NoopLoader
         plugin_module_name: argrelay.misc_helper.NoopLoader
@@ -52,7 +53,7 @@ plugin_list:
 
             types_to_values:
 
-                ServerTag:
+                ColorTag:
                     - red
                     - green
 
@@ -101,10 +102,15 @@ static_data:
             - zxcv
             - xcvb
 
+        ServiceName:
+            - service_a
+            - service_b
+            - service_c
+
         AccessType:
             - ro
             - rw
 
-        ServerTag: [ ]
+        ColorTag: [ ]
 
     data_objects: [ ]

@@ -2,6 +2,7 @@ import inspect
 
 from flasgger import swag_from
 from flask import request, Blueprint
+from pymongo.database import Database
 
 from argrelay.api_ext.relay_server.ServerConfig import ServerConfig
 from argrelay.api_int.const_int import (
@@ -17,7 +18,7 @@ from argrelay.relay_server.call_context import ParsedContext, CommandContext
 from argrelay.shared_unit.call_context import InputContext
 
 
-def create_blueprint(server_config: ServerConfig):
+def create_blueprint(server_config: ServerConfig, mongo_db: Database):
     root_blueprint = Blueprint("root_blueprint", __name__)
 
     def interpret_command(input_ctx: InputContext) -> CommandContext:
@@ -41,7 +42,7 @@ def create_blueprint(server_config: ServerConfig):
         assert input_ctx.comp_type == CompType.DescribeArgs
         command_ctx = interpret_command(input_ctx)
         # TODO: Print to stdout/stderr on client side. Send back data instead:
-        command_ctx.invoke_action()
+        command_ctx.invoke_action(mongo_db)
         # TODO: send data instead of text:
         return inspect.currentframe().f_code.co_name
 
@@ -72,7 +73,7 @@ def create_blueprint(server_config: ServerConfig):
         request_ctx = request_context_desc.object_schema.loads(request.json)
         input_ctx = InputContext.from_request_context(
             request_ctx,
-            run_mode = RunMode.CompletionMode,
+            run_mode = RunMode.InvocationMode,
             comp_key = "0",
         )
         assert input_ctx.comp_type == CompType.InvokeAction
@@ -81,7 +82,7 @@ def create_blueprint(server_config: ServerConfig):
         print(input_ctx)
 
         command_ctx = interpret_command(input_ctx)
-        command_ctx.invoke_action()
+        command_ctx.invoke_action(mongo_db)
         # TODO: send data instead of text:
         return inspect.currentframe().f_code.co_name
 

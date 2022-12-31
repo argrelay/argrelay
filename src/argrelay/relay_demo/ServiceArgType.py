@@ -7,8 +7,9 @@ class ServiceArgType(Enum):
     FlowStage = auto()
     GeoRegion = auto()
     HostName = auto()
+    ServiceName = auto()
     AccessType = auto()
-    ServerTag = auto()
+    ColorTag = auto()
 
     def __str__(self):
         return self.name

@@ -15,6 +15,7 @@ from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc
 from argrelay.api_int.const_int import API_SPEC
 from argrelay.api_int.server_op import API_DOCS_UI_PATH
 from argrelay.misc_helper import eprint
+from argrelay.mongo_data import MongoClient
 from argrelay.mongo_data.MongoServer import MongoServer
 from argrelay.relay_server.path_config import create_blueprint
 
@@ -78,6 +79,10 @@ def create_app():
     run_plugins()
     mongo_server.start_mongo_server(server_config.mongo_config)
 
+    mongo_client = MongoClient.get_mongo_client(server_config.mongo_config)
+    mongo_db = mongo_client[server_config.mongo_config.database_name]
+    MongoClient.store_objects(mongo_db, server_config.static_data)
+
     swagger_template = {
         "info": {
             "title": server_title,
@@ -108,7 +113,7 @@ def create_app():
         config = swagger_config,
     )
 
-    root_blueprint = create_blueprint(server_config)
+    root_blueprint = create_blueprint(server_config, mongo_db)
     flask_app.register_blueprint(root_blueprint)
 
     return flask_app
