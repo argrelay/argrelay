@@ -14,7 +14,7 @@ mongo_config:
 plugin_list:
 
     -   plugin_id: FirstArgInterpFactory
-        plugin_module_name: argrelay.relay_server.line_interp.FirstArgInterpFactory
+        plugin_module_name: argrelay.interp_plugin.FirstArgInterpFactory
         plugin_class_name: FirstArgInterpFactory
         plugin_type: InterpFactoryPlugin
         plugin_config:

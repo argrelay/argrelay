@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from argrelay.interp_plugin.ArgProcessor import ArgProcessor
+from argrelay.interp_plugin.GenericInterp import GenericInterp
 from argrelay.relay_demo.CodeMaturityProcessor import CodeMaturityProcessor
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.relay_server.arg_processor import ArgProcessor
-from argrelay.relay_server.call_context import CommandContext
-from argrelay.relay_server.line_interp import GenericInterp
+from argrelay.runtime_context.CommandContext import CommandContext
 
 """
 `ServiceInterp` is a configured use case of :class:`GenericInterp` for auto-completion of service attributes.

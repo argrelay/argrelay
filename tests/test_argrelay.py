@@ -3,14 +3,18 @@ import io
 from inspect import currentframe, getframeinfo
 from unittest import TestCase
 
-from argrelay.api_ext.relay_server.StaticDataSchema import static_data_desc
-from argrelay.api_int.meta_data import CompType, ArgValue, ArgSource, RunMode
-from argrelay.relay_client.meta_data import TermColor
+from argrelay.data_schema.StaticDataSchema import static_data_desc
+from argrelay.interp_plugin.FirstArgInterpFactory import FirstArgInterpFactory
+from argrelay.meta_data.ArgSource import ArgSource
+from argrelay.meta_data.ArgValue import ArgValue
+from argrelay.meta_data.CompType import CompType
+from argrelay.meta_data.RunMode import RunMode
+from argrelay.meta_data.TermColor import TermColor
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceInterpFactory import ServiceInterpFactory, service_interp_config_desc
-from argrelay.relay_server.call_context import ParsedContext, CommandContext
-from argrelay.relay_server.line_interp.FirstArgInterpFactory import FirstArgInterpFactory
-from argrelay.shared_unit.call_context import InputContext
+from argrelay.runtime_context.CommandContext import CommandContext
+from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_context.ParsedContext import ParsedContext
 from relay_server.test_relay_server import load_relay_demo_server_config_dict
 
 

@@ -3,21 +3,21 @@ from argrelay.misc_helper.ElapsedTime import ElapsedTime
 ElapsedTime.measure("after_program_entry")
 # @formatter:on
 
-from argrelay.api_ext.ConnectionConfig import ConnectionConfig
-from argrelay.api_ext.relay_server.ServerConfig import ServerConfig
-from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc
-from argrelay.api_ext.reley_client.ClientConfigSchema import client_config_desc
-
-from argrelay.api_int.meta_data import CompType, RunMode
-from argrelay.relay_client.command_impl.AbstractCommand import AbstractCommand
-from argrelay.relay_client.command_impl.DescribeLineArgsCommand import DescribeLineArgsCommand
-from argrelay.relay_client.command_impl.ProposeArgValuesCommand import ProposeArgValuesCommand
-from argrelay.relay_client.command_impl.RelayLineArgsCommand import RelayLineArgsCommand
+from argrelay.meta_data.CompType import CompType
+from argrelay.meta_data.RunMode import RunMode
+from argrelay.runtime_context.CommandContext import CommandContext
+from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_context.ParsedContext import ParsedContext
+from argrelay.meta_data.ConnectionConfig import ConnectionConfig
+from argrelay.meta_data.ServerConfig import ServerConfig
+from argrelay.data_schema.ServerConfigSchema import server_config_desc
+from argrelay.data_schema.ClientConfigSchema import client_config_desc
+from argrelay.client_command.AbstractCommand import AbstractCommand
+from argrelay.client_command.DescribeLineArgsCommand import DescribeLineArgsCommand
+from argrelay.client_command.ProposeArgValuesCommand import ProposeArgValuesCommand
+from argrelay.client_command.RelayLineArgsCommand import RelayLineArgsCommand
 
 import sys
-
-from argrelay.relay_server.call_context import ParsedContext, CommandContext
-from argrelay.shared_unit.call_context import InputContext
 
 ElapsedTime.measure("after_imports")
 

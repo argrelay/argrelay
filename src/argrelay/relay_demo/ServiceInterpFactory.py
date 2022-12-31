@@ -1,9 +1,9 @@
-from argrelay.api_ext.relay_server.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.data_schema.GenericInterpConfigSchema import GenericInterpConfigSchema
+from argrelay.interp_plugin.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceInterp import ServiceInterp
-from argrelay.relay_server.call_context import CommandContext
-from argrelay.relay_server.line_interp.GenericInterpFactory import GenericInterpConfigSchema
+from argrelay.runtime_context.CommandContext import CommandContext
 
 
 class ServiceInterpConfigSchema(GenericInterpConfigSchema):

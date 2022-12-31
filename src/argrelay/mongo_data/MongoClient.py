@@ -7,10 +7,10 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.api_ext.meta_data.DataObjectSchema import object_id_
-from argrelay.api_ext.relay_server.StaticData import StaticData
-from argrelay.api_ext.relay_server.StaticDataSchema import data_objects_
-from argrelay.api_int.meta_data import ArgValue
+from argrelay.data_schema.DataObjectSchema import object_id_
+from argrelay.data_schema.StaticDataSchema import data_objects_
+from argrelay.meta_data.ArgValue import ArgValue
+from argrelay.meta_data.StaticData import StaticData
 from argrelay.mongo_data.MongoConfig import MongoConfig
 
 

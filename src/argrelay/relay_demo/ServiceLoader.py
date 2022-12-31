@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from argrelay.api_ext.meta_data.DataObjectSchema import (
+from argrelay.data_schema.DataObjectSchema import (
     object_data_,
     object_id_,
     object_class_,
 )
-from argrelay.api_ext.meta_data.FunctionObjectDataSchema import accept_object_classes_
-from argrelay.api_ext.meta_data.ReservedObjectClass import ReservedObjectClass
-from argrelay.api_ext.relay_server.AbstractLoader import AbstractLoader
-from argrelay.api_ext.relay_server.StaticData import StaticData
-from argrelay.api_ext.relay_server.StaticDataSchema import types_to_values_
+from argrelay.data_schema.FunctionObjectDataSchema import accept_object_classes_
+from argrelay.data_schema.StaticDataSchema import types_to_values_
+from argrelay.loader_plugin.AbstractLoader import AbstractLoader
+from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
+from argrelay.meta_data.StaticData import StaticData
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceObjectClass import ServiceObjectClass
 

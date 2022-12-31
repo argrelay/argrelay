@@ -7,17 +7,17 @@ from flasgger import Swagger
 from flask import Flask
 
 from argrelay import relay_server
-from argrelay.api_ext.meta_data.PluginType import PluginType
-from argrelay.api_ext.relay_server.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.api_ext.relay_server.AbstractLoader import AbstractLoader
-from argrelay.api_ext.relay_server.ServerConfig import ServerConfig
-from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc
-from argrelay.api_int.const_int import API_SPEC
-from argrelay.api_int.server_op import API_DOCS_UI_PATH
+from argrelay.data_schema.ServerConfigSchema import server_config_desc
+from argrelay.interp_plugin.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.loader_plugin.AbstractLoader import AbstractLoader
+from argrelay.meta_data.PluginType import PluginType
+from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.misc_helper import eprint
 from argrelay.mongo_data import MongoClient
 from argrelay.mongo_data.MongoServer import MongoServer
 from argrelay.relay_server.path_config import create_blueprint
+from argrelay.server_spec.const_int import API_SPEC
+from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH
 
 # Set this here (because `require` function may fail in other contexts):
 server_version = pkg_resources.require("argrelay")[0].version

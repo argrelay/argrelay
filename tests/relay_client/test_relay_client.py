@@ -8,12 +8,12 @@ from unittest.mock import mock_open
 import responses
 import yaml
 
-from argrelay.api_ext.ConnectionConfigSchema import connection_config_desc
-from argrelay.api_ext.reley_client.ClientConfigSchema import client_config_desc
-from argrelay.api_int.const_int import PROPOSE_ARG_VALUES_PATH, BASE_URL_FORMAT
-from argrelay.api_int.data_schema.ArgValuesSchema import arg_values_desc
-from argrelay.api_int.meta_data import CompType
+from argrelay.data_schema.ArgValuesSchema import arg_values_desc
+from argrelay.data_schema.ClientConfigSchema import client_config_desc
+from argrelay.data_schema.ConnectionConfigSchema import connection_config_desc
+from argrelay.meta_data.CompType import CompType
 from argrelay.relay_client import __main__
+from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH, BASE_URL_FORMAT
 from test_argrelay import parse_line_and_cpos
 
 

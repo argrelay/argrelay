@@ -1,9 +1,10 @@
-from argrelay.api_ext.relay_server import StaticData
-from argrelay.api_int.meta_data import ArgValue, ArgSource
-from argrelay.api_int.meta_data.RunMode import RunMode
+from argrelay.interp_plugin.ArgProcessor import ArgProcessor
+from argrelay.meta_data import StaticData
+from argrelay.meta_data.ArgSource import ArgSource
+from argrelay.meta_data.ArgValue import ArgValue
+from argrelay.meta_data.RunMode import RunMode
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.relay_server.arg_processor.ArgProcessor import ArgProcessor
-from argrelay.relay_server.call_context import CommandContext
+from argrelay.runtime_context.CommandContext import CommandContext
 
 
 class CodeMaturityProcessor(ArgProcessor):

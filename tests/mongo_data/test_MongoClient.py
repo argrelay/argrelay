@@ -3,9 +3,9 @@ from unittest import TestCase, skip
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.api_ext.relay_server.StaticDataSchema import types_to_values_
+from argrelay.data_schema.MongoConfigSchema import mongo_config_desc
+from argrelay.data_schema.StaticDataSchema import types_to_values_
 from argrelay.mongo_data.MongoClient import get_mongo_client
-from argrelay.mongo_data.MongoConfigSchema import mongo_config_desc
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 
 

@@ -8,25 +8,26 @@ import mongomock
 import pkg_resources
 import yaml
 
-from argrelay.api_ext.relay_server.ServerConfigSchema import server_config_desc, mongo_config_
-from argrelay.api_int.const_int import API_SPEC
-from argrelay.api_int.const_int import (
+from argrelay.data_schema.MongoConfigSchema import mongo_config_desc
+from argrelay.data_schema.RequestContextSchema import request_context_desc
+from argrelay.data_schema.ServerConfigSchema import server_config_desc, mongo_config_
+from argrelay.meta_data.CompType import CompType
+from argrelay.mongo_data import MongoClient
+from argrelay.relay_server.__main__ import create_app
+from argrelay.server_spec.const_int import API_SPEC
+from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
     PROPOSE_ARG_VALUES_PATH,
     RELAY_LINE_ARGS_PATH,
 )
-from argrelay.api_int.data_schema.RequestContextSchema import request_context_desc
-from argrelay.api_int.meta_data import CompType
-from argrelay.api_int.server_op import server_op_data_schemas, API_DOCS_UI_PATH
-from argrelay.mongo_data import MongoClient
-from argrelay.mongo_data.MongoConfigSchema import mongo_config_desc
-from argrelay.relay_server.__main__ import create_app
+from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH, server_op_data_schemas
 
 
 def load_relay_demo_server_config_dict() -> dict:
     # Composing path to resource this way keeps its base directory always at this relative path:
     test_server_config_path = pkg_resources.resource_filename(__name__, "../../demo/argrelay.server.yaml")
-    server_config = yaml.safe_load(open(test_server_config_path))
+    with open(test_server_config_path) as f:
+        server_config = yaml.safe_load(f)
     # Override loaded data - do not start mongo server during testing:
     server_config["mongo_config"]["start_server"] = False
     return server_config

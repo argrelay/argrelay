@@ -1,5 +1,5 @@
-from argrelay.api_ext.relay_server.AbstractLoader import AbstractLoader
-from argrelay.api_ext.relay_server.StaticData import StaticData
+from argrelay.loader_plugin.AbstractLoader import AbstractLoader
+from argrelay.meta_data.StaticData import StaticData
 
 
 class NoopLoader(AbstractLoader):

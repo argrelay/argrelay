@@ -4,18 +4,20 @@ from flasgger import swag_from
 from flask import request, Blueprint
 from pymongo.database import Database
 
-from argrelay.api_ext.relay_server.ServerConfig import ServerConfig
-from argrelay.api_int.const_int import (
+from argrelay.data_schema.ArgValuesSchema import arg_values_desc
+from argrelay.data_schema.RequestContextSchema import request_context_desc
+from argrelay.meta_data.CompType import CompType
+from argrelay.meta_data.RunMode import RunMode
+from argrelay.meta_data.ServerConfig import ServerConfig
+from argrelay.runtime_context.CommandContext import CommandContext
+from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_context.ParsedContext import ParsedContext
+from argrelay.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
+from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
     PROPOSE_ARG_VALUES_PATH,
     RELAY_LINE_ARGS_PATH,
 )
-from argrelay.api_int.data_schema.ArgValuesSchema import arg_values_desc
-from argrelay.api_int.data_schema.RequestContextSchema import request_context_desc
-from argrelay.api_int.meta_data import RunMode, CompType
-from argrelay.api_int.server_op import DescribeLineArgsSpec, RelayLineArgsSpec, ProposeArgValuesSpec
-from argrelay.relay_server.call_context import ParsedContext, CommandContext
-from argrelay.shared_unit.call_context import InputContext
 
 
 def create_blueprint(server_config: ServerConfig, mongo_db: Database):
