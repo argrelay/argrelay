@@ -3,6 +3,7 @@ from enum import Enum, auto
 
 class ServiceArgType(Enum):
     ActionType = auto()
+    ObjectSelector = auto()
     CodeMaturity = auto()
     FlowStage = auto()
     GeoRegion = auto()

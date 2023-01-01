@@ -19,7 +19,7 @@ def _todo(self):
     #       It is actually, when one of the objects is singled-out.
     #       "default vs implicit":
     #       But setting it as implicit args means situation of searching objects contained by it.
-    #       Another situation is continue searching objects outside of it - implicit args should not be used.
+    #       Another situation is to continue searching objects outside of it - implicit args should not be used.
     # host_name_to_args: dict[str, dict[ServiceArgType, str]]
     self.host_name_to_args = {
         "qwer": {
@@ -64,20 +64,32 @@ class ServiceLoader(AbstractLoader):
         The loader hard-codes samples into `static_data["data_objects"]`
         """
 
-        static_data.data_objects.extend([
+        object_list = [
 
             ############################################################################################################
             # functions
 
             {
-                object_id_: "goto",
+                object_id_: "goto_host",
+                object_class_: ReservedObjectClass.ClassFunction.name,
+                object_data_: {
+                    accept_object_classes_: [
+                        ServiceObjectClass.ClassHost.name,
+                    ],
+                },
+                ServiceArgType.ActionType.name: "goto",
+                ServiceArgType.ObjectSelector.name: "host",
+            },
+            {
+                object_id_: "goto_service",
                 object_class_: ReservedObjectClass.ClassFunction.name,
                 object_data_: {
                     accept_object_classes_: [
                         ServiceObjectClass.ClassService.name,
-                        ServiceObjectClass.ClassHost.name,
                     ],
                 },
+                ServiceArgType.ActionType.name: "goto",
+                ServiceArgType.ObjectSelector.name: "service",
             },
             {
                 object_id_: "desc",
@@ -88,6 +100,7 @@ class ServiceLoader(AbstractLoader):
                         ServiceObjectClass.ClassHost.name,
                     ],
                 },
+                ServiceArgType.ActionType.name: "desc",
             },
             {
                 object_id_: "list",
@@ -98,13 +111,13 @@ class ServiceLoader(AbstractLoader):
                         ServiceObjectClass.ClassHost.name,
                     ],
                 },
+                ServiceArgType.ActionType.name: "list",
             },
 
             ############################################################################################################
             # hosts
 
             {
-                object_id_: "qwer",
                 object_class_: ServiceObjectClass.ClassHost.name,
                 object_data_: {
                 },
@@ -114,7 +127,6 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer",
             },
             {
-                object_id_: "asdf",
                 object_class_: ServiceObjectClass.ClassHost.name,
                 object_data_: {
                 },
@@ -124,7 +136,6 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "asdf",
             },
             {
-                object_id_: "zxcv",
                 object_class_: ServiceObjectClass.ClassHost.name,
                 object_data_: {
                 },
@@ -138,7 +149,6 @@ class ServiceLoader(AbstractLoader):
             # services
 
             {
-                object_id_: "qwer.service_a",
                 object_class_: ServiceObjectClass.ClassHost.name,
                 object_data_: {
                 },
@@ -149,7 +159,6 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "service_a",
             },
             {
-                object_id_: "asdf.service_b",
                 object_class_: ServiceObjectClass.ClassHost.name,
                 object_data_: {
                 },
@@ -160,7 +169,6 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "service_b",
             },
             {
-                object_id_: "zxcv.service_c",
                 object_class_: ServiceObjectClass.ClassHost.name,
                 object_data_: {
                 },
@@ -170,7 +178,23 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "zxcv",
                 ServiceArgType.ServiceName.name: "service_c",
             },
+        ]
 
-        ])
+        self.generate_object_id(object_list)
+
+        static_data.data_objects.extend(object_list)
 
         return static_data
+
+    # noinspection PyMethodMayBeStatic
+    def generate_object_id(self, object_list: list):
+        for object_data in object_list:
+            if object_id_ not in object_data:
+                if object_class_ == ServiceObjectClass.ClassHost.name:
+                    object_data[object_id_] = object_data[ServiceArgType.HostName.name]
+                if object_class_ == ServiceObjectClass.ClassService.name:
+                    object_data[object_id_] = (
+                        object_data[ServiceArgType.HostName.name]
+                        + "." +
+                        object_data[ServiceArgType.ServiceName.name]
+                    )

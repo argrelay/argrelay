@@ -3,7 +3,7 @@ from __future__ import annotations
 from argrelay.meta_data import StaticData
 from argrelay.meta_data.ArgSource import ArgSource
 from argrelay.meta_data.ArgValue import ArgValue
-from argrelay.runtime_context.CommandContext import CommandContext
+from argrelay.runtime_context.InterpContext import InterpContext
 
 
 class ArgProcessor:
@@ -19,22 +19,23 @@ class ArgProcessor:
     def __repr__(self):
         return f"{self.__class__.__name__}({self.arg_type!r})"
 
-    def try_explicit_arg(self, ctx: CommandContext, token: str) -> bool:
+    def try_explicit_arg(self, ctx: InterpContext, token: str) -> bool:
         """
         :return: True if any arg was assigned during invocation
         """
         if (
-            self.arg_type not in ctx.assigned_types_to_values
+            self.arg_type not in ctx.curr_assigned_types_to_values
             and
             token in self.static_data.types_to_values[self.arg_type]
         ):
-            ctx.assigned_types_to_values[self.arg_type] = ArgValue(token, ArgSource.ExplicitArg)
+            # TODO: rename to more qualified interp_ctx:
+            ctx.curr_assigned_types_to_values[self.arg_type] = ArgValue(token, ArgSource.ExplicitArg)
             return True
         else:
             return False
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def try_implicit_arg(self, ctx: CommandContext) -> bool:
+    def try_implicit_arg(self, ctx: InterpContext) -> bool:
         """
         :return: True if any arg was assigned during invocation
         """

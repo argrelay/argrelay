@@ -17,7 +17,7 @@ class RemoteClient:
     client_config: ClientConfig
 
     @staticmethod
-    def make_request(client_config: ClientConfig, input_ctx: InputContext):
+    def make_request(client_config: ClientConfig, input_ctx: InputContext) -> None:
         assert not client_config.use_local_requests
 
         command_obj = RemoteClient.select_command(input_ctx)

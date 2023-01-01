@@ -14,7 +14,7 @@ from argrelay.data_schema.ConnectionConfigSchema import connection_config_desc
 from argrelay.meta_data.CompType import CompType
 from argrelay.relay_client import __main__
 from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH, BASE_URL_FORMAT
-from test_argrelay import parse_line_and_cpos
+from misc_helper import parse_line_and_cpos
 
 
 class ThisTestCase(TestCase):
@@ -31,7 +31,7 @@ class ThisTestCase(TestCase):
             "COMP_LINE": command_line,
             "COMP_POINT": str(cursor_cpos),
             "COMP_TYPE": str(CompType.DescribeArgs.value),
-            "COMP_KEY": "0",
+            "COMP_KEY": str(0),
         }):
             __main__.main()
 
@@ -45,7 +45,7 @@ class ThisTestCase(TestCase):
             "COMP_LINE": command_line,
             "COMP_POINT": str(cursor_cpos),
             "COMP_TYPE": str(CompType.PrefixShown.value),
-            "COMP_KEY": "0",
+            "COMP_KEY": str(0),
         }):
             __main__.main()
 
@@ -89,7 +89,7 @@ class ThisTestCase(TestCase):
                     "COMP_LINE": command_line,
                     "COMP_POINT": str(cursor_cpos),
                     "COMP_TYPE": str(CompType.PrefixShown.value),
-                    "COMP_KEY": "0",
+                    "COMP_KEY": str(0),
                 }):
                     # when:
 

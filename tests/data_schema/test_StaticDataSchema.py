@@ -3,9 +3,10 @@ from unittest import TestCase
 from jsonschema.exceptions import ValidationError
 from marshmallow import ValidationError
 
+from argrelay.data_schema.ServerConfigSchema import static_data_
 from argrelay.data_schema.StaticDataSchema import static_data_desc, types_to_values_, first_interp_factory_id_
-from relay_server.test_relay_server import load_relay_demo_server_config_dict
-from test_argrelay import line_no
+from misc_helper import line_no
+from relay_demo.test_relay_demo import load_relay_demo_server_config_dict
 
 
 class ThisTestCase(TestCase):
@@ -54,7 +55,7 @@ class ThisTestCase(TestCase):
             ),
             (
                 line_no(), "default test data: expanded (realistic) sample",
-                load_relay_demo_server_config_dict()["static_data"],
+                load_relay_demo_server_config_dict()[static_data_],
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
                 },

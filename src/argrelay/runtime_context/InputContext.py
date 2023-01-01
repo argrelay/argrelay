@@ -55,7 +55,7 @@ class InputContext(RequestContext):
             command_line = " ".join(argv)
             cursor_cpos = len(command_line)
             comp_type = CompType.InvokeAction
-            comp_key = "0"
+            comp_key = str(0)
 
         is_debug_enabled = "ENABLE_DEBUG" in os.environ
 

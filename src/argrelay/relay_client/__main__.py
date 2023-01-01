@@ -20,20 +20,22 @@ def main():
     if client_config.use_local_requests:
         from argrelay.relay_client.LocalClient import LocalClient
 
-        make_request(LocalClient, client_config, input_ctx)
+        interp_ctx = make_request(LocalClient, client_config, input_ctx)
     else:
         from argrelay.relay_client.RemoteClient import RemoteClient
 
-        make_request(RemoteClient, client_config, input_ctx)
+        interp_ctx = make_request(RemoteClient, client_config, input_ctx)
 
     ElapsedTime.measure("on_exit")
     if input_ctx.is_debug_enabled:
         ElapsedTime.print_all()
 
+    return interp_ctx
+
 
 def make_request(cls, client_config, input_ctx):
     ElapsedTime.measure("before_client_invocation")
-    cls.make_request(client_config, input_ctx)
+    return cls.make_request(client_config, input_ctx)
 
 
 if __name__ == "__main__":

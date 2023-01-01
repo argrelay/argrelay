@@ -15,7 +15,7 @@ from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 
 class LocalServer:
     """
-    Server functionality without network-exposed API
+    Server functionality without network-exposed API wrapper
     """
 
     server_config: ServerConfig

@@ -5,12 +5,10 @@ from unittest import TestCase
 from unittest.mock import patch, mock_open
 
 import mongomock
-import pkg_resources
 import yaml
 
-from argrelay.data_schema.MongoConfigSchema import mongo_config_desc
 from argrelay.data_schema.RequestContextSchema import request_context_desc
-from argrelay.data_schema.ServerConfigSchema import server_config_desc, mongo_config_
+from argrelay.data_schema.ServerConfigSchema import server_config_desc
 from argrelay.meta_data.CompType import CompType
 from argrelay.relay_server.__main__ import create_app
 from argrelay.server_spec.const_int import API_SPEC
@@ -20,16 +18,7 @@ from argrelay.server_spec.const_int import (
     RELAY_LINE_ARGS_PATH,
 )
 from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH, server_op_data_schemas
-
-
-def load_relay_demo_server_config_dict() -> dict:
-    # Composing path to resource this way keeps its base directory always at this relative path:
-    test_server_config_path = pkg_resources.resource_filename(__name__, "../../demo/argrelay.server.yaml")
-    with open(test_server_config_path) as f:
-        server_config = yaml.safe_load(f)
-    # Override loaded data - do not start mongo server during testing:
-    server_config["mongo_config"]["start_server"] = False
-    return server_config
+from relay_demo.test_relay_demo import load_relay_demo_server_config_dict
 
 
 class ThisTestCase(TestCase):
@@ -37,7 +26,6 @@ class ThisTestCase(TestCase):
     def setUp(self):
         server_config_dict = load_relay_demo_server_config_dict()
         server_config_yaml = yaml.dump(server_config_dict)
-        mongo_config_obj = mongo_config_desc.from_input_dict(server_config_dict[mongo_config_])
 
         # mock access to server config file:
         with patch("builtins.open", mock_open(read_data = server_config_yaml)) as mock_file:

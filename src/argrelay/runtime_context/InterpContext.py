@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from dataclasses import field, dataclass
 
+from pymongo.collection import Collection
 from pymongo.database import Database
 
+from argrelay.data_schema.StaticDataSchema import data_objects_
 from argrelay.meta_data import StaticData
 from argrelay.meta_data.ArgValue import ArgValue
 from argrelay.meta_data.CompType import CompType
@@ -13,9 +15,10 @@ from argrelay.misc_helper import eprint
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client, find_objects
 from argrelay.runtime_context.ParsedContext import ParsedContext
 
+assigned_types_to_values_ = "assigned_types_to_values"
 
 @dataclass
-class CommandContext:
+class InterpContext:
     """
     Mutable state for the process of command line interpretation.
     """
@@ -28,6 +31,8 @@ class CommandContext:
 
     mongo_db: Database
 
+    mongo_col: Collection = field(init = False)
+
     unconsumed_tokens: list[int] = field(init = False)
     """
     Remaining tokens (their ipos) which are still unconsumed (in ascending order).
@@ -38,9 +43,20 @@ class CommandContext:
     Already consumed tokens (their ipos) in the order of their consumption.
     """
 
-    assigned_types_to_values: dict[str, ArgValue] = field(init = False, default_factory = lambda: {})
+    curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False, default_factory = lambda: {})
     """
     All assigned args (from interpreted tokens) mapped as type:value.
+    """
+
+    assigned_types_to_values_per_object: list[dict] = field(init = False, default_factory = lambda: [])
+    """
+    List of completed results previously accumulated in `curr_assigned_types_to_values`.
+    Each element of the list contains a dict with these fields:
+    # TODO: Formalize this in schema - see also `GenericInterp.curr_data_object`:
+    *   `object_class_`
+    *   `object_data_`
+    *   `assigned_types_to_values_`
+    *   TODO: maybe also `keys_to_types` (the query)?
     """
 
     curr_interp: "AbstractInterp" = field(init = False, default = None)
@@ -52,6 +68,7 @@ class CommandContext:
 
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
+        self.mongo_col = self.mongo_db[data_objects_]
 
     def _init_unconsumed_tokens(self):
         return [
@@ -71,13 +88,31 @@ class CommandContext:
         ]
 
     def interpret_command(self) -> None:
+        """
+        Main interpretation loop.
+
+        Start with initial interpreter and continue until curr interpreter returns no more next interpreter.
+        """
         self.curr_interp = self.create_next_interp(self.static_data.first_interp_factory_id)
         while self.curr_interp:
+
             self.curr_interp.consume_key_args()
             self.curr_interp.consume_pos_args()
-            if self.parsed_ctx.run_mode == RunMode.CompletionMode:
-                self.curr_interp.propose_arg_completion()
+
+            iter_status: int = self.curr_interp.try_iterate()
+            if iter_status > 0:
+                continue
+            elif iter_status < 0:
+                self._contribute_to_completion()
+                return
+
+            self._contribute_to_completion()
             self.curr_interp = self.curr_interp.next_interp()
+
+    def _contribute_to_completion(self):
+        if self.parsed_ctx.run_mode == RunMode.CompletionMode:
+            # Each in the chains of interpreters hava a chance to suggest completion values (contribute):
+            self.curr_interp.propose_arg_completion()
 
     # TODO: remove this: the result is returned from server to client for client to execute either print_help or print arg values
     def invoke_action(self) -> None:
@@ -98,7 +133,7 @@ class CommandContext:
             # TODO: send data to client to invoke command:
             eprint("no relay implemented yet")
             # TODO: clean up: temporarily implemented to list all objects matching criteria:
-            for data_object in find_objects(self.mongo_db, self.assigned_types_to_values):
+            for data_object in find_objects(self.mongo_db, self.curr_assigned_types_to_values):
                 print(data_object)
 
     # TODO: clean up: single line was only useful for local requests:
@@ -127,12 +162,12 @@ class CommandContext:
         for arg_type in self.static_data.types_to_values.keys():
             if not self.is_type_with_values(arg_type):
                 continue
-            if arg_type in self.assigned_types_to_values:
+            if arg_type in self.curr_assigned_types_to_values:
                 eprint(TermColor.DARK_GREEN.value, end = "")
                 eprint(f"{arg_type}:", end = "")
                 eprint(
-                    f" {self.assigned_types_to_values[arg_type].arg_value} " +
-                    f"[{self.assigned_types_to_values[arg_type].arg_source}]",
+                    f" {self.curr_assigned_types_to_values[arg_type].arg_value} " +
+                    f"[{self.curr_assigned_types_to_values[arg_type].arg_source}]",
                     end = ""
                 )
                 eprint(TermColor.RESET.value, end = "")

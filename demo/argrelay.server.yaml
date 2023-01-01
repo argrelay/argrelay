@@ -29,15 +29,33 @@ plugin_list:
         plugin_class_name: ServiceInterpFactory
         plugin_type: InterpFactoryPlugin
         plugin_config:
-            keys_to_types:
-                action: ActionType
-                code: CodeMaturity
-                stage: FlowStage
-                region: GeoRegion
-                host: HostName
-                service: ServiceName
-                access: AccessType
-                tag: ColorTag
+            function_query:
+                object_class: ClassFunction
+                keys_to_types_list:
+                    -   action: ActionType
+                    -   selector: ObjectSelector
+            object_class_queries:
+                -   object_class: ClassFunction
+                    keys_to_types_list:
+                        -   action: ActionType
+                        -   selector: ObjectSelector
+                -   object_class: ClassHost
+                    keys_to_types_list:
+                        -   code: CodeMaturity
+                        -   stage: FlowStage
+                        -   region: GeoRegion
+                        -   host: HostName
+                        -   tag: ColorTag
+                -   object_class: ClassService
+                    keys_to_types_list:
+                        -   code: CodeMaturity
+                        -   stage: FlowStage
+                        -   region: GeoRegion
+                        -   host: HostName
+                        -   service: ServiceName
+                        # TODO: AccessType should be part of selecting another class or simply an arg to function (it is not used to find service, it is used to select how to access it):
+                        -   access: AccessType
+                        -   tag: ColorTag
 
     -   plugin_id: NoopLoader
         plugin_module_name: argrelay.misc_helper.NoopLoader
@@ -70,6 +88,10 @@ static_data:
             - goto
             - desc
             - list
+
+        ObjectSelector:
+            - host
+            - service
 
         CodeMaturity:
             - dev

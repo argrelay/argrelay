@@ -3,8 +3,8 @@ from argrelay.meta_data.ClientConfig import ClientConfig
 from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.CommandContext import CommandContext
 from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 
 
@@ -14,7 +14,7 @@ class LocalClient:
     """
 
     @staticmethod
-    def make_request(client_config: ClientConfig, input_ctx: InputContext):
+    def make_request(client_config: ClientConfig, input_ctx: InputContext) -> InterpContext:
         assert client_config.use_local_requests
 
         server_config: ServerConfig = server_config_desc.from_default_file()
@@ -25,14 +25,16 @@ class LocalClient:
         ElapsedTime.measure("after_local_server_start")
 
         parsed_ctx = ParsedContext.from_instance(input_ctx)
-        command_ctx = CommandContext(
+        interp_ctx = InterpContext(
             parsed_ctx,
             server_config.static_data,
             server_config.interp_factories,
             local_server.mongo_client[server_config.mongo_config.database_name]
         )
-        command_ctx.interpret_command()
+        interp_ctx.interpret_command()
         ElapsedTime.measure("after_interp")
 
-        command_ctx.invoke_action()
+        interp_ctx.invoke_action()
         ElapsedTime.measure("after_request_processed")
+
+        return interp_ctx

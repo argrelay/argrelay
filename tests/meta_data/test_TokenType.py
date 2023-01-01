@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from argrelay.meta_data.TokenType import get_token_type, TokenType
-from test_argrelay import line_no
+from misc_helper import line_no
 
 
 class ThisTestCase(TestCase):

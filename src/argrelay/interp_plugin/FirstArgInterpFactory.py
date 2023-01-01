@@ -4,7 +4,7 @@ from argrelay.interp_plugin.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.interp_plugin.FirstArgInterp import FirstArgInterp
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.relay_demo.ServiceInterpFactory import ServiceInterpFactory
-from argrelay.runtime_context.CommandContext import CommandContext
+from argrelay.runtime_context.InterpContext import InterpContext
 
 
 class FirstArgInterpConfigSchema(Schema):
@@ -39,5 +39,5 @@ class FirstArgInterpFactory(AbstractInterpFactory):
         super().__init__(config_dict)
         first_arg_interp_config_desc.object_schema.validate(config_dict)
 
-    def create_interp(self, command_context: CommandContext) -> FirstArgInterp:
-        return FirstArgInterp(command_context, self.config_dict)
+    def create_interp(self, interp_ctx: InterpContext) -> FirstArgInterp:
+        return FirstArgInterp(interp_ctx, self.config_dict)

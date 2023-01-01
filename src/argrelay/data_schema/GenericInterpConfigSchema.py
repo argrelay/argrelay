@@ -1,6 +1,10 @@
 from marshmallow import Schema, RAISE, fields
 
+from argrelay.data_schema.ObjectClassQuerySchema import object_class_query_desc
 from argrelay.misc_helper.TypeDesc import TypeDesc
+
+function_query_ = "function_query"
+object_class_queries_ = "object_class_queries"
 
 
 class GenericInterpConfigSchema(Schema):
@@ -8,19 +12,24 @@ class GenericInterpConfigSchema(Schema):
         unknown = RAISE
         strict = True
 
-    keys_to_types = fields.Dict(
-        keys = fields.String(),
-        values = fields.String(),
+    function_query = fields.Nested(
+        object_class_query_desc.object_schema,
+        required = True,
+    )
+
+    object_class_queries = fields.List(
+        fields.Nested(object_class_query_desc.object_schema),
         required = True,
     )
 
 
 generic_interp_config_example = {
-    "keys_to_types": {
-        "type_a": "TypeA",
-        "type_b": "TypeB",
-    },
+    function_query_: object_class_query_desc.dict_example,
+    object_class_queries_: [
+        object_class_query_desc.dict_example,
+    ],
 }
+
 generic_interp_config_desc = TypeDesc(
     object_schema = GenericInterpConfigSchema(),
     ref_name = GenericInterpConfigSchema.__name__,

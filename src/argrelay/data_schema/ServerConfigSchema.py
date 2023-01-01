@@ -11,6 +11,8 @@ from argrelay.misc_helper.TypeDesc import TypeDesc
 
 connection_config_ = "connection_config"
 mongo_config_ = "mongo_config"
+plugin_list_ = "plugin_list"
+static_data_ = "static_data"
 
 
 class ServerConfigSchema(Schema):
@@ -42,8 +44,8 @@ class ServerConfigSchema(Schema):
         return ServerConfig(
             connection_config = input_dict[connection_config_],
             mongo_config = input_dict[mongo_config_],
-            plugin_list = input_dict["plugin_list"],
-            static_data = input_dict["static_data"],
+            plugin_list = input_dict[plugin_list_],
+            static_data = input_dict[static_data_],
         )
 
 
@@ -53,10 +55,10 @@ server_config_desc = TypeDesc(
     dict_example = {
         connection_config_: connection_config_desc.dict_example,
         mongo_config_: mongo_config_desc.dict_example,
-        "plugin_list": [
+        plugin_list_: [
             plugin_entry_desc.dict_example,
         ],
-        "static_data": static_data_desc.dict_example,
+        static_data_: static_data_desc.dict_example,
     },
     default_file_path = os.path.expanduser("~") + "/" + ".argrelay.server.yaml",
 )

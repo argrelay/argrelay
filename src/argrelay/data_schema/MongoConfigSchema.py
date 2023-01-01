@@ -5,7 +5,7 @@ from argrelay.mongo_data.MongoConfig import MongoConfig
 
 client_connection_string_ = "client_connection_string"
 database_name_ = "database_name"
-
+start_server_ = "start_server"
 
 class MongoConfigSchema(Schema):
     class Meta:
@@ -34,7 +34,7 @@ mongo_config_desc = TypeDesc(
         # TODO: Can it be as simple as "mongodb://localhost:27017" or even "mongodb://localhost"?
         client_connection_string_: "mongodb://test:test@localhost/test?authSource=admin",
         database_name_: "test",
-        "start_server": False,
+        start_server_: False,
         "server_start_command":
             "~/argrelay.git/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod"
             " --dbpath "

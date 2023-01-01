@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-from argrelay.interp_plugin.ArgProcessor import ArgProcessor
 from argrelay.interp_plugin.GenericInterp import GenericInterp
-from argrelay.relay_demo.CodeMaturityProcessor import CodeMaturityProcessor
-from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.runtime_context.CommandContext import CommandContext
 
 """
 `ServiceInterp` is a configured use case of :class:`GenericInterp` for auto-completion of service attributes.
@@ -36,54 +32,4 @@ but it does not have to be remembered because auto-completion suggest them accor
 
 
 class ServiceInterp(GenericInterp):
-
-    def __init__(self, command_ctx: CommandContext, config_dict: dict):
-        keys_to_types = config_dict["keys_to_types"]
-        # reverse:
-        types_to_keys = {v: k for k, v in keys_to_types.items()}
-
-        super().__init__(
-            command_ctx,
-            config_dict,
-            [
-                ArgProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.ActionType.name],
-                    ServiceArgType.ActionType.name,
-                ),
-                CodeMaturityProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.CodeMaturity.name],
-                ),
-                ArgProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.FlowStage.name],
-                    ServiceArgType.FlowStage.name,
-                ),
-                ArgProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.GeoRegion.name],
-                    ServiceArgType.GeoRegion.name,
-                ),
-                ArgProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.HostName.name],
-                    ServiceArgType.HostName.name,
-                ),
-                ArgProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.ServiceName.name],
-                    ServiceArgType.ServiceName.name,
-                ),
-                ArgProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.AccessType.name],
-                    ServiceArgType.AccessType.name,
-                ),
-                ArgProcessor(
-                    command_ctx.static_data,
-                    types_to_keys[ServiceArgType.ColorTag.name],
-                    ServiceArgType.ColorTag.name,
-                ),
-            ],
-        )
+    pass

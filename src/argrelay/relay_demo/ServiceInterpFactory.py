@@ -1,9 +1,16 @@
 from argrelay.data_schema.GenericInterpConfigSchema import GenericInterpConfigSchema
+from argrelay.data_schema.GenericInterpConfigSchema import (
+    function_query_,
+    object_class_queries_,
+)
+from argrelay.data_schema.ObjectClassQuerySchema import object_class_, keys_to_types_list_
 from argrelay.interp_plugin.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceInterp import ServiceInterp
-from argrelay.runtime_context.CommandContext import CommandContext
+from argrelay.relay_demo.ServiceObjectClass import ServiceObjectClass
+from argrelay.runtime_context.InterpContext import InterpContext
 
 
 class ServiceInterpConfigSchema(GenericInterpConfigSchema):
@@ -11,16 +18,45 @@ class ServiceInterpConfigSchema(GenericInterpConfigSchema):
 
 
 service_interp_config_example = {
-    "keys_to_types": {
-        "action": ServiceArgType.ActionType.name,
-        "code": ServiceArgType.CodeMaturity.name,
-        "stage": ServiceArgType.FlowStage.name,
-        "region": ServiceArgType.GeoRegion.name,
-        "host": ServiceArgType.HostName.name,
-        "service": ServiceArgType.ServiceName.name,
-        "access": ServiceArgType.AccessType.name,
-        "tag": ServiceArgType.ColorTag.name,
+    function_query_: {
+        object_class_: ReservedObjectClass.ClassFunction.name,
+        keys_to_types_list_: [
+            {
+                "action": ServiceArgType.ActionType.name,
+            },
+            {
+                "object": ServiceArgType.ObjectSelector.name,
+            },
+        ],
     },
+    object_class_queries_: [
+        {
+            object_class_: ServiceObjectClass.ClassService.name,
+            keys_to_types_list_: [
+                {
+                    "code": ServiceArgType.CodeMaturity.name,
+                },
+                {
+                    "stage": ServiceArgType.FlowStage.name,
+                },
+                {
+                    "region": ServiceArgType.GeoRegion.name,
+                },
+                {
+                    "host": ServiceArgType.HostName.name,
+                },
+                {
+                    "service": ServiceArgType.ServiceName.name,
+                },
+                {
+                    "access": ServiceArgType.AccessType.name,
+                },
+                {
+                    "tag": ServiceArgType.ColorTag.name,
+                },
+            ],
+        },
+    ],
 }
 
 service_interp_config_desc = TypeDesc(
@@ -37,5 +73,5 @@ class ServiceInterpFactory(AbstractInterpFactory):
         super().__init__(config_dict)
         service_interp_config_desc.object_schema.validate(config_dict)
 
-    def create_interp(self, command_context: CommandContext) -> ServiceInterp:
-        return ServiceInterp(command_context, self.config_dict)
+    def create_interp(self, interp_ctx: InterpContext) -> ServiceInterp:
+        return ServiceInterp(interp_ctx, self.config_dict)

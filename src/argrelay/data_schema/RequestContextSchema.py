@@ -6,7 +6,7 @@ from argrelay.runtime_context.RequestContext import RequestContext
 
 _request_context_example = {
     "command_line": "some_command prod",
-    "cursor_cpos": 16,
+    "cursor_cpos": str(16),
     "comp_type": CompType.PrefixShown.name,
     "is_debug_enabled": True,
 }

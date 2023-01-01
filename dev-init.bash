@@ -91,7 +91,7 @@ function invoke_completion {
         export COMP_LINE="${READLINE_LINE}"
         export COMP_POINT="${READLINE_POINT}"
         # CompType.DescribeArgs = ASCII '^':
-        export COMP_TYPE='94'
+        export COMP_TYPE="94"
         # NOTE: Not useful: for any key sequence, it is only set to the last key (no use case at the moment).
         export COMP_KEY="88"
 
