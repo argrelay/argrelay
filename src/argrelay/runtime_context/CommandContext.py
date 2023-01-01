@@ -10,7 +10,7 @@ from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint
-from argrelay.mongo_data.MongoClient import get_mongo_client, find_objects
+from argrelay.mongo_data.MongoClientWrapper import get_mongo_client, find_objects
 from argrelay.runtime_context.ParsedContext import ParsedContext
 
 
@@ -25,6 +25,8 @@ class CommandContext:
     static_data: StaticData
 
     interp_factories: dict[str, "AbstractInterpFactory"]
+
+    mongo_db: Database
 
     unconsumed_tokens: list[int] = field(init = False)
     """
@@ -78,7 +80,7 @@ class CommandContext:
             self.curr_interp = self.curr_interp.next_interp()
 
     # TODO: remove this: the result is returned from server to client for client to execute either print_help or print arg values
-    def invoke_action(self, mongo_db: Database) -> None:
+    def invoke_action(self) -> None:
         self.print_debug()
 
         if self.parsed_ctx.comp_type == CompType.DescribeArgs:
@@ -96,7 +98,7 @@ class CommandContext:
             # TODO: send data to client to invoke command:
             eprint("no relay implemented yet")
             # TODO: clean up: temporarily implemented to list all objects matching criteria:
-            for data_object in find_objects(mongo_db, self.assigned_types_to_values):
+            for data_object in find_objects(self.mongo_db, self.assigned_types_to_values):
                 print(data_object)
 
     # TODO: clean up: single line was only useful for local requests:

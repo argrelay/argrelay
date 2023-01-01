@@ -3,6 +3,9 @@ import io
 from inspect import currentframe, getframeinfo
 from unittest import TestCase
 
+import mongomock
+
+from argrelay.data_schema.MongoConfigSchema import database_name_, mongo_config_desc
 from argrelay.data_schema.StaticDataSchema import static_data_desc
 from argrelay.interp_plugin.FirstArgInterpFactory import FirstArgInterpFactory
 from argrelay.meta_data.ArgSource import ArgSource
@@ -83,7 +86,8 @@ class ThisTestCase(TestCase):
                         config_dict = service_interp_config_desc.dict_example,
                     ),
                 }
-                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories)
+                mongo_db = mongomock.MongoClient()[mongo_config_desc.dict_example[database_name_]]
+                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories, mongo_db)
                 command_ctx.interpret_command()
                 for arg_type, arg_value in expected_assignments.items():
                     if not arg_value:
@@ -137,7 +141,8 @@ class ThisTestCase(TestCase):
                         config_dict = service_interp_config_desc.dict_example,
                     ),
                 }
-                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories)
+                mongo_db = mongomock.MongoClient()[mongo_config_desc.dict_example[database_name_]]
+                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories, mongo_db)
                 command_ctx.interpret_command()
                 actual_suggestions = command_ctx.propose_auto_comp()
                 self.assertEqual(expected_suggestions, actual_suggestions)
@@ -173,11 +178,12 @@ class ThisTestCase(TestCase):
                         config_dict = service_interp_config_desc.dict_example,
                     ),
                 }
-                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories)
+                mongo_db = mongomock.MongoClient()[mongo_config_desc.dict_example[database_name_]]
+                command_ctx = CommandContext(parsed_ctx, relay_demo_static_data_object, interp_factories, mongo_db)
                 command_ctx.interpret_command()
                 f = io.StringIO()
                 with contextlib.redirect_stderr(f):
-                    command_ctx.invoke_action(None)
+                    command_ctx.invoke_action()
                     self.maxDiff = None
                     self.assertEqual(
                         f"""

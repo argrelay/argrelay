@@ -12,7 +12,6 @@ from argrelay.data_schema.MongoConfigSchema import mongo_config_desc
 from argrelay.data_schema.RequestContextSchema import request_context_desc
 from argrelay.data_schema.ServerConfigSchema import server_config_desc, mongo_config_
 from argrelay.meta_data.CompType import CompType
-from argrelay.mongo_data import MongoClient
 from argrelay.relay_server.__main__ import create_app
 from argrelay.server_spec.const_int import API_SPEC
 from argrelay.server_spec.const_int import (
@@ -45,10 +44,8 @@ class ThisTestCase(TestCase):
             self.assertTrue(open(server_config_desc.default_file_path).read() == server_config_yaml)
 
             # mock access to Mongo DB:
-            with patch("argrelay.mongo_data.MongoClient.get_mongo_client") as get_mongo_client_mock:
+            with patch("argrelay.mongo_data.MongoClientWrapper.get_mongo_client") as get_mongo_client_mock:
                 get_mongo_client_mock.return_value = mongomock.MongoClient()
-                print("get_mongo_client_mock: ", get_mongo_client_mock)
-                print("get_mongo_client(): ", MongoClient.get_mongo_client(mongo_config_obj))
                 flask_app = create_app()
                 self.ctx = flask_app.app_context()
                 self.ctx.push()

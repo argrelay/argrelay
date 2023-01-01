@@ -3,6 +3,9 @@ from __future__ import annotations
 from copy import deepcopy
 from unittest import TestCase
 
+import mongomock
+
+from argrelay.data_schema.MongoConfigSchema import database_name_, mongo_config_desc
 from argrelay.interp_plugin.AbstractInterp import AbstractInterp
 from argrelay.interp_plugin.FirstArgInterpFactory import FirstArgInterpFactory
 from argrelay.relay_demo.ServiceInterpFactory import ServiceInterpFactory, service_interp_config_desc
@@ -31,7 +34,8 @@ class ThisTestCase(TestCase):
                 config_dict = service_interp_config_desc.dict_example,
             ),
         }
-        command_ctx = CommandContext(parsed_ctx, deepcopy(relay_demo_static_data_object), interp_factories)
+        mongo_db = mongomock.MongoClient()[mongo_config_desc.dict_example[database_name_]]
+        command_ctx = CommandContext(parsed_ctx, deepcopy(relay_demo_static_data_object), interp_factories, mongo_db)
         line_interp = interp_factories[FirstArgInterpFactory.__name__].create_interp(command_ctx)
         line_interp.consume_key_args()
         line_interp.consume_pos_args()

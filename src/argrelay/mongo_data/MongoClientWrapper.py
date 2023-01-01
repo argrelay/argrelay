@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-# TODO: rename this module from MongoClient as it matches pymongo.MongoClient class not locally owned one.
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
@@ -30,8 +29,6 @@ def store_objects(mongo_db: Database, static_data: StaticData):
 
 
 def find_objects(mongo_db: Database, assigned_types_to_values: dict[str, ArgValue]):
-    print("mongo_db: ", mongo_db)
-    print("assigned_types_to_values: ", assigned_types_to_values)
     col_object: Collection = mongo_db[data_objects_]
     query_dict = {}
     for arg_type, arg_val in assigned_types_to_values.items():

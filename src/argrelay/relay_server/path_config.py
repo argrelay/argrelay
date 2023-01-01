@@ -2,13 +2,12 @@ import inspect
 
 from flasgger import swag_from
 from flask import request, Blueprint
-from pymongo.database import Database
 
 from argrelay.data_schema.ArgValuesSchema import arg_values_desc
 from argrelay.data_schema.RequestContextSchema import request_context_desc
 from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.RunMode import RunMode
-from argrelay.meta_data.ServerConfig import ServerConfig
+from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.CommandContext import CommandContext
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
@@ -20,13 +19,18 @@ from argrelay.server_spec.const_int import (
 )
 
 
-def create_blueprint(server_config: ServerConfig, mongo_db: Database):
+def create_blueprint(local_server: LocalServer):
     root_blueprint = Blueprint("root_blueprint", __name__)
 
     def interpret_command(input_ctx: InputContext) -> CommandContext:
         parsed_ctx = ParsedContext.from_instance(input_ctx)
         # TODO: Split server_config and static_data (both top level, not config including data):
-        command_ctx = CommandContext(parsed_ctx, server_config.static_data, server_config.interp_factories)
+        command_ctx = CommandContext(
+            parsed_ctx,
+            local_server.server_config.static_data,
+            local_server.server_config.interp_factories,
+            local_server.get_mongo_database(),
+        )
         command_ctx.interpret_command()
         return command_ctx
 
@@ -44,7 +48,7 @@ def create_blueprint(server_config: ServerConfig, mongo_db: Database):
         assert input_ctx.comp_type == CompType.DescribeArgs
         command_ctx = interpret_command(input_ctx)
         # TODO: Print to stdout/stderr on client side. Send back data instead:
-        command_ctx.invoke_action(mongo_db)
+        command_ctx.invoke_action()
         # TODO: send data instead of text:
         return inspect.currentframe().f_code.co_name
 
@@ -84,7 +88,7 @@ def create_blueprint(server_config: ServerConfig, mongo_db: Database):
         print(input_ctx)
 
         command_ctx = interpret_command(input_ctx)
-        command_ctx.invoke_action(mongo_db)
+        command_ctx.invoke_action()
         # TODO: send data instead of text:
         return inspect.currentframe().f_code.co_name
 

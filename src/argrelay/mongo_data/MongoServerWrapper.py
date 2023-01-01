@@ -5,7 +5,7 @@ from argrelay.misc_helper import eprint
 from argrelay.mongo_data.MongoConfig import MongoConfig
 
 
-class MongoServer:
+class MongoServerWrapper:
     is_started: bool
     mongo_proc: Popen
 
