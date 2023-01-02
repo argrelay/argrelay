@@ -25,7 +25,7 @@ from argrelay.relay_client.__main__ import main
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import assigned_types_to_values_
 from misc_helper import line_no, parse_line_and_cpos
-from misc_helper.MockOpen import MockOpen
+from misc_helper.OpenFileMock import OpenFileMock
 
 
 def load_relay_demo_server_config_dict() -> dict:
@@ -110,11 +110,11 @@ class ThisTestCase(TestCase):
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 # mock access to config files:
-                mock_open_obj = MockOpen({
+                file_mock = OpenFileMock({
                     client_config_desc.default_file_path: client_config_yaml,
                     server_config_desc.default_file_path: server_config_yaml,
                 })
-                with mock.patch("builtins.open", mock_open_obj.open) as mock_open:
+                with mock.patch("builtins.open", file_mock.open):
                     self.assertTrue(open(server_config_desc.default_file_path).read() == server_config_yaml)
                     self.assertTrue(open(client_config_desc.default_file_path).read() == client_config_yaml)
 
@@ -131,11 +131,11 @@ class ThisTestCase(TestCase):
                             actual_suggestions = interp_ctx.propose_auto_comp()
                             self.assertEqual(expected_suggestions, actual_suggestions)
 
-                    mock_open_obj.path_to_mock[
+                    file_mock.path_to_mock[
                         client_config_desc.default_file_path
                     ].assert_called_with(client_config_desc.default_file_path)
 
-                    mock_open_obj.path_to_mock[
+                    file_mock.path_to_mock[
                         server_config_desc.default_file_path
                     ].assert_called_with(server_config_desc.default_file_path)
 
@@ -166,11 +166,11 @@ class ThisTestCase(TestCase):
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 # mock access to config files:
-                mock_open_obj = MockOpen({
+                file_mock = OpenFileMock({
                     client_config_desc.default_file_path: client_config_yaml,
                     server_config_desc.default_file_path: server_config_yaml,
                 })
-                with mock.patch("builtins.open", mock_open_obj.open) as mock_open:
+                with mock.patch("builtins.open", file_mock.open):
                     self.assertTrue(open(server_config_desc.default_file_path).read() == server_config_yaml)
                     self.assertTrue(open(client_config_desc.default_file_path).read() == client_config_yaml)
 
@@ -206,11 +206,11 @@ class ThisTestCase(TestCase):
                                     f.getvalue()
                                 )
 
-                    mock_open_obj.path_to_mock[
+                    file_mock.path_to_mock[
                         client_config_desc.default_file_path
                     ].assert_called_with(client_config_desc.default_file_path)
 
-                    mock_open_obj.path_to_mock[
+                    file_mock.path_to_mock[
                         server_config_desc.default_file_path
                     ].assert_called_with(server_config_desc.default_file_path)
 
@@ -258,11 +258,11 @@ class ThisTestCase(TestCase):
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 # mock access to config files:
-                mock_open_obj = MockOpen({
+                file_mock = OpenFileMock({
                     client_config_desc.default_file_path: client_config_yaml,
                     server_config_desc.default_file_path: server_config_yaml,
                 })
-                with mock.patch("builtins.open", mock_open_obj.open) as mock_open:
+                with mock.patch("builtins.open", file_mock.open):
                     self.assertTrue(open(server_config_desc.default_file_path).read() == server_config_yaml)
                     self.assertTrue(open(client_config_desc.default_file_path).read() == client_config_yaml)
 
@@ -294,10 +294,10 @@ class ThisTestCase(TestCase):
                                         [arg_type]
                                     )
 
-                    mock_open_obj.path_to_mock[
+                    file_mock.path_to_mock[
                         client_config_desc.default_file_path
                     ].assert_called_with(client_config_desc.default_file_path)
 
-                    mock_open_obj.path_to_mock[
+                    file_mock.path_to_mock[
                         server_config_desc.default_file_path
                     ].assert_called_with(server_config_desc.default_file_path)

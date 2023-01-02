@@ -3,7 +3,7 @@ from __future__ import annotations
 from unittest import mock
 
 
-class MockOpen:
+class OpenFileMock:
     """
     Mock file data for specific paths:
     https://stackoverflow.com/questions/69670597/how-do-i-mock-a-file-open-for-a-specific-path-in-python/69681105#69681105
