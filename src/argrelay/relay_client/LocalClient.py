@@ -29,7 +29,7 @@ class LocalClient:
             parsed_ctx,
             server_config.static_data,
             server_config.interp_factories,
-            local_server.mongo_client[server_config.mongo_config.database_name]
+            local_server.mongo_client[server_config.mongo_config.database_name],
         )
         interp_ctx.interpret_command()
         ElapsedTime.measure("after_interp")

@@ -12,7 +12,6 @@ mongo_config:
     server_start_command: ~/argrelay.git/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/mongo/data
 
 plugin_list:
-
     -   plugin_id: FirstArgInterpFactory
         plugin_module_name: argrelay.interp_plugin.FirstArgInterpFactory
         plugin_class_name: FirstArgInterpFactory

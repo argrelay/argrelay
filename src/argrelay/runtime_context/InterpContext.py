@@ -17,6 +17,7 @@ from argrelay.runtime_context.ParsedContext import ParsedContext
 
 assigned_types_to_values_ = "assigned_types_to_values"
 
+
 @dataclass
 class InterpContext:
     """
@@ -59,12 +60,14 @@ class InterpContext:
     *   TODO: maybe also `keys_to_types` (the query)?
     """
 
+    prev_interp: "AbstractInterp" = field(init = False, default = None)
+
     curr_interp: "AbstractInterp" = field(init = False, default = None)
     """
     Current interpreter during command line interpretation.
     """
 
-    comp_suggestions: list = field(init = False, default = lambda: [])
+    comp_suggestions: list = field(init = False, default_factory = lambda: [])
 
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
@@ -107,6 +110,7 @@ class InterpContext:
                 return
 
             self._contribute_to_completion()
+            self.prev_interp = self.curr_interp
             self.curr_interp = self.curr_interp.next_interp()
 
     def _contribute_to_completion(self):

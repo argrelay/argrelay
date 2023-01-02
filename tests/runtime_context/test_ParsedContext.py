@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from misc_helper import line_no, parse_line_and_cpos, default_test_parsed_context
+from misc_helper import line_no, parse_line_and_cpos
+from misc_helper.EnvMockBuilder import default_test_parsed_context
 
 
 class ThisTestCase(TestCase):

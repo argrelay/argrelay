@@ -1,4 +1,3 @@
-import sys
 from dataclasses import asdict
 
 import requests
@@ -26,9 +25,7 @@ class AbstractCommand:
         self.response_schema = response_schema
         self.request_schema = request_schema
 
-    def execute_command(self, connection_config: ConnectionConfig):
-        input_ctx = InputContext.from_env(sys.argv)
-
+    def execute_command(self, connection_config: ConnectionConfig, input_ctx: InputContext):
         server_url = BASE_URL_FORMAT.format(**asdict(connection_config)) + f"{self.server_path}"
         headers_dict = {
             "Content-Type": "application/json",

@@ -1,3 +1,4 @@
+from argrelay.data_schema.FirstArgInterpFactorySchema import first_arg_vals_to_next_interp_factory_ids_
 from argrelay.interp_plugin.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 
@@ -26,5 +27,5 @@ class FirstArgInterp(AbstractInterp):
         return 0
 
     def next_interp(self) -> "AbstractInterp":
-        next_interp = self.config_dict["first_arg_vals_to_next_interp_factory_ids"][self.command_name]
+        next_interp = self.config_dict[first_arg_vals_to_next_interp_factory_ids_][self.command_name]
         return self.interp_ctx.create_next_interp(next_interp)

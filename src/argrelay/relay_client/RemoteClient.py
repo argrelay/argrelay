@@ -21,7 +21,7 @@ class RemoteClient:
         assert not client_config.use_local_requests
 
         command_obj = RemoteClient.select_command(input_ctx)
-        command_obj.execute_command(client_config.connection_config)
+        command_obj.execute_command(client_config.connection_config, input_ctx)
         ElapsedTime.measure("after_request_processed")
 
     @staticmethod

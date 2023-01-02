@@ -2,10 +2,6 @@ import dataclasses
 import json
 from types import SimpleNamespace
 from unittest import TestCase
-from unittest.mock import patch, mock_open
-
-import mongomock
-import yaml
 
 from argrelay.data_schema.RequestContextSchema import request_context_desc
 from argrelay.data_schema.ServerConfigSchema import server_config_desc
@@ -18,28 +14,30 @@ from argrelay.server_spec.const_int import (
     RELAY_LINE_ARGS_PATH,
 )
 from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH, server_op_data_schemas
-from relay_demo.test_relay_demo import load_relay_demo_server_config_dict
+from misc_helper.EnvMockBuilder import EnvMockBuilder
 
 
 class ThisTestCase(TestCase):
 
     def setUp(self):
-        server_config_dict = load_relay_demo_server_config_dict()
-        server_config_yaml = yaml.dump(server_config_dict)
 
-        # mock access to server config file:
-        with patch("builtins.open", mock_open(read_data = server_config_yaml)) as mock_file:
-            self.assertTrue(open(server_config_desc.default_file_path).read() == server_config_yaml)
+        env_mock_builder = (
+            EnvMockBuilder()
+            .set_mock_client_config_file_read(False)
+            .set_mock_client_input(False)
+            .set_client_config_with_local_server(False)
+        )
+        with env_mock_builder.build():
+            self.assertTrue(
+                open(server_config_desc.default_file_path).read() == env_mock_builder.get_server_config_yaml()
+            )
 
-            # mock access to Mongo DB:
-            with patch("argrelay.mongo_data.MongoClientWrapper.get_mongo_client") as get_mongo_client_mock:
-                get_mongo_client_mock.return_value = mongomock.MongoClient()
-                flask_app = create_app()
-                self.ctx = flask_app.app_context()
-                self.ctx.push()
-                self.client = flask_app.test_client()
+            flask_app = create_app()
+            self.ctx = flask_app.app_context()
+            self.ctx.push()
+            self.client = flask_app.test_client()
 
-        mock_file.assert_called_with(server_config_desc.default_file_path)
+            env_mock_builder.assert_server_config_read()
 
     def tearDown(self):
         self.ctx.pop()
