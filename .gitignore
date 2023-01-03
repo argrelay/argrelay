@@ -12,6 +12,6 @@ __pycache__/
 # PyCharm
 /.idea/
 
-# Ignore `todo.md` = (temporary) notes shared across branch switching:
-/todo.md
+# Do not track files under drafts - they are shared across branch switching:
+/drafts/
 
