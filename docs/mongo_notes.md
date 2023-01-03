@@ -1,21 +1,21 @@
 
 
 
-Download Mongo DB and Shell from: https://www.mongodb.com/try/download/community
+Download Mongo DB and Mongo Shell from: https://www.mongodb.com/try/download/community
 *   `mongodb-linux-x86_64-rhel80-6.0.3.tgz`
 *   `mongosh-1.6.1-linux-x64.tgz`
-
+For example, place them under `./temp/mongo` sub-dir.
 
 Start server:
 
 ```sh
-~/argrelay.git/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/Works/argrelay.git/mongodb/data
+~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/Works/argrelay.git/temp/mongo/data
 ```
 
 Start client:
 
 ```sh
-~/argrelay.git/mongo/mongosh-1.6.1-linux-x64/bin/mongosh
+~/argrelay.git/temp/mongo/mongosh-1.6.1-linux-x64/bin/mongosh
 ```
 
 Client: configure username and password:
@@ -48,7 +48,7 @@ Run:
 * pymongo_get_database.py
 * pymongo_test_insert.py
 
-From MongoDB shell exploring collections:
+Exploring collections from Mongo Shell:
 
 ```
 show databases # has `some_database`

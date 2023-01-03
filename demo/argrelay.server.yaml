@@ -9,7 +9,7 @@ mongo_config:
     client_connection_string: mongodb://test:test@localhost/test?authSource=admin
     database_name: test
     start_server: True
-    server_start_command: ~/argrelay.git/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/mongo/data
+    server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
 
 plugin_list:
     -   plugin_id: FirstArgInterpFactory

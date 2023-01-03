@@ -37,9 +37,9 @@ mongo_config_desc = TypeDesc(
         database_name_: "test",
         start_server_: False,
         "server_start_command":
-            "~/argrelay.git/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod"
+            "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod"
             " --dbpath "
-            "~/argrelay.git/mongo/data",
+            "~/argrelay.git/temp/mongo/data",
     },
     default_file_path = "",
 )
