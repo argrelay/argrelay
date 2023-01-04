@@ -19,12 +19,15 @@ import yaml
 
 from argrelay.data_schema.ClientConfigSchema import use_local_requests_, client_config_desc
 from argrelay.data_schema.MongoConfigSchema import start_server_
-from argrelay.data_schema.ServerConfigSchema import static_data_, mongo_config_, server_config_desc
+from argrelay.data_schema.PluginEntrySchema import plugin_id_, plugin_config_
+from argrelay.data_schema.ServerConfigSchema import static_data_, mongo_config_, server_config_desc, plugin_list_
 from argrelay.data_schema.StaticDataSchema import static_data_desc
 from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.meta_data.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
+from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
+from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from misc_helper.OpenFileMock import OpenFileMock
@@ -55,6 +58,7 @@ class EnvMockBuilder:
     server_config_dict: dict = field(default_factory = lambda: load_relay_demo_server_config_dict())
     mock_server_config_file_read: bool = True
     is_server_config_with_mongo_start: bool = False
+    enable_demo_git_loader: bool = False
 
     actual_stdout = io.StringIO()
     capture_stdout: bool = False
@@ -170,12 +174,18 @@ class EnvMockBuilder:
         if self.is_server_config_with_mongo_start:
             assert self.mock_server_config_file_read
 
+        if self.enable_demo_git_loader:
+            assert self.mock_client_config_file_read
+
         if self.mock_client_config_file_read:
             self.client_config_dict[use_local_requests_] = self.is_client_config_with_local_server
             self.file_mock.path_to_data[client_config_desc.default_file_path] = yaml.dump(self.client_config_dict)
 
         if self.mock_server_config_file_read:
             self.server_config_dict[mongo_config_][start_server_] = self.is_server_config_with_mongo_start
+            for plugin_entry in self.server_config_dict[plugin_list_]:
+                if plugin_entry[plugin_id_] == GitRepoLoader.__name__:
+                    plugin_entry[plugin_config_][is_enabled_] = self.enable_demo_git_loader
             self.file_mock.path_to_data[server_config_desc.default_file_path] = yaml.dump(self.server_config_dict)
 
         with ExitStack() as exit_stack:

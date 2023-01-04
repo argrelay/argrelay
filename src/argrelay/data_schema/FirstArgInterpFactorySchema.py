@@ -1,7 +1,7 @@
 from marshmallow import Schema, RAISE, fields
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.relay_demo.ServiceInterpFactory import ServiceInterpFactory
+from argrelay.relay_demo.DemoInterpFactory import DemoInterpFactory
 
 first_arg_vals_to_next_interp_factory_ids_ = "first_arg_vals_to_next_interp_factory_ids"
 
@@ -20,7 +20,7 @@ class FirstArgInterpConfigSchema(Schema):
 
 first_arg_interp_config_example = {
     first_arg_vals_to_next_interp_factory_ids_: {
-        "some_command": ServiceInterpFactory.__name__,
+        "some_command": DemoInterpFactory.__name__,
     },
 }
 first_arg_interp_config_desc = TypeDesc(

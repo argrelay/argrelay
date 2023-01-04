@@ -50,7 +50,7 @@ class ThisTestCase(TestCase):
         # Patch server config to add NamedNoopInterpFactory (2 plugin instances):
         for first_command_name in first_command_names:
             plugin_entry = {
-                # Compose same plugin id (as above:
+                # Compose same plugin id (as above):
                 plugin_id_: NamedNoopInterpFactory.__name__ + "." + first_command_name,
                 plugin_module_name_: NamedNoopInterpFactory.__module__,
                 plugin_class_name_: NamedNoopInterpFactory.__name__,

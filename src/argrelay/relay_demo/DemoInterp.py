@@ -3,7 +3,7 @@ from __future__ import annotations
 from argrelay.interp_plugin.GenericInterp import GenericInterp
 
 """
-`ServiceInterp` is a configured use case of :class:`GenericInterp` for auto-completion of service attributes.
+`DemoInterp` is a configured use case of :class:`GenericInterp` for auto-completion of service attributes.
 
 The command line tokens are translated to typed args.
 A user keeps adding the typed arg values until all requited types unambiguously specify what to do:
@@ -31,5 +31,5 @@ but it does not have to be remembered because auto-completion suggest them accor
 """
 
 
-class ServiceInterp(GenericInterp):
+class DemoInterp(GenericInterp):
     pass

@@ -8,6 +8,7 @@ from argrelay.data_schema.DataObjectSchema import (
 from argrelay.data_schema.FunctionObjectDataSchema import accept_object_classes_
 from argrelay.data_schema.StaticDataSchema import types_to_values_
 from argrelay.loader_plugin.AbstractLoader import AbstractLoader
+from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.meta_data.StaticData import StaticData
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
@@ -64,11 +65,16 @@ class ServiceLoader(AbstractLoader):
         The loader hard-codes samples into `static_data["data_objects"]`
         """
 
-        object_list = [
+        # TODO: This loader overwrites existing object list (it has to patch it instead).
+        #       This is fine for now because `ServiceLoader` is used first in config.
+        data_objects = [
 
             ############################################################################################################
             # functions
 
+            # TODO: As of now, `ServiceLoader` is configured first (after `GitRepoLoader`), so it works.
+            #       But to be robust against re-ordering, this loader should shared function names like
+            #       "desc", "list", "goto" to accept `GitRepoObjectClass` in addition to `ServiceObjectClass`.
             {
                 object_id_: "goto_host",
                 object_class_: ReservedObjectClass.ClassFunction.name,
@@ -77,8 +83,8 @@ class ServiceLoader(AbstractLoader):
                         ServiceObjectClass.ClassHost.name,
                     ],
                 },
-                ServiceArgType.ActionType.name: "goto",
-                ServiceArgType.ObjectSelector.name: "host",
+                GlobalArgType.ActionType.name: "goto",
+                GlobalArgType.ObjectSelector.name: "host",
             },
             {
                 object_id_: "goto_service",
@@ -88,11 +94,11 @@ class ServiceLoader(AbstractLoader):
                         ServiceObjectClass.ClassService.name,
                     ],
                 },
-                ServiceArgType.ActionType.name: "goto",
-                ServiceArgType.ObjectSelector.name: "service",
+                GlobalArgType.ActionType.name: "goto",
+                GlobalArgType.ObjectSelector.name: "service",
             },
             {
-                object_id_: "desc",
+                object_id_: "desc_host",
                 object_class_: ReservedObjectClass.ClassFunction.name,
                 object_data_: {
                     accept_object_classes_: [
@@ -100,8 +106,28 @@ class ServiceLoader(AbstractLoader):
                         ServiceObjectClass.ClassHost.name,
                     ],
                 },
-                ServiceArgType.ActionType.name: "desc",
+                GlobalArgType.ActionType.name: "desc",
+                GlobalArgType.ObjectSelector.name: "host",
             },
+            {
+                object_id_: "desc_service",
+                object_class_: ReservedObjectClass.ClassFunction.name,
+                object_data_: {
+                    accept_object_classes_: [
+                        ServiceObjectClass.ClassService.name,
+                        ServiceObjectClass.ClassHost.name,
+                    ],
+                },
+                GlobalArgType.ActionType.name: "desc",
+                GlobalArgType.ObjectSelector.name: "service",
+            },
+            # TODO: Finalize (and test):
+            #       Can there be functions accepting different objects classes
+            #       (not like goto_host and goto_service specific for each)?
+            #       When "list" `accept_object_classes_` including both host and servie
+            #       (ServiceObjectClass.ClassService.name and ServiceObjectClass.ClassHost.name),
+            #       will it accept 2 (ALL) via AND or 1 (ANY) via OR?
+            #       Is such distinction required?
             {
                 object_id_: "list",
                 object_class_: ReservedObjectClass.ClassFunction.name,
@@ -111,7 +137,7 @@ class ServiceLoader(AbstractLoader):
                         ServiceObjectClass.ClassHost.name,
                     ],
                 },
-                ServiceArgType.ActionType.name: "list",
+                GlobalArgType.ActionType.name: "list",
             },
 
             ############################################################################################################
@@ -180,15 +206,15 @@ class ServiceLoader(AbstractLoader):
             },
         ]
 
-        self.generate_object_id(object_list)
+        self.generate_object_id(data_objects)
 
-        static_data.data_objects.extend(object_list)
+        static_data.data_objects.extend(data_objects)
 
         return static_data
 
     # noinspection PyMethodMayBeStatic
-    def generate_object_id(self, object_list: list):
-        for object_data in object_list:
+    def generate_object_id(self, data_objects: list):
+        for object_data in data_objects:
             if object_id_ not in object_data:
                 if object_class_ == ServiceObjectClass.ClassHost.name:
                     object_data[object_id_] = object_data[ServiceArgType.HostName.name]

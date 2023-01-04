@@ -16,7 +16,7 @@ from argrelay.runtime_context.InterpContext import InterpContext, assigned_types
 """
 This module auto-completes command line args when integrated with shell (Bash).
 
-See use case: derived :class:`ServiceInterp`.
+See use case: derived :class:`DemoInterp`.
 """
 
 
@@ -172,6 +172,7 @@ class GenericInterp(AbstractInterp):
                 if next_found:
                     eprint("next_found: ", next_found)
                     # Too many - stop:
+                    # TODO: Use enum instead of numbers:
                     return -1
                 else:
                     self.function_object_found = first_found
@@ -183,6 +184,7 @@ class GenericInterp(AbstractInterp):
                     )
                     if not self.accept_object_classes:
                         # Function does not need any object:
+                        # TODO: Use enum instead of numbers:
                         return 0
 
                     self.accept_object_class_ipos = 0
@@ -190,9 +192,11 @@ class GenericInterp(AbstractInterp):
                         self.object_class_queries_dict[self.accept_object_classes[self.accept_object_class_ipos]]
                     )
                     # Need more args to consume (for objects to find):
+                    # TODO: Use enum instead of numbers:
                     return +1
             else:
                 # No function = nothing to do:
+                # TODO: Use enum instead of numbers:
                 return -1
         else:
             query_res = self._query_objects({
@@ -239,7 +243,7 @@ class GenericInterp(AbstractInterp):
     def _query_objects(self, query_dict):
         for arg_type, arg_val in self.interp_ctx.curr_assigned_types_to_values.items():
             query_dict[arg_type] = arg_val.arg_value
-        query_dict[object_class_] = ReservedObjectClass.ClassFunction.name
+        # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query objects which contain given value in elements of the array?
         query_res = self.interp_ctx.mongo_col.find(query_dict)
         return query_res
 
@@ -274,9 +278,9 @@ class GenericInterp(AbstractInterp):
             ):
                 # Cannot complete => show first missing:
                 # TODO: differentiate when have proposed and no proposed:
-                first_missing_type = self.remaining_from_next_missing_types()
-                if first_missing_type:
-                    return first_missing_type
+                first_missing_type_values = self.remaining_from_next_missing_types()
+                if first_missing_type_values:
+                    return first_missing_type_values
                 else:
                     self.print_complete()
                     return []

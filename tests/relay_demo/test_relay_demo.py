@@ -5,6 +5,7 @@ from unittest import TestCase
 from argrelay.meta_data.ArgSource import ArgSource
 from argrelay.meta_data.ArgValue import ArgValue
 from argrelay.meta_data.CompType import CompType
+from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.relay_client.__main__ import main
@@ -30,8 +31,8 @@ class ThisTestCase(TestCase):
             (line_no(), "some_command upstream goto host |",  CompType.SubsequentHelp, "dev\nqa\nprod", ""),
             # TODO: If selected token left part does not fall into next expected space, suggest from all other (yet not determined) matching that substring.
             (line_no(), "some_command host goto upstream q|", CompType.SubsequentHelp, "qa\nqw\nqwe\nqwer", "Suggestions for subsequent Tab are limited by prefix"),
-            (line_no(), "some_command upstream qa apac desc |", CompType.SubsequentHelp, "qw\nqwe\nqwer\nwert\nas\nasd\nasdf\nsdfg\nzx\nzxc\nzxcv\nxcvb", ""),
-            (line_no(), "some_command service upstream|", CompType.PrefixHidden, "upstream", ""),
+            (line_no(), "some_command upstream qa apac desc host |", CompType.SubsequentHelp, "qw\nqwe\nqwer\nwert\nas\nasd\nasdf\nsdfg\nzx\nzxc\nzxcv\nxcvb", ""),
+            (line_no(), "some_command service goto upstream|", CompType.PrefixHidden, "upstream", ""),
             (line_no(), "some_command de|", CompType.PrefixHidden, "desc", "Suggest from the set of values for the first unassigned arg type (with matching prefix)"),
             (line_no(), "some_command host goto q| dev", CompType.PrefixHidden, "qw\nqwe\nqwer", "Suggestion for a value from other spaces which do not have coordinate specified"),
             (line_no(), "some_command q| dev", CompType.PrefixHidden, "", "Do not suggest a value from other spaces until they are available for query for current object to search"),
@@ -114,7 +115,7 @@ class ThisTestCase(TestCase):
 {TermColor.DARK_GREEN.value}FlowStage: upstream [ExplicitArg]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}GeoRegion: amer [ExplicitArg]{TermColor.RESET.value}
 {TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} qw|qwe|qwer|wert|as|asd|asdf|sdfg|zx|zxc|zxcv|xcvb
-{TermColor.BRIGHT_YELLOW.value}ObjectSelector: ?{TermColor.RESET.value} host|service
+{TermColor.BRIGHT_YELLOW.value}ObjectSelector: ?{TermColor.RESET.value} host|service|repo|commit
 {TermColor.BRIGHT_YELLOW.value}ServiceName: ?{TermColor.RESET.value} service_a|service_b|service_c
 """,
                             env_mock_builder.actual_stderr.getvalue()
@@ -124,11 +125,11 @@ class ThisTestCase(TestCase):
         # @formatter:off
         test_cases = [
             # TODO: uncomment, it works:
-            (line_no(), RunMode.CompletionMode, "some_command goto|", CompType.PrefixShown, 0, {ServiceArgType.ActionType.name: None, ServiceArgType.ObjectSelector.name: None}, "No assignment for incomplete token (token pointed by the cursor) in completion mode"),
-            (line_no(), RunMode.InvocationMode, "some_command goto|", CompType.PrefixShown, 0, {ServiceArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: None}, "Incomplete token (pointed by the cursor) is complete in invocation mode"),
+            (line_no(), RunMode.CompletionMode, "some_command goto|", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: None, GlobalArgType.ObjectSelector.name: None}, "No assignment for incomplete token (token pointed by the cursor) in completion mode"),
+            (line_no(), RunMode.InvocationMode, "some_command goto|", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: None}, "Incomplete token (pointed by the cursor) is complete in invocation mode"),
 
-            (line_no(), RunMode.CompletionMode, "some_command goto |", CompType.PrefixShown, 0, {ServiceArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), ServiceArgType.ObjectSelector.name: None}, "Explicit assignment for complete token"),
-            (line_no(), RunMode.CompletionMode, "some_command goto service |", CompType.PrefixShown, 0, {ServiceArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), ServiceArgType.ObjectSelector.name: ArgValue("service", ArgSource.ExplicitArg)}, "Explicit assignment for complete token"),
+            (line_no(), RunMode.CompletionMode, "some_command goto |", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), GlobalArgType.ObjectSelector.name: None}, "Explicit assignment for complete token"),
+            (line_no(), RunMode.CompletionMode, "some_command goto service |", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), GlobalArgType.ObjectSelector.name: ArgValue("service", ArgSource.ExplicitArg)}, "Explicit assignment for complete token"),
 
             (line_no(), RunMode.CompletionMode, "some_command goto host prod|", CompType.PrefixShown, 1, {ServiceArgType.CodeMaturity.name: None, ServiceArgType.AccessType.name: None}, "No implicit assignment for incomplete token"),
             # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:

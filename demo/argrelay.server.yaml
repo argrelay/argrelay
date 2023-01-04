@@ -19,15 +19,16 @@ plugin_list:
         plugin_config:
             first_arg_vals_to_next_interp_factory_ids:
                 # This binding uses existing script `relay_demo`:
-                relay_demo: ServiceInterpFactory
+                relay_demo: DemoInterpFactory
                 # Another equivalent binding (but `some_command` does not exist in this repo):
-                some_command: ServiceInterpFactory
+                some_command: DemoInterpFactory
 
-    -   plugin_id: ServiceInterpFactory
-        plugin_module_name: argrelay.relay_demo.ServiceInterpFactory
-        plugin_class_name: ServiceInterpFactory
+    -   plugin_id: DemoInterpFactory
+        plugin_module_name: argrelay.relay_demo.DemoInterpFactory
+        plugin_class_name: DemoInterpFactory
         plugin_type: InterpFactoryPlugin
         plugin_config:
+            # TODO: Is `function_query` always supposed to repeat `object_class_queries` for `object_class` = `ClassFunction`?
             function_query:
                 object_class: ClassFunction
                 keys_to_types_list:
@@ -55,6 +56,15 @@ plugin_list:
                         # TODO: AccessType should be part of selecting another class or simply an arg to function (it is not used to find service, it is used to select how to access it):
                         -   access: AccessType
                         -   tag: ColorTag
+                -   object_class: ClassGitRepo
+                    keys_to_types_list:
+                        -   part: GitRepoPathComp
+                        -   path: GitRepoRelPath
+                -   object_class: ClassGitCommit
+                    keys_to_types_list:
+                        -   path: GitRepoRelPath
+                        -   email: GitRepoCommitAuthorEmail
+                        -   hex: GitRepoCommitId
 
     -   plugin_id: NoopLoader
         plugin_module_name: argrelay.misc_helper.NoopLoader
@@ -74,6 +84,14 @@ plugin_list:
                     - red
                     - green
 
+    -   plugin_id: GitRepoLoader
+        plugin_module_name: argrelay.relay_demo.GitRepoLoader
+        plugin_class_name: GitRepoLoader
+        plugin_type: LoaderPlugin
+        plugin_config:
+            is_enabled: False
+            base_path: "~/repos"
+
 # Statically defined `static_data` - and it is not a tautology!
 # This data is loaded as part of the config on start (and will be available even when all loader plugins removed).
 # Loader plugins are also supposed to add more data (but they also can modify or completely remove it).
@@ -83,6 +101,7 @@ static_data:
 
     types_to_values:
 
+        # TODO: only define list of types, populating `types_to_values` should be automatic from all loaded objects:
         ActionType:
             - goto
             - desc
@@ -91,6 +110,8 @@ static_data:
         ObjectSelector:
             - host
             - service
+            - repo
+            - commit
 
         CodeMaturity:
             - dev
