@@ -14,7 +14,7 @@ from argrelay.server_spec.const_int import (
     RELAY_LINE_ARGS_PATH,
 )
 from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH, server_op_data_schemas
-from misc_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 
 class ThisTestCase(TestCase):

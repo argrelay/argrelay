@@ -17,6 +17,7 @@ import mongomock
 import pkg_resources
 import yaml
 
+import argrelay
 from argrelay.data_schema.ClientConfigSchema import use_local_requests_, client_config_desc
 from argrelay.data_schema.MongoConfigSchema import start_server_
 from argrelay.data_schema.PluginEntrySchema import plugin_id_, plugin_config_
@@ -30,7 +31,7 @@ from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from misc_helper.OpenFileMock import OpenFileMock
+from argrelay.test_helper.OpenFileMock import OpenFileMock
 
 
 @dataclass
@@ -309,16 +310,14 @@ def _fix_python_invocation_args(command_args: list[str]):
 
 
 def load_relay_demo_server_config_dict() -> dict:
-    # TODO: figure out how to access it without relative path - it complains about deprecation:
-    #       DeprecationWarning: Use of .. or absolute path in a resource path is not allowed and will raise exceptions in a future release.
-    test_server_config_path = _get_resource_path("../../demo/argrelay.server.yaml")
+    test_server_config_path = _get_resource_path("relay_demo/argrelay.server.yaml")
     with open(test_server_config_path) as f:
         server_config_dict = yaml.safe_load(f)
     return server_config_dict
 
 
 def load_relay_demo_client_config_dict() -> dict:
-    test_client_config_path = _get_resource_path("../../demo/argrelay.client.yaml")
+    test_client_config_path = _get_resource_path("relay_demo/argrelay.client.yaml")
     with open(test_client_config_path) as f:
         client_config_dict = yaml.safe_load(f)
     return client_config_dict
@@ -326,7 +325,7 @@ def load_relay_demo_client_config_dict() -> dict:
 
 def _get_resource_path(rel_path: str):
     # Composing path to resource this way keeps its base directory always at this relative path:
-    test_server_config_path = pkg_resources.resource_filename(__name__, rel_path)
+    test_server_config_path = pkg_resources.resource_filename(argrelay.__name__, rel_path)
     return test_server_config_path
 
 

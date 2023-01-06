@@ -9,8 +9,8 @@ from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.relay_client import __main__
 from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH, BASE_URL_FORMAT
-from misc_helper import parse_line_and_cpos
-from misc_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper import parse_line_and_cpos
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 
 class ThisTestCase(TestCase):

@@ -5,8 +5,8 @@ from marshmallow import ValidationError
 
 from argrelay.data_schema.ServerConfigSchema import static_data_
 from argrelay.data_schema.StaticDataSchema import static_data_desc, types_to_values_, first_interp_factory_id_
-from misc_helper import line_no
-from misc_helper.EnvMockBuilder import load_relay_demo_server_config_dict
+from argrelay.test_helper import line_no
+from argrelay.test_helper.EnvMockBuilder import load_relay_demo_server_config_dict
 
 
 class ThisTestCase(TestCase):

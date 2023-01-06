@@ -16,8 +16,8 @@ from argrelay.meta_data.PluginType import PluginType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.relay_client import __main__
 from argrelay.runtime_context.InterpContext import InterpContext
-from misc_helper import parse_line_and_cpos
-from misc_helper.EnvMockBuilder import (
+from argrelay.test_helper import parse_line_and_cpos
+from argrelay.test_helper.EnvMockBuilder import (
     EnvMockBuilder,
     load_relay_demo_server_config_dict,
 )

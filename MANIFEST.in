@@ -1,1 +1,4 @@
+
 include readme.md
+include dev-init.bash
+include dev-shell.bash

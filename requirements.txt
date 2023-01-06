@@ -11,6 +11,8 @@ dnspython==2.2.1
 filelock==3.8.2
 flasgger==0.9.5
 Flask==2.2.2
+gitdb==4.0.10
+GitPython==3.1.30
 idna==3.4
 importlib-metadata==5.1.0
 importlib-resources==5.10.1
@@ -31,7 +33,9 @@ pyrsistent==0.19.2
 PyYAML==6.0
 requests==2.28.1
 responses==0.22.0
+sentinels==1.0.0
 six==1.16.0
+smmap==5.0.0
 toml==0.10.2
 tomli==2.0.1
 tox==4.0.12

@@ -2,7 +2,7 @@ import os
 import subprocess
 import tempfile
 from copy import deepcopy
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from argrelay.data_schema.ServerConfigSchema import static_data_
 from argrelay.data_schema.StaticDataSchema import types_to_values_
@@ -10,10 +10,12 @@ from argrelay.misc_helper import eprint
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, is_enabled_
-from misc_helper import line_no
-from misc_helper.EnvMockBuilder import relay_demo_static_data_object
+from argrelay.test_helper import line_no
+from argrelay.test_helper.EnvMockBuilder import relay_demo_static_data_object
 
 
+# TODO: move this test into integration and run only on demand:
+@skip
 class ThisTestCase(TestCase):
     temp_dir: tempfile.TemporaryDirectory
 

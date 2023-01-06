@@ -7,7 +7,6 @@ from argrelay.data_schema.ObjectClassQuerySchema import keys_to_types_list_, obj
 from argrelay.interp_plugin.AbstractInterp import AbstractInterp
 from argrelay.interp_plugin.ArgProcessor import ArgProcessor
 from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.meta_data.SpecialChar import SpecialChar
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint

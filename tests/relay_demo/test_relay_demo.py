@@ -11,8 +11,8 @@ from argrelay.meta_data.TermColor import TermColor
 from argrelay.relay_client.__main__ import main
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import assigned_types_to_values_
-from misc_helper import line_no, parse_line_and_cpos
-from misc_helper.EnvMockBuilder import (
+from argrelay.test_helper import line_no, parse_line_and_cpos
+from argrelay.test_helper.EnvMockBuilder import (
     EnvMockBuilder
 )
 
