@@ -26,7 +26,9 @@ class ArgProcessor:
         if (
             self.arg_type not in ctx.curr_assigned_types_to_values
             and
-            token in self.static_data.types_to_values[self.arg_type]
+            self.arg_type in ctx.curr_remaining_types_to_values
+            and
+            token in ctx.curr_remaining_types_to_values[self.arg_type]
         ):
             # TODO: rename to more qualified interp_ctx:
             ctx.curr_assigned_types_to_values[self.arg_type] = ArgValue(token, ArgSource.ExplicitArg)

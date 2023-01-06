@@ -171,11 +171,39 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "zxcv",
             },
 
+            {
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "prod",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.HostName.name: "wert",
+            },
+            {
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "qa",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.GeoRegion.name: "amer",
+                ServiceArgType.HostName.name: "sdfg",
+            },
+            {
+                object_class_: ServiceObjectClass.ClassHost.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.HostName.name: "xcvb",
+            },
+
             ############################################################################################################
             # services
 
             {
-                object_class_: ServiceObjectClass.ClassHost.name,
+                object_class_: ServiceObjectClass.ClassService.name,
                 object_data_: {
                 },
                 ServiceArgType.CodeMaturity.name: "dev",
@@ -185,7 +213,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "service_a",
             },
             {
-                object_class_: ServiceObjectClass.ClassHost.name,
+                object_class_: ServiceObjectClass.ClassService.name,
                 object_data_: {
                 },
                 ServiceArgType.CodeMaturity.name: "dev",
@@ -195,13 +223,24 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "service_b",
             },
             {
-                object_class_: ServiceObjectClass.ClassHost.name,
+                object_class_: ServiceObjectClass.ClassService.name,
                 object_data_: {
                 },
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.FlowStage.name: "upstream",
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.HostName.name: "zxcv",
+                ServiceArgType.ServiceName.name: "service_c",
+            },
+
+            {
+                object_class_: ServiceObjectClass.ClassService.name,
+                object_data_: {
+                },
+                ServiceArgType.CodeMaturity.name: "qa",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.HostName.name: "poiu",
                 ServiceArgType.ServiceName.name: "service_c",
             },
         ]

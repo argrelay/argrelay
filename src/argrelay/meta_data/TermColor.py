@@ -15,6 +15,7 @@ class TermColor(Enum):
     BRIGHT_CYAN = '\033[96m'
     BRIGHT_GREEN = '\033[92m'
     BRIGHT_YELLOW = '\033[93m'
+    BRIGHT_RED = '\033[91m'
     BRIGHT_GRAY = '\033[37m'
 
     DEBUG = DARK_GRAY

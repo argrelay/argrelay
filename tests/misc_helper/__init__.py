@@ -5,7 +5,7 @@ from inspect import getframeinfo, currentframe
 
 def line_no() -> int:
     """
-    Get source line in the callee frame
+    Get source line in the caller frame
     """
     return getframeinfo(currentframe().f_back).lineno
 

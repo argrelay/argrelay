@@ -5,6 +5,8 @@ from dataclasses import field, dataclass
 from pymongo.collection import Collection
 from pymongo.database import Database
 
+from argrelay.data_schema.DataObjectSchema import object_class_
+from argrelay.data_schema.ObjectClassQuerySchema import keys_to_types_list_
 from argrelay.data_schema.StaticDataSchema import data_objects_
 from argrelay.meta_data import StaticData
 from argrelay.meta_data.ArgValue import ArgValue
@@ -16,7 +18,7 @@ from argrelay.mongo_data.MongoClientWrapper import get_mongo_client, find_object
 from argrelay.runtime_context.ParsedContext import ParsedContext
 
 assigned_types_to_values_ = "assigned_types_to_values"
-
+remaining_types_to_values_ = "remaining_types_to_values"
 
 @dataclass
 class InterpContext:
@@ -44,9 +46,14 @@ class InterpContext:
     Already consumed tokens (their ipos) in the order of their consumption.
     """
 
-    curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False, default_factory = lambda: {})
+    curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False)
     """
-    All assigned args (from interpreted tokens) mapped as type:value.
+    All assigned args (from interpreted tokens) mapped as type:value which belong to `curr_data_object`.
+    """
+
+    curr_remaining_types_to_values: dict[str, list[str]] = field(init = False)
+    """
+    All arg values per type left for suggestion given the `curr_assigned_types_to_values`.
     """
 
     assigned_types_to_values_per_object: list[dict] = field(init = False, default_factory = lambda: [])
@@ -57,6 +64,7 @@ class InterpContext:
     *   `object_class_`
     *   `object_data_`
     *   `assigned_types_to_values_`
+    *   `remaining_types_to_value_`
     *   TODO: maybe also `keys_to_types` (the query)?
     """
 
@@ -162,33 +170,53 @@ class InterpContext:
         # TODO: print conflicting values (two different implicit values)
         # TODO: print unrecognized tokens
         # TODO: for unrecognized token highlight by color all tokens with matching substring
-        is_first_missing_found: bool = False
-        for arg_type in self.static_data.types_to_values.keys():
-            if not self.is_type_with_values(arg_type):
-                continue
-            if arg_type in self.curr_assigned_types_to_values:
-                eprint(TermColor.DARK_GREEN.value, end = "")
-                eprint(f"{arg_type}:", end = "")
-                eprint(
-                    f" {self.curr_assigned_types_to_values[arg_type].arg_value} " +
-                    f"[{self.curr_assigned_types_to_values[arg_type].arg_source}]",
-                    end = ""
-                )
-                eprint(TermColor.RESET.value, end = "")
-            else:
-                eprint(TermColor.BRIGHT_YELLOW.value, end = "")
-                if not is_first_missing_found:
-                    eprint(f"*{arg_type}:", end = "")
-                    is_first_missing_found = True
-                else:
+        for object_result in self.assigned_types_to_values_per_object:
+            if object_class_ not in object_result:
+                # It must be last object created but no object class left to query it:
+                break
+            eprint(object_result[object_class_])
+            result_remaining_types_to_values = object_result[remaining_types_to_values_]
+            result_assigned_types_to_values = object_result[assigned_types_to_values_]
+            keys_to_types_list = object_result[keys_to_types_list_]
+
+            is_first_missing_found: bool = False
+            for key_to_type_dict in keys_to_types_list:
+                arg_key = next(iter(key_to_type_dict))
+                arg_type = key_to_type_dict[arg_key]
+
+                if arg_type in result_assigned_types_to_values:
+                    eprint(TermColor.DARK_GREEN.value, end = "")
                     eprint(f"{arg_type}:", end = "")
-                eprint(f" ?", end = "")
-                eprint(TermColor.RESET.value, end = "")
-                eprint(
-                    f" {'|'.join(self.static_data.types_to_values[arg_type])}",
-                    end = ""
-                )
-            eprint()
+                    eprint(
+                        f" {result_assigned_types_to_values[arg_type].arg_value} " +
+                        f"[{result_assigned_types_to_values[arg_type].arg_source}]",
+                        end = ""
+                    )
+                    eprint(TermColor.RESET.value, end = "")
+                elif arg_type in result_remaining_types_to_values:
+                    eprint(TermColor.BRIGHT_YELLOW.value, end = "")
+                    if not is_first_missing_found:
+                        eprint(f"*{arg_type}:", end = "")
+                        is_first_missing_found = True
+                    else:
+                        eprint(f"{arg_type}:", end = "")
+                    eprint(f" ?", end = "")
+                    eprint(TermColor.RESET.value, end = "")
+                    eprint(
+                        f" {'|'.join(result_remaining_types_to_values[arg_type])}",
+                        end = ""
+                    )
+                else:
+                    eprint(TermColor.BRIGHT_RED.value, end = "")
+                    if not is_first_missing_found:
+                        eprint(f"*{arg_type}:", end = "")
+                        is_first_missing_found = True
+                    else:
+                        eprint(f"{arg_type}:", end = "")
+                    eprint(f" ?", end = "")
+                    eprint(TermColor.RESET.value, end = "")
+
+                eprint()
 
     def is_type_with_values(self, arg_type: str) -> bool:
         return len(self.static_data.types_to_values[arg_type]) != 0

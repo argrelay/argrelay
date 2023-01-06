@@ -23,18 +23,36 @@ class ThisTestCase(TestCase):
         # @formatter:off
         test_cases = [
             (line_no(), "some_command |", CompType.PrefixHidden, "goto\ndesc\nlist", "Suggest from the set of values for the first unassigned arg type"),
-            (line_no(), "some_command goto host prod amer upstream sdfg|  ", CompType.PrefixShown, "sdfg", "Still as expected with trailing space after cursor"),
-            (line_no(), "some_command goto host qa prod|", CompType.SubsequentHelp, "", "Another value from the same dimension with `SubsequentHelp` => no suggestions"),
-            (line_no(), "some_command host qa upstream amer qw goto ro service_c green |", CompType.PrefixShown, "", "No more suggestions when all coordinates specified"),
-            (line_no(), "some_command host qa goto |", CompType.MenuCompletion, "upstream\ndownstream", "Suggestions for next coordinate show entire space"),
-            (line_no(), "some_command upstream goto host |", CompType.PrefixHidden, "dev\nqa\nprod", ""),
-            (line_no(), "some_command upstream goto host |",  CompType.SubsequentHelp, "dev\nqa\nprod", ""),
+
+            (line_no(), "some_command goto host dev amer upstream qwer|  ", CompType.PrefixShown, "qwer", "Still as expected with trailing space after cursor"),
+
+            (line_no(), "some_command goto host qa prod|", CompType.SubsequentHelp, "", "Another value from the same dimension with `SubsequentHelp` yet prefix not matching any from other dimensions => no suggestions"),
+            (line_no(), "some_command goto host qa amer|", CompType.SubsequentHelp, "amer", "Another value from the same dimension with `SubsequentHelp` and prefix matching some from other dimensions => some suggestions"),
+
+
+            # TODO: FIXME: Bug: FD-2023-01-07--1: interp skips `upstream` and suggest `downstream` (because there is no `upstream` for `host` and `qa` already pre-selected).
+            #       I'm currently thinking about new meta data `ValueScope` with two values `ValueScope.QueriedData` and `ValueScope.EntireValueSpace`.
+            #       We should force-assign `upstream` value (but mark it ad `ValueScope.EntireValueSpace`).
+            #       * suggested value is incorrect (should be empty)
+            #       * description is correct
+            (line_no(), "some_command host qa upstream amer qw goto ro service_c green |", CompType.PrefixShown, "downstream", "No more suggestions when all coordinates specified"),
+
+            (line_no(), "some_command host qa goto |", CompType.MenuCompletion, "downstream", "Suggestions for next coordinate are arg values pre-filtered by selection of previous arg values"),
+
+            # TODO: FIXME: Bug: while suggestion on `CompType.PrefixHidden` is filtered, suggestion on `CompType.SubsequentHelp` should be entire value space "dev\nqa\nprod":
+            #       This is debatable: what if entire value space is too huge? But then values for huge value space should be ask last allowing to narrow the suggestion down by previous args:
+            (line_no(), "some_command upstream goto host |", CompType.PrefixHidden, "dev", ""),
+            (line_no(), "some_command upstream goto host |", CompType.SubsequentHelp, "dev", ""),
+
             # TODO: If selected token left part does not fall into next expected space, suggest from all other (yet not determined) matching that substring.
             (line_no(), "some_command host goto upstream q|", CompType.SubsequentHelp, "qa\nqw\nqwe\nqwer", "Suggestions for subsequent Tab are limited by prefix"),
-            (line_no(), "some_command upstream qa apac desc host |", CompType.SubsequentHelp, "qw\nqwe\nqwer\nwert\nas\nasd\nasdf\nsdfg\nzx\nzxc\nzxcv\nxcvb", ""),
+
+            # TODO: FIXME: FD-2023-01-07--1: It proposes "dev" while "qa" already specified among args:
+            (line_no(), "some_command goto upstream qa apac desc host |", CompType.SubsequentHelp, "dev", ""),
+
             (line_no(), "some_command service goto upstream|", CompType.PrefixHidden, "upstream", ""),
             (line_no(), "some_command de|", CompType.PrefixHidden, "desc", "Suggest from the set of values for the first unassigned arg type (with matching prefix)"),
-            (line_no(), "some_command host goto q| dev", CompType.PrefixHidden, "qw\nqwe\nqwer", "Suggestion for a value from other spaces which do not have coordinate specified"),
+            (line_no(), "some_command host goto q| dev", CompType.PrefixHidden, "qwer", "Suggestion for a value from other spaces which do not have coordinate specified"),
             (line_no(), "some_command q| dev", CompType.PrefixHidden, "", "Do not suggest a value from other spaces until they are available for query for current object to search"),
             (line_no(), "some_command pro| dev", CompType.PrefixHidden, "", "No suggestion for another value from a space which already have coordinate specified"),
             (line_no(), "some_command goto service q| whatever", CompType.PrefixHidden, "qa", "Unrecognized value does not obstruct suggestion"),
@@ -68,7 +86,7 @@ class ThisTestCase(TestCase):
     def test_describe_args(self):
         # @formatter:off
         test_cases = [
-            (line_no(), "some_command goto service prod amer upstream sdfg|  ", CompType.DescribeArgs, "sdfg", ""),
+            (line_no(), "some_command goto service dev amer upstream sdfg|  ", CompType.DescribeArgs, "sdfg", ""),
         ]
         # @formatter:on
 
@@ -108,15 +126,17 @@ class ThisTestCase(TestCase):
                         #       and it only compares it to the last `curr_assigned_types_to_values` (while it should print all `assigned_types_to_values_per_object`)
                         self.assertEqual(
                             f"""
-{TermColor.BRIGHT_YELLOW.value}*AccessType: ?{TermColor.RESET.value} ro|rw
-{TermColor.BRIGHT_YELLOW.value}ActionType: ?{TermColor.RESET.value} goto|desc|list
-{TermColor.DARK_GREEN.value}CodeMaturity: prod [ExplicitArg]{TermColor.RESET.value}
-{TermColor.BRIGHT_YELLOW.value}ColorTag: ?{TermColor.RESET.value} red|green
+ClassFunction
+{TermColor.DARK_GREEN.value}ActionType: goto [ExplicitArg]{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}ObjectSelector: service [ExplicitArg]{TermColor.RESET.value}
+ClassService
+{TermColor.DARK_GREEN.value}CodeMaturity: dev [ExplicitArg]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}FlowStage: upstream [ExplicitArg]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}GeoRegion: amer [ExplicitArg]{TermColor.RESET.value}
-{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} qw|qwe|qwer|wert|as|asd|asdf|sdfg|zx|zxc|zxcv|xcvb
-{TermColor.BRIGHT_YELLOW.value}ObjectSelector: ?{TermColor.RESET.value} host|service|repo|commit
-{TermColor.BRIGHT_YELLOW.value}ServiceName: ?{TermColor.RESET.value} service_a|service_b|service_c
+{TermColor.BRIGHT_YELLOW.value}*HostName: ?{TermColor.RESET.value} qwer
+{TermColor.BRIGHT_YELLOW.value}ServiceName: ?{TermColor.RESET.value} service_a
+{TermColor.BRIGHT_RED.value}AccessType: ?{TermColor.RESET.value}
+{TermColor.BRIGHT_RED.value}ColorTag: ?{TermColor.RESET.value}
 """,
                             env_mock_builder.actual_stderr.getvalue()
                         )

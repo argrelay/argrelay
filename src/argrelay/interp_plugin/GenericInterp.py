@@ -11,7 +11,7 @@ from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.meta_data.SpecialChar import SpecialChar
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint
-from argrelay.runtime_context.InterpContext import InterpContext, assigned_types_to_values_
+from argrelay.runtime_context.InterpContext import InterpContext, assigned_types_to_values_, remaining_types_to_values_
 
 """
 This module auto-completes command line args when integrated with shell (Bash).
@@ -40,8 +40,14 @@ class GenericInterp(AbstractInterp):
     # *   `object_class_`
     # *   `object_data_`
     # *   `assigned_types_to_values_`
+    # *   `remaining_types_to_values_`
     # *   TODO: maybe also `keys_to_types` (the query)?
     curr_data_object: dict
+
+    # Objects found in the last query:
+    res_count: int
+    # First object found in the last query
+    first_found: dict
 
     # Direct list to preserve order:
     curr_keys_to_types_list: list[dict[str, str]]
@@ -67,22 +73,27 @@ class GenericInterp(AbstractInterp):
         self.accept_object_class_ipos = None
 
         self._init_next_object_to_find()
-        self.curr_data_object[object_class_] = self.function_query[object_class_]
 
         # Init to find function class:
-        self._set_object_class_query(self.function_query)
+        self._set_object_class_query_and_query(self.function_query)
 
-    def _set_object_class_query(self, object_class_query):
+    def _set_object_class_query_and_query(self, object_class_query):
         self.curr_data_object[object_class_] = object_class_query[object_class_]
         self._set_curr_keys_to_type(object_class_query[keys_to_types_list_])
+        self.query_objects()
 
     def _set_curr_keys_to_type(self, keys_to_types_list):
+        self.curr_data_object[keys_to_types_list_] = keys_to_types_list
         self.curr_keys_to_types_list = keys_to_types_list
 
         self.curr_keys_to_types_dict = self.list_to_dict(self.curr_keys_to_types_list)
 
         # generate reverse:
         self.curr_types_to_keys = {v: k for k, v in self.curr_keys_to_types_dict.items()}
+
+        # init remaining:
+        for arg_type in self.curr_types_to_keys.keys():
+            self.interp_ctx.curr_remaining_types_to_values[arg_type] = []
 
         # instantiate processors:
         self.all_processors = []
@@ -110,6 +121,7 @@ class GenericInterp(AbstractInterp):
         pass
 
     def consume_pos_args(self) -> None:
+        # TODO: rename to `_assign_explicit_pos_args` and `_assign_implicit_pos_args`:
         self._assign_explicit_args()
         self._assign_implicit_args()
 
@@ -118,18 +130,19 @@ class GenericInterp(AbstractInterp):
         Scans through `unconsumed_tokens` and tries to match its value against values of each type.
         """
 
-        consumed_tokens = []
+        consumed_token_iposes = []
         for unconsumed_token_ipos in self.interp_ctx.unconsumed_tokens:
-            other_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
+            unconsumed_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
             # see if token matches any type by value:
             for curr_processor in self.all_processors:
-                if curr_processor.try_explicit_arg(self.interp_ctx, other_token):
-                    consumed_tokens.append(unconsumed_token_ipos)
+                if curr_processor.try_explicit_arg(self.interp_ctx, unconsumed_token):
+                    consumed_token_iposes.append(unconsumed_token_ipos)
+                    self.interp_ctx.consumed_tokens.append(unconsumed_token_ipos)
+                    self.query_objects()
 
         # perform list modifications out of the prev loop:
-        for consumed_token in consumed_tokens:
-            self.interp_ctx.unconsumed_tokens.remove(consumed_token)
-            self.interp_ctx.consumed_tokens.append(consumed_token)
+        for consumed_token_ipos in consumed_token_iposes:
+            self.interp_ctx.unconsumed_tokens.remove(consumed_token_ipos)
 
     def _assign_implicit_args(self) -> None:
         """
@@ -159,23 +172,15 @@ class GenericInterp(AbstractInterp):
             < 0: stop: interpreter sees no point to continue main loop (`InterpContext.interpret_command`)
         """
         if not self.function_object_found:
-            # Function is still not found - try to find now:
-            query_res = self._query_objects({
-                object_class_: ReservedObjectClass.ClassFunction.name,
-            })
             # We want single function object found, not zero, not more than one:
-            query_res_iter = iter(query_res)
-            first_found = next(query_res_iter, None)
-            eprint("first_found: ", first_found)
-            if first_found is not None:
-                next_found = next(query_res_iter, None)
-                if next_found:
-                    eprint("next_found: ", next_found)
+            eprint("first_found: ", self.first_found)
+            if self.first_found is not None:
+                if self.res_count > 1:
                     # Too many - stop:
                     # TODO: Use enum instead of numbers:
                     return -1
                 else:
-                    self.function_object_found = first_found
+                    self.function_object_found = self.first_found
                     self._rotate_object_found(self.function_object_found)
 
                     # Init next objects to find:
@@ -188,10 +193,10 @@ class GenericInterp(AbstractInterp):
                         return 0
 
                     self.accept_object_class_ipos = 0
-                    self._set_object_class_query(
+                    self._set_object_class_query_and_query(
                         self.object_class_queries_dict[self.accept_object_classes[self.accept_object_class_ipos]]
                     )
-                    # Need more args to consume (for objects to find):
+                    # Need more args to consume for the next object to find:
                     # TODO: Use enum instead of numbers:
                     return +1
             else:
@@ -199,26 +204,20 @@ class GenericInterp(AbstractInterp):
                 # TODO: Use enum instead of numbers:
                 return -1
         else:
-            query_res = self._query_objects({
-                object_class_: self.curr_data_object[object_class_],
-            })
             # We need single object:
-            query_res_iter = iter(query_res)
-            first_found = next(query_res_iter, None)
-            data_object: dict = first_found
-            eprint("first_found: ", first_found)
-            if data_object is not None:
-                next_found = next(query_res_iter, None)
-                eprint("next_found: ", next_found)
-                if next_found:
+            eprint("first_found: ", self.first_found)
+            if self.first_found is not None:
+                if self.res_count > 1:
                     # Too many - stop:
                     return -1
                 else:
-                    self._rotate_object_found(data_object)
                     self.accept_object_class_ipos += 1
                     if self.accept_object_class_ipos < len(self.accept_object_classes):
+                        self._rotate_object_found(self.first_found)
                         # Move to the next object class to find:
-                        self._set_object_class_query(self.accept_object_classes[self.accept_object_class_ipos])
+                        self._set_object_class_query_and_query(
+                            self.object_class_queries_dict[self.accept_object_classes[self.accept_object_class_ipos]]
+                        )
                         return +1
                     else:
                         # Move to the next interp:
@@ -229,23 +228,58 @@ class GenericInterp(AbstractInterp):
 
     def _init_next_object_to_find(self):
         self.interp_ctx.curr_assigned_types_to_values = {}
+        self.interp_ctx.curr_remaining_types_to_values = {}
+
         self.curr_data_object = {
-            assigned_types_to_values_: self.interp_ctx.curr_assigned_types_to_values
+            assigned_types_to_values_: self.interp_ctx.curr_assigned_types_to_values,
+            remaining_types_to_values_: self.interp_ctx.curr_remaining_types_to_values,
         }
-        # Also, keep it in the list even if it is incomplete:
+        # Also, keep the object in the list right away (even if it may not be found):
         self.interp_ctx.assigned_types_to_values_per_object.append(self.curr_data_object)
 
-    def _rotate_object_found(self, object_data):
+    def _rotate_object_found(self, object_found):
         # Finalize missing data field:
-        self.curr_data_object[object_data_] = object_data
+        self.curr_data_object[object_data_] = object_found[object_data_]
         self._init_next_object_to_find()
 
-    def _query_objects(self, query_dict):
+    def query_objects(self):
+        query_dict = {
+            object_class_: self.curr_data_object[object_class_],
+        }
         for arg_type, arg_val in self.interp_ctx.curr_assigned_types_to_values.items():
             query_dict[arg_type] = arg_val.arg_value
         # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query objects which contain given value in elements of the array?
         query_res = self.interp_ctx.mongo_col.find(query_dict)
-        return query_res
+        self._update_curr_remaining_types_to_values(query_res)
+
+    def _update_curr_remaining_types_to_values(self, query_res):
+        # reset:
+        self.interp_ctx.curr_remaining_types_to_values.clear()
+
+        self.res_count: int = 0
+        self.first_found = None
+        # find all remaining arg vals per arg type:
+        for object_found in iter(query_res):
+            self.res_count += 1
+            if not self.first_found:
+                self.first_found = object_found
+            # TODO: instead of looping through all `types_to_values` possible in `static_data`,
+            #       loop through those types used in query for that object:
+            # arg type must be known:
+            for arg_type in self.interp_ctx.static_data.types_to_values.keys():
+                # arg type must be in one of the objects found:
+                if arg_type in object_found:
+                    # arg type must not be assigned/consumed:
+                    if arg_type not in self.interp_ctx.curr_assigned_types_to_values.keys():
+                        arg_val = object_found[arg_type]
+                        if arg_type not in self.interp_ctx.curr_remaining_types_to_values:
+                            val_list = []
+                            self.interp_ctx.curr_remaining_types_to_values[arg_type] = val_list
+                        else:
+                            val_list = self.interp_ctx.curr_remaining_types_to_values[arg_type]
+                        # ensure unique arg vals:
+                        if arg_val not in val_list:
+                            val_list.append(arg_val)
 
     def propose_arg_completion(self) -> None:
         self.interp_ctx.comp_suggestions = self.propose_auto_comp_list()
@@ -260,7 +294,7 @@ class GenericInterp(AbstractInterp):
         ):
             return [
                 name + SpecialChar.KeyValueDelimiter.value
-                for name in self.curr_types_to_keys.keys() if not name.startswith('_')
+                for name in self.curr_types_to_keys.keys() if not name.startswith("_")
             ]
 
         if self.interp_ctx.parsed_ctx.comp_type == CompType.SubsequentHelp:
@@ -304,9 +338,16 @@ class GenericInterp(AbstractInterp):
 
         # Return filtered value set fom next missing arg:
         for arg_type in self.curr_types_to_keys.keys():
-            if not proposed_tokens and arg_type not in self.interp_ctx.curr_assigned_types_to_values:
+            if (
+                not proposed_tokens
+                and
+                # TODO: I think only one condition is enough: arg_type is either in one or in another, not in both:
+                arg_type not in self.interp_ctx.curr_assigned_types_to_values
+                and
+                arg_type in self.interp_ctx.curr_remaining_types_to_values
+            ):
                 proposed_tokens = [
-                    x for x in self.interp_ctx.static_data.types_to_values[arg_type]
+                    x for x in self.interp_ctx.curr_remaining_types_to_values[arg_type]
                     if x.startswith(self.interp_ctx.parsed_ctx.sel_token_l_part)
                 ]
 
@@ -319,6 +360,7 @@ class GenericInterp(AbstractInterp):
         for arg_type in self.curr_types_to_keys.keys():
             if arg_type not in self.interp_ctx.curr_assigned_types_to_values:
                 proposed_tokens += [
+                    # TODO: if these values are populated by all possible automatically, do we still want to propose from all regardless current object class context? On `SubsequentHelp`? I don't think so.
                     x for x in self.interp_ctx.static_data.types_to_values[arg_type]
                     if x.startswith(self.interp_ctx.parsed_ctx.sel_token_l_part)
                 ]
