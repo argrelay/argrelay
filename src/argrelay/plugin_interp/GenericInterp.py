@@ -6,7 +6,12 @@ from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_interp.ArgProcessor import ArgProcessor
-from argrelay.runtime_context.InterpContext import InterpContext, assigned_types_to_values_, remaining_types_to_values_
+from argrelay.runtime_context.InterpContext import (
+    InterpContext,
+    assigned_types_to_values_,
+    remaining_types_to_values_,
+    is_found_,
+)
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
 from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_, envelope_class_
 from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import accept_envelope_classes_
@@ -25,15 +30,16 @@ class GenericInterp(AbstractInterp):
     function_query: dict
     # List to preserve order:
     envelope_class_queries_list: list[dict]
-    # Dict for quick lookup:
+    # Dict for quick lookup: `envelope_class` -> `envelope_class_query`
     envelope_class_queries_dict: dict[str, dict]
 
     # Envelope of `ReservedEnvelopeClass.ClassFunction` from database which defines all other envelopes to be found:
     function_envelope: dict
-    # When `function_envelope`, it is list of object classes function requires:
+    # When `function_envelope` found, it is list of object classes function requires:
     accept_envelope_classes: list[str]
-    # When `function_envelope`, it is an ipos into `accept_envelope_classes` to select `curr_envelope_class`:
+    # When `function_envelope` found, it is an ipos into `accept_envelope_classes` to select `curr_envelope_class`:
     accept_envelope_class_ipos: int
+
     # It contains pending envelopes to be found (including data from `function_envelope`):
     # TODO: Formalize this in schema - see also `InterpContext.assigned_types_to_values_per_envelope`:
     # *   `envelope_class_`
@@ -41,6 +47,7 @@ class GenericInterp(AbstractInterp):
     # *   `assigned_types_to_values_`
     # *   `remaining_types_to_values_`
     # *   TODO: maybe also `keys_to_types` (the query)?
+    # It is the last among `InterpContext.assigned_types_to_values_per_envelope`.
     curr_data_envelope: dict
 
     # Envelopes found in the last query:
@@ -66,6 +73,7 @@ class GenericInterp(AbstractInterp):
         for envelope_class_query in self.envelope_class_queries_list:
             self.envelope_class_queries_dict[envelope_class_query[envelope_class_]] = envelope_class_query
 
+        # TODO: unify `function_envelope` and `curr_data_envelope` - there should not many special treatment/logic for `function_envelope` as it is found just like any other envelope
         # None until function envelope is found:
         self.function_envelope = None
         self.accept_envelope_classes = None
@@ -120,31 +128,32 @@ class GenericInterp(AbstractInterp):
         pass
 
     def consume_pos_args(self) -> None:
-        # TODO: rename to `_assign_explicit_pos_args` and `_assign_implicit_pos_args`:
-        self._assign_explicit_args()
-        self._assign_implicit_args()
+        self._assign_explicit_pos_args()
+        self._assign_implicit_pos_args()
 
-    def _assign_explicit_args(self) -> None:
+    def _assign_explicit_pos_args(self) -> None:
         """
         Scans through `unconsumed_tokens` and tries to match its value against values of each type.
         """
 
-        # TODO: Rename to `consumed_token_ipos_list`:
-        consumed_token_iposes = []
+        consumed_token_ipos_list = []
         for unconsumed_token_ipos in self.interp_ctx.unconsumed_tokens:
             unconsumed_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
             # see if token matches any type by value:
             for curr_processor in self.all_processors:
                 if curr_processor.try_explicit_arg(self.interp_ctx, unconsumed_token):
-                    consumed_token_iposes.append(unconsumed_token_ipos)
+                    consumed_token_ipos_list.append(unconsumed_token_ipos)
                     self.interp_ctx.consumed_tokens.append(unconsumed_token_ipos)
                     self.query_envelopes()
+                    # TD-2023-01-07--1:
+                    # Assign current ArgVal by the first ArgProcessor only:
+                    break
 
         # perform list modifications out of the prev loop:
-        for consumed_token_ipos in consumed_token_iposes:
+        for consumed_token_ipos in consumed_token_ipos_list:
             self.interp_ctx.unconsumed_tokens.remove(consumed_token_ipos)
 
-    def _assign_implicit_args(self) -> None:
+    def _assign_implicit_pos_args(self) -> None:
         """
         Invokes all :class:`ArgProcessor` and
         assigns args known implicitly for each arg type.
@@ -181,7 +190,7 @@ class GenericInterp(AbstractInterp):
                     return -1
                 else:
                     self.function_envelope = self.first_found
-                    self._rotate_envelope(self.function_envelope)
+                    self._register_found_envelope(self.function_envelope)
 
                     # Init next objects to find:
                     self.accept_envelope_classes = (
@@ -213,7 +222,7 @@ class GenericInterp(AbstractInterp):
                 else:
                     self.accept_envelope_class_ipos += 1
                     if self.accept_envelope_class_ipos < len(self.accept_envelope_classes):
-                        self._rotate_envelope(self.first_found)
+                        self._register_found_envelope(self.first_found)
                         # Move to the next object class to find:
                         self._set_envelope_class_query_and_query(
                             self.envelope_class_queries_dict[
@@ -236,20 +245,21 @@ class GenericInterp(AbstractInterp):
         self.interp_ctx.curr_remaining_types_to_values = {}
 
         self.curr_data_envelope = {
+            is_found_: False,
             assigned_types_to_values_: self.interp_ctx.curr_assigned_types_to_values,
             remaining_types_to_values_: self.interp_ctx.curr_remaining_types_to_values,
         }
         # Also, keep the envelope in the list right away (even if it may not be found):
         self.interp_ctx.assigned_types_to_values_per_envelope.append(self.curr_data_envelope)
 
-    def _rotate_envelope(self, envelope_found):
+    def _register_found_envelope(self, envelope_found):
         self._finalize_curr_envelope(envelope_found)
         self._init_next_envelope_to_find()
 
     def _finalize_curr_envelope(self, envelope_found):
+        self.interp_ctx.last_found_envelope_ipos += 1
+        self.curr_data_envelope[is_found_] = True
         # Finalize missing data field:
-        # TODO: Do we maintain any extra fields beyond what is in database?
-        #       This will overwrite them (if database does not have them or their values are different):
         self.curr_data_envelope.update(envelope_found)
 
     def query_envelopes(self):

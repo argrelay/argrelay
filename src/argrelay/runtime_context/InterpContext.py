@@ -15,6 +15,7 @@ from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
 
+is_found_ = "is_found"
 assigned_types_to_values_ = "assigned_types_to_values"
 remaining_types_to_values_ = "remaining_types_to_values"
 
@@ -67,6 +68,13 @@ class InterpContext:
     *   `assigned_types_to_values_`
     *   `remaining_types_to_value_`
     *   TODO: maybe also `keys_to_types` (the query)?
+    """
+
+    last_found_envelope_ipos: int = field(init = False, default = -1)
+    """
+    An ipos into `assigned_types_to_values_per_envelope` for the last found envelope.
+    Because of multiple (or zero) candidates, the last envelope inside `assigned_types_to_values_per_envelope`
+    may not be pointing to an actual envelope, but to a query which still still does not return single candidate.
     """
 
     prev_interp: "AbstractInterp" = field(init = False, default = None)
@@ -144,7 +152,7 @@ class InterpContext:
         # TODO: print unrecognized tokens
         # TODO: for unrecognized token highlight by color all tokens with matching substring
         for data_envelope in self.assigned_types_to_values_per_envelope:
-            if envelope_class_ not in data_envelope:
+            if not data_envelope[is_found_]:
                 # It must be last envelope created but no envelope class left to query it:
                 break
             eprint(data_envelope[envelope_class_])

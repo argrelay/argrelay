@@ -199,6 +199,17 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "xcvb",
             },
 
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                    "test_data": "TD-2023-01-07--1"
+                },
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.GeoRegion.name: "amer.us",
+                ServiceArgType.HostName.name: "amer.us",
+            },
+
             ############################################################################################################
             # services
 

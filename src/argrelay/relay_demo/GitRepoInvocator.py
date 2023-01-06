@@ -14,6 +14,9 @@ class GitRepoInvocator(AbstractInvocator):
         super().__init__(config_dict)
 
     def populate_invocation_input(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
+
+        assert interp_ctx.last_found_envelope_ipos >= 0, "the (first) function envelope must be found"
+
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopePayloadSchema` for its `envelope_payload`:
         function_envelope = interp_ctx.assigned_types_to_values_per_envelope[0]

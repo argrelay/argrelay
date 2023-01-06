@@ -4,6 +4,7 @@ from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_context.InterpContext import is_found_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, data_envelope_desc
 from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import invocator_plugin_id_
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
@@ -27,7 +28,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopePayloadSchema` for its `envelope_payload`:
         function_envelope = self.interp_ctx.assigned_types_to_values_per_envelope[0]
-        if envelope_payload_ not in function_envelope:
+        if not function_envelope[is_found_]:
             # TODO: Think how to pass info about failure.
             #       Maybe create an ErrorInvocatorPlugin and send data to client?
             #       At the moment, send some fake object:

@@ -19,19 +19,18 @@ class ArgProcessor:
     def __repr__(self):
         return f"{self.__class__.__name__}({self.arg_type!r})"
 
-    def try_explicit_arg(self, ctx: InterpContext, token: str) -> bool:
+    def try_explicit_arg(self, interp_ctx: InterpContext, token: str) -> bool:
         """
         :return: True if any arg was assigned during invocation
         """
         if (
-            self.arg_type not in ctx.curr_assigned_types_to_values
+            self.arg_type not in interp_ctx.curr_assigned_types_to_values
             and
-            self.arg_type in ctx.curr_remaining_types_to_values
+            self.arg_type in interp_ctx.curr_remaining_types_to_values
             and
-            token in ctx.curr_remaining_types_to_values[self.arg_type]
+            token in interp_ctx.curr_remaining_types_to_values[self.arg_type]
         ):
-            # TODO: rename to more qualified interp_ctx:
-            ctx.curr_assigned_types_to_values[self.arg_type] = ArgValue(token, ArgSource.ExplicitArg)
+            interp_ctx.curr_assigned_types_to_values[self.arg_type] = ArgValue(token, ArgSource.ExplicitArg)
             return True
         else:
             return False

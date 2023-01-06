@@ -31,6 +31,7 @@ class ThisTestCase(TestCase):
             (line_no(), "some_command goto host qa prod|", CompType.SubsequentHelp, "", "Another value from the same dimension with `SubsequentHelp` yet prefix not matching any from other dimensions => no suggestions"),
             (line_no(), "some_command goto host qa amer|", CompType.SubsequentHelp, "amer", "Another value from the same dimension with `SubsequentHelp` and prefix matching some from other dimensions => some suggestions"),
 
+            (line_no(), "some_command goto host dev downstream amer.us amer.u|", CompType.PrefixShown, "amer.us", "TD-2023-01-07--1: one of the explicit value matches more than one type, but it is not assigned to all arg types => some suggestion for missing arg types"),
 
             # TODO: FIXME: Bug: FD-2023-01-07--1: interp skips `upstream` and suggest `downstream` (because there is no `upstream` for `host` and `qa` already pre-selected).
             #       I'm currently thinking about new meta data `ValueScope` with two values `ValueScope.QueriedData` and `ValueScope.EntireValueSpace`.
