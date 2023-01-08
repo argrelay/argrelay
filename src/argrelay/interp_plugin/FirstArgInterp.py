@@ -1,6 +1,6 @@
-from argrelay.data_schema.FirstArgInterpFactorySchema import first_arg_vals_to_next_interp_factory_ids_
 from argrelay.interp_plugin.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.schema_config_core_server.FirstArgInterpFactorySchema import first_arg_vals_to_next_interp_factory_ids_
 
 
 class FirstArgInterp(AbstractInterp):

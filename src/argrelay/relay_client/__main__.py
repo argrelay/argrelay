@@ -1,4 +1,4 @@
-# avoid re-ordering of minimal import on start
+# Keep minimal import on start for LocalClient:
 # @formatter:off
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 ElapsedTime.measure("after_program_entry")
@@ -8,7 +8,7 @@ ElapsedTime.measure("after_program_entry")
 def main():
     import sys
     from argrelay.runtime_context.InputContext import InputContext
-    from argrelay.data_schema.ClientConfigSchema import client_config_desc
+    from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 
     ElapsedTime.measure("after_initial_imports")
 
@@ -20,22 +20,22 @@ def main():
     if client_config.use_local_requests:
         from argrelay.relay_client.LocalClient import LocalClient
 
-        interp_ctx = make_request(LocalClient, client_config, input_ctx)
+        command_obj = make_request(LocalClient(client_config), input_ctx)
     else:
         from argrelay.relay_client.RemoteClient import RemoteClient
 
-        interp_ctx = make_request(RemoteClient, client_config, input_ctx)
+        command_obj = make_request(RemoteClient(client_config), input_ctx)
 
     ElapsedTime.measure("on_exit")
     if input_ctx.is_debug_enabled:
         ElapsedTime.print_all()
 
-    return interp_ctx
+    return command_obj
 
 
-def make_request(cls, client_config, input_ctx):
+def make_request(abstract_client, input_ctx) -> "AbstractClientCommand":
     ElapsedTime.measure("before_client_invocation")
-    return cls.make_request(client_config, input_ctx)
+    return abstract_client.make_request(input_ctx)
 
 
 if __name__ == "__main__":

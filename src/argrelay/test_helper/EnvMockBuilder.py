@@ -18,11 +18,6 @@ import pkg_resources
 import yaml
 
 import argrelay
-from argrelay.data_schema.ClientConfigSchema import use_local_requests_, client_config_desc
-from argrelay.data_schema.MongoConfigSchema import start_server_
-from argrelay.data_schema.PluginEntrySchema import plugin_id_, plugin_config_
-from argrelay.data_schema.ServerConfigSchema import static_data_, mongo_config_, server_config_desc, plugin_list_
-from argrelay.data_schema.StaticDataSchema import static_data_desc
 from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.meta_data.SpecialChar import SpecialChar
@@ -31,6 +26,12 @@ from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
+from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
+from argrelay.schema_config_core_server.MongoConfigSchema import start_server_
+from argrelay.schema_config_core_server.ServerConfigSchema import static_data_, mongo_config_, server_config_desc, \
+    plugin_list_
+from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_id_, plugin_config_
 from argrelay.test_helper.OpenFileMock import OpenFileMock
 
 

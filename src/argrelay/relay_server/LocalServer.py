@@ -1,16 +1,15 @@
-import importlib
-from typing import Type
-
 from pymongo import MongoClient
 
-from argrelay.data_schema.ServerConfigSchema import server_config_desc
 from argrelay.interp_plugin.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.invocation_plugin.AbstractInvocator import AbstractInvocator
 from argrelay.loader_plugin.AbstractLoader import AbstractLoader
 from argrelay.meta_data.PluginType import PluginType
 from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.misc_helper import eprint
+from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
+from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 
 
 class LocalServer:
@@ -28,14 +27,14 @@ class LocalServer:
         self.mongo_client = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
 
     def start_local_server(self):
-        self._run_plugins()
+        self._activate_plugins()
         self._start_mongo_server()
         self._index_data()
 
     def get_mongo_database(self):
         return self.mongo_client[self.server_config.mongo_config.database_name]
 
-    def _run_plugins(self):
+    def _activate_plugins(self):
         """
         Calls each plugin to update :class:`StaticData`.
         """
@@ -44,26 +43,31 @@ class LocalServer:
 
         for plugin_entry in self.server_config.plugin_list:
             eprint(f"using: {plugin_entry}")
-            plugin_module = importlib.import_module(plugin_entry.plugin_module_name)
+
+            # Populate `plugin_dict`:
+            self.server_config.plugin_dict[plugin_entry.plugin_id] = plugin_entry
 
             if plugin_entry.plugin_type == PluginType.LoaderPlugin:
-                plugin_class: Type[AbstractLoader] = getattr(
-                    plugin_module,
-                    plugin_entry.plugin_class_name,
-                )
-                plugin_object: AbstractLoader = plugin_class(plugin_entry.plugin_config)
+                plugin_object: AbstractLoader = instantiate_plugin(plugin_entry)
+                plugin_object.activate_plugin()
                 # Use loader to update data:
                 self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
                 server_config_desc.object_schema.validate(self.server_config.static_data)
+                continue
 
             if plugin_entry.plugin_type == PluginType.InterpFactoryPlugin:
-                plugin_class: Type[AbstractInterpFactory] = getattr(
-                    plugin_module,
-                    plugin_entry.plugin_class_name,
-                )
-                plugin_object: AbstractInterpFactory = plugin_class(plugin_entry.plugin_config)
-                # Store instance of factory under specified id for future use:
+                plugin_object: AbstractInterpFactory = instantiate_plugin(plugin_entry)
+                plugin_object.activate_plugin()
+                # Store instance of `AbstractInterpFactory` under specified id for future use:
                 self.server_config.interp_factories[plugin_entry.plugin_id] = plugin_object
+                continue
+
+            if plugin_entry.plugin_type == PluginType.InvocatorPlugin:
+                plugin_object: AbstractInvocator = instantiate_plugin(plugin_entry)
+                plugin_object.activate_plugin()
+                # Store instance of `AbstractInvocator` under specified id for future use:
+                self.server_config.action_invocators[plugin_entry.plugin_id] = plugin_object
+                continue
 
     def _start_mongo_server(self):
         self.mongo_server.start_mongo_server(self.server_config.mongo_config)

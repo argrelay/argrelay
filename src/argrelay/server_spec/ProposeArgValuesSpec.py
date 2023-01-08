@@ -1,5 +1,5 @@
-from argrelay.data_schema.ArgValuesSchema import arg_values_desc
-from argrelay.data_schema.RequestContextSchema import request_context_desc
+from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 from argrelay.server_spec.server_data_schema import server_op_data_schemas
 
 spec_data = {

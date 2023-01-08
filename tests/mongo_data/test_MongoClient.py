@@ -3,10 +3,10 @@ from unittest import TestCase, skip
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.data_schema.MongoConfigSchema import mongo_config_desc
-from argrelay.data_schema.StaticDataSchema import types_to_values_
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
+from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
+from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_, data_objects_
 
 
 class ThisTestCase(TestCase):
@@ -238,3 +238,21 @@ class ThisTestCase(TestCase):
             print("item_object: ", item_object)
 
         self.remove_all_items(col_object)
+
+    @skip  # test again running server
+    def test_list_all_objects(self):
+        """
+        Does not test anything, just lists objects in current database collection:
+        """
+
+        mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
+        mongo_client = get_mongo_client(mongo_config)
+        print("list_database_names: ", mongo_client.list_database_names())
+
+        mongo_db: Database = mongo_client[mongo_config.database_name]
+        print("list_collection_names: ", mongo_db.list_collection_names())
+
+        col_name = data_objects_
+        col_object: Collection = mongo_db[col_name]
+
+        self.show_all_items(col_object)

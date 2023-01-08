@@ -7,6 +7,7 @@ connection_config:
 
 mongo_config:
     client_connection_string: mongodb://test:test@localhost/test?authSource=admin
+    # TODO: change to `argrelay`:
     database_name: test
     start_server: True
     server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
@@ -91,6 +92,18 @@ plugin_list:
         plugin_config:
             is_enabled: False
             base_path: "~/repos"
+
+    -   plugin_id: GitRepoInvocator
+        plugin_module_name: argrelay.relay_demo.GitRepoInvocator
+        plugin_class_name: GitRepoInvocator
+        plugin_type: InvocatorPlugin
+        plugin_config: { }
+
+    -   plugin_id: NoopInvocator
+        plugin_module_name: argrelay.invocation_plugin.NoopInvocator
+        plugin_class_name: NoopInvocator
+        plugin_type: InvocatorPlugin
+        plugin_config: { }
 
 # Statically defined `static_data` - and it is not a tautology!
 # This data is loaded as part of the config on start (and will be available even when all loader plugins removed).

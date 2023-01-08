@@ -1,14 +1,14 @@
-from argrelay.data_schema.GenericInterpConfigSchema import (
-    GenericInterpConfigSchema,
-    function_query_,
-    object_class_queries_,
-)
-from argrelay.data_schema.ObjectClassQuerySchema import object_class_, keys_to_types_list_
 from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceObjectClass import ServiceObjectClass
+from argrelay.schema_config_interp.GenericInterpConfigSchema import (
+    GenericInterpConfigSchema,
+    function_query_,
+    object_class_queries_,
+)
+from argrelay.schema_config_interp.ObjectClassQuerySchema import object_class_, keys_to_types_list_
 
 
 class DemoInterpConfigSchema(GenericInterpConfigSchema):

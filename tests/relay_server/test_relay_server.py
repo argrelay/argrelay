@@ -3,10 +3,10 @@ import json
 from types import SimpleNamespace
 from unittest import TestCase
 
-from argrelay.data_schema.RequestContextSchema import request_context_desc
-from argrelay.data_schema.ServerConfigSchema import server_config_desc
 from argrelay.meta_data.CompType import CompType
 from argrelay.relay_server.__main__ import create_app
+from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.server_spec.const_int import API_SPEC
 from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
@@ -50,8 +50,11 @@ class ThisTestCase(TestCase):
         self.assertEqual(200, response.status_code)
         print(response.json)
 
-        # Ensure auto-magic schema generation provides example for Swagger UI:
+        # JSON string to Python object:
+        # https://stackoverflow.com/questions/6578986/how-to-convert-json-data-into-a-python-object/15882054#15882054
         schema_obj = json.loads(response.text, object_hook = lambda d: SimpleNamespace(**d))
+
+        # Ensure auto-magic schema generation provides example for Swagger UI:
         self.assertEqual(
             request_context_desc.dict_example["command_line"],
             schema_obj.definitions.RequestContextSchema.properties.command_line.example,

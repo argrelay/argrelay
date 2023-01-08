@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from argrelay.data_schema.RequestContextSchema import request_context_desc
 from argrelay.meta_data.CompType import CompType
 from argrelay.runtime_context.RequestContext import RequestContext
+from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.test_helper import line_no, parse_line_and_cpos
 
 

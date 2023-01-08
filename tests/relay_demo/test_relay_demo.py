@@ -2,15 +2,17 @@ from __future__ import annotations
 
 from unittest import TestCase
 
+from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.meta_data.ArgSource import ArgSource
 from argrelay.meta_data.ArgValue import ArgValue
 from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.meta_data.TermColor import TermColor
-from argrelay.relay_client.__main__ import main
+from argrelay.relay_client import __main__
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import assigned_types_to_values_
+from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import line_no, parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
     EnvMockBuilder
@@ -78,9 +80,10 @@ class ThisTestCase(TestCase):
                     .set_comp_type(comp_type)
                 )
                 with env_mock_builder.build():
-                    interp_ctx = main()
+                    command_obj = __main__.main()
+                    assert isinstance(command_obj, AbstractLocalClientCommand)
 
-                    actual_suggestions = interp_ctx.propose_auto_comp()
+                    actual_suggestions = "\n".join(command_obj.response_dict[arg_values_])
                     self.assertEqual(expected_suggestions, actual_suggestions)
 
     def test_describe_args(self):
@@ -109,16 +112,21 @@ class ThisTestCase(TestCase):
                     .set_comp_type(comp_type)
                 )
                 with env_mock_builder.build():
-                    interp_ctx = main()
+                    command_obj = __main__.main()
+                    assert isinstance(command_obj, AbstractLocalClientCommand)
+                    interp_ctx = command_obj.interp_ctx
 
-                    # Nested to capture output only after all processing output is over (ready for action output):
+                    # TODO: Running print again with capturing `stderr`
+                    #       (executing end-to-end above generates noise output by server logic).
+                    #       A proper implementation would be getting `DescribeArgs`'s response_dict
+                    #       and printing it again.
                     with (
                         EnvMockBuilder()
                             .set_mock_mongo_client(False)
                             .set_capture_stderr(True)
                             .build()
                     ):
-                        interp_ctx.invoke_action()
+                        interp_ctx.print_help()
 
                         self.maxDiff = None
                         # TODO: Fix: currently (after extending data schema)
@@ -186,8 +194,9 @@ ClassService
                     .set_comp_type(comp_type)
                 )
                 with env_mock_builder.build():
-
-                    interp_ctx = main()
+                    command_obj = __main__.main()
+                    assert isinstance(command_obj, AbstractLocalClientCommand)
+                    interp_ctx = command_obj.interp_ctx
 
                     for arg_type, arg_value in expected_assignments.items():
                         if arg_value is None:

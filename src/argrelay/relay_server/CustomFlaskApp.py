@@ -5,9 +5,9 @@ from flasgger import Swagger
 from flask import Flask
 
 from argrelay import relay_server
-from argrelay.data_schema.ServerConfigSchema import server_config_desc
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.path_config import create_blueprint
+from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.server_spec.const_int import API_SPEC
 from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH
 

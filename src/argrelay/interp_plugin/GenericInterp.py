@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-from argrelay.data_schema.DataObjectSchema import object_data_
-from argrelay.data_schema.FunctionObjectDataSchema import accept_object_classes_
-from argrelay.data_schema.GenericInterpConfigSchema import function_query_, object_class_queries_
-from argrelay.data_schema.ObjectClassQuerySchema import keys_to_types_list_, object_class_
 from argrelay.interp_plugin.AbstractInterp import AbstractInterp
 from argrelay.interp_plugin.ArgProcessor import ArgProcessor
 from argrelay.meta_data.CompType import CompType
@@ -11,6 +7,10 @@ from argrelay.meta_data.SpecialChar import SpecialChar
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.runtime_context.InterpContext import InterpContext, assigned_types_to_values_, remaining_types_to_values_
+from argrelay.schema_config_interp.DataObjectSchema import object_data_
+from argrelay.schema_config_interp.FunctionObjectDataSchema import accept_object_classes_
+from argrelay.schema_config_interp.GenericInterpConfigSchema import function_query_, object_class_queries_
+from argrelay.schema_config_interp.ObjectClassQuerySchema import keys_to_types_list_, object_class_
 
 """
 This module auto-completes command line args when integrated with shell (Bash).
@@ -28,6 +28,7 @@ class GenericInterp(AbstractInterp):
     # Dict for quick lookup:
     object_class_queries_dict: dict[str, dict]
 
+    # TODO: rename to `function_object`:
     # Object of `ReservedObjectClass.ClassFunction` from database which defines all other objects to be found:
     function_object_found: dict
     # When `function_object_found`, it is list of object classes function requires:
@@ -129,6 +130,7 @@ class GenericInterp(AbstractInterp):
         Scans through `unconsumed_tokens` and tries to match its value against values of each type.
         """
 
+        # TODO: Rename to `consumed_token_ipos_list`:
         consumed_token_iposes = []
         for unconsumed_token_ipos in self.interp_ctx.unconsumed_tokens:
             unconsumed_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
@@ -219,6 +221,9 @@ class GenericInterp(AbstractInterp):
                         )
                         return +1
                     else:
+                        # TODO: We are finalizing but not rotating to the next one.
+                        #       What if next interp start to write into this object again?
+                        self._finalize_curr_object(self.first_found)
                         # Move to the next interp:
                         return 0
             else:
@@ -237,9 +242,14 @@ class GenericInterp(AbstractInterp):
         self.interp_ctx.assigned_types_to_values_per_object.append(self.curr_data_object)
 
     def _rotate_object_found(self, object_found):
-        # Finalize missing data field:
-        self.curr_data_object[object_data_] = object_found[object_data_]
+        self._finalize_curr_object(object_found)
         self._init_next_object_to_find()
+
+    def _finalize_curr_object(self, object_found):
+        # Finalize missing data field:
+        # TODO: Do we maintain any extra fields beyond what is in database?
+        #       This will overwrite them (if database does not have them or their values are different):
+        self.curr_data_object.update(object_found)
 
     def query_objects(self):
         query_dict = {
@@ -347,7 +357,12 @@ class GenericInterp(AbstractInterp):
             ):
                 proposed_tokens = [
                     x for x in self.interp_ctx.curr_remaining_types_to_values[arg_type]
-                    if x.startswith(self.interp_ctx.parsed_ctx.sel_token_l_part)
+                    if (
+                        isinstance(x, str)
+                        and
+                        x.startswith(self.interp_ctx.parsed_ctx.sel_token_l_part)
+                        # TODO: Support list[str] - what if one type can have list of values (and we need to match any as in OR)?
+                    )
                 ]
 
         return proposed_tokens

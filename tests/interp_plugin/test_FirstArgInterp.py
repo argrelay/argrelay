@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from unittest import TestCase
 
-from argrelay.data_schema.FirstArgInterpFactorySchema import first_arg_vals_to_next_interp_factory_ids_
-from argrelay.data_schema.PluginEntrySchema import plugin_id_, plugin_config_, plugin_module_name_, plugin_class_name_, \
-    plugin_type_
-from argrelay.data_schema.ServerConfigSchema import plugin_list_
+from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.interp_plugin.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
@@ -15,7 +12,15 @@ from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.PluginType import PluginType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.relay_client import __main__
-from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.schema_config_core_server.FirstArgInterpFactorySchema import first_arg_vals_to_next_interp_factory_ids_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_list_
+from argrelay.schema_config_plugin.PluginEntrySchema import (
+    plugin_id_,
+    plugin_config_,
+    plugin_module_name_,
+    plugin_class_name_,
+    plugin_type_,
+)
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
     EnvMockBuilder,
@@ -66,11 +71,13 @@ class ThisTestCase(TestCase):
             .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
-            .set_comp_type(CompType.InvokeAction)
+            .set_comp_type(CompType.PrefixShown)
             .set_server_config_dict(server_config_dict)
         )
         with env_mock_builder.build():
-            interp_ctx: InterpContext = __main__.main()
+            command_obj = __main__.main()
+            assert isinstance(command_obj, AbstractLocalClientCommand)
+            interp_ctx = command_obj.interp_ctx
 
             # FirstArgInterp is supposed to consume first pos arg only (first token):
             self.assertEqual([0], interp_ctx.consumed_tokens)

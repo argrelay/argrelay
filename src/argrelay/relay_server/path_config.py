@@ -1,16 +1,15 @@
-import inspect
-
 from flasgger import swag_from
 from flask import request, Blueprint
 
-from argrelay.data_schema.ArgValuesSchema import arg_values_desc
-from argrelay.data_schema.RequestContextSchema import request_context_desc
-from argrelay.meta_data.CompType import CompType
+from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
+from argrelay.handler_request.DescribeLineArgsServerRequestHandler import DescribeLineArgsServerRequestHandler
+from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
+from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLineArgsServerRequestHandler
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InputContext import InputContext
-from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_context.ParsedContext import ParsedContext
+from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_response.ArgValuesSchema import arg_values_desc
+from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
 from argrelay.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
 from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
@@ -22,74 +21,40 @@ from argrelay.server_spec.const_int import (
 def create_blueprint(local_server: LocalServer):
     root_blueprint = Blueprint("root_blueprint", __name__)
 
-    def interpret_command(input_ctx: InputContext) -> InterpContext:
-        parsed_ctx = ParsedContext.from_instance(input_ctx)
-        # TODO: Split server_config and static_data (both top level, not config including data):
-        interp_ctx = InterpContext(
-            parsed_ctx,
-            local_server.server_config.static_data,
-            local_server.server_config.interp_factories,
-            local_server.get_mongo_database(),
-        )
-        interp_ctx.interpret_command()
-        return interp_ctx
+    describe_line_args_handler = DescribeLineArgsServerRequestHandler(local_server)
+    propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
+    relay_line_args_handler = RelayLineArgsServerRequestHandler(local_server)
+
+    def create_input_ctx(run_mode: RunMode):
+        request_ctx = request_context_desc.object_schema.loads(request.json)
+        return AbstractServerRequestHandler.create_input_ctx(request_ctx, run_mode)
 
     # TODO: Add REST test on client and server side.
     @root_blueprint.route(DESCRIBE_LINE_ARGS_PATH, methods = ['post'])
     @swag_from(DescribeLineArgsSpec.spec_data)
     def describe_line_args():
-        # TODO: move implementation to command_impl instance:
-        request_ctx = request_context_desc.object_schema.loads(request.json)
-        input_ctx = InputContext.from_request_context(
-            request_ctx,
-            run_mode = RunMode.CompletionMode,
-            comp_key = str(0),
-        )
-        assert input_ctx.comp_type == CompType.DescribeArgs
-        interp_ctx = interpret_command(input_ctx)
-        # TODO: Print to stdout/stderr on client side. Send back data instead:
-        interp_ctx.invoke_action()
-        # TODO: send data instead of text:
-        return inspect.currentframe().f_code.co_name
+        input_ctx = create_input_ctx(RunMode.CompletionMode)
+        response_dict = describe_line_args_handler.handle_request(input_ctx)
+        # TODO: `arg_values_desc` is wrong, implement correct schema:
+        response_json = arg_values_desc.object_schema.dumps(response_dict)
+        return response_json
 
     # TODO: Add REST test on client and server side.
     @root_blueprint.route(PROPOSE_ARG_VALUES_PATH, methods = ['post'])
     @swag_from(ProposeArgValuesSpec.spec_data)
     def propose_arg_values():
-        # TODO: move implementation to command_impl instance:
-        request_ctx = request_context_desc.object_schema.loads(request.json)
-        input_ctx = InputContext.from_request_context(
-            request_ctx,
-            run_mode = RunMode.CompletionMode,
-            comp_key = str(0),
-        )
-        assert input_ctx.comp_type != CompType.DescribeArgs
-        assert input_ctx.comp_type != CompType.InvokeAction
-        interp_ctx = interpret_command(input_ctx)
-        response_dict = {
-            "arg_values": interp_ctx.propose_arg_values()
-        }
-        return arg_values_desc.object_schema.dumps(response_dict)
+        input_ctx = create_input_ctx(RunMode.CompletionMode)
+        response_dict = propose_arg_values_handler.handle_request(input_ctx)
+        response_json = arg_values_desc.object_schema.dumps(response_dict)
+        return response_json
 
     # TODO: Add REST test on client and server side.
     @root_blueprint.route(RELAY_LINE_ARGS_PATH, methods = ['post'])
     @swag_from(RelayLineArgsSpec.spec_data)
     def relay_line_args():
-        # TODO: move implementation to command_impl instance:
-        request_ctx = request_context_desc.object_schema.loads(request.json)
-        input_ctx = InputContext.from_request_context(
-            request_ctx,
-            run_mode = RunMode.InvocationMode,
-            comp_key = str(0),
-        )
-        assert input_ctx.comp_type == CompType.InvokeAction
-
-        # TODO: remove:
-        print(input_ctx)
-
-        interp_ctx = interpret_command(input_ctx)
-        interp_ctx.invoke_action()
-        # TODO: send data instead of text:
-        return inspect.currentframe().f_code.co_name
+        input_ctx = create_input_ctx(RunMode.InvocationMode)
+        response_dict = relay_line_args_handler.handle_request(input_ctx)
+        response_json = invocation_input_desc.object_schema.dumps(response_dict)
+        return response_json
 
     return root_blueprint

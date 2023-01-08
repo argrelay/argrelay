@@ -5,16 +5,17 @@ import subprocess
 
 from git import Repo
 
-from argrelay.data_schema.DataObjectSchema import object_id_, object_class_, object_data_
-from argrelay.data_schema.FunctionObjectDataSchema import accept_object_classes_
 from argrelay.loader_plugin.AbstractLoader import AbstractLoader
 from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.meta_data.StaticData import StaticData
 from argrelay.misc_helper import eprint
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
+from argrelay.relay_demo.GitRepoInvocator import GitRepoInvocator
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_enabled_
 from argrelay.relay_demo.GitRepoObjectClass import GitRepoObjectClass
+from argrelay.schema_config_interp.DataObjectSchema import object_id_, object_class_, object_data_
+from argrelay.schema_config_interp.FunctionObjectDataSchema import accept_object_classes_, invocator_plugin_id_
 
 
 class GitRepoLoader(AbstractLoader):
@@ -112,6 +113,7 @@ class GitRepoLoader(AbstractLoader):
                 object_id_: rel_git_path,
                 object_class_: GitRepoObjectClass.ClassGitRepo.name,
                 object_data_: {
+                    "abs_repo_path": abs_git_path,
                     # TODO: Add anything extra (beyond top-level keys with meta data) required for some function
                 },
                 GlobalArgType.ObjectSelector.name: "repo",
@@ -161,6 +163,7 @@ class GitRepoLoader(AbstractLoader):
             object_id_: "desc_repo",
             object_class_: ReservedObjectClass.ClassFunction.name,
             object_data_: {
+                invocator_plugin_id_: GitRepoInvocator.__name__,
                 accept_object_classes_: [
                     GitRepoObjectClass.ClassGitRepo.name,
                 ],
@@ -174,6 +177,7 @@ class GitRepoLoader(AbstractLoader):
             object_id_: "desc_commit",
             object_class_: ReservedObjectClass.ClassFunction.name,
             object_data_: {
+                invocator_plugin_id_: GitRepoInvocator.__name__,
                 accept_object_classes_: [
                     GitRepoObjectClass.ClassGitCommit.name,
                 ],

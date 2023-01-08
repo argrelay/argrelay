@@ -1,12 +1,9 @@
 from argrelay.interp_plugin.AbstractInterp import AbstractInterp
+from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
 from argrelay.runtime_context.InterpContext import InterpContext
 
 
-class AbstractInterpFactory:
-    config_dict: dict
-
-    def __init__(self, config_dict: dict):
-        self.config_dict = config_dict
+class AbstractInterpFactory(AbstractPlugin):
 
     def create_interp(self, interp_ctx: InterpContext) -> AbstractInterp:
         pass

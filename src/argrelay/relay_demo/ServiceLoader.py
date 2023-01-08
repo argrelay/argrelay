@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from argrelay.data_schema.DataObjectSchema import (
-    object_data_,
-    object_id_,
-    object_class_,
-)
-from argrelay.data_schema.FunctionObjectDataSchema import accept_object_classes_
-from argrelay.data_schema.StaticDataSchema import types_to_values_
 from argrelay.loader_plugin.AbstractLoader import AbstractLoader
 from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.meta_data.StaticData import StaticData
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceObjectClass import ServiceObjectClass
+from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_
+from argrelay.schema_config_interp.DataObjectSchema import (
+    object_data_,
+    object_id_,
+    object_class_,
+)
+from argrelay.schema_config_interp.FunctionObjectDataSchema import accept_object_classes_
 
 
 def _todo(self):

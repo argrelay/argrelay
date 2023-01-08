@@ -7,8 +7,8 @@ it is not required to load them at run-time (hence, they are "hidden" in this pa
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
-from argrelay.data_schema.ArgValuesSchema import arg_values_desc
-from argrelay.data_schema.RequestContextSchema import request_context_desc
+from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 from argrelay.server_spec.const_int import DEFAULT_OPEN_API_VERSION, UNUSED_TITLE, UNUSED_VERSION
 
 # This spec is only used to generate data schemas: Marshmallow Schemas -> JSON Schemas.

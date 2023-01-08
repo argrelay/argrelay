@@ -5,17 +5,15 @@ from dataclasses import field, dataclass
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.data_schema.DataObjectSchema import object_class_
-from argrelay.data_schema.ObjectClassQuerySchema import keys_to_types_list_
-from argrelay.data_schema.StaticDataSchema import data_objects_
 from argrelay.meta_data import StaticData
 from argrelay.meta_data.ArgValue import ArgValue
-from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.RunMode import RunMode
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint
-from argrelay.mongo_data.MongoClientWrapper import get_mongo_client, find_objects
 from argrelay.runtime_context.ParsedContext import ParsedContext
+from argrelay.schema_config_core_server.StaticDataSchema import data_objects_
+from argrelay.schema_config_interp.DataObjectSchema import object_class_
+from argrelay.schema_config_interp.ObjectClassQuerySchema import keys_to_types_list_
 
 assigned_types_to_values_ = "assigned_types_to_values"
 remaining_types_to_values_ = "remaining_types_to_values"
@@ -33,6 +31,8 @@ class InterpContext:
 
     interp_factories: dict[str, "AbstractInterpFactory"]
 
+    action_invocators: dict[str, "AbstractInvocator"]
+
     mongo_db: Database
 
     mongo_col: Collection = field(init = False)
@@ -47,7 +47,7 @@ class InterpContext:
     Already consumed tokens (their ipos) in the order of their consumption.
     """
 
-    curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False)
+    curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False, default_factory = lambda: {})
     """
     All assigned args (from interpreted tokens) mapped as type:value which belong to `curr_data_object`.
     """
@@ -126,34 +126,6 @@ class InterpContext:
         if self.parsed_ctx.run_mode == RunMode.CompletionMode:
             # Each in the chains of interpreters hava a chance to suggest completion values (contribute):
             self.curr_interp.propose_arg_completion()
-
-    # TODO: remove this: the result is returned from server to client for client to execute either print_help or print arg values
-    def invoke_action(self) -> None:
-        self.print_debug()
-
-        if self.parsed_ctx.comp_type == CompType.DescribeArgs:
-            # TODO: send data to client to print this help:
-            self.print_help()
-            return
-
-        if self.parsed_ctx.run_mode == RunMode.CompletionMode:
-            auto_comp: str = self.propose_auto_comp()
-            # TODO: send data to client to print parguments:
-            print(auto_comp, flush = True)
-            return
-
-        if self.parsed_ctx.run_mode == RunMode.InvocationMode:
-            # TODO: send data to client to invoke command:
-            eprint("no relay implemented yet")
-            # TODO: clean up: temporarily implemented to list all objects matching criteria:
-            for data_object in find_objects(self.mongo_db, self.curr_assigned_types_to_values):
-                print(data_object)
-
-    # TODO: clean up: single line was only useful for local requests:
-    def propose_auto_comp(self) -> str:
-        if self.comp_suggestions is None:
-            raise ValueError("Return value must be list")
-        return "\n".join(self.comp_suggestions)
 
     def propose_arg_values(self) -> list[str]:
         return self.comp_suggestions
@@ -234,6 +206,3 @@ class InterpContext:
         eprint(f"comp_key: {self.parsed_ctx.comp_key}", end = " ")
         eprint(f"comp_suggestions: {self.comp_suggestions}", end = " ")
         eprint(TermColor.RESET.value)
-
-    def list_objects(self):
-        mongo_client = get_mongo_client()
