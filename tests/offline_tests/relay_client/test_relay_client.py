@@ -1,4 +1,4 @@
-from unittest import TestCase, skip
+from unittest import TestCase
 
 import responses
 
@@ -18,57 +18,6 @@ class ThisTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.base_URL = BASE_URL_FORMAT.format(**connection_config_desc.dict_example)
-
-    @skip  # test again running server
-    def test_live_describe_line_args(self):
-        test_line = "some_command pro|d whatever"
-        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
-        env_mock_builder = (
-            EnvMockBuilder()
-            .set_client_config_with_local_server(False)
-            .set_run_mode(RunMode.CompletionMode)
-            .set_command_line(command_line)
-            .set_cursor_cpos(cursor_cpos)
-            .set_comp_type(CompType.DescribeArgs)
-        )
-        with env_mock_builder.build():
-            __main__.main()
-
-        self.assertTrue(True)
-
-    @skip  # test again running server
-    def test_live_propose_arg_values(self):
-        test_line = "some_command pro|d whatever"
-        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
-        env_mock_builder = (
-            EnvMockBuilder()
-            .set_client_config_with_local_server(False)
-            .set_run_mode(RunMode.CompletionMode)
-            .set_command_line(command_line)
-            .set_cursor_cpos(cursor_cpos)
-            .set_comp_type(CompType.PrefixShown)
-        )
-        with env_mock_builder.build():
-            __main__.main()
-
-        self.assertTrue(True)
-
-    @skip  # test again running server
-    def test_live_relay_line_args(self):
-        test_line = "relay_demo desc repo asdf/qwer/argrelay.git |"
-        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
-        env_mock_builder = (
-            EnvMockBuilder()
-            .set_client_config_with_local_server(False)
-            .set_mock_server_config_file_read(False)
-            .set_mock_client_config_file_read(False)
-            .set_run_mode(RunMode.InvocationMode)
-            .set_command_line(command_line)
-            .set_cursor_cpos(cursor_cpos)
-            .set_comp_type(CompType.InvokeAction)
-        )
-        with env_mock_builder.build():
-            __main__.main()
 
     @responses.activate
     def test_mocked_propose_arg_values(self):
