@@ -1,0 +1,79 @@
+
+These are some guidelines for the code style (excuses with justifications).
+
+They often go against what would be more natural
+preferring (not immediately obvious) practical properties.
+
+*   Use at least two words for identifiers.
+
+    For example, `run_mode` (or `RunMode`) instead of just `mode` (or `Mode).
+
+    This helps in refactoring and searching. Two words will singnificantly
+    narrow down the scope excluding unwanted search hits to review.
+
+*   Prefer single file per class.
+
+    Cons:
+    *   This makes content bloated.
+    *   It is also **not** how many other Python projects are structured.
+
+    Nevertheless:
+    *   It removes the need to decide how classes should be combined.
+    *   It helps navigation.
+
+*   Stick with flat module structure = only one sub-dir.
+
+    Until number of dirs in the list is excessively large, it is just simpler.
+
+    Where should "one of the response handlers" be placed anyway?
+    *   `./handler/response/`
+    *   `./response/handler/`
+
+    Yet, "sub-categories" can still be represented by a dir with extra suffix:
+    *   `./handler_request/`
+    *   `./handler_response/`
+    Instead of:
+    *   `./handler/request/`
+    *   `./handler/response/`
+
+*   Reorder words in identifiers if it helps dir grouping.
+
+    For example,
+    these two modules will appear groupped together
+    (when sorted lexicographically in IDEs) due to common prefix:
+    *   `client_command_local`
+    *   `client_command_remote`
+
+    Naming them "in English" will break the groupping
+    as there is no common prefix anymore:
+    *   `local_client_command`
+    *   [something in between]
+    *   `remote_client_command`
+
+    After all, the three keywords (`local` | `remote`, `command`, `client`)
+    are pressent in any of the naming style and
+    there is no ambiguity in meaning.
+
+*   Use new lines excessively - prefer "tall" code rather than "wide" one.
+
+    For example, this:
+
+    ```python
+    def __init__(
+        self,
+        config_dict: dict,
+    ):
+        self.config_dict = config_dict
+    ```
+
+    instead of this:
+
+    ```python
+    def __init__(self, config_dict: dict):
+        self.config_dict = config_dict
+    ```
+
+    In case of constructur args changes, the first style:
+    *   makes diff output cleaner for reviews
+    *   preserves the history through `git blame` for more lines
+
