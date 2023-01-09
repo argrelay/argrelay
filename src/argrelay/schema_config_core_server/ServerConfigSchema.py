@@ -21,19 +21,19 @@ class ServerConfigSchema(Schema):
         strict = True
 
     connection_config = fields.Nested(
-        connection_config_desc.object_schema,
+        connection_config_desc.dict_schema,
         required = True,
     )
     mongo_config = fields.Nested(
-        mongo_config_desc.object_schema,
+        mongo_config_desc.dict_schema,
         required = True,
     )
     plugin_list = fields.List(
-        fields.Nested(plugin_entry_desc.object_schema),
+        fields.Nested(plugin_entry_desc.dict_schema),
         required = True,
     )
     static_data = fields.Nested(
-        static_data_desc.object_schema,
+        static_data_desc.dict_schema,
         required = True,
     )
 
@@ -50,7 +50,7 @@ class ServerConfigSchema(Schema):
 
 
 server_config_desc = TypeDesc(
-    object_schema = ServerConfigSchema(),
+    dict_schema = ServerConfigSchema(),
     ref_name = ServerConfigSchema.__name__,
     dict_example = {
         connection_config_: connection_config_desc.dict_example,

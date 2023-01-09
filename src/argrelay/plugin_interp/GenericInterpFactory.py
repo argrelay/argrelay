@@ -8,7 +8,7 @@ class GenericInterpFactory(AbstractInterpFactory):
 
     def __init__(self, config_dict: dict):
         super().__init__(config_dict)
-        generic_interp_config_desc.object_schema.validate(config_dict)
+        generic_interp_config_desc.dict_schema.validate(config_dict)
 
     def create_interp(self, interp_ctx: InterpContext) -> GenericInterp:
         raise NotImplementedError

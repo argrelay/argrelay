@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 
-class ServiceObjectClass(Enum):
+class ServiceEnvelopeClass(Enum):
     ClassService = auto()
     ClassHost = auto()
 

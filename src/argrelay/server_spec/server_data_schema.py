@@ -24,11 +24,11 @@ server_op_data_schemas = APISpec(
 # Generate data schemas: Marshmallow Schema -> JSON Schema:
 server_op_data_schemas.components.schema(
     request_context_desc.ref_name,
-    schema = request_context_desc.object_schema,
+    schema = request_context_desc.dict_schema,
 )
 server_op_data_schemas.components.schema(
     arg_values_desc.ref_name,
-    schema = arg_values_desc.object_schema,
+    schema = arg_values_desc.dict_schema,
 )
 
 # Run API docs UI at the root:

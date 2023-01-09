@@ -15,5 +15,5 @@ class ProposeArgValuesRemoteClientCommand(AbstractRemoteClientCommand):
             server_path = PROPOSE_ARG_VALUES_PATH,
             connection_config = connection_config,
             response_handler = ProposeArgValuesClientResponseHandler(),
-            response_schema = arg_values_desc.object_schema,
+            response_schema = arg_values_desc.dict_schema,
         )

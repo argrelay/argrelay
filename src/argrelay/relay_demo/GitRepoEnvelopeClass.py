@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 
-class GitRepoObjectClass(Enum):
+class GitRepoEnvelopeClass(Enum):
     ClassGitRepo = auto()
     ClassGitCommit = auto()
 

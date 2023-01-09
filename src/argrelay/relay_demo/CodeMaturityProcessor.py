@@ -1,8 +1,8 @@
-from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.meta_data import StaticData
 from argrelay.meta_data.ArgSource import ArgSource
 from argrelay.meta_data.ArgValue import ArgValue
 from argrelay.meta_data.RunMode import RunMode
+from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import InterpContext
 

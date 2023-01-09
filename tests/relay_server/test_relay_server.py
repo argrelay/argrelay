@@ -77,7 +77,7 @@ class ThisTestCase(TestCase):
             "Key `additionalProperties` must be `false` and automatically generated."
         )
 
-        # Ensure whole example object for all requests:
+        # Ensure whole example dict for all requests:
         schema_dict = json.loads(response.text)
         for request_path in [
             DESCRIBE_LINE_ARGS_PATH,
@@ -95,34 +95,34 @@ class ThisTestCase(TestCase):
 
     def test_describe_line_args(self):
         data_obj = dataclasses.replace(
-            request_context_desc.object_schema.load(request_context_desc.dict_example),
+            request_context_desc.dict_schema.load(request_context_desc.dict_example),
             comp_type = CompType.DescribeArgs,
         )
         response = self.client.post(
             DESCRIBE_LINE_ARGS_PATH,
-            json = request_context_desc.object_schema.dumps(data_obj),
+            json = request_context_desc.dict_schema.dumps(data_obj),
         )
         self.assertEqual(200, response.status_code)
 
     def test_propose_arg_values(self):
         data_obj = dataclasses.replace(
-            request_context_desc.object_schema.load(request_context_desc.dict_example),
+            request_context_desc.dict_schema.load(request_context_desc.dict_example),
             comp_type = CompType.PrefixShown,
         )
         response = self.client.post(
             PROPOSE_ARG_VALUES_PATH,
-            json = request_context_desc.object_schema.dumps(data_obj),
+            json = request_context_desc.dict_schema.dumps(data_obj),
         )
         self.assertEqual(200, response.status_code)
 
     def test_relay_line_args(self):
         data_obj = dataclasses.replace(
-            request_context_desc.object_schema.load(request_context_desc.dict_example),
+            request_context_desc.dict_schema.load(request_context_desc.dict_example),
             comp_type = CompType.InvokeAction,
         )
         response = self.client.post(
             RELAY_LINE_ARGS_PATH,
-            json = request_context_desc.object_schema.dumps(data_obj),
+            json = request_context_desc.dict_schema.dumps(data_obj),
         )
         self.assertEqual(200, response.status_code)
 

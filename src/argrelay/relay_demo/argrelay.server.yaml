@@ -29,25 +29,25 @@ plugin_list:
         plugin_class_name: DemoInterpFactory
         plugin_type: InterpFactoryPlugin
         plugin_config:
-            # TODO: Is `function_query` always supposed to repeat `object_class_queries` for `object_class` = `ClassFunction`?
+            # TODO: Is `function_query` always supposed to repeat `envelope_class_queries` for `envelope_class` = `ClassFunction`?
             function_query:
-                object_class: ClassFunction
+                envelope_class: ClassFunction
                 keys_to_types_list:
                     -   action: ActionType
                     -   selector: ObjectSelector
-            object_class_queries:
-                -   object_class: ClassFunction
+            envelope_class_queries:
+                -   envelope_class: ClassFunction
                     keys_to_types_list:
                         -   action: ActionType
                         -   selector: ObjectSelector
-                -   object_class: ClassHost
+                -   envelope_class: ClassHost
                     keys_to_types_list:
                         -   code: CodeMaturity
                         -   stage: FlowStage
                         -   region: GeoRegion
                         -   host: HostName
                         -   tag: ColorTag
-                -   object_class: ClassService
+                -   envelope_class: ClassService
                     keys_to_types_list:
                         -   code: CodeMaturity
                         -   stage: FlowStage
@@ -57,11 +57,11 @@ plugin_list:
                         # TODO: AccessType should be part of selecting another class or simply an arg to function (it is not used to find service, it is used to select how to access it):
                         -   access: AccessType
                         -   tag: ColorTag
-                -   object_class: ClassGitRepo
+                -   envelope_class: ClassGitRepo
                     keys_to_types_list:
                         -   part: GitRepoPathComp
                         -   path: GitRepoRelPath
-                -   object_class: ClassGitCommit
+                -   envelope_class: ClassGitCommit
                     keys_to_types_list:
                         -   path: GitRepoRelPath
                         -   email: GitRepoCommitAuthorEmail
@@ -114,7 +114,7 @@ static_data:
 
     types_to_values:
 
-        # TODO: only define list of types, populating `types_to_values` should be automatic from all loaded objects:
+        # TODO: only define list of types, populating `types_to_values` should be automatic from all loaded envelopes:
         ActionType:
             - goto
             - desc
@@ -168,4 +168,4 @@ static_data:
 
         ColorTag: [ ]
 
-    data_objects: [ ]
+    data_envelopes: [ ]

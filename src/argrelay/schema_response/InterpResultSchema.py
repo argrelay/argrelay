@@ -16,7 +16,7 @@ class InterpResultSchema(Schema):
 
 
 interp_result_desc = TypeDesc(
-    object_schema = InterpResultSchema(),
+    dict_schema = InterpResultSchema(),
     ref_name = InterpResultSchema.__name__,
     dict_example = {
     },

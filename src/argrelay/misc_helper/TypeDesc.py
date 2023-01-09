@@ -10,7 +10,7 @@ class TypeDesc:
     Type descriptor: schema, example, etc.
     """
 
-    object_schema: Schema
+    dict_schema: Schema
     ref_name: str
     dict_example: dict
     default_file_path: str
@@ -25,4 +25,4 @@ class TypeDesc:
         return self.from_input_dict(yaml.safe_load(yaml_str))
 
     def from_input_dict(self, input_dict: dict):
-        return self.object_schema.load(input_dict)
+        return self.dict_schema.load(input_dict)

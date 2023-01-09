@@ -38,4 +38,3 @@ class ServerConfig:
     Entries in `action_invocators` are not directly loaded from config.
     These are plugin instances created during plugin activation.
     """
-

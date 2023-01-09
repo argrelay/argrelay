@@ -24,7 +24,7 @@ first_arg_interp_config_example = {
     },
 }
 first_arg_interp_config_desc = TypeDesc(
-    object_schema = FirstArgInterpConfigSchema(),
+    dict_schema = FirstArgInterpConfigSchema(),
     ref_name = FirstArgInterpConfigSchema.__name__,
     dict_example = first_arg_interp_config_example,
     default_file_path = "",

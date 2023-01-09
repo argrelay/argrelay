@@ -80,7 +80,7 @@ class RequestContextSchema(Schema):
 
 
 request_context_desc = TypeDesc(
-    object_schema = RequestContextSchema(),
+    dict_schema = RequestContextSchema(),
     ref_name = RequestContextSchema.__name__,
     dict_example = _request_context_example,
     default_file_path = "",

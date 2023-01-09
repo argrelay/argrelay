@@ -26,7 +26,7 @@ class ConnectionConfigSchema(Schema):
 
 
 connection_config_desc = TypeDesc(
-    object_schema = ConnectionConfigSchema(),
+    dict_schema = ConnectionConfigSchema(),
     ref_name = ConnectionConfigSchema.__name__,
     dict_example = {
         "server_host_name": DEFAULT_IP_ADDRESS,

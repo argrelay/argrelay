@@ -1,14 +1,14 @@
 from pymongo import MongoClient
 
-from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
-from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.meta_data.PluginType import PluginType
 from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
+from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 
 
@@ -52,7 +52,7 @@ class LocalServer:
                 plugin_object.activate_plugin()
                 # Use loader to update data:
                 self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
-                server_config_desc.object_schema.validate(self.server_config.static_data)
+                server_config_desc.dict_schema.validate(self.server_config.static_data)
                 continue
 
             if plugin_entry.plugin_type == PluginType.InterpFactoryPlugin:
@@ -74,4 +74,4 @@ class LocalServer:
 
     def _index_data(self):
         mongo_db = self.mongo_client[self.server_config.mongo_config.database_name]
-        MongoClientWrapper.store_objects(mongo_db, self.server_config.static_data)
+        MongoClientWrapper.store_envelopes(mongo_db, self.server_config.static_data)

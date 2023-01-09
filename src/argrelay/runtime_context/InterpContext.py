@@ -11,9 +11,9 @@ from argrelay.meta_data.RunMode import RunMode
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.schema_config_core_server.StaticDataSchema import data_objects_
-from argrelay.schema_config_interp.DataObjectSchema import object_class_
-from argrelay.schema_config_interp.ObjectClassQuerySchema import keys_to_types_list_
+from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
+from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
 
 assigned_types_to_values_ = "assigned_types_to_values"
 remaining_types_to_values_ = "remaining_types_to_values"
@@ -49,7 +49,7 @@ class InterpContext:
 
     curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False, default_factory = lambda: {})
     """
-    All assigned args (from interpreted tokens) mapped as type:value which belong to `curr_data_object`.
+    All assigned args (from interpreted tokens) mapped as type:value which belong to `curr_data_envelope`.
     """
 
     curr_remaining_types_to_values: dict[str, list[str]] = field(init = False)
@@ -57,13 +57,13 @@ class InterpContext:
     All arg values per type left for suggestion given the `curr_assigned_types_to_values`.
     """
 
-    assigned_types_to_values_per_object: list[dict] = field(init = False, default_factory = lambda: [])
+    assigned_types_to_values_per_envelope: list[dict] = field(init = False, default_factory = lambda: [])
     """
     List of completed results previously accumulated in `curr_assigned_types_to_values`.
     Each element of the list contains a dict with these fields:
-    # TODO: Formalize this in schema - see also `GenericInterp.curr_data_object`:
-    *   `object_class_`
-    *   `object_data_`
+    # TODO: Formalize this in schema - see also `GenericInterp.curr_data_envelope`:
+    *   `envelope_class_`
+    *   `envelope_payload_`
     *   `assigned_types_to_values_`
     *   `remaining_types_to_value_`
     *   TODO: maybe also `keys_to_types` (the query)?
@@ -80,7 +80,7 @@ class InterpContext:
 
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
-        self.mongo_col = self.mongo_db[data_objects_]
+        self.mongo_col = self.mongo_db[data_envelopes_]
 
     def _init_unconsumed_tokens(self):
         return [
@@ -143,14 +143,14 @@ class InterpContext:
         # TODO: print conflicting values (two different implicit values)
         # TODO: print unrecognized tokens
         # TODO: for unrecognized token highlight by color all tokens with matching substring
-        for object_result in self.assigned_types_to_values_per_object:
-            if object_class_ not in object_result:
-                # It must be last object created but no object class left to query it:
+        for data_envelope in self.assigned_types_to_values_per_envelope:
+            if envelope_class_ not in data_envelope:
+                # It must be last envelope created but no envelope class left to query it:
                 break
-            eprint(object_result[object_class_])
-            result_remaining_types_to_values = object_result[remaining_types_to_values_]
-            result_assigned_types_to_values = object_result[assigned_types_to_values_]
-            keys_to_types_list = object_result[keys_to_types_list_]
+            eprint(data_envelope[envelope_class_])
+            result_remaining_types_to_values = data_envelope[remaining_types_to_values_]
+            result_assigned_types_to_values = data_envelope[assigned_types_to_values_]
+            keys_to_types_list = data_envelope[keys_to_types_list_]
 
             is_first_missing_found: bool = False
             for key_to_type_dict in keys_to_types_list:

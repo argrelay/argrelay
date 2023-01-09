@@ -3,14 +3,14 @@ from __future__ import annotations
 from unittest import TestCase
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.meta_data.CompType import CompType
+from argrelay.meta_data.PluginType import PluginType
+from argrelay.meta_data.RunMode import RunMode
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
 from argrelay.plugin_interp.NamedNoopInterp import NamedNoopInterp
 from argrelay.plugin_interp.NamedNoopInterpFactory import NamedNoopInterpFactory
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.PluginType import PluginType
-from argrelay.meta_data.RunMode import RunMode
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.FirstArgInterpFactorySchema import first_arg_vals_to_next_interp_factory_ids_
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_list_

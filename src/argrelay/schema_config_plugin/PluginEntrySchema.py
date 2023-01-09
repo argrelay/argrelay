@@ -84,7 +84,7 @@ class PluginEntrySchema(Schema):
 
 
 plugin_entry_desc = TypeDesc(
-    object_schema = PluginEntrySchema(),
+    dict_schema = PluginEntrySchema(),
     ref_name = PluginEntrySchema.__name__,
     dict_example = _plugin_entry_example,
     default_file_path = "",

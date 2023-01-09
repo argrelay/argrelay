@@ -29,7 +29,7 @@ class MongoConfigSchema(Schema):
 
 
 mongo_config_desc = TypeDesc(
-    object_schema = MongoConfigSchema(),
+    dict_schema = MongoConfigSchema(),
     ref_name = MongoConfigSchema.__name__,
     dict_example = {
         # TODO: Can it be as simple as "mongodb://localhost:27017" or even "mongodb://localhost"?

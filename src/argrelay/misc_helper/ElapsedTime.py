@@ -10,7 +10,7 @@ from argrelay.misc_helper import eprint
 @dataclass
 class ElapsedTime:
     """
-    *   Object holds a named timestamp.
+    *   Instance holds a named timestamp.
     *   Class maintains a list of all named timestamps stored in order of measurements.
     """
 

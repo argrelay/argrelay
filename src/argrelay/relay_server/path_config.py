@@ -26,7 +26,7 @@ def create_blueprint(local_server: LocalServer):
     relay_line_args_handler = RelayLineArgsServerRequestHandler(local_server)
 
     def create_input_ctx(run_mode: RunMode):
-        request_ctx = request_context_desc.object_schema.loads(request.json)
+        request_ctx = request_context_desc.dict_schema.loads(request.json)
         return AbstractServerRequestHandler.create_input_ctx(request_ctx, run_mode)
 
     # TODO: Add REST test on client and server side.
@@ -36,7 +36,7 @@ def create_blueprint(local_server: LocalServer):
         input_ctx = create_input_ctx(RunMode.CompletionMode)
         response_dict = describe_line_args_handler.handle_request(input_ctx)
         # TODO: `arg_values_desc` is wrong, implement correct schema:
-        response_json = arg_values_desc.object_schema.dumps(response_dict)
+        response_json = arg_values_desc.dict_schema.dumps(response_dict)
         return response_json
 
     # TODO: Add REST test on client and server side.
@@ -45,7 +45,7 @@ def create_blueprint(local_server: LocalServer):
     def propose_arg_values():
         input_ctx = create_input_ctx(RunMode.CompletionMode)
         response_dict = propose_arg_values_handler.handle_request(input_ctx)
-        response_json = arg_values_desc.object_schema.dumps(response_dict)
+        response_json = arg_values_desc.dict_schema.dumps(response_dict)
         return response_json
 
     # TODO: Add REST test on client and server side.
@@ -54,7 +54,7 @@ def create_blueprint(local_server: LocalServer):
     def relay_line_args():
         input_ctx = create_input_ctx(RunMode.InvocationMode)
         response_dict = relay_line_args_handler.handle_request(input_ctx)
-        response_json = invocation_input_desc.object_schema.dumps(response_dict)
+        response_json = invocation_input_desc.dict_schema.dumps(response_dict)
         return response_json
 
     return root_blueprint

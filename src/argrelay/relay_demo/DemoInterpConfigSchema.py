@@ -1,14 +1,14 @@
 from argrelay.meta_data.GlobalArgType import GlobalArgType
-from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
+from argrelay.meta_data.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.relay_demo.ServiceObjectClass import ServiceObjectClass
+from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.schema_config_interp.EnvelopeClassQuerySchema import envelope_class_, keys_to_types_list_
 from argrelay.schema_config_interp.GenericInterpConfigSchema import (
     GenericInterpConfigSchema,
     function_query_,
-    object_class_queries_,
+    envelope_class_queries_,
 )
-from argrelay.schema_config_interp.ObjectClassQuerySchema import object_class_, keys_to_types_list_
 
 
 class DemoInterpConfigSchema(GenericInterpConfigSchema):
@@ -17,7 +17,7 @@ class DemoInterpConfigSchema(GenericInterpConfigSchema):
 
 demo_interp_config_example = {
     function_query_: {
-        object_class_: ReservedObjectClass.ClassFunction.name,
+        envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
         keys_to_types_list_: [
             {
                 "action": GlobalArgType.ActionType.name,
@@ -27,9 +27,9 @@ demo_interp_config_example = {
             },
         ],
     },
-    object_class_queries_: [
+    envelope_class_queries_: [
         {
-            object_class_: ReservedObjectClass.ClassFunction.name,
+            envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             keys_to_types_list_: [
                 {
                     "action": GlobalArgType.ActionType.name,
@@ -40,7 +40,7 @@ demo_interp_config_example = {
             ],
         },
         {
-            object_class_: ServiceObjectClass.ClassService.name,
+            envelope_class_: ServiceEnvelopeClass.ClassService.name,
             keys_to_types_list_: [
                 {
                     "code": ServiceArgType.CodeMaturity.name,
@@ -69,7 +69,7 @@ demo_interp_config_example = {
 }
 
 demo_interp_config_desc = TypeDesc(
-    object_schema = DemoInterpConfigSchema(),
+    dict_schema = DemoInterpConfigSchema(),
     ref_name = DemoInterpConfigSchema.__name__,
     dict_example = demo_interp_config_example,
     default_file_path = "",

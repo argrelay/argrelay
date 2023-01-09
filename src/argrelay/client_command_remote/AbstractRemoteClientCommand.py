@@ -24,7 +24,7 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         connection_config,
         response_handler: AbstractClientResponseHandler,
         response_schema,
-        request_schema = request_context_desc.object_schema,
+        request_schema = request_context_desc.dict_schema,
     ):
         super().__init__(
             response_handler,

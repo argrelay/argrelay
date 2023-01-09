@@ -1,13 +1,11 @@
 import subprocess
 
+from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
-from argrelay.meta_data.ServerConfig import ServerConfig
-from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.schema_config_interp.DataObjectSchema import object_data_, object_id_
-from argrelay.schema_config_interp.FunctionObjectDataSchema import invocator_plugin_id_
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, envelope_id_
+from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import invocator_plugin_id_
 
 
 class GitRepoInvocator(AbstractInvocator):
@@ -16,14 +14,14 @@ class GitRepoInvocator(AbstractInvocator):
         super().__init__(config_dict)
 
     def populate_invocation_input(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
-        # The first object (`DataObjectSchema`) is assumed to be of
-        # `ReservedObjectClass.ClassFunction` with `FunctionObjectDataSchema` for its `object_data`:
-        function_object = interp_ctx.assigned_types_to_values_per_object[0]
-        invocator_plugin_id = function_object[object_data_][invocator_plugin_id_]
+        # The first envelope (`DataEnvelopeSchema`) is assumed to be of
+        # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopePayloadSchema` for its `envelope_payload`:
+        function_envelope = interp_ctx.assigned_types_to_values_per_envelope[0]
+        invocator_plugin_id = function_envelope[envelope_payload_][invocator_plugin_id_]
         invocation_input = InvocationInput(
             invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_id],
-            function_object = function_object,
-            assigned_types_to_values_per_object = interp_ctx.assigned_types_to_values_per_object,
+            function_envelope = function_envelope,
+            assigned_types_to_values_per_envelope = interp_ctx.assigned_types_to_values_per_envelope,
             interp_result = {},
             extra_data = {},
         )
@@ -31,10 +29,10 @@ class GitRepoInvocator(AbstractInvocator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        if invocation_input.function_object[object_id_] == "desc_repo":
-            # The 2nd object (`DataObjectSchema`) is supposed to have `object_data` in its `object_data`:
-            repo_object = invocation_input.assigned_types_to_values_per_object[1]
-            abs_repo_path = repo_object[object_data_]["abs_repo_path"]
+        if invocation_input.function_envelope[envelope_id_] == "desc_repo":
+            # The 2nd envelope (`DataEnvelopeSchema`) is supposed to have `envelope_payload` in its `envelope_payload`:
+            repo_envelope = invocation_input.assigned_types_to_values_per_envelope[1]
+            abs_repo_path = repo_envelope[envelope_payload_]["abs_repo_path"]
             # List Git repo dir:
             subproc = subprocess.run(
                 [
@@ -46,4 +44,3 @@ class GitRepoInvocator(AbstractInvocator):
             ret_code = subproc.returncode
             if ret_code != 0:
                 raise RuntimeError
-

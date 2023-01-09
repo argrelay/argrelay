@@ -28,5 +28,5 @@ class ThisTestCase(TestCase):
                     comp_type = comp_type,
                     is_debug_enabled = False,
                 )
-                actual_json = request_context_desc.object_schema.dumps(request_ctx)
+                actual_json = request_context_desc.dict_schema.dumps(request_ctx)
                 self.assertEqual(expected_json, actual_json)

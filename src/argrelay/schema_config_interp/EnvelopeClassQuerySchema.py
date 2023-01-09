@@ -1,22 +1,22 @@
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError
 
-from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
+from argrelay.meta_data.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper.TypeDesc import TypeDesc
 
-object_class_ = "object_class"
+envelope_class_ = "envelope_class"
 keys_to_types_list_ = "keys_to_types_list"
 
 
-class ObjectClassQuerySchema(Schema):
+class EnvelopeClassQuerySchema(Schema):
     """
-    Schema for all :class:`plugin_config.object_class_queries`
+    Schema for all :class:`plugin_config.envelope_class_queries`
     """
 
     class Meta:
         unknown = RAISE
         strict = True
 
-    object_class = fields.String()
+    envelope_class = fields.String()
 
     # List of keys to use for named args during interpretation and arg types to use in queries:
     keys_to_types_list = fields.List(
@@ -35,11 +35,11 @@ class ObjectClassQuerySchema(Schema):
                 raise ValidationError("only one key per dict is allowed")
 
 
-object_class_query_desc = TypeDesc(
-    object_schema = ObjectClassQuerySchema(),
-    ref_name = ObjectClassQuerySchema.__name__,
+envelope_class_query_desc = TypeDesc(
+    dict_schema = EnvelopeClassQuerySchema(),
+    ref_name = EnvelopeClassQuerySchema.__name__,
     dict_example = {
-        object_class_: ReservedObjectClass.ClassFunction.name,
+        envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
         keys_to_types_list_: [
             {
                 "type_a": "TypeA",

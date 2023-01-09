@@ -4,11 +4,11 @@ from marshmallow import Schema, RAISE, fields, post_load
 
 from argrelay.meta_data.StaticData import StaticData
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.schema_config_interp.DataObjectSchema import data_object_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 
 first_interp_factory_id_ = "first_interp_factory_id"
 types_to_values_ = "types_to_values"
-data_objects_ = "data_objects"
+data_envelopes_ = "data_envelopes"
 
 
 class StaticDataSchema(Schema):
@@ -25,8 +25,8 @@ class StaticDataSchema(Schema):
         default = {},
         required = True,
     )
-    data_objects = fields.List(
-        fields.Nested(data_object_desc.object_schema),
+    data_envelopes = fields.List(
+        fields.Nested(data_envelope_desc.dict_schema),
         required = True,
     )
 
@@ -39,7 +39,7 @@ class StaticDataSchema(Schema):
 
 
 static_data_desc = TypeDesc(
-    object_schema = StaticDataSchema(),
+    dict_schema = StaticDataSchema(),
     ref_name = StaticDataSchema.__name__,
     dict_example = {
         first_interp_factory_id_: "SomeInterp",
@@ -53,8 +53,8 @@ static_data_desc = TypeDesc(
                 "B_value_2",
             ],
         },
-        data_objects_: [
-            data_object_desc.dict_example,
+        data_envelopes_: [
+            data_envelope_desc.dict_example,
         ]
     },
     default_file_path = "",

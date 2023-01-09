@@ -55,7 +55,7 @@ class ThisTestCase(TestCase):
             (line_no(), "some_command service goto upstream|", CompType.PrefixHidden, "upstream", ""),
             (line_no(), "some_command de|", CompType.PrefixHidden, "desc", "Suggest from the set of values for the first unassigned arg type (with matching prefix)"),
             (line_no(), "some_command host goto q| dev", CompType.PrefixHidden, "qwer", "Suggestion for a value from other spaces which do not have coordinate specified"),
-            (line_no(), "some_command q| dev", CompType.PrefixHidden, "", "Do not suggest a value from other spaces until they are available for query for current object to search"),
+            (line_no(), "some_command q| dev", CompType.PrefixHidden, "", "Do not suggest a value from other spaces until they are available for query for current envelope to search"),
             (line_no(), "some_command pro| dev", CompType.PrefixHidden, "", "No suggestion for another value from a space which already have coordinate specified"),
             (line_no(), "some_command goto service q| whatever", CompType.PrefixHidden, "qa", "Unrecognized value does not obstruct suggestion"),
         ]
@@ -130,8 +130,8 @@ class ThisTestCase(TestCase):
 
                         self.maxDiff = None
                         # TODO: Fix: currently (after extending data schema)
-                        #       what this output shows is entire type list known to static data (it should use limited lists per object)
-                        #       and it only compares it to the last `curr_assigned_types_to_values` (while it should print all `assigned_types_to_values_per_object`)
+                        #       what this output shows is entire type list known to static data (it should use limited lists per envelope)
+                        #       and it only compares it to the last `curr_assigned_types_to_values` (while it should print all `assigned_types_to_values_per_envelope`)
                         self.assertEqual(
                             f"""
 ClassFunction
@@ -181,7 +181,7 @@ ClassService
                     run_mode,
                     test_line,
                     comp_type,
-                    found_object_ipos,
+                    found_envelope_ipos,
                     expected_assignments,
                     case_comment,
                 ) = test_case
@@ -202,15 +202,15 @@ ClassService
                         if arg_value is None:
                             self.assertTrue(
                                 arg_type not in
-                                interp_ctx.assigned_types_to_values_per_object
-                                [found_object_ipos]
+                                interp_ctx.assigned_types_to_values_per_envelope
+                                [found_envelope_ipos]
                                 [assigned_types_to_values_]
                             )
                         else:
                             self.assertEqual(
                                 arg_value,
-                                interp_ctx.assigned_types_to_values_per_object
-                                [found_object_ipos]
+                                interp_ctx.assigned_types_to_values_per_envelope
+                                [found_envelope_ipos]
                                 [assigned_types_to_values_]
                                 [arg_type]
                             )

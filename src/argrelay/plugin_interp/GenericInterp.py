@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.SpecialChar import SpecialChar
 from argrelay.meta_data.TermColor import TermColor
 from argrelay.misc_helper import eprint
+from argrelay.plugin_interp.AbstractInterp import AbstractInterp
+from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.runtime_context.InterpContext import InterpContext, assigned_types_to_values_, remaining_types_to_values_
-from argrelay.schema_config_interp.DataObjectSchema import object_data_
-from argrelay.schema_config_interp.FunctionObjectDataSchema import accept_object_classes_
-from argrelay.schema_config_interp.GenericInterpConfigSchema import function_query_, object_class_queries_
-from argrelay.schema_config_interp.ObjectClassQuerySchema import keys_to_types_list_, object_class_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_, envelope_class_
+from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import accept_envelope_classes_
+from argrelay.schema_config_interp.GenericInterpConfigSchema import function_query_, envelope_class_queries_
 
 """
 This module auto-completes command line args when integrated with shell (Bash).
@@ -24,27 +24,26 @@ class GenericInterp(AbstractInterp):
 
     function_query: dict
     # List to preserve order:
-    object_class_queries_list: list[dict]
+    envelope_class_queries_list: list[dict]
     # Dict for quick lookup:
-    object_class_queries_dict: dict[str, dict]
+    envelope_class_queries_dict: dict[str, dict]
 
-    # TODO: rename to `function_object`:
-    # Object of `ReservedObjectClass.ClassFunction` from database which defines all other objects to be found:
-    function_object_found: dict
-    # When `function_object_found`, it is list of object classes function requires:
-    accept_object_classes: list[str]
-    # When `function_object_found`, it is an ipos into `accept_object_classes` to select `curr_object_class`:
-    accept_object_class_ipos: int
-    # It contains pending object to be found (including data from `function_object_found`):
-    # TODO: Formalize this in schema - see also `InterpContext.assigned_types_to_values_per_object`:
-    # *   `object_class_`
-    # *   `object_data_`
+    # Envelope of `ReservedEnvelopeClass.ClassFunction` from database which defines all other envelopes to be found:
+    function_envelope: dict
+    # When `function_envelope`, it is list of object classes function requires:
+    accept_envelope_classes: list[str]
+    # When `function_envelope`, it is an ipos into `accept_envelope_classes` to select `curr_envelope_class`:
+    accept_envelope_class_ipos: int
+    # It contains pending envelopes to be found (including data from `function_envelope`):
+    # TODO: Formalize this in schema - see also `InterpContext.assigned_types_to_values_per_envelope`:
+    # *   `envelope_class_`
+    # *   `envelope_payload_`
     # *   `assigned_types_to_values_`
     # *   `remaining_types_to_values_`
     # *   TODO: maybe also `keys_to_types` (the query)?
-    curr_data_object: dict
+    curr_data_envelope: dict
 
-    # Objects found in the last query:
+    # Envelopes found in the last query:
     res_count: int
     # First object found in the last query
     first_found: dict
@@ -62,28 +61,28 @@ class GenericInterp(AbstractInterp):
 
         self.function_query = config_dict[function_query_]
         # TODO: provide dict in config directly, there is no usage of list variant (no ordering is defined by this list):
-        self.object_class_queries_list = config_dict[object_class_queries_]
-        self.object_class_queries_dict = {}
-        for object_class_query in self.object_class_queries_list:
-            self.object_class_queries_dict[object_class_query[object_class_]] = object_class_query
+        self.envelope_class_queries_list = config_dict[envelope_class_queries_]
+        self.envelope_class_queries_dict = {}
+        for envelope_class_query in self.envelope_class_queries_list:
+            self.envelope_class_queries_dict[envelope_class_query[envelope_class_]] = envelope_class_query
 
-        # None until function object is found:
-        self.function_object_found = None
-        self.accept_object_classes = None
-        self.accept_object_class_ipos = None
+        # None until function envelope is found:
+        self.function_envelope = None
+        self.accept_envelope_classes = None
+        self.accept_envelope_class_ipos = None
 
-        self._init_next_object_to_find()
+        self._init_next_envelope_to_find()
 
         # Init to find function class:
-        self._set_object_class_query_and_query(self.function_query)
+        self._set_envelope_class_query_and_query(self.function_query)
 
-    def _set_object_class_query_and_query(self, object_class_query):
-        self.curr_data_object[object_class_] = object_class_query[object_class_]
-        self._set_curr_keys_to_type(object_class_query[keys_to_types_list_])
-        self.query_objects()
+    def _set_envelope_class_query_and_query(self, envelope_class_query):
+        self.curr_data_envelope[envelope_class_] = envelope_class_query[envelope_class_]
+        self._set_curr_keys_to_type(envelope_class_query[keys_to_types_list_])
+        self.query_envelopes()
 
     def _set_curr_keys_to_type(self, keys_to_types_list):
-        self.curr_data_object[keys_to_types_list_] = keys_to_types_list
+        self.curr_data_envelope[keys_to_types_list_] = keys_to_types_list
         self.curr_keys_to_types_list = keys_to_types_list
 
         self.curr_keys_to_types_dict = self.list_to_dict(self.curr_keys_to_types_list)
@@ -139,7 +138,7 @@ class GenericInterp(AbstractInterp):
                 if curr_processor.try_explicit_arg(self.interp_ctx, unconsumed_token):
                     consumed_token_iposes.append(unconsumed_token_ipos)
                     self.interp_ctx.consumed_tokens.append(unconsumed_token_ipos)
-                    self.query_objects()
+                    self.query_envelopes()
 
         # perform list modifications out of the prev loop:
         for consumed_token_ipos in consumed_token_iposes:
@@ -164,16 +163,16 @@ class GenericInterp(AbstractInterp):
         """
         Try to consume more args if possible.
 
-        *   If function was found, start with its first required object class.
-        *   If curr object class found, move to the next until all found.
+        *   If function was found, start with its first required envelope class.
+        *   If curr envelope class is found, move to the next until all are found.
 
         :returns:
             = 0: move to next interpreter: curr interpreter is fully satisfied from the args
             > 0: call again curr interpreter: still more things to find in the args
             < 0: stop: interpreter sees no point to continue main loop (`InterpContext.interpret_command`)
         """
-        if not self.function_object_found:
-            # We want single function object found, not zero, not more than one:
+        if not self.function_envelope:
+            # We want single function envelope to be found, not zero, not more than one:
             eprint("first_found: ", self.first_found)
             if self.first_found is not None:
                 if self.res_count > 1:
@@ -181,23 +180,23 @@ class GenericInterp(AbstractInterp):
                     # TODO: Use enum instead of numbers:
                     return -1
                 else:
-                    self.function_object_found = self.first_found
-                    self._rotate_object_found(self.function_object_found)
+                    self.function_envelope = self.first_found
+                    self._rotate_envelope(self.function_envelope)
 
                     # Init next objects to find:
-                    self.accept_object_classes = (
-                        self.function_object_found[object_data_][accept_object_classes_]
+                    self.accept_envelope_classes = (
+                        self.function_envelope[envelope_payload_][accept_envelope_classes_]
                     )
-                    if not self.accept_object_classes:
-                        # Function does not need any object:
+                    if not self.accept_envelope_classes:
+                        # Function does not need any envelopes:
                         # TODO: Use enum instead of numbers:
                         return 0
 
-                    self.accept_object_class_ipos = 0
-                    self._set_object_class_query_and_query(
-                        self.object_class_queries_dict[self.accept_object_classes[self.accept_object_class_ipos]]
+                    self.accept_envelope_class_ipos = 0
+                    self._set_envelope_class_query_and_query(
+                        self.envelope_class_queries_dict[self.accept_envelope_classes[self.accept_envelope_class_ipos]]
                     )
-                    # Need more args to consume for the next object to find:
+                    # Need more args to consume for the next envelope to find:
                     # TODO: Use enum instead of numbers:
                     return +1
             else:
@@ -205,59 +204,61 @@ class GenericInterp(AbstractInterp):
                 # TODO: Use enum instead of numbers:
                 return -1
         else:
-            # We need single object:
+            # We need single envelope:
             eprint("first_found: ", self.first_found)
             if self.first_found is not None:
                 if self.res_count > 1:
                     # Too many - stop:
                     return -1
                 else:
-                    self.accept_object_class_ipos += 1
-                    if self.accept_object_class_ipos < len(self.accept_object_classes):
-                        self._rotate_object_found(self.first_found)
+                    self.accept_envelope_class_ipos += 1
+                    if self.accept_envelope_class_ipos < len(self.accept_envelope_classes):
+                        self._rotate_envelope(self.first_found)
                         # Move to the next object class to find:
-                        self._set_object_class_query_and_query(
-                            self.object_class_queries_dict[self.accept_object_classes[self.accept_object_class_ipos]]
+                        self._set_envelope_class_query_and_query(
+                            self.envelope_class_queries_dict[
+                                self.accept_envelope_classes[self.accept_envelope_class_ipos]
+                            ]
                         )
                         return +1
                     else:
                         # TODO: We are finalizing but not rotating to the next one.
-                        #       What if next interp start to write into this object again?
-                        self._finalize_curr_object(self.first_found)
+                        #       What if next interp start to write into this envelope again?
+                        self._finalize_curr_envelope(self.first_found)
                         # Move to the next interp:
                         return 0
             else:
-                # No object = stop:
+                # No envelopes = stop:
                 return -1
 
-    def _init_next_object_to_find(self):
+    def _init_next_envelope_to_find(self):
         self.interp_ctx.curr_assigned_types_to_values = {}
         self.interp_ctx.curr_remaining_types_to_values = {}
 
-        self.curr_data_object = {
+        self.curr_data_envelope = {
             assigned_types_to_values_: self.interp_ctx.curr_assigned_types_to_values,
             remaining_types_to_values_: self.interp_ctx.curr_remaining_types_to_values,
         }
-        # Also, keep the object in the list right away (even if it may not be found):
-        self.interp_ctx.assigned_types_to_values_per_object.append(self.curr_data_object)
+        # Also, keep the envelope in the list right away (even if it may not be found):
+        self.interp_ctx.assigned_types_to_values_per_envelope.append(self.curr_data_envelope)
 
-    def _rotate_object_found(self, object_found):
-        self._finalize_curr_object(object_found)
-        self._init_next_object_to_find()
+    def _rotate_envelope(self, envelope_found):
+        self._finalize_curr_envelope(envelope_found)
+        self._init_next_envelope_to_find()
 
-    def _finalize_curr_object(self, object_found):
+    def _finalize_curr_envelope(self, envelope_found):
         # Finalize missing data field:
         # TODO: Do we maintain any extra fields beyond what is in database?
         #       This will overwrite them (if database does not have them or their values are different):
-        self.curr_data_object.update(object_found)
+        self.curr_data_envelope.update(envelope_found)
 
-    def query_objects(self):
+    def query_envelopes(self):
         query_dict = {
-            object_class_: self.curr_data_object[object_class_],
+            envelope_class_: self.curr_data_envelope[envelope_class_],
         }
         for arg_type, arg_val in self.interp_ctx.curr_assigned_types_to_values.items():
             query_dict[arg_type] = arg_val.arg_value
-        # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query objects which contain given value in elements of the array?
+        # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
         query_res = self.interp_ctx.mongo_col.find(query_dict)
         self._update_curr_remaining_types_to_values(query_res)
 
@@ -268,25 +269,25 @@ class GenericInterp(AbstractInterp):
         self.res_count: int = 0
         self.first_found = None
         # find all remaining arg vals per arg type:
-        for object_found in iter(query_res):
+        for envelope_found in iter(query_res):
             self.res_count += 1
             if not self.first_found:
-                self.first_found = object_found
+                self.first_found = envelope_found
             # TODO: instead of looping through all `types_to_values` possible in `static_data`,
             #       loop through those types used in query for that object:
-            # arg type must be known:
+            # `arg_type` must be known:
             for arg_type in self.interp_ctx.static_data.types_to_values.keys():
-                # arg type must be in one of the objects found:
-                if arg_type in object_found:
-                    # arg type must not be assigned/consumed:
+                # `arg_type` must be in one of the `data_envelope`-s found:
+                if arg_type in envelope_found:
+                    # `arg_type` must not be assigned/consumed:
                     if arg_type not in self.interp_ctx.curr_assigned_types_to_values.keys():
-                        arg_val = object_found[arg_type]
+                        arg_val = envelope_found[arg_type]
                         if arg_type not in self.interp_ctx.curr_remaining_types_to_values:
                             val_list = []
                             self.interp_ctx.curr_remaining_types_to_values[arg_type] = val_list
                         else:
                             val_list = self.interp_ctx.curr_remaining_types_to_values[arg_type]
-                        # ensure unique arg vals:
+                        # ensure unique `arg_value`-s:
                         if arg_val not in val_list:
                             val_list.append(arg_val)
 

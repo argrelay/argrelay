@@ -1,5 +1,5 @@
-from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.meta_data.StaticData import StaticData
+from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 
 
 class NoopLoader(AbstractLoader):

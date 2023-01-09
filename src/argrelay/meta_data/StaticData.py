@@ -11,4 +11,4 @@ class StaticData:
 
     first_interp_factory_id: str = field(init = True, default = "")
     types_to_values: dict[str, list[str]] = field(init = True, default_factory = lambda: {})
-    data_objects: list = field(init = True, default_factory = lambda: [])
+    data_envelopes: list = field(init = True, default_factory = lambda: [])

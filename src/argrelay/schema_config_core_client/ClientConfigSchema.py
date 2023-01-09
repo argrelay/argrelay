@@ -17,7 +17,7 @@ class ClientConfigSchema(Schema):
 
     # Serve requests from local data or send to server:
     use_local_requests = fields.Boolean()
-    connection_config = fields.Nested(connection_config_desc.object_schema)
+    connection_config = fields.Nested(connection_config_desc.dict_schema)
 
     @post_load
     def make_object(self, input_dict, **kwargs):
@@ -28,7 +28,7 @@ class ClientConfigSchema(Schema):
 
 
 client_config_desc = TypeDesc(
-    object_schema = ClientConfigSchema(),
+    dict_schema = ClientConfigSchema(),
     ref_name = ClientConfigSchema.__name__,
     dict_example = {
         use_local_requests_: False,

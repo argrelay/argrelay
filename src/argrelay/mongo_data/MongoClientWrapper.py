@@ -9,29 +9,29 @@ from pymongo.database import Database
 from argrelay.meta_data.ArgValue import ArgValue
 from argrelay.meta_data.StaticData import StaticData
 from argrelay.mongo_data.MongoConfig import MongoConfig
-from argrelay.schema_config_core_server.StaticDataSchema import data_objects_
-from argrelay.schema_config_interp.DataObjectSchema import object_id_
+from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_
 
 
 def get_mongo_client(mongo_config: MongoConfig):
     return MongoClient(mongo_config.client_connection_string)
 
 
-def store_objects(mongo_db: Database, static_data: StaticData):
-    col_object: Collection = mongo_db[data_objects_]
-    col_object.delete_many({})
+def store_envelopes(mongo_db: Database, static_data: StaticData):
+    col_proxy: Collection = mongo_db[data_envelopes_]
+    col_proxy.delete_many({})
 
-    for data_object in static_data.data_objects:
-        object_to_store = deepcopy(data_object)
-        if object_id_ in object_to_store:
-            object_to_store["_id"] = data_object[object_id_]
-        col_object.insert_one(object_to_store)
+    for data_envelope in static_data.data_envelopes:
+        envelope_to_store = deepcopy(data_envelope)
+        if envelope_id_ in envelope_to_store:
+            envelope_to_store["_id"] = data_envelope[envelope_id_]
+        col_proxy.insert_one(envelope_to_store)
 
 
-def find_objects(mongo_db: Database, assigned_types_to_values: dict[str, ArgValue]):
-    col_object: Collection = mongo_db[data_objects_]
+def find_envelopes(mongo_db: Database, assigned_types_to_values: dict[str, ArgValue]):
+    col_proxy: Collection = mongo_db[data_envelopes_]
     query_dict = {}
     for arg_type, arg_val in assigned_types_to_values.items():
         query_dict[arg_type] = arg_val.arg_value
 
-    return col_object.find(query_dict)
+    return col_proxy.find(query_dict)

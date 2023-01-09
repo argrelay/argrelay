@@ -18,7 +18,7 @@ class GitRepoLoaderConfigSchema(Schema):
 
 
 git_repo_loader_config_desc = TypeDesc(
-    object_schema = GitRepoLoaderConfigSchema(),
+    dict_schema = GitRepoLoaderConfigSchema(),
     ref_name = GitRepoLoaderConfigSchema.__name__,
     dict_example = {
         is_enabled_: False,

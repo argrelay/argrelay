@@ -6,20 +6,20 @@ from pymongo.database import Database
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
-from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_, data_objects_
+from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_, data_envelopes_
 
 
 class ThisTestCase(TestCase):
 
     @staticmethod
-    def show_all_items(col_object: Collection):
-        print("show_all_items:")
-        for item_object in col_object.find():
-            print("item_object: ", item_object)
+    def show_all_envelopes(col_proxy: Collection):
+        print("show_all_envelopes:")
+        for data_envelope in col_proxy.find():
+            print("data_envelope: ", data_envelope)
 
     @staticmethod
-    def remove_all_items(col_object):
-        col_object.delete_many({})
+    def remove_all_envelopes(col_proxy):
+        col_proxy.delete_many({})
 
     # noinspection PyMethodMayBeStatic
     @skip  # test again running server
@@ -35,134 +35,134 @@ class ThisTestCase(TestCase):
         mongo_db: Database = mongo_client[mongo_config.database_name]
         print("list_collection_names: ", mongo_db.list_collection_names())
 
-        col_name = "user_1_items"
-        col_object: Collection = mongo_db[col_name]
+        col_name = "user_1_envelopes"
+        col_proxy: Collection = mongo_db[col_name]
 
-        self.show_all_items(col_object)
+        self.show_all_envelopes(col_proxy)
 
-        self.remove_all_items(col_object)
+        self.remove_all_envelopes(col_proxy)
 
-        item_1 = {
+        envelope_1 = {
             "_id": "U1IT00001",
-            "item_name": "Blender",
+            "envelope_name": "Blender",
             "max_discount": "10%",
             "batch_number": "RR450020FRG",
             "price": 340,
             "category": "kitchen appliance",
         }
 
-        item_2 = {
+        envelope_2 = {
             "_id": "U1IT00002",
-            "item_name": "Egg",
+            "envelope_name": "Egg",
             "category": "food",
             "quantity": 12,
             "price": 36,
-            "item_description": "brown country eggs",
+            "envelope_description": "brown country eggs",
         }
 
-        item_3 = {
-            "item_name": "whatever",
+        envelope_3 = {
+            "envelope_name": "whatever",
             "category": "whatever",
             "batch_number": "whatever",
             "price": 999,
         }
 
-        item_4 = {
-            "item_name": "butter",
+        envelope_4 = {
+            "envelope_name": "butter",
             "category": "food",
             "batch_number": "BU5E0020FK",
             "price": 20,
         }
 
-        item_5 = {
-            "item_name": "face cream",
+        envelope_5 = {
+            "envelope_name": "face cream",
             "category": "beauty",
             "max_discount": "4%",
             "ingredients": "Hyaluronic acid, Ceramides, vitamins A,C,E, fruit acids",
         }
 
-        item_6 = {
-            "item_name": "fishing plier",
+        envelope_6 = {
+            "envelope_name": "fishing plier",
             "category": "sports",
-            "item_description": "comes with tungsten carbide cutters to easily cut fishing lines and hooks",
+            "envelope_description": "comes with tungsten carbide cutters to easily cut fishing lines and hooks",
         }
 
-        item_7 = {
-            "item_name": "pizza sauce",
+        envelope_7 = {
+            "envelope_name": "pizza sauce",
             "category": "food",
             "quantity": 5,
         }
 
-        item_8 = {
-            "item_name": "fitness band",
+        envelope_8 = {
+            "envelope_name": "fitness band",
             "price": 300,
             "max_discount": "12%",
         }
 
-        item_9 = {
-            "item_name": "cinnamon",
+        envelope_9 = {
+            "envelope_name": "cinnamon",
             "category": "food",
             "warning": "strong smell, not to be consumed directly",
             "price": 2,
         }
 
-        item_10 = {
-            "item_name": "lego building set",
+        envelope_10 = {
+            "envelope_name": "lego building set",
             "category": "toys",
             "warning": "very small parts, not suitable for children below 3 years",
             "parts_included": "colored interlocking plastic bricks, gears, minifigures, plates, cones, round bricks",
         }
 
-        item_11 = {
-            "item_name": "dishwasher",
+        envelope_11 = {
+            "envelope_name": "dishwasher",
             "category": "kitchen appliance",
             "warranty": "2 years",
         }
 
-        item_12 = {
-            "item_name": "running shoes",
+        envelope_12 = {
+            "envelope_name": "running shoes",
             "brand": "Nike",
             "category": "sports",
             "price": 145,
             "max_discount": "5%",
         }
 
-        item_13 = {
-            "item_name": "leather bookmark",
+        envelope_13 = {
+            "envelope_name": "leather bookmark",
             "category": "books",
             "design": "colored alphabets",
-            "item_description": "hand-made, natural colors used",
+            "envelope_description": "hand-made, natural colors used",
         }
 
-        item_14 = {
-            "item_name": "maple syrup",
+        envelope_14 = {
+            "envelope_name": "maple syrup",
             "category": "food",
-            "item_description": "A-grade, dark, organic, keep in refrigerator after opening",
+            "envelope_description": "A-grade, dark, organic, keep in refrigerator after opening",
             "price": 25,
         }
 
-        col_object.insert_many([
-            item_1,
-            item_2,
-            item_3,
-            item_4,
-            item_5,
-            item_6,
-            item_7,
-            item_8,
-            item_9,
-            item_10,
-            item_11,
-            item_12,
-            item_13,
-            item_14,
+        col_proxy.insert_many([
+            envelope_1,
+            envelope_2,
+            envelope_3,
+            envelope_4,
+            envelope_5,
+            envelope_6,
+            envelope_7,
+            envelope_8,
+            envelope_9,
+            envelope_10,
+            envelope_11,
+            envelope_12,
+            envelope_13,
+            envelope_14,
         ])
 
-        col_object.create_index("category")
+        col_proxy.create_index("category")
 
     # noinspection PyMethodMayBeStatic
     @skip  # test again running server
-    def test_live_object_searched_by_multiple_typed_vals(self):
+    def test_live_envelope_searched_by_multiple_typed_vals(self):
         """
         Example with data searched by multiple { type: value } pairs
         """
@@ -175,22 +175,22 @@ class ThisTestCase(TestCase):
         print("list_collection_names: ", mongo_db.list_collection_names())
 
         col_name = "argrelay"
-        col_object: Collection = mongo_db[col_name]
+        col_proxy: Collection = mongo_db[col_name]
 
-        self.remove_all_items(col_object)
+        self.remove_all_envelopes(col_proxy)
 
-        item_001 = {
-            "object_data": {
-                "object_name": "item_001",
+        envelope_001 = {
+            "envelope_payload": {
+                "object_name": "envelope_001",
             },
             types_to_values_: {
                 ServiceArgType.AccessType.name: "ro",
             },
         }
 
-        item_002 = {
-            "object_data": {
-                "object_name": "item_002",
+        envelope_002 = {
+            "envelope_payload": {
+                "object_name": "envelope_002",
             },
             types_to_values_: {
                 ServiceArgType.AccessType.name: "rw",
@@ -198,9 +198,9 @@ class ThisTestCase(TestCase):
             },
         }
 
-        item_003 = {
-            "object_data": {
-                "object_name": "item_003",
+        envelope_003 = {
+            "envelope_payload": {
+                "object_name": "envelope_003",
             },
             types_to_values_: {
                 ServiceArgType.AccessType.name: "rw",
@@ -208,9 +208,9 @@ class ThisTestCase(TestCase):
             },
         }
 
-        item_004 = {
-            "object_data": {
-                "object_name": "item_004",
+        envelope_004 = {
+            "envelope_payload": {
+                "object_name": "envelope_004",
             },
             types_to_values_: {
                 ServiceArgType.AccessType.name: "rw",
@@ -219,30 +219,30 @@ class ThisTestCase(TestCase):
             },
         }
 
-        col_object.insert_many([
-            item_001,
-            item_002,
-            item_003,
-            item_004,
+        col_proxy.insert_many([
+            envelope_001,
+            envelope_002,
+            envelope_003,
+            envelope_004,
         ])
 
-        col_object.create_index(types_to_values_)
+        col_proxy.create_index(types_to_values_)
 
         print("query 1:")
-        for item_object in col_object.find(
+        for data_envelope in col_proxy.find(
             {
                 f"types_to_values.{ServiceArgType.AccessType.name}": "rw",
                 f"types_to_values.{ServiceArgType.ColorTag.name}": "red",
             }
         ):
-            print("item_object: ", item_object)
+            print("data_envelope: ", data_envelope)
 
-        self.remove_all_items(col_object)
+        self.remove_all_envelopes(col_proxy)
 
     @skip  # test again running server
-    def test_list_all_objects(self):
+    def test_list_all_envelopes(self):
         """
-        Does not test anything, just lists objects in current database collection:
+        Does not test anything, just lists envelopes in current database collection:
         """
 
         mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
@@ -252,7 +252,7 @@ class ThisTestCase(TestCase):
         mongo_db: Database = mongo_client[mongo_config.database_name]
         print("list_collection_names: ", mongo_db.list_collection_names())
 
-        col_name = data_objects_
-        col_object: Collection = mongo_db[col_name]
+        col_name = data_envelopes_
+        col_proxy: Collection = mongo_db[col_name]
 
-        self.show_all_items(col_object)
+        self.show_all_envelopes(col_proxy)

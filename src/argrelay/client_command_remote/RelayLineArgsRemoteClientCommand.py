@@ -1,5 +1,4 @@
 from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractRemoteClientCommand
-from argrelay.handler_response.ProposeArgValuesClientResponseHandler import ProposeArgValuesClientResponseHandler
 from argrelay.handler_response.RelayLineArgsClientResponseHandler import RelayLineArgsClientResponseHandler
 from argrelay.meta_data.ConnectionConfig import ConnectionConfig
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
@@ -16,5 +15,5 @@ class RelayLineArgsRemoteClientCommand(AbstractRemoteClientCommand):
             server_path = RELAY_LINE_ARGS_PATH,
             connection_config = connection_config,
             response_handler = RelayLineArgsClientResponseHandler(),
-            response_schema = invocation_input_desc.object_schema,
+            response_schema = invocation_input_desc.dict_schema,
         )

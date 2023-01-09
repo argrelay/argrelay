@@ -33,7 +33,7 @@ class ThisTestCase(TestCase):
                             "rw",
                         ],
                     },
-                    "data_objects": [
+                    "data_envelopes": [
                     ],
                 },
                 {
@@ -49,7 +49,7 @@ class ThisTestCase(TestCase):
                             "rw",
                         ],
                     },
-                    "data_objects": [
+                    "data_envelopes": [
                     ],
                 },
                 None,
@@ -63,7 +63,7 @@ class ThisTestCase(TestCase):
                 None,
             ),
             (
-                line_no(), "without required field (`data_objects`)",
+                line_no(), "without required field (`data_envelopes`)",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
                     types_to_values_: {
@@ -80,7 +80,7 @@ class ThisTestCase(TestCase):
                     first_interp_factory_id_: "FirstArgInterpFactory",
                     "types_to_values": {
                     },
-                    "data_objects": [
+                    "data_envelopes": [
                     ],
                     "whatever_extra_key": "whatever_extra_val",
                 },
@@ -88,7 +88,7 @@ class ThisTestCase(TestCase):
                     first_interp_factory_id_: "FirstArgInterpFactory",
                     types_to_values_: {
                     },
-                    "data_objects": [
+                    "data_envelopes": [
                     ],
                 },
                 ValidationError,
@@ -96,13 +96,13 @@ class ThisTestCase(TestCase):
         ]
         for test_case in test_cases:
             with self.subTest(test_case):
-                (line_number, case_comment, input_dict, expected_object_part, expected_exception) = test_case
+                (line_number, case_comment, input_dict, expected_dict_part, expected_exception) = test_case
                 if not expected_exception:
                     static_data = static_data_desc.from_input_dict(input_dict)
 
-                    # Assert those files which were specified in the `expected_object_part`:
-                    for key_to_verify in expected_object_part.keys():
-                        self.assertEqual(expected_object_part[key_to_verify], getattr(static_data, key_to_verify))
+                    # Assert those files which were specified in the `expected_dict_part`:
+                    for key_to_verify in expected_dict_part.keys():
+                        self.assertEqual(expected_dict_part[key_to_verify], getattr(static_data, key_to_verify))
 
                 else:
                     with self.assertRaises(expected_exception):
