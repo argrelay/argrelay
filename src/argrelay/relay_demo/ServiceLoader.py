@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.loader_plugin.AbstractLoader import AbstractLoader
+from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.ReservedObjectClass import ReservedObjectClass
 from argrelay.meta_data.StaticData import StaticData

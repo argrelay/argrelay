@@ -1,8 +1,8 @@
 from typing import Type
 
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
-from argrelay.invocation_plugin.AbstractInvocator import AbstractInvocator
-from argrelay.invocation_plugin.InvocationInput import InvocationInput
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.misc_helper.AbstractPlugin import import_plugin_class
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
 

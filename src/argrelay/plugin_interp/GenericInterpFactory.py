@@ -1,5 +1,5 @@
-from argrelay.interp_plugin.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.interp_plugin.GenericInterp import GenericInterp
+from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.plugin_interp.GenericInterp import GenericInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_interp.GenericInterpConfigSchema import generic_interp_config_desc
 

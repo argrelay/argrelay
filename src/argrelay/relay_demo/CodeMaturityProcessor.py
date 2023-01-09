@@ -1,4 +1,4 @@
-from argrelay.interp_plugin.ArgProcessor import ArgProcessor
+from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.meta_data import StaticData
 from argrelay.meta_data.ArgSource import ArgSource
 from argrelay.meta_data.ArgValue import ArgValue

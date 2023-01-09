@@ -1,4 +1,4 @@
-from argrelay.interp_plugin.AbstractInterp import AbstractInterp
+from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
 from argrelay.runtime_context.InterpContext import InterpContext
 

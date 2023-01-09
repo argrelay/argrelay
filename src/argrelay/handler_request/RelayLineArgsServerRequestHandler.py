@@ -1,8 +1,8 @@
 import dataclasses
 
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
-from argrelay.invocation_plugin.AbstractInvocator import AbstractInvocator
-from argrelay.invocation_plugin.InvocationInput import InvocationInput
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.meta_data.CompType import CompType
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InputContext import InputContext

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from argrelay.interp_plugin.AbstractInterp import AbstractInterp
-from argrelay.interp_plugin.ArgProcessor import ArgProcessor
+from argrelay.plugin_interp.AbstractInterp import AbstractInterp
+from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.SpecialChar import SpecialChar
 from argrelay.meta_data.TermColor import TermColor

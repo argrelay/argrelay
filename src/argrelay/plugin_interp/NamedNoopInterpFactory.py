@@ -1,5 +1,5 @@
-from argrelay.interp_plugin.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.interp_plugin.NamedNoopInterp import NamedNoopInterp
+from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.plugin_interp.NamedNoopInterp import NamedNoopInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 
 

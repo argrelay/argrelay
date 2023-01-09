@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.interp_plugin.GenericInterp import GenericInterp
+from argrelay.plugin_interp.GenericInterp import GenericInterp
 
 """
 `DemoInterp` is a configured use case of :class:`GenericInterp` for auto-completion of service attributes.

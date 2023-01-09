@@ -14,7 +14,7 @@ mongo_config:
 
 plugin_list:
     -   plugin_id: FirstArgInterpFactory
-        plugin_module_name: argrelay.interp_plugin.FirstArgInterpFactory
+        plugin_module_name: argrelay.plugin_interp.FirstArgInterpFactory
         plugin_class_name: FirstArgInterpFactory
         plugin_type: InterpFactoryPlugin
         plugin_config:
@@ -100,7 +100,7 @@ plugin_list:
         plugin_config: { }
 
     -   plugin_id: NoopInvocator
-        plugin_module_name: argrelay.invocation_plugin.NoopInvocator
+        plugin_module_name: argrelay.plugin_invocator.NoopInvocator
         plugin_class_name: NoopInvocator
         plugin_type: InvocatorPlugin
         plugin_config: { }

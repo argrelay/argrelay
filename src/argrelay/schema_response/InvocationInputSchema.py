@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields, post_load, pre_dump
 
-from argrelay.invocation_plugin.InvocationInput import InvocationInput
+from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.DataObjectSchema import data_object_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc

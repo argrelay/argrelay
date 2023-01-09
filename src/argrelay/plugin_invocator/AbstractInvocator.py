@@ -1,4 +1,4 @@
-from argrelay.invocation_plugin.InvocationInput import InvocationInput
+from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
 from argrelay.runtime_context.InterpContext import InterpContext

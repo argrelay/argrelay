@@ -1,5 +1,5 @@
-from argrelay.invocation_plugin.AbstractInvocator import AbstractInvocator
-from argrelay.invocation_plugin.InvocationInput import InvocationInput
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_interp.DataObjectSchema import data_object_desc

@@ -1,4 +1,4 @@
-from argrelay.loader_plugin.AbstractLoader import AbstractLoader
+from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.meta_data.StaticData import StaticData
 
 

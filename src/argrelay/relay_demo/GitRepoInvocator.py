@@ -1,7 +1,7 @@
 import subprocess
 
-from argrelay.invocation_plugin.AbstractInvocator import AbstractInvocator
-from argrelay.invocation_plugin.InvocationInput import InvocationInput
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.runtime_context.InterpContext import InterpContext
