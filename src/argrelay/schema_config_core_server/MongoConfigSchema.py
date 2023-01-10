@@ -2,10 +2,12 @@ from marshmallow import Schema, fields, RAISE, post_load
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.mongo_data.MongoConfig import MongoConfig
+from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_client_config_desc
+from argrelay.schema_config_core_server.MongoServerConfigSchema import mongo_server_config_desc
 
-client_connection_string_ = "client_connection_string"
-database_name_ = "database_name"
-start_server_ = "start_server"
+use_mongomock_only_ = "use_mongomock_only"
+mongo_client_ = "mongo_client"
+mongo_server_ = "mongo_server"
 
 
 class MongoConfigSchema(Schema):
@@ -13,18 +15,22 @@ class MongoConfigSchema(Schema):
         unknown = RAISE
         strict = True
 
-    client_connection_string = fields.String()
-    database_name = fields.String()
-    start_server = fields.Boolean()
-    server_start_command = fields.String()
+    use_mongomock_only = fields.Boolean()
+    """
+    It might be the case that (test) `mongomock` lib actually provides necessary functionality and meet
+    non-function requirements for many (prod) workloads without need to deploy and administer MongoDB.
+    https://github.com/mongomock/mongomock
+    """
+
+    mongo_client = fields.Nested(mongo_client_config_desc.dict_schema)
+    mongo_server = fields.Nested(mongo_server_config_desc.dict_schema)
 
     @post_load
     def make_object(self, input_dict, **kwargs):
         return MongoConfig(
-            client_connection_string = input_dict[client_connection_string_],
-            database_name = input_dict[database_name_],
-            start_server = input_dict["start_server"],
-            server_start_command = input_dict["server_start_command"],
+            use_mongomock_only = input_dict[use_mongomock_only_],
+            mongo_client = input_dict[mongo_client_],
+            mongo_server = input_dict[mongo_server_],
         )
 
 
@@ -32,14 +38,9 @@ mongo_config_desc = TypeDesc(
     dict_schema = MongoConfigSchema(),
     ref_name = MongoConfigSchema.__name__,
     dict_example = {
-        # TODO: Can it be as simple as "mongodb://localhost:27017" or even "mongodb://localhost"?
-        client_connection_string_: "mongodb://test:test@localhost/test?authSource=admin",
-        database_name_: "test",
-        start_server_: False,
-        "server_start_command":
-            "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod"
-            " --dbpath "
-            "~/argrelay.git/temp/mongo/data",
+        use_mongomock_only_: True,
+        mongo_client_: mongo_client_config_desc.dict_example,
+        mongo_server_: mongo_server_config_desc.dict_example,
     },
     default_file_path = "",
 )

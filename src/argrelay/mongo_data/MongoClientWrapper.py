@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 
+import mongomock
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
@@ -14,7 +15,10 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_
 
 
 def get_mongo_client(mongo_config: MongoConfig):
-    return MongoClient(mongo_config.client_connection_string)
+    if mongo_config.use_mongomock_only:
+        return mongomock.MongoClient()
+    else:
+        return MongoClient(mongo_config.mongo_client.client_connection_string)
 
 
 def store_envelopes(mongo_db: Database, static_data: StaticData):

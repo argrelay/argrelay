@@ -14,7 +14,7 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev7",
+    version = "0.0.0.dev9",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "TODO",
@@ -58,6 +58,8 @@ setuptools.setup(
             "relay_demo/argrelay.client.yaml",
             "relay_demo/argrelay.server.yaml",
             "relay_demo/relay_demo",
+            "relay_demo/dev-init.bash",
+            "relay_demo/dev-shell.bash",
         ]
     },
     include_package_data = True,
@@ -70,6 +72,7 @@ setuptools.setup(
         "apispec",
         "pymongo",
         "GitPython",
+        "mongomock",
     ],
     tests_require = tests_require,
     extras_require = extras_require,

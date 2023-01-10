@@ -1,4 +1,4 @@
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from argrelay.meta_data.CompType import CompType
 from argrelay.meta_data.RunMode import RunMode

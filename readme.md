@@ -36,11 +36,11 @@ To start both the server and the client, 2 terminal windows are required.
 *   Try to complete command `relay_demo`:
 
     ```sh
-    relay_demo prod         # press Tab one or multiple times
+    relay_demo goto host        # press Tab one or multiple times
     ```
 
     ```sh
-    relay_demo prod ro      # press Alt+Shift+Q shortcut to describe command line args
+    relay_demo goto host dev    # press Alt+Shift+Q shortcut to describe command line args
     ```
 
 *   To clean up, exit sub-shells:

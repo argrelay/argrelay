@@ -6,11 +6,14 @@ connection_config:
     server_port_number: 8787
 
 mongo_config:
-    client_connection_string: mongodb://test:test@localhost/test?authSource=admin
-    # TODO: change to `argrelay`:
-    database_name: test
-    start_server: True
-    server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
+    use_mongomock_only: True
+    mongo_client:
+        client_connection_string: mongodb://test:test@localhost/test?authSource=admin
+    mongo_server:
+        # TODO: change to `argrelay`:
+        database_name: test
+        start_server: True
+        server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
 
 plugin_list:
     -   plugin_id: FirstArgInterpFactory
@@ -102,6 +105,12 @@ plugin_list:
     -   plugin_id: NoopInvocator
         plugin_module_name: argrelay.plugin_invocator.NoopInvocator
         plugin_class_name: NoopInvocator
+        plugin_type: InvocatorPlugin
+        plugin_config: { }
+
+    -   plugin_id: ErrorInvocator
+        plugin_module_name: argrelay.plugin_invocator.ErrorInvocator
+        plugin_class_name: ErrorInvocator
         plugin_type: InvocatorPlugin
         plugin_config: { }
 

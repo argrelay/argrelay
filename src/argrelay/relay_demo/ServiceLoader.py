@@ -3,6 +3,7 @@ from __future__ import annotations
 from argrelay.meta_data.GlobalArgType import GlobalArgType
 from argrelay.meta_data.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.meta_data.StaticData import StaticData
+from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
@@ -12,7 +13,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     envelope_class_,
 )
-from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import accept_envelope_classes_
+from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import accept_envelope_classes_, invocator_plugin_id_
 
 
 def _todo(self):
@@ -79,6 +80,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_id_: "goto_host",
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 envelope_payload_: {
+                    invocator_plugin_id_: ErrorInvocator.__name__,
                     accept_envelope_classes_: [
                         ServiceEnvelopeClass.ClassHost.name,
                     ],
@@ -90,6 +92,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_id_: "goto_service",
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 envelope_payload_: {
+                    invocator_plugin_id_: ErrorInvocator.__name__,
                     accept_envelope_classes_: [
                         ServiceEnvelopeClass.ClassService.name,
                     ],
@@ -102,7 +105,6 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 envelope_payload_: {
                     accept_envelope_classes_: [
-                        ServiceEnvelopeClass.ClassService.name,
                         ServiceEnvelopeClass.ClassHost.name,
                     ],
                 },
@@ -115,7 +117,6 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                     accept_envelope_classes_: [
                         ServiceEnvelopeClass.ClassService.name,
-                        ServiceEnvelopeClass.ClassHost.name,
                     ],
                 },
                 GlobalArgType.ActionType.name: "desc",

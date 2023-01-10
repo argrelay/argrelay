@@ -26,7 +26,7 @@ class AbstractInvocator(AbstractPlugin):
     def invoke_action(invocation_input: InvocationInput):
         """
         Client-side (static) entry point.
-        The plugin instance is used by client :
+        The plugin instance is used by client:
         *   without instantiating
         *   without providing `AbstractPlugin.config_dict`
         *   without calling `AbstractPlugin.activate_plugin`

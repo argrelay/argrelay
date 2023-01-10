@@ -2,19 +2,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from argrelay.mongo_data.MongoClientConfig import MongoClientConfig
+from argrelay.mongo_data.MongoServerConfig import MongoServerConfig
+
 
 @dataclass
 class MongoConfig:
-    # Example:
-    # "mongodb://test:test@localhost/test?authSource=admin"
-    client_connection_string: str
+    use_mongomock_only: bool
+    """
+    See :class:`MongoConfigSchema.use_mongomock_only`.
+    """
 
-    # Example:
-    # "test"
-    database_name: str
+    mongo_client: MongoClientConfig
 
-    start_server: bool
-
-    # Example:
-    # "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data"
-    server_start_command: str
+    mongo_server: MongoServerConfig

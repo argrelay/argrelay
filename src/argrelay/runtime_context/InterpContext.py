@@ -152,7 +152,9 @@ class InterpContext:
         # TODO: print unrecognized tokens
         # TODO: for unrecognized token highlight by color all tokens with matching substring
         for data_envelope in self.assigned_types_to_values_per_envelope:
-            if not data_envelope[is_found_]:
+            # Checking if `data_envelope[is_found_]` is not right because
+            # not yet found envelope collect `assigned_types_to_values_` to show:
+            if envelope_class_ not in data_envelope:
                 # It must be last envelope created but no envelope class left to query it:
                 break
             eprint(data_envelope[envelope_class_])

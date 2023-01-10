@@ -1,5 +1,3 @@
-from unittest import skip
-
 from pymongo.collection import Collection
 from pymongo.database import Database
 

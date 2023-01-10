@@ -32,7 +32,7 @@ class LocalServer:
         self._index_data()
 
     def get_mongo_database(self):
-        return self.mongo_client[self.server_config.mongo_config.database_name]
+        return self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
 
     def _activate_plugins(self):
         """
@@ -73,5 +73,5 @@ class LocalServer:
         self.mongo_server.start_mongo_server(self.server_config.mongo_config)
 
     def _index_data(self):
-        mongo_db = self.mongo_client[self.server_config.mongo_config.database_name]
+        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
         MongoClientWrapper.store_envelopes(mongo_db, self.server_config.static_data)

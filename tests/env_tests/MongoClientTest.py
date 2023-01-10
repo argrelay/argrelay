@@ -1,12 +1,6 @@
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from pymongo.collection import Collection
-from pymongo.database import Database
-
-from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
-from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
-from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_, data_envelopes_
 
 
 class MongoClientTest(TestCase):

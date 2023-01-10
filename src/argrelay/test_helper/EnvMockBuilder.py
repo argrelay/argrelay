@@ -27,9 +27,14 @@ from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
-from argrelay.schema_config_core_server.MongoConfigSchema import start_server_
-from argrelay.schema_config_core_server.ServerConfigSchema import static_data_, mongo_config_, server_config_desc, \
-    plugin_list_
+from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
+from argrelay.schema_config_core_server.MongoServerConfigSchema import start_server_
+from argrelay.schema_config_core_server.ServerConfigSchema import (
+    static_data_,
+    mongo_config_,
+    server_config_desc,
+    plugin_list_,
+)
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_id_, plugin_config_
 from argrelay.test_helper.OpenFileMock import OpenFileMock
@@ -184,7 +189,9 @@ class EnvMockBuilder:
             self.file_mock.path_to_data[client_config_desc.default_file_path] = yaml.dump(self.client_config_dict)
 
         if self.mock_server_config_file_read:
-            self.server_config_dict[mongo_config_][start_server_] = self.is_server_config_with_mongo_start
+            self.server_config_dict[mongo_config_][mongo_server_][
+                start_server_
+            ] = self.is_server_config_with_mongo_start
             for plugin_entry in self.server_config_dict[plugin_list_]:
                 if plugin_entry[plugin_id_] == GitRepoLoader.__name__:
                     plugin_entry[plugin_config_][is_enabled_] = self.enable_demo_git_loader
@@ -198,7 +205,12 @@ class EnvMockBuilder:
             # Always mock file access - whether file data or mocked data is given depends on the config:
             yield_list.append(exit_stack.enter_context(self.mock_file_open()))
 
-            if self.mock_mongo_client:
+            if (
+                self.mock_mongo_client
+                and
+                # If `mongomock` is already used, no need to mock MongoDB:
+                not self.server_config_dict[mongo_config_][use_mongomock_only_]
+            ):
                 yield_list.append(exit_stack.enter_context(_mongo_client_mock_manager()))
 
             if self._mock_client_input:
