@@ -35,6 +35,7 @@ class StaticDataSchema(Schema):
         return StaticData(
             first_interp_factory_id = input_dict[first_interp_factory_id_],
             types_to_values = input_dict[types_to_values_],
+            data_envelopes = input_dict[data_envelopes_],
         )
 
 

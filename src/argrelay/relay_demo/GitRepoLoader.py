@@ -171,7 +171,7 @@ class GitRepoLoader(AbstractLoader):
             GlobalArgType.ActionType.name: "desc",
             GlobalArgType.ObjectSelector.name: "repo",
         }
-        self._merge_function_envelopes(data_envelopes, given_function_envelope)
+        data_envelopes.append(given_function_envelope)
 
         given_function_envelope = {
             envelope_id_: "desc_commit",
@@ -185,41 +185,6 @@ class GitRepoLoader(AbstractLoader):
             GlobalArgType.ActionType.name: "desc",
             GlobalArgType.ObjectSelector.name: "commit",
         }
-        self._merge_function_envelopes(data_envelopes, given_function_envelope)
+        data_envelopes.append(given_function_envelope)
 
         return static_data
-
-    # noinspection PyMethodMayBeStatic
-    def _merge_function_envelopes(self, data_envelopes: list, given_func_envelope):
-
-        is_found = False
-        for data_envelope in data_envelopes:
-            if (
-                (envelope_id_ in data_envelope)
-                and
-                (data_envelope[envelope_id_] == given_func_envelope[envelope_id_])
-                and
-                (envelope_class_ in data_envelope)
-                and
-                (data_envelope[envelope_class_] == given_func_envelope[envelope_class_])
-            ):
-                # Update existing function envelope:
-                if not is_found:
-                    is_found = True
-
-                    # Can we really support any other `envelope class`-es for this function?
-                    assert len(data_envelope[envelope_payload_][accept_envelope_classes_]) == 0
-                    data_envelope[envelope_payload_][accept_envelope_classes_].extend(
-                        given_func_envelope[envelope_payload_][accept_envelope_classes_]
-                    )
-
-                    assert data_envelope[GlobalArgType.ActionType.name] == given_func_envelope[
-                        GlobalArgType.ActionType.name]
-                    data_envelope[GlobalArgType.ObjectSelector.name] = given_func_envelope[
-                        GlobalArgType.ObjectSelector.name]
-
-                else:
-                    raise RuntimeError
-        if not is_found:
-            # Insert given function envelope:
-            data_envelopes.append(given_func_envelope)

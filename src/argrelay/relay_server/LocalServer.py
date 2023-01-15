@@ -50,6 +50,8 @@ class LocalServer:
             if plugin_entry.plugin_type == PluginType.LoaderPlugin:
                 plugin_object: AbstractLoader = instantiate_plugin(plugin_entry)
                 plugin_object.activate_plugin()
+                # Store instance of `AbstractLoader` under specified id for future use:
+                self.server_config.data_loaders[plugin_entry.plugin_id] = plugin_object
                 # Use loader to update data:
                 self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
                 server_config_desc.dict_schema.validate(self.server_config.static_data)
@@ -68,6 +70,17 @@ class LocalServer:
                 # Store instance of `AbstractInvocator` under specified id for future use:
                 self.server_config.action_invocators[plugin_entry.plugin_id] = plugin_object
                 continue
+
+        self._validate_static_data()
+
+    def _validate_static_data(self):
+        all_plugins: [AbstractLoader] = []
+        all_plugins.extend(self.server_config.data_loaders.values())
+        all_plugins.extend(self.server_config.interp_factories.values())
+        all_plugins.extend(self.server_config.action_invocators.values())
+
+        for plugin_instance in all_plugins:
+            plugin_instance.validate_loaded_data(self.server_config.static_data)
 
     def _start_mongo_server(self):
         self.mongo_server.start_mongo_server(self.server_config.mongo_config)

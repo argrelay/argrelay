@@ -27,6 +27,12 @@ class ServerConfig:
     They are are populated from `plugin_list` (key = `plugin_id`, value = `plugin_entry`).
     """
 
+    data_loaders: dict[str, "AbstractLoader"] = field(default_factory = lambda: {})
+    """
+    Entries in `data_loaders` are not directly loaded from config.
+    These are plugin instances created during plugin activation.
+    """
+
     interp_factories: dict[str, "AbstractInterpFactory"] = field(default_factory = lambda: {})
     """
     Entries in `interp_factories` are not directly loaded from config.
