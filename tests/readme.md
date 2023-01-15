@@ -22,3 +22,8 @@ The only useful practical difference between them are these directories:
     (rely on some running service, need some files, etc.).
 
     They are in separate directory (excluded from running automatically) instead of `@skip`-ping them.
+
+*   `release_tests`
+
+    Separate category of tests which are okay to fail on branches (and it is okay not to run them to avoid noise),
+    but they will eventually need to pass before release.

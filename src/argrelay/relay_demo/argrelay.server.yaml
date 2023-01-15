@@ -93,7 +93,7 @@ plugin_list:
         plugin_class_name: GitRepoLoader
         plugin_type: LoaderPlugin
         plugin_config:
-            is_enabled: False
+            is_enabled: True
             base_path: "~/repos"
 
     -   plugin_id: GitRepoInvocator

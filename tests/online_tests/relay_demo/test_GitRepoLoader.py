@@ -36,7 +36,7 @@ class ThisTestCase(TestCase):
                 },
                 {
                     "git_root_path": "qwer/xyz",
-                    "git_remote_url": "git@github.com:uvsmtid/argrelay.git",
+                    "git_remote_url": "git@github.com:kislyuk/argcomplete.git",
                 },
                 {
                     "git_root_path": "zxcv",
