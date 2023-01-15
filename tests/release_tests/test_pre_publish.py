@@ -3,6 +3,7 @@ Check things which should not be published
 
 For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
 """
+import os
 from unittest import TestCase
 
 from argrelay.meta_data.ServerConfig import ServerConfig
@@ -38,3 +39,19 @@ class ThisTestCase(TestCase):
             raise RuntimeError("missing " + GitRepoLoader_class.__name__ + " plugin?")
 
         self.assertFalse(git_loader_plugin.plugin_config[is_enabled_])
+
+    def test_env_tests_have_no_init_file(self):
+        """
+        There should be no `__init__.py` file under `env_tests` directory.
+
+        This keeps all tests under `env_tests` non-discoverable when run from `env_tests`.
+
+        See `tests/readme.md`.
+        """
+
+        # When IDE runs, CWD="tests", when `tox` runs, CWD=[repo root], so change to `tests` subdir:
+        if os.path.basename(os.getcwd()) != "tests":
+            os.chdir("tests")
+
+        self.assertTrue(os.path.isdir("env_tests"))
+        self.assertFalse(os.path.exists("env_tests/__init__.py"))

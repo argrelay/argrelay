@@ -22,6 +22,10 @@ def get_mongo_client(mongo_config: MongoConfig):
 
 
 def store_envelopes(mongo_db: Database, static_data: StaticData):
+    # TODO: Currently, we use single collection,
+    #       but we never search across all object,
+    #       we always search specific `envelope_class_`.
+    #       Should we use collection per envelope class?
     col_proxy: Collection = mongo_db[data_envelopes_]
     col_proxy.delete_many({})
 

@@ -4,7 +4,6 @@ from pymongo.database import Database
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
-from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_
 from env_tests.MongoClientTest import MongoClientTest
 
 
@@ -20,7 +19,7 @@ class ThisTestCase(MongoClientTest):
         mongo_client = get_mongo_client(mongo_config)
         print("list_database_names: ", mongo_client.list_database_names())
 
-        mongo_db: Database = mongo_client[mongo_config.database_name]
+        mongo_db: Database = mongo_client[mongo_config.mongo_server.database_name]
         print("list_collection_names: ", mongo_db.list_collection_names())
 
         col_name = "argrelay"
@@ -28,44 +27,42 @@ class ThisTestCase(MongoClientTest):
 
         self.remove_all_envelopes(col_proxy)
 
+        index_fields = [
+            ServiceArgType.AccessType.name,
+            ServiceArgType.ColorTag.name,
+            ServiceArgType.CodeMaturity.name,
+        ]
+
         envelope_001 = {
             "envelope_payload": {
                 "object_name": "envelope_001",
             },
-            types_to_values_: {
-                ServiceArgType.AccessType.name: "ro",
-            },
+            ServiceArgType.AccessType.name: "ro",
         }
 
         envelope_002 = {
             "envelope_payload": {
                 "object_name": "envelope_002",
             },
-            types_to_values_: {
-                ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.ColorTag.name: "red",
-            },
+            ServiceArgType.AccessType.name: "rw",
+            ServiceArgType.ColorTag.name: "red",
         }
 
         envelope_003 = {
             "envelope_payload": {
                 "object_name": "envelope_003",
             },
-            types_to_values_: {
-                ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.ColorTag.name: "blue",
-            },
+            ServiceArgType.AccessType.name: "rw",
+            ServiceArgType.ColorTag.name: "blue",
         }
 
         envelope_004 = {
             "envelope_payload": {
                 "object_name": "envelope_004",
             },
-            types_to_values_: {
-                ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.ColorTag.name: "red",
-                ServiceArgType.CodeMaturity.name: "prod",
-            },
+            ServiceArgType.AccessType.name: "rw",
+            ServiceArgType.ColorTag.name: "red",
+            ServiceArgType.CodeMaturity.name: "prod",
         }
 
         col_proxy.insert_many([
@@ -75,13 +72,14 @@ class ThisTestCase(MongoClientTest):
             envelope_004,
         ])
 
-        col_proxy.create_index(types_to_values_)
+        for index_field in index_fields:
+            col_proxy.create_index(index_field)
 
         print("query 1:")
         for data_envelope in col_proxy.find(
             {
-                f"types_to_values.{ServiceArgType.AccessType.name}": "rw",
-                f"types_to_values.{ServiceArgType.ColorTag.name}": "red",
+                ServiceArgType.AccessType.name: "rw",
+                ServiceArgType.ColorTag.name: "red",
             }
         ):
             print("data_envelope: ", data_envelope)

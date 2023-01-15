@@ -78,8 +78,8 @@ class GitRepoLoader(AbstractLoader):
 
         # Init type keys (if they do not exist):
         for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-            if type_name not in static_data.types_to_values.keys():
-                static_data.types_to_values[type_name] = []
+            if type_name not in static_data.known_types:
+                static_data.known_types.append(type_name)
 
         data_envelopes = static_data.data_envelopes
 
@@ -90,8 +90,6 @@ class GitRepoLoader(AbstractLoader):
         for abs_git_path in git_repo_paths.keys():
             rel_git_path = git_repo_paths[abs_git_path]
             print(f"Git repo to load: {rel_git_path}")
-            # TODO: `types_to_values` should be updated automatically after loading all envelopes:
-            static_data.types_to_values[GitRepoArgType.GitRepoRelPath.name].append(rel_git_path)
 
             # Produce relative path, for example, if:
             # base_path_ = "/path/to/base/dir/"
@@ -100,8 +98,8 @@ class GitRepoLoader(AbstractLoader):
             # rel_git_path = "rel/path/to/git/repo.git/"
             # path_comp_list = [ "rel", "path", "to", "git", "repo" ]
             rel_git_path = git_repo_paths[abs_git_path]
-            # TODO: `types_to_values` should be updated automatically after loading all envelopes:
-            path_comp_list = static_data.types_to_values[GitRepoArgType.GitRepoPathComp.name]
+
+            path_comp_list = []
             for rel_git_path_comp in rel_git_path.split(os.sep)[:-1]:
                 if rel_git_path_comp not in path_comp_list:
                     path_comp_list.append(rel_git_path_comp)
@@ -129,14 +127,6 @@ class GitRepoLoader(AbstractLoader):
 
             git_repo = Repo(abs_git_path)
             for git_commit in git_repo.iter_commits():
-                # TODO: `types_to_values` should be updated automatically after loading all envelopes:
-                static_data.types_to_values[
-                    GitRepoArgType.GitRepoCommitId.name
-                ].append(git_commit.hexsha)
-                static_data.types_to_values[
-                    GitRepoArgType.GitRepoCommitAuthorEmail.name
-                ].append(git_commit.author.email)
-
                 ########################################################################################################
                 # commits
 

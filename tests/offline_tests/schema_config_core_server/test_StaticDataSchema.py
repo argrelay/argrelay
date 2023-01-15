@@ -4,8 +4,11 @@ from jsonschema.exceptions import ValidationError
 from marshmallow import ValidationError
 
 from argrelay.schema_config_core_server.ServerConfigSchema import static_data_
-from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc, types_to_values_, \
-    first_interp_factory_id_
+from argrelay.schema_config_core_server.StaticDataSchema import (
+    static_data_desc,
+    first_interp_factory_id_,
+    known_types_, data_envelopes_,
+)
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import load_relay_demo_server_config_dict
 
@@ -22,34 +25,20 @@ class ThisTestCase(TestCase):
                 line_no(), "basic sample",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    types_to_values_: {
-                        "action": [
-                            "goto",
-                            "desc",
-                            "list",
-                        ],
-                        "access": [
-                            "ro",
-                            "rw",
-                        ],
-                    },
-                    "data_envelopes": [
+                    known_types_: [
+                        "action",
+                        "access",
+                    ],
+                    data_envelopes_: [
                     ],
                 },
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    types_to_values_: {
-                        "action": [
-                            "goto",
-                            "desc",
-                            "list",
-                        ],
-                        "access": [
-                            "ro",
-                            "rw",
-                        ],
-                    },
-                    "data_envelopes": [
+                    known_types_: [
+                        "action",
+                        "access",
+                    ],
+                    data_envelopes_: [
                     ],
                 },
                 None,
@@ -66,8 +55,8 @@ class ThisTestCase(TestCase):
                 line_no(), "without required field (`data_envelopes`)",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    types_to_values_: {
-                    },
+                    known_types_: [
+                    ],
                 },
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
@@ -78,17 +67,17 @@ class ThisTestCase(TestCase):
                 line_no(), "with extra key (`whatever_extra_key`) which is not allowed",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    "types_to_values": {
-                    },
-                    "data_envelopes": [
+                    known_types_: [
+                    ],
+                    data_envelopes_: [
                     ],
                     "whatever_extra_key": "whatever_extra_val",
                 },
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    types_to_values_: {
-                    },
-                    "data_envelopes": [
+                    known_types_: [
+                    ],
+                    data_envelopes_: [
                     ],
                 },
                 ValidationError,

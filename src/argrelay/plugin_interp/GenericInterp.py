@@ -69,6 +69,7 @@ class GenericInterp(AbstractInterp):
         self.function_query = config_dict[function_query_]
         # TODO: provide dict in config directly, there is no usage of list variant (no ordering is defined by this list):
         self.envelope_class_queries_list = config_dict[envelope_class_queries_]
+        # Convert list to dict:
         self.envelope_class_queries_dict = {}
         for envelope_class_query in self.envelope_class_queries_list:
             self.envelope_class_queries_dict[envelope_class_query[envelope_class_]] = envelope_class_query
@@ -286,7 +287,7 @@ class GenericInterp(AbstractInterp):
             # TODO: instead of looping through all `types_to_values` possible in `static_data`,
             #       loop through those types used in query for that object:
             # `arg_type` must be known:
-            for arg_type in self.interp_ctx.static_data.types_to_values.keys():
+            for arg_type in self.curr_types_to_keys.keys():
                 # `arg_type` must be in one of the `data_envelope`-s found:
                 if arg_type in envelope_found:
                     # `arg_type` must not be assigned/consumed:
@@ -321,7 +322,8 @@ class GenericInterp(AbstractInterp):
             if self.interp_ctx.parsed_ctx.sel_token_l_part == "":
                 return self.remaining_from_next_missing_types()
             else:
-                return self.remaining_from_all_missing_types()
+                # TODO: Suggest keys (:) of missing types instead - it is `SubsequentHelp`, user insist and wants something else:
+                return self.remaining_from_next_missing_types()
 
         if self.interp_ctx.parsed_ctx.sel_token_l_part == "":
             # assert t == CompType.PartialWord, "Is this partial word but selected token left part is empty?"
@@ -374,20 +376,6 @@ class GenericInterp(AbstractInterp):
                         x.startswith(self.interp_ctx.parsed_ctx.sel_token_l_part)
                         # TODO: Support list[str] - what if one type can have list of values (and we need to match any as in OR)?
                     )
-                ]
-
-        return proposed_tokens
-
-    def remaining_from_all_missing_types(self) -> list[str]:
-        proposed_tokens: list[str] = []
-
-        # Add entire value sets for missing args to proposed set:
-        for arg_type in self.curr_types_to_keys.keys():
-            if arg_type not in self.interp_ctx.curr_assigned_types_to_values:
-                proposed_tokens += [
-                    # TODO: if these values are populated by all possible automatically, do we still want to propose from all regardless current object class context? On `SubsequentHelp`? I don't think so.
-                    x for x in self.interp_ctx.static_data.types_to_values[arg_type]
-                    if x.startswith(self.interp_ctx.parsed_ctx.sel_token_l_part)
                 ]
 
         return proposed_tokens

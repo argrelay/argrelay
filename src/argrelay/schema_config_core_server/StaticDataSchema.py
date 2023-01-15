@@ -7,7 +7,7 @@ from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 
 first_interp_factory_id_ = "first_interp_factory_id"
-types_to_values_ = "types_to_values"
+known_types_ = "known_types"
 data_envelopes_ = "data_envelopes"
 
 
@@ -19,10 +19,8 @@ class StaticDataSchema(Schema):
     first_interp_factory_id = fields.String(
         required = True,
     )
-    types_to_values = fields.Dict(
-        keys = fields.String(),
-        values = fields.List(fields.String()),
-        default = {},
+    known_types = fields.List(
+        fields.String(),
         required = True,
     )
     data_envelopes = fields.List(
@@ -34,7 +32,7 @@ class StaticDataSchema(Schema):
     def make_object(self, input_dict, **kwargs):
         return StaticData(
             first_interp_factory_id = input_dict[first_interp_factory_id_],
-            types_to_values = input_dict[types_to_values_],
+            known_types = input_dict[known_types_],
             data_envelopes = input_dict[data_envelopes_],
         )
 
@@ -44,16 +42,10 @@ static_data_desc = TypeDesc(
     ref_name = StaticDataSchema.__name__,
     dict_example = {
         first_interp_factory_id_: "SomeInterp",
-        types_to_values_: {
-            "SomeTypeA": [
-                "A_value_1",
-                "A_value_2",
-            ],
-            "SomeTypeB": [
-                "B_value_1",
-                "B_value_2",
-            ],
-        },
+        known_types_: [
+            "SomeTypeA",
+            "SomeTypeB",
+        ],
         data_envelopes_: [
             data_envelope_desc.dict_example,
         ]
