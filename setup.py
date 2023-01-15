@@ -36,7 +36,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: POSIX :: Linux",
-        "Development Status :: 1 - Planning",
+        "Development Status :: 2 - Pre-Alpha",
     ],
     # See sample layout:
     # https://docs.python.org/3/distutils/setupscript.html#installing-package-data
@@ -76,5 +76,4 @@ setuptools.setup(
     ],
     tests_require = tests_require,
     extras_require = extras_require,
-
 )

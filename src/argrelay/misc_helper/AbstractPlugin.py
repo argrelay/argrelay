@@ -12,6 +12,19 @@ class AbstractPlugin:
         self.config_dict = config_dict
 
     def activate_plugin(self):
+        """
+        One-time plugin activation callback during server startup.
+
+        This is a chance to initialize (once) any resources plugin requires.
+        """
+        pass
+
+    def validate_loaded_data(self, static_data: "StaticData"):
+        """
+        Callback to validate data after all :class:`AbstractLoader`-s completed loading data.
+
+        This is a chance for any plugin to verify that the data still matches its expectation.
+        """
         pass
 
 

@@ -80,13 +80,7 @@ plugin_list:
         plugin_module_name: argrelay.relay_demo.ServiceLoader
         plugin_class_name: ServiceLoader
         plugin_type: LoaderPlugin
-        plugin_config:
-
-            types_to_values:
-
-                ColorTag:
-                    - red
-                    - green
+        plugin_config: { }
 
     -   plugin_id: GitRepoLoader
         plugin_module_name: argrelay.relay_demo.GitRepoLoader
@@ -121,60 +115,6 @@ static_data:
 
     first_interp_factory_id: FirstArgInterpFactory
 
-    types_to_values:
-
-        # TODO: only define list of types, populating `types_to_values` should be automatic from all loaded envelopes:
-        ActionType:
-            - goto
-            - desc
-            - list
-
-        ObjectSelector:
-            - host
-            - service
-            - repo
-            - commit
-
-        CodeMaturity:
-            - dev
-            - qa
-            - prod
-
-        FlowStage:
-            - upstream
-            - downstream
-
-        GeoRegion:
-            - amer
-            - emea
-            - apac
-
-        # Host names are just some strings with prefixes for testing:
-        HostName:
-            - qw
-            - qwe
-            - qwer
-            - wert
-
-            - as
-            - asd
-            - asdf
-            - sdfg
-
-            - zx
-            - zxc
-            - zxcv
-            - xcvb
-
-        ServiceName:
-            - service_a
-            - service_b
-            - service_c
-
-        AccessType:
-            - ro
-            - rw
-
-        ColorTag: [ ]
+    known_types: [ ]
 
     data_envelopes: [ ]

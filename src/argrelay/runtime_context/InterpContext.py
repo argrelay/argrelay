@@ -201,9 +201,6 @@ class InterpContext:
 
                 eprint()
 
-    def is_type_with_values(self, arg_type: str) -> bool:
-        return len(self.static_data.types_to_values[arg_type]) != 0
-
     def print_debug(self) -> None:
         if not self.parsed_ctx.is_debug_enabled:
             return

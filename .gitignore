@@ -1,7 +1,7 @@
 
 # Python
 __pycache__/
-/venv/relay_demo/
+/venv/
 /.tox/
 
 /build/

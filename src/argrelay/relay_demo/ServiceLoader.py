@@ -7,7 +7,6 @@ from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     envelope_id_,
@@ -41,30 +40,20 @@ class ServiceLoader(AbstractLoader):
 
     def update_static_data(self, static_data: StaticData) -> StaticData:
 
-        static_data = self.load_types_to_values(static_data)
         static_data = self.load_data_envelopes(static_data)
-
-        return static_data
-
-    def load_types_to_values(self, static_data: StaticData) -> StaticData:
-        """
-        The loader simply merges content its `config_dict` into `static_data`.
-        """
-
-        config_types_to_values: dict[str, list[str]] = self.config_dict[types_to_values_]
-        for type_name, values_list in config_types_to_values.items():
-            if type_name in static_data.types_to_values:
-                static_data.types_to_values[type_name].extend(values_list)
-            else:
-                static_data.types_to_values[type_name] = values_list
 
         return static_data
 
     # noinspection PyMethodMayBeStatic
     def load_data_envelopes(self, static_data: StaticData) -> StaticData:
         """
-        The loader hard-codes samples into `static_data["data_envelopes"]`
+        The loader writes samples into `static_data["data_envelopes"]` simply from code (without any data source).
         """
+
+        # Init type keys (if they do not exist):
+        for type_name in [enum_item.name for enum_item in ServiceArgType]:
+            if type_name not in static_data.known_types:
+                static_data.known_types.append(type_name)
 
         # TODO: This loader overwrites existing object list (it has to patch it instead).
         #       This is fine for now because `ServiceLoader` is used first in config.

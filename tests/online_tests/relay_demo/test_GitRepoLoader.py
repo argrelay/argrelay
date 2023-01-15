@@ -8,8 +8,6 @@ from argrelay.misc_helper import eprint
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, is_enabled_
-from argrelay.schema_config_core_server.ServerConfigSchema import static_data_
-from argrelay.schema_config_core_server.StaticDataSchema import types_to_values_
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import relay_demo_static_data_object
 
@@ -36,7 +34,7 @@ class ThisTestCase(TestCase):
                 },
                 {
                     "git_root_path": "qwer/xyz",
-                    "git_remote_url": "git@github.com:uvsmtid/argrelay.git",
+                    "git_remote_url": "git@github.com:kislyuk/argcomplete.git",
                 },
                 {
                     "git_root_path": "zxcv",
@@ -88,8 +86,12 @@ class ThisTestCase(TestCase):
                 git_repo_loader = GitRepoLoader(plugin_config)
                 static_data = git_repo_loader.update_static_data(static_data)
 
-                # TODO: When `types_to_values` become auto-populated, showing them here does not make sense:
-                print(f"curr `{static_data_}.{types_to_values_}`:")
                 for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-                    assert type_name in static_data.types_to_values
-                    print(f"{type_name}: ", static_data.types_to_values[type_name])
+                    assert type_name in static_data.known_types
+
+                    # Find list all values in data_envelope per `type_name`:
+                    typed_values = []
+                    for data_envelope in static_data.data_envelopes:
+                        if type_name in data_envelope:
+                            typed_values.append(data_envelope[type_name])
+                    print(f"type_to_values: {type_name}: {typed_values}")
