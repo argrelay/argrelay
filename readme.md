@@ -49,7 +49,7 @@ To clarify,<br/>
     *   objects the server can search
     *   grammar the command line can have
 *   **Interfaces** to bind these all together.
-*   **Demo** plugins to show an example.
+*   **Demo** plugins to show examples.
 
 # CLI-friendly completion: primary focus
 
@@ -79,7 +79,7 @@ Without any context, just two words "drink" + "sweet" leave<br/>
 a lot of ambiguity to guess a watermelon (many drinks are sweet).
 
 A more clarified "sentence" could be:
-> drink round red sweet fruit
+> drink striped red sweet fruit
 
 Each word narrows down matching object set<br/>
 to more specific candidates (including watermelon).
@@ -88,7 +88,7 @@ to more specific candidates (including watermelon).
 
 Notice that the word order is not important -<br/>
 this line provides (almost) equivalent hints for guessing:
-> round sweet fruit red drink
+> striped sweet fruit red drink
 
 It is not valid English grammar, but it somewhat works.
 
@@ -124,7 +124,7 @@ larger enum cardinalities or more word places are required.
 CLI-s are used to write commands - imperative sentences:<br/>
 specific actions on specific objects.
 
-The "enum language" above covers searching/specifying all<br/>
+The "enum language" above covers searching both<br/>
 an action and any object it requires.
 
 ### Suggest contextually
@@ -140,11 +140,11 @@ remaining (narrowed down) object sets.
 All above may be an obvious approach to come up with,<br/>
 but it is not ordinary for CLI-s of most common commands:
 
-| Common commands (think `ls`, `git`, `ssh`, ...):                            | `argrelay`-wrapped actions                             |
-|:----------------------------------------------------------------------------|:-------------------------------------------------------|
-| have succinct syntax and prefer<br/> single-char switches (defined by code) | prefer explicit "enum language"<br/> defined by data   |
-| rely on a human to memorize syntax<br/> (options, ordering, etc.)           | assume a human have<br/> a loose idea about the syntax |
-| auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific index        |
+| Common commands (think `ls`, `git`, `ssh`, ...):                            | `argrelay`-wrapped actions                            |
+|:----------------------------------------------------------------------------|:------------------------------------------------------|
+| have succinct syntax and prefer<br/> single-char switches (defined by code) | prefer explicit "enum language"<br/> defined by data  |
+| rely on humans to memorize syntax<br/> (options, ordering, etc.)            | assume humans have<br/> a loose idea about the syntax |
+| auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific index       |
 
 The default `argrelay` parsing and CLI-interpretation plugin (see `GenericInterp`)<br/>
 implies such syntax.
@@ -178,7 +178,7 @@ two terminal windows are required.
     ```
 
     While it is running (temporarily),<br/>
-    this sub-shell is configured with completion for `relay_demo` command.
+    this sub-shell is configured for Bash Tab-completion for `relay_demo` command.
 
 *   Try to complete command `relay_demo`:
 
