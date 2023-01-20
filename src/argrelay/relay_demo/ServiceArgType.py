@@ -5,6 +5,7 @@ class ServiceArgType(Enum):
     CodeMaturity = auto()
     FlowStage = auto()
     GeoRegion = auto()
+    ClusterName = auto()
     HostName = auto()
     ServiceName = auto()
     AccessType = auto()

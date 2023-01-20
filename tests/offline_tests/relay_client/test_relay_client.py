@@ -2,8 +2,8 @@ from unittest import TestCase
 
 import responses
 
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.RunMode import RunMode
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.RunMode import RunMode
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc

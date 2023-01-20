@@ -18,9 +18,9 @@ import pkg_resources
 import yaml
 
 import argrelay
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.RunMode import RunMode
-from argrelay.meta_data.SpecialChar import SpecialChar
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.RunMode import RunMode
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_

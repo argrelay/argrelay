@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import Enum, auto
 
-from argrelay.meta_data.SpecialChar import SpecialChar
+from argrelay.enum_desc.SpecialChar import SpecialChar
 
 
 class TokenType(Enum):

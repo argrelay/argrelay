@@ -1,11 +1,11 @@
 from flasgger import swag_from
 from flask import request, Blueprint
 
+from argrelay.enum_desc.RunMode import RunMode
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.handler_request.DescribeLineArgsServerRequestHandler import DescribeLineArgsServerRequestHandler
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLineArgsServerRequestHandler
-from argrelay.meta_data.RunMode import RunMode
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc

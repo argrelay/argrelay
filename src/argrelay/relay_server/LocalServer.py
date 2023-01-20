@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 
-from argrelay.meta_data.PluginType import PluginType
-from argrelay.meta_data.ServerConfig import ServerConfig
+from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
@@ -9,6 +8,7 @@ from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 
 

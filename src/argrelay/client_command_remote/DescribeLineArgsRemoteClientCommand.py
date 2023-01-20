@@ -1,6 +1,6 @@
 from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractRemoteClientCommand
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import DescribeLineArgsClientResponseHandler
-from argrelay.meta_data.ConnectionConfig import ConnectionConfig
+from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.server_spec.const_int import DESCRIBE_LINE_ARGS_PATH
 
 

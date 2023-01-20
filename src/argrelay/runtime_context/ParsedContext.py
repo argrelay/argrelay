@@ -4,7 +4,7 @@ import dataclasses
 import re
 from dataclasses import dataclass, field
 
-from argrelay.meta_data.SpecialChar import SpecialChar
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.runtime_context.InputContext import InputContext
 
 

@@ -1,3 +1,7 @@
+###############################################################################
+# Note that these dependencies are not necessarily required ones,
+# those required listed in `setup.py` script.
+###############################################################################
 apispec==6.0.2
 attrs==22.1.0
 bleach==5.0.1

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from argrelay.meta_data.ArgSource import ArgSource
+from argrelay.enum_desc.ArgSource import ArgSource
 
 
 # TODO: Forget about coords everywhere, use args for input, maybe coord for the term of core library.

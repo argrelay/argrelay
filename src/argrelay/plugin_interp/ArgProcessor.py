@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from argrelay.meta_data import StaticData
-from argrelay.meta_data.ArgSource import ArgSource
-from argrelay.meta_data.ArgValue import ArgValue
+from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data import StaticData
+from argrelay.runtime_data.ArgValue import ArgValue
 
 
 class ArgProcessor:
@@ -30,7 +30,7 @@ class ArgProcessor:
             and
             token in interp_ctx.curr_remaining_types_to_values[self.arg_type]
         ):
-            interp_ctx.curr_assigned_types_to_values[self.arg_type] = ArgValue(token, ArgSource.ExplicitArg)
+            interp_ctx.curr_assigned_types_to_values[self.arg_type] = ArgValue(token, ArgSource.ExplicitPosArg)
             return True
         else:
             return False

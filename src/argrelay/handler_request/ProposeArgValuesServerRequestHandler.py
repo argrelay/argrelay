@@ -1,5 +1,6 @@
+from argrelay.enum_desc.CompType import CompType
+
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
-from argrelay.meta_data.CompType import CompType
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InputContext import InputContext
 

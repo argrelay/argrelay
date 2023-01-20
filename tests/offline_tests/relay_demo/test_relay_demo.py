@@ -3,15 +3,15 @@ from __future__ import annotations
 from unittest import TestCase
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.meta_data.ArgSource import ArgSource
-from argrelay.meta_data.ArgValue import ArgValue
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.GlobalArgType import GlobalArgType
-from argrelay.meta_data.RunMode import RunMode
-from argrelay.meta_data.TermColor import TermColor
+from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.GlobalArgType import GlobalArgType
+from argrelay.enum_desc.RunMode import RunMode
+from argrelay.enum_desc.TermColor import TermColor
 from argrelay.relay_client import __main__
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import assigned_types_to_values_
+from argrelay.runtime_data.ArgValue import ArgValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import line_no, parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
@@ -24,41 +24,107 @@ class ThisTestCase(TestCase):
     def test_propose_auto_comp(self):
         # @formatter:off
         test_cases = [
-            (line_no(), "some_command |", CompType.PrefixHidden, "goto\ndesc\nlist", "Suggest from the set of values for the first unassigned arg type"),
+            # TODO: If selected token left part does not fall into next expected space, in case of `CompType.SubsequentHelp` suggest to specify named arg.
 
-            (line_no(), "some_command goto host dev amer upstream qwer|  ", CompType.PrefixShown, "qwer", "Still as expected with trailing space after cursor"),
-
-            (line_no(), "some_command goto host qa prod|", CompType.SubsequentHelp, "", "Another value from the same dimension with `SubsequentHelp` yet prefix not matching any from other dimensions => no suggestions"),
-            (line_no(), "some_command goto host qa amer|", CompType.SubsequentHelp, "amer", "Another value from the same dimension with `SubsequentHelp` and prefix matching some from other dimensions => some suggestions"),
-
-            (line_no(), "some_command goto host dev downstream amer.us amer.u|", CompType.PrefixShown, "amer.us", "TD-2023-01-07--1: one of the explicit value matches more than one type, but it is not assigned to all arg types => some suggestion for missing arg types"),
-
-            # TODO: FIXME: Bug: FD-2023-01-07--1: interp skips `upstream` and suggest `downstream` (because there is no `upstream` for `host` and `qa` already pre-selected).
-            #       I'm currently thinking about new meta data `ValueScope` with two values `ValueScope.QueriedData` and `ValueScope.EntireValueSpace`.
-            #       We should force-assign `upstream` value (but mark it ad `ValueScope.EntireValueSpace`).
-            #       * suggested value is incorrect (should be empty)
-            #       * description is correct
-            (line_no(), "some_command host qa upstream amer qw goto ro service_c green |", CompType.PrefixShown, "downstream", "No more suggestions when all coordinates specified"),
-
-            (line_no(), "some_command host qa goto |", CompType.MenuCompletion, "downstream", "Suggestions for next coordinate are arg values pre-filtered by selection of previous arg values"),
-
-            # TODO: FIXME: Bug: while suggestion on `CompType.PrefixHidden` is filtered, suggestion on `CompType.SubsequentHelp` should be entire value space "dev\nqa\nprod":
-            #       This is debatable: what if entire value space is too huge? But then values for huge value space should be ask last allowing to narrow the suggestion down by previous args:
-            (line_no(), "some_command upstream goto host |", CompType.PrefixHidden, "dev", ""),
-            (line_no(), "some_command upstream goto host |", CompType.SubsequentHelp, "dev", ""),
-
-            # TODO: If selected token left part does not fall into next expected space, suggest from all other (yet not determined) matching that substring.
-            (line_no(), "some_command host goto upstream q|", CompType.SubsequentHelp, "qa\nqw\nqwe\nqwer", "Suggestions for subsequent Tab are limited by prefix"),
-
-            # TODO: FIXME: FD-2023-01-07--1: It proposes "dev" while "qa" already specified among args:
-            (line_no(), "some_command goto upstream qa apac desc host |", CompType.SubsequentHelp, "dev", ""),
-
-            (line_no(), "some_command service goto upstream|", CompType.PrefixHidden, "upstream", ""),
-            (line_no(), "some_command de|", CompType.PrefixHidden, "desc", "Suggest from the set of values for the first unassigned arg type (with matching prefix)"),
-            (line_no(), "some_command host goto q| dev", CompType.PrefixHidden, "qwer", "Suggestion for a value from other spaces which do not have coordinate specified"),
-            (line_no(), "some_command q| dev", CompType.PrefixHidden, "", "Do not suggest a value from other spaces until they are available for query for current envelope to search"),
-            (line_no(), "some_command pro| dev", CompType.PrefixHidden, "", "No suggestion for another value from a space which already have coordinate specified"),
-            (line_no(), "some_command goto service q| whatever", CompType.PrefixHidden, "qa", "Unrecognized value does not obstruct suggestion"),
+            (
+                line_no(), "some_command |", CompType.PrefixHidden,
+                "goto\ndesc\nlist",
+                "Suggest from the set of values for the first unassigned arg type",
+            ),
+            (
+                line_no(), "some_command goto host dev amer upstream qwer|  ", CompType.PrefixShown,
+                "",
+                "FD-2023-01-20--1: "
+                "Host `qwer` is already singled out `data_envelope` "
+                "(only one `ServiceEnvelopeClass.ClassHost` within current `ServiceArgType.ClusterName`),"
+                "therefore, it is not suggested.",
+            ),
+            (
+                line_no(), "some_command goto host qa prod|", CompType.SubsequentHelp,
+                "",
+                "Another value from the same dimension with `SubsequentHelp` "
+                "yet prefix not matching any from other dimensions => no suggestions",
+            ),
+            (
+                line_no(), "some_command goto host qa amer|", CompType.SubsequentHelp,
+                "",
+                "FD-2023-01-20--1: "
+                "`ServiceArgType.CodeMaturity` = `qa` singles out `ServiceEnvelopeClass.ClassCluster` which "
+                "skips suggestion for `ServiceArgType.GeoRegion`",
+            ),
+            # TODO: Fix test_data: TD-2023-01-07--1: there is no overlap after introduction of ClusterName.
+            (
+                line_no(), "some_command goto host dev downstream amer.us amer.u|", CompType.PrefixShown,
+                "",
+                "TD-2023-01-07--1: one of the explicit value matches more than one type, "
+                "but it is not assigned to all arg types => some suggestion for missing arg types",
+            ),
+            (
+                line_no(), "some_command host qa upstream amer qw goto ro service_c green |", CompType.PrefixShown,
+                "",
+                "No more suggestions when all coordinates specified",
+            ),
+            (
+                line_no(), "some_command host dev goto downstream |", CompType.MenuCompletion,
+                "emea\namer.us",
+                "Suggestions for next coordinate are arg values pre-filtered by selection of previous arg values",
+            ),
+            (
+                line_no(), "some_command upstream goto host |", CompType.PrefixHidden,
+                "dev",
+                "",
+            ),
+            (
+                line_no(), "some_command upstream goto host |", CompType.SubsequentHelp,
+                "dev",
+                "",
+            ),
+            (
+                line_no(), "some_command host goto upstream a|", CompType.SubsequentHelp,
+                "amer\napac",
+                "Suggestions for subsequent Tab are limited by prefix",
+            ),
+            (
+                line_no(),
+                "some_command goto upstream qa apac desc host |", CompType.SubsequentHelp,
+                "ro\nrw",
+                "FD-2023-01-20--1: "
+                "`ServiceArgType.CodeMaturity` = `qa` singles out `ServiceEnvelopeClass.ClassCluster` which "
+                "skips suggestion for `ServiceArgType.GeoRegion`, then this cluster has only one "
+                "`ServiceEnvelopeClass.ClassHost` = `sdfg` which also skips host suggestion "
+                "leaving `ServiceArgType.AccessType` to be the next to suggest.",
+            ),
+            (
+                line_no(), "some_command service goto upstream|", CompType.PrefixHidden,
+                "upstream",
+                "",
+            ),
+            (
+                line_no(), "some_command de|", CompType.PrefixHidden,
+                "desc",
+                "Suggest from the set of values for the first unassigned arg type (with matching prefix)",
+            ),
+            (
+                line_no(), "some_command host goto e| dev", CompType.PrefixHidden,
+                "emea",
+                "Suggestion for a value from other spaces which do not have coordinate specified",
+            ),
+            (
+                line_no(), "some_command q| dev", CompType.PrefixHidden,
+                "",
+                "Do not suggest a value from other spaces until "
+                "they are available for query for current envelope to search",
+            ),
+            (
+                line_no(), "some_command pro| dev", CompType.PrefixHidden,
+                "",
+                "No suggestion for another value from a space which already have coordinate specified",
+            ),
+            (
+                line_no(), "some_command goto service q| whatever", CompType.PrefixHidden,
+                "qa",
+                "Unrecognized value does not obstruct suggestion",
+            ),
         ]
         # @formatter:on
 
@@ -134,18 +200,22 @@ class ThisTestCase(TestCase):
                         #       what this output shows is entire type list known to static data (it should use limited lists per envelope)
                         #       and it only compares it to the last `curr_assigned_types_to_values` (while it should print all `assigned_types_to_values_per_envelope`)
                         self.assertEqual(
+# TODO: ClassService must use `context_control` to take `ClusterName` from identified `ClassCluster` - `ClusterName` should not be interrogated:
                             f"""
 ClassFunction
-{TermColor.DARK_GREEN.value}ActionType: goto [ExplicitArg]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}ObjectSelector: service [ExplicitArg]{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}ActionType: goto [ExplicitPosArg]{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}ObjectSelector: service [ExplicitPosArg]{TermColor.RESET.value}
+ClassCluster
+{TermColor.DARK_GREEN.value}CodeMaturity: dev [ExplicitPosArg]{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}FlowStage: upstream [ExplicitPosArg]{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}GeoRegion: amer [ExplicitPosArg]{TermColor.RESET.value}
 ClassService
-{TermColor.DARK_GREEN.value}CodeMaturity: dev [ExplicitArg]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}FlowStage: upstream [ExplicitArg]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}GeoRegion: amer [ExplicitArg]{TermColor.RESET.value}
-{TermColor.BRIGHT_YELLOW.value}*HostName: ?{TermColor.RESET.value} qwer
-{TermColor.BRIGHT_YELLOW.value}ServiceName: ?{TermColor.RESET.value} service_a
-{TermColor.BRIGHT_RED.value}AccessType: ?{TermColor.RESET.value}
-{TermColor.BRIGHT_RED.value}ColorTag: ?{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}ClusterName: dev-upstream-amer [ImplicitValue]{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}HostName: qwer [ImplicitValue]{TermColor.RESET.value}
+{TermColor.DARK_GREEN.value}ServiceName: service_a [ImplicitValue]{TermColor.RESET.value}
+{TermColor.BRIGHT_RED.value}*ColorTag: ?{TermColor.RESET.value}
+AccessType
+{TermColor.BRIGHT_YELLOW.value}AccessType: ?{TermColor.RESET.value} ro|rw
 """,
                             env_mock_builder.actual_stderr.getvalue()
                         )
@@ -153,24 +223,99 @@ ClassService
     def test_arg_assignments_for_completion(self):
         # @formatter:off
         test_cases = [
-            # TODO: uncomment, it works:
-            (line_no(), RunMode.CompletionMode, "some_command goto|", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: None, GlobalArgType.ObjectSelector.name: None}, "No assignment for incomplete token (token pointed by the cursor) in completion mode"),
-            (line_no(), RunMode.InvocationMode, "some_command goto|", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: None}, "Incomplete token (pointed by the cursor) is complete in invocation mode"),
-
-            (line_no(), RunMode.CompletionMode, "some_command goto |", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), GlobalArgType.ObjectSelector.name: None}, "Explicit assignment for complete token"),
-            (line_no(), RunMode.CompletionMode, "some_command goto service |", CompType.PrefixShown, 0, {GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitArg), GlobalArgType.ObjectSelector.name: ArgValue("service", ArgSource.ExplicitArg)}, "Explicit assignment for complete token"),
-
-            (line_no(), RunMode.CompletionMode, "some_command goto host prod|", CompType.PrefixShown, 1, {ServiceArgType.CodeMaturity.name: None, ServiceArgType.AccessType.name: None}, "No implicit assignment for incomplete token"),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto|", CompType.PrefixShown,
+                0,
+                {
+                    GlobalArgType.ActionType.name: None,
+                    GlobalArgType.ObjectSelector.name: None,
+                },
+                "No assignment for incomplete token (token pointed by the cursor) in completion mode",
+            ),
+            (
+                line_no(), RunMode.InvocationMode, "some_command desc host zxcv|", CompType.PrefixShown,
+                0,
+                {
+                    GlobalArgType.ActionType.name: ArgValue("desc", ArgSource.ExplicitPosArg),
+                    ServiceArgType.AccessType.name: None,
+                },
+                "Incomplete token (pointed by the cursor) is complete in invocation mode",
+            ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto |", CompType.PrefixShown,
+                0,
+                {
+                    GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitPosArg),
+                    GlobalArgType.ObjectSelector.name: None,
+                },
+                "Explicit assignment for complete token",
+            ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto service |", CompType.PrefixShown,
+                0,
+                {
+                    GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitPosArg),
+                    GlobalArgType.ObjectSelector.name: ArgValue("service", ArgSource.ExplicitPosArg),
+                },
+                "Explicit assignment for complete token",
+            ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto host prod|", CompType.PrefixShown,
+                1,
+                {
+                    ServiceArgType.CodeMaturity.name: None,
+                    ServiceArgType.AccessType.name: None,
+                },
+                "No implicit assignment for incomplete token",
+            ),
             # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
-            #(line_no(), RunMode.InvocationMode, "some_command goto host prod|", CompType.PrefixShown, 1, {ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: ArgValue("ro", ArgSource.ImplicitValue)}, "Implicit assignment even for incomplete token (token pointed by cursor)"),
-
-            (line_no(), RunMode.CompletionMode, "some_command goto host prod |", CompType.PrefixShown, 1, {ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: None}, "No implicit assignment of access type to \"ro\" when code maturity is \"prod\" in completion"),
+            # (
+            #     line_no(), RunMode.InvocationMode, "some_command goto host prod|", CompType.PrefixShown,
+            #     1,
+            #     {
+            #         ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.AccessType.name: ArgValue("ro", ArgSource.ImplicitValue),
+            #     },
+            #     "Implicit assignment even for incomplete token (token pointed by cursor)",
+            # ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto host prod |", CompType.PrefixShown,
+                1,
+                {
+                    ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitPosArg),
+                    ServiceArgType.AccessType.name: None,
+                },
+                "No implicit assignment of access type to \"ro\" when code maturity is \"prod\" in completion",
+            ),
             # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
-            #(line_no(), RunMode.InvocationMode, "some_command goto host prod |", CompType.PrefixShown, 1, {ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: ArgValue("ro", ArgSource.ImplicitValue)}, "Implicit assignment of access type to \"ro\" when code maturity is \"prod\" in invocation"),
-
-            (line_no(), RunMode.CompletionMode, "some_command goto host dev |", CompType.PrefixShown, 1, {ServiceArgType.CodeMaturity.name: ArgValue("dev", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: None}, "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion"),
+            # (
+            #     line_no(), RunMode.InvocationMode, "some_command goto host prod |", CompType.PrefixShown,
+            #     1,
+            #     {
+            #         ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.AccessType.name: ArgValue("ro", ArgSource.ImplicitValue),
+            #     },
+            #     "Implicit assignment of access type to \"ro\" when code maturity is \"prod\" in invocation",
+            # ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto host dev |", CompType.PrefixShown,
+                1,
+                {
+                    ServiceArgType.CodeMaturity.name: ArgValue("dev", ArgSource.ExplicitPosArg),
+                    ServiceArgType.AccessType.name: None,
+                },
+                "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion",
+            ),
             # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
-            #(line_no(), RunMode.InvocationMode, "some_command goto host dev |", CompType.PrefixShown, 1, {ServiceArgType.CodeMaturity.name: ArgValue("dev", ArgSource.ExplicitArg), ServiceArgType.AccessType.name: ArgValue("rw", ArgSource.ImplicitValue)}, "Implicit assignment of access type to \"rw\" when code maturity is \"uat\" in invocation"),
+            # (
+            #     line_no(), RunMode.InvocationMode, "some_command goto host dev |", CompType.PrefixShown,
+            #     1,
+            #     {
+            #         ServiceArgType.CodeMaturity.name: ArgValue("dev", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.AccessType.name: ArgValue("rw", ArgSource.ImplicitValue),
+            #     },
+            #     "Implicit assignment of access type to \"rw\" when code maturity is \"uat\" in invocation",
+            # ),
         ]
         # @formatter:on
 

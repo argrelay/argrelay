@@ -2,6 +2,7 @@ from enum import Enum, auto
 
 
 class ServiceEnvelopeClass(Enum):
+    ClassCluster = auto()
     ClassService = auto()
     ClassHost = auto()
 

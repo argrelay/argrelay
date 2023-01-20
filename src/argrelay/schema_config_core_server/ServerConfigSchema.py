@@ -2,8 +2,8 @@ import os
 
 from marshmallow import Schema, fields, RAISE, post_load
 
-from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc

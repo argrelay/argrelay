@@ -1,8 +1,8 @@
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
 from argrelay.relay_server.LocalServer import LocalServer
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,

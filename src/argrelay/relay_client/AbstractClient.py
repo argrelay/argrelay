@@ -1,8 +1,8 @@
-from argrelay.meta_data.ClientConfig import ClientConfig
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_client import AbstractClientCommand
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
 from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_data.ClientConfig import ClientConfig
 
 
 class AbstractClient:

@@ -4,10 +4,10 @@ import requests
 from marshmallow import Schema
 
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
-from argrelay.meta_data.ConnectionConfig import ConnectionConfig
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
 from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.server_spec.const_int import BASE_URL_FORMAT
 

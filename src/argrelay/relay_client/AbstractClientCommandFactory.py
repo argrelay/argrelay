@@ -1,5 +1,6 @@
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.RunMode import RunMode
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.RunMode import RunMode
+
 from argrelay.relay_client import AbstractClientCommand
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.server_spec.const_int import (

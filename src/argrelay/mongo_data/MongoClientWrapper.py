@@ -7,9 +7,9 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.meta_data.ArgValue import ArgValue
-from argrelay.meta_data.StaticData import StaticData
 from argrelay.mongo_data.MongoConfig import MongoConfig
+from argrelay.runtime_data.ArgValue import ArgValue
+from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_
 

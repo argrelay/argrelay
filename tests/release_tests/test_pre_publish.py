@@ -6,10 +6,10 @@ For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
 import os
 from unittest import TestCase
 
-from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.relay_demo import GitRepoLoader as GitRepoLoader_module
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )

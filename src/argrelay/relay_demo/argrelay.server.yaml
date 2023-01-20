@@ -35,40 +35,10 @@ plugin_list:
             # TODO: Is `function_query` always supposed to repeat `envelope_class_queries` for `envelope_class` = `ClassFunction`?
             function_query:
                 envelope_class: ClassFunction
+                # TODO: Move to `search_control` - see FD-2023-01-17--4:
                 keys_to_types_list:
                     -   action: ActionType
                     -   selector: ObjectSelector
-            envelope_class_queries:
-                -   envelope_class: ClassFunction
-                    keys_to_types_list:
-                        -   action: ActionType
-                        -   selector: ObjectSelector
-                -   envelope_class: ClassHost
-                    keys_to_types_list:
-                        -   code: CodeMaturity
-                        -   stage: FlowStage
-                        -   region: GeoRegion
-                        -   host: HostName
-                        -   tag: ColorTag
-                -   envelope_class: ClassService
-                    keys_to_types_list:
-                        -   code: CodeMaturity
-                        -   stage: FlowStage
-                        -   region: GeoRegion
-                        -   host: HostName
-                        -   service: ServiceName
-                        # TODO: AccessType should be part of selecting another class or simply an arg to function (it is not used to find service, it is used to select how to access it):
-                        -   access: AccessType
-                        -   tag: ColorTag
-                -   envelope_class: ClassGitRepo
-                    keys_to_types_list:
-                        -   part: GitRepoPathComp
-                        -   path: GitRepoRelPath
-                -   envelope_class: ClassGitCommit
-                    keys_to_types_list:
-                        -   path: GitRepoRelPath
-                        -   email: GitRepoCommitAuthorEmail
-                        -   hex: GitRepoCommitId
 
     -   plugin_id: NoopLoader
         plugin_module_name: argrelay.misc_helper.NoopLoader

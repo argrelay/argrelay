@@ -1,6 +1,6 @@
 from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractRemoteClientCommand
 from argrelay.handler_response.ProposeArgValuesClientResponseHandler import ProposeArgValuesClientResponseHandler
-from argrelay.meta_data.ConnectionConfig import ConnectionConfig
+from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH
 
