@@ -27,7 +27,8 @@ class EnvelopeClassQuerySchema(Schema):
             values = fields.String(),
             required = True,
         ),
-    ),
+        required = True,
+    )
 
     @validates_schema
     def validate_known(self, input_dict, **kwargs):

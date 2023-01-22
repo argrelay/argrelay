@@ -18,6 +18,9 @@ from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 
 class ThisTestCase(TestCase):
+    """
+    Server-only test via Flask test client (via API without spanning `argrelay` client).
+    """
 
     def setUp(self):
 

@@ -24,6 +24,7 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         connection_config,
         response_handler: AbstractClientResponseHandler,
         response_schema,
+        # TODO: Are all remote client commands using the same schema?
         request_schema = request_context_desc.dict_schema,
     ):
         super().__init__(

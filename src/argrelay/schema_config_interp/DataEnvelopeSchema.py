@@ -52,13 +52,13 @@ class DataEnvelopeSchema(Schema):
     """
     context_control = fields.List(
         fields.String(),
-        required = True,
+        required = False,
     )
 
     @validates_schema
     def validate_known(self, input_dict, **kwargs):
         if input_dict[envelope_class_] == ReservedEnvelopeClass.ClassFunction.name:
-            function_envelope_instance_data_desc.dict_schema.validate(input_dict[instance_data_])
+            function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
 
 data_envelope_desc = TypeDesc(

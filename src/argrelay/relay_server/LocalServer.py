@@ -10,6 +10,7 @@ from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 
 
 class LocalServer:
@@ -54,7 +55,6 @@ class LocalServer:
                 self.server_config.data_loaders[plugin_entry.plugin_id] = plugin_object
                 # Use loader to update data:
                 self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
-                server_config_desc.dict_schema.validate(self.server_config.static_data)
                 continue
 
             if plugin_entry.plugin_type == PluginType.InterpFactoryPlugin:
@@ -74,6 +74,15 @@ class LocalServer:
         self._validate_static_data()
 
     def _validate_static_data(self):
+        self._validate_static_data_schema()
+        self._validata_static_data_by_plugins()
+
+    def _validate_static_data_schema(self):
+        # Note that this is slow for large data sets:
+        static_data_dict = static_data_desc.dict_schema.dump(self.server_config.static_data)
+        static_data_desc.validate_dict(static_data_dict)
+
+    def _validata_static_data_by_plugins(self):
         all_plugins: [AbstractLoader] = []
         all_plugins.extend(self.server_config.data_loaders.values())
         all_plugins.extend(self.server_config.interp_factories.values())

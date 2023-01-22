@@ -11,10 +11,6 @@ class InvocationInput:
 
     invocator_plugin_entry: PluginEntry
 
-    function_envelope: dict
-
-    assigned_types_to_values_per_envelope: list
-
-    interp_result: dict
+    data_envelopes: list
 
     extra_data: dict

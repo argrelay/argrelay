@@ -10,8 +10,8 @@ class RunMode(Enum):
     *   `CompletionMode` = (proposing options) collects all possible options.
     *   `InvocationMode` = (exercising options) selects only one option out of all possible.
     Also:
-    *   `CompletionMode` excludes selected token (pointed by cursor) as input - `argrelay` provides completion for it.
-    *   `InvocationMode` includes selected token as input arg to execute selected function.
+    *   `CompletionMode` excludes tangent token ("touched" by the cursor) as input to provide completion for it.
+    *   `InvocationMode` includes tangent token as input arg to execute selected function.
     """
     # TODO: Add docstring if true:
     #       RunMode is client-side property.

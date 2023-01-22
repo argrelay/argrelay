@@ -153,6 +153,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_id_: "desc_service",
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
+                    invocator_plugin_id_: NoopInvocator.__name__,
                     envelope_class_queries_: [
                         cluster_query,
                         service_query,
@@ -175,6 +176,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_id_: "list",
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
+                    invocator_plugin_id_: NoopInvocator.__name__,
                     envelope_class_queries_: [
                         host_query,
                         service_query,

@@ -106,8 +106,8 @@ class ThisTestCase(TestCase):
                 ) = test_case
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
                 parsed_ctx = default_test_parsed_context(command_line, cursor_cpos)
-                self.assertEqual(expected_l_cpos, parsed_ctx.sel_token_l_cpos)
-                self.assertEqual(expected_r_cpos, parsed_ctx.sel_token_r_cpos)
-                self.assertEqual(expected_sel_token, parsed_ctx.sel_token)
-                self.assertEqual(expected_sel_token_ipos, parsed_ctx.sel_token_ipos)
+                self.assertEqual(expected_l_cpos, parsed_ctx.tan_token_l_cpos)
+                self.assertEqual(expected_r_cpos, parsed_ctx.tan_token_r_cpos)
+                self.assertEqual(expected_sel_token, parsed_ctx.tan_token)
+                self.assertEqual(expected_sel_token_ipos, parsed_ctx.tan_token_ipos)
                 self.assertEqual(expected_all_tokens, parsed_ctx.all_tokens)

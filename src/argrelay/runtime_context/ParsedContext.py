@@ -12,33 +12,35 @@ from argrelay.runtime_context.InputContext import InputContext
 class ParsedContext(InputContext):
     """
     Internal immutable parsed view of :class:`InputContext`
+
+    `tan_token_*` = `tangent_token`, see FD-2023-01-20--1.
     """
 
     all_tokens: list[str] = field(init = False)
-    sel_token_ipos: int = field(init = False)
-    sel_token_l_cpos: int = field(init = False)
-    sel_token_r_cpos: int = field(init = False)
-    sel_token: str = field(init = False)
-    sel_token_l_part: str = field(init = False)
-    sel_token_r_part: str = field(init = False)
+    tan_token_ipos: int = field(init = False)
+    tan_token_l_cpos: int = field(init = False)
+    tan_token_r_cpos: int = field(init = False)
+    tan_token: str = field(init = False)
+    tan_token_l_part: str = field(init = False)
+    tan_token_r_part: str = field(init = False)
 
     def __post_init__(self):
         (
             all_tokens,
-            sel_token_ipos,
-            sel_token_l_cpos,
-            sel_token_r_cpos,
-            sel_token,
-            sel_token_l_part,
-            sel_token_r_part,
+            tan_token_ipos,
+            tan_token_l_cpos,
+            tan_token_r_cpos,
+            tan_token,
+            tan_token_l_part,
+            tan_token_r_part,
         ) = self.parse_input(self)
         object.__setattr__(self, 'all_tokens', all_tokens)
-        object.__setattr__(self, 'sel_token_ipos', sel_token_ipos)
-        object.__setattr__(self, 'sel_token_l_cpos', sel_token_l_cpos)
-        object.__setattr__(self, 'sel_token_r_cpos', sel_token_r_cpos)
-        object.__setattr__(self, 'sel_token', sel_token)
-        object.__setattr__(self, 'sel_token_l_part', sel_token_l_part)
-        object.__setattr__(self, 'sel_token_r_part', sel_token_r_part)
+        object.__setattr__(self, 'tan_token_ipos', tan_token_ipos)
+        object.__setattr__(self, 'tan_token_l_cpos', tan_token_l_cpos)
+        object.__setattr__(self, 'tan_token_r_cpos', tan_token_r_cpos)
+        object.__setattr__(self, 'tan_token', tan_token)
+        object.__setattr__(self, 'tan_token_l_part', tan_token_l_part)
+        object.__setattr__(self, 'tan_token_r_part', tan_token_r_part)
 
     @classmethod
     def from_instance(cls, input_ctx: InputContext):
@@ -60,15 +62,15 @@ class ParsedContext(InputContext):
         (
             [                               # list of all tokens
                 "some_command",             # 0
-                "some_sub_command",         # 1 (selected token = token pointed by cursor)
+                "some_sub_command",         # 1 (tangent token = token "touched" by the cursor)
                 "some_arg",                 # 2
             ],
-            1                               # selected token item position (ipos)
-            13                              # left-most char position (cpos) of selected token (including it)
-            29                              # right-most char position (cpos) of selected token (excluding it)
-            "some_sub_command",             # selected token string
-            "some_su",                      # selected token left part substring (preceding cursor position)
-            "b_command",                    # selected token right part substring (succeeding cursor position)
+            1                               # tangent token item position (ipos)
+            13                              # left-most char position (cpos) of tangent token (including it)
+            29                              # right-most char position (cpos) of tangent token (excluding it)
+            "some_sub_command",             # tangent token string
+            "some_su",                      # tangent token left part substring (preceding cursor position)
+            "b_command",                    # tangent token right part substring (succeeding cursor position)
         )
         """
         # Wrap orig command line into delimiter for simplification:
@@ -78,9 +80,9 @@ class ParsedContext(InputContext):
 
         # Init with defaults:
         all_tokens = []
-        sel_token_ipos = -1
-        sel_token_l_cpos = -1
-        sel_token_r_cpos = -1
+        tan_token_ipos = -1
+        tan_token_l_cpos = -1
+        tan_token_r_cpos = -1
 
         # Iterate through all delimiter spans to cut out tokens:
         prev_span_l = -1
@@ -91,10 +93,10 @@ class ParsedContext(InputContext):
             if prev_span_r != -1:
                 # New token found between prev and curr delimiter span.
                 if prev_span_r <= cursor_cpos <= span_l:
-                    # Found selected token (touched by cursor):
-                    sel_token_ipos = token_ipos
-                    sel_token_l_cpos = prev_span_r
-                    sel_token_r_cpos = span_l
+                    # Found tangent token (touched by the cursor):
+                    tan_token_ipos = token_ipos
+                    tan_token_l_cpos = prev_span_r
+                    tan_token_r_cpos = span_l
 
                 all_tokens.append(command_line[prev_span_r:span_l])
                 token_ipos += 1
@@ -104,27 +106,27 @@ class ParsedContext(InputContext):
 
         if prev_span_r == -1:
             # No delimiter spans found => entire command line is the single token.
-            sel_token_ipos = token_ipos
-            sel_token_l_cpos = 0
-            sel_token_r_cpos = line_len
+            tan_token_ipos = token_ipos
+            tan_token_l_cpos = 0
+            tan_token_r_cpos = line_len
             all_tokens.append(command_line)
 
-        sel_token = command_line[sel_token_l_cpos:sel_token_r_cpos]
-        sel_token_l_part = command_line[sel_token_l_cpos:cursor_cpos]
-        sel_token_r_part = command_line[cursor_cpos:sel_token_r_cpos]
+        tan_token = command_line[tan_token_l_cpos:tan_token_r_cpos]
+        tan_token_l_part = command_line[tan_token_l_cpos:cursor_cpos]
+        tan_token_r_part = command_line[cursor_cpos:tan_token_r_cpos]
 
         # Adjust for wrapping command line into delimiters:
-        if sel_token_l_cpos != -1:
-            sel_token_l_cpos -= 1
-        if sel_token_r_cpos != -1:
-            sel_token_r_cpos -= 1
+        if tan_token_l_cpos != -1:
+            tan_token_l_cpos -= 1
+        if tan_token_r_cpos != -1:
+            tan_token_r_cpos -= 1
 
         return (
             all_tokens,
-            sel_token_ipos,
-            sel_token_l_cpos,
-            sel_token_r_cpos,
-            sel_token,
-            sel_token_l_part,
-            sel_token_r_part,
+            tan_token_ipos,
+            tan_token_l_cpos,
+            tan_token_r_cpos,
+            tan_token,
+            tan_token_l_part,
+            tan_token_r_part,
         )

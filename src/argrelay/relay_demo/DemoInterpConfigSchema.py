@@ -3,13 +3,13 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.EnvelopeClassQuerySchema import envelope_class_, keys_to_types_list_
-from argrelay.schema_config_interp.GenericInterpConfigSchema import (
-    GenericInterpConfigSchema,
+from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import (
+    FuncArgsInterpConfigSchema,
     function_query_,
 )
 
 
-class DemoInterpConfigSchema(GenericInterpConfigSchema):
+class DemoInterpConfigSchema(FuncArgsInterpConfigSchema):
     pass
 
 

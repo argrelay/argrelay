@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 import yaml
-from marshmallow import Schema
+from marshmallow import Schema, ValidationError
 
 
 @dataclass(frozen = True)
@@ -26,3 +26,8 @@ class TypeDesc:
 
     def from_input_dict(self, input_dict: dict):
         return self.dict_schema.load(input_dict)
+
+    def validate_dict(self, input_dict: dict):
+        validation_errors = self.dict_schema.validate(input_dict)
+        if validation_errors:
+            raise ValidationError(validation_errors)

@@ -1,9 +1,9 @@
-from enum import auto, IntEnum
+from enum import IntEnum
 
 
 class ArgSource(IntEnum):
     """
-    Specifies how each :class:`ArgValue` was obtained.
+    Specifies how each :class:`AssignedValue` was obtained.
 
     They are listed in the order of priority:
     *  The first one is the lowest priority = can be overriden by any other `ArgSource.*`

@@ -31,8 +31,7 @@ class GitRepoLoader(AbstractLoader):
 
     def __init__(self, config_dict: dict):
         super().__init__(config_dict)
-        # validate:
-        git_repo_loader_config_desc.from_input_dict(config_dict)
+        git_repo_loader_config_desc.validate_dict(config_dict)
 
     def update_static_data(self, static_data: StaticData) -> StaticData:
         """

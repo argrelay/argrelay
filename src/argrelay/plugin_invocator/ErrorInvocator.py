@@ -12,9 +12,9 @@ class ErrorInvocator(AbstractInvocator):
     def populate_invocation_input(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
         invocation_input = InvocationInput(
             invocator_plugin_entry = server_config.plugin_dict[self.__class__.__name__],
-            function_envelope = data_envelope_desc.dict_example,
-            assigned_types_to_values_per_envelope = [],
-            interp_result = {},
+            data_envelopes = [
+                data_envelope_desc.dict_example,
+            ],
             extra_data = {},
         )
         return invocation_input

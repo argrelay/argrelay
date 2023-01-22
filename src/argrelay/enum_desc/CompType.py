@@ -45,7 +45,7 @@ class CompType(IntEnum):
     This happens on first `complete` only when `set show-all-if-ambiguous off`.
     In that case, it appears to work exactly like `PrefixShown`
     except Bash hides suggested values from user if these values are ambiguous
-    (more than one value matching selected token left part).
+    (more than one value matching tangent token left part).
     """
     PrefixHidden = 9  # ASCII '\t'
 

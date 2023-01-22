@@ -5,20 +5,16 @@ from dataclasses import field, dataclass
 from pymongo.collection import Collection
 from pymongo.database import Database
 
+from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
+from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.runtime_data import StaticData
-from argrelay.runtime_data.ArgValue import ArgValue
+from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
-
-is_found_ = "is_found"
-assigned_types_to_values_ = "assigned_types_to_values"
-remaining_types_to_values_ = "remaining_types_to_values"
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_, context_control_
 
 
 @dataclass
@@ -29,11 +25,16 @@ class InterpContext:
 
     parsed_ctx: ParsedContext
 
-    static_data: StaticData
-
+    # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that).
     interp_factories: dict[str, "AbstractInterpFactory"]
+    """
+    Reference to `ServerConfig.action_invocators`.
+    """
 
     action_invocators: dict[str, "AbstractInvocator"]
+    """
+    Reference to `ServerConfig.action_invocators`.
+    """
 
     mongo_db: Database
 
@@ -49,36 +50,25 @@ class InterpContext:
     Already consumed tokens (their ipos) in the order of their consumption.
     """
 
-    # TODO: Part of to `args_context`: FD-2023-01-17--1:
-    curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False, default_factory = lambda: {})
-    """
-    All assigned args (from interpreted tokens) mapped as type:value which belong to `curr_data_envelope`.
-    """
-
-    # TODO: Part of to `args_context`: FD-2023-01-17--1:
-    curr_remaining_types_to_values: dict[str, list[str]] = field(init = False)
-    """
-    All arg values per type left for suggestion given the `curr_assigned_types_to_values`.
-    """
-
     # TODO: Make it explicit that this is, in fact, set of `args_context`-s (saved for each `data_envelope` found and last `data_envelope` which may be not yet found): FD-2023-01-17--1:
-    assigned_types_to_values_per_envelope: list[dict] = field(init = False, default_factory = lambda: [])
+    envelope_containers: list[EnvelopeContainer] = field(init = False, default_factory = lambda: [])
     """
-    List of completed results previously accumulated in `curr_assigned_types_to_values`.
-    Each element of the list contains a dict with these fields:
-    # TODO: Formalize this in schema - see also `GenericInterp.curr_data_envelope`:
-    *   `envelope_class_`
-    *   `envelope_payload_`
-    *   `assigned_types_to_values_`
-    *   `remaining_types_to_value_`
-    *   TODO: maybe also `keys_to_types` (the query)?
+    Associated data for each `data_envelope` to be found.
     """
+
+    curr_container: EnvelopeContainer = field(init = False, default_factory = lambda: EnvelopeContainer())
+    """
+    The `envelope_containers` currently being searched.
+    """
+
+    # When `function_envelope` found, it is an ipos into `envelope_class_queries` to select curr `envelope_class_query`:
+    curr_container_ipos: int = field(init = False, default = -1)
 
     last_found_envelope_ipos: int = field(init = False, default = -1)
     """
-    An ipos into `assigned_types_to_values_per_envelope` for the last found envelope.
-    Because of multiple (or zero) candidates, the last envelope inside `assigned_types_to_values_per_envelope`
-    may not be pointing to an actual envelope, but to a query which still still does not return single candidate.
+    An ipos into `envelope_containers` for the last found envelope.
+    Because of multiple or zero candidates (not singled out), the tail of `envelope_containers` starting after
+    `last_found_envelope_ipos` is not pointing to `data_envelope`-s found.
     """
 
     prev_interp: "AbstractInterp" = field(init = False, default = None)
@@ -93,16 +83,17 @@ class InterpContext:
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
         self.mongo_col = self.mongo_db[data_envelopes_]
+        self.envelope_containers.append(self.curr_container)
 
     def _init_unconsumed_tokens(self):
         return [
-            ipos for ipos in range(0, len(self.parsed_ctx.all_tokens))
+            token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
             if (
                 (
                     self.parsed_ctx.run_mode == RunMode.CompletionMode
                     and
-                    # Completion mode excludes selected token because it is supposed to be completed:
-                    ipos != self.parsed_ctx.sel_token_ipos
+                    # Completion mode excludes tangent token because it is supposed to be completed:
+                    token_ipos != self.parsed_ctx.tan_token_ipos
                 )
                 or
                 (
@@ -111,13 +102,75 @@ class InterpContext:
             )
         ]
 
-    def interpret_command(self) -> None:
+    def create_containers(self, envelope_class_queries):
+        for envelope_class_query in envelope_class_queries:
+            envelope_container = EnvelopeContainer(
+                envelope_class_query
+            )
+            self.envelope_containers.append(envelope_container)
+
+    def is_last_container(self) -> bool:
+        return self.curr_container_ipos + 1 == len(self.envelope_containers)
+
+    def init_next_container(self):
+        self.curr_container_ipos += 1
+        self.curr_container = self.envelope_containers[
+            self.curr_container_ipos
+        ]
+        self._propagate_implicit_values()
+
+    def _propagate_implicit_values(self):
+        """
+        FD-2023-01-17--1:
+        Copy arg value from prev `data_envelope` for arg types specified in `context_control` into next `arg_context`.
+        """
+        if self.last_found_envelope_ipos >= 0:
+            prev_envelope = self.envelope_containers[
+                self.last_found_envelope_ipos
+            ]
+            if context_control_ in prev_envelope.data_envelope:
+                arg_type_list_to_push = prev_envelope.data_envelope[context_control_]
+                for arg_type_to_push in arg_type_list_to_push:
+                    if arg_type_to_push in prev_envelope.data_envelope:
+                        if arg_type_to_push in self.curr_container.assigned_types_to_values:
+                            arg_value = self.curr_container.assigned_types_to_values[
+                                arg_type_to_push
+                            ]
+                            if arg_value.arg_source.value <= ArgSource.ImplicitValue.value:
+                                # Override value with source of higher priority:
+                                arg_value.arg_source = ArgSource.ImplicitValue
+                                arg_value.arg_value = prev_envelope.data_envelope[arg_type_to_push]
+                        else:
+                            self.curr_container.assigned_types_to_values[
+                                arg_type_to_push
+                            ] = AssignedValue(
+                                prev_envelope.data_envelope[arg_type_to_push],
+                                ArgSource.ImplicitValue,
+                            )
+
+    def query_envelopes(self):
+        query_dict = {
+            envelope_class_: self.curr_container.envelope_class_query[envelope_class_],
+        }
+        for arg_type, arg_val in self.curr_container.assigned_types_to_values.items():
+            query_dict[arg_type] = arg_val.arg_value
+
+        # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
+        query_res = self.mongo_col.find(query_dict)
+        self.curr_container.update_curr_remaining_types_to_values(query_res)
+
+    def register_found_envelope(self):
+        self.last_found_envelope_ipos += 1
+        self.curr_container.populate_implicit_arg_values()
+
+    # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that) together with this loop:
+    def interpret_command(self, first_interp_factory_id: str) -> None:
         """
         Main interpretation loop.
 
         Start with initial interpreter and continue until curr interpreter returns no more next interpreter.
         """
-        self.curr_interp = self.create_next_interp(self.static_data.first_interp_factory_id)
+        self.curr_interp = self.create_next_interp(first_interp_factory_id)
         while self.curr_interp:
 
             self.curr_interp.consume_key_args()
@@ -148,64 +201,8 @@ class InterpContext:
         interp_factory: "AbstractInterpFactory" = self.interp_factories[interp_factory_id]
         return interp_factory.create_interp(self)
 
-    def print_help(self) -> None:
-        eprint()
-        # TODO: print:
-        #       * currently selected args in one line: key1:value2 key2:value2
-        #       * not selected args spaces in multiple lines: space: value1 value2 ...
-        # TODO: print values matching any of the arg types which have already been assigned
-        # TODO: print conflicting values (two different implicit values)
-        # TODO: print unrecognized tokens
-        # TODO: for unrecognized token highlight by color all tokens with matching substring
-        is_first_missing_found: bool = False
-        for data_envelope in self.assigned_types_to_values_per_envelope:
-            # Checking if `data_envelope[is_found_]` is not right because
-            # not yet found envelope collect `assigned_types_to_values_` to show:
-            if envelope_class_ not in data_envelope:
-                # It must be last envelope created but no envelope class left to query it:
-                break
-            eprint(data_envelope[envelope_class_])
-            result_remaining_types_to_values = data_envelope[remaining_types_to_values_]
-            result_assigned_types_to_values = data_envelope[assigned_types_to_values_]
-            keys_to_types_list = data_envelope[keys_to_types_list_]
-
-            for key_to_type_dict in keys_to_types_list:
-                arg_key = next(iter(key_to_type_dict))
-                arg_type = key_to_type_dict[arg_key]
-
-                if arg_type in result_assigned_types_to_values:
-                    eprint(TermColor.DARK_GREEN.value, end = "")
-                    eprint(f"{arg_type}:", end = "")
-                    eprint(
-                        f" {result_assigned_types_to_values[arg_type].arg_value} " +
-                        f"[{result_assigned_types_to_values[arg_type].arg_source.name}]",
-                        end = ""
-                    )
-                    eprint(TermColor.RESET.value, end = "")
-                elif arg_type in result_remaining_types_to_values:
-                    eprint(TermColor.BRIGHT_YELLOW.value, end = "")
-                    if not is_first_missing_found:
-                        eprint(f"*{arg_type}:", end = "")
-                        is_first_missing_found = True
-                    else:
-                        eprint(f"{arg_type}:", end = "")
-                    eprint(f" ?", end = "")
-                    eprint(TermColor.RESET.value, end = "")
-                    eprint(
-                        f" {'|'.join(result_remaining_types_to_values[arg_type])}",
-                        end = ""
-                    )
-                else:
-                    eprint(TermColor.BRIGHT_RED.value, end = "")
-                    if not is_first_missing_found:
-                        eprint(f"*{arg_type}:", end = "")
-                        is_first_missing_found = True
-                    else:
-                        eprint(f"{arg_type}:", end = "")
-                    eprint(f" ?", end = "")
-                    eprint(TermColor.RESET.value, end = "")
-
-                eprint()
+    def get_data_envelopes(self):
+        return [envelope_container.data_envelope for envelope_container in self.envelope_containers]
 
     def print_debug(self) -> None:
         if not self.parsed_ctx.is_debug_enabled:
@@ -213,8 +210,8 @@ class InterpContext:
         eprint(TermColor.DEBUG.value)
         eprint(f"\"{self.parsed_ctx.command_line}\"", end = " ")
         eprint(f"cursor_cpos: {self.parsed_ctx.cursor_cpos}", end = " ")
-        eprint(f"sel_token_l_part: \"{self.parsed_ctx.sel_token_l_part}\"", end = " ")
-        eprint(f"sel_token_r_part: \"{self.parsed_ctx.sel_token_r_part}\"", end = " ")
+        eprint(f"sel_token_l_part: \"{self.parsed_ctx.tan_token_l_part}\"", end = " ")
+        eprint(f"sel_token_r_part: \"{self.parsed_ctx.tan_token_r_part}\"", end = " ")
         eprint(f"comp_type: {self.parsed_ctx.comp_type}", end = " ")
         eprint(f"comp_key: {self.parsed_ctx.comp_key}", end = " ")
         eprint(f"comp_suggestions: {self.comp_suggestions}", end = " ")

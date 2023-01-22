@@ -34,10 +34,9 @@ class AbstractServerRequestHandler:
         # TODO: Split server_config and static_data (both top level, not config including data):
         self.interp_ctx = InterpContext(
             parsed_ctx = parsed_ctx,
-            static_data = local_server.server_config.static_data,
             interp_factories = local_server.server_config.interp_factories,
             action_invocators = local_server.server_config.action_invocators,
             mongo_db = local_server.get_mongo_database(),
         )
-        self.interp_ctx.interpret_command()
+        self.interp_ctx.interpret_command(local_server.server_config.static_data.first_interp_factory_id)
         self.interp_ctx.print_debug()

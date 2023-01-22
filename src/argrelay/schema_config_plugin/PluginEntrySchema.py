@@ -53,22 +53,20 @@ class PluginEntrySchema(Schema):
     def make_dict(self, input_object: PluginEntry, **kwargs):
         # TODO: figure out to populate all automatically and reduce duplication - this is error-prone:
         if isinstance(input_object, PluginEntry):
-            plugin_type = ensure_value_is_enum(input_object.plugin_type, PluginType)
             return {
                 plugin_id_: input_object.plugin_id,
                 plugin_module_name_: input_object.plugin_module_name,
                 plugin_class_name_: input_object.plugin_class_name,
-                plugin_type_: plugin_type,
+                plugin_type_: ensure_value_is_enum(input_object.plugin_type, PluginType),
                 plugin_config_: input_object.plugin_config,
             }
         else:
             # Assuming it is as dict:
-            plugin_type = ensure_value_is_enum(input_object[plugin_type_], PluginType)
             return {
                 plugin_id_: input_object[plugin_id_],
                 plugin_module_name_: input_object[plugin_module_name_],
                 plugin_class_name_: input_object[plugin_class_name_],
-                plugin_type_: plugin_type,
+                plugin_type_: ensure_value_is_enum(input_object[plugin_type_], PluginType),
                 plugin_config_: input_object[plugin_config_],
             }
 
@@ -78,7 +76,7 @@ class PluginEntrySchema(Schema):
             plugin_id = input_dict[plugin_id_],
             plugin_module_name = input_dict[plugin_module_name_],
             plugin_class_name = input_dict[plugin_class_name_],
-            plugin_type = input_dict[plugin_type_],
+            plugin_type = ensure_value_is_enum(input_dict[plugin_type_], PluginType),
             plugin_config = input_dict[plugin_config_],
         )
 

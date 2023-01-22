@@ -14,6 +14,9 @@ from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 
 class ThisTestCase(TestCase):
+    """
+    Client-only test via mocked `responses` lib (without spanning `argrelay` server).
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -26,14 +29,14 @@ class ThisTestCase(TestCase):
         test_line = "some_command pro|d whatever"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
-        mock_rdp_auth = responses.Response(
+        mocked_response = responses.Response(
             method = "POST",
             url = self.base_URL + PROPOSE_ARG_VALUES_PATH,
             json = arg_values_desc.dict_example,
             status = 200,
             content_type = 'application/json'
         )
-        responses.add(mock_rdp_auth)
+        responses.add(mocked_response)
 
         env_mock_builder = (
             EnvMockBuilder()
@@ -47,10 +50,18 @@ class ThisTestCase(TestCase):
             .set_capture_stdout(True)
         )
         with env_mock_builder.build():
+
+            # when:
+
             __main__.main()
+
+            # then:
 
             self.assertTrue(
                 "\n".join(arg_values_desc.dict_example[arg_values_])
                 in
                 env_mock_builder.actual_stdout.getvalue()
             )
+
+    # TODO: add test for description
+    # TODO: add test for invocation

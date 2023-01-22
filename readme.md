@@ -30,6 +30,7 @@ To clarify,<br/>
 | Execution:     | `A.py` calls `argparse` library                         | `A.py` is called by the framework<br/> when `A_relay` is invoked            |
 | Function:      | `A.py` directly does<br/> some domain-specific task     | `A_relay` directly only "relays"<br/> the command line to `argrelay`        |
 | CLI source:    | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins      |
+| CLI is:        | mostly code-driven                                      | mostly data-driven                                                          |
 | Modify CLI:    | modify `A.py`                                           | keep `A.py` intact,<br/> re-configure `argrelay` instead                    |
 | Prog lang:     | `A.py` has to be<br/> a Python script to use `argparse` | `A.py` can be anything<br/> somehow executable by `argrelay`                |
 | **Important:** | `A.py`/`argparse` have no domain data<br/> to query     | `A_relay` may access any<br/> domain data from `argrelay` server            |
@@ -144,13 +145,13 @@ remaining (narrowed down) object sets.
 All above may be an obvious approach to come up with,<br/>
 but it is not ordinary for CLI-s of most common commands:
 
-| Common commands (think `ls`, `git`, `ssh`, ...):                            | `argrelay`-wrapped actions                            |
+| Common commands (think `ls`, `git`, `ssh`, ...):                            | `argrelay`-wrapped actions:                           |
 |:----------------------------------------------------------------------------|:------------------------------------------------------|
 | have succinct syntax and prefer<br/> single-char switches (defined by code) | prefer explicit "enum language"<br/> defined by data  |
 | rely on humans to memorize syntax<br/> (options, ordering, etc.)            | assume humans have<br/> a loose idea about the syntax |
 | auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific index       |
 
-The default `argrelay` parsing and CLI-interpretation plugin (see `GenericInterp`)<br/>
+The default `argrelay` parsing and CLI-interpretation plugin (see `FuncArgsInterp`)<br/>
 implies such syntax.
 
 # Quick demo

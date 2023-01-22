@@ -7,9 +7,7 @@ from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
 
 invocator_plugin_entry_ = "invocator_plugin_entry"
-function_envelope_ = "function_envelope"
-assigned_types_to_values_per_envelope_ = "assigned_types_to_values_per_envelope"
-interp_result_ = "interp_result"
+data_envelopes_ = "data_envelopes"
 extra_data_ = "extra_data"
 
 
@@ -23,19 +21,9 @@ class InvocationInputSchema(Schema):
         required = True,
     )
 
-    function_envelope = fields.Nested(
-        data_envelope_desc.dict_schema,
-        required = True,
-    )
-
-    assigned_types_to_values_per_envelope = fields.List(
+    data_envelopes = fields.List(
         fields.Nested(data_envelope_desc.dict_schema),
         required = True,
-    )
-
-    interp_result = fields.Nested(
-        interp_result_desc.dict_schema,
-        required = True
     )
 
     extra_data = fields.Dict(
@@ -47,9 +35,7 @@ class InvocationInputSchema(Schema):
         if isinstance(input_object, InvocationInput):
             return {
                 invocator_plugin_entry_: input_object.invocator_plugin_entry,
-                function_envelope_: input_object.function_envelope,
-                assigned_types_to_values_per_envelope_: input_object.assigned_types_to_values_per_envelope,
-                interp_result_: input_object.interp_result,
+                data_envelopes_: input_object.data_envelopes,
                 extra_data_: input_object.extra_data,
             }
         else:
@@ -61,20 +47,16 @@ class InvocationInputSchema(Schema):
     def make_object(self, input_dict, **kwargs):
         return InvocationInput(
             invocator_plugin_entry = input_dict[invocator_plugin_entry_],
-            function_envelope = input_dict[function_envelope_],
-            assigned_types_to_values_per_envelope = input_dict[assigned_types_to_values_per_envelope_],
-            interp_result = input_dict[interp_result_],
+            data_envelopes = input_dict[data_envelopes_],
             extra_data = {},
         )
 
 
 _invocation_input_example = {
     invocator_plugin_entry_: plugin_entry_desc.dict_example,
-    function_envelope_: data_envelope_desc.dict_example,
-    assigned_types_to_values_per_envelope_: [
+    data_envelopes_: [
         data_envelope_desc.dict_example,
     ],
-    interp_result_: interp_result_desc.dict_example,
     extra_data_: {},
 }
 

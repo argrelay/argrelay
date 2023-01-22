@@ -1,15 +1,14 @@
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.RunMode import RunMode
 
-from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data import StaticData
-from argrelay.runtime_data.ArgValue import ArgValue
+from argrelay.runtime_data.AssignedValue import AssignedValue
 
 
 # TODO: class is not used anymore - the same functionality has to be addressed somehow generically (or at least, should be reimplemented, current approach here got in the way of more important feature and removed temporarily)
-class CodeMaturityProcessor(ArgProcessor):
+class CodeMaturityProcessor:
 
     def __init__(self, static_data: StaticData, arg_key: str):
         super().__init__(static_data, arg_key, ServiceArgType.CodeMaturity.name)
@@ -25,13 +24,13 @@ class CodeMaturityProcessor(ArgProcessor):
                 # Assign AccessType if it was not specified (explicitly):
                 if ServiceArgType.AccessType.name not in ctx.curr_assigned_types_to_values:
                     if ctx.curr_assigned_types_to_values[self.arg_type].arg_value == "prod":
-                        ctx.curr_assigned_types_to_values[ServiceArgType.AccessType.name] = ArgValue(
+                        ctx.curr_assigned_types_to_values[ServiceArgType.AccessType.name] = AssignedValue(
                             "ro",
                             ArgSource.ImplicitValue,
                         )
                         return True
                     else:
-                        ctx.curr_assigned_types_to_values[ServiceArgType.AccessType.name] = ArgValue(
+                        ctx.curr_assigned_types_to_values[ServiceArgType.AccessType.name] = AssignedValue(
                             "rw",
                             ArgSource.ImplicitValue,
                         )

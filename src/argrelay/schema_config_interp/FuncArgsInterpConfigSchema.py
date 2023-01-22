@@ -6,7 +6,7 @@ from argrelay.schema_config_interp.EnvelopeClassQuerySchema import envelope_clas
 function_query_ = "function_query"
 
 
-class GenericInterpConfigSchema(Schema):
+class FuncArgsInterpConfigSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
@@ -17,13 +17,13 @@ class GenericInterpConfigSchema(Schema):
     )
 
 
-generic_interp_config_example = {
+func_args_interp_config_example = {
     function_query_: envelope_class_query_desc.dict_example,
 }
 
-generic_interp_config_desc = TypeDesc(
-    dict_schema = GenericInterpConfigSchema(),
-    ref_name = GenericInterpConfigSchema.__name__,
-    dict_example = generic_interp_config_example,
+func_args_interp_config_desc = TypeDesc(
+    dict_schema = FuncArgsInterpConfigSchema(),
+    ref_name = FuncArgsInterpConfigSchema.__name__,
+    dict_example = func_args_interp_config_example,
     default_file_path = "",
 )

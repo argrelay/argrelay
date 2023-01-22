@@ -19,22 +19,20 @@ class GitRepoInvocator(AbstractInvocator):
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
-        function_envelope = interp_ctx.assigned_types_to_values_per_envelope[0]
-        invocator_plugin_id = function_envelope[instance_data_][invocator_plugin_id_]
+        function_envelope = interp_ctx.envelope_containers[0]
+        invocator_plugin_id = function_envelope.data_envelope[instance_data_][invocator_plugin_id_]
         invocation_input = InvocationInput(
             invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_id],
-            function_envelope = function_envelope,
-            assigned_types_to_values_per_envelope = interp_ctx.assigned_types_to_values_per_envelope,
-            interp_result = {},
+            data_envelopes = interp_ctx.get_data_envelopes(),
             extra_data = {},
         )
         return invocation_input
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        if invocation_input.function_envelope[envelope_id_] == "desc_repo":
+        if invocation_input.data_envelopes[0][envelope_id_] == "desc_repo":
             # The 2nd envelope (`DataEnvelopeSchema`) is supposed to have `envelope_payload` in its `envelope_payload`:
-            repo_envelope = invocation_input.assigned_types_to_values_per_envelope[1]
+            repo_envelope = invocation_input.data_envelopes[1]
             abs_repo_path = repo_envelope[envelope_payload_]["abs_repo_path"]
             # List Git repo dir:
             subproc = subprocess.run(

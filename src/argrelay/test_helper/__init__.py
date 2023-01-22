@@ -2,6 +2,23 @@
 """
 from inspect import getframeinfo, currentframe
 
+# Enable/Disable breakpoints programmatically:
+__is_breakpoint_enabled = False
+
+
+def enable_breakpoint():
+    global __is_breakpoint_enabled
+    __is_breakpoint_enabled = True
+
+
+def disable_breakpoint():
+    global __is_breakpoint_enabled
+    __is_breakpoint_enabled = False
+
+
+def is_breakpoint_enabled() -> bool:
+    return __is_breakpoint_enabled
+
 
 def line_no() -> int:
     """

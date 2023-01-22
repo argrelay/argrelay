@@ -61,7 +61,6 @@ class RequestContextSchema(Schema):
             }
         else:
             # Assuming it is as dict:
-            comp_type = ensure_value_is_enum(input_object[comp_type_], CompType)
             return {
                 command_line_: input_object[command_line_],
                 cursor_cpos_: input_object[cursor_cpos_],
@@ -74,7 +73,7 @@ class RequestContextSchema(Schema):
         return RequestContext(
             command_line = input_dict[command_line_],
             cursor_cpos = input_dict[cursor_cpos_],
-            comp_type = input_dict[comp_type_],
+            comp_type = ensure_value_is_enum(input_dict[comp_type_], CompType),
             is_debug_enabled = input_dict[is_debug_enabled_],
         )
 

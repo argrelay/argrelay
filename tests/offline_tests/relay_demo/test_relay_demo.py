@@ -10,8 +10,8 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.relay_client import __main__
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.runtime_context.InterpContext import assigned_types_to_values_
-from argrelay.runtime_data.ArgValue import ArgValue
+from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
+from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import line_no, parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
@@ -24,7 +24,9 @@ class ThisTestCase(TestCase):
     def test_propose_auto_comp(self):
         # @formatter:off
         test_cases = [
-            # TODO: If selected token left part does not fall into next expected space, in case of `CompType.SubsequentHelp` suggest to specify named arg.
+            # TODO: If tangent token left part does not fall into next expected space, in case of `CompType.SubsequentHelp` suggest to specify named arg.
+
+            # TODO: Test that even multiple envelopes can set `ArgSource.ImplicitValue` when one of the arg type has single value among all those envelopes. Add special test data.
 
             (
                 line_no(), "some_command |", CompType.PrefixHidden,
@@ -193,14 +195,10 @@ class ThisTestCase(TestCase):
                             .set_capture_stderr(True)
                             .build()
                     ):
-                        interp_ctx.print_help()
+                        EnvelopeContainer.print_help(interp_ctx.envelope_containers)
 
                         self.maxDiff = None
-                        # TODO: Fix: currently (after extending data schema)
-                        #       what this output shows is entire type list known to static data (it should use limited lists per envelope)
-                        #       and it only compares it to the last `curr_assigned_types_to_values` (while it should print all `assigned_types_to_values_per_envelope`)
                         self.assertEqual(
-# TODO: ClassService must use `context_control` to take `ClusterName` from identified `ClassCluster` - `ClusterName` should not be interrogated:
                             f"""
 ClassFunction
 {TermColor.DARK_GREEN.value}ActionType: goto [ExplicitPosArg]{TermColor.RESET.value}
@@ -236,7 +234,7 @@ AccessType
                 line_no(), RunMode.InvocationMode, "some_command desc host zxcv|", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.ActionType.name: ArgValue("desc", ArgSource.ExplicitPosArg),
+                    GlobalArgType.ActionType.name: AssignedValue("desc", ArgSource.ExplicitPosArg),
                     ServiceArgType.AccessType.name: None,
                 },
                 "Incomplete token (pointed by the cursor) is complete in invocation mode",
@@ -245,7 +243,7 @@ AccessType
                 line_no(), RunMode.CompletionMode, "some_command goto |", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitPosArg),
+                    GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
                     GlobalArgType.ObjectSelector.name: None,
                 },
                 "Explicit assignment for complete token",
@@ -254,8 +252,8 @@ AccessType
                 line_no(), RunMode.CompletionMode, "some_command goto service |", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.ActionType.name: ArgValue("goto", ArgSource.ExplicitPosArg),
-                    GlobalArgType.ObjectSelector.name: ArgValue("service", ArgSource.ExplicitPosArg),
+                    GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
+                    GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
                 },
                 "Explicit assignment for complete token",
             ),
@@ -273,8 +271,8 @@ AccessType
             #     line_no(), RunMode.InvocationMode, "some_command goto host prod|", CompType.PrefixShown,
             #     1,
             #     {
-            #         ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitPosArg),
-            #         ServiceArgType.AccessType.name: ArgValue("ro", ArgSource.ImplicitValue),
+            #         ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.ImplicitValue),
             #     },
             #     "Implicit assignment even for incomplete token (token pointed by cursor)",
             # ),
@@ -282,7 +280,7 @@ AccessType
                 line_no(), RunMode.CompletionMode, "some_command goto host prod |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitPosArg),
+                    ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
                     ServiceArgType.AccessType.name: None,
                 },
                 "No implicit assignment of access type to \"ro\" when code maturity is \"prod\" in completion",
@@ -292,8 +290,8 @@ AccessType
             #     line_no(), RunMode.InvocationMode, "some_command goto host prod |", CompType.PrefixShown,
             #     1,
             #     {
-            #         ServiceArgType.CodeMaturity.name: ArgValue("prod", ArgSource.ExplicitPosArg),
-            #         ServiceArgType.AccessType.name: ArgValue("ro", ArgSource.ImplicitValue),
+            #         ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.ImplicitValue),
             #     },
             #     "Implicit assignment of access type to \"ro\" when code maturity is \"prod\" in invocation",
             # ),
@@ -301,7 +299,7 @@ AccessType
                 line_no(), RunMode.CompletionMode, "some_command goto host dev |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: ArgValue("dev", ArgSource.ExplicitPosArg),
+                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                     ServiceArgType.AccessType.name: None,
                 },
                 "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion",
@@ -311,8 +309,8 @@ AccessType
             #     line_no(), RunMode.InvocationMode, "some_command goto host dev |", CompType.PrefixShown,
             #     1,
             #     {
-            #         ServiceArgType.CodeMaturity.name: ArgValue("dev", ArgSource.ExplicitPosArg),
-            #         ServiceArgType.AccessType.name: ArgValue("rw", ArgSource.ImplicitValue),
+            #         ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.ImplicitValue),
             #     },
             #     "Implicit assignment of access type to \"rw\" when code maturity is \"uat\" in invocation",
             # ),
@@ -348,15 +346,13 @@ AccessType
                         if arg_value is None:
                             self.assertTrue(
                                 arg_type not in
-                                interp_ctx.assigned_types_to_values_per_envelope
-                                [found_envelope_ipos]
-                                [assigned_types_to_values_]
+                                interp_ctx.envelope_containers
+                                [found_envelope_ipos].assigned_types_to_values
                             )
                         else:
                             self.assertEqual(
                                 arg_value,
-                                interp_ctx.assigned_types_to_values_per_envelope
-                                [found_envelope_ipos]
-                                [assigned_types_to_values_]
+                                interp_ctx.envelope_containers
+                                [found_envelope_ipos].assigned_types_to_values
                                 [arg_type]
                             )

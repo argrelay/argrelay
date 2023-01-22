@@ -9,6 +9,7 @@ from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLine
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
+from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
 from argrelay.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
 from argrelay.server_spec.const_int import (
@@ -35,8 +36,7 @@ def create_blueprint(local_server: LocalServer):
     def describe_line_args():
         input_ctx = create_input_ctx(RunMode.CompletionMode)
         response_dict = describe_line_args_handler.handle_request(input_ctx)
-        # TODO: `arg_values_desc` is wrong, implement correct schema:
-        response_json = arg_values_desc.dict_schema.dumps(response_dict)
+        response_json = interp_result_desc.dict_schema.dumps(response_dict)
         return response_json
 
     # TODO: Add REST test on client and server side.

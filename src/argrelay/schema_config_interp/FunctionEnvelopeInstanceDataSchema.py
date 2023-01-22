@@ -4,6 +4,7 @@ from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.EnvelopeClassQuerySchema import envelope_class_query_desc
 
 invocator_plugin_id_ = "invocator_plugin_id"
+# TODO: Rename to `query_control`?
 envelope_class_queries_ = "envelope_class_queries"
 
 
