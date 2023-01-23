@@ -4,7 +4,6 @@ from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
-from argrelay.schema_response.InterpResultSchema import interp_result_desc
 
 invocator_plugin_entry_ = "invocator_plugin_entry"
 data_envelopes_ = "data_envelopes"

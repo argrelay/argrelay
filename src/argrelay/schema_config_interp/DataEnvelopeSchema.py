@@ -48,7 +48,7 @@ class DataEnvelopeSchema(Schema):
     )
 
     """
-    List of arg types to be pushed to the next `arg_context` to query next `data_envelope`-s.
+    List of arg types to be pushed to the next `args_context` to query next `data_envelope`-s.
     """
     context_control = fields.List(
         fields.String(),

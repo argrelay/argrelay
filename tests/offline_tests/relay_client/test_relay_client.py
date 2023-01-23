@@ -50,7 +50,6 @@ class ThisTestCase(TestCase):
             .set_capture_stdout(True)
         )
         with env_mock_builder.build():
-
             # when:
 
             __main__.main()

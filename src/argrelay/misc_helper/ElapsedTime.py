@@ -24,7 +24,7 @@ class ElapsedTime:
 
     @staticmethod
     def print_formatted(name: str, ts: int, diff: int):
-        eprint(f"{name}: {ts}: {diff / 1_000_000_000:f}s")
+        eprint(f"{diff / 1_000_000_000:f}s: {name}")
 
     @classmethod
     def measure(cls, name: str):

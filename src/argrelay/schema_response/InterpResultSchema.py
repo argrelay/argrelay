@@ -9,6 +9,7 @@ Schema for the result of interpretation taken from :class:`InterpContext`
 
 envelope_containers_ = "envelope_containers"
 
+
 class InterpResultSchema(Schema):
     class Meta:
         unknown = RAISE

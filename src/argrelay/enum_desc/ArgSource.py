@@ -11,12 +11,10 @@ class ArgSource(IntEnum):
     """
 
     # TODO: The context should be specify-able in the client config (TODO: low priority use case).
-    #       TODO: See "over-specified" context in FD-2023-01-17--1:
     #       it might be a useless in simple/dumb implementation by hiding envelopes.
     ConfigValue = 1
 
     # TODO: The context should be specify-able in the env var (TODO: low priority use case).
-    #       TODO: See "over-specified" context in FD-2023-01-17--1:
     #       it might be a useless in simple/dumb implementation by hiding envelopes.
     EnvVarValue = 2
 

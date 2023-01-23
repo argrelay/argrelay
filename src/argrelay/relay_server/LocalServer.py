@@ -9,7 +9,6 @@ from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.ServerConfig import ServerConfig
-from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 
 

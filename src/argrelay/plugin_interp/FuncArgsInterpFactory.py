@@ -1,9 +1,12 @@
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_interp.FuncArgsInterp import FuncArgsInterp
-from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
-from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import func_args_interp_config_desc, function_query_
+from argrelay.runtime_context.SearchControl import SearchControl
+from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import (
+    func_args_interp_config_desc,
+    function_search_control_,
+)
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
 
 
 class FuncArgsInterpFactory(AbstractInterpFactory):
@@ -20,7 +23,7 @@ class FuncArgsInterpFactory(AbstractInterpFactory):
 
     def _validate_function_envelopes_have_unique_coordinates(self, static_data: "StaticData"):
         """
-        Verify that all arg types listed to query functions uniquely identify all function with such arg types
+        Verify that all arg types listed in `function_search_control` uniquely identify function
 
         Otherwise, functions which do not have unique coordinates with listed arg types will not be invokable.
 
@@ -30,8 +33,8 @@ class FuncArgsInterpFactory(AbstractInterpFactory):
         *   Make sure all arg values (ordered by arg type) have unique tuple.
         """
 
-        types_list = EnvelopeContainer.convert_list_of_ordered_singular_dicts_to_unordered_dict(
-            self.config_dict[function_query_][keys_to_types_list_]
+        types_list = SearchControl.convert_list_of_ordered_singular_dicts_to_unordered_dict(
+            self.config_dict[function_search_control_][keys_to_types_list_]
         ).values()
 
         all_typed_values_lists = []

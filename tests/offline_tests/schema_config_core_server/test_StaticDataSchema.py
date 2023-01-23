@@ -52,7 +52,7 @@ class ThisTestCase(TestCase):
                 None,
             ),
             (
-                line_no(), "without required field (`data_envelopes`)",
+                line_no(), "without required field (`data_envelope`-s)",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
                     known_types_: [

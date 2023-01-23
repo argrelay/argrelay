@@ -4,7 +4,7 @@ all published versions are pre-releases `0.0.0.devN`.
 
 There is no Git-tagged/versioned releases yet.
 
-Nevertheless, to publish, the version in the meta data of the package
+Nevertheless, to publish, the version in the metadata of the package
 still has to be changed:
 
 ```diff

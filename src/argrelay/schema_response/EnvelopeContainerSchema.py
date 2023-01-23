@@ -3,8 +3,8 @@ from marshmallow import Schema, RAISE, fields, post_load
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import (
-    envelope_class_query_desc,
+from argrelay.schema_config_interp.SearchControlSchema import (
+    search_control_desc,
 )
 from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
 
@@ -12,7 +12,7 @@ from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
 Schema for :class:`EnvelopeContainer`
 """
 
-envelope_class_query_ = "envelope_class_query"
+search_control_ = "search_control"
 data_envelope_ = "data_envelope"
 found_count_ = "found_count"
 assigned_types_to_values_ = "assigned_types_to_values"
@@ -24,8 +24,8 @@ class EnvelopeContainerSchema(Schema):
         unknown = RAISE
         ordered = True
 
-    envelope_class_query = fields.Nested(
-        envelope_class_query_desc.dict_schema,
+    search_control = fields.Nested(
+        search_control_desc.dict_schema,
         required = True,
     )
 
@@ -55,7 +55,7 @@ class EnvelopeContainerSchema(Schema):
     @post_load
     def make_object(self, input_dict, **kwargs):
         return EnvelopeContainer(
-            envelope_class_query = input_dict[envelope_class_query_],
+            search_control = input_dict[search_control_],
             data_envelope = input_dict[data_envelope_],
             found_count = input_dict[found_count_],
             assigned_types_to_values = input_dict[assigned_types_to_values_],
@@ -67,7 +67,7 @@ envelope_container_desc = TypeDesc(
     dict_schema = EnvelopeContainerSchema(),
     ref_name = EnvelopeContainerSchema.__name__,
     dict_example = {
-        envelope_class_query_: envelope_class_query_desc.dict_example,
+        search_control_: search_control_desc.dict_example,
         data_envelope_: data_envelope_desc.dict_example,
         found_count_: 1,
         assigned_types_to_values_: {

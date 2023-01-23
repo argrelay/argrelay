@@ -17,3 +17,6 @@ TODO: reformat and populate
 *   interrogate (user to specify arg value)
 *   suggest (arg values to user (to interrogate the user))
 
+*   arg type = see also: FD-2023-01-23--1
+*   arg value = any string from a value set according to arg type.
+*   envelope class = see also: FD-2023-01-23--1

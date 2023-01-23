@@ -1,23 +1,27 @@
-from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError
+from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError, post_load
 
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.runtime_context.SearchControl import SearchControl
 
 envelope_class_ = "envelope_class"
 keys_to_types_list_ = "keys_to_types_list"
 
 
-# TODO: Rename to `search_control`? See FD-2023-01-17--4.
-# FD-2023-01-17--4:
-class EnvelopeClassQuerySchema(Schema):
+class SearchControlSchema(Schema):
     """
-    Schema for all :class:`plugin_config.envelope_class_queries`
+    FD-2023-01-17--4:
+    Schema to specify what arg types will be used in search (and how they are mapped to named arg keys).
     """
 
     class Meta:
         unknown = RAISE
         strict = True
 
+    # TODO: Move to `context_control`:
+    #       Avoid special case when only some specific arg type `ReservedArgType.EnvelopeClass` is propagated
+    #       via special mechanism and the rest of arg types are propagated via FD-2023-01-23--2.
+    # Specifies class to search:
     envelope_class = fields.String()
 
     # List of keys to use for named args during interpretation and arg types to use in queries:
@@ -30,6 +34,13 @@ class EnvelopeClassQuerySchema(Schema):
         required = True,
     )
 
+    @post_load
+    def make_object(self, input_dict, **kwargs):
+        return SearchControl(
+            envelope_class = input_dict[envelope_class_],
+            keys_to_types_list = input_dict[keys_to_types_list_],
+        )
+
     @validates_schema
     def validate_known(self, input_dict, **kwargs):
         for key_to_type_entry in input_dict[keys_to_types_list_]:
@@ -38,9 +49,9 @@ class EnvelopeClassQuerySchema(Schema):
                 raise ValidationError("only one key per dict is allowed")
 
 
-envelope_class_query_desc = TypeDesc(
-    dict_schema = EnvelopeClassQuerySchema(),
-    ref_name = EnvelopeClassQuerySchema.__name__,
+search_control_desc = TypeDesc(
+    dict_schema = SearchControlSchema(),
+    ref_name = SearchControlSchema.__name__,
     dict_example = {
         envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
         keys_to_types_list_: [

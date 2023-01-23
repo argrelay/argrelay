@@ -1,3 +1,4 @@
+import json
 from dataclasses import asdict
 
 import requests
@@ -24,7 +25,6 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         connection_config,
         response_handler: AbstractClientResponseHandler,
         response_schema,
-        # TODO: Are all remote client commands using the same schema?
         request_schema = request_context_desc.dict_schema,
     ):
         super().__init__(
@@ -49,10 +49,10 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         )
         ElapsedTime.measure("after_request")
         if response.ok:
-            response_obj = self.response_schema.loads(response.text)
-            # TODO: Figure out how to get response_dict (instead of response_obj) right away from JSON string
-            #       without requirement for this extra step:
-            response_dict = self.response_schema.dump(response_obj)
+            # Leave both object creation and validation via schemas to `response_handler`.
+            # Just deserialize into dict here:
+            response_dict = json.loads(response.text)
+            ElapsedTime.measure("after_deserialization")
             self.response_handler.handle_response(response_dict)
         else:
             raise RuntimeError

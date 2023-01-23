@@ -5,8 +5,8 @@ from dataclasses import dataclass, field
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
+from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_, envelope_class_
 
 
 @dataclass
@@ -16,74 +16,26 @@ class EnvelopeContainer:
     """
 
     # A specs how to query `data_envelope` for this `EnvelopeContainer`:
-    envelope_class_query: dict = field(default_factory = lambda: {})
+    search_control: SearchControl = field(default_factory = lambda: SearchControl())
 
-    # If found in the last query, it contains `data_envelope` based on `envelope_class_query`:
+    # If found in the last query, it contains `data_envelope` based on `search_control`:
     data_envelope: dict = field(default_factory = lambda: {})
 
     # `data_envelope`-s found in the last query:
     found_count: int = field(default = 0)
 
-    # `keys_to_types_list` is a reference to `envelope_class_query[keys_to_types_list_]`:
-    # Direct list to preserve order:
-    keys_to_types_list: list[dict[str, str]] = field(init = False, default_factory = lambda: [])
-
-    # `keys_to_types_dict` is derived from `keys_to_types_list`:
-    # Direct dict for quick lookup:
-    keys_to_types_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
-
-    # `types_to_keys_dict` is derived from `keys_to_types_dict`:
-    # Reverse lookup:
-    types_to_keys_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
-
-    # TODO: Part of to `args_context`: FD-2023-01-17--1:
+    # TODO: Maybe rename to `context_types_to_values`?
+    # TODO: Part of (or actually is?) `args_context`: FD-2023-01-17--1:
     assigned_types_to_values: dict[str, AssignedValue] = field(default_factory = lambda: {})
     """
     All assigned args (from interpreted tokens) mapped as type:value which belong to `data_envelope`.
     """
 
-    # TODO: Part of to `args_context`: FD-2023-01-17--1:
+    # TODO: Part of (or not?) `args_context` (FD-2023-01-17--1) to support FD-2023-01-17--3:
     remaining_types_to_values: dict[str, list[str]] = field(default_factory = lambda: {})
     """
     All arg values per type left for suggestion given the `assigned_types_to_values`.
     """
-
-    def __post_init__(self):
-        self._init_derived_fields()
-
-    def init_envelope_class_query(self, envelope_class_query: dict):
-        self.envelope_class_query.clear()
-        self.envelope_class_query.update(envelope_class_query)
-        self._init_derived_fields()
-
-    def _init_derived_fields(self):
-        if keys_to_types_list_ in self.envelope_class_query:
-            self.keys_to_types_list = self.envelope_class_query[keys_to_types_list_]
-        else:
-            self.keys_to_types_list = []
-
-        self.keys_to_types_dict = self.convert_list_of_ordered_singular_dicts_to_unordered_dict(
-            self.keys_to_types_list
-        )
-
-        # generate reverse:
-        self.types_to_keys_dict = {
-            v: k for k, v in
-            self.keys_to_types_dict.items()
-        }
-
-    @staticmethod
-    def convert_list_of_ordered_singular_dicts_to_unordered_dict(dict_list: list[dict]) -> dict:
-        """
-        Convert ordered list[dict] (with dict having single { key: value }) into unordered dict { keys: values }.
-        """
-        converted_dict = {}
-        for key_to_value_dict in dict_list:
-            curr_key = next(iter(key_to_value_dict))
-            curr_value = key_to_value_dict[curr_key]
-            converted_dict[curr_key] = curr_value
-
-        return converted_dict
 
     def update_curr_remaining_types_to_values(self, query_res):
         # reset:
@@ -95,7 +47,7 @@ class EnvelopeContainer:
         for self.data_envelope in iter(query_res):
             self.found_count += 1
             # `arg_type` must be known:
-            for arg_type in self.types_to_keys_dict.keys():
+            for arg_type in self.search_control.types_to_keys_dict.keys():
                 # `arg_type` must be in one of the `data_envelope`-s found:
                 if arg_type in self.data_envelope:
                     # `arg_type` must not be assigned/consumed:
@@ -115,7 +67,8 @@ class EnvelopeContainer:
         """
         When `data_envelope` is singled out, all remaining `arg_type`-s become `ArgSource.ImplicitValue`.
         """
-        for arg_type in self.keys_to_types_dict.values():
+        # Filter as in: FD-2023-01-17--4:
+        for arg_type in self.search_control.keys_to_types_dict.values():
             if arg_type in self.data_envelope:
                 if arg_type not in self.assigned_types_to_values:
                     assert arg_type in self.remaining_types_to_values
@@ -131,16 +84,16 @@ class EnvelopeContainer:
         eprint()
         # TODO: print:
         #       * currently selected args in one line: key1:value2 key2:value2
-        #       * not selected args spaces in multiple lines: space: value1 value2 ...
+        #       * not selected args types in multiple lines: type: value1 value2 ...
         # TODO: print values matching any of the arg types which have already been assigned
         # TODO: print conflicting values (two different implicit values)
         # TODO: print unrecognized tokens
         # TODO: for unrecognized token highlight by color all tokens with matching substring
         is_first_missing_found: bool = False
         for envelope_container in envelope_containers:
-            eprint(envelope_container.envelope_class_query[envelope_class_])
+            eprint(envelope_container.search_control.envelope_class)
 
-            for key_to_type_dict in envelope_container.keys_to_types_list:
+            for key_to_type_dict in envelope_container.search_control.keys_to_types_list:
                 arg_key = next(iter(key_to_type_dict))
                 arg_type = key_to_type_dict[arg_key]
 
@@ -167,6 +120,7 @@ class EnvelopeContainer:
                         end = ""
                     )
                 else:
+                    # The arg type is in the remaining but data have no arg values to suggest:
                     eprint(TermColor.BRIGHT_RED.value, end = "")
                     if not is_first_missing_found:
                         eprint(f"*{arg_type}:", end = "")

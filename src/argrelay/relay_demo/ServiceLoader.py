@@ -15,11 +15,11 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
     context_control_,
 )
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_id_,
-    envelope_class_queries_,
+    search_control_list_,
 )
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
 
 
 def _todo(self):
@@ -54,7 +54,7 @@ class ServiceLoader(AbstractLoader):
     # noinspection PyMethodMayBeStatic
     def load_data_envelopes(self, static_data: StaticData) -> StaticData:
         """
-        The loader writes samples into `static_data["data_envelopes"]` simply from code (without any data source).
+        The loader writes samples into `static_data[data_envelopes_]` simply from code (without any data source).
         """
 
         # Init type keys (if they do not exist):
@@ -62,8 +62,7 @@ class ServiceLoader(AbstractLoader):
             if type_name not in static_data.known_types:
                 static_data.known_types.append(type_name)
 
-        # TODO: Consider `search_control` - see FD-2023-01-17--4:
-        cluster_query = {
+        cluster_search_control = {
             envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
             keys_to_types_list_: [
                 {"code": ServiceArgType.CodeMaturity.name},
@@ -72,7 +71,7 @@ class ServiceLoader(AbstractLoader):
             ],
         }
 
-        host_query = {
+        host_search_control = {
             envelope_class_: ServiceEnvelopeClass.ClassHost.name,
             keys_to_types_list_: [
                 {"cluster": ServiceArgType.ClusterName.name},
@@ -81,7 +80,7 @@ class ServiceLoader(AbstractLoader):
             ],
         }
 
-        service_query = {
+        service_search_control = {
             envelope_class_: ServiceEnvelopeClass.ClassService.name,
             keys_to_types_list_: [
                 {"cluster": ServiceArgType.ClusterName.name},
@@ -91,7 +90,7 @@ class ServiceLoader(AbstractLoader):
             ],
         }
 
-        access_query = {
+        access_search_control = {
             envelope_class_: ServiceArgType.AccessType.name,
             keys_to_types_list_: [
                 {"access": ServiceArgType.AccessType.name},
@@ -113,10 +112,10 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: ErrorInvocator.__name__,
-                    envelope_class_queries_: [
-                        cluster_query,
-                        host_query,
-                        access_query,
+                    search_control_list_: [
+                        cluster_search_control,
+                        host_search_control,
+                        access_search_control,
                     ],
                 },
                 GlobalArgType.ActionType.name: "goto",
@@ -127,10 +126,10 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: ErrorInvocator.__name__,
-                    envelope_class_queries_: [
-                        cluster_query,
-                        service_query,
-                        access_query,
+                    search_control_list_: [
+                        cluster_search_control,
+                        service_search_control,
+                        access_search_control,
                     ],
                 },
                 GlobalArgType.ActionType.name: "goto",
@@ -141,9 +140,9 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: NoopInvocator.__name__,
-                    envelope_class_queries_: [
-                        cluster_query,
-                        host_query,
+                    search_control_list_: [
+                        cluster_search_control,
+                        host_search_control,
                     ],
                 },
                 GlobalArgType.ActionType.name: "desc",
@@ -154,9 +153,9 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: NoopInvocator.__name__,
-                    envelope_class_queries_: [
-                        cluster_query,
-                        service_query,
+                    search_control_list_: [
+                        cluster_search_control,
+                        service_search_control,
                     ],
                 },
                 GlobalArgType.ActionType.name: "desc",
@@ -165,7 +164,7 @@ class ServiceLoader(AbstractLoader):
             # TODO: Finalize (and test):
             #       Can there be functions accepting different envelopes classes
             #       (not like goto_host and goto_service specific for each)?
-            #       When "list" `envelope_class_queries_` including both host and servie
+            #       When "list" `search_control_list_` including both host and servie
             #       (ServiceEnvelopeClass.ClassService.name and ServiceEnvelopeClass.ClassHost.name),
             #       will it accept 2 (ALL) via AND or 1 (ANY) via OR?
             #       Is such distinction required?
@@ -177,9 +176,9 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: NoopInvocator.__name__,
-                    envelope_class_queries_: [
-                        host_query,
-                        service_query,
+                    search_control_list_: [
+                        host_search_control,
+                        service_search_control,
                     ],
                 },
                 GlobalArgType.ActionType.name: "list",

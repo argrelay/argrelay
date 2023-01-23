@@ -11,9 +11,9 @@ from argrelay.schema_config_core_server.MongoServerConfigSchema import mongo_ser
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import envelope_class_query_desc
 from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import func_args_interp_config_desc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
+from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
@@ -42,7 +42,7 @@ class ThisTestCase(TestCase):
             (line_no(), server_config_desc),
             (line_no(), static_data_desc),
             (line_no(), data_envelope_desc),
-            (line_no(), envelope_class_query_desc),
+            (line_no(), search_control_desc),
             (line_no(), function_envelope_instance_data_desc),
             (line_no(), func_args_interp_config_desc),
             (line_no(), arg_values_desc),

@@ -15,6 +15,7 @@ from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_, context_control_
+from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
 
 @dataclass
@@ -50,7 +51,6 @@ class InterpContext:
     Already consumed tokens (their ipos) in the order of their consumption.
     """
 
-    # TODO: Make it explicit that this is, in fact, set of `args_context`-s (saved for each `data_envelope` found and last `data_envelope` which may be not yet found): FD-2023-01-17--1:
     envelope_containers: list[EnvelopeContainer] = field(init = False, default_factory = lambda: [])
     """
     Associated data for each `data_envelope` to be found.
@@ -61,7 +61,7 @@ class InterpContext:
     The `envelope_containers` currently being searched.
     """
 
-    # When `function_envelope` found, it is an ipos into `envelope_class_queries` to select curr `envelope_class_query`:
+    # When `function_envelope` found, it is an ipos into `search_control_list` to select curr `search_control`:
     curr_container_ipos: int = field(init = False, default = -1)
 
     last_found_envelope_ipos: int = field(init = False, default = -1)
@@ -102,10 +102,12 @@ class InterpContext:
             )
         ]
 
-    def create_containers(self, envelope_class_queries):
-        for envelope_class_query in envelope_class_queries:
+    def create_containers(self, search_control_list):
+        for search_control in search_control_list:
             envelope_container = EnvelopeContainer(
-                envelope_class_query
+                search_control_desc.dict_schema.load(
+                    search_control
+                )
             )
             self.envelope_containers.append(envelope_container)
 
@@ -121,7 +123,7 @@ class InterpContext:
 
     def _propagate_implicit_values(self):
         """
-        FD-2023-01-17--1:
+        FD-2023-01-23--2:
         Copy arg value from prev `data_envelope` for arg types specified in `context_control` into next `arg_context`.
         """
         if self.last_found_envelope_ipos >= 0:
@@ -150,10 +152,12 @@ class InterpContext:
 
     def query_envelopes(self):
         query_dict = {
-            envelope_class_: self.curr_container.envelope_class_query[envelope_class_],
+            envelope_class_: self.curr_container.search_control.envelope_class,
         }
-        for arg_type, arg_val in self.curr_container.assigned_types_to_values.items():
-            query_dict[arg_type] = arg_val.arg_value
+        # FD-2023-01-17--4: populate arg values to search from the context:
+        for arg_type in self.curr_container.search_control.types_to_keys_dict.keys():
+            if arg_type in self.curr_container.assigned_types_to_values:
+                query_dict[arg_type] = self.curr_container.assigned_types_to_values[arg_type].arg_value
 
         # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
         query_res = self.mongo_col.find(query_dict)

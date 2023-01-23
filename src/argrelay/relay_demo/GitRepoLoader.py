@@ -20,11 +20,11 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     instance_data_,
 )
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_id_,
-    envelope_class_queries_,
+    search_control_list_,
 )
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
 
 
 class GitRepoLoader(AbstractLoader):
@@ -120,7 +120,7 @@ class GitRepoLoader(AbstractLoader):
                 envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
                 envelope_payload_: {
                     "abs_repo_path": abs_git_path,
-                    # TODO: Add anything extra (beyond top-level keys with meta data) required for some function
+                    # TODO: Add anything extra (beyond top-level keys with metadata) required for some function
                 },
                 GlobalArgType.ObjectSelector.name: "repo",
                 GitRepoArgType.GitRepoRelPath.name: rel_git_path,
@@ -142,7 +142,7 @@ class GitRepoLoader(AbstractLoader):
                     envelope_id_: git_commit.hexsha,
                     envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
                     envelope_payload_: {
-                        # TODO: Add anything extra (beyond top-level keys with meta data) required for some function
+                        # TODO: Add anything extra (beyond top-level keys with metadata) required for some function
                     },
                     GlobalArgType.ObjectSelector.name: "commit",
                     GitRepoArgType.GitRepoRelPath.name: rel_git_path,
@@ -157,8 +157,7 @@ class GitRepoLoader(AbstractLoader):
         ###############################################################################################################
         # functions
 
-        # TODO: Consider `search_control` - see FD-2023-01-17--4:
-        repo_query = {
+        repo_search_control = {
             envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
             keys_to_types_list_: [
                 {"part": GitRepoArgType.GitRepoPathComp.name},
@@ -166,7 +165,7 @@ class GitRepoLoader(AbstractLoader):
             ],
         }
 
-        commit_query = {
+        commit_search_control = {
             envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
             keys_to_types_list_: [
                 {"path": GitRepoArgType.GitRepoRelPath.name},
@@ -180,8 +179,8 @@ class GitRepoLoader(AbstractLoader):
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: GitRepoInvocator.__name__,
-                envelope_class_queries_: [
-                    repo_query,
+                search_control_list_: [
+                    repo_search_control,
                 ],
             },
             GlobalArgType.ActionType.name: "desc",
@@ -194,8 +193,8 @@ class GitRepoLoader(AbstractLoader):
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: GitRepoInvocator.__name__,
-                envelope_class_queries_: [
-                    commit_query,
+                search_control_list_: [
+                    commit_search_control,
                 ],
             },
             GlobalArgType.ActionType.name: "desc",

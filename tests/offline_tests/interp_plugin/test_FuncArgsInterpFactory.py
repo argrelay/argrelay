@@ -12,12 +12,12 @@ from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_list_, static_data_
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_, context_control_
-from argrelay.schema_config_interp.EnvelopeClassQuerySchema import envelope_class_, keys_to_types_list_
-from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_query_
+from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_id_,
-    envelope_class_queries_,
+    search_control_list_,
 )
+from argrelay.schema_config_interp.SearchControlSchema import envelope_class_, keys_to_types_list_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_id_,
     plugin_config_,
@@ -52,7 +52,7 @@ class ThisTestCase(TestCase):
             plugin_class_name_: FuncArgsInterpFactory.__name__,
             plugin_type_: PluginType.InterpFactoryPlugin.name,
             plugin_config_: {
-                function_query_: {
+                function_search_control_: {
                     envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                     keys_to_types_list_: [
                         {type_1: type_1},
@@ -68,7 +68,7 @@ class ThisTestCase(TestCase):
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
-                envelope_class_queries_: [],
+                search_control_list_: [],
             },
             context_control_: [],
             type_1: "type_1_value_1",
@@ -80,7 +80,7 @@ class ThisTestCase(TestCase):
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
-                envelope_class_queries_: [],
+                search_control_list_: [],
             },
             context_control_: [],
             type_1: "type_1_value_2",
@@ -107,7 +107,7 @@ class ThisTestCase(TestCase):
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
-                envelope_class_queries_: [],
+                search_control_list_: [],
             },
             context_control_: [],
             type_1: "type_1_value_1",

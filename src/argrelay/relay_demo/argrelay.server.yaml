@@ -32,10 +32,8 @@ plugin_list:
         plugin_class_name: DemoInterpFactory
         plugin_type: InterpFactoryPlugin
         plugin_config:
-            # TODO: Is `function_query` always supposed to repeat `envelope_class_queries` for `envelope_class` = `ClassFunction`?
-            function_query:
+            function_search_control:
                 envelope_class: ClassFunction
-                # TODO: Move to `search_control` - see FD-2023-01-17--4:
                 keys_to_types_list:
                     -   action: ActionType
                     -   selector: ObjectSelector

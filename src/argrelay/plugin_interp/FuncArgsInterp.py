@@ -12,10 +12,11 @@ from argrelay.runtime_context.InterpContext import (
 )
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
-from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_query_
+from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    envelope_class_queries_,
+    search_control_list_,
 )
+from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
 """
 This module auto-completes command line args when integrated with shell (Bash).
@@ -30,7 +31,9 @@ class FuncArgsInterp(AbstractInterp):
         super().__init__(interp_ctx, config_dict)
         self.interp_ctx = interp_ctx
 
-        self.interp_ctx.curr_container.init_envelope_class_query(config_dict[function_query_])
+        self.interp_ctx.curr_container.search_control = search_control_desc.dict_schema.load(
+            config_dict[function_search_control_]
+        )
         self.interp_ctx.init_next_container()
         self.interp_ctx.query_envelopes()
 
@@ -85,7 +88,7 @@ class FuncArgsInterp(AbstractInterp):
             if self.interp_ctx.curr_container_ipos == 0:
                 # This is a function envelope - create `EnvelopeContainer`-s for every envelope to find:
                 self.interp_ctx.create_containers(
-                    self.interp_ctx.curr_container.data_envelope[instance_data_][envelope_class_queries_]
+                    self.interp_ctx.curr_container.data_envelope[instance_data_][search_control_list_]
                 )
 
             self.interp_ctx.register_found_envelope()
@@ -116,7 +119,7 @@ class FuncArgsInterp(AbstractInterp):
         ):
             return [
                 type_name + SpecialChar.KeyValueDelimiter.value
-                for type_name in self.interp_ctx.curr_container.types_to_keys_dict.keys()
+                for type_name in self.interp_ctx.curr_container.search_control.types_to_keys_dict.keys()
                 if not type_name.startswith("_")
             ]
 
@@ -162,7 +165,7 @@ class FuncArgsInterp(AbstractInterp):
         proposed_tokens: list[str] = []
 
         # Return filtered value set fom next missing arg:
-        for arg_type in self.interp_ctx.curr_container.types_to_keys_dict.keys():
+        for arg_type in self.interp_ctx.curr_container.search_control.types_to_keys_dict.keys():
             if (
                 not proposed_tokens
                 and
