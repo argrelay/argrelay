@@ -15,8 +15,21 @@ mongo_config:
         start_server: True
         server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
 
-plugin_list:
-    -   plugin_id: FirstArgInterpFactory
+plugin_id_load_list:
+
+    -   FirstArgInterpFactory
+    -   DemoInterpFactory
+
+    -   NoopLoader
+    -   ServiceLoader
+    -   GitRepoLoader
+
+    -   NoopInvocator
+    -   GitRepoInvocator
+    -   ErrorInvocator
+
+plugin_dict:
+    FirstArgInterpFactory:
         plugin_module_name: argrelay.plugin_interp.FirstArgInterpFactory
         plugin_class_name: FirstArgInterpFactory
         plugin_type: InterpFactoryPlugin
@@ -27,7 +40,7 @@ plugin_list:
                 # Another equivalent binding (but `some_command` does not exist in this repo):
                 some_command: DemoInterpFactory
 
-    -   plugin_id: DemoInterpFactory
+    DemoInterpFactory:
         plugin_module_name: argrelay.relay_demo.DemoInterpFactory
         plugin_class_name: DemoInterpFactory
         plugin_type: InterpFactoryPlugin
@@ -38,19 +51,21 @@ plugin_list:
                     -   action: ActionType
                     -   selector: ObjectSelector
 
-    -   plugin_id: NoopLoader
+    NoopLoader:
         plugin_module_name: argrelay.misc_helper.NoopLoader
         plugin_class_name: NoopLoader
         plugin_type: LoaderPlugin
         plugin_config: { }
 
-    -   plugin_id: ServiceLoader
+    ServiceLoader:
         plugin_module_name: argrelay.relay_demo.ServiceLoader
         plugin_class_name: ServiceLoader
         plugin_type: LoaderPlugin
-        plugin_config: { }
+        plugin_config:
+            is_test_data_filter_enabled: False
+            allow_only_test_data: []
 
-    -   plugin_id: GitRepoLoader
+    GitRepoLoader:
         plugin_module_name: argrelay.relay_demo.GitRepoLoader
         plugin_class_name: GitRepoLoader
         plugin_type: LoaderPlugin
@@ -58,19 +73,19 @@ plugin_list:
             is_enabled: False
             base_path: "~/repos"
 
-    -   plugin_id: GitRepoInvocator
-        plugin_module_name: argrelay.relay_demo.GitRepoInvocator
-        plugin_class_name: GitRepoInvocator
-        plugin_type: InvocatorPlugin
-        plugin_config: { }
-
-    -   plugin_id: NoopInvocator
+    NoopInvocator:
         plugin_module_name: argrelay.plugin_invocator.NoopInvocator
         plugin_class_name: NoopInvocator
         plugin_type: InvocatorPlugin
         plugin_config: { }
 
-    -   plugin_id: ErrorInvocator
+    GitRepoInvocator:
+        plugin_module_name: argrelay.relay_demo.GitRepoInvocator
+        plugin_class_name: GitRepoInvocator
+        plugin_type: InvocatorPlugin
+        plugin_config: { }
+
+    ErrorInvocator:
         plugin_module_name: argrelay.plugin_invocator.ErrorInvocator
         plugin_class_name: ErrorInvocator
         plugin_type: InvocatorPlugin

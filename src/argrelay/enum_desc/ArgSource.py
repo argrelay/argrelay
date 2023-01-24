@@ -26,7 +26,7 @@ class ArgSource(IntEnum):
     # * Plugins.
     ComputedValue = 3
 
-    # TODO: Provide detailed description in FD-2023-01-17--3?
+    # TODO: Provide detailed description in FS_13_51_07_97?
     # TODO: Actually, to provide implicit value, the envelope should not necessarily be singled out.
     #       If a set of all envelopes constrained by current context provide the same value for some type,
     #       such value should be implied (and user should not be proposed/interrogated for that).

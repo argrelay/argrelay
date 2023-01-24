@@ -22,6 +22,7 @@ class DataEnvelopeSchema(Schema):
         strict = True
 
     envelope_id = fields.String(
+        # TODO: make it required for predictability - isn't it required?
         required = False,
     )
     envelope_class = fields.String(
@@ -34,7 +35,7 @@ class DataEnvelopeSchema(Schema):
     For example, `ReservedEnvelopeClass.ClassFunction` defines `FunctionEnvelopeInstanceDataSchema`.
     """
     instance_data = fields.Dict(
-        # TODO: make it required - isn't it required?
+        # TODO: make it required for predictability - isn't it required?
         required = False,
     )
 
@@ -43,7 +44,7 @@ class DataEnvelopeSchema(Schema):
     It is not inspected by `argrelay`.
     """
     envelope_payload = fields.Dict(
-        # TODO: make it required (and ensure it is sent in tests):
+        # TODO: make it required for predictability - isn't it required?
         required = False,
     )
 
@@ -52,6 +53,7 @@ class DataEnvelopeSchema(Schema):
     """
     context_control = fields.List(
         fields.String(),
+        # TODO: make it required for predictability - isn't it required?
         required = False,
     )
 

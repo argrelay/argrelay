@@ -13,20 +13,17 @@ class ServerConfig:
     connection_config: ConnectionConfig
     mongo_config: MongoConfig
 
-    plugin_list: list[PluginEntry]
+    plugin_id_load_list: list[str]
     """
-    List of plugin. It is a list because the order might be important (it is the order of plugin activation).
-    Indexed version (from `plugin_id` into `plugin_entry`) is generated into `plugin_dict`.
+    List of `plugin_id`s in order of loading. Each `plugin_id` is a key into `plugin_dict`.
+    """
+
+    plugin_dict: dict[str, PluginEntry]
+    """
+    Key = `plugin_id`
     """
 
     static_data: StaticData
-
-    # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
-    plugin_dict: dict[str, PluginEntry] = field(default_factory = lambda: {})
-    """
-    Entries in `plugin_dict` are not directly loaded from config.
-    They are are populated from `plugin_list` (key = `plugin_id`, value = `plugin_entry`).
-    """
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
     data_loaders: dict[str, "AbstractLoader"] = field(default_factory = lambda: {})

@@ -1,27 +1,25 @@
-This is a dir with test data,
-abbreviated as `TD`,
-referenced as `test_data`.
+This is a dir with explanation for test data sets,
+referenced by `test_data`'s id,
+abbreviated as `TD`.
 
-It is supposed to define reference ids to
-find them in related places in source files
+Each `test_data` set has its own id to
+find them in related places in files
 (to bind these places all together).
 
-This highlights a special purpose of some data | code and helps to avoid
-inadvertently changing them breaking the test.
+This helps to highlight a special purpose of some data and avoid
+inadvertently changing it making a test invalid.
 
-The format of the test data id is:
+The format of the `test_data` id is:
 
 ```
-TD-YYYY-MM-DD--N
+TD_NN_NN_NN_NN
 ```
 
 *   `TD`: prefix as is
-*   `YYYY-MM-DD`: date of creation
-*   `N`: ordinal number (within `YYYY-MM-DD`)
+*   `NN_NN_NN_NN`: random numbers
 
-For example:
+It can be followed by ignorable mnemonic keywords, for example:
 
 ```
-TD-2023-01-07--1
+TD_70_69_38_46 # no data
 ```
-

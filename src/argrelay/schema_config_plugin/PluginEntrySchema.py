@@ -6,14 +6,12 @@ from argrelay.misc_helper.NoopLoader import NoopLoader
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_data.PluginEntry import PluginEntry
 
-plugin_id_ = "plugin_id"
 plugin_config_ = "plugin_config"
 plugin_module_name_ = "plugin_module_name"
 plugin_class_name_ = "plugin_class_name"
 plugin_type_ = "plugin_type"
 
 _plugin_entry_example = {
-    plugin_id_: NoopLoader.__name__,
     plugin_module_name_: NoopLoader.__module__,
     plugin_class_name_: NoopLoader.__name__,
     plugin_type_: PluginType.LoaderPlugin.name,
@@ -26,10 +24,6 @@ class PluginEntrySchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
-
-    plugin_id = fields.String(
-        required = True,
-    )
 
     plugin_module_name = fields.String(
         required = True,
@@ -54,7 +48,6 @@ class PluginEntrySchema(Schema):
         # TODO: figure out to populate all automatically and reduce duplication - this is error-prone:
         if isinstance(input_object, PluginEntry):
             return {
-                plugin_id_: input_object.plugin_id,
                 plugin_module_name_: input_object.plugin_module_name,
                 plugin_class_name_: input_object.plugin_class_name,
                 plugin_type_: ensure_value_is_enum(input_object.plugin_type, PluginType),
@@ -63,7 +56,6 @@ class PluginEntrySchema(Schema):
         else:
             # Assuming it is as dict:
             return {
-                plugin_id_: input_object[plugin_id_],
                 plugin_module_name_: input_object[plugin_module_name_],
                 plugin_class_name_: input_object[plugin_class_name_],
                 plugin_type_: ensure_value_is_enum(input_object[plugin_type_], PluginType),
@@ -73,7 +65,6 @@ class PluginEntrySchema(Schema):
     @post_load
     def make_object(self, input_dict, **kwargs):
         return PluginEntry(
-            plugin_id = input_dict[plugin_id_],
             plugin_module_name = input_dict[plugin_module_name_],
             plugin_class_name = input_dict[plugin_class_name_],
             plugin_type = ensure_value_is_enum(input_dict[plugin_type_], PluginType),

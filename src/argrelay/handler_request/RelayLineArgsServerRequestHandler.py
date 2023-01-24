@@ -18,7 +18,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         local_server: LocalServer,
     ):
         super().__init__(
-            local_server = local_server
+            local_server = local_server,
         )
 
     def handle_request(self, input_ctx: InputContext) -> dict:

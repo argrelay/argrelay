@@ -1,4 +1,4 @@
-from marshmallow import Schema, RAISE, fields, post_load
+from marshmallow import Schema, RAISE, fields, post_load, validates_schema, ValidationError
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
@@ -32,6 +32,7 @@ class EnvelopeContainerSchema(Schema):
     data_envelope = fields.Nested(
         data_envelope_desc.dict_schema,
         required = True,
+        allow_none = True,
     )
 
     found_count = fields.Integer(
@@ -61,6 +62,15 @@ class EnvelopeContainerSchema(Schema):
             assigned_types_to_values = input_dict[assigned_types_to_values_],
             remaining_types_to_values = input_dict[remaining_types_to_values_],
         )
+
+    @validates_schema
+    def validate_known(self, input_dict, **kwargs):
+        if input_dict[found_count_] > 0:
+            if not input_dict[data_envelope_]:
+                raise ValidationError(
+                    f"`{found_count_}` is `{input_dict[found_count_]}`"
+                    f"but `{data_envelope_}` is `{None}`"
+                )
 
 
 envelope_container_desc = TypeDesc(

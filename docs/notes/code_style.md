@@ -51,7 +51,7 @@ preferring (not immediately obvious) practical properties.
     *   `remote_client_command`
 
     After all, the three keywords (`local` | `remote`, `command`, `client`)
-    are pressent in any of the naming style and
+    are present in any of the naming style and
     there is no ambiguity in meaning.
 
 *   Use new lines excessively - prefer "tall" code rather than "wide" one.
@@ -73,7 +73,7 @@ preferring (not immediately obvious) practical properties.
         self.config_dict = config_dict
     ```
 
-    In case of constructur args changes, the first style:
+    In case of constructor args changes, the first style:
     *   makes diff output cleaner for reviews
     *   preserves the history through `git blame` for more lines
 

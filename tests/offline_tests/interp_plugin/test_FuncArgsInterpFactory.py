@@ -9,7 +9,7 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
 from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_list_, static_data_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_id_load_list_, static_data_, plugin_dict_
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_, context_control_
 from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_
@@ -19,7 +19,6 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
 )
 from argrelay.schema_config_interp.SearchControlSchema import envelope_class_, keys_to_types_list_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
-    plugin_id_,
     plugin_config_,
     plugin_module_name_,
     plugin_class_name_,
@@ -46,8 +45,11 @@ class ThisTestCase(TestCase):
         type_2 = "whatever_type_2"
 
         # Configure new `FuncArgsInterpFactory`:
-        server_config_dict[plugin_list_].append({
-            plugin_id_: FuncArgsInterpFactory.__name__ + ".test",
+        plugin_id = FuncArgsInterpFactory.__name__ + ".test"
+        assert plugin_id not in server_config_dict[plugin_id_load_list_]
+        assert plugin_id not in server_config_dict[plugin_dict_]
+        server_config_dict[plugin_id_load_list_].append(plugin_id)
+        server_config_dict[plugin_dict_][plugin_id] = {
             plugin_module_name_: FuncArgsInterpFactory.__module__,
             plugin_class_name_: FuncArgsInterpFactory.__name__,
             plugin_type_: PluginType.InterpFactoryPlugin.name,
@@ -60,7 +62,7 @@ class ThisTestCase(TestCase):
                     ]
                 },
             }
-        })
+        }
 
         # Add two functions with unique coordinates:
         given_function_envelope = {

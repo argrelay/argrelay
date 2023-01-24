@@ -13,6 +13,7 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
+from argrelay.test_helper import change_to_known_path_tests_dir
 
 
 class ThisTestCase(TestCase):
@@ -25,7 +26,8 @@ class ThisTestCase(TestCase):
         server_config: ServerConfig = server_config_desc.from_default_file()
         found_one = False
         git_loader_plugin = None
-        for plugin_item in server_config.plugin_list:
+        for plugin_id in server_config.plugin_id_load_list:
+            plugin_item = server_config.plugin_dict[plugin_id]
             if (
                 plugin_item.plugin_module_name == GitRepoLoader_module.__name__
                 and
@@ -49,9 +51,7 @@ class ThisTestCase(TestCase):
         See `tests/readme.md`.
         """
 
-        # When IDE runs, CWD="tests", when `tox` runs, CWD=[repo root], so change to `tests` subdir:
-        if os.path.basename(os.getcwd()) != "tests":
-            os.chdir("tests")
+        change_to_known_path_tests_dir()
 
         self.assertTrue(os.path.isdir("env_tests"))
         self.assertFalse(os.path.exists("env_tests/__init__.py"))

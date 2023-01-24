@@ -123,7 +123,7 @@ class InterpContext:
 
     def _propagate_implicit_values(self):
         """
-        FD-2023-01-23--2:
+        FS_46_96_59_05:
         Copy arg value from prev `data_envelope` for arg types specified in `context_control` into next `arg_context`.
         """
         if self.last_found_envelope_ipos >= 0:
@@ -154,7 +154,7 @@ class InterpContext:
         query_dict = {
             envelope_class_: self.curr_container.search_control.envelope_class,
         }
-        # FD-2023-01-17--4: populate arg values to search from the context:
+        # FS_31_70_49_15: populate arg values to search from the context:
         for arg_type in self.curr_container.search_control.types_to_keys_dict.keys():
             if arg_type in self.curr_container.assigned_types_to_values:
                 query_dict[arg_type] = self.curr_container.assigned_types_to_values[arg_type].arg_value

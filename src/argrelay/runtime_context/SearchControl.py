@@ -6,14 +6,14 @@ from dataclasses import dataclass, field
 @dataclass
 class SearchControl:
     """
-    FD-2023-01-17--4:
+    FS_31_70_49_15:
     Object to specify what arg types will be used in search (and how they are mapped to named arg keys).
     """
 
-    # TODO: Move to `context_control`:
+    # TODO: Move to `context_control` (out of this `search_control` here):
     #       Avoid special case when only some specific arg type `ReservedArgType.EnvelopeClass` is propagated
-    #       via special mechanism and the rest of arg types are propagated via FD-2023-01-23--2.
-    envelope_class: str = field(default_factory = lambda: {})
+    #       this special mechanism and the rest of arg types are propagated via FS_46_96_59_05.
+    envelope_class: str = field(default_factory = lambda: None)
 
     # A specs how to query `data_envelope` for this `EnvelopeContainer` (which arg types to use).
     # Direct list to preserve order:

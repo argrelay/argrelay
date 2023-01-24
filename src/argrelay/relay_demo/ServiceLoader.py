@@ -7,6 +7,11 @@ from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.relay_demo.ServiceLoaderConfigSchema import (
+    service_loader_config_desc,
+    allow_only_test_data_,
+    is_test_data_filter_enabled_,
+)
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
@@ -20,6 +25,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     search_control_list_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
+from argrelay.test_helper import test_data_
 
 
 def _todo(self):
@@ -43,7 +49,51 @@ def _todo(self):
     # TODO: implement generic logic and config when one of the arg proposes values for other.
 
 
+cluster_search_control = {
+    envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+    keys_to_types_list_: [
+        {"code": ServiceArgType.CodeMaturity.name},
+        {"stage": ServiceArgType.FlowStage.name},
+        {"region": ServiceArgType.GeoRegion.name},
+    ],
+}
+
+host_search_control = {
+    envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+    keys_to_types_list_: [
+        {"cluster": ServiceArgType.ClusterName.name},
+        {"host": ServiceArgType.HostName.name},
+        {"tag": ServiceArgType.ColorTag.name},
+    ],
+}
+
+service_search_control = {
+    envelope_class_: ServiceEnvelopeClass.ClassService.name,
+    keys_to_types_list_: [
+        {"cluster": ServiceArgType.ClusterName.name},
+        {"host": ServiceArgType.HostName.name},
+        {"service": ServiceArgType.ServiceName.name},
+        {"tag": ServiceArgType.ColorTag.name},
+    ],
+}
+
+access_search_control = {
+    envelope_class_: ServiceArgType.AccessType.name,
+    keys_to_types_list_: [
+        {"access": ServiceArgType.AccessType.name},
+    ],
+}
+
+
+# noinspection PyPep8Naming
 class ServiceLoader(AbstractLoader):
+
+    def __init__(
+        self,
+        config_dict: dict,
+    ):
+        super().__init__(config_dict)
+        service_loader_config_desc.validate_dict(config_dict)
 
     def update_static_data(self, static_data: StaticData) -> StaticData:
 
@@ -62,44 +112,37 @@ class ServiceLoader(AbstractLoader):
             if type_name not in static_data.known_types:
                 static_data.known_types.append(type_name)
 
-        cluster_search_control = {
-            envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-            keys_to_types_list_: [
-                {"code": ServiceArgType.CodeMaturity.name},
-                {"stage": ServiceArgType.FlowStage.name},
-                {"region": ServiceArgType.GeoRegion.name},
-            ],
-        }
-
-        host_search_control = {
-            envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-            keys_to_types_list_: [
-                {"cluster": ServiceArgType.ClusterName.name},
-                {"host": ServiceArgType.HostName.name},
-                {"tag": ServiceArgType.ColorTag.name},
-            ],
-        }
-
-        service_search_control = {
-            envelope_class_: ServiceEnvelopeClass.ClassService.name,
-            keys_to_types_list_: [
-                {"cluster": ServiceArgType.ClusterName.name},
-                {"host": ServiceArgType.HostName.name},
-                {"service": ServiceArgType.ServiceName.name},
-                {"tag": ServiceArgType.ColorTag.name},
-            ],
-        }
-
-        access_search_control = {
-            envelope_class_: ServiceArgType.AccessType.name,
-            keys_to_types_list_: [
-                {"access": ServiceArgType.AccessType.name},
-            ],
-        }
-
         # TODO: This loader overwrites existing object list (it has to patch it instead).
         #       This is fine for now because `ServiceLoader` is used first in config.
-        data_envelopes = [
+        data_envelopes = []
+
+        self.populate_common_functions(data_envelopes)
+        self.populate_common_AccessType(data_envelopes)
+        self.populate_TD_63_37_05_36_default(data_envelopes)
+        self.populate_TD_76_09_29_31_overlapped(data_envelopes)
+
+        self.generate_envelope_id(data_envelopes)
+
+        static_data.data_envelopes.extend(data_envelopes)
+
+        return static_data
+
+    # noinspection PyMethodMayBeStatic
+    def generate_envelope_id(self, data_envelopes: list):
+        for data_envelope in data_envelopes:
+            if envelope_id_ not in data_envelope:
+                if envelope_class_ == ServiceEnvelopeClass.ClassHost.name:
+                    data_envelope[envelope_id_] = data_envelope[ServiceArgType.HostName.name]
+                if envelope_class_ == ServiceEnvelopeClass.ClassService.name:
+                    data_envelope[envelope_id_] = (
+                        data_envelope[ServiceArgType.HostName.name]
+                        + "." +
+                        data_envelope[ServiceArgType.ServiceName.name]
+                    )
+
+    @staticmethod
+    def populate_common_functions(data_envelopes: list):
+        data_envelopes.extend([
 
             ############################################################################################################
             # functions
@@ -183,202 +226,15 @@ class ServiceLoader(AbstractLoader):
                 },
                 GlobalArgType.ActionType.name: "list",
             },
+        ])
+
+    @staticmethod
+    def populate_common_AccessType(data_envelopes: list):
+
+        data_envelopes.extend([
 
             ############################################################################################################
-            # clusters
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-                envelope_payload_: {
-                },
-                # TODO: repeated info: FD-2023-01-19--3:
-                context_control_: [
-                    ServiceArgType.ClusterName.name,
-                ],
-                ServiceArgType.CodeMaturity.name: "dev",
-                ServiceArgType.FlowStage.name: "upstream",
-                ServiceArgType.GeoRegion.name: "amer",
-                ServiceArgType.ClusterName.name: "dev-upstream-amer",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-                envelope_payload_: {
-                },
-                # TODO: repeated info: FD-2023-01-19--3:
-                context_control_: [
-                    ServiceArgType.ClusterName.name,
-                ],
-                ServiceArgType.CodeMaturity.name: "dev",
-                ServiceArgType.FlowStage.name: "upstream",
-                ServiceArgType.GeoRegion.name: "emea",
-                ServiceArgType.ClusterName.name: "dev-upstream-emea",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-                envelope_payload_: {
-                },
-                # TODO: repeated info: FD-2023-01-19--3:
-                context_control_: [
-                    ServiceArgType.ClusterName.name,
-                ],
-                ServiceArgType.CodeMaturity.name: "dev",
-                ServiceArgType.FlowStage.name: "upstream",
-                ServiceArgType.GeoRegion.name: "apac",
-                ServiceArgType.ClusterName.name: "dev-upstream-apac",
-            },
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-                envelope_payload_: {
-                },
-                # TODO: repeated info: FD-2023-01-19--3:
-                context_control_: [
-                    ServiceArgType.ClusterName.name,
-                ],
-                ServiceArgType.CodeMaturity.name: "prod",
-                ServiceArgType.FlowStage.name: "downstream",
-                ServiceArgType.GeoRegion.name: "apac",
-                ServiceArgType.ClusterName.name: "prod-downstream-apac",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-                envelope_payload_: {
-                },
-                # TODO: repeated info: FD-2023-01-19--3:
-                context_control_: [
-                    ServiceArgType.ClusterName.name,
-                ],
-                ServiceArgType.CodeMaturity.name: "qa",
-                ServiceArgType.FlowStage.name: "downstream",
-                ServiceArgType.GeoRegion.name: "amer",
-                ServiceArgType.ClusterName.name: "qa-downstream-amer",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-                envelope_payload_: {
-                },
-                # TODO: repeated info: FD-2023-01-19--3:
-                context_control_: [
-                    ServiceArgType.ClusterName.name,
-                ],
-                ServiceArgType.CodeMaturity.name: "dev",
-                ServiceArgType.FlowStage.name: "downstream",
-                ServiceArgType.GeoRegion.name: "emea",
-                ServiceArgType.ClusterName.name: "dev-downstream-emea",
-            },
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-                envelope_payload_: {
-                    # TODO: Fix test_data: TD-2023-01-07--1: there is no overlap after introduction of ClusterName.
-                    "test_data": "TD-2023-01-07--1",
-                },
-                # TODO: repeated info: FD-2023-01-19--3:
-                context_control_: [
-                    ServiceArgType.ClusterName.name,
-                ],
-                ServiceArgType.CodeMaturity.name: "dev",
-                ServiceArgType.FlowStage.name: "downstream",
-                ServiceArgType.GeoRegion.name: "amer.us",
-                ServiceArgType.ClusterName.name: "dev-downstream-amer.us",
-            },
-
-            ############################################################################################################
-            # hosts
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "dev-upstream-amer",
-                ServiceArgType.HostName.name: "qwer",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "dev-upstream-emea",
-                ServiceArgType.HostName.name: "asdf",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "dev-upstream-apac",
-                ServiceArgType.HostName.name: "zxcv",
-            },
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "prod-downstream-apac",
-                ServiceArgType.HostName.name: "wert",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "qa-downstream-amer",
-                ServiceArgType.HostName.name: "sdfg",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "dev-downstream-emea",
-                ServiceArgType.HostName.name: "xcvb",
-            },
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-                envelope_payload_: {
-                    # TODO: Fix test_data: TD-2023-01-07--1: there is no overlap after introduction of ClusterName.
-                    "test_data": "TD-2023-01-07--1",
-                },
-                ServiceArgType.ClusterName.name: "dev-downstream-amer.us",
-                ServiceArgType.HostName.name: "amer.us",
-            },
-
-            ############################################################################################################
-            # services
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "dev-upstream-amer",
-                ServiceArgType.HostName.name: "qwer",
-                ServiceArgType.ServiceName.name: "service_a",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "dev-upstream-emea",
-                ServiceArgType.HostName.name: "asdf",
-                ServiceArgType.ServiceName.name: "service_b",
-            },
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "dev-upstream-apac",
-                ServiceArgType.HostName.name: "zxcv",
-                ServiceArgType.ServiceName.name: "service_c",
-            },
-
-            {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
-                envelope_payload_: {
-                },
-                ServiceArgType.ClusterName.name: "qa-upstream-apac",
-                ServiceArgType.HostName.name: "poiu",
-                ServiceArgType.ServiceName.name: "service_c",
-            },
-
-            ############################################################################################################
-            # `AccessType`: FD-2023-01-19--1
+            # `AccessType`: FS_24_50_40_64
 
             {
                 envelope_class_: ServiceArgType.AccessType.name,
@@ -392,23 +248,300 @@ class ServiceLoader(AbstractLoader):
                 },
                 ServiceArgType.AccessType.name: "rw",
             },
-        ]
+        ])
 
-        self.generate_envelope_id(data_envelopes)
+    def populate_TD_63_37_05_36_default(self, data_envelopes: list):
+        """
+        Populates TD_63_37_05_36 # default
+        """
+        if (
+            not self.config_dict[is_test_data_filter_enabled_]
+            or
+            "TD_63_37_05_36" not in self.config_dict[allow_only_test_data_]
+        ):
+            return
 
-        static_data.data_envelopes.extend(data_envelopes)
+        data_envelopes.extend([
 
-        return static_data
+            ############################################################################################################
+            # TD_63_37_05_36 # default: clusters
 
-    # noinspection PyMethodMayBeStatic
-    def generate_envelope_id(self, data_envelopes: list):
-        for data_envelope in data_envelopes:
-            if envelope_id_ not in data_envelope:
-                if envelope_class_ == ServiceEnvelopeClass.ClassHost.name:
-                    data_envelope[envelope_id_] = data_envelope[ServiceArgType.HostName.name]
-                if envelope_class_ == ServiceEnvelopeClass.ClassService.name:
-                    data_envelope[envelope_id_] = (
-                        data_envelope[ServiceArgType.HostName.name]
-                        + "." +
-                        data_envelope[ServiceArgType.ServiceName.name]
-                    )
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "amer",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.ClusterName.name: "dev-amer-upstream",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.ClusterName.name: "dev-emea-upstream",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.ClusterName.name: "dev-apac-upstream",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.CodeMaturity.name: "qa",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.ClusterName.name: "qa-apac-upstream",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.CodeMaturity.name: "qa",
+                ServiceArgType.GeoRegion.name: "amer",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "qa-amer-downstream",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.CodeMaturity.name: "prod",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "prod-apac-downstream",
+            },
+
+            ############################################################################################################
+            # TD_63_37_05_36 # default: hosts
+
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-amer-upstream",
+                ServiceArgType.HostName.name: "qwer",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-emea-upstream",
+                ServiceArgType.HostName.name: "asdf-du",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-apac-upstream",
+                ServiceArgType.HostName.name: "zxcv-du",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+                ServiceArgType.HostName.name: "xcvb-dd",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "qa-apac-upstream",
+                ServiceArgType.HostName.name: "poiu-qu",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "qa-amer-downstream",
+                ServiceArgType.HostName.name: "sdfg-qd",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "prod-apac-downstream",
+                ServiceArgType.HostName.name: "wert-pd-1",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "prod-apac-downstream",
+                ServiceArgType.HostName.name: "wert-pd-2",
+            },
+
+            ############################################################################################################
+            # TD_63_37_05_36 # default: services
+
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-apac-upstream",
+                ServiceArgType.HostName.name: "zxcv-du",
+                ServiceArgType.ServiceName.name: "s_c",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-emea-upstream",
+                ServiceArgType.HostName.name: "asdf-du",
+                ServiceArgType.ServiceName.name: "s_b",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-amer-upstream",
+                ServiceArgType.HostName.name: "qwer-du",
+                ServiceArgType.ServiceName.name: "s_a",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+                ServiceArgType.HostName.name: "xcvb-dd",
+                ServiceArgType.ServiceName.name: "xx",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "qa-apac-upstream",
+                ServiceArgType.HostName.name: "poiu-qu",
+                ServiceArgType.ServiceName.name: "s_c",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "prod-apac-downstream",
+                ServiceArgType.HostName.name: "wert-pd-1",
+                ServiceArgType.ServiceName.name: "tt1",
+            },
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # default
+                ServiceArgType.ClusterName.name: "prod-apac-downstream",
+                ServiceArgType.HostName.name: "wert-pd-2",
+                ServiceArgType.ServiceName.name: "tt2",
+            },
+        ])
+
+    def populate_TD_76_09_29_31_overlapped(self, data_envelopes: list):
+        if (
+            not self.config_dict[is_test_data_filter_enabled_]
+            or
+            "TD_76_09_29_31" not in self.config_dict[allow_only_test_data_]
+        ):
+            return
+
+        data_envelopes.extend([
+
+            ############################################################################################################
+            # TD_76_09_29_31 # overlapped: clusters
+
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30:
+                context_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                # TODO: Fix test_data: TD_76_09_29_31 # overlapped:
+                #       there is no overlap after introduction of ClusterName.
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "amer.us",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-amer.us-downstream",
+            },
+
+            ############################################################################################################
+            # TD_76_09_29_31 # overlapped: hosts
+
+            {
+                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_payload_: {
+                },
+                # TODO: Fix test_data: TD_76_09_29_31: # overlapped:
+                #       there is no overlap after introduction of ClusterName.
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ServiceArgType.ClusterName.name: "dev-amer.us-downstream",
+                ServiceArgType.HostName.name: "amer.us",
+            },
+        ])

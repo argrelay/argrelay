@@ -29,7 +29,10 @@ from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list
 
 class GitRepoLoader(AbstractLoader):
 
-    def __init__(self, config_dict: dict):
+    def __init__(
+        self,
+        config_dict: dict,
+    ):
         super().__init__(config_dict)
         git_repo_loader_config_desc.validate_dict(config_dict)
 

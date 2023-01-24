@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 
 from argrelay.enum_desc.PluginType import PluginType
-from argrelay.misc_helper import eprint
 from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
@@ -39,19 +38,14 @@ class LocalServer:
         Calls each plugin to update :class:`StaticData`.
         """
 
-        eprint(f"plugin_list: {self.server_config.plugin_list}")
-
-        for plugin_entry in self.server_config.plugin_list:
-            eprint(f"using: {plugin_entry}")
-
-            # Populate `plugin_dict`:
-            self.server_config.plugin_dict[plugin_entry.plugin_id] = plugin_entry
+        for plugin_id in self.server_config.plugin_id_load_list:
+            plugin_entry = self.server_config.plugin_dict[plugin_id]
 
             if plugin_entry.plugin_type == PluginType.LoaderPlugin:
                 plugin_object: AbstractLoader = instantiate_plugin(plugin_entry)
                 plugin_object.activate_plugin()
                 # Store instance of `AbstractLoader` under specified id for future use:
-                self.server_config.data_loaders[plugin_entry.plugin_id] = plugin_object
+                self.server_config.data_loaders[plugin_id] = plugin_object
                 # Use loader to update data:
                 self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
                 continue
@@ -60,14 +54,14 @@ class LocalServer:
                 plugin_object: AbstractInterpFactory = instantiate_plugin(plugin_entry)
                 plugin_object.activate_plugin()
                 # Store instance of `AbstractInterpFactory` under specified id for future use:
-                self.server_config.interp_factories[plugin_entry.plugin_id] = plugin_object
+                self.server_config.interp_factories[plugin_id] = plugin_object
                 continue
 
             if plugin_entry.plugin_type == PluginType.InvocatorPlugin:
                 plugin_object: AbstractInvocator = instantiate_plugin(plugin_entry)
                 plugin_object.activate_plugin()
                 # Store instance of `AbstractInvocator` under specified id for future use:
-                self.server_config.action_invocators[plugin_entry.plugin_id] = plugin_object
+                self.server_config.action_invocators[plugin_id] = plugin_object
                 continue
 
         self._validate_static_data()

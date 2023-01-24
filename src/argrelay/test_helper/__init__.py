@@ -1,8 +1,11 @@
 """
 """
+import os
 from inspect import getframeinfo, currentframe
 
-# Enable/Disable breakpoints programmatically:
+test_data_ = "test_data"
+
+# Enable/disable breakpoints programmatically:
 __is_breakpoint_enabled = False
 
 
@@ -35,3 +38,15 @@ def parse_line_and_cpos(test_line: str) -> (str, int):
     cursor_cpos = test_line.index('|')
     command_line = test_line.replace('|', "")
     return command_line, cursor_cpos
+
+
+def change_to_known_path_tests_dir():
+    """
+    This function changes to known path (`./test`) within repo root.
+
+    This allows any other code relying on the file access within the repo use reliable relative paths.
+    """
+
+    # When IDE runs, CWD = "tests", when `tox` runs, CWD = [repo root], change to `tests` subdir:
+    if os.path.basename(os.getcwd()) != "tests":
+        os.chdir("tests")

@@ -24,6 +24,8 @@ from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
+from argrelay.relay_demo.ServiceLoader import ServiceLoader
+from argrelay.relay_demo.ServiceLoaderConfigSchema import is_test_data_filter_enabled_, allow_only_test_data_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
@@ -33,10 +35,10 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     static_data_,
     mongo_config_,
     server_config_desc,
-    plugin_list_,
+    plugin_dict_,
 )
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_id_, plugin_config_
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper.OpenFileMock import OpenFileMock
 
 
@@ -67,15 +69,20 @@ class EnvMockBuilder:
     is_server_config_with_mongo_start: bool = False
     enable_demo_git_loader: bool = False
 
-    actual_stdout = io.StringIO()
+    actual_stdout = None
     capture_stdout: bool = False
 
-    actual_stderr = io.StringIO()
+    actual_stderr = None
     capture_stderr: bool = False
 
     mock_mongo_client: bool = True
 
     assert_on_close: bool = True
+
+    service_test_data_filter = [
+        # Default:
+        "TD_70_69_38_46",  # no data
+    ]
 
     def set_run_mode(self, run_mode: RunMode):
         self.run_mode = run_mode
@@ -155,6 +162,10 @@ class EnvMockBuilder:
         self.mock_mongo_client = mock_mongo_client
         return self
 
+    def set_service_test_data_filter(self, service_test_data_filter: list[str]):
+        self.service_test_data_filter = service_test_data_filter
+        return self
+
     @contextlib.contextmanager
     def mock_file_open(self):
         with mock.patch("builtins.open", self.file_mock.open) as file_mock:
@@ -176,6 +187,8 @@ class EnvMockBuilder:
         assert not (self._command_line_is_set and self._command_args_are_set), "both cannot be true"
 
         if self.is_client_config_with_local_server:
+            # So far, local server is only used for testing (which implies using mocked client config file access).
+            # If fails here, for consistency, either enable client config file mocking or disable local server.
             assert self.mock_client_config_file_read
 
         if self.is_server_config_with_mongo_start:
@@ -192,9 +205,17 @@ class EnvMockBuilder:
             self.server_config_dict[mongo_config_][mongo_server_][
                 start_server_
             ] = self.is_server_config_with_mongo_start
-            for plugin_entry in self.server_config_dict[plugin_list_]:
-                if plugin_entry[plugin_id_] == GitRepoLoader.__name__:
-                    plugin_entry[plugin_config_][is_enabled_] = self.enable_demo_git_loader
+            plugin_entry = self.server_config_dict[plugin_dict_][GitRepoLoader.__name__]
+            plugin_entry[plugin_config_][is_enabled_] = self.enable_demo_git_loader
+
+            if self.service_test_data_filter:
+                plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
+                plugin_entry[plugin_config_][is_test_data_filter_enabled_] = True
+                plugin_entry[plugin_config_][allow_only_test_data_] = self.service_test_data_filter
+            else:
+                plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
+                plugin_entry[plugin_config_][is_test_data_filter_enabled_] = False
+
             self.file_mock.path_to_data[server_config_desc.default_file_path] = yaml.dump(self.server_config_dict)
 
         with ExitStack() as exit_stack:
@@ -239,9 +260,11 @@ class EnvMockBuilder:
                     raise RuntimeError
 
             if self.capture_stdout:
+                self.actual_stdout = io.StringIO()
                 yield_list.append(exit_stack.enter_context(_mock_stdout(self.actual_stdout)))
 
             if self.capture_stderr:
+                self.actual_stderr = io.StringIO()
                 yield_list.append(exit_stack.enter_context(_mock_stderr(self.actual_stderr)))
 
             if self.assert_on_close:
@@ -266,6 +289,11 @@ class EnvMockBuilder:
         self.assert_file_read(server_config_desc.default_file_path)
 
     def assert_file_read(self, file_path: str):
+        """
+        Ensures that mock was actually accessed.
+
+        If fails here, it means setup was over-mocked or test did not hit functionality accessing the file.
+        """
         self.file_mock.path_to_mock[file_path].assert_called_with(file_path)
 
 

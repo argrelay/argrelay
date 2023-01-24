@@ -1,5 +1,5 @@
 
-TODO: reformat and populate
+TODO: reformat, sort, populate, link to `feature_story`-ies.
 
 *   char position = cpos: char index within a string
 *   index position = ipos: item index within a list
@@ -17,6 +17,6 @@ TODO: reformat and populate
 *   interrogate (user to specify arg value)
 *   suggest (arg values to user (to interrogate the user))
 
-*   arg type = see also: FD-2023-01-23--1
+*   arg type = describes arg value, see also: FS_53_81_66_18 # TnC
 *   arg value = any string from a value set according to arg type.
-*   envelope class = see also: FD-2023-01-23--1
+*   envelope class = describes `data_envelope` schema, see also: FS_53_81_66_18 # TnC

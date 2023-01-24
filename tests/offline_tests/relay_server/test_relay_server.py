@@ -29,6 +29,8 @@ class ThisTestCase(TestCase):
             .set_mock_client_config_file_read(False)
             .set_mock_client_input(False)
             .set_client_config_with_local_server(False)
+            # Load all data:
+            .set_service_test_data_filter([])
         )
         with env_mock_builder.build():
             self.assertTrue(

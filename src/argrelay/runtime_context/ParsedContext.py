@@ -13,7 +13,7 @@ class ParsedContext(InputContext):
     """
     Internal immutable parsed view of :class:`InputContext`
 
-    `tan_token_*` = `tangent_token`, see FD-2023-01-20--1.
+    `tan_token_*` = `tangent_token`, see FS_23_62_89_43.
     """
 
     all_tokens: list[str] = field(init = False)

@@ -10,7 +10,7 @@ keys_to_types_list_ = "keys_to_types_list"
 
 class SearchControlSchema(Schema):
     """
-    FD-2023-01-17--4:
+    FS_31_70_49_15:
     Schema to specify what arg types will be used in search (and how they are mapped to named arg keys).
     """
 
@@ -20,7 +20,7 @@ class SearchControlSchema(Schema):
 
     # TODO: Move to `context_control`:
     #       Avoid special case when only some specific arg type `ReservedArgType.EnvelopeClass` is propagated
-    #       via special mechanism and the rest of arg types are propagated via FD-2023-01-23--2.
+    #       via special mechanism and the rest of arg types are propagated via FS_46_96_59_05.
     # Specifies class to search:
     envelope_class = fields.String()
 
