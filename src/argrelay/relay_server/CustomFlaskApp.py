@@ -49,7 +49,7 @@ def create_app() -> CustomFlaskApp:
         "info": {
             "title": server_title,
             "version": server_version,
-            "description": f"{os.getcwd()}: python -m argrelay.relay_server",
+            "description": f"{os.getcwd()}: run_argrelay_server",
         },
     }
 

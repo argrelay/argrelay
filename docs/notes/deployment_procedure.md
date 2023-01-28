@@ -1,4 +1,8 @@
 
+This doc describes `pip install` method from `dev_env_and_target_env_diff.md`.
+
+It is assumed the project using `argrelay` already has Python configured (e.g. via `venv`).
+
 To upgrade package:
 
 ```sh
@@ -14,34 +18,41 @@ pip install --upgrade --force-reinstall argrelay
 
 Note:
 Forcing to download new version does not appear consistent.
-Apparently, there are many replicas with packages.
-And some of them take minutes to get updates.
+Apparently, there are many replicas with packages on the web.
+And some of them take minutes to get the latest updates.
 
 After installation, initial config files can be found
-together with installed package:
+together with installed package.
+
+Find `build-pip-env.bash` file, for example:
 
 ```sh
-find . -name '*.yaml'
-./venv/lib/python3.10/site-packages/argrelay/relay_demo/argrelay.client.yaml
-./venv/lib/python3.10/site-packages/argrelay/relay_demo/argrelay.server.yaml
+find . -name 'build-pip-env.bash'
+./venv/lib/python3.10/site-packages/argrelay/relay_demo/build-pip-env.bash
 ```
 
-Copy sample config files into expected path:
+Run it to deploy necessary artifacts:
 
 ```sh
-cp ./venv/lib/python3.10/site-packages/argrelay/relay_demo/argrelay.client.yaml       ~/.argrelay.client.yaml
-cp ./venv/lib/python3.10/site-packages/argrelay/relay_demo/argrelay.server.yaml       ~/.argrelay.server.yaml
+./venv/lib/python3.10/site-packages/argrelay/relay_demo/build-pip-env.bash
 ```
 
-Create a (demo) dir, link there `dev-init.bash` and `dev-shell.bash`, and start `dev-shell.bash` from there:
+It will deploy:
 
-TODO: These steps are not finalized: `dev-shell.bash` so far assumed it runs from `argrelay.git` repo.
-TODO: Automate entire deployment procedure.
+*   Helper scripts in the **current directory**.
 
-```sh
-mkdir ~/relay_demo
-ln -snf $(pwd)/venv/lib/python3.10/site-packages/argrelay/relay_demo/dev-init.bash    ~/relay_demo/dev-init.bash
-ln -snf $(pwd)/venv/lib/python3.10/site-packages/argrelay/relay_demo/dev-shell.bash   ~/relay_demo/dev-shell.bash
-cd ~/relay_demo
-./dev-shell.bash
-```
+*   User dot files (`~/.*`) for server and client config.
+
+To enable auto-completion:
+
+*   Update deployed `argrelay-rc.bash`:
+
+    Minimally, assign `PATH_TO_SCRIPTS` there to absolute path of **current directory**.
+
+*   Source deployed `argrelay-rc.bash` from the **current directory** in `~/.bashrc`.
+
+This deployment covers only vanilla version.
+
+Customization (with custom plugins) may require setting up additional dependencies - see `plugin_development.md`.
+
+To run real Mongo DB (instead of `mongomock`), see also `mongo_notes.md`.

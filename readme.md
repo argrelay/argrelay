@@ -156,6 +156,11 @@ implies such syntax.
 
 # Quick demo
 
+Clone this repo somewhere.
+
+If `dev-shell.bash` is run for the first time,<br/>
+it will ask to provide `python-conf.bash` file - follow instruction on error.
+
 To start both the server and the client,<br/>
 two terminal windows are required.
 
@@ -171,7 +176,7 @@ two terminal windows are required.
 
     ```sh
     # in server `dev-shell.bash`:
-    python -m argrelay.relay_server
+    run_argrelay_server
     ```
 
 *   Client:

@@ -1,5 +1,5 @@
 # Sample config for `argrelay` client.
-# To test, symlink this files as user dot file - see `dev-init.bash` script.
+# To test, symlink this files as user dot file - see `dev-shell.bash` script.
 
 use_local_requests: false
 

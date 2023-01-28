@@ -6,6 +6,7 @@ with open("readme.md", "r", encoding = "utf-8") as fh:
 tests_require = [
     "responses",
     "mongomock",
+    "pandas",
 ]
 
 extras_require = {
@@ -14,7 +15,7 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev9",
+    version = "0.0.0.dev12",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "TODO",
@@ -57,10 +58,13 @@ setuptools.setup(
         "argrelay": [
             "relay_demo/argrelay.client.yaml",
             "relay_demo/argrelay.server.yaml",
-            "relay_demo/relay_demo",
+            "relay_demo/build-git-env.bash",
+            "relay_demo/build-pip-env.bash",
+            "relay_demo/deploy-artifacts.bash",
             "relay_demo/dev-init.bash",
             "relay_demo/dev-shell.bash",
-        ]
+            "relay_demo/argrelay-rc.bash",
+        ],
     },
     include_package_data = True,
     python_requires = ">=3.7",
@@ -72,7 +76,9 @@ setuptools.setup(
         "apispec",
         "pymongo",
         "GitPython",
+        # Use `mongomock` as replacement for Mongo DB in simple prod cases:
         "mongomock",
+        "requests",
     ],
     tests_require = tests_require,
     extras_require = extras_require,

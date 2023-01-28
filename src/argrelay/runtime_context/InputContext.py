@@ -57,7 +57,7 @@ class InputContext(RequestContext):
             comp_type = CompType.InvokeAction
             comp_key = str(0)
 
-        is_debug_enabled = "DEBUG_ARGRELAY" in os.environ
+        is_debug_enabled = "ARGRELAY_DEBUG" in os.environ
 
         return cls(
             command_line = command_line,

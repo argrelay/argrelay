@@ -290,9 +290,11 @@ class EnvMockBuilder:
 
     def assert_file_read(self, file_path: str):
         """
-        Ensures that mock was actually accessed.
+        Ensures that mocked file was actually accessed.
 
-        If fails here, it means setup was over-mocked or test did not hit functionality accessing the file.
+        If fails here, it means either/or:
+        *   test setup was over-mocked (e.g. see `mock_server_config_file_read`, `mock_client_config_file_read`)
+        *   test did not hit functionality that is supposed to access the file
         """
         self.file_mock.path_to_mock[file_path].assert_called_with(file_path)
 

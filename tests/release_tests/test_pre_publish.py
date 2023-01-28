@@ -4,7 +4,7 @@ Check things which should not be published
 For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
 """
 import os
-from unittest import TestCase
+from unittest import TestCase, skipIf
 
 from argrelay.relay_demo import GitRepoLoader as GitRepoLoader_module
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
@@ -14,6 +14,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
 from argrelay.test_helper import change_to_known_path_tests_dir
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 
 class ThisTestCase(TestCase):
@@ -23,24 +24,36 @@ class ThisTestCase(TestCase):
         `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
         """
 
-        server_config: ServerConfig = server_config_desc.from_default_file()
-        found_one = False
-        git_loader_plugin = None
-        for plugin_id in server_config.plugin_id_load_list:
-            plugin_item = server_config.plugin_dict[plugin_id]
-            if (
-                plugin_item.plugin_module_name == GitRepoLoader_module.__name__
-                and
-                plugin_item.plugin_class_name == GitRepoLoader_class.__name__
-            ):
-                if found_one:
-                    raise RuntimeError("two " + GitRepoLoader_class.__name__ + " plugins?")
-                found_one = True
-                git_loader_plugin = plugin_item
-        if not found_one:
-            raise RuntimeError("missing " + GitRepoLoader_class.__name__ + " plugin?")
+        # Still use mock because config data for the mock is loaded from source files:
+        # * `load_relay_demo_server_config_dict`
+        # * `load_relay_demo_client_config_dict`
+        env_mock_builder = (
+            EnvMockBuilder()
+            # TODO: have pre-configured mocks: with client, without client, any other variants?
+            # Not running the client in ths test:
+            .set_client_config_with_local_server(False)
+            .set_mock_client_config_file_read(False)
+        )
+        with env_mock_builder.build():
 
-        self.assertFalse(git_loader_plugin.plugin_config[is_enabled_])
+            server_config: ServerConfig = server_config_desc.from_default_file()
+            found_one = False
+            git_loader_plugin = None
+            for plugin_id in server_config.plugin_id_load_list:
+                plugin_item = server_config.plugin_dict[plugin_id]
+                if (
+                    plugin_item.plugin_module_name == GitRepoLoader_module.__name__
+                    and
+                    plugin_item.plugin_class_name == GitRepoLoader_class.__name__
+                ):
+                    if found_one:
+                        raise RuntimeError("two " + GitRepoLoader_class.__name__ + " plugins?")
+                    found_one = True
+                    git_loader_plugin = plugin_item
+            if not found_one:
+                raise RuntimeError("missing " + GitRepoLoader_class.__name__ + " plugin?")
+
+            self.assertFalse(git_loader_plugin.plugin_config[is_enabled_])
 
     def test_env_tests_have_no_init_file(self):
         """
@@ -55,3 +68,22 @@ class ThisTestCase(TestCase):
 
         self.assertTrue(os.path.isdir("env_tests"))
         self.assertFalse(os.path.exists("env_tests/__init__.py"))
+
+    @skipIf(os.environ.get("ARGRELAY_DEV_SHELL", False), "Allow deployed configs for `dev-shell.bash`")
+    def test_config_files_are_not_deployed(self):
+        """
+        Ensure server and client config files are not deployed:
+
+        *   `~/.argrelay.server.yaml`
+        *   `~/.argrelay.client.yaml`
+
+        Move them under different name to preserve or delete them completely.
+
+        This, in turn ensures that no other tests rely on their existence (and use proper file access mocking).
+        """
+
+        for file_path in [
+            os.path.expanduser("~") + "/" + ".argrelay.server.yaml",
+            os.path.expanduser("~") + "/" + ".argrelay.client.yaml",
+        ]:
+            self.assertFalse(os.path.exists(file_path))

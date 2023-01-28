@@ -4,7 +4,7 @@
 Download Mongo DB and Mongo Shell from: https://www.mongodb.com/try/download/community
 *   `mongodb-linux-x86_64-rhel80-6.0.3.tgz`
 *   `mongosh-1.6.1-linux-x64.tgz`
-For example, place them under `./temp/mongo` sub-dir.
+For example, place them under `./temp/mongo` sub-dir (everything under `./temp` is ignored by `argrelay` Git).
 
 Start server:
 
@@ -38,15 +38,15 @@ db.createUser(
 Tutorial:
 https://www.mongodb.com/languages/python
 
-Installing python client:
+Installing Python client:
 
 ```sh
 python -m pip install "pymongo[srv]"
 ```
 
-Run:
-* pymongo_get_database.py
-* pymongo_test_insert.py
+Run (see tutorial link):
+*   `pymongo_get_database.py`
+*   `pymongo_test_insert.py`
 
 Exploring collections from Mongo Shell:
 

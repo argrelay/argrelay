@@ -228,6 +228,14 @@ class ServiceLoader(AbstractLoader):
             },
         ])
 
+    def is_test_data_allowed(self, test_data_id: str) -> bool:
+        if self.config_dict[is_test_data_filter_enabled_]:
+            if test_data_id in self.config_dict[allow_only_test_data_]:
+                return True
+        else:
+            return True
+        return False
+
     @staticmethod
     def populate_common_AccessType(data_envelopes: list):
 
@@ -254,11 +262,7 @@ class ServiceLoader(AbstractLoader):
         """
         Populates TD_63_37_05_36 # default
         """
-        if (
-            not self.config_dict[is_test_data_filter_enabled_]
-            or
-            "TD_63_37_05_36" not in self.config_dict[allow_only_test_data_]
-        ):
+        if not self.is_test_data_allowed("TD_63_37_05_36"):
             return
 
         data_envelopes.extend([
@@ -502,11 +506,7 @@ class ServiceLoader(AbstractLoader):
         ])
 
     def populate_TD_76_09_29_31_overlapped(self, data_envelopes: list):
-        if (
-            not self.config_dict[is_test_data_filter_enabled_]
-            or
-            "TD_76_09_29_31" not in self.config_dict[allow_only_test_data_]
-        ):
+        if not self.is_test_data_allowed("TD_76_09_29_31"):
             return
 
         data_envelopes.extend([
