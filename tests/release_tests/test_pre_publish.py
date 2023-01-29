@@ -13,7 +13,7 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
-from argrelay.test_helper import change_to_known_path_tests_dir
+from argrelay.test_helper import change_to_known_repo_path
 from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 
@@ -64,12 +64,14 @@ class ThisTestCase(TestCase):
         See `tests/readme.md`.
         """
 
-        change_to_known_path_tests_dir()
+        with change_to_known_repo_path():
+            self.assertTrue(os.path.isdir("env_tests"))
+            self.assertFalse(os.path.exists("env_tests/__init__.py"))
 
-        self.assertTrue(os.path.isdir("env_tests"))
-        self.assertFalse(os.path.exists("env_tests/__init__.py"))
-
-    @skipIf(os.environ.get("ARGRELAY_DEV_SHELL", False), "Allow deployed configs for `dev-shell.bash`")
+    @skipIf(
+        os.environ.get("ARGRELAY_DEV_SHELL", False) or os.environ.get("PYCHARM_HOSTED", False),
+        "Skip when in `dev-shell.bash` or IDE to allow deployed config files.",
+    )
     def test_config_files_are_not_deployed(self):
         """
         Ensure server and client config files are not deployed:

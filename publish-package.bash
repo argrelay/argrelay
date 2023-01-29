@@ -25,10 +25,9 @@ script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "${script_dir}" || exit 1
 
 # Ensure the script was started in `dev-shell.bash`:
-# https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash/13864829#13864829
 if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]
 then
-    echo "ERROR: Run this command in \`dev-shell.bash\`." 2>&1
+    echo "ERROR: Run this script under \`dev-shell.bash\`." 2>&1
     exit 1
 fi
 

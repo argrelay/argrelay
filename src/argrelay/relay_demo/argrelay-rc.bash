@@ -35,7 +35,7 @@ test -f ~/".argrelay.server.yaml" || return 1
 test -f ~/".argrelay.client.yaml" || return 1
 
 # Add dir with `relay_demo` command into PATH to make it available in Bash as plain `basename`:
-PATH="${PATH}:${PATH_TO_SCRIPTS}"
+PATH="${PATH_TO_SCRIPTS}:${PATH}"
 export PATH
 
 # When `run_argrelay_client` is executed,

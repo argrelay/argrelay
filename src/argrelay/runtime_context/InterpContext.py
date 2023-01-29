@@ -208,15 +208,10 @@ class InterpContext:
     def get_data_envelopes(self):
         return [envelope_container.data_envelope for envelope_container in self.envelope_containers]
 
-    def print_debug(self) -> None:
+    def print_debug(self, end_str: str = "\n") -> None:
         if not self.parsed_ctx.is_debug_enabled:
             return
-        eprint(TermColor.DEBUG.value)
-        eprint(f"\"{self.parsed_ctx.command_line}\"", end = " ")
-        eprint(f"cursor_cpos: {self.parsed_ctx.cursor_cpos}", end = " ")
-        eprint(f"sel_token_l_part: \"{self.parsed_ctx.tan_token_l_part}\"", end = " ")
-        eprint(f"sel_token_r_part: \"{self.parsed_ctx.tan_token_r_part}\"", end = " ")
-        eprint(f"comp_type: {self.parsed_ctx.comp_type}", end = " ")
-        eprint(f"comp_key: {self.parsed_ctx.comp_key}", end = " ")
+        self.parsed_ctx.print_debug("")
+        eprint(TermColor.DEBUG.value, end = "")
         eprint(f"comp_suggestions: {self.comp_suggestions}", end = " ")
-        eprint(TermColor.RESET.value)
+        eprint(TermColor.RESET.value, end = end_str)

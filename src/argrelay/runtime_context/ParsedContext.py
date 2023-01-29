@@ -5,6 +5,8 @@ import re
 from dataclasses import dataclass, field
 
 from argrelay.enum_desc.SpecialChar import SpecialChar
+from argrelay.enum_desc.TermColor import TermColor
+from argrelay.misc_helper import eprint
 from argrelay.runtime_context.InputContext import InputContext
 
 
@@ -130,3 +132,14 @@ class ParsedContext(InputContext):
             tan_token_l_part,
             tan_token_r_part,
         )
+
+    def print_debug(self, end_str: str = "\n") -> None:
+        if not self.is_debug_enabled:
+            return
+        super().print_debug("")
+        eprint(TermColor.DEBUG.value, end = "")
+        eprint(f"sel_token_l_part: \"{self.tan_token_l_part}\"", end = " ")
+        eprint(f"sel_token_r_part: \"{self.tan_token_r_part}\"", end = " ")
+        eprint(f"comp_type: {self.comp_type}", end = " ")
+        eprint(f"comp_key: {self.comp_key}", end = " ")
+        eprint(TermColor.RESET.value, end = end_str)

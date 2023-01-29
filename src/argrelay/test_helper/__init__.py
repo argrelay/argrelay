@@ -1,6 +1,7 @@
 """
 """
 import os
+from contextlib import contextmanager
 from inspect import getframeinfo, currentframe
 
 test_data_ = "test_data"
@@ -40,13 +41,23 @@ def parse_line_and_cpos(test_line: str) -> (str, int):
     return command_line, cursor_cpos
 
 
-def change_to_known_path_tests_dir():
+@contextmanager
+def change_to_known_repo_path(path_from_repo_root = "./tests"):
     """
-    This function changes to known path (`./test`) within repo root.
+    This function changes to known path within repo root.
 
     This allows any other code relying on the file access within the repo use reliable relative paths.
     """
 
-    # When IDE runs, CWD = "tests", when `tox` runs, CWD = [repo root], change to `tests` subdir:
-    if os.path.basename(os.getcwd()) != "tests":
-        os.chdir("tests")
+    old_pwd = os.getcwd()
+    try:
+        # When IDE runs, CWD = "tests", when `tox` runs, CWD = [repo root], change to `tests` subdir:
+        if os.path.basename(os.getcwd()) != "tests":
+            os.chdir("tests")
+        # Base path = repo root:
+        os.chdir("..")
+        # Desired path:
+        os.chdir(path_from_repo_root)
+        yield
+    finally:
+        os.chdir(old_pwd)

@@ -8,7 +8,7 @@ from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.test_helper import change_to_known_path_tests_dir, test_data_
+from argrelay.test_helper import change_to_known_repo_path, test_data_
 from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 
@@ -27,15 +27,14 @@ class ThisTestCase(TestCase):
         Note: consider generating table view for review instead of consuming one created manually.
         """
 
-        change_to_known_path_tests_dir()
-
-        # Filter out only table lines from Markdown file:
-        table_regex = re.compile("^\|")
-        test_data = ""
-        with open("../docs/test_data/TD_63_37_05_36.default_service_data.md") as md_file:
-            for file_line in md_file:
-                if table_regex.match(file_line):
-                    test_data += file_line
+        with change_to_known_repo_path():
+            # Filter out only table lines from Markdown file:
+            table_regex = re.compile("^\|")
+            test_data = ""
+            with open("../docs/test_data/TD_63_37_05_36.default_service_data.md") as md_file:
+                for file_line in md_file:
+                    if table_regex.match(file_line):
+                        test_data += file_line
         print(test_data)
 
         # Configure to print all:

@@ -5,6 +5,8 @@ from dataclasses import dataclass
 
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
+from argrelay.enum_desc.TermColor import TermColor
+from argrelay.misc_helper import eprint
 from argrelay.runtime_context.RequestContext import RequestContext
 
 
@@ -49,9 +51,7 @@ class InputContext(RequestContext):
         else:
             # If no "COMP_LINE" env var, the call is for InvocationMode:
             run_mode = RunMode.InvocationMode
-            # Ignore argv[0] - it is how python called this.
-            # Take arg[1] - it must be command name.
-            argv = [os.path.basename(argv[1])] + argv[2:]
+            argv = [os.path.basename(argv[0])] + argv[1:]
             command_line = " ".join(argv)
             cursor_cpos = len(command_line)
             comp_type = CompType.InvokeAction
@@ -67,3 +67,11 @@ class InputContext(RequestContext):
             comp_key = comp_key,
             run_mode = run_mode,
         )
+
+    def print_debug(self, end_str: str = "\n") -> None:
+        if not self.is_debug_enabled:
+            return
+        eprint(TermColor.DEBUG.value, end = "")
+        eprint(f"\"{self.command_line}\"", end = " ")
+        eprint(f"cursor_cpos: {self.cursor_cpos}", end = " ")
+        eprint(TermColor.RESET.value, end = end_str)

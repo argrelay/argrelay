@@ -322,14 +322,12 @@ def _mock_client_input_in_completion_mode(command_line: str, cursor_cpos: int, c
 @contextlib.contextmanager
 def _mock_client_input_in_invocation_mode_with_line(command_line: str):
     command_args = re.compile(SpecialChar.TokenDelimiter.value).split(command_line)
-    command_args = _fix_python_invocation_args(command_args)
     with mock.patch.object(sys, "argv", command_args) as argv_mock:
         yield argv_mock
 
 
 @contextlib.contextmanager
 def _mock_client_input_in_invocation_mode_with_args(command_args: list[str]):
-    command_args = _fix_python_invocation_args(command_args)
     with mock.patch.object(sys, "argv", command_args) as argv_mock:
         yield argv_mock
 
@@ -344,12 +342,6 @@ def _mock_stdout(stdout_f):
 def _mock_stderr(stderr_f):
     with contextlib.redirect_stderr(stderr_f) as stderr_mock:
         yield stderr_mock
-
-
-def _fix_python_invocation_args(command_args: list[str]):
-    # When Python script is invoked, its very first arg is the path to Python script:
-    command_args = ["ignored"] + command_args
-    return command_args
 
 
 def load_relay_demo_server_config_dict() -> dict:
