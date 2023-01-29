@@ -32,7 +32,7 @@ test -f "${PATH_TO_SCRIPTS}/run_argrelay_server" || return 1
 test -f "${PATH_TO_SCRIPTS}/run_argrelay_client" || return 1
 # Ensure both server and client configs are deployed (`build-git-env.bash` creates them if not available):
 test -f ~/".argrelay.server.yaml" || return 1
-test -f ~/".argrelay.client.yaml" || return 1
+test -f ~/".argrelay.client.json" || return 1
 
 # Add dir with `relay_demo` command into PATH to make it available in Bash as plain `basename`:
 PATH="${PATH_TO_SCRIPTS}:${PATH}"

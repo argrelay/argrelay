@@ -42,16 +42,16 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         }
         request_json = self.request_schema.dumps(input_ctx)
         ElapsedTime.measure("before_request")
-        response = requests.post(
+        response_obj = requests.post(
             server_url,
             headers = headers_dict,
             json = request_json,
         )
         ElapsedTime.measure("after_request")
-        if response.ok:
+        if response_obj.ok:
             # Leave both object creation and validation via schemas to `response_handler`.
             # Just deserialize into dict here:
-            response_dict = json.loads(response.text)
+            response_dict = json.loads(response_obj.text)
             ElapsedTime.measure("after_deserialization")
             self.response_handler.handle_response(response_dict)
         else:

@@ -1,18 +1,18 @@
-# Keep minimal import on start for LocalClient:
-# @formatter:off
+# Keep minimal import on start:
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
+
 ElapsedTime.measure("after_program_entry")
-# @formatter:on
 
 
 def main():
+    # Initial imports - see `completion_perf_notes.md`.
+    import os
     import sys
     from argrelay.runtime_context.InputContext import InputContext
-    from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-
     ElapsedTime.measure("after_initial_imports")
 
-    client_config = client_config_desc.from_default_file()
+    file_path = os.path.expanduser("~") + "/" + ".argrelay.client.json"
+    client_config = load_client_config(file_path)
     ElapsedTime.measure("after_loading_client_config")
 
     input_ctx = InputContext.from_env(sys.argv)
@@ -31,6 +31,28 @@ def main():
         ElapsedTime.print_all()
 
     return command_obj
+
+
+def load_client_config(file_path):
+    import json
+    with open(file_path) as config_file:
+        client_config_dict = json.load(config_file)
+    client_config = client_config_dict_to_object(client_config_dict)
+    return client_config
+
+
+def client_config_dict_to_object(client_config_dict):
+    from argrelay.runtime_data.ClientConfig import ClientConfig
+    from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
+    client_config = ClientConfig(
+        # Not importing constants like `use_local_requests_` from *Schema for performance:
+        use_local_requests = client_config_dict["use_local_requests"],
+        connection_config = ConnectionConfig(
+            server_host_name = client_config_dict["connection_config"]["server_host_name"],
+            server_port_number = client_config_dict["connection_config"]["server_port_number"],
+        ),
+    )
+    return client_config
 
 
 def make_request(abstract_client, input_ctx) -> "AbstractClientCommand":

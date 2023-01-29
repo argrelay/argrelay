@@ -10,4 +10,4 @@ class ProposeArgValuesClientResponseHandler(AbstractClientResponseHandler):
         )
 
     def handle_response(self, response_dict: dict):
-        print("\n".join(response_dict["arg_values"]))
+        print(response_dict["arg_values"])

@@ -212,8 +212,8 @@ two terminal windows are required.
 
 *   Inspect client and server config:
 
-    *   client config: `~/.argrelay.client.yaml`
     *   server config: `~/.argrelay.server.yaml`
+    *   client config: `~/.argrelay.client.json`
 
 *   To clean up, exit the sub-shells:
 

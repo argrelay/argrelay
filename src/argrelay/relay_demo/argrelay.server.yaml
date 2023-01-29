@@ -1,4 +1,4 @@
-# Sample config for `argrelay` server.
+# This is an `argrelay` server config.
 # To test, symlink this files as user dot file - see `dev-shell.bash` script.
 
 connection_config:

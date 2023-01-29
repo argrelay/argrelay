@@ -15,7 +15,7 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev12",
+    version = "0.0.0.dev13",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "TODO",
@@ -56,8 +56,8 @@ setuptools.setup(
     },
     package_data = {
         "argrelay": [
-            "relay_demo/argrelay.client.yaml",
             "relay_demo/argrelay.server.yaml",
+            "relay_demo/argrelay.client.json",
             "relay_demo/build-git-env.bash",
             "relay_demo/build-pip-env.bash",
             "relay_demo/deploy-artifacts.bash",

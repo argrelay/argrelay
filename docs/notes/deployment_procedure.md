@@ -31,7 +31,8 @@ find . -name 'build-pip-env.bash'
 ./venv/lib/python3.10/site-packages/argrelay/relay_demo/build-pip-env.bash
 ```
 
-Run it to deploy necessary artifacts:
+Run it to deploy necessary artifacts
+(into **current directory**, not where `build-pip-env.bash` is):
 
 ```sh
 ./venv/lib/python3.10/site-packages/argrelay/relay_demo/build-pip-env.bash

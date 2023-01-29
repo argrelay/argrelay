@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import contextlib
 import io
+import json
 import os
 import re
 import sys
@@ -124,8 +125,8 @@ class EnvMockBuilder:
         self.client_config_dict = client_config
         return self
 
-    def get_client_config_yaml(self):
-        return yaml.dump(self.client_config_dict)
+    def get_client_config_json(self):
+        return json.dump(self.client_config_dict)
 
     def set_mock_client_config_file_read(self, given_val: bool):
         self.mock_client_config_file_read = given_val
@@ -199,7 +200,7 @@ class EnvMockBuilder:
 
         if self.mock_client_config_file_read:
             self.client_config_dict[use_local_requests_] = self.is_client_config_with_local_server
-            self.file_mock.path_to_data[client_config_desc.default_file_path] = yaml.dump(self.client_config_dict)
+            self.file_mock.path_to_data[client_config_desc.default_file_path] = json.dumps(self.client_config_dict)
 
         if self.mock_server_config_file_read:
             self.server_config_dict[mongo_config_][mongo_server_][
@@ -352,9 +353,9 @@ def load_relay_demo_server_config_dict() -> dict:
 
 
 def load_relay_demo_client_config_dict() -> dict:
-    test_client_config_path = _get_resource_path("relay_demo/argrelay.client.yaml")
+    test_client_config_path = _get_resource_path("relay_demo/argrelay.client.json")
     with open(test_client_config_path) as f:
-        client_config_dict = yaml.safe_load(f)
+        client_config_dict = json.load(f)
     return client_config_dict
 
 

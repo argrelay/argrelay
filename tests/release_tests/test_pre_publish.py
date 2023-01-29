@@ -77,7 +77,7 @@ class ThisTestCase(TestCase):
         Ensure server and client config files are not deployed:
 
         *   `~/.argrelay.server.yaml`
-        *   `~/.argrelay.client.yaml`
+        *   `~/.argrelay.client.json`
 
         Move them under different name to preserve or delete them completely.
 
@@ -86,6 +86,6 @@ class ThisTestCase(TestCase):
 
         for file_path in [
             os.path.expanduser("~") + "/" + ".argrelay.server.yaml",
-            os.path.expanduser("~") + "/" + ".argrelay.client.yaml",
+            os.path.expanduser("~") + "/" + ".argrelay.client.json",
         ]:
             self.assertFalse(os.path.exists(file_path))
