@@ -11,7 +11,7 @@ from argrelay.misc_helper import eprint
 class ElapsedTime:
     """
     *   Instance holds a named timestamp.
-    *   Class maintains a list of all named timestamps stored in order of measurements.
+    *   Class maintains a list of all instances (named timestamps) stored in order of measurements.
     """
 
     name: str
@@ -21,6 +21,10 @@ class ElapsedTime:
 
     def print(self, prev_ts: int):
         ElapsedTime.print_formatted(self.name, self.ts, self.ts - prev_ts)
+
+    @classmethod
+    def clear_measurements(cls):
+        cls.all_ts.clear()
 
     @staticmethod
     def print_formatted(name: str, ts: int, diff: int):

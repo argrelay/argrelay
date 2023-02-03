@@ -1,3 +1,4 @@
+from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.TokenType import get_token_type, TokenType
 
 from argrelay.runtime_context.InterpContext import InterpContext
@@ -22,7 +23,7 @@ class AbstractInterp:
     def consume_pos_args(self) -> None:
         pass
 
-    def try_iterate(self) -> int:
+    def try_iterate(self) -> InterpStep:
         pass
 
     def propose_arg_completion(self) -> None:

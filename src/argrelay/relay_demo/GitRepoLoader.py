@@ -89,8 +89,8 @@ class GitRepoLoader(AbstractLoader):
 
         # Init type keys (if they do not exist):
         for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-            if type_name not in static_data.known_types:
-                static_data.known_types.append(type_name)
+            if type_name not in static_data.known_arg_types:
+                static_data.known_arg_types.append(type_name)
 
         data_envelopes = static_data.data_envelopes
 

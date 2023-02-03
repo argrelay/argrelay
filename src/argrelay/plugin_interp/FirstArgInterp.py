@@ -1,3 +1,4 @@
+from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_core_server.FirstArgInterpFactorySchema import first_arg_vals_to_next_interp_factory_ids_
@@ -23,8 +24,8 @@ class FirstArgInterp(AbstractInterp):
         else:
             raise LookupError()
 
-    def try_iterate(self) -> int:
-        return 0
+    def try_iterate(self) -> InterpStep:
+        return InterpStep.NextInterp
 
     def next_interp(self) -> "AbstractInterp":
         next_interp = self.config_dict[first_arg_vals_to_next_interp_factory_ids_][self.command_name]

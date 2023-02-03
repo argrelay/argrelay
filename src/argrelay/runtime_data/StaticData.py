@@ -11,8 +11,9 @@ class StaticData:
 
     first_interp_factory_id: str = field(init = True, default = "")
 
-    # TODO: It is currently populated, but not used.
-    #       It should probably be populated with config how to index these types in MongoDB:
-    known_types: list = field(init = True, default_factory = lambda: [])
+    known_arg_types: list = field(init = True, default_factory = lambda: [])
+    """
+    Field `known_arg_types` lists fields of `data_envelop` - they are used to create MongoDB index.
+    """
 
     data_envelopes: list = field(init = True, default_factory = lambda: [])

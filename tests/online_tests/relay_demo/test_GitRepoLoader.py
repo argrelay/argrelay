@@ -87,7 +87,7 @@ class ThisTestCase(TestCase):
                 static_data = git_repo_loader.update_static_data(static_data)
 
                 for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-                    assert type_name in static_data.known_types
+                    assert type_name in static_data.known_arg_types
 
                     # Find list all values in data_envelope per `type_name`:
                     typed_values = []

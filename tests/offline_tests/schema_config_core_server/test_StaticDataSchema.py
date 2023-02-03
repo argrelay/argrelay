@@ -7,7 +7,8 @@ from argrelay.schema_config_core_server.ServerConfigSchema import static_data_
 from argrelay.schema_config_core_server.StaticDataSchema import (
     static_data_desc,
     first_interp_factory_id_,
-    known_types_, data_envelopes_,
+    known_arg_types_,
+    data_envelopes_,
 )
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import load_relay_demo_server_config_dict
@@ -25,7 +26,7 @@ class ThisTestCase(TestCase):
                 line_no(), "basic sample",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    known_types_: [
+                    known_arg_types_: [
                         "action",
                         "access",
                     ],
@@ -34,7 +35,7 @@ class ThisTestCase(TestCase):
                 },
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    known_types_: [
+                    known_arg_types_: [
                         "action",
                         "access",
                     ],
@@ -55,7 +56,7 @@ class ThisTestCase(TestCase):
                 line_no(), "without required field (`data_envelope`-s)",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    known_types_: [
+                    known_arg_types_: [
                     ],
                 },
                 {
@@ -67,7 +68,7 @@ class ThisTestCase(TestCase):
                 line_no(), "with extra key (`whatever_extra_key`) which is not allowed",
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    known_types_: [
+                    known_arg_types_: [
                     ],
                     data_envelopes_: [
                     ],
@@ -75,7 +76,7 @@ class ThisTestCase(TestCase):
                 },
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
-                    known_types_: [
+                    known_arg_types_: [
                     ],
                     data_envelopes_: [
                     ],

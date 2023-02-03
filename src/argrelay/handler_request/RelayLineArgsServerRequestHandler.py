@@ -1,6 +1,7 @@
 from argrelay.enum_desc.CompType import CompType
 
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
+from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
@@ -25,6 +26,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         assert input_ctx.comp_type == CompType.InvokeAction
 
         self.interpret_command(self.local_server, input_ctx)
+        ElapsedTime.measure("after_interpret_command")
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:

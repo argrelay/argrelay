@@ -27,7 +27,7 @@ class ThisTestCase(MongoClientTest):
 
         self.remove_all_envelopes(col_proxy)
 
-        index_fields = [
+        known_arg_types = [
             ServiceArgType.AccessType.name,
             ServiceArgType.ColorTag.name,
             ServiceArgType.CodeMaturity.name,
@@ -72,7 +72,7 @@ class ThisTestCase(MongoClientTest):
             envelope_004,
         ])
 
-        for index_field in index_fields:
+        for index_field in known_arg_types:
             col_proxy.create_index(index_field)
 
         print("query 1:")

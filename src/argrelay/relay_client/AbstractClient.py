@@ -22,5 +22,5 @@ class AbstractClient:
         input_ctx.print_debug()
         command_obj = self.command_factory.create_command(input_ctx)
         command_obj.execute_command(input_ctx)
-        ElapsedTime.measure("after_request_processed")
+        ElapsedTime.measure("after_execute_command")
         return command_obj

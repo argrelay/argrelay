@@ -6,6 +6,7 @@ from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
+from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.InterpContext import (
     InterpContext,
@@ -49,7 +50,9 @@ class FuncArgsInterp(AbstractInterp):
         for unconsumed_token_ipos in self.interp_ctx.unconsumed_tokens:
             unconsumed_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
             # see if token matches any type by value:
+            type_n: int = 0
             for arg_type, arg_values in self.interp_ctx.curr_container.remaining_types_to_values.items():
+                type_n += 1
                 if unconsumed_token in arg_values:
                     self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
                         unconsumed_token,

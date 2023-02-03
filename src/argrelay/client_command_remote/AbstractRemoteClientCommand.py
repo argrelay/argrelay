@@ -48,11 +48,14 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
             json = request_json,
         )
         ElapsedTime.measure("after_request")
-        if response_obj.ok:
-            # Leave both object creation and validation via schemas to `response_handler`.
-            # Just deserialize into dict here:
-            response_dict = json.loads(response_obj.text)
-            ElapsedTime.measure("after_deserialization")
-            self.response_handler.handle_response(response_dict)
-        else:
-            raise RuntimeError
+        try:
+            if response_obj.ok:
+                # Leave both object creation and validation via schemas to `response_handler`.
+                # Just deserialize into dict here:
+                response_dict = json.loads(response_obj.text)
+                ElapsedTime.measure("after_deserialization")
+                self.response_handler.handle_response(response_dict)
+            else:
+                raise RuntimeError
+        finally:
+            ElapsedTime.measure("after_handle_response")

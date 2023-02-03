@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.misc_helper import eprint
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
@@ -9,8 +10,7 @@ from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.relay_demo.ServiceLoaderConfigSchema import (
     service_loader_config_desc,
-    allow_only_test_data_,
-    is_test_data_filter_enabled_,
+    test_data_ids_to_load_,
 )
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -109,8 +109,8 @@ class ServiceLoader(AbstractLoader):
 
         # Init type keys (if they do not exist):
         for type_name in [enum_item.name for enum_item in ServiceArgType]:
-            if type_name not in static_data.known_types:
-                static_data.known_types.append(type_name)
+            if type_name not in static_data.known_arg_types:
+                static_data.known_arg_types.append(type_name)
 
         # TODO: This loader overwrites existing object list (it has to patch it instead).
         #       This is fine for now because `ServiceLoader` is used first in config.
@@ -120,6 +120,7 @@ class ServiceLoader(AbstractLoader):
         self.populate_common_AccessType(data_envelopes)
         self.populate_TD_63_37_05_36_default(data_envelopes)
         self.populate_TD_76_09_29_31_overlapped(data_envelopes)
+        self.populate_TD_38_03_48_51_large_generated(data_envelopes)
 
         self.generate_envelope_id(data_envelopes)
 
@@ -229,10 +230,7 @@ class ServiceLoader(AbstractLoader):
         ])
 
     def is_test_data_allowed(self, test_data_id: str) -> bool:
-        if self.config_dict[is_test_data_filter_enabled_]:
-            if test_data_id in self.config_dict[allow_only_test_data_]:
-                return True
-        else:
+        if test_data_id in self.config_dict[test_data_ids_to_load_]:
             return True
         return False
 
@@ -545,3 +543,79 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "amer.us",
             },
         ])
+
+    def populate_TD_38_03_48_51_large_generated(self, data_envelopes: list):
+        """
+        TD_38_03_48_51: generate large data set:
+        [code_maturity] * [geo_region] * [flow_stage] * [host_name] * [service_name] = 100_000 services
+        10              * 10           * 10           * 10          * 10             = 100_000
+
+        The total set of `data_envelope`-s:
+        *   1_000       * clusters
+        *   10_000      * hosts
+        *   100_000     * services
+
+        """
+        if not self.is_test_data_allowed("TD_38_03_48_51"):
+            return
+
+        for code_maturity in ["cm" + str(cmn) for cmn in range(0, 10)]:
+            for geo_region in ["gr" + str(grn) for grn in range(0, 10)]:
+                for flow_stage in ["fs" + str(fsn) for fsn in range(0, 10)]:
+
+                    cluster_name = f"{code_maturity}-{geo_region}-{flow_stage}"
+
+                    eprint(f"loading cluster_name={cluster_name}...")
+
+                    #####################################################################################################
+                    # clusters
+
+                    generated_cluster = {
+                        envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                        envelope_payload_: {
+                        },
+                        # TODO: repeated info: FS_83_48_41_30:
+                        context_control_: [
+                            ServiceArgType.ClusterName.name,
+                        ],
+                        test_data_: "TD_38_03_48_51",  # large generated
+                        ServiceArgType.CodeMaturity.name: code_maturity,
+                        ServiceArgType.GeoRegion.name: geo_region,
+                        ServiceArgType.FlowStage.name: flow_stage,
+                        ServiceArgType.ClusterName.name: cluster_name,
+                    }
+
+                    data_envelopes.append(generated_cluster)
+
+                    for host_name in ["hs" + str(hsn) for hsn in range(0, 10)]:
+
+                        ################################################################################################
+                        # hosts
+
+                        generated_host = {
+                            envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                            envelope_payload_: {
+                            },
+                            test_data_: "TD_38_03_48_51",  # large generated
+                            ServiceArgType.ClusterName.name: cluster_name,
+                            ServiceArgType.HostName.name: host_name,
+                        }
+
+                        data_envelopes.append(generated_host)
+
+                        for service_name in ["sn{:02d}".format(snn) for snn in range(0, 10)]:
+
+                            ############################################################################################################
+                            # services
+
+                            generated_service = {
+                                envelope_class_: ServiceEnvelopeClass.ClassService.name,
+                                envelope_payload_: {
+                                },
+                                test_data_: "TD_38_03_48_51",  # large generated
+                                ServiceArgType.ClusterName.name: cluster_name,
+                                ServiceArgType.HostName.name: host_name,
+                                ServiceArgType.ServiceName.name: service_name,
+                            }
+
+                            data_envelopes.append(generated_service)

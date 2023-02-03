@@ -10,6 +10,7 @@ from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
+from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -151,6 +152,7 @@ class InterpContext:
                             )
 
     def query_envelopes(self):
+        ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
         query_dict = {
             envelope_class_: self.curr_container.search_control.envelope_class,
         }
@@ -160,8 +162,11 @@ class InterpContext:
                 query_dict[arg_type] = self.curr_container.assigned_types_to_values[arg_type].arg_value
 
         # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
+        ElapsedTime.measure("before_mongo_find")
         query_res = self.mongo_col.find(query_dict)
+        ElapsedTime.measure("after_mongo_find")
         self.curr_container.update_curr_remaining_types_to_values(query_res)
+        ElapsedTime.measure(f"end_query_envelopes: {query_dict.keys()} {self.curr_container.found_count}")
 
     def register_found_envelope(self):
         self.last_found_envelope_ipos += 1
@@ -174,24 +179,34 @@ class InterpContext:
 
         Start with initial interpreter and continue until curr interpreter returns no more next interpreter.
         """
+
+        interp_n: int = 0
         self.curr_interp = self.create_next_interp(first_interp_factory_id)
         while self.curr_interp:
+            interp_n += 1
+            ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {type(self.curr_interp).__name__}")
 
             self.curr_interp.consume_key_args()
             self.curr_interp.consume_pos_args()
 
+            ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {type(self.curr_interp).__name__}")
             interp_step: InterpStep = self.curr_interp.try_iterate()
             if interp_step == InterpStep.NextEnvelope:
                 continue
             elif interp_step == InterpStep.StopAll:
+                ElapsedTime.measure(f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}")
                 self._contribute_to_completion()
+                ElapsedTime.measure(f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}")
                 return
             elif interp_step == InterpStep.NextInterp:
+                ElapsedTime.measure(f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}")
+                self._contribute_to_completion()
+                ElapsedTime.measure(f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}")
+                self.prev_interp = self.curr_interp
+                self.curr_interp = self.curr_interp.next_interp()
                 pass
-
-            self._contribute_to_completion()
-            self.prev_interp = self.curr_interp
-            self.curr_interp = self.curr_interp.next_interp()
+            else:
+                raise RuntimeError(interp_step)
 
     def _contribute_to_completion(self):
         if self.parsed_ctx.run_mode == RunMode.CompletionMode:

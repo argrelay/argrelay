@@ -7,7 +7,7 @@ from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 
 first_interp_factory_id_ = "first_interp_factory_id"
-known_types_ = "known_types"
+known_arg_types_ = "known_arg_types"
 data_envelopes_ = "data_envelopes"
 
 
@@ -19,7 +19,7 @@ class StaticDataSchema(Schema):
     first_interp_factory_id = fields.String(
         required = True,
     )
-    known_types = fields.List(
+    known_arg_types = fields.List(
         fields.String(),
         required = True,
     )
@@ -32,7 +32,7 @@ class StaticDataSchema(Schema):
     def make_object(self, input_dict, **kwargs):
         return StaticData(
             first_interp_factory_id = input_dict[first_interp_factory_id_],
-            known_types = input_dict[known_types_],
+            known_arg_types = input_dict[known_arg_types_],
             data_envelopes = input_dict[data_envelopes_],
         )
 
@@ -42,13 +42,13 @@ static_data_desc = TypeDesc(
     ref_name = StaticDataSchema.__name__,
     dict_example = {
         first_interp_factory_id_: "SomeInterp",
-        known_types_: [
+        known_arg_types_: [
             "SomeTypeA",
             "SomeTypeB",
         ],
         data_envelopes_: [
             data_envelope_desc.dict_example,
-        ]
+        ],
     },
     default_file_path = "",
 )

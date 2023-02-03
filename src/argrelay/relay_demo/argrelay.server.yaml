@@ -62,8 +62,10 @@ plugin_dict:
         plugin_class_name: ServiceLoader
         plugin_type: LoaderPlugin
         plugin_config:
-            is_test_data_filter_enabled: False
-            allow_only_test_data: []
+            test_data_ids_to_load:
+                #-   TD_70_69_38_46  # no data
+                -   TD_63_37_05_36  # default
+                #-   TD_38_03_48_51  # large generated
 
     GitRepoLoader:
         plugin_module_name: argrelay.relay_demo.GitRepoLoader
@@ -98,6 +100,6 @@ static_data:
 
     first_interp_factory_id: FirstArgInterpFactory
 
-    known_types: [ ]
+    known_arg_types: [ ]
 
     data_envelopes: [ ]

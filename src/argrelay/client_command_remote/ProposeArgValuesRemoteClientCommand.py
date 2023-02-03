@@ -88,12 +88,15 @@ Connection: close\r
 
         ElapsedTime.measure("after_deserialization")
 
-        if response_status_code == 200:
-            self.response_handler.handle_response({
-                "arg_values": response_body_str,
-            })
-        else:
-            raise RuntimeError
+        try:
+            if response_status_code == 200:
+                self.response_handler.handle_response({
+                    "arg_values": response_body_str,
+                })
+            else:
+                raise RuntimeError
+        finally:
+            ElapsedTime.measure("after_handle_response")
 
     # noinspection SpellCheckingInspection
     @staticmethod

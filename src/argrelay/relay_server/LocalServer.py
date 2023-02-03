@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 
 from argrelay.enum_desc.PluginType import PluginType
+from argrelay.misc_helper import eprint
 from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
@@ -9,6 +10,7 @@ from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 
 
 class LocalServer:
@@ -28,7 +30,8 @@ class LocalServer:
     def start_local_server(self):
         self._activate_plugins()
         self._start_mongo_server()
-        self._index_data()
+        self._load_mongo_data()
+        self._create_mongo_index()
 
     def get_mongo_database(self):
         return self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
@@ -64,6 +67,7 @@ class LocalServer:
                 self.server_config.action_invocators[plugin_id] = plugin_object
                 continue
 
+        eprint("validating data...")
         self._validate_static_data()
 
     def _validate_static_data(self):
@@ -87,6 +91,12 @@ class LocalServer:
     def _start_mongo_server(self):
         self.mongo_server.start_mongo_server(self.server_config.mongo_config)
 
-    def _index_data(self):
+    def _load_mongo_data(self):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
         MongoClientWrapper.store_envelopes(mongo_db, self.server_config.static_data)
+
+    def _create_mongo_index(self):
+        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+        # Include `envelope_class` field into index by default:
+        self.server_config.static_data.known_arg_types.append(envelope_class_)
+        MongoClientWrapper.create_index(mongo_db, self.server_config.static_data)

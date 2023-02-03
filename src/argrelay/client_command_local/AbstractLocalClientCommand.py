@@ -31,9 +31,9 @@ class AbstractLocalClientCommand(AbstractClientCommand):
 
     def execute_command(self, input_ctx: InputContext):
         self.response_dict = self.request_handler.handle_request(input_ctx)
+        ElapsedTime.measure("before_sending_response")
         self.response_handler.handle_response(self.response_dict)
-
-        ElapsedTime.measure("after_request_response")
+        ElapsedTime.measure("after_handle_response")
 
         # `AbstractLocalClientCommand`'s feature: expose `InterpContext` used by the server:
         self.interp_ctx = self.request_handler.interp_ctx

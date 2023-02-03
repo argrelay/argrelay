@@ -26,7 +26,7 @@ from argrelay.mongo_data import MongoClientWrapper
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
 from argrelay.relay_demo.ServiceLoader import ServiceLoader
-from argrelay.relay_demo.ServiceLoaderConfigSchema import is_test_data_filter_enabled_, allow_only_test_data_
+from argrelay.relay_demo.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
@@ -81,7 +81,6 @@ class EnvMockBuilder:
     assert_on_close: bool = True
 
     service_test_data_filter = [
-        # Default:
         "TD_70_69_38_46",  # no data
     ]
 
@@ -209,13 +208,8 @@ class EnvMockBuilder:
             plugin_entry = self.server_config_dict[plugin_dict_][GitRepoLoader.__name__]
             plugin_entry[plugin_config_][is_enabled_] = self.enable_demo_git_loader
 
-            if self.service_test_data_filter:
-                plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
-                plugin_entry[plugin_config_][is_test_data_filter_enabled_] = True
-                plugin_entry[plugin_config_][allow_only_test_data_] = self.service_test_data_filter
-            else:
-                plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
-                plugin_entry[plugin_config_][is_test_data_filter_enabled_] = False
+            plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
+            plugin_entry[plugin_config_][test_data_ids_to_load_] = self.service_test_data_filter
 
             self.file_mock.path_to_data[server_config_desc.default_file_path] = yaml.dump(self.server_config_dict)
 
