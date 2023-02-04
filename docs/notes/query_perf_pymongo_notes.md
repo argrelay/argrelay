@@ -1,4 +1,10 @@
 
+Test command line:
+
+```sh
+relay_demo goto host cm1 fs0 gr0 hs1 ro
+```
+
 Note that the `total` row below in all snapshots is not sum of mearement captured in snapshots,
 instead it is full end-to-end measurement (just FYI) for entire server request processing
 (basically, some rows were excluded `...` from snapshots to arrive at the same `total` from snapshot data only).

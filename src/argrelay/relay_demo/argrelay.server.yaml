@@ -8,11 +8,12 @@ connection_config:
 mongo_config:
     use_mongomock_only: True
     mongo_client:
-        client_connection_string: mongodb://test:test@localhost/test?authSource=admin
+        # See `MongoClientConfigSchema` for detailed connection string format:
+        client_connection_string: mongodb://localhost
     mongo_server:
-        # TODO: change to `argrelay`:
-        database_name: test
+        database_name: argrelay
         start_server: True
+        # See `mongo_notes.md`:
         server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
 
 plugin_id_load_list:
