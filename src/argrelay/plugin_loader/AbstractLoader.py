@@ -1,5 +1,5 @@
-from argrelay.meta_data.StaticData import StaticData
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
+from argrelay.runtime_data.StaticData import StaticData
 
 
 class AbstractLoader(AbstractPlugin):

@@ -1,12 +1,14 @@
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError
 
-from argrelay.meta_data.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper.TypeDesc import TypeDesc
 
 envelope_class_ = "envelope_class"
 keys_to_types_list_ = "keys_to_types_list"
 
 
+# TODO: Rename to `search_control`? See FD-2023-01-17--4.
+# FD-2023-01-17--4:
 class EnvelopeClassQuerySchema(Schema):
     """
     Schema for all :class:`plugin_config.envelope_class_queries`

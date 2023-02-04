@@ -23,15 +23,16 @@ To clarify,<br/>
 `argrelay` _framework_ can be compared with (independent)<br/>
 `argparse` _library_:
 
-| Category    | `argparse` is a library                                 | `argrelay` is a framework                                                   |
-|:------------|:--------------------------------------------------------|:----------------------------------------------------------------------------|
-| Given:      | `A.py` is some script                                   | `A_relay` is a "wrapper" command<br/> configured in Bash to call `argrelay` |
-| In Bash:    | type `A.py` to execute it                               | type `A_relay` to let `argrelay` decide<br/> whether to execute `A.py`      |
-| Execution:  | `A.py` calls `argparse` library                         | `A.py` is called by the framework<br/> when `A_relay` is invoked            |
-| Function:   | `A.py` directly does<br/> some domain-specific task     | `A_relay` directly only "relays"<br/> the command line to `argrelay`        |
-| CLI source: | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins      |
-| Modify CLI: | modify `A.py`                                           | keep `A.py` intact,<br/> re-configure `argrelay` instead                    |
-| Prog lang:  | `A.py` has to be<br/> a Python script to use `argparse` | `A.py` can be anything<br/> somehow executable by `argrelay`                |
+| Category       | `argparse` is a library                                 | `argrelay` is a framework                                                   |
+|:---------------|:--------------------------------------------------------|:----------------------------------------------------------------------------|
+| Given:         | `A.py` is some script                                   | `A_relay` is a "wrapper" command<br/> configured in Bash to call `argrelay` |
+| In Bash:       | type `A.py` to execute it                               | type `A_relay` to let `argrelay` decide<br/> whether to execute `A.py`      |
+| Execution:     | `A.py` calls `argparse` library                         | `A.py` is called by the framework<br/> when `A_relay` is invoked            |
+| Function:      | `A.py` directly does<br/> some domain-specific task     | `A_relay` directly only "relays"<br/> the command line to `argrelay`        |
+| CLI source:    | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins      |
+| Modify CLI:    | modify `A.py`                                           | keep `A.py` intact,<br/> re-configure `argrelay` instead                    |
+| Prog lang:     | `A.py` has to be<br/> a Python script to use `argparse` | `A.py` can be anything<br/> somehow executable by `argrelay`                |
+| **Important:** | `A.py`/`argparse` have no domain data<br/> to query     | `A_relay` may access any<br/> domain data from `argrelay` server            |
 
 # What's missing?
 
@@ -102,6 +103,9 @@ Think of speaking "enum language":
     *   Action: drink, play, ...
 *   Word order is irrelevant because _enum value spaces do not overlap_ (almost).
 *   To "say" something, one keeps clarifying meaning by more enum values.
+
+Now, imagine the enum types and values are not supposed to be memorized,<br/>
+they are proposed to select from (based on the current context).
 
 ### Address any object
 
@@ -191,6 +195,7 @@ two terminal windows are required.
     # in client `dev-shell.bash`:
     relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
     ```
+    > TODO: Currently, the output is on serer side. Print on client side (need to transfer server state to client).
 
 *   Inspect how auto-completion binds to `relay_demo` command:
 

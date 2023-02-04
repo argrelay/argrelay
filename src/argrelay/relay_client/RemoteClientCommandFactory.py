@@ -2,8 +2,8 @@ from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractR
 from argrelay.client_command_remote.DescribeLineArgsRemoteClientCommand import DescribeLineArgsRemoteClientCommand
 from argrelay.client_command_remote.ProposeArgValuesRemoteClientCommand import ProposeArgValuesRemoteClientCommand
 from argrelay.client_command_remote.RelayLineArgsRemoteClientCommand import RelayLineArgsRemoteClientCommand
-from argrelay.meta_data.ClientConfig import ClientConfig
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
+from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
     RELAY_LINE_ARGS_PATH,

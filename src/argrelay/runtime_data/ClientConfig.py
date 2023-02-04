@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from argrelay.meta_data.ConnectionConfig import ConnectionConfig
+from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 
 
 @dataclass(frozen = True)

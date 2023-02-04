@@ -3,9 +3,9 @@ from __future__ import annotations
 from unittest import TestCase
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.PluginType import PluginType
-from argrelay.meta_data.RunMode import RunMode
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.PluginType import PluginType
+from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )

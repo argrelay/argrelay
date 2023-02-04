@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.RunMode import RunMode
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.RunMode import RunMode
 from argrelay.relay_client import __main__
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder

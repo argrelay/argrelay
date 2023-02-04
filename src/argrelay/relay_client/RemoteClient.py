@@ -1,6 +1,6 @@
-from argrelay.meta_data.ClientConfig import ClientConfig
 from argrelay.relay_client.AbstractClient import AbstractClient
 from argrelay.relay_client.RemoteClientCommandFactory import RemoteClientCommandFactory
+from argrelay.runtime_data.ClientConfig import ClientConfig
 
 
 class RemoteClient(AbstractClient):

@@ -1,10 +1,11 @@
-from argrelay.meta_data import StaticData
-from argrelay.meta_data.ArgSource import ArgSource
-from argrelay.meta_data.ArgValue import ArgValue
-from argrelay.meta_data.RunMode import RunMode
+from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.RunMode import RunMode
+
 from argrelay.plugin_interp.ArgProcessor import ArgProcessor
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data import StaticData
+from argrelay.runtime_data.ArgValue import ArgValue
 
 
 # TODO: class is not used anymore - the same functionality has to be addressed somehow generically (or at least, should be reimplemented, current approach here got in the way of more important feature and removed temporarily)

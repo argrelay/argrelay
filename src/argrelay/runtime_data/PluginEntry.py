@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from argrelay.meta_data.PluginType import PluginType
+from argrelay.enum_desc.PluginType import PluginType
 
 
 @dataclass(frozen = True)

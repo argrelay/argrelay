@@ -5,17 +5,26 @@ import subprocess
 
 from git import Repo
 
-from argrelay.meta_data.GlobalArgType import GlobalArgType
-from argrelay.meta_data.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.meta_data.StaticData import StaticData
+from argrelay.enum_desc.GlobalArgType import GlobalArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.relay_demo.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.relay_demo.GitRepoInvocator import GitRepoInvocator
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_enabled_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, envelope_class_, envelope_payload_
-from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import accept_envelope_classes_, invocator_plugin_id_
+from argrelay.runtime_data.StaticData import StaticData
+from argrelay.schema_config_interp.DataEnvelopeSchema import (
+    envelope_id_,
+    envelope_class_,
+    envelope_payload_,
+    instance_data_,
+)
+from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
+from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
+    invocator_plugin_id_,
+    envelope_class_queries_,
+)
 
 
 class GitRepoLoader(AbstractLoader):
@@ -149,13 +158,31 @@ class GitRepoLoader(AbstractLoader):
         ###############################################################################################################
         # functions
 
+        # TODO: Consider `search_control` - see FD-2023-01-17--4:
+        repo_query = {
+            envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
+            keys_to_types_list_: [
+                {"part": GitRepoArgType.GitRepoPathComp.name},
+                {"path": GitRepoArgType.GitRepoRelPath.name},
+            ],
+        }
+
+        commit_query = {
+            envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
+            keys_to_types_list_: [
+                {"path": GitRepoArgType.GitRepoRelPath.name},
+                {"email": GitRepoArgType.GitRepoCommitAuthorEmail.name},
+                {"hex": GitRepoArgType.GitRepoCommitId.name},
+            ],
+        }
+
         given_function_envelope = {
             envelope_id_: "desc_repo",
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
-            envelope_payload_: {
+            instance_data_: {
                 invocator_plugin_id_: GitRepoInvocator.__name__,
-                accept_envelope_classes_: [
-                    GitRepoEnvelopeClass.ClassGitRepo.name,
+                envelope_class_queries_: [
+                    repo_query,
                 ],
             },
             GlobalArgType.ActionType.name: "desc",
@@ -166,10 +193,10 @@ class GitRepoLoader(AbstractLoader):
         given_function_envelope = {
             envelope_id_: "desc_commit",
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
-            envelope_payload_: {
+            instance_data_: {
                 invocator_plugin_id_: GitRepoInvocator.__name__,
-                accept_envelope_classes_: [
-                    GitRepoEnvelopeClass.ClassGitCommit.name,
+                envelope_class_queries_: [
+                    commit_query,
                 ],
             },
             GlobalArgType.ActionType.name: "desc",

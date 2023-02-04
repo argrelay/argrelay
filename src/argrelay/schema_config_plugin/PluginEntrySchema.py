@@ -1,10 +1,10 @@
 from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 
-from argrelay.meta_data.PluginEntry import PluginEntry
-from argrelay.meta_data.PluginType import PluginType
+from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper import ensure_value_is_enum
 from argrelay.misc_helper.NoopLoader import NoopLoader
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.runtime_data.PluginEntry import PluginEntry
 
 plugin_id_ = "plugin_id"
 plugin_config_ = "plugin_config"

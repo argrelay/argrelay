@@ -5,12 +5,13 @@ from dataclasses import field, dataclass
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.meta_data import StaticData
-from argrelay.meta_data.ArgValue import ArgValue
-from argrelay.meta_data.RunMode import RunMode
-from argrelay.meta_data.TermColor import TermColor
+from argrelay.enum_desc.InterpStep import InterpStep
+from argrelay.enum_desc.RunMode import RunMode
+from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.runtime_context.ParsedContext import ParsedContext
+from argrelay.runtime_data import StaticData
+from argrelay.runtime_data.ArgValue import ArgValue
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 from argrelay.schema_config_interp.EnvelopeClassQuerySchema import keys_to_types_list_
@@ -48,16 +49,19 @@ class InterpContext:
     Already consumed tokens (their ipos) in the order of their consumption.
     """
 
+    # TODO: Part of to `args_context`: FD-2023-01-17--1:
     curr_assigned_types_to_values: dict[str, ArgValue] = field(init = False, default_factory = lambda: {})
     """
     All assigned args (from interpreted tokens) mapped as type:value which belong to `curr_data_envelope`.
     """
 
+    # TODO: Part of to `args_context`: FD-2023-01-17--1:
     curr_remaining_types_to_values: dict[str, list[str]] = field(init = False)
     """
     All arg values per type left for suggestion given the `curr_assigned_types_to_values`.
     """
 
+    # TODO: Make it explicit that this is, in fact, set of `args_context`-s (saved for each `data_envelope` found and last `data_envelope` which may be not yet found): FD-2023-01-17--1:
     assigned_types_to_values_per_envelope: list[dict] = field(init = False, default_factory = lambda: [])
     """
     List of completed results previously accumulated in `curr_assigned_types_to_values`.
@@ -119,12 +123,14 @@ class InterpContext:
             self.curr_interp.consume_key_args()
             self.curr_interp.consume_pos_args()
 
-            iter_status: int = self.curr_interp.try_iterate()
-            if iter_status > 0:
+            interp_step: InterpStep = self.curr_interp.try_iterate()
+            if interp_step == InterpStep.NextEnvelope:
                 continue
-            elif iter_status < 0:
+            elif interp_step == InterpStep.StopAll:
                 self._contribute_to_completion()
                 return
+            elif interp_step == InterpStep.NextInterp:
+                pass
 
             self._contribute_to_completion()
             self.prev_interp = self.curr_interp
@@ -151,6 +157,7 @@ class InterpContext:
         # TODO: print conflicting values (two different implicit values)
         # TODO: print unrecognized tokens
         # TODO: for unrecognized token highlight by color all tokens with matching substring
+        is_first_missing_found: bool = False
         for data_envelope in self.assigned_types_to_values_per_envelope:
             # Checking if `data_envelope[is_found_]` is not right because
             # not yet found envelope collect `assigned_types_to_values_` to show:
@@ -162,7 +169,6 @@ class InterpContext:
             result_assigned_types_to_values = data_envelope[assigned_types_to_values_]
             keys_to_types_list = data_envelope[keys_to_types_list_]
 
-            is_first_missing_found: bool = False
             for key_to_type_dict in keys_to_types_list:
                 arg_key = next(iter(key_to_type_dict))
                 arg_type = key_to_type_dict[arg_key]
@@ -172,7 +178,7 @@ class InterpContext:
                     eprint(f"{arg_type}:", end = "")
                     eprint(
                         f" {result_assigned_types_to_values[arg_type].arg_value} " +
-                        f"[{result_assigned_types_to_values[arg_type].arg_source}]",
+                        f"[{result_assigned_types_to_values[arg_type].arg_source.name}]",
                         end = ""
                     )
                     eprint(TermColor.RESET.value, end = "")

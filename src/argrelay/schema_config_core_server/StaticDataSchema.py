@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from marshmallow import Schema, RAISE, fields, post_load
 
-from argrelay.meta_data.StaticData import StaticData
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 
 first_interp_factory_id_ = "first_interp_factory_id"

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from argrelay.meta_data.CompType import CompType
+from argrelay.enum_desc.CompType import CompType
 
 
 @dataclass(frozen = True)

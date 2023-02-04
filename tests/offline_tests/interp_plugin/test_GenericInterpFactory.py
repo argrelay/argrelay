@@ -2,22 +2,27 @@ from __future__ import annotations
 
 from unittest import TestCase
 
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.PluginType import PluginType
-from argrelay.meta_data.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.meta_data.RunMode import RunMode
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.PluginType import PluginType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.GenericInterpFactory import GenericInterpFactory
 from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_list_, static_data_
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, envelope_payload_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_, context_control_
 from argrelay.schema_config_interp.EnvelopeClassQuerySchema import envelope_class_, keys_to_types_list_
-from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import invocator_plugin_id_
-from argrelay.schema_config_interp.GenericInterpConfigSchema import function_query_, envelope_class_queries_
+from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
+    invocator_plugin_id_,
+)
+from argrelay.schema_config_interp.GenericInterpConfigSchema import function_query_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_id_,
-    plugin_config_, plugin_module_name_, plugin_class_name_, plugin_type_,
+    plugin_config_,
+    plugin_module_name_,
+    plugin_class_name_,
+    plugin_type_,
 )
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
@@ -53,8 +58,6 @@ class ThisTestCase(TestCase):
                         {type_2: type_2},
                     ]
                 },
-                envelope_class_queries_: {
-                }
             }
         })
 
@@ -62,9 +65,10 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_1",
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
-            envelope_payload_: {
+            instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
             },
+            context_control_: [],
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
         }
@@ -72,9 +76,10 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_2",
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
-            envelope_payload_: {
+            instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
             },
+            context_control_: [],
             type_1: "type_1_value_2",
             type_2: "type_2_value_2",
         }
@@ -97,9 +102,10 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_3",
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
-            envelope_payload_: {
+            instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
             },
+            context_control_: [],
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
         }

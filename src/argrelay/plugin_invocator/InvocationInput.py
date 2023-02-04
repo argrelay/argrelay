@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from argrelay.meta_data.PluginEntry import PluginEntry
+from argrelay.runtime_data.PluginEntry import PluginEntry
 
 
 @dataclass

@@ -3,7 +3,7 @@ import json
 from types import SimpleNamespace
 from unittest import TestCase
 
-from argrelay.meta_data.CompType import CompType
+from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_server.__main__ import create_app
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_request.RequestContextSchema import request_context_desc

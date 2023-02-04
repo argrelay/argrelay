@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 
-from argrelay.meta_data.CompType import CompType
+from argrelay.enum_desc.CompType import CompType
 from argrelay.misc_helper import ensure_value_is_enum
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_context.RequestContext import RequestContext

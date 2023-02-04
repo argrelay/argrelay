@@ -1,11 +1,11 @@
 import subprocess
 
-from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, envelope_id_
-from argrelay.schema_config_interp.FunctionEnvelopePayloadSchema import invocator_plugin_id_
+from argrelay.runtime_data.ServerConfig import ServerConfig
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, envelope_id_, instance_data_
+from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_id_
 
 
 class GitRepoInvocator(AbstractInvocator):
@@ -18,9 +18,9 @@ class GitRepoInvocator(AbstractInvocator):
         assert interp_ctx.last_found_envelope_ipos >= 0, "the (first) function envelope must be found"
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
-        # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopePayloadSchema` for its `envelope_payload`:
+        # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         function_envelope = interp_ctx.assigned_types_to_values_per_envelope[0]
-        invocator_plugin_id = function_envelope[envelope_payload_][invocator_plugin_id_]
+        invocator_plugin_id = function_envelope[instance_data_][invocator_plugin_id_]
         invocation_input = InvocationInput(
             invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_id],
             function_envelope = function_envelope,

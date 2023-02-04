@@ -1,7 +1,7 @@
-from argrelay.meta_data.ServerConfig import ServerConfig
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 
 

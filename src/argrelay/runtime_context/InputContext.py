@@ -3,8 +3,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
-from argrelay.meta_data.CompType import CompType
-from argrelay.meta_data.RunMode import RunMode
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.RunMode import RunMode
 from argrelay.runtime_context.RequestContext import RequestContext
 
 

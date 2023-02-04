@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from argrelay.meta_data.TokenType import get_token_type, TokenType
+from argrelay.enum_desc.TokenType import get_token_type, TokenType
 from argrelay.test_helper import line_no
 
 
