@@ -72,7 +72,7 @@ plugin_dict:
         plugin_class_name: GitRepoLoader
         plugin_type: LoaderPlugin
         plugin_config:
-            is_enabled: False
+            is_plugin_enabled: False
             base_path: "~/repos"
 
     NoopInvocator:

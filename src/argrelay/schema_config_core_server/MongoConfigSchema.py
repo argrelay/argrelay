@@ -23,6 +23,7 @@ class MongoConfigSchema(Schema):
     """
 
     mongo_client = fields.Nested(mongo_client_config_desc.dict_schema)
+
     mongo_server = fields.Nested(mongo_server_config_desc.dict_schema)
 
     @post_load

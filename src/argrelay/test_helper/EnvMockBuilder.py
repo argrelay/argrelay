@@ -24,7 +24,7 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
+from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_plugin_enabled_
 from argrelay.relay_demo.ServiceLoader import ServiceLoader
 from argrelay.relay_demo.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.runtime_context.InputContext import InputContext
@@ -206,7 +206,7 @@ class EnvMockBuilder:
                 start_server_
             ] = self.is_server_config_with_mongo_start
             plugin_entry = self.server_config_dict[plugin_dict_][GitRepoLoader.__name__]
-            plugin_entry[plugin_config_][is_enabled_] = self.enable_demo_git_loader
+            plugin_entry[plugin_config_][is_plugin_enabled_] = self.enable_demo_git_loader
 
             plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
             plugin_entry[plugin_config_][test_data_ids_to_load_] = self.service_test_data_filter

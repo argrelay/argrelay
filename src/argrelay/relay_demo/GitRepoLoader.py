@@ -12,7 +12,7 @@ from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.relay_demo.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.relay_demo.GitRepoInvocator import GitRepoInvocator
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_enabled_
+from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_plugin_enabled_
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
@@ -43,7 +43,7 @@ class GitRepoLoader(AbstractLoader):
 
         if not self.config_dict:
             return static_data
-        if not self.config_dict[is_enabled_]:
+        if not self.config_dict[is_plugin_enabled_]:
             return static_data
 
         base_path = os.path.normpath(os.path.expanduser(self.config_dict[base_path_]))

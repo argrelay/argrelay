@@ -7,7 +7,7 @@ from unittest import TestCase
 from argrelay.misc_helper import eprint
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, is_enabled_
+from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, is_plugin_enabled_
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import relay_demo_static_data_object
 
@@ -67,7 +67,7 @@ class ThisTestCase(TestCase):
             (
                 line_no(), "",
                 {
-                    is_enabled_: True,
+                    is_plugin_enabled_: True,
                 },
             ),
         ]

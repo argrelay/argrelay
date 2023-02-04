@@ -17,6 +17,7 @@ class ClientConfigSchema(Schema):
 
     # Serve requests from local data or send to server:
     use_local_requests = fields.Boolean()
+
     connection_config = fields.Nested(connection_config_desc.dict_schema)
 
     @post_load

@@ -13,6 +13,7 @@ class ConnectionConfigSchema(Schema):
     server_host_name = fields.String(
         default = DEFAULT_IP_ADDRESS,
     )
+
     server_port_number = fields.Integer(
         default = DEFAULT_PORT_NUMBER,
     )
