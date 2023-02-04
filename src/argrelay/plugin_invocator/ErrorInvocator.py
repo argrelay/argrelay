@@ -15,7 +15,7 @@ class ErrorInvocator(AbstractInvocator):
             data_envelopes = [
                 data_envelope_desc.dict_example,
             ],
-            extra_data = {},
+            custom_plugin_data = {},
         )
         return invocation_input
 

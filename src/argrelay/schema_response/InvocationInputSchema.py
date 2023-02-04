@@ -7,7 +7,7 @@ from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 
 invocator_plugin_entry_ = "invocator_plugin_entry"
 data_envelopes_ = "data_envelopes"
-extra_data_ = "extra_data"
+custom_plugin_data_ = "custom_plugin_data"
 
 
 class InvocationInputSchema(Schema):
@@ -25,7 +25,7 @@ class InvocationInputSchema(Schema):
         required = True,
     )
 
-    extra_data = fields.Dict(
+    custom_plugin_data = fields.Dict(
         required = False,
     )
 
@@ -35,7 +35,7 @@ class InvocationInputSchema(Schema):
             return {
                 invocator_plugin_entry_: input_object.invocator_plugin_entry,
                 data_envelopes_: input_object.data_envelopes,
-                extra_data_: input_object.extra_data,
+                custom_plugin_data_: input_object.custom_plugin_data,
             }
         else:
             # Assuming it is as dict:
@@ -47,7 +47,7 @@ class InvocationInputSchema(Schema):
         return InvocationInput(
             invocator_plugin_entry = input_dict[invocator_plugin_entry_],
             data_envelopes = input_dict[data_envelopes_],
-            extra_data = {},
+            custom_plugin_data = {},
         )
 
 
@@ -56,7 +56,7 @@ _invocation_input_example = {
     data_envelopes_: [
         data_envelope_desc.dict_example,
     ],
-    extra_data_: {},
+    custom_plugin_data_: {},
 }
 
 invocation_input_desc = TypeDesc(
