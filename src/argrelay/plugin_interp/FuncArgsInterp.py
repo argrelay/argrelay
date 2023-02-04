@@ -4,9 +4,6 @@ from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.SpecialChar import SpecialChar
-from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper import eprint
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.InterpContext import (
     InterpContext,
@@ -128,51 +125,50 @@ class FuncArgsInterp(AbstractInterp):
 
         if self.interp_ctx.parsed_ctx.comp_type == CompType.SubsequentHelp:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
-                return self.remaining_from_next_missing_types()
+                return self.remaining_from_next_missing_type()
             else:
                 # TODO: Suggest keys (:) of missing types instead - it is `SubsequentHelp`, user insist and wants something else:
-                return self.remaining_from_next_missing_types()
+                return self.remaining_from_next_missing_type()
 
         if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
-            # assert t == CompType.PartialWord, "Is this partial word but tangent token left part is empty?"
             if (
                 self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixHidden or
                 self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixShown or
                 self.interp_ctx.parsed_ctx.comp_type == CompType.MenuCompletion
             ):
                 # Cannot complete => show first missing:
-                # TODO: differentiate when have proposed and no proposed:
-                first_missing_type_values = self.remaining_from_next_missing_types()
+                first_missing_type_values = self.remaining_from_next_missing_type()
                 if first_missing_type_values:
                     return first_missing_type_values
                 else:
-                    self.print_complete()
                     return []
         else:
             if self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixHidden:
-                return self.remaining_from_next_missing_types()
+                return self.remaining_from_next_missing_type()
             if self.interp_ctx.parsed_ctx.comp_type == CompType.MenuCompletion:
                 # Note that this space will be cached by shell and used without completion script invocation
                 # until cycling through these options by repetitive menu completion is not over.
                 # TODO: Test cycling through options limited by current prefix (versus cycling through every item at current arg space):
-                return self.remaining_from_next_missing_types()
+                return self.remaining_from_next_missing_type()
             if self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixShown:
                 # Can complete => show matching:
-                # TODO: We have an option here: filter `startswith` or `in`:
-                #       But bash auto-completion with colors highlights according to `startswith` only:
-                return self.remaining_from_next_missing_types()
+                return self.remaining_from_next_missing_type()
             else:
-                return self.remaining_from_next_missing_types()
+                return self.remaining_from_next_missing_type()
 
-    def remaining_from_next_missing_types(self) -> list[str]:
+    def remaining_from_next_missing_type(self) -> list[str]:
+        """
+        Clarifications:
+        *   remaining = because values for the given type are reduced based on narrowed down `data_envelope` set
+        *   missing = because this arg type is not specified yet
+        *   next = because arg types are tired in specific order
+        """
         proposed_tokens: list[str] = []
 
-        # Return filtered value set fom next missing arg:
+        # Return filtered value set from the next missing arg:
         for arg_type in self.interp_ctx.curr_container.search_control.types_to_keys_dict.keys():
             if (
-                not proposed_tokens
-                and
-                # TODO: I think only one condition is enough: arg_type is either in one or in another, not in both:
+                # TODO: nly one condition should be enough: arg_type is either in one or in another, not in both:
                 arg_type not in self.interp_ctx.curr_container.assigned_types_to_values
                 and
                 arg_type in self.interp_ctx.curr_container.remaining_types_to_values
@@ -182,16 +178,14 @@ class FuncArgsInterp(AbstractInterp):
                     if (
                         isinstance(x, str)
                         and
+                        # Note that we have an option here: filter `startswith` or `in`, but Bash auto-completion
+                        # color-highlights according to `startswith` only (so `startswith` only):
                         x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)
                         # TODO: Support list[str] - what if one type can have list of values (and we need to match any as in OR)?
                     )
                 ]
+                if proposed_tokens:
+                    # Collect only until the first proposed value set from missing args:
+                    break
 
         return proposed_tokens
-
-    # noinspection PyMethodMayBeStatic
-    def print_complete(self) -> None:
-        eprint(TermColor.INFO.value)
-        # TODO: figure out something better than this:
-        eprint(f"DONE", end = "")
-        eprint(TermColor.RESET.value)
