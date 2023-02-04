@@ -3,21 +3,19 @@ from enum import Enum, auto
 
 class RunMode(Enum):
     """
-    Request is meant to run in two modes:
-    *   `CompletionMode` - when shell asks `argrelay` for suggestions to complete command line args.
-    *   `InvocationMode` - when already executed command uses `argrelay` to determine values for all ags.
+    `RunMode` originates on the client side because of different user actions:
+    *   `CompletionMode`: user hits `Tab` trying to complete command line arg.
+    *   `InvocationMode`: user hits `Enter` trying to execute the command line.
+    Request to `argrelay` server indicates the two different modes:
+    *   `CompletionMode` - when shell asks `argrelay` server for suggestions to complete one command line arg.
+    *   `InvocationMode` - when already executed command uses `argrelay` to determine values for all args.
     In other words:
-    *   `CompletionMode` = (proposing options) collects all possible options.
-    *   `InvocationMode` = (exercising options) selects only one option out of all possible.
+    *   `CompletionMode` = (proposing options) collects all possible value options for the single arg under cursor.
+    *   `InvocationMode` = (exercising options) selects only one value for specific arg, but does it for every arg.
     Also:
     *   `CompletionMode` excludes tangent token ("touched" by the cursor) as input to provide completion for it.
     *   `InvocationMode` includes tangent token as input arg to execute selected function.
     """
-    # TODO: Add docstring if true:
-    #       RunMode is client-side property.
-    #       It should result in different requests to server.
-    #       *   `CompletionMode` (completion request to server) expects response with arg values suggested for current situation.
-    #       *   `InvocationMode` (request to server for what to do) expects response with detailed command line to execute on client (or results of this execution if it was done on server side).
 
     CompletionMode = auto()
     InvocationMode = auto()
