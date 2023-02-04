@@ -17,7 +17,6 @@ class ThisTestCase(TestCase):
         """
 
         with change_to_known_repo_path("."):
-
             # Function "desc_host" ("desc host") uses NoopInvocator, so the test should always pass
             subproc = subprocess.run(
                 "relay_demo desc host dev upstream amer ro".split(" "),

@@ -1,15 +1,18 @@
 import os
 import subprocess
 import tempfile
-from copy import deepcopy
 from unittest import TestCase
 
+from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.misc_helper import eprint
+from argrelay.relay_client import __main__
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, is_plugin_enabled_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_dict_
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import relay_demo_static_data_object
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, load_relay_demo_server_config_dict
 
 
 class ThisTestCase(TestCase):
@@ -65,13 +68,14 @@ class ThisTestCase(TestCase):
     def test_loader(self):
         test_cases = [
             (
-                line_no(), "",
+                line_no(), f"{GitRepoLoader.__name__} enabled with random temp dir",
                 {
                     is_plugin_enabled_: True,
+                    # Temporary `base_path`:
+                    base_path_: self.temp_dir.name,
                 },
             ),
         ]
-        static_data = deepcopy(relay_demo_static_data_object)
         for test_case in test_cases:
             with self.subTest(test_case):
                 (
@@ -80,18 +84,29 @@ class ThisTestCase(TestCase):
                     plugin_config,
                 ) = test_case
 
-                # Temporary `base_path`:
-                plugin_config[base_path_] = self.temp_dir.name
+                # Modify config to enable `GitRepoLoader` plugin:
+                server_config_dict = load_relay_demo_server_config_dict()
+                server_config_dict[plugin_dict_][GitRepoLoader.__name__][plugin_config_] = plugin_config
 
-                git_repo_loader = GitRepoLoader(plugin_config)
-                static_data = git_repo_loader.update_static_data(static_data)
+                env_mock_builder = (
+                    EnvMockBuilder()
+                    .set_server_config_dict(server_config_dict)
+                    .set_enable_demo_git_loader(plugin_config[is_plugin_enabled_])
+                    .set_command_line("some_command whatever")
+                )
+                with env_mock_builder.build():
+                    # Populate static data by plugin by invoking `LocalClient` who starts `LocalServer:
+                    command_obj: AbstractLocalClientCommand = __main__.main()
+                    assert isinstance(command_obj, AbstractLocalClientCommand)
+                    static_data = command_obj.local_server.server_config.static_data
 
-                for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-                    assert type_name in static_data.known_arg_types
+                    # Verify:
+                    for type_name in [enum_item.name for enum_item in GitRepoArgType]:
+                        assert type_name in static_data.known_arg_types
 
-                    # Find list all values in data_envelope per `type_name`:
-                    typed_values = []
-                    for data_envelope in static_data.data_envelopes:
-                        if type_name in data_envelope:
-                            typed_values.append(data_envelope[type_name])
-                    print(f"type_to_values: {type_name}: {typed_values}")
+                        # Find list all values in data_envelope per `type_name`:
+                        typed_values = []
+                        for data_envelope in static_data.data_envelopes:
+                            if type_name in data_envelope:
+                                typed_values.append(data_envelope[type_name])
+                        print(f"type_to_values: {type_name}: {typed_values}")

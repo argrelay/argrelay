@@ -33,3 +33,4 @@ class RemoteClientCommandFactory(AbstractClientCommandFactory):
                 RelayLineArgsRemoteClientCommand,
             )
             return RelayLineArgsRemoteClientCommand(self.client_config.connection_config)
+        raise RuntimeError

@@ -17,6 +17,10 @@ server_title = relay_server.__name__
 
 
 class CustomFlaskApp(Flask):
+    """
+    This is an API-wrapper exposing `LocalServer` over the network.
+    """
+
     local_server: LocalServer
 
     def __init__(self, import_name: str):

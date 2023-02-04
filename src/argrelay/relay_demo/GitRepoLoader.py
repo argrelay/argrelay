@@ -141,7 +141,7 @@ class GitRepoLoader(AbstractLoader):
                 # commits
 
                 commit_envelope = {
-                    envelope_id_: git_commit.hexsha,
+                    envelope_id_: f"{rel_git_path}:{git_commit.hexsha}",
                     envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
                     envelope_payload_: {
                     },

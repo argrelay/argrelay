@@ -15,7 +15,9 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 
 class LocalServer:
     """
-    Server functionality without network-exposed API wrapper
+    This is plain server functionality without API-wrapper to expose over the network (hence, local).
+
+    The API-wrapper exposing `LocalServer` over the network is `CustomFlaskApp`.
     """
 
     server_config: ServerConfig

@@ -602,7 +602,6 @@ class ServiceLoader(AbstractLoader):
                         data_envelopes.append(generated_host)
 
                         for service_name in ["sn{:02d}".format(snn) for snn in range(0, 10)]:
-
                             ############################################################################################################
                             # services
 

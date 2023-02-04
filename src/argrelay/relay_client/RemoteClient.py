@@ -6,6 +6,10 @@ from argrelay.runtime_data.ClientConfig import ClientConfig
 class RemoteClient(AbstractClient):
     """
     Client remote to server
+
+    It talks to `CustomFlaskApp` which is remote server in this case.
+
+    See also `LocalClient` and `LocalServer`.
     """
 
     def __init__(self, client_config: ClientConfig):

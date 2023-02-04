@@ -33,18 +33,47 @@ from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requ
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
 from argrelay.schema_config_core_server.MongoServerConfigSchema import start_server_
 from argrelay.schema_config_core_server.ServerConfigSchema import (
-    static_data_,
     mongo_config_,
     server_config_desc,
     plugin_dict_,
 )
-from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper.OpenFileMock import OpenFileMock
 
 
 @dataclass
 class EnvMockBuilder:
+    """
+    All-in-one mock support which sets up the mocks and cleans them up as Python's Context Manager.
+
+    For example:
+
+    *   Mock env vars or `sys.argv` used by Bash to communicate input to argrelay client - see usage of:
+
+        *   _mock_client_input_in_completion_mode
+        *   _mock_client_input_in_invocation_mode_with_args
+        *   _mock_client_input_in_invocation_mode_with_line
+
+    *   Mock server and client config files - see usage of:
+
+        *   set_server_config_dict
+        *   set_client_config_dict
+
+    *   Capture `stdout` and `stderr` - see usage of:
+
+        *   set_capture_stdout
+        *   set_capture_stderr
+
+    *   Whether client uses `LocalClient`/`LocalServer` or `RemoteClient` with `CustomFlaskApp` - see usage of:
+
+        *   set_client_config_with_local_server
+
+    *   Mock MongoDB client - see usage of: mock_mongo_client
+
+    *   Simple selection of test data - see usage of: set_service_test_data_filter
+
+    """
+
     run_mode: RunMode = RunMode.CompletionMode
 
     command_line: str = ""
@@ -93,6 +122,7 @@ class EnvMockBuilder:
         Used as input for `RunMode.CompletionMode` because `COMP_LINE` is env var what Bash sets
         """
         self.command_line = command_line
+        self.cursor_cpos = len(self.command_line)
         self._command_line_is_set = True
         return self
 
@@ -148,6 +178,10 @@ class EnvMockBuilder:
 
     def set_server_config_with_mongo_start(self, given_val: bool):
         self.is_server_config_with_mongo_start = given_val
+        return self
+
+    def set_enable_demo_git_loader(self, given_val: bool):
+        self.enable_demo_git_loader = given_val
         return self
 
     def set_capture_stdout(self, given_val: bool):
@@ -374,7 +408,3 @@ def default_test_input_context(command_line: str, cursor_cpos: int) -> InputCont
         run_mode = RunMode.CompletionMode,
         comp_key = str(0),
     )
-
-
-# TODO: this is potentially useless as static data for demo becomes full and valid only after loading (with plugins):
-relay_demo_static_data_object = static_data_desc.from_input_dict(load_relay_demo_server_config_dict()[static_data_])
