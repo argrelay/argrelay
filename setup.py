@@ -18,7 +18,7 @@ setuptools.setup(
     version = "0.0.0.dev14",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
-    description = "TODO",
+    description = "Bash Tab-completion (data) server",
     long_description = long_description,
     long_description_content_type = "text/markdown",
     keywords = "argparse, argcomplete, bash, complete",
