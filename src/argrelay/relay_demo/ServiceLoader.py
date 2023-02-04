@@ -43,9 +43,7 @@ def _todo(self):
         }
     }
 
-    # TODO: add generic config for (ServiceArgType, value) -> assignment of implicit args in invocation mode.
-
-    # TODO: implement generic logic and config when one of the arg makes other required.
+    # TODO: implement generic logic and config when one of the arg makes other/extra required.
     # TODO: implement generic logic and config when one of the arg proposes values for other.
 
 
@@ -149,7 +147,7 @@ class ServiceLoader(AbstractLoader):
             # functions
 
             # TODO: As of now, `ServiceLoader` is configured first (after `GitRepoLoader`), so it works.
-            #       But to be robust against re-ordering, this loader should shared function names like
+            #       But to be robust against re-ordering, this loader should share function names like
             #       "desc", "list", "goto" to accept `GitRepoEnvelopeClass` in addition to `ServiceEnvelopeClass`.
             {
                 envelope_id_: "goto_host",

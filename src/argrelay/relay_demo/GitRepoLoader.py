@@ -123,7 +123,6 @@ class GitRepoLoader(AbstractLoader):
                 envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
                 envelope_payload_: {
                     "abs_repo_path": abs_git_path,
-                    # TODO: Add anything extra (beyond top-level keys with metadata) required for some function
                 },
                 GlobalArgType.ObjectSelector.name: "repo",
                 GitRepoArgType.GitRepoRelPath.name: rel_git_path,
@@ -145,7 +144,6 @@ class GitRepoLoader(AbstractLoader):
                     envelope_id_: git_commit.hexsha,
                     envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
                     envelope_payload_: {
-                        # TODO: Add anything extra (beyond top-level keys with metadata) required for some function
                     },
                     GlobalArgType.ObjectSelector.name: "commit",
                     GitRepoArgType.GitRepoRelPath.name: rel_git_path,
