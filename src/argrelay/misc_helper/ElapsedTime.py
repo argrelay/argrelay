@@ -12,12 +12,19 @@ class ElapsedTime:
     """
     *   Instance holds a named timestamp.
     *   Class maintains a list of all instances (named timestamps) stored in order of measurements.
+
+    At the moment, a static singleton is enough as perf measurements are done with single client.
     """
 
     name: str
     ts: int
 
     all_ts: ClassVar[list[ElapsedTime]] = []
+
+    is_debug_enabled: bool = False
+    """
+    This is normally set based on `RequestContext.is_debug_enabled`.
+    """
 
     def print(self, prev_ts: int):
         ElapsedTime.print_formatted(self.name, self.ts, self.ts - prev_ts)
@@ -54,3 +61,8 @@ class ElapsedTime:
         # total:
         if cls.all_ts:
             prev_ts.print_formatted("total", first_ts.ts, prev_ts.ts - first_ts.ts)
+
+    @classmethod
+    def print_all_if_debug(cls):
+        if cls.is_debug_enabled:
+            cls.print_all()
