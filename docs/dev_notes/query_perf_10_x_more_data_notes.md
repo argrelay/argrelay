@@ -1,5 +1,5 @@
 
-Test command line:
+Test command line with `TD_38_03_48_51`:
 
 ```sh
 relay_demo goto host cm1 fs0 gr0 hs1 ro

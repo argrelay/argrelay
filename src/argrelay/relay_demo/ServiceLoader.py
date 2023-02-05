@@ -544,15 +544,7 @@ class ServiceLoader(AbstractLoader):
 
     def populate_TD_38_03_48_51_large_generated(self, data_envelopes: list):
         """
-        TD_38_03_48_51: generate large data set:
-        [code_maturity] * [geo_region] * [flow_stage] * [host_name] * [service_name] = 100_000 services
-        10              * 10           * 10           * 10          * 10             = 100_000
-
-        The total set of `data_envelope`-s:
-        *   1_000       * clusters
-        *   10_000      * hosts
-        *   100_000     * services
-
+        TD_38_03_48_51: generate large data set
         """
         if not self.is_test_data_allowed("TD_38_03_48_51"):
             return

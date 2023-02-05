@@ -39,12 +39,12 @@ preferring (not immediately obvious) practical properties.
 *   Reorder words in identifiers if it helps dir grouping.
 
     For example,
-    these two modules will appear groupped together
+    these two modules will appear grouped together
     (when sorted lexicographically in IDEs) due to common prefix:
     *   `client_command_local`
     *   `client_command_remote`
 
-    Naming them "in English" will break the groupping
+    Naming them "in English" will break the grouping
     as there is no common prefix anymore:
     *   `local_client_command`
     *   [something in between]

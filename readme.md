@@ -163,6 +163,8 @@ but it is not ordinary for CLI-s of most common commands:
 
 # Quick demo
 
+This is a non-intrusive demo (without permanent changes to user env).
+
 Clone this repo somewhere.
 
 If `dev-shell.bash` is run for the first time,<br/>
@@ -208,7 +210,6 @@ two terminal windows are required.
     # in client `dev-shell.bash`:
     relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
     ```
-    > TODO: Currently, the output is on serer side. Print on client side (need to transfer server state to client).
 
 *   Inspect how auto-completion binds to `relay_demo` command:
 
@@ -229,8 +230,38 @@ two terminal windows are required.
     exit
     ```
 
-# Getting started
+# Data backend
+
+There are two options at the moment - both using [MongoDB][MongoDB] API:
+
+| Category       | `mongomock` (default)                                                                   | `PyMongo`                                                                                        |
+|:---------------|:----------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
+| Data set size: | practical limit ~ 10K                                                                   | tested at 1M                                                                                     |
+| Pro:           | nothing else to install                                                                 | no practical data set size limit found (yet)<br/> for `argrelay` intended use cases              |
+| Con:           | understandably, does not meet<br/> non-functional requirements<br/> for large data sets | require some knowledge of MongoDB,<br/> additional setup,<br/> additional running processes<br/> |
+
+`PyMongo` connects to running MongoDB instance which has to be configured in `mongo_config`<br/>
+and `mongomock` should be disabled in `argrelay.server.yaml`:
+
+```diff
+-    use_mongomock_only: True
++    use_mongomock_only: False
+```
+
+# What's next?
+
+*   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md].
+*   Modify `ServiceLoader.py` plugin to provide data beyond [default data set][TD_63_37_05_36.default_service_data.md].
+*   Replace `ErrorInvocator.py` plugin to run something useful when use hits `Enter`.
+*   ...
+
+> **Note**<br/>
+> To provide domain-specific functionality, new plugins should be added or existing reconfigured.<br/>
+> This section is under construction to provide detailed dev-level docs.<br/>
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
+[MongoDB]: https://www.mongodb.com/
+[dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
+[TD_63_37_05_36.default_service_data.md]: docs/test_data/TD_63_37_05_36.default_service_data.md
