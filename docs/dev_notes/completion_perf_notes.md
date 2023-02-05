@@ -1,6 +1,14 @@
 
 These are notes on optimization done for end-to-end request-response specifically for Tab-completion.
 
+# Results ahead of details
+
+The biggest perf impact is contributed by `import`-s</br>
+(even choice of HTTP-client is driven by time to `import` specific library).
+
+This suggests that server lookup is hardly embeddable (to make `argrelay` serverless),</br>
+unless using custom data-crunching logic with minimum `import`-s (or even not in Python).
+
 # Why bother optimizing?
 
 Unlike many GUI-s, Bash CLI does not have async execution -
@@ -23,12 +31,10 @@ The numbers are approximate - whatever seem to show up most of the time.
 
 See `ProposeArgValuesRemoteClientCommand`.
 
-*   Iteration 0: non-optimized version (applicable for commands `DESCRIBE_LINE_ARGS_PATH` or `RELAY_LINE_ARGS_PATH`).
+*   Iteration 0: non-optimized version (still in use for commands `DESCRIBE_LINE_ARGS_PATH` or `RELAY_LINE_ARGS_PATH`).
 *   Iteration 4: optimized version for `PROPOSE_ARG_VALUES_PATH`.
 
-The difference between 0 and 4 compared by running `RELAY_LINE_ARGS_PATH` and `PROPOSE_ARG_VALUES_PATH`.
-
-All numbers are deltas between prev and curr except `total` which is a delta between first and last (end-to-end).
+All numbers are deltas between prev and curr except end-to-end `total` (a delta between first and last).
 
 | `ElapsedTime` mark            | Iteration 0 | Iteration 1 | Iteration 2 | Iteration 3 | Iteration 4 |
 |-------------------------------|-------------|-------------|-------------|-------------|-------------|
@@ -48,9 +54,7 @@ All numbers are deltas between prev and curr except `total` which is a delta bet
 *   Iteration 1: Make imports conditional (import only when needed).
 *   Iteration 2: Switch from `requests` to `http.client`.
 *   Iteration 3: Do not import `Schema`-s for Tab-completion and use `*.json` config instead of `*.yaml`.
-*   Iteration 4: Use switch from `http.client` to plain `socket`.
-
-The biggest time contributed `import`-s (even choice of HTTP-client is driven by time to `import` specific library).
+*   Iteration 4: Switch from `http.client` to plain `socket`.
 
 # Choice of client config format
 
@@ -116,7 +120,7 @@ Iteration 3: Do not import `Schema`-s for Tab-completion and use `*.json` config
 0.000002s: on_exit
 0.031822s: total
 
-Iteration 4: Use switch from `http.client` to plain sockets:
+Iteration 4: Switch from `http.client` to plain `socket`:
 0.000000s: after_program_entry
 0.005476s: after_initial_imports
 0.000107s: after_loading_client_config
