@@ -15,7 +15,7 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev14",
+    version = "0.0.0.dev15",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Bash Tab-completion (data) server",
