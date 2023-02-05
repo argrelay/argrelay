@@ -1,5 +1,5 @@
 
-Project status: prototype
+Project status: working prototype
 
 [![asciicast](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL.svg)](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL)
 
