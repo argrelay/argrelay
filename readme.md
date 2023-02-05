@@ -77,6 +77,12 @@ For example,<br/>
 to ask for a watermelon (without knowing the exact sign),<br/>
 they used combination of known "drink" + "sweet".
 
+The default `argrelay` CLI-interpretation plugin (see `FuncArgsInterp`)<br/>
+prompts for object properties to disambiguate search results until single one is found.
+
+<details>
+<summary>continue story</summary>
+
 ### Narrow down options
 
 Without any context, just two words "drink" + "sweet" leave<br/>
@@ -153,8 +159,7 @@ but it is not ordinary for CLI-s of most common commands:
 | rely on humans to memorize syntax<br/> (options, ordering, etc.)            | assume humans have<br/> a loose idea about the syntax |
 | auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific index       |
 
-The default `argrelay` parsing and CLI-interpretation plugin (see `FuncArgsInterp`)<br/>
-implies such syntax.
+</details>
 
 # Quick demo
 
