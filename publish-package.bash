@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Publish artifacts to pypi.org.
-# See: docs/notes/release_procedure.md
+# See: docs/dev_notes/release_procedure.md
 # TODO: Merge in a single "atomic" step to make a release:
 #       (1) create tag, (2) build, (3) publish, ...
 #       At the moment, at least until first version `0.0.0`,

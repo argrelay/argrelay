@@ -228,4 +228,4 @@ two terminal windows are required.
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
-[completion_perf_notes.md]: docs/notes/completion_perf_notes.md
+[completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
