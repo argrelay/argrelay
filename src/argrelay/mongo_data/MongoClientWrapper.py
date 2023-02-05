@@ -49,7 +49,6 @@ def create_index(mongo_db: Database, static_data: StaticData):
     col_proxy: Collection = mongo_db[data_envelopes_]
 
     for index_field in static_data.known_arg_types:
-        eprint(f"creating index for field: {index_field}")
         col_proxy.create_index(index_field)
 
 
