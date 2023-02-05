@@ -29,7 +29,7 @@ To clarify,<br/>
 | In Bash:       | type `A.py` to execute it                               | type `A_relay` to let `argrelay` decide<br/> whether to execute `A.py`      |
 | Execution:     | `A.py` calls `argparse` library                         | `A.py` is called by the framework<br/> when `A_relay` is invoked            |
 | Function:      | `A.py` directly does<br/> some domain-specific task     | `A_relay` directly only "relays"<br/> the command line to `argrelay`        |
-| CLI source:    | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins      |
+| CLI source:    | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins/data |
 | CLI is:        | mostly code-driven                                      | mostly data-driven                                                          |
 | Modify CLI:    | modify `A.py`                                           | keep `A.py` intact,<br/> re-configure `argrelay` instead                    |
 | Prog lang:     | `A.py` has to be<br/> a Python script to use `argparse` | `A.py` can be anything<br/> somehow executable by `argrelay`                |
