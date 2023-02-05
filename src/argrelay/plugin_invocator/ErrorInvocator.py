@@ -22,4 +22,4 @@ class ErrorInvocator(AbstractInvocator):
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
         # TODO: Make `ErrorInvocator` customizable to throw configured errors - as of now, it's a stub:
-        sys.exit("ERROR: this is a stub")
+        sys.exit("INFO: command executed: this is a stub")
