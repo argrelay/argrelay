@@ -482,7 +482,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "s_c",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # default
@@ -491,7 +491,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "tt1",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # default
