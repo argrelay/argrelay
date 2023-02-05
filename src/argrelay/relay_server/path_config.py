@@ -6,7 +6,6 @@ from argrelay.handler_request.AbstractServerRequestHandler import AbstractServer
 from argrelay.handler_request.DescribeLineArgsServerRequestHandler import DescribeLineArgsServerRequestHandler
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLineArgsServerRequestHandler
-from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_request.RequestContextSchema import request_context_desc
@@ -30,6 +29,7 @@ def create_blueprint(local_server: LocalServer):
 
     def create_input_ctx(run_mode: RunMode):
         ElapsedTime.clear_measurements()
+        ElapsedTime.measure("before_request_payload_load")
         # TODO: Figure out why:
         #       *   requests by `ProposeArgValuesRemoteClientCommand` arrive as dict
         #       *   requests by `AbstractRemoteClientCommand` arrive as str
@@ -38,7 +38,10 @@ def create_blueprint(local_server: LocalServer):
             request_ctx = request_context_desc.dict_schema.loads(request.json)
         if isinstance(request.json, dict):
             request_ctx = request_context_desc.dict_schema.load(request.json)
-        return AbstractServerRequestHandler.create_input_ctx(request_ctx, run_mode)
+        input_ctx = AbstractServerRequestHandler.create_input_ctx(request_ctx, run_mode)
+        ElapsedTime.measure("after_input_context_creation")
+        ElapsedTime.is_debug_enabled = input_ctx.is_debug_enabled
+        return input_ctx
 
     # TODO: Add REST test on client and server side.
     @root_blueprint.route(DESCRIBE_LINE_ARGS_PATH, methods = ['post'])
@@ -81,6 +84,6 @@ def create_blueprint(local_server: LocalServer):
 
     @root_blueprint.teardown_request
     def show_teardown(exception):
-        eprint(ElapsedTime.print_all())
+        ElapsedTime.print_all_if_debug()
 
     return root_blueprint

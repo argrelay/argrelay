@@ -19,10 +19,12 @@ class StaticDataSchema(Schema):
     first_interp_factory_id = fields.String(
         required = True,
     )
+
     known_arg_types = fields.List(
         fields.String(),
         required = True,
     )
+
     data_envelopes = fields.List(
         fields.Nested(data_envelope_desc.dict_schema),
         required = True,

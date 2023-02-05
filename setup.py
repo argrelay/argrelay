@@ -4,21 +4,22 @@ with open("readme.md", "r", encoding = "utf-8") as fh:
     long_description = fh.read()
 
 tests_require = [
+    "tox",
     "responses",
     "mongomock",
     "pandas",
 ]
 
 extras_require = {
-    "test": tests_require,
+    "tests": tests_require,
 }
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev13",
+    version = "0.0.0.dev16",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
-    description = "TODO",
+    description = "Bash Tab-completion (data) server",
     long_description = long_description,
     long_description_content_type = "text/markdown",
     keywords = "argparse, argcomplete, bash, complete",

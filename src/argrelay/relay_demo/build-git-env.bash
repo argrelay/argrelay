@@ -67,7 +67,7 @@ python -m pip install --upgrade pip
 
 # Use editable install:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
-python -m pip install -e .
+python -m pip install -e .[tests]
 
 if false
 then

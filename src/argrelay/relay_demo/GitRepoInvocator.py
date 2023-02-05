@@ -24,7 +24,7 @@ class GitRepoInvocator(AbstractInvocator):
         invocation_input = InvocationInput(
             invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_id],
             data_envelopes = interp_ctx.get_data_envelopes(),
-            extra_data = {},
+            custom_plugin_data = {},
         )
         return invocation_input
 

@@ -19,13 +19,13 @@ class FuncArgsInterpFactory(AbstractInterpFactory):
         raise NotImplementedError
 
     def validate_loaded_data(self, static_data: "StaticData"):
-        self._validate_function_envelopes_have_unique_coordinates(static_data)
+        self._validate_function_envelopes_unambiguously_qualified(static_data)
 
-    def _validate_function_envelopes_have_unique_coordinates(self, static_data: "StaticData"):
+    def _validate_function_envelopes_unambiguously_qualified(self, static_data: "StaticData"):
         """
         Verify that all arg types listed in `function_search_control` uniquely identify function
 
-        Otherwise, functions which do not have unique coordinates with listed arg types will not be invokable.
+        Otherwise, functions which do not have unique "coordinates" with listed arg types will not be invokable.
 
         Plan:
         *   Find all envelopes of `ReservedEnvelopeClass.ClassFunction`.

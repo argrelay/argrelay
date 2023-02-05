@@ -14,7 +14,9 @@ class MongoServerConfigSchema(Schema):
         strict = True
 
     database_name = fields.String()
+
     start_server = fields.Boolean()
+
     server_start_command = fields.String()
 
     @post_load

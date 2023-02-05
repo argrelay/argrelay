@@ -1,5 +1,7 @@
 
-Project status: prototype
+Project status: working prototype
+
+[![asciicast](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL.svg)](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL)
 
 # What's this?
 
@@ -8,7 +10,7 @@ for command line interfaces (CLI) in Bash shell.
 
 The original use case is to make auto-completion based on large (config) data sets.
 
-This requires data indexing for responsive lookup<br/>
+This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
 
 The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
@@ -29,7 +31,7 @@ To clarify,<br/>
 | In Bash:       | type `A.py` to execute it                               | type `A_relay` to let `argrelay` decide<br/> whether to execute `A.py`      |
 | Execution:     | `A.py` calls `argparse` library                         | `A.py` is called by the framework<br/> when `A_relay` is invoked            |
 | Function:      | `A.py` directly does<br/> some domain-specific task     | `A_relay` directly only "relays"<br/> the command line to `argrelay`        |
-| CLI source:    | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins      |
+| CLI source:    | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins/data |
 | CLI is:        | mostly code-driven                                      | mostly data-driven                                                          |
 | Modify CLI:    | modify `A.py`                                           | keep `A.py` intact,<br/> re-configure `argrelay` instead                    |
 | Prog lang:     | `A.py` has to be<br/> a Python script to use `argparse` | `A.py` can be anything<br/> somehow executable by `argrelay`                |
@@ -74,6 +76,12 @@ they combined known words to describe unnamed things.
 For example,<br/>
 to ask for a watermelon (without knowing the exact sign),<br/>
 they used combination of known "drink" + "sweet".
+
+The default `argrelay` CLI-interpretation plugin (see `FuncArgsInterp`)<br/>
+prompts for object properties to disambiguate search results until single one is found.
+
+<details>
+<summary>continue story</summary>
 
 ### Narrow down options
 
@@ -151,10 +159,11 @@ but it is not ordinary for CLI-s of most common commands:
 | rely on humans to memorize syntax<br/> (options, ordering, etc.)            | assume humans have<br/> a loose idea about the syntax |
 | auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific index       |
 
-The default `argrelay` parsing and CLI-interpretation plugin (see `FuncArgsInterp`)<br/>
-implies such syntax.
+</details>
 
 # Quick demo
+
+This is a non-intrusive demo (without permanent changes to user env).
 
 Clone this repo somewhere.
 
@@ -201,7 +210,6 @@ two terminal windows are required.
     # in client `dev-shell.bash`:
     relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
     ```
-    > TODO: Currently, the output is on serer side. Print on client side (need to transfer server state to client).
 
 *   Inspect how auto-completion binds to `relay_demo` command:
 
@@ -221,3 +229,39 @@ two terminal windows are required.
     # in client or server `dev-shell.bash`:
     exit
     ```
+
+# Data backend
+
+There are two options at the moment - both using [MongoDB][MongoDB] API:
+
+| Category       | `mongomock` (default)                                                                   | `PyMongo`                                                                                        |
+|:---------------|:----------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
+| Data set size: | practical limit ~ 10K                                                                   | tested at 1M                                                                                     |
+| Pro:           | nothing else to install                                                                 | no practical data set size limit found (yet)<br/> for `argrelay` intended use cases              |
+| Con:           | understandably, does not meet<br/> non-functional requirements<br/> for large data sets | require some knowledge of MongoDB,<br/> additional setup,<br/> additional running processes<br/> |
+
+`PyMongo` connects to running MongoDB instance which has to be configured in `mongo_config`<br/>
+and `mongomock` should be disabled in `argrelay.server.yaml`:
+
+```diff
+-    use_mongomock_only: True
++    use_mongomock_only: False
+```
+
+# What's next?
+
+*   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md].
+*   Modify `ServiceLoader.py` plugin to provide data beyond [default data set][TD_63_37_05_36.default_service_data.md].
+*   Replace `ErrorInvocator.py` plugin to run something useful when use hits `Enter`.
+*   ...
+
+> **Note**<br/>
+> To provide domain-specific functionality, new plugins should be added or existing reconfigured.<br/>
+> This section is under construction to provide detailed dev-level docs.<br/>
+
+<!-- refs ---------------------------------------------------------------------------------------------------------- -->
+
+[completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
+[MongoDB]: https://www.mongodb.com/
+[dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
+[TD_63_37_05_36.default_service_data.md]: docs/test_data/TD_63_37_05_36.default_service_data.md

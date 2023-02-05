@@ -12,6 +12,15 @@ class MongoClientConfigSchema(Schema):
         strict = True
 
     client_connection_string = fields.String()
+    """
+    See: https://www.mongodb.com/docs/manual/reference/connection-string/
+
+    Full format:
+    mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
+
+    The simplest:
+    mongodb://localhost
+    """
 
     @post_load
     def make_object(self, input_dict, **kwargs):
@@ -24,8 +33,7 @@ mongo_client_config_desc = TypeDesc(
     dict_schema = MongoClientConfigSchema(),
     ref_name = MongoClientConfigSchema.__name__,
     dict_example = {
-        # TODO: Can it be as simple as "mongodb://localhost:27017" or even "mongodb://localhost"?
-        client_connection_string_: "mongodb://test:test@localhost/test?authSource=admin",
+        client_connection_string_: "mongodb://localhost",
     },
     default_file_path = "",
 )

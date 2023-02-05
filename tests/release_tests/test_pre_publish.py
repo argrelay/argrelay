@@ -8,7 +8,7 @@ from unittest import TestCase, skipIf
 
 from argrelay.relay_demo import GitRepoLoader as GitRepoLoader_module
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_enabled_
+from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_plugin_enabled_
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
@@ -53,7 +53,7 @@ class ThisTestCase(TestCase):
             if not found_one:
                 raise RuntimeError("missing " + GitRepoLoader_class.__name__ + " plugin?")
 
-            self.assertFalse(git_loader_plugin.plugin_config[is_enabled_])
+            self.assertFalse(git_loader_plugin.plugin_config[is_plugin_enabled_])
 
     def test_env_tests_have_no_init_file(self):
         """

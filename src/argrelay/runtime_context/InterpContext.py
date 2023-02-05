@@ -194,14 +194,22 @@ class InterpContext:
             if interp_step == InterpStep.NextEnvelope:
                 continue
             elif interp_step == InterpStep.StopAll:
-                ElapsedTime.measure(f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}")
+                ElapsedTime.measure(
+                    f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}"
+                )
                 self._contribute_to_completion()
-                ElapsedTime.measure(f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}")
+                ElapsedTime.measure(
+                    f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}"
+                )
                 return
             elif interp_step == InterpStep.NextInterp:
-                ElapsedTime.measure(f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}")
+                ElapsedTime.measure(
+                    f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}"
+                )
                 self._contribute_to_completion()
-                ElapsedTime.measure(f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}")
+                ElapsedTime.measure(
+                    f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}"
+                )
                 self.prev_interp = self.curr_interp
                 self.curr_interp = self.curr_interp.next_interp()
                 pass

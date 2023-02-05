@@ -1,5 +1,5 @@
 # To include files from `src` dir, see `package_data` in `setup.py`.
 
 # Add docs:
-recursive-include docs
+recursive-include docs *
 include readme.md

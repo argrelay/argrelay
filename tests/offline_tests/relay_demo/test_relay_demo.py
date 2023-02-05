@@ -83,7 +83,7 @@ class ThisTestCase(TestCase):
             (
                 line_no(), "some_command host qa upstream amer qw goto ro s_c green |", CompType.PrefixShown,
                 "",
-                "No more suggestions when all coordinates specified",
+                "No more suggestions when all \"coordinates\" specified",
             ),
             (
                 line_no(), "some_command upstream goto host |", CompType.PrefixHidden,
@@ -124,7 +124,7 @@ class ThisTestCase(TestCase):
             (
                 line_no(), "some_command host goto e| dev", CompType.PrefixHidden,
                 "emea",
-                "Suggestion for a value from other spaces which do not have coordinate specified",
+                "Suggestion for a value from other spaces which do not have \"coordinate\" specified",
             ),
             (
                 line_no(), "some_command q| dev", CompType.PrefixHidden,
@@ -135,7 +135,7 @@ class ThisTestCase(TestCase):
             (
                 line_no(), "some_command pro| dev", CompType.PrefixHidden,
                 "",
-                "No suggestion for another value from a space which already have coordinate specified",
+                "No suggestion for another value from a space which already have \"coordinate\" specified",
             ),
             (
                 line_no(), "some_command goto service q| whatever", CompType.PrefixHidden,
@@ -177,7 +177,7 @@ class ThisTestCase(TestCase):
               (
                 line_no(), "some_command host dev goto downstream |", CompType.MenuCompletion,
                 "emea\namer.us",
-                "Suggestions for next coordinate are arg values pre-filtered by selection of previous arg values",
+                "Suggestions for next \"coordinate\" are arg values pre-filtered by selection of previous arg values",
             ),
             # TODO: Fix test_data: TD_76_09_29_31: # overlapped:
             #       there is no overlap after introduction of ClusterName.

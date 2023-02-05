@@ -25,6 +25,7 @@ class ThisTestCase(TestCase):
     def setUp(self):
 
         env_mock_builder = (
+            # Server-only mock:
             EnvMockBuilder()
             .set_mock_client_config_file_read(False)
             .set_mock_client_input(False)

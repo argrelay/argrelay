@@ -1,7 +1,7 @@
 """
-This package "hides" definition of `relay_server` operations from `relay_client`.
-While `relay_client` is supposed to rely on these definitions (and they are often used at test-time),
-it is not required to load them at run-time (hence, they are "hidden" in this package).
+This package generates OpenAPI spec definitions for `relay_server` it publishes over HTTP.
+While `relay_client` is supposed to use these definitions, it does not.
+Instead, it uses `marshmallow` schemas these OpenAPI spec definitions are generated from.
 """
 
 from apispec import APISpec
@@ -13,7 +13,7 @@ from argrelay.server_spec.const_int import DEFAULT_OPEN_API_VERSION, UNUSED_TITL
 
 # This spec is only used to generate data schemas: Marshmallow Schemas -> JSON Schemas.
 # These data schemas are subsequently used in OAS specs for paths (which are defined manually).
-# All serialization/deserialization/validation is done using Marshmallow Schemas (instead of JSON Schemas).
+# All serialization/deserialization/validation is done using `marshmallow` schemas (instead of JSON Schemas below).
 server_op_data_schemas = APISpec(
     title = UNUSED_TITLE,
     version = UNUSED_VERSION,

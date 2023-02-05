@@ -5,9 +5,11 @@ from unittest import TestCase
 import pandas as pd
 
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 from argrelay.test_helper import change_to_known_repo_path, test_data_
 from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
@@ -107,7 +109,10 @@ class ThisTestCase(TestCase):
                         ServiceArgType.ClusterName.name: cluster_name,
                     }
                     if is_cluster:
-                        pass
+                        query_dict.update({
+                            envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                        })
+                        self.find_single_data_envelope(mongo_col, query_dict)
                     else:
                         # TODO: FS_82_35_57_62: current data is indexed by `ClusterName` only,
                         #       fix it to include all other arg types,
@@ -115,21 +120,31 @@ class ThisTestCase(TestCase):
                         del query_dict[ServiceArgType.CodeMaturity.name]
                         del query_dict[ServiceArgType.GeoRegion.name]
                         del query_dict[ServiceArgType.FlowStage.name]
+
                         query_dict.update({
                             ServiceArgType.HostName.name: host_name,
                         })
                         if is_host:
-                            # Ensure `HostName` contains `ClusterName` as suffix:
-
-                            pass
+                            query_dict.update({
+                                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                            })
+                            # Ensure `HostName` contains abbreviation of (`CodeMaturity`, `FlowStage`) as its suffix:
+                            data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
+                            self.assertTrue(
+                                code_maturity[0]
+                                +
+                                flow_stage[0]
+                                in
+                                data_envelope[ServiceArgType.HostName.name]
+                            )
                         else:
                             query_dict.update({
+                                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                                 ServiceArgType.ServiceName.name: service_name,
                             })
+                            self.find_single_data_envelope(mongo_col, query_dict)
 
-                    self.find_single_data_envelope(mongo_col, query_dict)
-
-    def find_single_data_envelope(self, mongo_col, query_dict):
+    def find_single_data_envelope(self, mongo_col, query_dict) -> dict:
         query_res = mongo_col.find(query_dict)
         found_count = 0
 
@@ -137,3 +152,4 @@ class ThisTestCase(TestCase):
             found_count += 1
 
         self.assertEqual(1, found_count, query_dict)
+        return data_envelope

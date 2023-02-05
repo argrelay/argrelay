@@ -12,7 +12,7 @@ from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
 from argrelay.relay_demo.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.relay_demo.GitRepoInvocator import GitRepoInvocator
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_enabled_
+from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_plugin_enabled_
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
@@ -43,7 +43,7 @@ class GitRepoLoader(AbstractLoader):
 
         if not self.config_dict:
             return static_data
-        if not self.config_dict[is_enabled_]:
+        if not self.config_dict[is_plugin_enabled_]:
             return static_data
 
         base_path = os.path.normpath(os.path.expanduser(self.config_dict[base_path_]))
@@ -123,7 +123,6 @@ class GitRepoLoader(AbstractLoader):
                 envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
                 envelope_payload_: {
                     "abs_repo_path": abs_git_path,
-                    # TODO: Add anything extra (beyond top-level keys with metadata) required for some function
                 },
                 GlobalArgType.ObjectSelector.name: "repo",
                 GitRepoArgType.GitRepoRelPath.name: rel_git_path,
@@ -142,10 +141,9 @@ class GitRepoLoader(AbstractLoader):
                 # commits
 
                 commit_envelope = {
-                    envelope_id_: git_commit.hexsha,
+                    envelope_id_: f"{rel_git_path}:{git_commit.hexsha}",
                     envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
                     envelope_payload_: {
-                        # TODO: Add anything extra (beyond top-level keys with metadata) required for some function
                     },
                     GlobalArgType.ObjectSelector.name: "commit",
                     GitRepoArgType.GitRepoRelPath.name: rel_git_path,

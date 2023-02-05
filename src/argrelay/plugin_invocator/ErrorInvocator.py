@@ -15,11 +15,11 @@ class ErrorInvocator(AbstractInvocator):
             data_envelopes = [
                 data_envelope_desc.dict_example,
             ],
-            extra_data = {},
+            custom_plugin_data = {},
         )
         return invocation_input
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
         # TODO: Make `ErrorInvocator` customizable to throw configured errors - as of now, it's a stub:
-        sys.exit("ERROR: this is a stub")
+        sys.exit("INFO: command executed: this is a stub")

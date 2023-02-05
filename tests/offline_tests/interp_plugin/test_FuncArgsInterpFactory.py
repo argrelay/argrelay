@@ -34,7 +34,7 @@ from argrelay.test_helper.EnvMockBuilder import (
 
 class ThisTestCase(TestCase):
 
-    def test_validate_function_envelopes_have_unique_coordinates(self):
+    def test_validate_function_envelopes_unambiguously_qualified(self):
         client_config_dict = load_relay_demo_client_config_dict()
         server_config_dict = load_relay_demo_server_config_dict()
         data_envelopes = server_config_dict[static_data_][data_envelopes_]
@@ -64,7 +64,7 @@ class ThisTestCase(TestCase):
             }
         }
 
-        # Add two functions with unique coordinates:
+        # Add two functions with unique "coordinates":
         given_function_envelope = {
             envelope_id_: "func_1",
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
@@ -103,7 +103,7 @@ class ThisTestCase(TestCase):
             __main__.main()
             self.assertTrue(True)
 
-        # Add function with non-unique coordinates:
+        # Add function with non-unique "coordinates":
         given_function_envelope = {
             envelope_id_: "func_3",
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,

@@ -43,9 +43,7 @@ def _todo(self):
         }
     }
 
-    # TODO: add generic config for (ServiceArgType, value) -> assignment of implicit args in invocation mode.
-
-    # TODO: implement generic logic and config when one of the arg makes other required.
+    # TODO: implement generic logic and config when one of the arg makes other/extra required.
     # TODO: implement generic logic and config when one of the arg proposes values for other.
 
 
@@ -149,7 +147,7 @@ class ServiceLoader(AbstractLoader):
             # functions
 
             # TODO: As of now, `ServiceLoader` is configured first (after `GitRepoLoader`), so it works.
-            #       But to be robust against re-ordering, this loader should shared function names like
+            #       But to be robust against re-ordering, this loader should share function names like
             #       "desc", "list", "goto" to accept `GitRepoEnvelopeClass` in addition to `ServiceEnvelopeClass`.
             {
                 envelope_id_: "goto_host",
@@ -484,7 +482,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "s_c",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # default
@@ -493,7 +491,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "tt1",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # default
@@ -546,15 +544,7 @@ class ServiceLoader(AbstractLoader):
 
     def populate_TD_38_03_48_51_large_generated(self, data_envelopes: list):
         """
-        TD_38_03_48_51: generate large data set:
-        [code_maturity] * [geo_region] * [flow_stage] * [host_name] * [service_name] = 100_000 services
-        10              * 10           * 10           * 10          * 10             = 100_000
-
-        The total set of `data_envelope`-s:
-        *   1_000       * clusters
-        *   10_000      * hosts
-        *   100_000     * services
-
+        TD_38_03_48_51: generate large data set
         """
         if not self.is_test_data_allowed("TD_38_03_48_51"):
             return
@@ -604,7 +594,6 @@ class ServiceLoader(AbstractLoader):
                         data_envelopes.append(generated_host)
 
                         for service_name in ["sn{:02d}".format(snn) for snn in range(0, 10)]:
-
                             ############################################################################################################
                             # services
 

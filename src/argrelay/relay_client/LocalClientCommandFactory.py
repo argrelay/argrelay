@@ -50,3 +50,4 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
                 self.server_config,
                 self.local_server,
             )
+        raise RuntimeError

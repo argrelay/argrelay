@@ -27,7 +27,8 @@ def store_envelopes(mongo_db: Database, static_data: StaticData):
     #       but we never search across all object,
     #       we always search specific `envelope_class_`.
     #       Should we use collection per envelope class?
-    #       However, why not searching for different envelop classes? Then, single collection is fine (and simple).
+    #       However, what if we need to list all envelop classes?
+    #       Then, single collection is fine (and simple).
     col_proxy: Collection = mongo_db[data_envelopes_]
     col_proxy.delete_many({})
 
@@ -48,7 +49,6 @@ def create_index(mongo_db: Database, static_data: StaticData):
     col_proxy: Collection = mongo_db[data_envelopes_]
 
     for index_field in static_data.known_arg_types:
-        eprint(f"creating index for field: {index_field}")
         col_proxy.create_index(index_field)
 
 
