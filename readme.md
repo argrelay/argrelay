@@ -1,6 +1,8 @@
 
 Project status: prototype
 
+[![asciicast](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL.svg)](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL)
+
 # What's this?
 
 An integration framework to provide contextual Tab-auto-completion<br/>
