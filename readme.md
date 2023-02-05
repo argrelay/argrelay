@@ -10,7 +10,7 @@ for command line interfaces (CLI) in Bash shell.
 
 The original use case is to make auto-completion based on large (config) data sets.
 
-This requires data indexing for responsive lookup<br/>
+This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
 
 The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
@@ -223,3 +223,9 @@ two terminal windows are required.
     # in client or server `dev-shell.bash`:
     exit
     ```
+
+# Getting started
+
+<!-- refs ---------------------------------------------------------------------------------------------------------- -->
+
+[completion_perf_notes.md]: docs/notes/completion_perf_notes.md
