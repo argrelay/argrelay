@@ -21,7 +21,7 @@ class InvocationInputSchema(Schema):
     )
 
     data_envelopes = fields.List(
-        fields.Nested(data_envelope_desc.dict_schema),
+        fields.Dict(),
         required = True,
     )
 
