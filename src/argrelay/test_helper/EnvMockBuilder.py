@@ -5,6 +5,7 @@ Mock environment (env vars, command line args, file access, database, etc.) for 
 from __future__ import annotations
 
 import contextlib
+import dataclasses
 import io
 import json
 import os
@@ -23,6 +24,8 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
 from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_plugin_enabled_
 from argrelay.relay_demo.ServiceLoader import ServiceLoader
@@ -72,6 +75,8 @@ class EnvMockBuilder:
 
     *   Simple selection of test data - see usage of: set_service_test_data_filter
 
+    *   Verifying plugin `InvocationInput` - see usage of: invocator_plugin_invoke_action_func_path
+
     """
 
     run_mode: RunMode = RunMode.CompletionMode
@@ -109,9 +114,13 @@ class EnvMockBuilder:
 
     assert_on_close: bool = True
 
+    # TODO: rename accordingly
     service_test_data_filter = [
         "TD_70_69_38_46",  # no data
     ]
+
+    invocator_plugin_invoke_action_func_path = None
+    invocation_input: InvocationInput = None
 
     def set_run_mode(self, run_mode: RunMode):
         self.run_mode = run_mode
@@ -198,6 +207,21 @@ class EnvMockBuilder:
 
     def set_service_test_data_filter(self, service_test_data_filter: list[str]):
         self.service_test_data_filter = service_test_data_filter
+        return self
+
+    def set_capture_invocator_invocation_input(self, abstract_invocator: AbstractInvocator):
+        """
+        This func causes `AbstractInvocator.invoke_action` to be mocked to capture `InvocationInput`
+        inside `ErrorInvocator.invocation_input` which test can then assert its data.
+        """
+
+        self.invocator_plugin_invoke_action_func_path = (
+            f"{abstract_invocator.__module__}"
+            "."
+            f"{abstract_invocator.__name__}"
+            "."
+            "invoke_action"
+        )
         return self
 
     @contextlib.contextmanager
@@ -299,6 +323,11 @@ class EnvMockBuilder:
             if self.assert_on_close:
                 yield_list.append(exit_stack.enter_context(self.assert_all_cm()))
 
+            if self.invocator_plugin_invoke_action_func_path:
+                yield_list.append(exit_stack.enter_context(
+                    _mock_invocator_plugin(self.invocator_plugin_invoke_action_func_path)
+                ))
+
             yield yield_list
 
     @contextlib.contextmanager
@@ -371,6 +400,16 @@ def _mock_stdout(stdout_f):
 def _mock_stderr(stderr_f):
     with contextlib.redirect_stderr(stderr_f) as stderr_mock:
         yield stderr_mock
+
+
+@contextlib.contextmanager
+def _mock_invocator_plugin(path_to_invoke_action):
+    with mock.patch(path_to_invoke_action, capture_invocation_input) as mock_static:
+        yield mock_static
+
+
+def capture_invocation_input(invocation_input: InvocationInput):
+    EnvMockBuilder.invocation_input = dataclasses.replace(invocation_input)
 
 
 def load_relay_demo_server_config_dict() -> dict:

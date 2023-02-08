@@ -8,10 +8,13 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
+from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.relay_client import __main__
 from argrelay.relay_demo.ServiceArgType import ServiceArgType
+from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import line_no, parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
@@ -439,3 +442,27 @@ AccessType
                                 [found_envelope_ipos].assigned_types_to_values
                                 [arg_type]
                             )
+
+    def test_capture_invocation_input(self):
+        test_line = "some_command goto service prod wert-pd-1 |"
+        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+        env_mock_builder = (
+            EnvMockBuilder()
+            .set_run_mode(RunMode.InvocationMode)
+            .set_command_line(command_line)
+            .set_cursor_cpos(cursor_cpos)
+            .set_comp_type(CompType.InvokeAction)
+            .set_service_test_data_filter([
+                "TD_63_37_05_36",  # default
+            ])
+            .set_capture_invocator_invocation_input(ErrorInvocator)
+        )
+        with env_mock_builder.build():
+            __main__.main()
+            print(EnvMockBuilder.invocation_input)
+            invocation_input = EnvMockBuilder.invocation_input
+            self.assertEqual(ServiceEnvelopeClass.ClassService.name, invocation_input.data_envelopes[2][envelope_class_])
+            self.assertEqual("prod-apac-downstream", invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name])
+            self.assertEqual("wert-pd-1", invocation_input.data_envelopes[2][ServiceArgType.HostName.name])
+            self.assertEqual("tt1", invocation_input.data_envelopes[2][ServiceArgType.ServiceName.name])
+            self.assertTrue(True)
