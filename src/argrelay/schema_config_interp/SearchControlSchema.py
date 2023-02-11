@@ -10,8 +10,10 @@ keys_to_types_list_ = "keys_to_types_list"
 
 class SearchControlSchema(Schema):
     """
-    FS_31_70_49_15:
-    Schema to specify what arg types will be used in search (and how they are mapped to named arg keys).
+    Implements FS_31_70_49_15 # search_control
+
+    Schema for search_control which specifies what arg types will be used in search of the `data_envelope`
+    (and how they are mapped to named arg keys).
     """
 
     class Meta:
@@ -19,8 +21,9 @@ class SearchControlSchema(Schema):
         strict = True
 
     # TODO: Move to `context_control`:
-    #       Avoid special case when only some specific arg type `ReservedArgType.EnvelopeClass` is propagated
-    #       via special mechanism and the rest of arg types are propagated via FS_46_96_59_05.
+    #       Avoid this special case when only some specific arg type (here - `ReservedArgType.EnvelopeClass`)
+    #       is propagated via this special mechanism and
+    #       the rest of arg types are propagated via FS_46_96_59_05 # implicit values.
     # Specifies class to search:
     envelope_class = fields.String()
 
