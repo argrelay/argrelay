@@ -61,7 +61,7 @@ host_search_control = {
     keys_to_types_list_: [
         {"cluster": ServiceArgType.ClusterName.name},
         {"host": ServiceArgType.HostName.name},
-        {"tag": ServiceArgType.ColorTag.name},
+        {"tag": ServiceArgType.LiveStatus.name},
     ],
 }
 
@@ -71,7 +71,7 @@ service_search_control = {
         {"cluster": ServiceArgType.ClusterName.name},
         {"host": ServiceArgType.HostName.name},
         {"service": ServiceArgType.ServiceName.name},
-        {"tag": ServiceArgType.ColorTag.name},
+        {"tag": ServiceArgType.LiveStatus.name},
     ],
 }
 

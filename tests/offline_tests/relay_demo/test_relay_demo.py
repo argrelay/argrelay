@@ -230,7 +230,7 @@ ClassService
 {TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [ImplicitValue]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}HostName: qwer-du [ImplicitValue]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}ServiceName: s_a [ImplicitValue]{TermColor.RESET.value}
-{TermColor.DARK_GRAY.value}ColorTag: [none]{TermColor.RESET.value}
+{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
 AccessType
 {TermColor.BRIGHT_YELLOW.value}*AccessType: ?{TermColor.RESET.value} ro|rw
 """,
@@ -249,7 +249,7 @@ ClassCluster
 ClassHost
 {TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
 {TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
-{TermColor.DARK_GRAY.value}ColorTag: [none]{TermColor.RESET.value}
+{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
 AccessType
 {TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,

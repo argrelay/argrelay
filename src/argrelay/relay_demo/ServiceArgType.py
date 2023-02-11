@@ -22,9 +22,9 @@ class ServiceArgType(Enum):
     # ---
     AccessType = auto()
     # ---
-    ColorTag = auto()
+    LiveStatus = auto()
     """
-    TODO: Currently `ColorTag` is not used - it can be thought of as manually or dynamically assigned to the resource.
+    TODO: Currently `LiveStatus` is not used - it can be thought of as manually or dynamically assigned to the resource.
     """
 
     def __str__(self):
