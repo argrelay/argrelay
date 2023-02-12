@@ -16,6 +16,10 @@ This requires data indexing for [responsive lookup][completion_perf_notes.md]<br
 The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
 to run a standby data server.
 
+An accidental use case is creation of sever-side catalogues of functions and their (live) data<br/>
+available for selection on client-side via auto-completion of some keywords -<br/>
+all directly from shell.
+
 # What's in a name?
 
 Eventually, `argrelay` will "relay" (hence, the name) command line arguments to<br/>
@@ -61,6 +65,20 @@ GUI-s are secondary for `argrelay`'s niche because<br/>
 GUI-s do not have the restrictions CLI-s have:
 *   Technically, the server can handle requests for any GUI.
 *   But API-s are primarily feature-tailored to support CLI.
+
+<details>
+<summary>show example</summary>
+For example, in GUI-s, typing a query into a search bar may easily be accompanied by<br/>
+(1) a separate (from the search bar) area<br/>
+(2) with individually selectable<br/>
+(3) full-text-search results<br/>
+(4) populated in async execution.<br/>
+
+In CLI-s, `grep` does (3) full-text-search, but what about the rest (1), (2), (4)?
+
+To facilitate selection of results via auto-completion,
+catalogue-like navigation (rather than full-text-search) seems the answer.
+</details>
 
 # Syntax: origin story
 

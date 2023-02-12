@@ -67,7 +67,7 @@ class ThisTestCase(TestCase):
             # Not using client:
             .set_mock_client_config_file_read(False)
             .set_client_config_with_local_server(False)
-            .set_service_test_data_filter([
+            .set_test_data_ids_to_load([
                 "TD_63_37_05_36",  # default
             ])
         )

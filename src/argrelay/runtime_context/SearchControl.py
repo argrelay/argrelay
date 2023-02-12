@@ -10,7 +10,9 @@ class SearchControl:
     Object to specify what arg types will be used in search (and how they are mapped to named arg keys).
     """
 
-    # TODO: Move to `context_control` (out of this `search_control` here):
+    # TODO: In short, function plugin should populate envelope_class inside curr_assigned_types_to_values
+    #       (probably with new ArgSource.MandatoryValue with highest priority).
+    #       Move to `context_control` (out of this `search_control` here):
     #       Avoid special case when only some specific arg type `ReservedArgType.EnvelopeClass` is propagated
     #       this special mechanism and the rest of arg types are propagated via FS_46_96_59_05.
     envelope_class: str = field(default_factory = lambda: None)

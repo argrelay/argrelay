@@ -29,7 +29,7 @@ class ThisTestCase(MongoClientTest):
 
         known_arg_types = [
             ServiceArgType.AccessType.name,
-            ServiceArgType.ColorTag.name,
+            ServiceArgType.LiveStatus.name,
             ServiceArgType.CodeMaturity.name,
         ]
 
@@ -45,7 +45,7 @@ class ThisTestCase(MongoClientTest):
                 "object_name": "envelope_002",
             },
             ServiceArgType.AccessType.name: "rw",
-            ServiceArgType.ColorTag.name: "red",
+            ServiceArgType.LiveStatus.name: "red",
         }
 
         envelope_003 = {
@@ -53,7 +53,7 @@ class ThisTestCase(MongoClientTest):
                 "object_name": "envelope_003",
             },
             ServiceArgType.AccessType.name: "rw",
-            ServiceArgType.ColorTag.name: "blue",
+            ServiceArgType.LiveStatus.name: "blue",
         }
 
         envelope_004 = {
@@ -61,7 +61,7 @@ class ThisTestCase(MongoClientTest):
                 "object_name": "envelope_004",
             },
             ServiceArgType.AccessType.name: "rw",
-            ServiceArgType.ColorTag.name: "red",
+            ServiceArgType.LiveStatus.name: "red",
             ServiceArgType.CodeMaturity.name: "prod",
         }
 
@@ -79,7 +79,7 @@ class ThisTestCase(MongoClientTest):
         for data_envelope in col_proxy.find(
             {
                 ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.ColorTag.name: "red",
+                ServiceArgType.LiveStatus.name: "red",
             }
         ):
             print("data_envelope: ", data_envelope)

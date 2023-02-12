@@ -120,11 +120,11 @@ class InterpContext:
         self.curr_container = self.envelope_containers[
             self.curr_container_ipos
         ]
-        self._propagate_implicit_values()
+        self._init_values()
 
-    def _propagate_implicit_values(self):
+    def _init_values(self):
         """
-        FS_46_96_59_05:
+        FS_46_96_59_05: TODO: current implementation works but not flexible - it will be changed:
         Copy arg value from prev `data_envelope` for arg types specified in `context_control` into next `arg_context`.
         """
         if self.last_found_envelope_ipos >= 0:

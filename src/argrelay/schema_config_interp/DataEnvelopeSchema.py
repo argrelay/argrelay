@@ -33,7 +33,7 @@ class DataEnvelopeSchema(Schema):
     """
     Schema for all :class:`StaticDataSchema.data_envelopes`
 
-    Note that this schema definition (unlike any many others) is not used to `Schema.dump` `dict` instances
+    Note that this schema definition (unlike many others) is not used to `Schema.dump` `dict` instances
     because `data_envelope`-s contain arbitrary top-level keys used as (search) metadata.
     Because these top-level keys are arbitrary, they cannot be defined in this schema.
     Because they are missing in the schema, they do not survive `Schema.dump`.

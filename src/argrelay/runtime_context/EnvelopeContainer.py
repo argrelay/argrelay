@@ -31,7 +31,7 @@ class EnvelopeContainer:
     All assigned args (from interpreted tokens) mapped as type:value which belong to `data_envelope`.
     """
 
-    # TODO: Part of (or not?) `args_context` (FS_62_25_92_06) to support FS_13_51_07_97:
+    # TODO: Part of (or not?) `args_context` (FS_62_25_92_06) to support FS_13_51_07_97 (single out implicit values):
     remaining_types_to_values: dict[str, list[str]] = field(default_factory = lambda: {})
     """
     All arg values per type left for suggestion given the `assigned_types_to_values`.
@@ -62,10 +62,12 @@ class EnvelopeContainer:
                         if arg_val not in val_list:
                             val_list.append(arg_val)
 
-    # See: FS_13_51_07_97:
     def populate_implicit_arg_values(self):
         """
         When `data_envelope` is singled out, all remaining `arg_type`-s become `ArgSource.ImplicitValue`.
+
+        # Implements: FS_13_51_07_97
+        # See KI_12_84_57_78: It should be fixed to work for N `data_envelope`-s with single same arg value for all.
         """
         # Filter as in: FS_31_70_49_15:
         for arg_type in self.search_control.keys_to_types_dict.values():

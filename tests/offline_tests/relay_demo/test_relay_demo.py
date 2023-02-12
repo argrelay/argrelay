@@ -38,7 +38,7 @@ class ThisTestCase(TestCase):
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)
-            .set_service_test_data_filter(test_data_filter)
+            .set_test_data_ids_to_load(test_data_filter)
         )
         with env_mock_builder.build():
             command_obj = __main__.main()
@@ -230,7 +230,7 @@ ClassService
 {TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [ImplicitValue]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}HostName: qwer-du [ImplicitValue]{TermColor.RESET.value}
 {TermColor.DARK_GREEN.value}ServiceName: s_a [ImplicitValue]{TermColor.RESET.value}
-{TermColor.DARK_GRAY.value}ColorTag: [none]{TermColor.RESET.value}
+{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
 AccessType
 {TermColor.BRIGHT_YELLOW.value}*AccessType: ?{TermColor.RESET.value} ro|rw
 """,
@@ -249,7 +249,7 @@ ClassCluster
 ClassHost
 {TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
 {TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
-{TermColor.DARK_GRAY.value}ColorTag: [none]{TermColor.RESET.value}
+{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
 AccessType
 {TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
@@ -274,7 +274,7 @@ AccessType
                     .set_command_line(command_line)
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
-                    .set_service_test_data_filter([
+                    .set_test_data_ids_to_load([
                         "TD_63_37_05_36",  # default
                     ])
                 )
@@ -419,7 +419,7 @@ AccessType
                     .set_command_line(command_line)
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
-                    .set_service_test_data_filter([
+                    .set_test_data_ids_to_load([
                         "TD_63_37_05_36",  # default
                     ])
                 )
@@ -452,7 +452,7 @@ AccessType
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.InvokeAction)
-            .set_service_test_data_filter([
+            .set_test_data_ids_to_load([
                 "TD_63_37_05_36",  # default
             ])
             .set_capture_invocator_invocation_input(ErrorInvocator)

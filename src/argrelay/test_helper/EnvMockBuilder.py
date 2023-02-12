@@ -53,29 +53,29 @@ class EnvMockBuilder:
 
     *   Mock env vars or `sys.argv` used by Bash to communicate input to argrelay client - see usage of:
 
-        *   _mock_client_input_in_completion_mode
-        *   _mock_client_input_in_invocation_mode_with_args
-        *   _mock_client_input_in_invocation_mode_with_line
+        *   `_mock_client_input_in_completion_mode`
+        *   `_mock_client_input_in_invocation_mode_with_args`
+        *   `_mock_client_input_in_invocation_mode_with_line`
 
     *   Mock server and client config files - see usage of:
 
-        *   set_server_config_dict
-        *   set_client_config_dict
+        *   `set_server_config_dict`
+        *   `set_client_config_dict`
 
     *   Capture `stdout` and `stderr` - see usage of:
 
-        *   set_capture_stdout
-        *   set_capture_stderr
+        *   `set_capture_stdout`
+        *   `set_capture_stderr`
 
     *   Whether client uses `LocalClient`/`LocalServer` or `RemoteClient` with `CustomFlaskApp` - see usage of:
 
-        *   set_client_config_with_local_server
+        *   `set_client_config_with_local_server`
 
-    *   Mock MongoDB client - see usage of: mock_mongo_client
+    *   Mock MongoDB client - see usage of: `mock_mongo_client`
 
-    *   Simple selection of test data - see usage of: set_service_test_data_filter
+    *   Simple selection of test data - see usage of: `set_test_data_ids_to_load`
 
-    *   Verifying plugin `InvocationInput` - see usage of: invocator_plugin_invoke_action_func_path
+    *   Verifying plugin `InvocationInput` - see usage of: `invocator_plugin_invoke_action_func_path`
 
     """
 
@@ -114,8 +114,7 @@ class EnvMockBuilder:
 
     assert_on_close: bool = True
 
-    # TODO: rename accordingly
-    service_test_data_filter = [
+    test_data_ids_to_load = [
         "TD_70_69_38_46",  # no data
     ]
 
@@ -205,8 +204,8 @@ class EnvMockBuilder:
         self.mock_mongo_client = mock_mongo_client
         return self
 
-    def set_service_test_data_filter(self, service_test_data_filter: list[str]):
-        self.service_test_data_filter = service_test_data_filter
+    def set_test_data_ids_to_load(self, test_data_ids_to_load: list[str]):
+        self.test_data_ids_to_load = test_data_ids_to_load
         return self
 
     def set_capture_invocator_invocation_input(self, abstract_invocator: AbstractInvocator):
@@ -267,7 +266,7 @@ class EnvMockBuilder:
             plugin_entry[plugin_config_][is_plugin_enabled_] = self.enable_demo_git_loader
 
             plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
-            plugin_entry[plugin_config_][test_data_ids_to_load_] = self.service_test_data_filter
+            plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
 
             self.file_mock.path_to_data[server_config_desc.default_file_path] = yaml.dump(self.server_config_dict)
 
