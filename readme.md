@@ -66,6 +66,20 @@ GUI-s do not have the restrictions CLI-s have:
 *   Technically, the server can handle requests for any GUI.
 *   But API-s are primarily feature-tailored to support CLI.
 
+<details>
+<summary>show example</summary>
+For example, in GUI-s, typing a query into a search bar may easily be accompanied by<br/>
+(1) a separate (from the search bar) area<br/>
+(2) with individually selectable<br/>
+(3) full-text-search results<br/>
+(4) populated in async execution.<br/>
+
+In CLI-s, `grep` does (3) full-text-search, but what about the rest (1), (2), (4)?
+
+To facilitate selection of results via auto-completion,
+catalogue-like navigation (rather than full-text-search) seems the answer.
+</details>
+
 # Syntax: origin story
 
 When an interface is limited...

@@ -1,4 +1,4 @@
-See [parent readme.md](../readme.md) for explanation of ids these docs use.
+See [parent `readme.md`](../readme.md) for explanation of ids these docs use.
 
 There are several `feature_status`-es:
 *   `TBD`: not clear yet whether useful or adequate - to be discussed.
