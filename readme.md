@@ -16,6 +16,10 @@ This requires data indexing for [responsive lookup][completion_perf_notes.md]<br
 The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
 to run a standby data server.
 
+An accidental use case is creation of sever-side catalogues of functions and their (live) data<br/>
+available for selection on client-side via auto-completion of some keywords -<br/>
+all directly from shell.
+
 # What's in a name?
 
 Eventually, `argrelay` will "relay" (hence, the name) command line arguments to<br/>
