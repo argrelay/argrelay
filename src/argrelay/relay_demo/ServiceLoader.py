@@ -27,26 +27,6 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
 from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
 from argrelay.test_helper import test_data_
 
-
-def _todo(self):
-    # TODO: this should be generic config for (ServiceArgType, value) -> assignment of implicit args in completion mode.
-    #       It is actually, when one of the envelope is singled-out.
-    #       "default vs implicit":
-    #       But setting it as implicit args means situation of searching objects contained by it.
-    #       Another situation is to continue searching envelopes outside of it - implicit args should not be used.
-    # host_name_to_args: dict[str, dict[ServiceArgType, str]]
-    self.host_name_to_args = {
-        "qwer": {
-            ServiceArgType.CodeMaturity: "dev",
-            ServiceArgType.FlowStage: "upstream",
-            ServiceArgType.GeoRegion: "amer",
-        }
-    }
-
-    # TODO: implement generic logic and config when one of the arg makes other/extra required.
-    # TODO: implement generic logic and config when one of the arg proposes values for other.
-
-
 cluster_search_control = {
     envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
     keys_to_types_list_: [

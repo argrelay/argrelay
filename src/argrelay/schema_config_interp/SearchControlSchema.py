@@ -20,7 +20,7 @@ class SearchControlSchema(Schema):
         unknown = RAISE
         strict = True
 
-    # TODO: Move to `context_control`:
+    # TODO: Move to `context_control` (see also `SearchControl`):
     #       Avoid this special case when only some specific arg type (here - `ReservedArgType.EnvelopeClass`)
     #       is propagated via this special mechanism and
     #       the rest of arg types are propagated via FS_46_96_59_05 # implicit values.

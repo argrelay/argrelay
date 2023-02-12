@@ -21,7 +21,9 @@ TODO: top todos
 
 *   Fix arg overlap test data and test cases.
 
+*   Add tests to ensure override arg works (e.g. from implicit `ro` by explicit `rw`).
+
 *   Document search logic, add test cases.
     Try to reduce number of search requests (e.g.) file it as known issue to fix.
 
-*   KI_12_84_57_78: Fix singled out args test case.
+*   KI_12_84_57_78: Fix singled out args.
