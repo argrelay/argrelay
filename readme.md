@@ -13,7 +13,8 @@ https://dstein64.github.io/gifcast/
 An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
-The original use case is to make auto-completion based on large (config) data sets.
+Original use case:<br/>
+auto-complete based on large (config) data sets.
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
@@ -21,8 +22,9 @@ This requires data indexing for [responsive lookup][completion_perf_notes.md]<br
 The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
 to run a standby data server.
 
-An accidental use case is creation of sever-side catalogues of functions and their (live) data<br/>
-available for selection on client-side via auto-completion of some keywords -<br/>
+Accidental use case:<br/>
+sever-side catalogues of both (A) functions and (B) related (live) data<br/>
+browsable via selection of auto-complete-able keywords on client-side -<br/>
 all directly from shell.
 
 # What's in a name?
