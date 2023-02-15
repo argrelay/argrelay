@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This script is NOT supposed to be run or sourced directly.
 # Instead, run `dev-shell.bash`.
@@ -46,3 +47,4 @@ set +e
 set +u
 set +v
 set +x
+

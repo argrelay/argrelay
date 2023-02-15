@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This script sets up a dev env for `pip install` deployment method (see `dev_env_and_target_env_diff.md`).
 # It does NOT configure Bash for auto-completion - for that, either/or:
@@ -37,3 +38,4 @@ function copy_artifact {
 
 copy_artifact "build-pip-env.bash"
 copy_artifact "argrelay-rc.bash"
+

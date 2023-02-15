@@ -48,8 +48,6 @@ Extra:
 
 *   Fix perf output in server-side logs.
 
-*   Add banner to re-use-able files to indicate they are copied-and-modified from (e.g. `argrelay-rc.bash`).
-
 *   Make server config composable (allow including other files).
 
 *   Think to start each arg as `ArgSource.UnassignedValue` (or at least mark it in the described arg output as this).

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This script is source-able by `~/.bashrc`:
 #     source path/to/argrelay-rc.bash
@@ -96,3 +97,4 @@ set +e
 set +u
 set +v
 set +x
+

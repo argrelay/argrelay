@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This script is not supposed to be run directly.
 # It is a common part of two deployment methods (see `dev_env_and_target_env_diff.md`):
@@ -82,3 +83,4 @@ PYTHON_CLIENT_EOF
 # Make both executable:
 chmod u+x run_argrelay_server
 chmod u+x run_argrelay_client
+
