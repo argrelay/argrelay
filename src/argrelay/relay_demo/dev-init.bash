@@ -6,9 +6,9 @@
 
 # The steps this script:
 # *   Runs `build-git-env.bash` first.
-# *   Configures Bash auto-completion for command name `relay_demo`.
+# *   Configures Bash auto-completion for command name `${ARGRELAY_CLIENT_COMMAND}`.
 #     This is what normally done to `~/.bashrc` to make Bash auto-completion permanent.
-#     However, the `relay_demo` binding is temporarily (while `dev-shell.bash` is running).
+#     However, the `${ARGRELAY_CLIENT_COMMAND}` binding is temporarily (while `dev-shell.bash` is running).
 
 # Note that enabling exit on error (like `set -e` below) will exit parent
 # `dev-shell.bash` script (as this one is sourced) - that is intentional.
@@ -37,8 +37,8 @@ source venv/relay_demo/bin/activate
 # Enable auto-completion:
 source ./argrelay-rc.bash
 
-# Show what would be done for `relay_demo` auto-completion:
-complete -p relay_demo
+# Show what would be done for auto-completion:
+complete -p "${ARGRELAY_CLIENT_COMMAND}"
 
 # Disable exit on errors and any extra debug info for interactive shell
 # (see enabling them for the duration of this script above):

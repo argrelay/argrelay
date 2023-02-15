@@ -11,7 +11,7 @@ class ThisTestCase(TestCase):
 
     # noinspection PyMethodMayBeStatic
     def test_live_relay_line_args(self):
-        test_line = "relay_demo desc repo asdf/qwer/argrelay.git |"
+        test_line = "some_command desc repo asdf/qwer/argrelay.git |"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()

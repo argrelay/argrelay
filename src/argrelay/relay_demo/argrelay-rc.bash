@@ -6,7 +6,6 @@
 # First, "copy and paste and modify" it.
 # When sourced in `~/.bashrc`, `argrelay` auto-completion for `reley_demo` command
 # becomes permanent and available immediately in any Bash instance.
-# Instead of `relay_demo` there might be `your_command`.
 # Those places requiring modification are marked with `CUSTOMIZE` keyword.
 
 # Note that enabling exit on error (like `set -e` below) will exit parent Bash shell (as this one is sourced).
@@ -23,6 +22,9 @@
 # Debug: Print commands before execution:
 #set -x
 
+# CUSTOMIZE: Use `your_command` instead of `relay_demo`:
+ARGRELAY_CLIENT_COMMAND="relay_demo"
+
 # Path to exposes commands with `PATH` evn var:
 # CUSTOMIZE: Use explicit dirname of `/path/to/somewhere` where `your_command` is instead of "automatic" `$(pwd)`.
 PATH_TO_SCRIPTS="$(pwd)"
@@ -35,18 +37,17 @@ test -f "${PATH_TO_SCRIPTS}/run_argrelay_client" || return 1
 test -f ~/".argrelay.server.yaml" || return 1
 test -f ~/".argrelay.client.json" || return 1
 
-# Add dir with `relay_demo` command into PATH to make it available in Bash as plain `basename`:
+# Add dir with `${ARGRELAY_CLIENT_COMMAND}` command into PATH to make it available in Bash as plain `basename`:
 PATH="${PATH_TO_SCRIPTS}:${PATH}"
 export PATH
 
 # When `run_argrelay_client` is executed,
 # its actual command name is sent as the first arg (args[0]) which `argrelay` framework
 # can use to look up and run any custom command line interpreter.
-# The demo is configured to expect `relay_demo` as the first arg.
-# Create `relay_demo` command (just symlink to `run_argrelay_client`):
-# CUSTOMIZE: Use `your_command` instead of `relay_demo`.
+# The demo is configured to expect `${ARGRELAY_CLIENT_COMMAND}` as the first arg.
+# Create `${ARGRELAY_CLIENT_COMMAND}` command (just symlink to `run_argrelay_client`):
 cd "${PATH_TO_SCRIPTS}" > /dev/null || return 1
-ln -snf run_argrelay_client relay_demo
+ln -snf run_argrelay_client "${ARGRELAY_CLIENT_COMMAND}"
 cd - > /dev/null || return 1
 
 # Command line auto-completion process is largely similar to parsing command line args.
@@ -54,17 +55,15 @@ cd - > /dev/null || return 1
 # (A) an action is run             (based on provided parsed arg values)
 # (B) arg values are suggested     (based on provided parsed arg values)
 # Therefore, the same `run_argrelay_client` can run both processes:
-# (A) as target command of `relay_demo` symlink (above)
-# (B) as `-C` argument to Bash `complete` to configure auto-completion for `relay_demo` (below)
-# Enable auto-completion for `relay_demo` command:
+# (A) as target command of `${ARGRELAY_CLIENT_COMMAND}` symlink (above)
+# (B) as `-C` argument to Bash `complete` to configure auto-completion for `${ARGRELAY_CLIENT_COMMAND}` (below)
+# Enable auto-completion for `${ARGRELAY_CLIENT_COMMAND}` command:
 if [[ "${BASH_VERSION}" == 5* ]]
 then
-    # CUSTOMIZE: Use `your_command` instead of `relay_demo`.
-    complete -o nosort -C run_argrelay_client relay_demo
+    complete -o nosort -C run_argrelay_client "${ARGRELAY_CLIENT_COMMAND}"
 else
     # Old Bash versions do not support `nosort` option:
-    # CUSTOMIZE: Use `your_command` instead of `relay_demo`.
-    complete           -C run_argrelay_client relay_demo
+    complete           -C run_argrelay_client "${ARGRELAY_CLIENT_COMMAND}"
 fi
 
 # Invoke completion programmatically:

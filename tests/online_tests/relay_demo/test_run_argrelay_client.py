@@ -9,7 +9,10 @@ class ThisTestCase(TestCase):
 
     @skipIf(
         not os.environ.get("ARGRELAY_DEV_SHELL", False),
-        "Only `dev-shell.bash` controllably puts `relay_demo` in `PATH` env var - skip test otherwise.",
+        """
+        Only `dev-shell.bash` controllably puts `${ARGRELAY_CLIENT_COMMAND}`into `PATH` env var.
+        Skip test otherwise.
+        """,
     )
     def test_invoke_via_shell(self):
         """
@@ -17,9 +20,10 @@ class ThisTestCase(TestCase):
         """
 
         with change_to_known_repo_path("."):
+            client_command_env_var_name = "ARGRELAY_CLIENT_COMMAND"
             # Function "desc_host" ("desc host") uses NoopInvocator, so the test should always pass
             subproc = subprocess.run(
-                "relay_demo desc host dev upstream amer ro".split(" "),
+                f"{os.environ.get(client_command_env_var_name)} desc host dev upstream amer ro".split(" "),
             )
             ret_code = subproc.returncode
             if ret_code != 0:

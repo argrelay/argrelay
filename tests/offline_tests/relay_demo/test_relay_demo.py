@@ -236,7 +236,7 @@ AccessType
 """,
             ),
             (
-                line_no(), "relay_demo goto host upstream emea|", CompType.DescribeArgs,
+                line_no(), "some_command goto host upstream emea|", CompType.DescribeArgs,
                 "",
                 f"""
 ClassFunction

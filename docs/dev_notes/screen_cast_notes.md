@@ -1,4 +1,7 @@
 
+This doc notes down steps to record screencast
+(e.g. after integrating `argrelay` with custom data source).
+
 Install `asciinema`:
 
 ```sh
