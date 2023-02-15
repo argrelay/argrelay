@@ -31,8 +31,8 @@ cd "${script_dir}" || exit 1
 # Create dev env:
 ./build-git-env.bash
 
-# Use prepared `venv/relay_demo`:
-source venv/relay_demo/bin/activate
+# Use prepared `venv/"${ARGRELAY_VENV_NAME}"`:
+source venv/"${ARGRELAY_VENV_NAME}"/bin/activate
 
 # Enable auto-completion:
 source ./argrelay-rc.bash

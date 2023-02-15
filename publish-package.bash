@@ -34,8 +34,8 @@ fi
 # Ensure any "privileges" of `dev-shell.bash` are disabled:
 unset ARGRELAY_DEV_SHELL
 
-# Use `venv/relay_demo` (if does not exists, run `build-git-env.bash`):
-source venv/relay_demo/bin/activate
+# Use `venv/"${ARGRELAY_VENV_NAME}"` (if does not exists, run `build-git-env.bash`):
+source venv/"${ARGRELAY_VENV_NAME}"/bin/activate
 
 # Update `requirements.txt` to know what was there at the time of publishing:
 cat << 'REQUIREMENTS_EOF' > ./requirements.txt

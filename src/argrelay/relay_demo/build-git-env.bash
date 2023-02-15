@@ -6,7 +6,7 @@
 # see `dev-shell.bash` instead (which calls `dev-init.bash` to do that).
 
 # The high-level steps this script performs:
-# *   Configure Python and set up `venv/relay_demo`.
+# *   Configure Python and set up `venv/"${ARGRELAY_VENV_NAME}"`.
 # *   Build `argrelay` and pip-install it in the editable mode.
 # *   Run `deploy-artifacts.bash`.
 
@@ -20,6 +20,8 @@ set -u
 #set -v
 # Debug: Print commands before execution:
 #set -x
+
+ARGRELAY_VENV_NAME="relay_demo"
 
 # Switch to dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -59,11 +61,11 @@ then
     exit 1
 fi
 
-# Prepare `venv/relay_demo` - start with python of specific version:
-"${pythonX_command}" -m venv venv/relay_demo
-source venv/relay_demo/bin/activate
+# Prepare `venv/"${ARGRELAY_VENV_NAME}"` - start with python of specific version:
+"${pythonX_command}" -m venv venv/"${ARGRELAY_VENV_NAME}"
+source venv/"${ARGRELAY_VENV_NAME}"/bin/activate
 
-# Continue with python from `venv/relay_demo`:
+# Continue with python from `venv/"${ARGRELAY_VENV_NAME}"`:
 python -m pip install --upgrade pip
 
 # Use editable install:
