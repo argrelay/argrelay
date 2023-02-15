@@ -309,14 +309,20 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
 ---
 
+**Footnotes:**
+
 [^1]:
-Attempts to find an adequate solution for sizeable data in DEC 2022 yielded no results.<br/>
-The [earlier question][earlier_stack_question] received no activity for one month</br>
-(except a silent helpful down vote).<br/>
-It was deleted by a bot because of that,<br/>
-and undelete request does not meet criteria (as it seeks recommendations).<br/>
-The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
-recommendations are still welcome there.<br/>
+Attempts to find an adequate solution for sizeable data in DEC 2022 yielded no results:<br/>
+
+*   The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
+    recommendations are still welcome there.
+
+*   The [earlier question][earlier_stack_question] received no activity for one month</br>
+    (except a silent helpful down vote).<br/>
+    It was deleted by a bot because of that,<br/>
+    and undelete request does not meet criteria<br/>
+    as it seeks recommendations (unheard of).
+
 But, with some patience, `argrelay` already worked well by FEB 2023 to be a solution on its own.
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
