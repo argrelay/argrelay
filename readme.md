@@ -13,8 +13,8 @@ https://dstein64.github.io/gifcast/
 An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
-**Original use case:**<br/>
-auto-complete based on large (config) data sets.
+**Original use case:**[^1]<br/>
+Auto-complete based on large (config) data sets.
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).</br>
@@ -26,9 +26,9 @@ The straightforward approach to meet performance requirements taken by `argrelay
 to run a standby data server.
 
 **Accidental use case:**<br/>
-sever-side catalogues of both (A) functions and (B) related (live) data<br/>
+Sever-side catalogues of both (A) functions and (B) their related (live) data<br/>
 browsable via selection of auto-complete-able keywords on client-side -<br/>
-all directly from shell.
+all directly from standard shell.
 
 # What's in a name?
 
@@ -278,14 +278,46 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
 # What's next?
 
-*   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md].
+*   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md] for permanent setup.
+
 *   Modify `ServiceLoader.py` plugin to provide data beyond [default data set][TD_63_37_05_36.default_service_data.md].
-*   Replace `ErrorInvocator.py` plugin to run something useful when use hits `Enter`.
+
+    The data can be simply hard-coded with different `test_data` tag (not `TD_63_37_05_36`) and<br/>
+    selected in `argrelay.server.yaml`:
+
+    ```diff
+        ServiceLoader:
+            plugin_module_name: argrelay.relay_demo.ServiceLoader
+            plugin_class_name: ServiceLoader
+            plugin_type: LoaderPlugin
+            plugin_config:
+                test_data_ids_to_load:
+                    #-   TD_70_69_38_46  # no data
+    -               -   TD_63_37_05_36  # default
+    +               -   TD_NN_NN_NN_NN  # custom data
+                    #-   TD_38_03_48_51  # large generated
+    ```
+
+    If hard-coding is boring, soft-code to load it from external data source.
+
+*   Replace `ErrorInvocator.py` plugin to execute something useful when use hits `Enter`.
+
 *   ...
 
-> **Note**<br/>
-> To provide domain-specific functionality, new plugins should be added or existing reconfigured.<br/>
-> This section is under construction to provide detailed dev-level docs.<br/>
+*   Once custom integration is done, make a point -<br/>
+    [record a demo screencast][screen_cast_notes.md] for your team.
+
+---
+
+[^1]:
+Attempts to find an adequate solution for sizeable data in DEC 2022 yielded no results.<br/>
+The [earlier question][earlier_stack_question] received no activity for one month</br>
+(except a silent helpful down vote).<br/>
+It was deleted by a bot because of that,<br/>
+and undelete request does not meet criteria (as it seeks recommendations).<br/>
+The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
+recommendations are still welcome there.<br/>
+But, with some patience, `argrelay` already worked well by FEB 2023 to be a solution on its own.
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
@@ -293,3 +325,6 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 [MongoDB]: https://www.mongodb.com/
 [dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
 [TD_63_37_05_36.default_service_data.md]: docs/test_data/TD_63_37_05_36.default_service_data.md
+[screen_cast_notes.md]: docs/dev_notes/screen_cast_notes.md
+[earlier_stack_question]: https://stackoverflow.com/questions/74996560/
+[later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
