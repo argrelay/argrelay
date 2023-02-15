@@ -15,6 +15,8 @@ Before `0.0.0`:
 
 *   Document search logic.
 
+*   Document integration logic.
+
 *   Add consciously written semver doc.
 
 *   Add release automation script to enforce non-dev version publishing.
@@ -25,7 +27,7 @@ Extra:
 
 *   Add named args.
 
-*   Search via different collections.
+*   Search via different collections: https://github.com/uvsmtid/argrelay/issues/10
 
 *   FS_18_64_57_18: Var args
 
@@ -57,3 +59,11 @@ Extra:
 *   FS_61_67_08_53: arbitrary text args.
 
 *   Showing help: help_title, help_details.
+
+*   Rename package `relay_demo` to (something like) `integ_demo` to be different from `relay_demo` command.
+
+*   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).
+
+*   Think of integration with `tmux` specifically, or other ways to open new shell windows in general.
+
+*   Rename "default" test data to "demo" test data.

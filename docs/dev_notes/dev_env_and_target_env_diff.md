@@ -17,5 +17,5 @@ the differences are only in the installation method:
 | `argrelay` package is in: | editable `pip`-install | regular `pip`-install           |
 
 *   For `pip install` method, see `deployment_procedure.md`.
-*   For `git clone` method, see main `readme.md`.
+*   For `git clone` method, see root `readme.md`.
 
