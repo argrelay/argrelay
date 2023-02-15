@@ -51,3 +51,11 @@ Extra:
 *   Add banner to re-use-able files to indicate they are copied-and-modified from (e.g. `argrelay-rc.bash`).
 
 *   Make server config composable (allow including other files).
+
+*   Think to start each arg as `ArgSource.UnassignedValue` (or at least mark it in the described arg output as this).
+
+*   Rename "default" data set to "demo" data set.
+
+*   FS_61_67_08_53: arbitrary text args.
+
+*   Showing help: help_title, help_details.
