@@ -7,7 +7,7 @@ class ServiceArgType(Enum):
 
     See also:
     *   `FS_53_81_66_18` (TnC) for arg types.
-    *   `TD_63_37_05_36` (default) for `test_data`.
+    *   `TD_63_37_05_36` (demo) for `test_data`.
     """
 
     # ---

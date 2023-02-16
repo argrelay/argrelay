@@ -236,7 +236,7 @@ class ServiceLoader(AbstractLoader):
 
     def populate_TD_63_37_05_36_default(self, data_envelopes: list):
         """
-        Populates TD_63_37_05_36 # default
+        Populates TD_63_37_05_36 # demo
         """
         if not self.is_test_data_allowed("TD_63_37_05_36"):
             return
@@ -244,7 +244,7 @@ class ServiceLoader(AbstractLoader):
         data_envelopes.extend([
 
             ############################################################################################################
-            # TD_63_37_05_36 # default: clusters
+            # TD_63_37_05_36 # demo: clusters
 
             {
                 envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
@@ -254,7 +254,7 @@ class ServiceLoader(AbstractLoader):
                 context_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "amer",
                 ServiceArgType.FlowStage.name: "upstream",
@@ -268,7 +268,7 @@ class ServiceLoader(AbstractLoader):
                 context_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "emea",
                 ServiceArgType.FlowStage.name: "upstream",
@@ -282,7 +282,7 @@ class ServiceLoader(AbstractLoader):
                 context_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.FlowStage.name: "upstream",
@@ -296,7 +296,7 @@ class ServiceLoader(AbstractLoader):
                 context_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "emea",
                 ServiceArgType.FlowStage.name: "downstream",
@@ -310,7 +310,7 @@ class ServiceLoader(AbstractLoader):
                 context_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.CodeMaturity.name: "qa",
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.FlowStage.name: "upstream",
@@ -324,7 +324,7 @@ class ServiceLoader(AbstractLoader):
                 context_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.CodeMaturity.name: "qa",
                 ServiceArgType.GeoRegion.name: "amer",
                 ServiceArgType.FlowStage.name: "downstream",
@@ -338,7 +338,7 @@ class ServiceLoader(AbstractLoader):
                 context_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.CodeMaturity.name: "prod",
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.FlowStage.name: "downstream",
@@ -346,13 +346,13 @@ class ServiceLoader(AbstractLoader):
             },
 
             ############################################################################################################
-            # TD_63_37_05_36 # default: hosts
+            # TD_63_37_05_36 # demo: hosts
 
             {
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-amer-upstream",
                 ServiceArgType.HostName.name: "qwer",
             },
@@ -360,7 +360,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-emea-upstream",
                 ServiceArgType.HostName.name: "asdf-du",
             },
@@ -368,7 +368,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-apac-upstream",
                 ServiceArgType.HostName.name: "zxcv-du",
             },
@@ -376,7 +376,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-emea-downstream",
                 ServiceArgType.HostName.name: "xcvb-dd",
             },
@@ -384,7 +384,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "qa-apac-upstream",
                 ServiceArgType.HostName.name: "poiu-qu",
             },
@@ -392,7 +392,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "qa-amer-downstream",
                 ServiceArgType.HostName.name: "sdfg-qd",
             },
@@ -400,7 +400,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-1",
             },
@@ -408,19 +408,19 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-2",
             },
 
             ############################################################################################################
-            # TD_63_37_05_36 # default: services
+            # TD_63_37_05_36 # demo: services
 
             {
                 envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-apac-upstream",
                 ServiceArgType.HostName.name: "zxcv-du",
                 ServiceArgType.ServiceName.name: "s_c",
@@ -429,7 +429,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-emea-upstream",
                 ServiceArgType.HostName.name: "asdf-du",
                 ServiceArgType.ServiceName.name: "s_b",
@@ -438,7 +438,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-amer-upstream",
                 ServiceArgType.HostName.name: "qwer-du",
                 ServiceArgType.ServiceName.name: "s_a",
@@ -447,7 +447,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "dev-emea-downstream",
                 ServiceArgType.HostName.name: "xcvb-dd",
                 ServiceArgType.ServiceName.name: "xx",
@@ -456,7 +456,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "qa-apac-upstream",
                 ServiceArgType.HostName.name: "poiu-qu",
                 ServiceArgType.ServiceName.name: "s_c",
@@ -465,7 +465,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-1",
                 ServiceArgType.ServiceName.name: "tt1",
@@ -474,7 +474,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
-                test_data_: "TD_63_37_05_36",  # default
+                test_data_: "TD_63_37_05_36",  # demo
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-2",
                 ServiceArgType.ServiceName.name: "tt2",

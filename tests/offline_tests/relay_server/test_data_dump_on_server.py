@@ -31,7 +31,7 @@ class ThisTestCase(TestCase):
             .set_client_config_with_local_server(False)
             # Load all data:
             .set_test_data_ids_to_load([
-                "TD_63_37_05_36"  # default
+                "TD_63_37_05_36"  # demo
             ])
         )
         with env_mock_builder.build():

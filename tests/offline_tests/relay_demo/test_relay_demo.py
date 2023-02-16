@@ -49,7 +49,7 @@ class ThisTestCase(TestCase):
 
     def test_propose_auto_comp_TD_63_37_05_36_default(self):
         """
-        Test arg values suggestion with TD_63_37_05_36 # default
+        Test arg values suggestion with TD_63_37_05_36 # demo
         """
         # @formatter:off
         test_cases = [
@@ -160,7 +160,7 @@ class ThisTestCase(TestCase):
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 self.run_completion_mode_test(
-                    ["TD_63_37_05_36"],  # default
+                    ["TD_63_37_05_36"],  # demo
                     command_line,
                     comp_type,
                     cursor_cpos,
@@ -275,7 +275,7 @@ AccessType
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
                     .set_test_data_ids_to_load([
-                        "TD_63_37_05_36",  # default
+                        "TD_63_37_05_36",  # demo
                     ])
                 )
                 with outer_env_mock_builder.build():
@@ -420,7 +420,7 @@ AccessType
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
                     .set_test_data_ids_to_load([
-                        "TD_63_37_05_36",  # default
+                        "TD_63_37_05_36",  # demo
                     ])
                 )
                 with env_mock_builder.build():
@@ -453,7 +453,7 @@ AccessType
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.InvokeAction)
             .set_test_data_ids_to_load([
-                "TD_63_37_05_36",  # default
+                "TD_63_37_05_36",  # demo
             ])
             .set_capture_invocator_invocation_input(ErrorInvocator)
         )

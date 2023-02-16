@@ -280,10 +280,10 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
 *   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md] for permanent setup.
 
-*   Modify `ServiceLoader.py` plugin to provide data beyond [default data set][TD_63_37_05_36.default_service_data.md].
+*   Modify `ServiceLoader.py` plugin to provide data beyond [demo data set][TD_63_37_05_36.demo_services_data.md].
 
-    The data can be simply hard-coded with different `test_data` tag (not `TD_63_37_05_36`) and<br/>
-    selected in `argrelay.server.yaml`:
+    The data can be simply hard-coded with different `test_data` tag<br/>
+    (other than `TD_63_37_05_36` demo) and selected in `argrelay.server.yaml`:
 
     ```diff
         ServiceLoader:
@@ -293,7 +293,7 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
             plugin_config:
                 test_data_ids_to_load:
                     #-   TD_70_69_38_46  # no data
-    -               -   TD_63_37_05_36  # default
+    -               -   TD_63_37_05_36  # demo
     +               -   TD_NN_NN_NN_NN  # custom data
                     #-   TD_38_03_48_51  # large generated
     ```
@@ -330,7 +330,7 @@ But, with some patience, `argrelay` already worked well by FEB 2023 to be a solu
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
 [MongoDB]: https://www.mongodb.com/
 [dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
-[TD_63_37_05_36.default_service_data.md]: docs/test_data/TD_63_37_05_36.default_service_data.md
+[TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md
 [screen_cast_notes.md]: docs/dev_notes/screen_cast_notes.md
 [earlier_stack_question]: https://stackoverflow.com/questions/74996560/
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/

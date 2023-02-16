@@ -45,7 +45,7 @@ class ThisTestCase(TestCase):
                 None,
             ),
             (
-                line_no(), "default test data: expanded (realistic) sample",
+                line_no(), "demo test data: expanded (realistic) sample",
                 load_custom_integ_server_config_dict()[static_data_],
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
