@@ -3,6 +3,8 @@ from __future__ import annotations
 from unittest import TestCase, skip
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
@@ -10,8 +12,6 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.relay_client import __main__
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
-from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
@@ -461,8 +461,10 @@ AccessType
             __main__.main()
             print(EnvMockBuilder.invocation_input)
             invocation_input = EnvMockBuilder.invocation_input
-            self.assertEqual(ServiceEnvelopeClass.ClassService.name, invocation_input.data_envelopes[2][envelope_class_])
-            self.assertEqual("prod-apac-downstream", invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name])
+            self.assertEqual(ServiceEnvelopeClass.ClassService.name,
+                             invocation_input.data_envelopes[2][envelope_class_])
+            self.assertEqual("prod-apac-downstream",
+                             invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name])
             self.assertEqual("wert-pd-1", invocation_input.data_envelopes[2][ServiceArgType.HostName.name])
             self.assertEqual("tt1", invocation_input.data_envelopes[2][ServiceArgType.ServiceName.name])
             self.assertTrue(True)

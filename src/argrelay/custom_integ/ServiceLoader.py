@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.misc_helper import eprint
-from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
-from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
-from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServiceLoaderConfigSchema import (
     service_loader_config_desc,
     test_data_ids_to_load_,
 )
+from argrelay.enum_desc.GlobalArgType import GlobalArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.misc_helper import eprint
+from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
+from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
+from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,

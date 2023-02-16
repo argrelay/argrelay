@@ -1,8 +1,8 @@
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
 from env_tests.MongoClientTest import MongoClientTest
 

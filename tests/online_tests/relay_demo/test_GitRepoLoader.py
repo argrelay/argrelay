@@ -4,11 +4,11 @@ import tempfile
 from unittest import TestCase
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.misc_helper import eprint
-from argrelay.relay_client import __main__
 from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import base_path_, is_plugin_enabled_
+from argrelay.misc_helper import eprint
+from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_dict_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper import line_no
