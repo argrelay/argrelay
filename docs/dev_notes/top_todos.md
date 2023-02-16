@@ -6,6 +6,7 @@ Integration:
 *   List data = function with multiple envelopes
 
 *   Get help metadata
+    Showing help: help_title, help_details.
 
 *   Live status
 
@@ -65,8 +66,6 @@ Extra:
 *   Rename "default" data set to "demo" data set.
 
 *   FS_61_67_08_53: arbitrary text args.
-
-*   Showing help: help_title, help_details.
 
 *   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).
 

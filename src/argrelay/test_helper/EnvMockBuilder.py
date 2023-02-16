@@ -20,16 +20,16 @@ import pkg_resources
 import yaml
 
 import argrelay
+from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
+from argrelay.custom_integ.GitRepoLoaderConfigSchema import is_plugin_enabled_
+from argrelay.custom_integ.ServiceLoader import ServiceLoader
+from argrelay.custom_integ.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
-from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
-from argrelay.custom_integ.GitRepoLoaderConfigSchema import is_plugin_enabled_
-from argrelay.custom_integ.ServiceLoader import ServiceLoader
-from argrelay.custom_integ.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc

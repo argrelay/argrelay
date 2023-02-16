@@ -4,6 +4,14 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
 
+mongo_id_ = "_id"
+"""
+Field used by Mongo DB to uniquely identify every object inside a collection.
+If not provided, it is auto-generated as `bson.objectid.ObjectId`.
+Note that it is not serializable by `Schema.dump` and must be excluded.
+for `argrelay`, if unique id is required, `envelope_id_` must be used (which is copied to `_id` on load).
+"""
+
 envelope_id_ = "envelope_id"
 """
 Not required (yet) field within `envelope_metadata` with unique id for `data_envelope`.
@@ -28,6 +36,7 @@ Data `argrelay` does not inspect.
 """
 
 context_control_ = "context_control"
+
 
 class DataEnvelopeSchema(Schema):
     """
