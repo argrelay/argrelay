@@ -2,8 +2,9 @@ from marshmallow import Schema, RAISE, fields, post_load, pre_dump
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
-from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
+from argrelay.schema_response.FilteredDict import FilteredDict
 
 invocator_plugin_entry_ = "invocator_plugin_entry"
 data_envelopes_ = "data_envelopes"
@@ -21,7 +22,9 @@ class InvocationInputSchema(Schema):
     )
 
     data_envelopes = fields.List(
-        fields.Dict(),
+        FilteredDict(
+            filtered_keys = [mongo_id_]
+        ),
         required = True,
     )
 

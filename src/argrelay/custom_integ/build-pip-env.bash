@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This script sets up a dev env for `pip install` deployment method (see `dev_env_and_target_env_diff.md`).
 # It does NOT configure Bash for auto-completion - for that, either/or:
@@ -25,15 +26,16 @@ PYTHON_GET_MODULE_PATH_EOF
 )" )"
 
 # Run common part for "git" and "pip" deployment modes:
-"${argrelay_path}"/relay_demo/deploy-artifacts.bash "pip"
+"${argrelay_path}"/custom_integ/deploy-artifacts.bash "pip"
 
 function copy_artifact {
     artifact_basename="${1}"
     if [[ ! -f "${artifact_basename}" ]]
     then
-        cp -p "${argrelay_path}/relay_demo/${artifact_basename}" "${artifact_basename}"
+        cp -p "${argrelay_path}/custom_integ/${artifact_basename}" "${artifact_basename}"
     fi
 }
 
 copy_artifact "build-pip-env.bash"
 copy_artifact "argrelay-rc.bash"
+

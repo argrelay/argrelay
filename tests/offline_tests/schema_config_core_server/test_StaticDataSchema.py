@@ -11,7 +11,7 @@ from argrelay.schema_config_core_server.StaticDataSchema import (
     data_envelopes_,
 )
 from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import load_relay_demo_server_config_dict
+from argrelay.test_helper.EnvMockBuilder import load_custom_integ_server_config_dict
 
 
 class ThisTestCase(TestCase):
@@ -45,8 +45,8 @@ class ThisTestCase(TestCase):
                 None,
             ),
             (
-                line_no(), "default test data: expanded (realistic) sample",
-                load_relay_demo_server_config_dict()[static_data_],
+                line_no(), "demo test data: expanded (realistic) sample",
+                load_custom_integ_server_config_dict()[static_data_],
                 {
                     first_interp_factory_id_: "FirstArgInterpFactory",
                 },

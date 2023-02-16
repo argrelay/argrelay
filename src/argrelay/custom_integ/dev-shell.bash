@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This is just a wrapper to start a new shell with special config and stay in that shell.
 
@@ -24,3 +25,4 @@ export ARGRELAY_DEV_SHELL
 # The new shell executes `dev-init.bash` script interactively as its init file:
 # https://serverfault.com/questions/368054
 bash --init-file <(echo "source ~/.bashrc && source ./dev-init.bash")
+

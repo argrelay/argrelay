@@ -3,22 +3,31 @@ Project status: working prototype
 
 [![asciicast](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL.svg)](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL)
 
+<!--
+See: docs/dev_notes/screen_cast_notes.md
+-->
+
 # What's this?
 
 An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
-The original use case is to make auto-completion based on large (config) data sets.
+**Original use case:**[^1]<br/>
+Auto-complete based on large (config) data sets.
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
 
 The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
 to run a standby data server.
+> For example, with several thousands of service instances,<br/>
+> even if someone manages to generate Bash completion config,<br/>
+> it takes considerable time to load it for every shell instance.
 
-An accidental use case is creation of sever-side catalogues of functions and their (live) data<br/>
-available for selection on client-side via auto-completion of some keywords -<br/>
-all directly from shell.
+**Accidental use case:**<br/>
+Sever-side catalogues of functions on related (live) data<br/>
+select-able by auto-complete-able keywords on client-side -<br/>
+**directly from standard shell**.
 
 # What's in a name?
 
@@ -268,18 +277,59 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
 # What's next?
 
-*   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md].
-*   Modify `ServiceLoader.py` plugin to provide data beyond [default data set][TD_63_37_05_36.default_service_data.md].
-*   Replace `ErrorInvocator.py` plugin to run something useful when use hits `Enter`.
+*   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md] for permanent setup.
+
+*   Modify `ServiceLoader.py` plugin to provide data beyond [demo data set][TD_63_37_05_36.demo_services_data.md].
+
+    The data can be simply hard-coded with different `test_data` tag<br/>
+    (other than `TD_63_37_05_36` demo) and selected in `argrelay.server.yaml`:
+
+    ```diff
+        ServiceLoader:
+            plugin_module_name: argrelay.custom_integ.ServiceLoader
+            plugin_class_name: ServiceLoader
+            plugin_type: LoaderPlugin
+            plugin_config:
+                test_data_ids_to_load:
+                    #-   TD_70_69_38_46  # no data
+    -               -   TD_63_37_05_36  # demo
+    +               -   TD_NN_NN_NN_NN  # custom data
+                    #-   TD_38_03_48_51  # large generated
+    ```
+
+    If hard-coding is boring, soft-code to load it from external data source.
+
+*   Replace `ErrorInvocator.py` plugin to execute something useful when use hits `Enter`.
+
 *   ...
 
-> **Note**<br/>
-> To provide domain-specific functionality, new plugins should be added or existing reconfigured.<br/>
-> This section is under construction to provide detailed dev-level docs.<br/>
+*   Once custom integration is done, make a point -<br/>
+    [record a demo screencast][screen_cast_notes.md] for your team.
+
+---
+
+**Footnotes:**
+
+[^1]:
+*   DEC 2022: Attempts to find an adequate solution for sizeable data yielded no results.
+
+*   JAN 2023: The [earlier question][earlier_stack_question] received zero activity for a month</br>
+    (now auto-deleted by a [SO][SO] bot for a silent helpful down vote there).<br/>
+    _"It inspires frequent recommendations"_ (one could only wish for) -<br/>
+    with that undelete request to community was shut down in flames.
+
+*   FEB 2023: The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
+    any recommendations are still very welcome there.
+
+*   But, with some patience, `argrelay` already worked to be a solution on its own.
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
 [MongoDB]: https://www.mongodb.com/
 [dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
-[TD_63_37_05_36.default_service_data.md]: docs/test_data/TD_63_37_05_36.default_service_data.md
+[TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md
+[screen_cast_notes.md]: docs/dev_notes/screen_cast_notes.md
+[earlier_stack_question]: https://stackoverflow.com/questions/74996560/
+[later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
+[SO]: https://stackoverflow.com/

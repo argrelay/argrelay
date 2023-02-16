@@ -16,7 +16,7 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev18",
+    version = "0.0.0.dev20",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Bash Tab-completion (data) server",
@@ -57,14 +57,14 @@ setuptools.setup(
     },
     package_data = {
         "argrelay": [
-            "relay_demo/argrelay.server.yaml",
-            "relay_demo/argrelay.client.json",
-            "relay_demo/build-git-env.bash",
-            "relay_demo/build-pip-env.bash",
-            "relay_demo/deploy-artifacts.bash",
-            "relay_demo/dev-init.bash",
-            "relay_demo/dev-shell.bash",
-            "relay_demo/argrelay-rc.bash",
+            "custom_integ/argrelay.server.yaml",
+            "custom_integ/argrelay.client.json",
+            "custom_integ/build-git-env.bash",
+            "custom_integ/build-pip-env.bash",
+            "custom_integ/deploy-artifacts.bash",
+            "custom_integ/dev-init.bash",
+            "custom_integ/dev-shell.bash",
+            "custom_integ/argrelay-rc.bash",
         ],
     },
     include_package_data = True,

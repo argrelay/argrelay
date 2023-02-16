@@ -3,6 +3,7 @@ from pymongo.database import Database
 
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import mongo_id_
 from env_tests.MongoClientTest import MongoClientTest
 
 
@@ -29,7 +30,7 @@ class ThisTestCase(MongoClientTest):
         self.remove_all_envelopes(col_proxy)
 
         envelope_1 = {
-            "_id": "U1IT00001",
+            mongo_id_: "U1IT00001",
             "envelope_name": "Blender",
             "max_discount": "10%",
             "batch_number": "RR450020FRG",
@@ -38,7 +39,7 @@ class ThisTestCase(MongoClientTest):
         }
 
         envelope_2 = {
-            "_id": "U1IT00002",
+            mongo_id_: "U1IT00002",
             "envelope_name": "Egg",
             "category": "food",
             "quantity": 12,

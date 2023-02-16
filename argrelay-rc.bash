@@ -1,1 +1,1 @@
-src/argrelay/relay_demo/argrelay-rc.bash
+./src/argrelay/custom_integ/argrelay-rc.bash

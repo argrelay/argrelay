@@ -23,7 +23,7 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
     EnvMockBuilder,
-    load_relay_demo_server_config_dict,
+    load_custom_integ_server_config_dict,
 )
 
 
@@ -43,7 +43,7 @@ class ThisTestCase(TestCase):
             # Compose same plugin id (as below):
             plugin_id = NamedNoopInterpFactory.__name__ + "." + first_command_name
             first_arg_vals_to_next_interp_factory_ids[first_command_name] = plugin_id
-        server_config_dict = load_relay_demo_server_config_dict()
+        server_config_dict = load_custom_integ_server_config_dict()
         plugin_entry = server_config_dict[plugin_dict_][FirstArgInterpFactory.__name__]
         plugin_entry[plugin_config_] = {
             first_arg_vals_to_next_interp_factory_ids_: first_arg_vals_to_next_interp_factory_ids,

@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
+# `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This script sets up a dev env for `git clone` deployment method (see `dev_env_and_target_env_diff.md`).
 # It does NOT configure Bash for auto-completion - for that,
 # see `dev-shell.bash` instead (which calls `dev-init.bash` to do that).
 
 # The high-level steps this script performs:
-# *   Configure Python and set up `venv/relay_demo`.
+# *   Configure Python and set up `venv/"${ARGRELAY_VENV_NAME}"`.
 # *   Build `argrelay` and pip-install it in the editable mode.
 # *   Run `deploy-artifacts.bash`.
 
@@ -20,12 +21,14 @@ set -u
 # Debug: Print commands before execution:
 #set -x
 
+ARGRELAY_VENV_NAME="relay_demo"
+
 # Switch to dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${script_dir}" || exit 1
 
 # Ensure it is the right dir:
-test -f "$(pwd)/src/argrelay/relay_demo/deploy-artifacts.bash"
+test -f "$(pwd)/src/argrelay/custom_integ/deploy-artifacts.bash"
 
 if [[ ! -f "./python-conf.bash" ]]
 then
@@ -58,11 +61,11 @@ then
     exit 1
 fi
 
-# Prepare `venv/relay_demo` - start with python of specific version:
-"${pythonX_command}" -m venv venv/relay_demo
-source venv/relay_demo/bin/activate
+# Prepare `venv/"${ARGRELAY_VENV_NAME}"` - start with python of specific version:
+"${pythonX_command}" -m venv venv/"${ARGRELAY_VENV_NAME}"
+source venv/"${ARGRELAY_VENV_NAME}"/bin/activate
 
-# Continue with python from `venv/relay_demo`:
+# Continue with python from `venv/"${ARGRELAY_VENV_NAME}"`:
 python -m pip install --upgrade pip
 
 # Use editable install:
@@ -87,4 +90,5 @@ PYTHON_GET_MODULE_PATH_EOF
 )" )"
 
 # Run common part for "git" and "pip" deployment modes:
-"${argrelay_path}"/relay_demo/deploy-artifacts.bash "git"
+"${argrelay_path}"/custom_integ/deploy-artifacts.bash "git"
+

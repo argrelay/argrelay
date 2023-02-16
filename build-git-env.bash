@@ -1,1 +1,1 @@
-src/argrelay/relay_demo/build-git-env.bash
+src/argrelay/custom_integ/build-git-env.bash

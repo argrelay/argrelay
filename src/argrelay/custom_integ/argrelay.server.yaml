@@ -42,7 +42,7 @@ plugin_dict:
                 some_command: DemoInterpFactory
 
     DemoInterpFactory:
-        plugin_module_name: argrelay.relay_demo.DemoInterpFactory
+        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
         plugin_class_name: DemoInterpFactory
         plugin_type: InterpFactoryPlugin
         plugin_config:
@@ -59,17 +59,17 @@ plugin_dict:
         plugin_config: { }
 
     ServiceLoader:
-        plugin_module_name: argrelay.relay_demo.ServiceLoader
+        plugin_module_name: argrelay.custom_integ.ServiceLoader
         plugin_class_name: ServiceLoader
         plugin_type: LoaderPlugin
         plugin_config:
             test_data_ids_to_load:
                 #-   TD_70_69_38_46  # no data
-                -   TD_63_37_05_36  # default
+                -   TD_63_37_05_36  # demo
                 #-   TD_38_03_48_51  # large generated
 
     GitRepoLoader:
-        plugin_module_name: argrelay.relay_demo.GitRepoLoader
+        plugin_module_name: argrelay.custom_integ.GitRepoLoader
         plugin_class_name: GitRepoLoader
         plugin_type: LoaderPlugin
         plugin_config:
@@ -83,7 +83,7 @@ plugin_dict:
         plugin_config: { }
 
     GitRepoInvocator:
-        plugin_module_name: argrelay.relay_demo.GitRepoInvocator
+        plugin_module_name: argrelay.custom_integ.GitRepoInvocator
         plugin_class_name: GitRepoInvocator
         plugin_type: InvocatorPlugin
         plugin_config: { }

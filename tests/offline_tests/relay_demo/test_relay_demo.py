@@ -3,6 +3,8 @@ from __future__ import annotations
 from unittest import TestCase, skip
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
@@ -10,8 +12,6 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.relay_client import __main__
-from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
@@ -49,7 +49,7 @@ class ThisTestCase(TestCase):
 
     def test_propose_auto_comp_TD_63_37_05_36_default(self):
         """
-        Test arg values suggestion with TD_63_37_05_36 # default
+        Test arg values suggestion with TD_63_37_05_36 # demo
         """
         # @formatter:off
         test_cases = [
@@ -160,7 +160,7 @@ class ThisTestCase(TestCase):
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 self.run_completion_mode_test(
-                    ["TD_63_37_05_36"],  # default
+                    ["TD_63_37_05_36"],  # demo
                     command_line,
                     comp_type,
                     cursor_cpos,
@@ -236,7 +236,7 @@ AccessType
 """,
             ),
             (
-                line_no(), "relay_demo goto host upstream emea|", CompType.DescribeArgs,
+                line_no(), "some_command goto host upstream emea|", CompType.DescribeArgs,
                 "",
                 f"""
 ClassFunction
@@ -275,7 +275,7 @@ AccessType
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
                     .set_test_data_ids_to_load([
-                        "TD_63_37_05_36",  # default
+                        "TD_63_37_05_36",  # demo
                     ])
                 )
                 with outer_env_mock_builder.build():
@@ -420,7 +420,7 @@ AccessType
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
                     .set_test_data_ids_to_load([
-                        "TD_63_37_05_36",  # default
+                        "TD_63_37_05_36",  # demo
                     ])
                 )
                 with env_mock_builder.build():
@@ -453,7 +453,7 @@ AccessType
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.InvokeAction)
             .set_test_data_ids_to_load([
-                "TD_63_37_05_36",  # default
+                "TD_63_37_05_36",  # demo
             ])
             .set_capture_invocator_invocation_input(ErrorInvocator)
         )
@@ -461,8 +461,10 @@ AccessType
             __main__.main()
             print(EnvMockBuilder.invocation_input)
             invocation_input = EnvMockBuilder.invocation_input
-            self.assertEqual(ServiceEnvelopeClass.ClassService.name, invocation_input.data_envelopes[2][envelope_class_])
-            self.assertEqual("prod-apac-downstream", invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name])
+            self.assertEqual(ServiceEnvelopeClass.ClassService.name,
+                             invocation_input.data_envelopes[2][envelope_class_])
+            self.assertEqual("prod-apac-downstream",
+                             invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name])
             self.assertEqual("wert-pd-1", invocation_input.data_envelopes[2][ServiceArgType.HostName.name])
             self.assertEqual("tt1", invocation_input.data_envelopes[2][ServiceArgType.ServiceName.name])
             self.assertTrue(True)

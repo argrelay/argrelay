@@ -12,7 +12,7 @@ from argrelay.mongo_data.MongoConfig import MongoConfig
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, data_envelope_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, data_envelope_desc, mongo_id_
 
 
 def get_mongo_client(mongo_config: MongoConfig):
@@ -41,7 +41,7 @@ def store_envelopes(mongo_db: Database, static_data: StaticData):
         envelope_to_store = deepcopy(data_envelope)
         data_envelope_desc.validate_dict(envelope_to_store)
         if envelope_id_ in envelope_to_store:
-            envelope_to_store["_id"] = data_envelope[envelope_id_]
+            envelope_to_store[mongo_id_] = data_envelope[envelope_id_]
         col_proxy.insert_one(envelope_to_store)
 
 

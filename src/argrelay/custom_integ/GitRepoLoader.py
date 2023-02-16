@@ -5,14 +5,14 @@ import subprocess
 
 from git import Repo
 
+from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay.custom_integ.GitRepoInvocator import GitRepoInvocator
+from argrelay.custom_integ.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_plugin_enabled_
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
-from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
-from argrelay.relay_demo.GitRepoEnvelopeClass import GitRepoEnvelopeClass
-from argrelay.relay_demo.GitRepoInvocator import GitRepoInvocator
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_plugin_enabled_
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,

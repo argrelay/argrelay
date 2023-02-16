@@ -20,16 +20,16 @@ import pkg_resources
 import yaml
 
 import argrelay
+from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
+from argrelay.custom_integ.GitRepoLoaderConfigSchema import is_plugin_enabled_
+from argrelay.custom_integ.ServiceLoader import ServiceLoader
+from argrelay.custom_integ.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
-from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_plugin_enabled_
-from argrelay.relay_demo.ServiceLoader import ServiceLoader
-from argrelay.relay_demo.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
@@ -95,11 +95,11 @@ class EnvMockBuilder:
 
     file_mock: OpenFileMock = OpenFileMock({})
 
-    client_config_dict: dict = field(default_factory = lambda: load_relay_demo_client_config_dict())
+    client_config_dict: dict = field(default_factory = lambda: load_custom_integ_client_config_dict())
     mock_client_config_file_read: bool = True
     is_client_config_with_local_server: bool = True
 
-    server_config_dict: dict = field(default_factory = lambda: load_relay_demo_server_config_dict())
+    server_config_dict: dict = field(default_factory = lambda: load_custom_integ_server_config_dict())
     mock_server_config_file_read: bool = True
     is_server_config_with_mongo_start: bool = False
     enable_demo_git_loader: bool = False
@@ -411,15 +411,15 @@ def capture_invocation_input(invocation_input: InvocationInput):
     EnvMockBuilder.invocation_input = dataclasses.replace(invocation_input)
 
 
-def load_relay_demo_server_config_dict() -> dict:
-    test_server_config_path = _get_resource_path("relay_demo/argrelay.server.yaml")
+def load_custom_integ_server_config_dict() -> dict:
+    test_server_config_path = _get_resource_path("custom_integ/argrelay.server.yaml")
     with open(test_server_config_path) as f:
         server_config_dict = yaml.safe_load(f)
     return server_config_dict
 
 
-def load_relay_demo_client_config_dict() -> dict:
-    test_client_config_path = _get_resource_path("relay_demo/argrelay.client.json")
+def load_custom_integ_client_config_dict() -> dict:
+    test_client_config_path = _get_resource_path("custom_integ/argrelay.client.json")
     with open(test_client_config_path) as f:
         client_config_dict = json.load(f)
     return client_config_dict

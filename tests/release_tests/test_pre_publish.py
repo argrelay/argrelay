@@ -6,9 +6,9 @@ For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
 import os
 from unittest import TestCase, skipIf
 
-from argrelay.relay_demo import GitRepoLoader as GitRepoLoader_module
-from argrelay.relay_demo.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import is_plugin_enabled_
+from argrelay.custom_integ import GitRepoLoader as GitRepoLoader_module
+from argrelay.custom_integ.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
+from argrelay.custom_integ.GitRepoLoaderConfigSchema import is_plugin_enabled_
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
@@ -25,8 +25,8 @@ class ThisTestCase(TestCase):
         """
 
         # Still use mock because config data for the mock is loaded from source files:
-        # * `load_relay_demo_server_config_dict`
-        # * `load_relay_demo_client_config_dict`
+        # * `load_custom_integ_server_config_dict`
+        # * `load_custom_integ_client_config_dict`
         env_mock_builder = (
             EnvMockBuilder()
             # TODO: have pre-configured mocks: with client, without client, any other variants?

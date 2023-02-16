@@ -1,7 +1,6 @@
+from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.RunMode import RunMode
-
-from argrelay.relay_demo.ServiceArgType import ServiceArgType
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data import StaticData
 from argrelay.runtime_data.AssignedValue import AssignedValue

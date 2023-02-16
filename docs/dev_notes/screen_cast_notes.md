@@ -1,5 +1,8 @@
 
-Install `asciinema`:
+This doc notes down steps to record screencast
+(e.g. after integrating `argrelay` with custom data source).
+
+Install [`asciinema`][asciinema]:
 
 ```sh
 sudo dnf install asciinema
@@ -25,3 +28,8 @@ Start recording:
 ```sh
 asciinema rec --stdin
 ```
+
+[Generate GIF][generate_GIF], if necessary.
+
+[asciinema]: https://github.com/asciinema/asciinema
+[generate_GIF]: https://dstein64.github.io/gifcast/

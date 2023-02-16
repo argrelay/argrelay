@@ -27,16 +27,16 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
     EnvMockBuilder,
-    load_relay_demo_server_config_dict,
-    load_relay_demo_client_config_dict,
+    load_custom_integ_server_config_dict,
+    load_custom_integ_client_config_dict,
 )
 
 
 class ThisTestCase(TestCase):
 
     def test_validate_function_envelopes_unambiguously_qualified(self):
-        client_config_dict = load_relay_demo_client_config_dict()
-        server_config_dict = load_relay_demo_server_config_dict()
+        client_config_dict = load_custom_integ_client_config_dict()
+        server_config_dict = load_custom_integ_server_config_dict()
         data_envelopes = server_config_dict[static_data_][data_envelopes_]
 
         (command_line, cursor_cpos) = parse_line_and_cpos("some_command |")

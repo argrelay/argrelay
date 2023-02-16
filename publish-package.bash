@@ -20,6 +20,8 @@ set -u
 # Debug: Print commands before execution:
 #set -x
 
+ARGRELAY_VENV_NAME="relay_demo"
+
 # Switch to dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${script_dir}" || exit 1
@@ -34,8 +36,8 @@ fi
 # Ensure any "privileges" of `dev-shell.bash` are disabled:
 unset ARGRELAY_DEV_SHELL
 
-# Use `venv/relay_demo` (if does not exists, run `build-git-env.bash`):
-source venv/relay_demo/bin/activate
+# Use `venv/"${ARGRELAY_VENV_NAME}"` (if does not exists, run `build-git-env.bash`):
+source venv/"${ARGRELAY_VENV_NAME}"/bin/activate
 
 # Update `requirements.txt` to know what was there at the time of publishing:
 cat << 'REQUIREMENTS_EOF' > ./requirements.txt
@@ -73,3 +75,4 @@ python setup.py sdist
 pip install twine
 # This will prompt for login credentials:
 twine upload dist/*
+

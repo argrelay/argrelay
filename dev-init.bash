@@ -1,1 +1,1 @@
-src/argrelay/relay_demo/dev-init.bash
+src/argrelay/custom_integ/dev-init.bash

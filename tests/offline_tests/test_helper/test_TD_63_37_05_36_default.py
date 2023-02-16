@@ -4,8 +4,8 @@ from unittest import TestCase
 
 import pandas as pd
 
-from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
@@ -16,13 +16,13 @@ from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 class ThisTestCase(TestCase):
     """
-    Verify TD_63_37_05_36 # default
+    Verify TD_63_37_05_36 # demo
     """
 
     def test_match_data_with_docs(self):
         """
         Matches data with its description in the table - see:
-        TD_63_37_05_36.default_service_data.md
+        TD_63_37_05_36.demo_services_data.md
 
         This data is relatively large - this test ensures it maintains required properties.
 
@@ -33,7 +33,7 @@ class ThisTestCase(TestCase):
             # Filter out only table lines from Markdown file:
             table_regex = re.compile("^\|")
             test_data = ""
-            with open("../docs/test_data/TD_63_37_05_36.default_service_data.md") as md_file:
+            with open("../docs/test_data/TD_63_37_05_36.demo_services_data.md") as md_file:
                 for file_line in md_file:
                     if table_regex.match(file_line):
                         test_data += file_line
@@ -68,7 +68,7 @@ class ThisTestCase(TestCase):
             .set_mock_client_config_file_read(False)
             .set_client_config_with_local_server(False)
             .set_test_data_ids_to_load([
-                "TD_63_37_05_36",  # default
+                "TD_63_37_05_36",  # demo
             ])
         )
         with env_mock_builder.build():
@@ -102,7 +102,7 @@ class ThisTestCase(TestCase):
                     is_host = service_name == ""
 
                     query_dict = {
-                        test_data_: "TD_63_37_05_36",  # default
+                        test_data_: "TD_63_37_05_36",  # demo
                         ServiceArgType.CodeMaturity.name: code_maturity,
                         ServiceArgType.GeoRegion.name: geo_region,
                         ServiceArgType.FlowStage.name: flow_stage,
