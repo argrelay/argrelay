@@ -312,18 +312,17 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 **Footnotes:**
 
 [^1]:
-Attempts to find an adequate solution for sizeable data in DEC 2022 yielded no results:<br/>
+*   DEC 2022: Attempts to find an adequate solution for sizeable data yielded no results.
 
-*   The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
-    recommendations are still welcome there.
+*   JAN 2023: The [earlier question][earlier_stack_question] received zero activity for a month</br>
+    (now auto-deleted by a [SO][SO] bot for a silent helpful down vote there).<br/>
+    _"It inspires frequent recommendations"_ (one could only wish for) -<br/>
+    with that undelete request to community was shut down in flames.
 
-*   The [earlier question][earlier_stack_question] received no activity for one month</br>
-    (except a silent helpful down vote).<br/>
-    It was deleted by a bot because of that,<br/>
-    and undelete request does not meet criteria<br/>
-    as it seeks recommendations (unheard of).
+*   FEB 2023: The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
+    any recommendations are still very welcome there.
 
-But, with some patience, `argrelay` already worked well by FEB 2023 to be a solution on its own.
+*   But, with some patience, `argrelay` already works to be a solution on its own.
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
@@ -334,3 +333,4 @@ But, with some patience, `argrelay` already worked well by FEB 2023 to be a solu
 [screen_cast_notes.md]: docs/dev_notes/screen_cast_notes.md
 [earlier_stack_question]: https://stackoverflow.com/questions/74996560/
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
+[SO]: https://stackoverflow.com/
