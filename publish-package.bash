@@ -20,6 +20,8 @@ set -u
 # Debug: Print commands before execution:
 #set -x
 
+ARGRELAY_VENV_NAME="relay_demo"
+
 # Switch to dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${script_dir}" || exit 1
