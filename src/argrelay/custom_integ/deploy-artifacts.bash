@@ -47,17 +47,17 @@ PYTHON_GET_MODULE_PATH_EOF
 )" )"
 
 # Test files to ensure it is the right place:
-test -f "${argrelay_path}/relay_demo/argrelay.server.yaml"
-test -f "${argrelay_path}/relay_demo/argrelay.client.json"
+test -f "${argrelay_path}/custom_integ/argrelay.server.yaml"
+test -f "${argrelay_path}/custom_integ/argrelay.client.json"
 
 # Deploy sample config server and client files as user dot files:
 if [[ ! -f ~/".argrelay.server.yaml" ]]
 then
-    eval "${deployment_command}" "${argrelay_path}/relay_demo/argrelay.server.yaml" ~/".argrelay.server.yaml"
+    eval "${deployment_command}" "${argrelay_path}/custom_integ/argrelay.server.yaml" ~/".argrelay.server.yaml"
 fi
 if [[ ! -f ~/".argrelay.client.json" ]]
 then
-    eval "${deployment_command}" "${argrelay_path}/relay_demo/argrelay.client.json" ~/".argrelay.client.json"
+    eval "${deployment_command}" "${argrelay_path}/custom_integ/argrelay.client.json" ~/".argrelay.client.json"
 fi
 
 # Generate `run_argrelay_server`:

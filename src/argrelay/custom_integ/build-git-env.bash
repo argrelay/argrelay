@@ -28,7 +28,7 @@ script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "${script_dir}" || exit 1
 
 # Ensure it is the right dir:
-test -f "$(pwd)/src/argrelay/relay_demo/deploy-artifacts.bash"
+test -f "$(pwd)/src/argrelay/custom_integ/deploy-artifacts.bash"
 
 if [[ ! -f "./python-conf.bash" ]]
 then
@@ -90,5 +90,5 @@ PYTHON_GET_MODULE_PATH_EOF
 )" )"
 
 # Run common part for "git" and "pip" deployment modes:
-"${argrelay_path}"/relay_demo/deploy-artifacts.bash "git"
+"${argrelay_path}"/custom_integ/deploy-artifacts.bash "git"
 

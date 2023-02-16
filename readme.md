@@ -287,7 +287,7 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
     ```diff
         ServiceLoader:
-            plugin_module_name: argrelay.relay_demo.ServiceLoader
+            plugin_module_name: argrelay.custom_integ.ServiceLoader
             plugin_class_name: ServiceLoader
             plugin_type: LoaderPlugin
             plugin_config:

@@ -1,6 +1,6 @@
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.relay_demo.DemoInterp import DemoInterp
-from argrelay.relay_demo.DemoInterpConfigSchema import demo_interp_config_desc
+from argrelay.custom_integ.DemoInterp import DemoInterp
+from argrelay.custom_integ.DemoInterpConfigSchema import demo_interp_config_desc
 from argrelay.runtime_context.InterpContext import InterpContext
 
 

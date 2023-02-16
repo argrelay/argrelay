@@ -26,13 +26,13 @@ PYTHON_GET_MODULE_PATH_EOF
 )" )"
 
 # Run common part for "git" and "pip" deployment modes:
-"${argrelay_path}"/relay_demo/deploy-artifacts.bash "pip"
+"${argrelay_path}"/custom_integ/deploy-artifacts.bash "pip"
 
 function copy_artifact {
     artifact_basename="${1}"
     if [[ ! -f "${artifact_basename}" ]]
     then
-        cp -p "${argrelay_path}/relay_demo/${artifact_basename}" "${artifact_basename}"
+        cp -p "${argrelay_path}/custom_integ/${artifact_basename}" "${artifact_basename}"
     fi
 }
 

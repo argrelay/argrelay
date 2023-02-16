@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from argrelay.relay_demo.DemoInterpConfigSchema import demo_interp_config_desc
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
+from argrelay.custom_integ.DemoInterpConfigSchema import demo_interp_config_desc
+from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 from argrelay.schema_config_core_server.FirstArgInterpFactorySchema import first_arg_interp_config_desc

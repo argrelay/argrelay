@@ -6,13 +6,13 @@ from unittest import TestCase
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.misc_helper import eprint
 from argrelay.relay_client import __main__
-from argrelay.relay_demo.GitRepoArgType import GitRepoArgType
-from argrelay.relay_demo.GitRepoLoader import GitRepoLoader
-from argrelay.relay_demo.GitRepoLoaderConfigSchema import base_path_, is_plugin_enabled_
+from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
+from argrelay.custom_integ.GitRepoLoaderConfigSchema import base_path_, is_plugin_enabled_
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_dict_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, load_relay_demo_server_config_dict
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, load_custom_integ_server_config_dict
 
 
 class ThisTestCase(TestCase):
@@ -85,7 +85,7 @@ class ThisTestCase(TestCase):
                 ) = test_case
 
                 # Modify config to enable `GitRepoLoader` plugin:
-                server_config_dict = load_relay_demo_server_config_dict()
+                server_config_dict = load_custom_integ_server_config_dict()
                 server_config_dict[plugin_dict_][GitRepoLoader.__name__][plugin_config_] = plugin_config
 
                 env_mock_builder = (

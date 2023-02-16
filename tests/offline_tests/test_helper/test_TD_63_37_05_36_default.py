@@ -4,8 +4,8 @@ from unittest import TestCase
 
 import pandas as pd
 
-from argrelay.relay_demo.ServiceArgType import ServiceArgType
-from argrelay.relay_demo.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
