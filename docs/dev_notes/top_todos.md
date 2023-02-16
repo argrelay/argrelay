@@ -1,6 +1,14 @@
 
 TODO: top todos
 
+Integration:
+
+*   List data = function with multiple envelopes
+
+*   Get help metadata
+
+*   Live status
+
 Before `0.0.0`:
 
 *   Establish some clear order for:
