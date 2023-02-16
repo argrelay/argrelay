@@ -7,6 +7,7 @@ from argrelay.custom_integ.ServiceLoaderConfigSchema import (
     test_data_ids_to_load_,
 )
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
@@ -16,15 +17,14 @@ from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     envelope_id_,
-    envelope_class_,
     instance_data_,
-    context_control_,
+    init_control_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_id_,
     search_control_list_,
 )
-from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
 from argrelay.test_helper import test_data_
 
 cluster_search_control = {
@@ -110,9 +110,9 @@ class ServiceLoader(AbstractLoader):
     def generate_envelope_id(self, data_envelopes: list):
         for data_envelope in data_envelopes:
             if envelope_id_ not in data_envelope:
-                if envelope_class_ == ServiceEnvelopeClass.ClassHost.name:
+                if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
                     data_envelope[envelope_id_] = data_envelope[ServiceArgType.HostName.name]
-                if envelope_class_ == ServiceEnvelopeClass.ClassService.name:
+                if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassService.name:
                     data_envelope[envelope_id_] = (
                         data_envelope[ServiceArgType.HostName.name]
                         + "." +
@@ -131,7 +131,6 @@ class ServiceLoader(AbstractLoader):
             #       "desc", "list", "goto" to accept `GitRepoEnvelopeClass` in addition to `ServiceEnvelopeClass`.
             {
                 envelope_id_: "goto_host",
-                envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: ErrorInvocator.__name__,
                     search_control_list_: [
@@ -140,12 +139,12 @@ class ServiceLoader(AbstractLoader):
                         access_search_control,
                     ],
                 },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 GlobalArgType.ActionType.name: "goto",
                 GlobalArgType.ObjectSelector.name: "host",
             },
             {
                 envelope_id_: "goto_service",
-                envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: ErrorInvocator.__name__,
                     search_control_list_: [
@@ -154,12 +153,12 @@ class ServiceLoader(AbstractLoader):
                         access_search_control,
                     ],
                 },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 GlobalArgType.ActionType.name: "goto",
                 GlobalArgType.ObjectSelector.name: "service",
             },
             {
                 envelope_id_: "desc_host",
-                envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: NoopInvocator.__name__,
                     search_control_list_: [
@@ -167,12 +166,12 @@ class ServiceLoader(AbstractLoader):
                         host_search_control,
                     ],
                 },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 GlobalArgType.ActionType.name: "desc",
                 GlobalArgType.ObjectSelector.name: "host",
             },
             {
                 envelope_id_: "desc_service",
-                envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: NoopInvocator.__name__,
                     search_control_list_: [
@@ -180,6 +179,7 @@ class ServiceLoader(AbstractLoader):
                         service_search_control,
                     ],
                 },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 GlobalArgType.ActionType.name: "desc",
                 GlobalArgType.ObjectSelector.name: "service",
             },
@@ -192,10 +192,9 @@ class ServiceLoader(AbstractLoader):
             #       Is such distinction required?
             #       DECISION: Always always find ALL per function via AND.
             #       TODO: The function below should be split into `list_service` and `list_host`.
-            # TODO: How to specify `list_service` which will list all services matching criteria (instead of trying to find one)?
+            # TODO: FS_18_64_57_18: How to specify `list_service` which will list all services matching criteria (instead of trying to find one)?
             {
                 envelope_id_: "list",
-                envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
                 instance_data_: {
                     invocator_plugin_id_: NoopInvocator.__name__,
                     search_control_list_: [
@@ -203,6 +202,7 @@ class ServiceLoader(AbstractLoader):
                         service_search_control,
                     ],
                 },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 GlobalArgType.ActionType.name: "list",
             },
         ])
@@ -221,15 +221,15 @@ class ServiceLoader(AbstractLoader):
             # `AccessType`: FS_24_50_40_64
 
             {
-                envelope_class_: ServiceArgType.AccessType.name,
                 envelope_payload_: {
                 },
+                ReservedArgType.EnvelopeClass.name: ServiceArgType.AccessType.name,
                 ServiceArgType.AccessType.name: "ro",
             },
             {
-                envelope_class_: ServiceArgType.AccessType.name,
                 envelope_payload_: {
                 },
+                ReservedArgType.EnvelopeClass.name: ServiceArgType.AccessType.name,
                 ServiceArgType.AccessType.name: "rw",
             },
         ])
@@ -247,98 +247,98 @@ class ServiceLoader(AbstractLoader):
             # TD_63_37_05_36 # demo: clusters
 
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "amer",
                 ServiceArgType.FlowStage.name: "upstream",
                 ServiceArgType.ClusterName.name: "dev-amer-upstream",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "emea",
                 ServiceArgType.FlowStage.name: "upstream",
                 ServiceArgType.ClusterName.name: "dev-emea-upstream",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.FlowStage.name: "upstream",
                 ServiceArgType.ClusterName.name: "dev-apac-upstream",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "emea",
                 ServiceArgType.FlowStage.name: "downstream",
                 ServiceArgType.ClusterName.name: "dev-emea-downstream",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "qa",
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.FlowStage.name: "upstream",
                 ServiceArgType.ClusterName.name: "qa-apac-upstream",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "qa",
                 ServiceArgType.GeoRegion.name: "amer",
                 ServiceArgType.FlowStage.name: "downstream",
                 ServiceArgType.ClusterName.name: "qa-amer-downstream",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "prod",
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.FlowStage.name: "downstream",
@@ -349,66 +349,66 @@ class ServiceLoader(AbstractLoader):
             # TD_63_37_05_36 # demo: hosts
 
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "dev-amer-upstream",
                 ServiceArgType.HostName.name: "qwer",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "dev-emea-upstream",
                 ServiceArgType.HostName.name: "asdf-du",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "dev-apac-upstream",
                 ServiceArgType.HostName.name: "zxcv-du",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "dev-emea-downstream",
                 ServiceArgType.HostName.name: "xcvb-dd",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "qa-apac-upstream",
                 ServiceArgType.HostName.name: "poiu-qu",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "qa-amer-downstream",
                 ServiceArgType.HostName.name: "sdfg-qd",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-1",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-2",
             },
@@ -417,64 +417,64 @@ class ServiceLoader(AbstractLoader):
             # TD_63_37_05_36 # demo: services
 
             {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "dev-apac-upstream",
                 ServiceArgType.HostName.name: "zxcv-du",
                 ServiceArgType.ServiceName.name: "s_c",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "dev-emea-upstream",
                 ServiceArgType.HostName.name: "asdf-du",
                 ServiceArgType.ServiceName.name: "s_b",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "dev-amer-upstream",
                 ServiceArgType.HostName.name: "qwer-du",
                 ServiceArgType.ServiceName.name: "s_a",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "dev-emea-downstream",
                 ServiceArgType.HostName.name: "xcvb-dd",
                 ServiceArgType.ServiceName.name: "xx",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "qa-apac-upstream",
                 ServiceArgType.HostName.name: "poiu-qu",
                 ServiceArgType.ServiceName.name: "s_c",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-1",
                 ServiceArgType.ServiceName.name: "tt1",
             },
             {
-                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
                 ServiceArgType.HostName.name: "wert-pd-2",
                 ServiceArgType.ServiceName.name: "tt2",
@@ -491,16 +491,16 @@ class ServiceLoader(AbstractLoader):
             # TD_76_09_29_31 # overlapped: clusters
 
             {
-                envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                 envelope_payload_: {
                 },
-                # TODO: repeated info: FS_83_48_41_30:
-                context_control_: [
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
                     ServiceArgType.ClusterName.name,
                 ],
                 # TODO: Fix test_data: TD_76_09_29_31 # overlapped:
                 #       there is no overlap after introduction of ClusterName.
                 test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "dev",
                 ServiceArgType.GeoRegion.name: "amer.us",
                 ServiceArgType.FlowStage.name: "downstream",
@@ -511,12 +511,12 @@ class ServiceLoader(AbstractLoader):
             # TD_76_09_29_31 # overlapped: hosts
 
             {
-                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                 envelope_payload_: {
                 },
-                # TODO: Fix test_data: TD_76_09_29_31: # overlapped:
+                # TODO: Fix test_data: TD_76_09_29_31 # overlapped:
                 #       there is no overlap after introduction of ClusterName.
                 test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                 ServiceArgType.ClusterName.name: "dev-amer.us-downstream",
                 ServiceArgType.HostName.name: "amer.us",
             },
@@ -541,14 +541,14 @@ class ServiceLoader(AbstractLoader):
                     # clusters
 
                     generated_cluster = {
-                        envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
                         envelope_payload_: {
                         },
-                        # TODO: repeated info: FS_83_48_41_30:
-                        context_control_: [
+                        # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                        init_control_: [
                             ServiceArgType.ClusterName.name,
                         ],
                         test_data_: "TD_38_03_48_51",  # large generated
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                         ServiceArgType.CodeMaturity.name: code_maturity,
                         ServiceArgType.GeoRegion.name: geo_region,
                         ServiceArgType.FlowStage.name: flow_stage,
@@ -563,10 +563,10 @@ class ServiceLoader(AbstractLoader):
                         # hosts
 
                         generated_host = {
-                            envelope_class_: ServiceEnvelopeClass.ClassHost.name,
                             envelope_payload_: {
                             },
                             test_data_: "TD_38_03_48_51",  # large generated
+                            ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                             ServiceArgType.ClusterName.name: cluster_name,
                             ServiceArgType.HostName.name: host_name,
                         }
@@ -578,10 +578,10 @@ class ServiceLoader(AbstractLoader):
                             # services
 
                             generated_service = {
-                                envelope_class_: ServiceEnvelopeClass.ClassService.name,
                                 envelope_payload_: {
                                 },
                                 test_data_: "TD_38_03_48_51",  # large generated
+                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                                 ServiceArgType.ClusterName.name: cluster_name,
                                 ServiceArgType.HostName.name: host_name,
                                 ServiceArgType.ServiceName.name: service_name,

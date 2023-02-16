@@ -15,6 +15,7 @@ class ThisTestCase(TestCase):
         env_mock_builder = (
             EnvMockBuilder()
             .set_client_config_with_local_server(False)
+            .set_mock_server_config_file_read(False)
             .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)

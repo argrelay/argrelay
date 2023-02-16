@@ -3,6 +3,7 @@
 import os
 from contextlib import contextmanager
 from inspect import getframeinfo, currentframe
+from pathlib import PurePath
 
 test_data_ = "test_data"
 
@@ -51,10 +52,17 @@ def change_to_known_repo_path(path_from_repo_root = "./tests"):
 
     old_pwd = os.getcwd()
     try:
-        # When IDE runs, CWD = "tests", when `tox` runs, CWD = [repo root], change to `tests` subdir:
+        # When IDE runs, CWD is somewhere under "tests".
+        # Keep climbing up until directory becomes "tests":
+        if "tests" in PurePath(os.getcwd()).parts:
+            while os.path.basename(os.getcwd()) != "tests":
+                os.chdir("..")
+
+        # When `tox` runs, CWD = [repo root]:
         if os.path.basename(os.getcwd()) != "tests":
             os.chdir("tests")
-        # Base path = repo root:
+
+        # Now, when same baseline is set regardless `tox` or IDE, change to repo root:
         os.chdir("..")
         # Desired path:
         os.chdir(path_from_repo_root)

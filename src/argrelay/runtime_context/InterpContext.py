@@ -5,18 +5,16 @@ from dataclasses import field, dataclass
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.InterpStep import InterpStep
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_, context_control_
-from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
 
 @dataclass
@@ -54,16 +52,20 @@ class InterpContext:
 
     envelope_containers: list[EnvelopeContainer] = field(init = False, default_factory = lambda: [])
     """
-    Associated data for each `data_envelope` to be found.
+    Each `envelope_container` wraps `data_envelope`-s matching query and some associated data.
     """
 
     curr_container: EnvelopeContainer = field(init = False, default_factory = lambda: EnvelopeContainer())
     """
-    The `envelope_containers` currently being searched.
+    One of the `envelope_containers` currently being searched.
     """
 
-    # When `function_envelope` found, it is an ipos into `search_control_list` to select curr `search_control`:
+    # TODO: Make it clear how `curr_container_ipos` and `last_found_envelope_ipos` are different - how?
     curr_container_ipos: int = field(init = False, default = -1)
+    """
+    It is an ipos into `envelope_containers` to select previously found container.
+    Index to select `curr_container` (what is currently being searched) = curr_container_ipos + 1.
+    """
 
     last_found_envelope_ipos: int = field(init = False, default = -1)
     """
@@ -103,65 +105,25 @@ class InterpContext:
             )
         ]
 
-    def create_containers(self, search_control_list):
+    def create_containers(self, search_control_list: list[SearchControl]):
         for search_control in search_control_list:
-            envelope_container = EnvelopeContainer(
-                search_control_desc.dict_schema.load(
-                    search_control
-                )
-            )
+            envelope_container = EnvelopeContainer(search_control)
             self.envelope_containers.append(envelope_container)
 
     def is_last_container(self) -> bool:
         return self.curr_container_ipos + 1 == len(self.envelope_containers)
 
-    def init_next_container(self):
-        self.curr_container_ipos += 1
-        self.curr_container = self.envelope_containers[
-            self.curr_container_ipos
-        ]
-        self._init_values()
-
-    def _init_values(self):
-        """
-        FS_46_96_59_05: TODO: current implementation works but not flexible - it will be changed:
-        Copy arg value from prev `data_envelope` for arg types specified in `context_control` into next `arg_context`.
-        """
-        if self.last_found_envelope_ipos >= 0:
-            prev_envelope = self.envelope_containers[
-                self.last_found_envelope_ipos
-            ]
-            if context_control_ in prev_envelope.data_envelope:
-                arg_type_list_to_push = prev_envelope.data_envelope[context_control_]
-                for arg_type_to_push in arg_type_list_to_push:
-                    if arg_type_to_push in prev_envelope.data_envelope:
-                        if arg_type_to_push in self.curr_container.assigned_types_to_values:
-                            arg_value = self.curr_container.assigned_types_to_values[
-                                arg_type_to_push
-                            ]
-                            if arg_value.arg_source.value <= ArgSource.ImplicitValue.value:
-                                # Override value with source of higher priority:
-                                arg_value.arg_source = ArgSource.ImplicitValue
-                                arg_value.arg_value = prev_envelope.data_envelope[arg_type_to_push]
-                        else:
-                            self.curr_container.assigned_types_to_values[
-                                arg_type_to_push
-                            ] = AssignedValue(
-                                prev_envelope.data_envelope[arg_type_to_push],
-                                ArgSource.ImplicitValue,
-                            )
-
     def query_envelopes(self):
         ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
         query_dict = {
-            envelope_class_: self.curr_container.search_control.envelope_class,
+            ReservedArgType.EnvelopeClass.name: self.curr_container.search_control.envelope_class,
         }
         # FS_31_70_49_15: populate arg values to search from the context:
         for arg_type in self.curr_container.search_control.types_to_keys_dict.keys():
             if arg_type in self.curr_container.assigned_types_to_values:
                 query_dict[arg_type] = self.curr_container.assigned_types_to_values[arg_type].arg_value
 
-        # TODO: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
+        # TODO: FS_06_99_43_60: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
         ElapsedTime.measure("before_mongo_find")
         query_res = self.mongo_col.find(query_dict)
         ElapsedTime.measure("after_mongo_find")

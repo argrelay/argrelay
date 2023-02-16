@@ -4,7 +4,7 @@ from pymongo.database import Database
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, mongo_id_
 from env_tests.MongoClientTest import MongoClientTest
 
 
@@ -13,7 +13,8 @@ class ThisTestCase(MongoClientTest):
     # noinspection PyMethodMayBeStatic
     def test_live_envelope_searched_by_multiple_typed_vals(self):
         """
-        Example with data searched by multiple { type: value } pairs
+        Example to search distinct values for each field individually in single query:
+        https://stackoverflow.com/questions/63592489/get-distinct-values-from-each-field-within-mongodb-collection
         """
 
         mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
@@ -39,6 +40,7 @@ class ThisTestCase(MongoClientTest):
                 "object_name": "envelope_001",
             },
             ServiceArgType.AccessType.name: "ro",
+            ServiceArgType.CodeMaturity.name: "prod",
         }
 
         envelope_002 = {
@@ -77,12 +79,22 @@ class ThisTestCase(MongoClientTest):
             col_proxy.create_index(index_field)
 
         print("query 1:")
-        for data_envelope in col_proxy.find(
+        for result_item in col_proxy.aggregate([
             {
-                ServiceArgType.AccessType.name: "rw",
-                ServiceArgType.LiveStatus.name: "red",
-            }
-        ):
-            print("data_envelope: ", data_envelope)
+                "$group": {
+                    mongo_id_: None,
+                    ServiceArgType.AccessType.name: {
+                        "$addToSet": f"${ServiceArgType.AccessType.name}"
+                    },
+                    ServiceArgType.LiveStatus.name: {
+                        "$addToSet": f"${ServiceArgType.LiveStatus.name}"
+                    },
+                    ServiceArgType.CodeMaturity.name: {
+                        "$addToSet": f"${ServiceArgType.CodeMaturity.name}"
+                    },
+                },
+            },
+        ]):
+            print("result_item: ", result_item)
 
         self.remove_all_envelopes(col_proxy)

@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 
 from argrelay.enum_desc.PluginType import PluginType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
@@ -10,7 +11,6 @@ from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 
 
 class LocalServer:
@@ -100,5 +100,5 @@ class LocalServer:
     def _create_mongo_index(self):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
         # Include `envelope_class` field into index by default:
-        self.server_config.static_data.known_arg_types.append(envelope_class_)
+        self.server_config.static_data.known_arg_types.append(ReservedArgType.EnvelopeClass.name)
         MongoClientWrapper.create_index(mongo_db, self.server_config.static_data)

@@ -3,16 +3,20 @@ from __future__ import annotations
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.InterpStep import InterpStep
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.runtime_context.InterpContext import (
     InterpContext,
 )
+from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    search_control_list_,
+    invocator_plugin_id_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
@@ -29,10 +33,18 @@ class FuncArgsInterp(AbstractInterp):
         super().__init__(interp_ctx, config_dict)
         self.interp_ctx = interp_ctx
 
+        # Perform `init_control` (later, when function is found, it is delegated to invocator plugin):
+        self.interp_ctx.curr_container.assigned_types_to_values[
+            ReservedArgType.EnvelopeClass.name
+        ] = AssignedValue(
+            ReservedEnvelopeClass.ClassFunction.name,
+            ArgSource.InitValue,
+        )
+        # First `search_control` is based on plugin config (rather than data found in `data_envelope`):
         self.interp_ctx.curr_container.search_control = search_control_desc.dict_schema.load(
             config_dict[function_search_control_]
         )
-        self.interp_ctx.init_next_container()
+        self.init_next_container()
         self.interp_ctx.query_envelopes()
 
     def consume_key_args(self) -> None:
@@ -86,10 +98,12 @@ class FuncArgsInterp(AbstractInterp):
         elif self.interp_ctx.curr_container.found_count == 1:
 
             if self.interp_ctx.curr_container_ipos == 0:
-                # This is a function envelope - create `EnvelopeContainer`-s for every envelope to find:
-                self.interp_ctx.create_containers(
-                    self.interp_ctx.curr_container.data_envelope[instance_data_][search_control_list_]
+                # This is a function envelope.
+                search_control_list: list[SearchControl] = self.get_search_control_list(
+                    self.interp_ctx.curr_container.data_envelope
                 )
+                # Create `EnvelopeContainer`-s for every envelope to find:
+                self.interp_ctx.create_containers(search_control_list)
 
             self.interp_ctx.register_found_envelope()
 
@@ -97,7 +111,7 @@ class FuncArgsInterp(AbstractInterp):
                 # Function does not need any envelopes:
                 return InterpStep.NextInterp
             else:
-                self.interp_ctx.init_next_container()
+                self.init_next_container()
                 self.interp_ctx.query_envelopes()
                 # Need more args to consume for the next envelope to find:
                 return InterpStep.NextEnvelope
@@ -105,6 +119,31 @@ class FuncArgsInterp(AbstractInterp):
         else:
             # No `data_envelope` = nothing to do:
             return InterpStep.StopAll
+
+    def get_search_control_list(self, function_data_envelope: dict) -> list[SearchControl]:
+        invocator_plugin_id = function_data_envelope[instance_data_][invocator_plugin_id_]
+        invocator_plugin: AbstractInvocator = self.interp_ctx.action_invocators[invocator_plugin_id]
+        search_control_list: list[SearchControl] = invocator_plugin.search_control(function_data_envelope)
+        return search_control_list
+
+    def run_init_control(self):
+        if self.interp_ctx.last_found_envelope_ipos < 0:
+            return
+
+        function_data_envelope = self.interp_ctx.envelope_containers[0].data_envelope
+        invocator_plugin_id = function_data_envelope[instance_data_][invocator_plugin_id_]
+        invocator_plugin: AbstractInvocator = self.interp_ctx.action_invocators[invocator_plugin_id]
+        invocator_plugin.init_control(
+            self.interp_ctx.envelope_containers,
+            self.interp_ctx.last_found_envelope_ipos,
+        )
+
+    def init_next_container(self):
+        self.interp_ctx.curr_container_ipos += 1
+        self.interp_ctx.curr_container = self.interp_ctx.envelope_containers[
+            self.interp_ctx.curr_container_ipos
+        ]
+        self.run_init_control()
 
     def propose_arg_completion(self) -> None:
         self.interp_ctx.comp_suggestions = self.propose_auto_comp_list()
@@ -168,7 +207,7 @@ class FuncArgsInterp(AbstractInterp):
         # Return filtered value set from the next missing arg:
         for arg_type in self.interp_ctx.curr_container.search_control.types_to_keys_dict.keys():
             if (
-                # TODO: nly one condition should be enough: arg_type is either in one or in another, not in both:
+                # TODO: only one condition should be enough: arg_type is either in one or in another, not in both:
                 arg_type not in self.interp_ctx.curr_container.assigned_types_to_values
                 and
                 arg_type in self.interp_ctx.curr_container.remaining_types_to_values

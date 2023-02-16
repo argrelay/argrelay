@@ -7,6 +7,8 @@ from argrelay.runtime_context.InterpContext import InterpContext
 class AbstractInterp:
     """
     Interpret command line sharing current state via :class:`InterpContext`.
+
+    New instance of interpreter is created by (plugin implementing) `AbstractInterpFactory` for each request.
     """
 
     interp_ctx: InterpContext

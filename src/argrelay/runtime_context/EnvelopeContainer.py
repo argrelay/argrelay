@@ -3,11 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
+indent_size = 2
 
 @dataclass
 class EnvelopeContainer:
@@ -15,14 +17,21 @@ class EnvelopeContainer:
     Combination of relevant config, user input and `data_envelope` from the store.
     """
 
-    # A specs how to query `data_envelope` for this `EnvelopeContainer`:
     search_control: SearchControl = field(default_factory = lambda: SearchControl())
+    """
+    A specs how to query `data_envelope` for this `EnvelopeContainer`.
+    """
 
-    # If found in the last query, it contains `data_envelope` based on `search_control`:
     data_envelope: dict = field(default_factory = lambda: None)
+    """
+    If the last query finds (unique) single result,
+    it contains `data_envelope` based on `search_control` and command line input.
+    """
 
-    # `data_envelope`-s found in the last query:
     found_count: int = field(default = 0)
+    """
+    Counter of `data_envelope`-s found in the last query.
+    """
 
     # TODO: Maybe rename to `context_types_to_values`?
     # TODO: Part of (or actually is?) `args_context`: FS_62_25_92_06:
@@ -84,22 +93,17 @@ class EnvelopeContainer:
     @staticmethod
     def print_help(envelope_containers: list[EnvelopeContainer]):
         eprint()
-        # TODO: print:
-        #       * currently selected args in one line: key1:value2 key2:value2
-        #       * not selected args types in multiple lines: type: value1 value2 ...
-        # TODO: print values matching any of the arg types which have already been assigned
-        # TODO: print conflicting values (two different implicit values)
-        # TODO: print unrecognized tokens
-        # TODO: for unrecognized token highlight by color all tokens with matching substring
+        # TODO: print colorized command line (reordered by `search_control`) with consumed tokens, unconsumed tokens, tangent token
         is_first_missing_found: bool = False
         for envelope_container in envelope_containers:
-            eprint(envelope_container.search_control.envelope_class)
+            eprint(f"{envelope_container.search_control.envelope_class}:")
 
             for key_to_type_dict in envelope_container.search_control.keys_to_types_list:
                 arg_key = next(iter(key_to_type_dict))
                 arg_type = key_to_type_dict[arg_key]
 
                 if arg_type in envelope_container.assigned_types_to_values:
+                    eprint(" " * indent_size, end = "")
                     eprint(TermColor.DARK_GREEN.value, end = "")
                     eprint(f"{arg_type}:", end = "")
                     eprint(
@@ -109,6 +113,7 @@ class EnvelopeContainer:
                     )
                     eprint(TermColor.RESET.value, end = "")
                 elif arg_type in envelope_container.remaining_types_to_values:
+                    eprint(" " * indent_size, end = "")
                     eprint(TermColor.BRIGHT_YELLOW.value, end = "")
                     if not is_first_missing_found:
                         eprint(f"*{arg_type}:", end = "")
@@ -126,6 +131,7 @@ class EnvelopeContainer:
                     # Such arg types are shown because they are part of `search_control`.
                     # But they cannot be specified for current situation, otherwise, if already no data,
                     # any arg value assigned to such arg type would return no results.
+                    eprint(" " * indent_size, end = "")
                     eprint(TermColor.DARK_GRAY.value, end = "")
                     eprint(f"{arg_type}:", end = "")
                     eprint(" [none]", end = "")

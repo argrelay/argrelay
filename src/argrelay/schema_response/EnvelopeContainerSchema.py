@@ -2,11 +2,12 @@ from marshmallow import Schema, RAISE, fields, post_load, validates_schema, Vali
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
-from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
 from argrelay.schema_config_interp.SearchControlSchema import (
     search_control_desc,
 )
 from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
+from argrelay.schema_response.FilteredDict import FilteredDict
 
 """
 Schema for :class:`EnvelopeContainer`
@@ -29,8 +30,8 @@ class EnvelopeContainerSchema(Schema):
         required = True,
     )
 
-    data_envelope = fields.Nested(
-        data_envelope_desc.dict_schema,
+    data_envelope = FilteredDict(
+        filtered_keys = [mongo_id_],
         required = True,
         allow_none = True,
     )

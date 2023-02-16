@@ -13,7 +13,10 @@ class FilteredDict(fields.Dict):
 
     def _serialize(self, value, attr, obj, **kwargs):
         value = super(FilteredDict, self)._serialize(value, attr, obj)
-        return {key: value[key] for key in value if key not in self.filtered_keys}
+        if value:
+            return {key: value[key] for key in value if key not in self.filtered_keys}
+        else:
+            return value
 
     def _deserialize(self, value, attr, data, **kwargs):
         value = super(FilteredDict, self)._deserialize(value, attr, data)

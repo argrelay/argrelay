@@ -7,7 +7,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 
 class NoopInvocator(AbstractInvocator):
 
-    def populate_invocation_input(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
+    def invoke_control(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
         invocation_input = InvocationInput(
             invocator_plugin_entry = server_config.plugin_dict[self.__class__.__name__],
             data_envelopes = [

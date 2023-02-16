@@ -4,7 +4,8 @@ from marshmallow import Schema, RAISE, fields, post_load
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_data.StaticData import StaticData
-from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
+from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
+from argrelay.schema_response.FilteredDict import FilteredDict
 
 first_interp_factory_id_ = "first_interp_factory_id"
 known_arg_types_ = "known_arg_types"
@@ -26,7 +27,9 @@ class StaticDataSchema(Schema):
     )
 
     data_envelopes = fields.List(
-        fields.Nested(data_envelope_desc.dict_schema),
+        FilteredDict(
+            filtered_keys = [mongo_id_]
+        ),
         required = True,
     )
 

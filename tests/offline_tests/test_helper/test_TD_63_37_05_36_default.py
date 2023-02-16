@@ -6,10 +6,10 @@ import pandas as pd
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 from argrelay.test_helper import change_to_known_repo_path, test_data_
 from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
@@ -110,7 +110,7 @@ class ThisTestCase(TestCase):
                     }
                     if is_cluster:
                         query_dict.update({
-                            envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+                            ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                         })
                         self.find_single_data_envelope(mongo_col, query_dict)
                     else:
@@ -126,7 +126,7 @@ class ThisTestCase(TestCase):
                         })
                         if is_host:
                             query_dict.update({
-                                envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                             })
                             # Ensure `HostName` contains abbreviation of (`CodeMaturity`, `FlowStage`) as its suffix:
                             data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
@@ -139,7 +139,7 @@ class ThisTestCase(TestCase):
                             )
                         else:
                             query_dict.update({
-                                envelope_class_: ServiceEnvelopeClass.ClassService.name,
+                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                                 ServiceArgType.ServiceName.name: service_name,
                             })
                             self.find_single_data_envelope(mongo_col, query_dict)

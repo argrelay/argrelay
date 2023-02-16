@@ -12,8 +12,8 @@ See: docs/dev_notes/screen_cast_notes.md
 An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
-**Original use case:**[^1]<br/>
-Auto-complete based on large (config) data sets.
+**Original use case:**<br/>
+Auto-complete based on large (config) data sets.[^1]
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
@@ -85,7 +85,7 @@ For example, in GUI-s, typing a query into a search bar may easily be accompanie
 
 In CLI-s, `grep` does (3) full-text-search, but what about the rest (1), (2), (4)?
 
-To facilitate selection of results via auto-completion,
+To facilitate selection of results via auto-completion,<br/>
 catalogue-like navigation (rather than full-text-search) seems the answer.
 </details>
 
@@ -187,6 +187,8 @@ but it is not ordinary for CLI-s of most common commands:
 | auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific index       |
 
 </details>
+
+Learn more about [how search works][how_search_works.md].
 
 # Quick demo
 
@@ -306,22 +308,23 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 *   Once custom integration is done, make a point -<br/>
     [record a demo screencast][screen_cast_notes.md] for your team.
 
----
+### [footnotes]
 
-**Footnotes:**
+[^1]: **Brief History**
 
-[^1]:
-*   DEC 2022: Attempts to find an adequate solution for sizeable data yielded no results.
-
-*   JAN 2023: The [earlier question][earlier_stack_question] received zero activity for a month</br>
-    (now auto-deleted by a [SO][SO] bot for a silent helpful down vote there).<br/>
-    _"It inspires frequent recommendations"_ (one could only wish for) -<br/>
-    with that undelete request to community was shut down in flames.
-
-*   FEB 2023: The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
-    any recommendations are still very welcome there.
-
-*   But, with some patience, `argrelay` already worked to be a solution on its own.
+    Tab-completion with custom (domain-specific) arg values is<br/>
+    constantly on a dev wish list for complex backend.
+    *   DEC 2022: Attempts to find an adequate solution for sizeable data yielded no results.
+    *   JAN 2023: The [earlier question][earlier_stack_question] received zero activity for a month</br>
+        (with a single silent downvote, auto-deleted by a bot).<br/>
+        Request to restore it was &#127925; Shut Down In Flames.
+        <!--
+        It seeked recommendations which tend to be spammed by answers<br/>
+        (controversially, some spam once a month helps more than none).
+        -->
+    *   FEB 2023: The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
+        recommendations are still very welcome there.<br/>
+        But, with some patience for integration, `argrelay` already became satisfying enough.
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
@@ -332,4 +335,4 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 [screen_cast_notes.md]: docs/dev_notes/screen_cast_notes.md
 [earlier_stack_question]: https://stackoverflow.com/questions/74996560/
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
-[SO]: https://stackoverflow.com/
+[how_search_works.md]: docs/dev_notes/how_search_works.md

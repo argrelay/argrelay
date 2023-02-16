@@ -13,7 +13,7 @@ class GitRepoInvocator(AbstractInvocator):
     def __init__(self, config_dict: dict):
         super().__init__(config_dict)
 
-    def populate_invocation_input(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
+    def invoke_control(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
 
         assert interp_ctx.last_found_envelope_ipos >= 0, "the (first) function envelope must be found"
 
