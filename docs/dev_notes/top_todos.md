@@ -68,3 +68,5 @@ Extra:
 *   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).
 
 *   Think of integration with `tmux` specifically, or other ways to open new shell windows in general.
+
+*   Add data center and server rack to demo data.
