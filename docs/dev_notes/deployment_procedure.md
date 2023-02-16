@@ -12,7 +12,7 @@ pip install --upgrade argrelay
 If newer version does not show up, try this:
 
 ```sh
-pin uninstall argrelay
+pip uninstall argrelay
 pip install --upgrade --force-reinstall argrelay
 ```
 

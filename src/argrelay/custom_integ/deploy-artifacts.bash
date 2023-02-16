@@ -63,7 +63,7 @@ fi
 # Generate `run_argrelay_server`:
 cat << PYTHON_SERVER_EOF > ./run_argrelay_server
 #!$(which python)
-# `argrelay` generated integration file: https://github.com/uvsmtid/argrelay
+# \`argrelay\` generated integration file: https://github.com/uvsmtid/argrelay
 
 from argrelay.relay_server.__main__ import main
 
@@ -74,7 +74,7 @@ PYTHON_SERVER_EOF
 # Generate `run_argrelay_client`:
 cat << PYTHON_CLIENT_EOF > ./run_argrelay_client
 #!$(which python)
-# `argrelay` generated integration file: https://github.com/uvsmtid/argrelay
+# \`argrelay\` generated integration file: https://github.com/uvsmtid/argrelay
 
 from argrelay.relay_client.__main__ import main
 
