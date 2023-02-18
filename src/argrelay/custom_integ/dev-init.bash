@@ -24,8 +24,6 @@ set -u
 # Debug: Print commands before execution:
 #set -x
 
-ARGRELAY_VENV_NAME="relay_demo"
-
 # Switch to the dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${script_dir}" || exit 1
@@ -33,8 +31,11 @@ cd "${script_dir}" || exit 1
 # Create dev env:
 ./build-git-env.bash
 
-# Use prepared `venv/"${ARGRELAY_VENV_NAME}"`:
-source venv/"${ARGRELAY_VENV_NAME}"/bin/activate
+# Python config:
+source ./python-conf.bash
+
+# Use prepared `"${path_to_pythonX}"`:
+source "${path_to_venvX}"/bin/activate
 
 # Enable auto-completion:
 source ./argrelay-rc.bash
