@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import timedelta
 
 from cachetools import TTLCache
@@ -29,7 +30,7 @@ class QueryEngine:
             maxsize = 1024,
             ttl = timedelta(seconds = 60).total_seconds(),
         )
-        self.is_cache_enabled = False
+        self.is_cache_enabled = True
 
     def query_envelopes(
         self,
@@ -37,9 +38,11 @@ class QueryEngine:
         search_control: SearchControl,
         assigned_types_to_values: dict[str, AssignedValue],
     ):
-
         if self.is_cache_enabled:
-            query_result = self.query_cache[query_dict]
+            ElapsedTime.measure("before_cache_lookup")
+            query_key = json.dumps(query_dict, separators = (",", ":"))
+            query_result = self.query_cache.get(query_key)
+            ElapsedTime.measure("after_cache_lookup")
             if query_result:
                 return query_result
 
@@ -52,7 +55,7 @@ class QueryEngine:
             assigned_types_to_values,
         )
         if self.is_cache_enabled:
-            self.query_cache[query_result] = query_result
+            self.query_cache[query_key] = query_result
         return query_result
 
     @staticmethod
