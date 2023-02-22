@@ -10,21 +10,8 @@ class ArgSource(IntEnum):
     *  The last one is the highest priority = cannot be overriden by any other `ArgSource.*`
     """
 
-    # TODO: The context should be specify-able in the client config (TODO: low priority use case).
-    #       it might be a useless in simple/dumb implementation by hiding envelopes.
-    ConfigValue = 1
-
-    # TODO: The context should be specify-able in the env var (TODO: low priority use case).
-    #       it might be a useless in simple/dumb implementation by hiding envelopes.
-    EnvVarValue = 2
-
-    # TODO: FS_46_96_59_05: `ComputedValue`-s have to be populated via `init_control`
-    # It was initially thought of as `DefaultValue`, but this is cannot be the default applicable to all.
-    # Instead, it is a value computed through rules with input from:
-    # * Static config.
-    # * Some special keys in `data_envelope` (`context_control`).
-    # * Plugins.
-    ComputedValue = 3
+    # Default value selected via `fill_control` (FS_72_40_53_00).
+    DefaultValue = 3
 
     # TODO: Provide detailed description in FS_13_51_07_97?
     # TODO: Actually, to provide implicit value, the envelope should not necessarily be singled out.
@@ -38,6 +25,13 @@ class ArgSource(IntEnum):
 
     # If command line arg is explicitly provided as named argument (`TokenType.KeyArg` + `TokenType.ValArg`):
     ExplicitNamedArg = 6
+
+    # This is pre-assigned value which cannot be changed subsequently (the highest priority).
+    # It is a value computed by plugin domain-specific logic with input from:
+    # * Env vars.
+    # * Config.
+    # * Currently found `data_envelope`-s
+    InitValue = 7
 
     def __str__(self):
         return self.name

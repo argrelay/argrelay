@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.PluginType import PluginType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
@@ -11,7 +12,7 @@ from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_id_load_list_, static_data_, plugin_dict_
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_, context_control_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_, init_control_
 from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_id_,
@@ -67,24 +68,24 @@ class ThisTestCase(TestCase):
         # Add two functions with unique "coordinates":
         given_function_envelope = {
             envelope_id_: "func_1",
-            envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
-            context_control_: [],
+            init_control_: [],
+            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
         }
         data_envelopes.append(given_function_envelope)
         given_function_envelope = {
             envelope_id_: "func_2",
-            envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
-            context_control_: [],
+            init_control_: [],
+            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             type_1: "type_1_value_2",
             type_2: "type_2_value_2",
         }
@@ -106,12 +107,12 @@ class ThisTestCase(TestCase):
         # Add function with non-unique "coordinates":
         given_function_envelope = {
             envelope_id_: "func_3",
-            envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
-            context_control_: [],
+            init_control_: [],
+            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
         }

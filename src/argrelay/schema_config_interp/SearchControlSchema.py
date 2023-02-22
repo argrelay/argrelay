@@ -5,8 +5,14 @@ from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_context.SearchControl import SearchControl
 
 envelope_class_ = "envelope_class"
-keys_to_types_list_ = "keys_to_types_list"
+"""
+Specifies `ReservedArgType.EnvelopeClass` to search.
+"""
 
+keys_to_types_list_ = "keys_to_types_list"
+"""
+List of keys to use for named args during interpretation and arg types to use in query.
+"""
 
 class SearchControlSchema(Schema):
     """
@@ -20,14 +26,8 @@ class SearchControlSchema(Schema):
         unknown = RAISE
         strict = True
 
-    # TODO: Move to `context_control` (see also `SearchControl`):
-    #       Avoid this special case when only some specific arg type (here - `ReservedArgType.EnvelopeClass`)
-    #       is propagated via this special mechanism and
-    #       the rest of arg types are propagated via FS_46_96_59_05 # implicit values.
-    # Specifies class to search:
     envelope_class = fields.String()
 
-    # List of keys to use for named args during interpretation and arg types to use in queries:
     keys_to_types_list = fields.List(
         fields.Dict(
             keys = fields.String(),

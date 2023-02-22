@@ -18,7 +18,7 @@ class ThisTestCase(MongoClientTest):
         mongo_client = get_mongo_client(mongo_config)
         print("list_database_names: ", mongo_client.list_database_names())
 
-        mongo_db: Database = mongo_client[mongo_config.database_name]
+        mongo_db: Database = mongo_client[mongo_config.mongo_server.database_name]
         print("list_collection_names: ", mongo_db.list_collection_names())
 
         col_name = data_envelopes_

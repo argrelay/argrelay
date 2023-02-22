@@ -8,7 +8,7 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 
 class ErrorInvocator(AbstractInvocator):
 
-    def populate_invocation_input(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
+    def invoke_control(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
         invocator_plugin_entry = server_config.plugin_dict[self.__class__.__name__]
         data_envelopes = interp_ctx.get_data_envelopes()
         invocation_input = InvocationInput(

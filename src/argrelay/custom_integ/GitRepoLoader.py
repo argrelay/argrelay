@@ -10,13 +10,13 @@ from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.GitRepoInvocator import GitRepoInvocator
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_plugin_enabled_
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
-    envelope_class_,
     envelope_payload_,
     instance_data_,
 )
@@ -24,7 +24,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_id_,
     search_control_list_,
 )
-from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
 
 
 class GitRepoLoader(AbstractLoader):
@@ -120,16 +120,16 @@ class GitRepoLoader(AbstractLoader):
 
             repo_envelope = {
                 envelope_id_: rel_git_path,
-                envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
                 envelope_payload_: {
                     "abs_repo_path": abs_git_path,
                 },
+                ReservedArgType.EnvelopeClass.name: GitRepoEnvelopeClass.ClassGitRepo.name,
                 GlobalArgType.ObjectSelector.name: "repo",
                 GitRepoArgType.GitRepoRelPath.name: rel_git_path,
                 GitRepoArgType.GitRepoPathComp.name: path_comp_list,
-                # TODO: populate list of remotes:
+                # TODO: FS_06_99_43_60: populate list of remotes:
                 GitRepoArgType.GitRepoRemoteUrl.name: [],
-                # TODO: populate list of local branches:
+                # TODO: FS_06_99_43_60: populate list of local branches:
                 GitRepoArgType.GitRepoLocalBranch.name: [],
             }
             print(repo_envelope)
@@ -142,9 +142,9 @@ class GitRepoLoader(AbstractLoader):
 
                 commit_envelope = {
                     envelope_id_: f"{rel_git_path}:{git_commit.hexsha}",
-                    envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
                     envelope_payload_: {
                     },
+                    ReservedArgType.EnvelopeClass.name: GitRepoEnvelopeClass.ClassGitCommit.name,
                     GlobalArgType.ObjectSelector.name: "commit",
                     GitRepoArgType.GitRepoRelPath.name: rel_git_path,
                     GitRepoArgType.GitRepoCommitId.name: git_commit.hexsha,
@@ -177,13 +177,13 @@ class GitRepoLoader(AbstractLoader):
 
         given_function_envelope = {
             envelope_id_: "desc_repo",
-            envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: GitRepoInvocator.__name__,
                 search_control_list_: [
                     repo_search_control,
                 ],
             },
+            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             GlobalArgType.ActionType.name: "desc",
             GlobalArgType.ObjectSelector.name: "repo",
         }
@@ -191,13 +191,13 @@ class GitRepoLoader(AbstractLoader):
 
         given_function_envelope = {
             envelope_id_: "desc_commit",
-            envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             instance_data_: {
                 invocator_plugin_id_: GitRepoInvocator.__name__,
                 search_control_list_: [
                     commit_search_control,
                 ],
             },
+            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             GlobalArgType.ActionType.name: "desc",
             GlobalArgType.ObjectSelector.name: "commit",
         }

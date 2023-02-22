@@ -8,13 +8,14 @@ from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.relay_client import __main__
-from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
+from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer, indent_size
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_class_
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import line_no, parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
@@ -219,39 +220,39 @@ class ThisTestCase(TestCase):
                 line_no(), "some_command goto service dev amer upstream sdfg|  ", CompType.DescribeArgs,
                 "",
                 f"""
-ClassFunction
-{TermColor.DARK_GREEN.value}ActionType: goto [ExplicitPosArg]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}ObjectSelector: service [ExplicitPosArg]{TermColor.RESET.value}
-ClassCluster
-{TermColor.DARK_GREEN.value}CodeMaturity: dev [ExplicitPosArg]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}FlowStage: upstream [ExplicitPosArg]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}GeoRegion: amer [ExplicitPosArg]{TermColor.RESET.value}
-ClassService
-{TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [ImplicitValue]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}HostName: qwer-du [ImplicitValue]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}ServiceName: s_a [ImplicitValue]{TermColor.RESET.value}
-{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
-AccessType
-{TermColor.BRIGHT_YELLOW.value}*AccessType: ?{TermColor.RESET.value} ro|rw
+{ReservedEnvelopeClass.ClassFunction.name}:
+{" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{ServiceEnvelopeClass.ClassCluster.name}:
+{" " * indent_size}{TermColor.DARK_GREEN.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}GeoRegion: amer [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{ServiceEnvelopeClass.ClassService.name}:
+{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [{ArgSource.InitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}HostName: qwer-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}ServiceName: s_a [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
+{ServiceArgType.AccessType.name}:
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*AccessType: ?{TermColor.RESET.value} ro|rw
 """,
             ),
             (
                 line_no(), "some_command goto host upstream emea|", CompType.DescribeArgs,
                 "",
                 f"""
-ClassFunction
-{TermColor.DARK_GREEN.value}ActionType: goto [ExplicitPosArg]{TermColor.RESET.value}
-{TermColor.DARK_GREEN.value}ObjectSelector: host [ExplicitPosArg]{TermColor.RESET.value}
-ClassCluster
-{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev|qa
-{TermColor.DARK_GREEN.value}FlowStage: upstream [ExplicitPosArg]{TermColor.RESET.value}
-{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} amer|emea|apac
-ClassHost
-{TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
-{TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
-{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
-AccessType
-{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
+{ReservedEnvelopeClass.ClassFunction.name}:
+{" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{ServiceEnvelopeClass.ClassCluster.name}:
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev|qa
+{" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} amer|emea|apac
+{ServiceEnvelopeClass.ClassHost.name}:
+{" " * indent_size}{TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
+{ServiceArgType.AccessType.name}:
+{" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
             ),
         ]
@@ -461,10 +462,20 @@ AccessType
             __main__.main()
             print(EnvMockBuilder.invocation_input)
             invocation_input = EnvMockBuilder.invocation_input
-            self.assertEqual(ServiceEnvelopeClass.ClassService.name,
-                             invocation_input.data_envelopes[2][envelope_class_])
-            self.assertEqual("prod-apac-downstream",
-                             invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name])
-            self.assertEqual("wert-pd-1", invocation_input.data_envelopes[2][ServiceArgType.HostName.name])
-            self.assertEqual("tt1", invocation_input.data_envelopes[2][ServiceArgType.ServiceName.name])
+            self.assertEqual(
+                ServiceEnvelopeClass.ClassService.name,
+                invocation_input.data_envelopes[2][ReservedArgType.EnvelopeClass.name]
+            )
+            self.assertEqual(
+                "prod-apac-downstream",
+                invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name]
+            )
+            self.assertEqual(
+                "wert-pd-1",
+                invocation_input.data_envelopes[2][ServiceArgType.HostName.name]
+            )
+            self.assertEqual(
+                "tt1",
+                invocation_input.data_envelopes[2][ServiceArgType.ServiceName.name]
+            )
             self.assertTrue(True)
