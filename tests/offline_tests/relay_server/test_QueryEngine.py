@@ -18,7 +18,7 @@ from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 
 class ThisTestCase(TestCase):
 
-    def test_when_cache_is_enabled(self):
+    def test_enable_query_cache(self):
         """
         Test enabled and disabled cache has no diff and that cache actually works
         """
@@ -27,9 +27,17 @@ class ThisTestCase(TestCase):
         test_cases = [
             (
                 line_no(),
+                True,
                 "some_command host goto e| dev", CompType.PrefixHidden,
                 "emea",
-                "just one sample",
+                "cache is enabled",
+            ),
+            (
+                line_no(),
+                False,
+                "some_command host goto e| dev", CompType.PrefixHidden,
+                "emea",
+                "cache is disabled",
             ),
         ]
         # @formatter:on
@@ -38,6 +46,7 @@ class ThisTestCase(TestCase):
             with self.subTest(test_case):
                 (
                     line_number,
+                    enable_query_cache,
                     test_line,
                     comp_type,
                     expected_suggestions,
@@ -51,7 +60,7 @@ class ThisTestCase(TestCase):
                     .set_command_line(command_line)
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
-                    .set_enable_query_cache(True)
+                    .set_enable_query_cache(enable_query_cache)
                     # Server-only mock:
                     .set_mock_client_config_file_read(False)
                     .set_mock_client_input(False)
@@ -83,6 +92,7 @@ class ThisTestCase(TestCase):
                             propose_arg_values_handler,
                             expected_suggestions,
                             method_mock,
+                            # 1st time: processing is always called:
                             True,
                         )
                     # 2nd run:
@@ -93,7 +103,8 @@ class ThisTestCase(TestCase):
                             propose_arg_values_handler,
                             expected_suggestions,
                             method_mock,
-                            False,
+                            # 2nd time: not called when cache is enabled, called when cache is disabled:
+                            not enable_query_cache,
                         )
 
                     self.assertEqual(actual_suggestions_1st_run, actual_suggestions_2nd_run)
