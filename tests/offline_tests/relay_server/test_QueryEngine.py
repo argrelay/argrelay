@@ -1,12 +1,9 @@
 from unittest import TestCase, mock
-from unittest.mock import patch, MagicMock
 
-from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
-from argrelay.relay_client import __main__
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_context.RequestContext import RequestContext
@@ -68,7 +65,6 @@ class ThisTestCase(TestCase):
                     .set_test_data_ids_to_load(["TD_63_37_05_36"])  # demo
                 )
                 with env_mock_builder.build():
-
                     # Start `LocalServer` with data:
                     server_config = server_config_desc.from_default_file()
                     local_server = LocalServer(server_config)
@@ -106,7 +102,6 @@ class ThisTestCase(TestCase):
                             # 2nd time: not called when cache is enabled, called when cache is disabled:
                             not enable_query_cache,
                         )
-
                     self.assertEqual(actual_suggestions_1st_run, actual_suggestions_2nd_run)
 
     def run_completion(self, request_ctx, propose_arg_values_handler, expected_suggestions, method_mock, is_called):

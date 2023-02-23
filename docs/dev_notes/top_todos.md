@@ -4,8 +4,31 @@ TODO: top todos
 
 To demo:
 
+*   Fix this:
+
+    ```
+    relay_demo goto host dev-emea-downstream ro
+
+    ClassFunction:
+      ActionType: goto [ExplicitPosArg]
+      ObjectSelector: host [ExplicitPosArg]
+    ClassCluster:
+      *CodeMaturity: ? dev                                                        # Fixed, but why no [ImplicitArg]?
+      FlowStage: ? downstream                                                     # Why not fixed?
+      GeoRegion: ? emea                                                           # Why not fixed?
+      ClusterName: dev-emea-downstream [ExplicitPosArg]
+    ClassHost:
+      ClusterName: dev-emea-downstream [InitValue]
+      HostName: xcvb-dd [ImplicitValue]
+      LiveStatus: [none]
+    AccessType:
+      AccessType: ro [ExplicitPosArg]
+    ```
+
 *   Populate TD_63_37_05_36 demo services data.
     Complete demo data: add (1) data center, (2) server rack, (3) process id, to demo data.
+
+*   "Describe" should run with InvocationMode instead of CompletionMode (to include current tangent tocken).
 
 *   Meta functions:
     *   List all objects of specified query.
@@ -70,6 +93,18 @@ Before `0.0.0`:
     *   TODO: `init_control`
     *   TODO: `fill_control`
     *   TODO: `invoke_control`
+
+    ALSO:
+    *   `init_control` sets values which are ensured non-overridable (by placing arg value consumable to replace default).
+    *   `fill_control` sets exactly the default values (when none are selected).
+    Therefore, there are several views at remaining values generated at different stages:
+    *    full enum set (after `init_control` is applied) - it is actually not full because `init_control` is already effective.
+    *    pre-default remaining values
+    *    post-default remaining values
+    Full enum set is used to see if command line value can be consumed. Note that it intentionally extended set (without taking into account filter already set by current args) to support FS_90_48_11_45.
+    Pre-default remaining values are needed to provide description (options available to override defaults).
+    Post-default remaining values are those used to suggest auto-completion (and show description what is reduced by defaults).
+    TODO: Basically, it is nice to compute a diff between pre and post and show it in the describe output.
 
 *   Document search logic.
 

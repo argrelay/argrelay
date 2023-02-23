@@ -227,6 +227,7 @@ class ThisTestCase(TestCase):
 {" " * indent_size}{TermColor.DARK_GREEN.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}GeoRegion: amer [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassService.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [{ArgSource.InitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}HostName: qwer-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
@@ -247,6 +248,7 @@ class ThisTestCase(TestCase):
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev|qa
 {" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} amer|emea|apac
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-amer-upstream|dev-emea-upstream|dev-apac-upstream|qa-apac-upstream
 {ServiceEnvelopeClass.ClassHost.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
@@ -305,6 +307,17 @@ class ThisTestCase(TestCase):
     def test_arg_assignments_for_completion(self):
         # @formatter:off
         test_cases = [
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
+                1,
+                {
+                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                    ServiceArgType.GeoRegion.name: AssignedValue("emea", ArgSource.ImplicitValue),
+                    ServiceArgType.FlowStage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                    ServiceArgType.ClusterName.name: AssignedValue("dev-emea-downstream", ArgSource.ExplicitPosArg),
+                },
+                "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion",
+            ),
             (
                 line_no(), RunMode.CompletionMode, "some_command goto|", CompType.PrefixShown,
                 0,

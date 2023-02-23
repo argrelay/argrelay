@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 
 from cachetools import TTLCache
@@ -48,7 +49,7 @@ class QueryEngine:
             query_result = self.query_cache.get(query_key)
             ElapsedTime.measure("after_cache_lookup")
             if query_result:
-                return query_result
+                return copy.deepcopy(query_result)
 
             query_result = self.run_query_and_process_results(
                 assigned_types_to_values,
@@ -56,13 +57,14 @@ class QueryEngine:
                 search_control,
             )
 
-            self.query_cache[query_key] = query_result
+            self.query_cache[query_key] = copy.deepcopy(query_result)
         else:
             query_result = self.run_query_and_process_results(
                 assigned_types_to_values,
                 query_dict,
                 search_control,
             )
+        # No cache -> no deep copy (throw away result):
         return query_result
 
     def run_query_and_process_results(
@@ -89,7 +91,9 @@ class QueryEngine:
         assigned_types_to_values: dict[str, AssignedValue],
     ) -> QueryResult:
         """
-        Primarily populates remaining_types_to_values.
+        Populates:
+        *   `found_count`
+        *   `remaining_types_to_values`
         """
         remaining_types_to_values: dict[str, list[str]] = {}
         data_envelope = None
@@ -103,7 +107,8 @@ class QueryEngine:
             for arg_type in search_control.types_to_keys_dict.keys():
                 # `arg_type` must be in one of the `data_envelope`-s found:
                 if arg_type in data_envelope:
-                    # `arg_type` must not be assigned/consumed:
+                    # If assigned/consumed, `arg_type` must not appear
+                    # as an option in `remaining_types_to_values` again:
                     if arg_type not in assigned_types_to_values.keys():
                         arg_val = data_envelope[arg_type]
                         if arg_type not in remaining_types_to_values:

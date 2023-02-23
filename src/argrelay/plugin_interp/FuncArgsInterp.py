@@ -10,6 +10,7 @@ from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.runtime_context.InterpContext import (
     InterpContext,
+    function_envelope_ipos_,
 )
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -44,8 +45,7 @@ class FuncArgsInterp(AbstractInterp):
         self.interp_ctx.curr_container.search_control = search_control_desc.dict_schema.load(
             config_dict[function_search_control_]
         )
-        self.init_next_container()
-        self.interp_ctx.query_envelopes()
+        self.select_next_container()
 
     def consume_key_args(self) -> None:
         pass
@@ -58,10 +58,9 @@ class FuncArgsInterp(AbstractInterp):
         consumed_token_ipos_list = []
         for unconsumed_token_ipos in self.interp_ctx.unconsumed_tokens:
             unconsumed_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
-            # see if token matches any type by value:
-            type_n: int = 0
+            # See if token matches any type by value:
+
             for arg_type, arg_values in self.interp_ctx.curr_container.remaining_types_to_values.items():
-                type_n += 1
                 if unconsumed_token in arg_values:
                     self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
                         unconsumed_token,
@@ -69,9 +68,9 @@ class FuncArgsInterp(AbstractInterp):
                     )
                     consumed_token_ipos_list.append(unconsumed_token_ipos)
                     self.interp_ctx.consumed_tokens.append(unconsumed_token_ipos)
-                    self.interp_ctx.query_envelopes()
                     # TD_76_09_29_31: overlapped
-                    # Assign current ArgVal by the first ArgProcessor only:
+                    # Assign matching unconsumed arg value to the first type it matches (only once):
+                    del self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
                     break
 
         # perform list modifications out of the prev loop:
@@ -82,8 +81,8 @@ class FuncArgsInterp(AbstractInterp):
         """
         Try to consume more args if possible.
 
-        *   If function was found, start with its first required envelope class.
-        *   If curr envelope class is found, move to the next until all are found.
+        *   If function was found, start with search for its first envelope class.
+        *   If curr envelope class is found, move to the next (until all are found).
 
         :returns:
         *   `InterpStep.NextInterp`: move to next interpreter: curr interpreter is fully satisfied from the args
@@ -98,21 +97,19 @@ class FuncArgsInterp(AbstractInterp):
         elif self.interp_ctx.curr_container.found_count == 1:
 
             if self.interp_ctx.curr_container_ipos == 0:
-                # This is a function envelope.
+                # This is a function envelope:
                 search_control_list: list[SearchControl] = self.get_search_control_list(
                     self.interp_ctx.curr_container.data_envelope
                 )
                 # Create `EnvelopeContainer`-s for every envelope to find:
                 self.interp_ctx.create_containers(search_control_list)
 
-            self.interp_ctx.register_found_envelope()
-
             if self.interp_ctx.is_last_container():
                 # Function does not need any envelopes:
                 return InterpStep.NextInterp
             else:
-                self.init_next_container()
-                self.interp_ctx.query_envelopes()
+                self.select_next_container()
+                self.run_init_control()
                 # Need more args to consume for the next envelope to find:
                 return InterpStep.NextEnvelope
 
@@ -127,23 +124,19 @@ class FuncArgsInterp(AbstractInterp):
         return search_control_list
 
     def run_init_control(self):
-        if self.interp_ctx.last_found_envelope_ipos < 0:
-            return
-
-        function_data_envelope = self.interp_ctx.envelope_containers[0].data_envelope
+        function_data_envelope = self.interp_ctx.envelope_containers[function_envelope_ipos_].data_envelope
         invocator_plugin_id = function_data_envelope[instance_data_][invocator_plugin_id_]
         invocator_plugin: AbstractInvocator = self.interp_ctx.action_invocators[invocator_plugin_id]
         invocator_plugin.init_control(
             self.interp_ctx.envelope_containers,
-            self.interp_ctx.last_found_envelope_ipos,
+            self.interp_ctx.curr_container_ipos,
         )
 
-    def init_next_container(self):
+    def select_next_container(self):
         self.interp_ctx.curr_container_ipos += 1
         self.interp_ctx.curr_container = self.interp_ctx.envelope_containers[
             self.interp_ctx.curr_container_ipos
         ]
-        self.run_init_control()
 
     def propose_arg_completion(self) -> None:
         self.interp_ctx.comp_suggestions = self.propose_auto_comp_list()

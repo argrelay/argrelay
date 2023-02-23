@@ -27,14 +27,27 @@ class AbstractInvocator(AbstractPlugin):
     *   share data only via :class:`InvocationInput`
     """
 
-    def search_control(self, function_data_envelope: dict) -> list[SearchControl]:
+    def search_control(
+        self,
+        function_data_envelope: dict,
+    ) -> list[SearchControl]:
         return self.extract_search_control_from_function_data_envelope(function_data_envelope)
 
-    def init_control(self, envelope_containers: list[EnvelopeContainer], last_found_envelope_ipos: int):
-        self.init_envelope_class(envelope_containers, last_found_envelope_ipos)
+    def init_control(
+        self,
+        envelope_containers: list[EnvelopeContainer],
+        curr_container_ipos: int,
+    ):
+        self.init_envelope_class(
+            envelope_containers,
+            curr_container_ipos,
+        )
 
         # Take from prev container:
-        self.use_init_control_from_data_envelope(envelope_containers, last_found_envelope_ipos)
+        self.use_init_control_from_data_envelope(
+            envelope_containers,
+            curr_container_ipos,
+        )
 
     def invoke_control(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
         """
@@ -64,9 +77,9 @@ class AbstractInvocator(AbstractPlugin):
     @staticmethod
     def init_envelope_class(
         envelope_containers: list[EnvelopeContainer],
-        last_found_envelope_ipos: int,
+        curr_container_ipos: int,
     ):
-        curr_container = envelope_containers[last_found_envelope_ipos + 1]
+        curr_container = envelope_containers[curr_container_ipos]
         curr_container.assigned_types_to_values[
             ReservedArgType.EnvelopeClass.name
         ] = AssignedValue(
@@ -77,7 +90,7 @@ class AbstractInvocator(AbstractPlugin):
     @staticmethod
     def use_init_control_from_data_envelope(
         envelope_containers: list[EnvelopeContainer],
-        last_found_envelope_ipos: int,
+        curr_container_ipos: int,
     ):
         """
         FS_46_96_59_05: default implementation of `init_control` (based on `init_control` in `data_envelope`)
@@ -85,8 +98,8 @@ class AbstractInvocator(AbstractPlugin):
         Copy arg value from prev `data_envelope` for arg types specified in `init_control` into next `args_context`.
         """
 
-        curr_container = envelope_containers[last_found_envelope_ipos + 1]
-        prev_envelope = envelope_containers[last_found_envelope_ipos]
+        curr_container = envelope_containers[curr_container_ipos]
+        prev_envelope = envelope_containers[curr_container_ipos - 1]
         if init_control_ in prev_envelope.data_envelope:
             arg_type_list_to_push = prev_envelope.data_envelope[init_control_]
             for arg_type_to_push in arg_type_list_to_push:
