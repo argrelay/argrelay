@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import json
-from datetime import timedelta
 
 from cachetools import TTLCache
 from pymongo.collection import Collection
 from pymongo.database import Database
 
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 from argrelay.relay_server.QueryResult import QueryResult
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -21,16 +21,20 @@ class QueryEngine:
 
     query_cache: TTLCache
 
-    is_cache_enabled: bool
+    enable_query_cache: bool
 
-    def __init__(self, mongo_db: Database):
+    def __init__(
+        self,
+        query_cache_config: QueryCacheConfig,
+        mongo_db: Database,
+    ):
         self.mongo_db = mongo_db
         self.mongo_col = self.mongo_db[data_envelopes_]
         self.query_cache = TTLCache(
-            maxsize = 1024,
-            ttl = timedelta(seconds = 60).total_seconds(),
+            maxsize = query_cache_config.query_cache_max_size_bytes,
+            ttl = query_cache_config.query_cache_ttl_sec,
         )
-        self.is_cache_enabled = True
+        self.enable_query_cache = query_cache_config.enable_query_cache
 
     def query_envelopes(
         self,
@@ -38,7 +42,7 @@ class QueryEngine:
         search_control: SearchControl,
         assigned_types_to_values: dict[str, AssignedValue],
     ):
-        if self.is_cache_enabled:
+        if self.enable_query_cache:
             ElapsedTime.measure("before_cache_lookup")
             query_key = json.dumps(query_dict, separators = (",", ":"))
             query_result = self.query_cache.get(query_key)
@@ -46,6 +50,27 @@ class QueryEngine:
             if query_result:
                 return query_result
 
+            query_result = self.run_query_and_process_results(
+                assigned_types_to_values,
+                query_dict,
+                search_control,
+            )
+
+            self.query_cache[query_key] = query_result
+        else:
+            query_result = self.run_query_and_process_results(
+                assigned_types_to_values,
+                query_dict,
+                search_control,
+            )
+        return query_result
+
+    def run_query_and_process_results(
+        self,
+        assigned_types_to_values,
+        query_dict,
+        search_control,
+    ):
         ElapsedTime.measure("before_mongo_find")
         query_res = self.mongo_col.find(query_dict)
         ElapsedTime.measure("after_mongo_find")
@@ -54,8 +79,7 @@ class QueryEngine:
             search_control,
             assigned_types_to_values,
         )
-        if self.is_cache_enabled:
-            self.query_cache[query_key] = query_result
+        ElapsedTime.measure("after_process_results")
         return query_result
 
     @staticmethod
