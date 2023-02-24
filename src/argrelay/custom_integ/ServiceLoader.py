@@ -111,9 +111,15 @@ class ServiceLoader(AbstractLoader):
         for data_envelope in data_envelopes:
             if envelope_id_ not in data_envelope:
                 if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
-                    data_envelope[envelope_id_] = data_envelope[ServiceArgType.HostName.name]
+                    data_envelope[envelope_id_] = (
+                        data_envelope[ServiceArgType.ClusterName.name]
+                        + "." +
+                        data_envelope[ServiceArgType.HostName.name]
+                    )
                 if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassService.name:
                     data_envelope[envelope_id_] = (
+                        data_envelope[ServiceArgType.ClusterName.name]
+                        + "." +
                         data_envelope[ServiceArgType.HostName.name]
                         + "." +
                         data_envelope[ServiceArgType.ServiceName.name]
