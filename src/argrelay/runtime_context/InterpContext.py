@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import field, dataclass
 
+from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.RunMode import RunMode
@@ -14,6 +15,7 @@ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_context.SearchControl import SearchControl
 
+function_envelope_ipos_ = 0
 
 @dataclass
 class InterpContext:
@@ -56,18 +58,14 @@ class InterpContext:
     One of the `envelope_containers` currently being searched.
     """
 
-    # TODO: Make it clear how `curr_container_ipos` and `last_found_envelope_ipos` are different - how?
     curr_container_ipos: int = field(init = False, default = -1)
     """
-    It is an ipos into `envelope_containers` to select previously found container.
-    Index to select `curr_container` (what is currently being searched) = curr_container_ipos + 1.
-    """
+    It is an `ipos` into `envelope_containers` to select `curr_container` (what is currently being searched for).
 
-    last_found_envelope_ipos: int = field(init = False, default = -1)
-    """
-    An ipos into `envelope_containers` for the last found envelope.
-    Because of multiple or zero candidates (not singled out), the tail of `envelope_containers` starting after
-    `last_found_envelope_ipos` is not pointing to `data_envelope`-s found.
+    Check `EnvelopeContainer.found_count` to see whether this container is singled out or not.
+
+    All `envelope_containers` after `curr_container_ipos` will not be pointing to any `data_envelope`-s
+    (search procedure has not reached them yet).
     """
 
     prev_interp: "AbstractInterp" = field(init = False, default = None)
@@ -108,7 +106,18 @@ class InterpContext:
     def is_last_container(self) -> bool:
         return self.curr_container_ipos + 1 == len(self.envelope_containers)
 
+    def is_funct_found(self) -> bool:
+        return (
+            self.curr_container_ipos >= function_envelope_ipos_
+            and
+            self.envelope_containers[function_envelope_ipos_].found_count == 1
+        )
+
     def query_envelopes(self):
+        if not self.curr_container.search_control.envelope_class:
+            # If `ReservedArgType.EnvelopeClass` is not specified, nothing to search:
+            return
+
         ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
         query_dict = {
             ReservedArgType.EnvelopeClass.name: self.curr_container.search_control.envelope_class,
@@ -127,11 +136,8 @@ class InterpContext:
         self.curr_container.remaining_types_to_values = query_result.remaining_types_to_values
         self.curr_container.data_envelope = query_result.data_envelope
         self.curr_container.found_count = query_result.found_count
-        ElapsedTime.measure(f"end_query_envelopes: {query_dict.keys()} {self.curr_container.found_count}")
+        ElapsedTime.measure(f"end_query_envelopes: {query_dict} {self.curr_container.found_count}")
 
-    def register_found_envelope(self):
-        self.last_found_envelope_ipos += 1
-        self.curr_container.populate_implicit_arg_values()
 
     # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that) together with this loop:
     def interpret_command(self, first_interp_factory_id: str) -> None:
@@ -145,13 +151,36 @@ class InterpContext:
         self.curr_interp = self.create_next_interp(first_interp_factory_id)
         while self.curr_interp:
             interp_n += 1
-            ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {type(self.curr_interp).__name__}")
 
+            # Query envelope values only - they will be used for consumption of command line args:
+            ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {type(self.curr_interp).__name__}")
+            self.query_envelopes()
+
+            ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {type(self.curr_interp).__name__}")
             self.curr_interp.consume_key_args()
             self.curr_interp.consume_pos_args()
 
+            ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {type(self.curr_interp).__name__}")
+            self.query_envelopes()
+            self.curr_container.populate_implicit_arg_values()
+
+            if self.parsed_ctx.comp_type == CompType.DescribeArgs:
+                # Describing args will need to show options except default - query values before defaults:
+                # TODO:
+                pass
+
+            # Apply defaults:
+            # TODO:
+
+            # Query envelopes after all defaults applied:
+            # TODO: We could probably select whether to query only envelopes or their values depending on RunMode.
+            #       But init of next envelope is depends on prev envelope found.
+            ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {type(self.curr_interp).__name__}")
+            self.query_envelopes()
+
             ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {type(self.curr_interp).__name__}")
             interp_step: InterpStep = self.curr_interp.try_iterate()
+            ElapsedTime.measure(f"[i={interp_n}]: after_try_iterate: {type(self.curr_interp).__name__}: {interp_step}")
             if interp_step == InterpStep.NextEnvelope:
                 continue
             elif interp_step == InterpStep.StopAll:
@@ -173,7 +202,6 @@ class InterpContext:
                 )
                 self.prev_interp = self.curr_interp
                 self.curr_interp = self.curr_interp.next_interp()
-                pass
             else:
                 raise RuntimeError(interp_step)
 

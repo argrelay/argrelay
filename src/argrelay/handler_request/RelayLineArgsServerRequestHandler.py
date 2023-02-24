@@ -7,6 +7,7 @@ from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InputContext import InputContext
+from argrelay.runtime_context.InterpContext import function_envelope_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_id_
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
@@ -30,15 +31,16 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
-        if self.interp_ctx.last_found_envelope_ipos < 0:
-            # TODO: Think how to pass info about failure - customize ErrorInvocator:
-            invocator_plugin_id = ErrorInvocator.__name__
-        else:
-            invocator_plugin_id = self.interp_ctx.envelope_containers[0].data_envelope[
+        if self.interp_ctx.is_funct_found():
+            invocator_plugin_id = self.interp_ctx.envelope_containers[function_envelope_ipos_].data_envelope[
                 instance_data_
             ][
                 invocator_plugin_id_
             ]
+        else:
+            # TODO: Think how to pass info about failure - customize ErrorInvocator:
+            invocator_plugin_id = ErrorInvocator.__name__
+
         invocator_plugin: AbstractInvocator = self.local_server.server_config.action_invocators[invocator_plugin_id]
         invocation_input: InvocationInput = invocator_plugin.invoke_control(
             self.local_server.server_config,

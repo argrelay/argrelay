@@ -43,7 +43,9 @@ class EnvelopeContainer:
     # TODO: Part of (or not?) `args_context` (FS_62_25_92_06) to support FS_13_51_07_97 (single out implicit values):
     remaining_types_to_values: dict[str, list[str]] = field(default_factory = lambda: {})
     """
-    All arg values per type left for suggestion given the `assigned_types_to_values`.
+    All arg values per arg type left as options to match arg value given on the command line.
+
+    When arg value from command line matches one of the values, this arg type moves to `assigned_types_to_values`.
     """
 
     def populate_implicit_arg_values(self):
@@ -51,19 +53,22 @@ class EnvelopeContainer:
         When `data_envelope` is singled out, all remaining `arg_type`-s become `ArgSource.ImplicitValue`.
 
         # Implements: FS_13_51_07_97
+        # TODO: add test cases - it should work:
         # See KI_12_84_57_78: It should be fixed to work for N `data_envelope`-s with single same arg value for all.
         """
         # Filter as in: FS_31_70_49_15:
         for arg_type in self.search_control.keys_to_types_dict.values():
-            if arg_type in self.data_envelope:
-                if arg_type not in self.assigned_types_to_values:
-                    assert arg_type in self.remaining_types_to_values
-                    # Update only `assigned_types_to_values`,
-                    # because `remaining_types_to_values` will be updated automatically.
-                    self.assigned_types_to_values[arg_type] = AssignedValue(
-                        self.data_envelope[arg_type],
-                        ArgSource.ImplicitValue,
-                    )
+            if arg_type not in self.assigned_types_to_values:
+                if arg_type in self.remaining_types_to_values:
+                    arg_values = self.remaining_types_to_values[arg_type]
+                    if len(arg_values) == 1:
+                        # TODO: update also remaining types for consistency:
+                        # Update only `assigned_types_to_values`,
+                        # because `remaining_types_to_values` will be updated automatically.
+                        self.assigned_types_to_values[arg_type] = AssignedValue(
+                            arg_values[0],
+                            ArgSource.ImplicitValue,
+                        )
 
     @staticmethod
     def print_help(envelope_containers: list[EnvelopeContainer]):

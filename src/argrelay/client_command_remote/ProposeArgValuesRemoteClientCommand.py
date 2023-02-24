@@ -52,7 +52,7 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
     "command_line": "{input_ctx.command_line}",
     "cursor_cpos": {input_ctx.cursor_cpos},
     "comp_type": "{input_ctx.comp_type.name}",
-    "is_debug_enabled": true
+    "is_debug_enabled": "{input_ctx.is_debug_enabled}"
 }}
 """)
         request_body_len = len(request_body_str.encode())

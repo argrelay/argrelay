@@ -2,7 +2,7 @@ import subprocess
 
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
-from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, envelope_id_, instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_id_
@@ -15,11 +15,11 @@ class GitRepoInvocator(AbstractInvocator):
 
     def invoke_control(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
 
-        assert interp_ctx.last_found_envelope_ipos >= 0, "the (first) function envelope must be found"
+        assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
-        function_envelope = interp_ctx.envelope_containers[0]
+        function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
         invocator_plugin_id = function_envelope.data_envelope[instance_data_][invocator_plugin_id_]
         invocation_input = InvocationInput(
             invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_id],
@@ -30,7 +30,7 @@ class GitRepoInvocator(AbstractInvocator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        if invocation_input.data_envelopes[0][envelope_id_] == "desc_repo":
+        if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == "desc_repo":
             # The 2nd envelope (`DataEnvelopeSchema`) is supposed to have `envelope_payload` in its `envelope_payload`:
             repo_envelope = invocation_input.data_envelopes[1]
             abs_repo_path = repo_envelope[envelope_payload_]["abs_repo_path"]

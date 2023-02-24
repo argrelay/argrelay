@@ -33,6 +33,7 @@ cluster_search_control = {
         {"code": ServiceArgType.CodeMaturity.name},
         {"stage": ServiceArgType.FlowStage.name},
         {"region": ServiceArgType.GeoRegion.name},
+        {"name": ServiceArgType.ClusterName.name},
     ],
 }
 
