@@ -2,15 +2,16 @@ from __future__ import annotations
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServiceInvocator import ServiceInvocator
 from argrelay.custom_integ.ServiceLoaderConfigSchema import (
     service_loader_config_desc,
     test_data_ids_to_load_,
 )
+from argrelay.custom_integ.value_constants import goto_host_funct_, goto_service_funct_
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
-from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
@@ -100,6 +101,7 @@ class ServiceLoader(AbstractLoader):
         self.populate_TD_63_37_05_36_default(data_envelopes)
         self.populate_TD_76_09_29_31_overlapped(data_envelopes)
         self.populate_TD_38_03_48_51_large_generated(data_envelopes)
+        self.populate_TD_43_24_76_58_single(data_envelopes)
 
         self.generate_envelope_id(data_envelopes)
 
@@ -137,9 +139,9 @@ class ServiceLoader(AbstractLoader):
             #       But to be robust against re-ordering, this loader should share function names like
             #       "desc", "list", "goto" to accept `GitRepoEnvelopeClass` in addition to `ServiceEnvelopeClass`.
             {
-                envelope_id_: "goto_host",
+                envelope_id_: goto_host_funct_,
                 instance_data_: {
-                    invocator_plugin_id_: ErrorInvocator.__name__,
+                    invocator_plugin_id_: ServiceInvocator.__name__,
                     search_control_list_: [
                         cluster_search_control,
                         host_search_control,
@@ -151,9 +153,9 @@ class ServiceLoader(AbstractLoader):
                 GlobalArgType.ObjectSelector.name: "host",
             },
             {
-                envelope_id_: "goto_service",
+                envelope_id_: goto_service_funct_,
                 instance_data_: {
-                    invocator_plugin_id_: ErrorInvocator.__name__,
+                    invocator_plugin_id_: ServiceInvocator.__name__,
                     search_control_list_: [
                         cluster_search_control,
                         service_search_control,
@@ -439,6 +441,15 @@ class ServiceLoader(AbstractLoader):
                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                 ServiceArgType.ClusterName.name: "dev-emea-upstream",
                 ServiceArgType.HostName.name: "asdf-du",
+                ServiceArgType.ServiceName.name: "s_a",
+            },
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
+                ServiceArgType.ClusterName.name: "dev-emea-upstream",
+                ServiceArgType.HostName.name: "asdf-du",
                 ServiceArgType.ServiceName.name: "s_b",
             },
             {
@@ -595,3 +606,82 @@ class ServiceLoader(AbstractLoader):
                             }
 
                             data_envelopes.append(generated_service)
+
+    def populate_TD_43_24_76_58_single(self, data_envelopes: list):
+        if not self.is_test_data_allowed("TD_43_24_76_58"):
+            return
+
+        data_envelopes.extend([
+
+            ############################################################################################################
+            # TD_43_24_76_58 # single: clusters
+
+            {
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_43_24_76_58",  # single
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-apac-downstream",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                # TODO: repeated info: FS_83_48_41_30 vs FS_46_96_59_05:
+                init_control_: [
+                    ServiceArgType.ClusterName.name,
+                ],
+                test_data_: "TD_43_24_76_58",  # single
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+            },
+
+            ############################################################################################################
+            # TD_43_24_76_58 # single: hosts
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_43_24_76_58",  # single
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.ClusterName.name: "dev-apac-downstream",
+                ServiceArgType.HostName.name: "qwer",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_43_24_76_58",  # single
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.ClusterName.name: "dev-apac-downstream",
+                ServiceArgType.HostName.name: "asdf",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_43_24_76_58",  # single
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+                ServiceArgType.HostName.name: "qwer",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_43_24_76_58",  # single
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+                ServiceArgType.HostName.name: "asdf",
+            },
+        ])

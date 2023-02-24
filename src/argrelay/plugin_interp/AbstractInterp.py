@@ -28,6 +28,9 @@ class AbstractInterp:
     def try_iterate(self) -> InterpStep:
         pass
 
+    def run_fill_control(self) -> None:
+        pass
+
     def propose_arg_completion(self) -> None:
         pass
 

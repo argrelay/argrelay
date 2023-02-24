@@ -25,21 +25,63 @@ from argrelay.test_helper.EnvMockBuilder import (
 
 class ThisTestCase(TestCase):
 
+    def verify_assignments(
+        self,
+        test_data,
+        test_line,
+        comp_type,
+        run_mode,
+        found_envelope_ipos,
+        expected_assignments,
+    ):
+        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+        env_mock_builder = (
+            EnvMockBuilder()
+            .set_run_mode(run_mode)
+            .set_command_line(command_line)
+            .set_cursor_cpos(cursor_cpos)
+            .set_comp_type(comp_type)
+            .set_test_data_ids_to_load([
+                test_data,
+            ])
+        )
+        with env_mock_builder.build():
+            command_obj = __main__.main()
+            assert isinstance(command_obj, AbstractLocalClientCommand)
+            interp_ctx = command_obj.interp_ctx
+
+            for arg_type, arg_value in expected_assignments.items():
+                if arg_value is None:
+                    self.assertTrue(
+                        arg_type not in
+                        interp_ctx.envelope_containers
+                        [found_envelope_ipos].assigned_types_to_values
+                    )
+                else:
+                    self.assertEqual(
+                        arg_value,
+                        interp_ctx.envelope_containers
+                        [found_envelope_ipos].assigned_types_to_values
+                        [arg_type]
+                    )
+
     def run_completion_mode_test(
         self,
-        test_data_filter,
-        command_line,
+        test_data,
+        test_line,
         comp_type,
-        cursor_cpos,
         expected_suggestions,
     ):
+        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()
             .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)
-            .set_test_data_ids_to_load(test_data_filter)
+            .set_test_data_ids_to_load([
+                test_data,
+            ])
         )
         with env_mock_builder.build():
             command_obj = __main__.main()
@@ -108,12 +150,13 @@ class ThisTestCase(TestCase):
             (
                 line_no(),
                 "some_command goto upstream qa apac desc host |", CompType.SubsequentHelp,
-                "ro\nrw",
+                "",
                 "FS_23_62_89_43: "
                 "`ServiceArgType.CodeMaturity` = `qa` singles out `ServiceEnvelopeClass.ClassCluster` which "
                 "skips suggestion for `ServiceArgType.GeoRegion`, then this cluster has only one "
                 "`ServiceEnvelopeClass.ClassHost` = `sdfg` which also skips host suggestion "
-                "leaving `ServiceArgType.AccessType` to be the next to suggest.",
+                "leaving `ServiceArgType.AccessType` to be the next to suggest which has a default "
+                "leading to no suggestions at all.",
             ),
             (
                 line_no(), "some_command service goto upstream|", CompType.PrefixHidden,
@@ -158,13 +201,11 @@ class ThisTestCase(TestCase):
                     expected_suggestions,
                     case_comment,
                 ) = test_case
-                (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 self.run_completion_mode_test(
-                    ["TD_63_37_05_36"],  # demo
-                    command_line,
+                    "TD_63_37_05_36",  # demo
+                    test_line,
                     comp_type,
-                    cursor_cpos,
                     expected_suggestions,
                 )
 
@@ -203,22 +244,75 @@ class ThisTestCase(TestCase):
                     expected_suggestions,
                     case_comment,
                 ) = test_case
-                (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 self.run_completion_mode_test(
-                    ["TD_76_09_29_31"],  # overlapped
-                    command_line,
+                    "TD_76_09_29_31",  # overlapped
+                    test_line,
                     comp_type,
-                    cursor_cpos,
                     expected_suggestions,
+                )
+
+    def test_propose_auto_comp_TD_43_24_76_58_single(self):
+        """
+        Test arg values suggestion with TD_43_24_76_58 # single
+        """
+
+        test_cases = [
+            (
+                line_no(), RunMode.CompletionMode, "some_command host goto |", CompType.PrefixShown,
+                "apac\nemea",
+                1,
+                {
+                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                },
+                "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServiceArgType.CodeMaturity`",
+            ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command host goto dev |", CompType.PrefixShown,
+                "apac\nemea",
+                1,
+                {
+                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                },
+                "Even if all `data_envelope`-s has the same `dev` `ServiceArgType.CodeMaturity`, "
+                "if it is provided, the value `dev` is still consumed."
+            ),
+        ]
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    run_mode,
+                    test_line,
+                    comp_type,
+                    expected_suggestions,
+                    found_envelope_ipos,
+                    expected_assignments,
+                    case_comment,
+                ) = test_case
+
+                self.run_completion_mode_test(
+                    "TD_43_24_76_58",  # single
+                    test_line,
+                    comp_type,
+                    expected_suggestions,
+                )
+                self.verify_assignments(
+                    "TD_43_24_76_58",
+                    test_line,
+                    comp_type,
+                    run_mode,
+                    found_envelope_ipos,
+                    expected_assignments,
                 )
 
     def test_describe_args(self):
         # @formatter:off
         test_cases = [
             (
-                line_no(), "some_command goto service dev amer upstream sdfg|  ", CompType.DescribeArgs,
-                "",
+                line_no(), "some_command goto service dev emea upstream s_|  ", CompType.DescribeArgs,
+                "FS_23_62_89_43: tangent token is taken into account in describe",
                 f"""
 {ReservedEnvelopeClass.ClassFunction.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
@@ -226,29 +320,30 @@ class ThisTestCase(TestCase):
 {ServiceEnvelopeClass.ClassCluster.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}GeoRegion: amer [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassService.name}:
-{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-amer-upstream [{ArgSource.InitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}HostName: qwer-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}ServiceName: s_a [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.InitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
 {" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
 {ServiceArgType.AccessType.name}:
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*AccessType: ?{TermColor.RESET.value} ro|rw
+{" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
             ),
             (
-                line_no(), "some_command goto host upstream emea|", CompType.DescribeArgs,
-                "",
+                line_no(), "some_command goto host upstream |", CompType.DescribeArgs,
+                "Envelopes ",
+                # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
 {ReservedEnvelopeClass.ClassFunction.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassCluster.name}:
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev|qa
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa
 {" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} amer|emea|apac
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-amer-upstream|dev-emea-upstream|dev-apac-upstream|qa-apac-upstream
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} amer emea apac
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-amer-upstream dev-emea-upstream dev-apac-upstream qa-apac-upstream
 {ServiceEnvelopeClass.ClassHost.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
@@ -316,7 +411,31 @@ class ThisTestCase(TestCase):
                     ServiceArgType.FlowStage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
                     ServiceArgType.ClusterName.name: AssignedValue("dev-emea-downstream", ArgSource.ExplicitPosArg),
                 },
-                "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion",
+                "Implicit assignment of all cluster categories when cluster name is specified",
+            ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto host prod-apac-downstream wert-pd-1 |", CompType.PrefixShown,
+                3,
+                {
+                    ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.DefaultValue),
+                },
+                "Default `ro` for `prod`",
+            ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto host prod-apac-downstream wert-pd-1 rw |", CompType.PrefixShown,
+                3,
+                {
+                    ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.ExplicitPosArg),
+                },
+                "Override default `ro` for `prod` to `rw`",
+            ),
+            (
+                line_no(), RunMode.CompletionMode, "some_command goto host dev-apac-upstream zxcv-du |", CompType.PrefixShown,
+                3,
+                {
+                    ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.DefaultValue),
+                },
+                "Default `rw` for non-`prod`",
             ),
             (
                 line_no(), RunMode.CompletionMode, "some_command goto|", CompType.PrefixShown,
@@ -415,7 +534,6 @@ class ThisTestCase(TestCase):
         # @formatter:on
 
         for test_case in test_cases:
-
             with self.subTest(test_case):
                 (
                     line_number,
@@ -426,36 +544,14 @@ class ThisTestCase(TestCase):
                     expected_assignments,
                     case_comment,
                 ) = test_case
-                (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
-                env_mock_builder = (
-                    EnvMockBuilder()
-                    .set_run_mode(run_mode)
-                    .set_command_line(command_line)
-                    .set_cursor_cpos(cursor_cpos)
-                    .set_comp_type(comp_type)
-                    .set_test_data_ids_to_load([
-                        "TD_63_37_05_36",  # demo
-                    ])
+                self.verify_assignments(
+                    "TD_63_37_05_36",
+                    test_line,
+                    comp_type,
+                    run_mode,
+                    found_envelope_ipos,
+                    expected_assignments,
                 )
-                with env_mock_builder.build():
-                    command_obj = __main__.main()
-                    assert isinstance(command_obj, AbstractLocalClientCommand)
-                    interp_ctx = command_obj.interp_ctx
-
-                    for arg_type, arg_value in expected_assignments.items():
-                        if arg_value is None:
-                            self.assertTrue(
-                                arg_type not in
-                                interp_ctx.envelope_containers
-                                [found_envelope_ipos].assigned_types_to_values
-                            )
-                        else:
-                            self.assertEqual(
-                                arg_value,
-                                interp_ctx.envelope_containers
-                                [found_envelope_ipos].assigned_types_to_values
-                                [arg_type]
-                            )
 
     def test_capture_invocation_input(self):
         test_line = "some_command goto service prod wert-pd-1 |"

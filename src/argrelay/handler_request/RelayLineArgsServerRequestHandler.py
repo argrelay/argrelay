@@ -42,7 +42,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
             invocator_plugin_id = ErrorInvocator.__name__
 
         invocator_plugin: AbstractInvocator = self.local_server.server_config.action_invocators[invocator_plugin_id]
-        invocation_input: InvocationInput = invocator_plugin.invoke_control(
+        invocation_input: InvocationInput = invocator_plugin.run_invoke_control(
             self.local_server.server_config,
             self.interp_ctx,
         )

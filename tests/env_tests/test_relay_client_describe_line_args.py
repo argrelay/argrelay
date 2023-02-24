@@ -10,7 +10,7 @@ from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
 class ThisTestCase(TestCase):
 
     def test_live_describe_line_args(self):
-        test_line = "some_command pro|d whatever"
+        test_line = "some_command goto host pro| whatever"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()

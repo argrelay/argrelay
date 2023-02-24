@@ -170,7 +170,7 @@ class InterpContext:
                 pass
 
             # Apply defaults:
-            # TODO:
+            self.curr_interp.run_fill_control()
 
             # Query envelopes after all defaults applied:
             # TODO: We could probably select whether to query only envelopes or their values depending on RunMode.

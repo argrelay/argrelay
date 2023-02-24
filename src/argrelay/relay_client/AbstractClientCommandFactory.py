@@ -21,11 +21,12 @@ class AbstractClientCommandFactory:
 
     @staticmethod
     def select_command(input_ctx: InputContext) -> str:
-        if input_ctx.run_mode == RunMode.CompletionMode:
+        if input_ctx.run_mode == RunMode.InvocationMode:
             if input_ctx.comp_type == CompType.DescribeArgs:
                 return DESCRIBE_LINE_ARGS_PATH
             else:
-                assert input_ctx.comp_type != CompType.InvokeAction
-                return PROPOSE_ARG_VALUES_PATH
+                assert input_ctx.comp_type == CompType.InvokeAction
+                return RELAY_LINE_ARGS_PATH
         else:
-            return RELAY_LINE_ARGS_PATH
+            assert input_ctx.run_mode == RunMode.CompletionMode
+            return PROPOSE_ARG_VALUES_PATH

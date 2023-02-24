@@ -98,9 +98,7 @@ class FuncArgsInterp(AbstractInterp):
 
             if self.interp_ctx.curr_container_ipos == 0:
                 # This is a function envelope:
-                search_control_list: list[SearchControl] = self.get_search_control_list(
-                    self.interp_ctx.curr_container.data_envelope
-                )
+                search_control_list: list[SearchControl] = self.get_search_control_list()
                 # Create `EnvelopeContainer`-s for every envelope to find:
                 self.interp_ctx.create_containers(search_control_list)
 
@@ -117,20 +115,31 @@ class FuncArgsInterp(AbstractInterp):
             # No `data_envelope` = nothing to do:
             return InterpStep.StopAll
 
-    def get_search_control_list(self, function_data_envelope: dict) -> list[SearchControl]:
-        invocator_plugin_id = function_data_envelope[instance_data_][invocator_plugin_id_]
-        invocator_plugin: AbstractInvocator = self.interp_ctx.action_invocators[invocator_plugin_id]
-        search_control_list: list[SearchControl] = invocator_plugin.search_control(function_data_envelope)
+    def get_search_control_list(self) -> list[SearchControl]:
+        invocator_plugin = self.get_funct_invocator()
+        search_control_list: list[SearchControl] = invocator_plugin.run_search_control(self.get_funct_data_envelope())
         return search_control_list
 
     def run_init_control(self):
-        function_data_envelope = self.interp_ctx.envelope_containers[function_envelope_ipos_].data_envelope
-        invocator_plugin_id = function_data_envelope[instance_data_][invocator_plugin_id_]
-        invocator_plugin: AbstractInvocator = self.interp_ctx.action_invocators[invocator_plugin_id]
-        invocator_plugin.init_control(
+        invocator_plugin = self.get_funct_invocator()
+        invocator_plugin.run_init_control(
             self.interp_ctx.envelope_containers,
             self.interp_ctx.curr_container_ipos,
         )
+
+    def run_fill_control(self):
+        self.get_funct_invocator().run_fill_control(
+            self.interp_ctx.envelope_containers,
+            self.interp_ctx.curr_container_ipos,
+        )
+
+    def get_funct_data_envelope(self):
+        return self.interp_ctx.envelope_containers[function_envelope_ipos_].data_envelope
+
+    def get_funct_invocator(self):
+        invocator_plugin_id = self.get_funct_data_envelope()[instance_data_][invocator_plugin_id_]
+        invocator_plugin: AbstractInvocator = self.interp_ctx.action_invocators[invocator_plugin_id]
+        return invocator_plugin
 
     def select_next_container(self):
         self.interp_ctx.curr_container_ipos += 1

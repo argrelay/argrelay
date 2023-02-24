@@ -140,6 +140,6 @@ class ParsedContext(InputContext):
         eprint(TermColor.DEBUG.value, end = "")
         eprint(f"sel_token_l_part: \"{self.tan_token_l_part}\"", end = " ")
         eprint(f"sel_token_r_part: \"{self.tan_token_r_part}\"", end = " ")
-        eprint(f"comp_type: {self.comp_type}", end = " ")
+        eprint(f"comp_type: {self.comp_type.name}", end = " ")
         eprint(f"comp_key: {self.comp_key}", end = " ")
         eprint(TermColor.RESET.value, end = end_str)

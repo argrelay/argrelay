@@ -10,10 +10,17 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import inv
 
 class GitRepoInvocator(AbstractInvocator):
 
-    def __init__(self, config_dict: dict):
+    def __init__(
+        self,
+        config_dict: dict,
+    ):
         super().__init__(config_dict)
 
-    def invoke_control(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
+    def run_invoke_control(
+        self,
+        server_config: ServerConfig,
+        interp_ctx: InterpContext,
+    ) -> InvocationInput:
 
         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
 

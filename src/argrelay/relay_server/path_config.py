@@ -47,7 +47,7 @@ def create_blueprint(local_server: LocalServer):
     @root_blueprint.route(DESCRIBE_LINE_ARGS_PATH, methods = ['post'])
     @swag_from(DescribeLineArgsSpec.spec_data)
     def describe_line_args():
-        input_ctx = create_input_ctx(RunMode.CompletionMode)
+        input_ctx = create_input_ctx(RunMode.InvocationMode)
         response_dict = describe_line_args_handler.handle_request(input_ctx)
         response_json = interp_result_desc.dict_schema.dumps(response_dict)
 
