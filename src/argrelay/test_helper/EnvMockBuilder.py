@@ -35,10 +35,12 @@ from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
 from argrelay.schema_config_core_server.MongoServerConfigSchema import start_server_
+from argrelay.schema_config_core_server.QueryCacheConfigSchema import enable_query_cache_
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     mongo_config_,
     server_config_desc,
     plugin_dict_,
+    query_cache_config_,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper.OpenFileMock import OpenFileMock
@@ -76,6 +78,8 @@ class EnvMockBuilder:
     *   Simple selection of test data - see usage of: `set_test_data_ids_to_load`
 
     *   Verifying plugin `InvocationInput` - see usage of: `invocator_plugin_invoke_action_func_path`
+
+    *   ...
 
     """
 
@@ -120,6 +124,8 @@ class EnvMockBuilder:
 
     invocator_plugin_invoke_action_func_path = None
     invocation_input: InvocationInput = None
+
+    enable_query_cache: bool = True
 
     def set_run_mode(self, run_mode: RunMode):
         self.run_mode = run_mode
@@ -223,6 +229,10 @@ class EnvMockBuilder:
         )
         return self
 
+    def set_enable_query_cache(self, given_val: bool):
+        self.enable_query_cache = given_val
+        return self
+
     @contextlib.contextmanager
     def mock_file_open(self):
         with mock.patch("builtins.open", self.file_mock.open) as file_mock:
@@ -254,11 +264,18 @@ class EnvMockBuilder:
         if self.enable_demo_git_loader:
             assert self.mock_client_config_file_read
 
+        if self.enable_query_cache != self.server_config_dict[query_cache_config_][enable_query_cache_]:
+            assert self.mock_server_config_file_read
+
         if self.mock_client_config_file_read:
             self.client_config_dict[use_local_requests_] = self.is_client_config_with_local_server
             self.file_mock.path_to_data[client_config_desc.default_file_path] = json.dumps(self.client_config_dict)
 
         if self.mock_server_config_file_read:
+            """
+            Change server config data, then mock file access to return that data for tests.
+            """
+
             self.server_config_dict[mongo_config_][mongo_server_][
                 start_server_
             ] = self.is_server_config_with_mongo_start
@@ -267,6 +284,8 @@ class EnvMockBuilder:
 
             plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
             plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
+
+            self.server_config_dict[query_cache_config_][enable_query_cache_] = self.enable_query_cache
 
             self.file_mock.path_to_data[server_config_desc.default_file_path] = yaml.dump(self.server_config_dict)
 

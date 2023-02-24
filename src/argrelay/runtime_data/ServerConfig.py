@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from argrelay.mongo_data.MongoConfig import MongoConfig
+from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.StaticData import StaticData
@@ -12,6 +13,7 @@ from argrelay.runtime_data.StaticData import StaticData
 class ServerConfig:
     connection_config: ConnectionConfig
     mongo_config: MongoConfig
+    query_cache_config: QueryCacheConfig
 
     plugin_id_load_list: list[str]
     """

@@ -46,31 +46,6 @@ class EnvelopeContainer:
     All arg values per type left for suggestion given the `assigned_types_to_values`.
     """
 
-    def update_curr_remaining_types_to_values(self, query_res):
-        # reset:
-        self.remaining_types_to_values.clear()
-        self.found_count = 0
-
-        # TODO: What if search result is huge? Blame data set designer?
-        # find all remaining arg vals per arg type:
-        for self.data_envelope in iter(query_res):
-            self.found_count += 1
-            # `arg_type` must be known:
-            for arg_type in self.search_control.types_to_keys_dict.keys():
-                # `arg_type` must be in one of the `data_envelope`-s found:
-                if arg_type in self.data_envelope:
-                    # `arg_type` must not be assigned/consumed:
-                    if arg_type not in self.assigned_types_to_values.keys():
-                        arg_val = self.data_envelope[arg_type]
-                        if arg_type not in self.remaining_types_to_values:
-                            val_list = []
-                            self.remaining_types_to_values[arg_type] = val_list
-                        else:
-                            val_list = self.remaining_types_to_values[arg_type]
-                        # Deduplicate: ensure unique `arg_value`-s:
-                        if arg_val not in val_list:
-                            val_list.append(arg_val)
-
     def populate_implicit_arg_values(self):
         """
         When `data_envelope` is singled out, all remaining `arg_type`-s become `ArgSource.ImplicitValue`.

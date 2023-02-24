@@ -2,19 +2,17 @@ from __future__ import annotations
 
 from dataclasses import field, dataclass
 
-from pymongo.collection import Collection
-from pymongo.database import Database
-
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.relay_server.QueryEngine import QueryEngine
+from argrelay.relay_server.QueryResult import QueryResult
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_context.SearchControl import SearchControl
-from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 
 
 @dataclass
@@ -36,9 +34,7 @@ class InterpContext:
     Reference to `ServerConfig.action_invocators`.
     """
 
-    mongo_db: Database
-
-    mongo_col: Collection = field(init = False)
+    query_engine: QueryEngine
 
     unconsumed_tokens: list[int] = field(init = False)
     """
@@ -85,7 +81,6 @@ class InterpContext:
 
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
-        self.mongo_col = self.mongo_db[data_envelopes_]
         self.envelope_containers.append(self.curr_container)
 
     def _init_unconsumed_tokens(self):
@@ -124,10 +119,14 @@ class InterpContext:
                 query_dict[arg_type] = self.curr_container.assigned_types_to_values[arg_type].arg_value
 
         # TODO: FS_06_99_43_60: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
-        ElapsedTime.measure("before_mongo_find")
-        query_res = self.mongo_col.find(query_dict)
-        ElapsedTime.measure("after_mongo_find")
-        self.curr_container.update_curr_remaining_types_to_values(query_res)
+        query_result: QueryResult = self.query_engine.query_envelopes(
+            query_dict,
+            self.curr_container.search_control,
+            self.curr_container.assigned_types_to_values,
+        )
+        self.curr_container.remaining_types_to_values = query_result.remaining_types_to_values
+        self.curr_container.data_envelope = query_result.data_envelope
+        self.curr_container.found_count = query_result.found_count
         ElapsedTime.measure(f"end_query_envelopes: {query_dict.keys()} {self.curr_container.found_count}")
 
     def register_found_envelope(self):

@@ -9,6 +9,7 @@ from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 
@@ -23,11 +24,16 @@ class LocalServer:
     server_config: ServerConfig
     mongo_server: MongoServerWrapper
     mongo_client: MongoClient
+    query_engine: QueryEngine
 
     def __init__(self, server_config: ServerConfig):
         self.server_config = server_config
         self.mongo_server = MongoServerWrapper()
         self.mongo_client = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
+        self.query_engine = QueryEngine(
+            self.server_config.query_cache_config,
+            self.get_mongo_database(),
+        )
 
     def start_local_server(self):
         self._activate_plugins()
@@ -37,6 +43,9 @@ class LocalServer:
 
     def get_mongo_database(self):
         return self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+
+    def get_query_engine(self):
+        return self.query_engine
 
     def _activate_plugins(self):
         """

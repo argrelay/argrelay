@@ -89,3 +89,5 @@ class ThisTestCase(TestCase):
             os.path.expanduser("~") + "/" + ".argrelay.client.json",
         ]:
             self.assertFalse(os.path.exists(file_path))
+
+    # TODO: Run test-loading other than default demo data.

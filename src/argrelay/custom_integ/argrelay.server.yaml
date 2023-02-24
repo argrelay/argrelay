@@ -16,6 +16,11 @@ mongo_config:
         # See `mongo_notes.md`:
         server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
 
+query_cache_config:
+    enable_query_cache: True
+    query_cache_ttl_sec: 60
+    query_cache_max_size_bytes: 1048576 # 1MiB
+
 plugin_id_load_list:
 
     -   FirstArgInterpFactory
