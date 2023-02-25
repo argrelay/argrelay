@@ -43,11 +43,16 @@ class InputContext(RequestContext):
         """
         if "COMP_LINE" in os.environ:
             # If "COMP_LINE" env var exists, the call is for CompletionMode:
-            run_mode = RunMode.CompletionMode
             command_line = os.environ["COMP_LINE"]
             cursor_cpos = int(os.environ["COMP_POINT"])
             comp_type = CompType(int(os.environ["COMP_TYPE"]))
             comp_key = os.environ["COMP_KEY"]
+            if comp_type == CompType.DescribeArgs:
+                # FS_23_62_89_43:
+                # To process tangent token in case of `CompType.DescribeArgs`, use `RunMode.InvocationMode`:
+                run_mode = RunMode.InvocationMode
+            else:
+                run_mode = RunMode.CompletionMode
         else:
             # If no "COMP_LINE" env var, the call is for InvocationMode:
             run_mode = RunMode.InvocationMode
@@ -74,4 +79,5 @@ class InputContext(RequestContext):
         eprint(TermColor.DEBUG.value, end = "")
         eprint(f"\"{self.command_line}\"", end = " ")
         eprint(f"cursor_cpos: {self.cursor_cpos}", end = " ")
+        eprint(f"run_mode: {self.run_mode}", end = " ")
         eprint(TermColor.RESET.value, end = end_str)

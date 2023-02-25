@@ -53,8 +53,6 @@ class EnvelopeContainer:
         When `data_envelope` is singled out, all remaining `arg_type`-s become `ArgSource.ImplicitValue`.
 
         # Implements: FS_13_51_07_97
-        # TODO: add test cases - it should work:
-        # See KI_12_84_57_78: It should be fixed to work for N `data_envelope`-s with single same arg value for all.
         """
         # Filter as in: FS_31_70_49_15:
         for arg_type in self.search_control.keys_to_types_dict.values():
@@ -62,9 +60,7 @@ class EnvelopeContainer:
                 if arg_type in self.remaining_types_to_values:
                     arg_values = self.remaining_types_to_values[arg_type]
                     if len(arg_values) == 1:
-                        # TODO: update also remaining types for consistency:
-                        # Update only `assigned_types_to_values`,
-                        # because `remaining_types_to_values` will be updated automatically.
+                        del self.remaining_types_to_values[arg_type]
                         self.assigned_types_to_values[arg_type] = AssignedValue(
                             arg_values[0],
                             ArgSource.ImplicitValue,
@@ -103,7 +99,7 @@ class EnvelopeContainer:
                     eprint(f" ?", end = "")
                     eprint(TermColor.RESET.value, end = "")
                     eprint(
-                        f" {'|'.join(envelope_container.remaining_types_to_values[arg_type])}",
+                        f" {' '.join(envelope_container.remaining_types_to_values[arg_type])}",
                         end = ""
                     )
                 else:

@@ -27,13 +27,13 @@ class AbstractInvocator(AbstractPlugin):
     *   share data only via :class:`InvocationInput`
     """
 
-    def search_control(
+    def run_search_control(
         self,
         function_data_envelope: dict,
     ) -> list[SearchControl]:
         return self.extract_search_control_from_function_data_envelope(function_data_envelope)
 
-    def init_control(
+    def run_init_control(
         self,
         envelope_containers: list[EnvelopeContainer],
         curr_container_ipos: int,
@@ -49,7 +49,18 @@ class AbstractInvocator(AbstractPlugin):
             curr_container_ipos,
         )
 
-    def invoke_control(self, server_config: ServerConfig, interp_ctx: InterpContext) -> InvocationInput:
+    def run_fill_control(
+        self,
+        envelope_containers: list[EnvelopeContainer],
+        curr_container_ipos: int,
+    ):
+        pass
+
+    def run_invoke_control(
+        self,
+        server_config: ServerConfig,
+        interp_ctx: InterpContext,
+    ) -> InvocationInput:
         """
         Server-side entry point.
         The plugin instance is used by server after `AbstractPlugin.activate_plugin`.

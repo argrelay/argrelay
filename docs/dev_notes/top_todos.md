@@ -4,31 +4,11 @@ TODO: top todos
 
 To demo:
 
-*   Fix this:
-
-    ```
-    relay_demo goto host dev-emea-downstream ro
-
-    ClassFunction:
-      ActionType: goto [ExplicitPosArg]
-      ObjectSelector: host [ExplicitPosArg]
-    ClassCluster:
-      *CodeMaturity: ? dev                                                        # Fixed, but why no [ImplicitArg]?
-      FlowStage: ? downstream                                                     # Why not fixed?
-      GeoRegion: ? emea                                                           # Why not fixed?
-      ClusterName: dev-emea-downstream [ExplicitPosArg]
-    ClassHost:
-      ClusterName: dev-emea-downstream [InitValue]
-      HostName: xcvb-dd [ImplicitValue]
-      LiveStatus: [none]
-    AccessType:
-      AccessType: ro [ExplicitPosArg]
-    ```
+*   Add tests to ensure override arg works for default values (e.g. from implicit `ro` by explicit `rw`).
+*   Show options for default values in describe
 
 *   Populate TD_63_37_05_36 demo services data.
     Complete demo data: add (1) data center, (2) server rack, (3) process id, to demo data.
-
-*   "Describe" should run with InvocationMode instead of CompletionMode (to include current tangent tocken).
 
 *   Meta functions:
     *   List all objects of specified query.
@@ -36,19 +16,16 @@ To demo:
     *   Print help string.
 
 *   List data = function with multiple envelopes
+*   FS_18_64_57_18: Var args
 
 *   Get help metadata
     Showing help: help_title, help_details.
-
-*   FS_18_64_57_18: Var args
+    Try help for every suggested option:
+    https://stackoverflow.com/questions/7267185/bash-autocompletion-add-description-for-possible-completions/10130007#10130007
 
 *   If there are multiple `data_envelope` anywhere in `query_plan` (as last `data_envelope` or not), it should be possible to hit enter and provide some meaningful action for the list of these `data_envelope`-s of one clas currently found (even if function needs envelopes of subsequent classes).
 
-*   KI_12_84_57_78: Fix singled out arg values for multiple `data_envelope`-s.
-
 *   Change separator from `|` to ` `.
-
-*   Add tests to ensure override arg works (e.g. from implicit `ro` by explicit `rw`).
 
 *   Add named args.
 
@@ -141,7 +118,3 @@ Extra:
 *   Use `ssh` on selected service (a useful case).
 
 *   Describe selected service (extra meta or show payload?).
-
-*   Try help for every suggested option:
-    https://stackoverflow.com/questions/7267185/bash-autocompletion-add-description-for-possible-completions/10130007#10130007
-
