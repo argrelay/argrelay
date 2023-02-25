@@ -228,7 +228,7 @@ two terminal windows are required.
     While it is running (temporarily),<br/>
     this sub-shell is configured for Bash Tab-completion for `relay_demo` command.
 
-*   Try to complete command `relay_demo`:
+*   Try to `Tab`-complete command `relay_demo` using [demo test data][TD_63_37_05_36.demo_services_data.md]:
 
     ```sh
     # in client `dev-shell.bash`:

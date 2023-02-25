@@ -18,6 +18,7 @@ class ServiceArgType(Enum):
     ClusterName = auto()
     # ---
     HostName = auto()
+    IpAddress = auto()
     ServiceName = auto()
     # ---
     AccessType = auto()

@@ -4,18 +4,18 @@ from dataclasses import field, dataclass
 
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.InterpStep import InterpStep
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
-from argrelay.relay_server.QueryEngine import QueryEngine
+from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_context.SearchControl import SearchControl
 
 function_envelope_ipos_ = 0
+
 
 @dataclass
 class InterpContext:
@@ -113,22 +113,16 @@ class InterpContext:
             self.envelope_containers[function_envelope_ipos_].found_count == 1
         )
 
-    def query_envelopes(self):
+    def query_prop_values(self):
         if not self.curr_container.search_control.envelope_class:
             # If `ReservedArgType.EnvelopeClass` is not specified, nothing to search:
             return
 
         ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
-        query_dict = {
-            ReservedArgType.EnvelopeClass.name: self.curr_container.search_control.envelope_class,
-        }
-        # FS_31_70_49_15: populate arg values to search from the context:
-        for arg_type in self.curr_container.search_control.types_to_keys_dict.keys():
-            if arg_type in self.curr_container.assigned_types_to_values:
-                query_dict[arg_type] = self.curr_container.assigned_types_to_values[arg_type].arg_value
+        query_dict = populate_query_dict(self.curr_container)
 
         # TODO: FS_06_99_43_60: How to query values contained in arrays? For example, `GitRepoRelPath` is array. How to query envelopes which contain given value in elements of the array?
-        query_result: QueryResult = self.query_engine.query_envelopes(
+        query_result: QueryResult = self.query_engine.query_prop_values(
             query_dict,
             self.curr_container.search_control,
             self.curr_container.assigned_types_to_values,
@@ -137,7 +131,6 @@ class InterpContext:
         self.curr_container.data_envelope = query_result.data_envelope
         self.curr_container.found_count = query_result.found_count
         ElapsedTime.measure(f"end_query_envelopes: {query_dict} {self.curr_container.found_count}")
-
 
     # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that) together with this loop:
     def interpret_command(self, first_interp_factory_id: str) -> None:
@@ -154,14 +147,14 @@ class InterpContext:
 
             # Query envelope values only - they will be used for consumption of command line args:
             ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {type(self.curr_interp).__name__}")
-            self.query_envelopes()
+            self.query_prop_values()
 
             ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {type(self.curr_interp).__name__}")
             self.curr_interp.consume_key_args()
             self.curr_interp.consume_pos_args()
 
             ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {type(self.curr_interp).__name__}")
-            self.query_envelopes()
+            self.query_prop_values()
             self.curr_container.populate_implicit_arg_values()
 
             if self.parsed_ctx.comp_type == CompType.DescribeArgs:
@@ -174,9 +167,9 @@ class InterpContext:
 
             # Query envelopes after all defaults applied:
             # TODO: We could probably select whether to query only envelopes or their values depending on RunMode.
-            #       But init of next envelope is depends on prev envelope found.
+            #       But init of next envelope depends on prev envelope found.
             ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {type(self.curr_interp).__name__}")
-            self.query_envelopes()
+            self.query_prop_values()
 
             ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {type(self.curr_interp).__name__}")
             interp_step: InterpStep = self.curr_interp.try_iterate()
@@ -216,9 +209,6 @@ class InterpContext:
     def create_next_interp(self, interp_factory_id: str) -> "AbstractInterp":
         interp_factory: "AbstractInterpFactory" = self.interp_factories[interp_factory_id]
         return interp_factory.create_interp(self)
-
-    def get_data_envelopes(self):
-        return [envelope_container.data_envelope for envelope_container in self.envelope_containers]
 
     def print_debug(self, end_str: str = "\n") -> None:
         if not self.parsed_ctx.is_debug_enabled:

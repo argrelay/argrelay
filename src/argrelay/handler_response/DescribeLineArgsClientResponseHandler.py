@@ -18,4 +18,4 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
         response_object = interp_result_desc.dict_schema.load(response_dict)
         ElapsedTime.measure("after_object_creation")
         envelope_containers: list[EnvelopeContainer] = response_object[envelope_containers_]
-        EnvelopeContainer.print_help(envelope_containers)
+        EnvelopeContainer.describe_data(envelope_containers)

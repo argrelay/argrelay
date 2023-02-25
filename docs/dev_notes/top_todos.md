@@ -4,8 +4,7 @@ TODO: top todos
 
 To demo:
 
-*   Add tests to ensure override arg works for default values (e.g. from implicit `ro` by explicit `rw`).
-*   Show options for default values in describe
+*   In describe, show other arg value options when default value is applied. Use different color for Implicit, Explicit, Default (just like for none).
 
 *   Populate TD_63_37_05_36 demo services data.
     Complete demo data: add (1) data center, (2) server rack, (3) process id, to demo data.
@@ -13,19 +12,15 @@ To demo:
 *   Meta functions:
     *   List all objects of specified query.
     *   Show catalog of functions.
-    *   Print help string.
 
 *   List data = function with multiple envelopes
-*   FS_18_64_57_18: Var args
+*   FS_18_64_57_18: varargs
 
-*   Get help metadata
-    Showing help: help_title, help_details.
+*   Print `help_hint` (FS_71_87_33_52).
     Try help for every suggested option:
     https://stackoverflow.com/questions/7267185/bash-autocompletion-add-description-for-possible-completions/10130007#10130007
 
 *   If there are multiple `data_envelope` anywhere in `query_plan` (as last `data_envelope` or not), it should be possible to hit enter and provide some meaningful action for the list of these `data_envelope`-s of one clas currently found (even if function needs envelopes of subsequent classes).
-
-*   Change separator from `|` to ` `.
 
 *   Add named args.
 
@@ -91,6 +86,32 @@ Before `0.0.0`:
 
 *   Add release automation script to enforce non-dev version publishing.
 
+Ease consumption for public:
+
+*   Make server config composable (allow including other files).
+
+*   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).
+    Use `help_hint` (FS_71_87_33_52) for selection of the repo.
+
+*   Use `ssh` on selected service (a useful case).
+
+*   Think of integration with `tmux` specifically, or other ways to open new shell windows in general.
+    Use `tmux` integration (built-in optional feature).
+
+*   Extend EnvMock to help testing on external project side.
+    Basically, the main one is a mock to ensure some function is called (although, that's easily done without EnvMock).
+
+Perf:
+
+*   Try querying values only - many queries may only need values (to provide suggestion) not entire `data_envelope`-s:
+    https://stackoverflow.com/questions/11973725/how-to-efficiently-perform-distinct-with-multiple-keys/11991854#11991854
+
+Docs:
+
+*   Split "arg" group of concepts (`arg_value`, `arg_type`) and "prop" group of concepts (`prop_value`, `prop_type`):
+    *   `command_line` args are mapped to `data_envelope` props and almost identical
+    *   BUT: they are not naturally/intuitively inter-change-able as `data_envelope` properties are hardly `command_line` arguments.
+
 Extra:
 
 *   Search via different collections: https://github.com/uvsmtid/argrelay/issues/10
@@ -100,21 +121,13 @@ Extra:
 
 *   Try to reduce number of search requests (e.g.) file it as known issue to fix.
 
-*   Make server config composable (allow including other files).
-
 *   Think to start each arg as `ArgSource.UnassignedValue` (or at least mark it in the described arg output as this).
-
-*   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).
-
-*   Think of integration with `tmux` specifically, or other ways to open new shell windows in general.
-    Use `tmux` integration (built-in optional feature).
-
-
-*   Extend EnvMock to help testing on external project side.
-    Basically, the main one is a mock to ensure some function is called (although, that's easily done without EnvMock).
 
 *   Consider splitting argrelay -> argrelay-core, argrelay-integ (server and client), argrelay-demo, while keeping argrelay as an easy to install package.
 
-*   Use `ssh` on selected service (a useful case).
+*   Make ErrorInvocator exit with specified code, print specified message, etc.
+
+*   Check start of mongo db server by client connection (instead of delay).
 
 *   Describe selected service (extra meta or show payload?).
+    Print `help_doc` (FS_94_30_49_28)?

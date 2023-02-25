@@ -43,7 +43,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
 
         invocator_plugin: AbstractInvocator = self.local_server.server_config.action_invocators[invocator_plugin_id]
         invocation_input: InvocationInput = invocator_plugin.run_invoke_control(
-            self.local_server.server_config,
+            self.local_server,
             self.interp_ctx,
         )
         response_dict = invocation_input_desc.dict_schema.dump(invocation_input)

@@ -8,7 +8,7 @@ preferring (not immediately obvious) practical properties.
 
     For example, `run_mode` (or `RunMode`) instead of just `mode` (or `Mode).
 
-    This helps in refactoring and searching. Two words will singnificantly
+    This helps in refactoring and searching. Two words will significantly
     narrow down the scope excluding unwanted search hits to review.
 
 *   Prefer single file per class.

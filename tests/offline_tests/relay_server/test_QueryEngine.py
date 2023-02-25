@@ -78,11 +78,11 @@ class ThisTestCase(TestCase):
                         is_debug_enabled = False,
                     )
 
-                    fq_method_name = f"{QueryEngine.__module__}.{QueryEngine.process_results.__qualname__}"
+                    fq_method_name = f"{QueryEngine.__module__}.{QueryEngine._process_prop_values.__qualname__}"
 
                     # 1st run:
                     actual_suggestions_1st_run = "1st"
-                    with mock.patch(fq_method_name, wraps = QueryEngine.process_results) as method_mock:
+                    with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
                         actual_suggestions_1st_run = self.run_completion(
                             request_ctx,
                             propose_arg_values_handler,
@@ -93,7 +93,7 @@ class ThisTestCase(TestCase):
                         )
                     # 2nd run:
                     actual_suggestions_2nd_run = "2nd"
-                    with mock.patch(fq_method_name, wraps = QueryEngine.process_results) as method_mock:
+                    with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
                         actual_suggestions_2nd_run = self.run_completion(
                             request_ctx,
                             propose_arg_values_handler,

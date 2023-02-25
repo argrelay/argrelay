@@ -5,15 +5,34 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
-from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.runtime_data.ServerConfig import ServerConfig
-from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_, init_control_
+from argrelay.schema_config_interp.DataEnvelopeSchema import (
+    instance_data_,
+    init_control_,
+    envelope_id_,
+)
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     search_control_list_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
+
+
+def get_data_envelopes(envelope_containers):
+    return [envelope_container.data_envelope for envelope_container in envelope_containers]
+
+
+def get_func_name_from_container(envelope_containers):
+    func_data_envelope = envelope_containers[function_envelope_ipos_].data_envelope
+    func_name = func_data_envelope[envelope_id_]
+    return func_name
+
+
+def get_func_name_from_envelope(data_envelopes):
+    func_data_envelope = data_envelopes[function_envelope_ipos_]
+    func_name = func_data_envelope[envelope_id_]
+    return func_name
 
 
 class AbstractInvocator(AbstractPlugin):
@@ -58,7 +77,7 @@ class AbstractInvocator(AbstractPlugin):
 
     def run_invoke_control(
         self,
-        server_config: ServerConfig,
+        local_server: "LocalServer",
         interp_ctx: InterpContext,
     ) -> InvocationInput:
         """

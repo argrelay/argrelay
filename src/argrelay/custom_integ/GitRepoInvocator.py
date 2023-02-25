@@ -1,9 +1,9 @@
 import subprocess
 
-from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator, get_data_envelopes
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
+from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
-from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, envelope_id_, instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_id_
 
@@ -18,7 +18,7 @@ class GitRepoInvocator(AbstractInvocator):
 
     def run_invoke_control(
         self,
-        server_config: ServerConfig,
+        local_server: LocalServer,
         interp_ctx: InterpContext,
     ) -> InvocationInput:
 
@@ -29,8 +29,8 @@ class GitRepoInvocator(AbstractInvocator):
         function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
         invocator_plugin_id = function_envelope.data_envelope[instance_data_][invocator_plugin_id_]
         invocation_input = InvocationInput(
-            invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_id],
-            data_envelopes = interp_ctx.get_data_envelopes(),
+            invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_id],
+            data_envelopes = get_data_envelopes(interp_ctx.envelope_containers),
             custom_plugin_data = {},
         )
         return invocation_input
