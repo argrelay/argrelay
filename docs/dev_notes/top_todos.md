@@ -49,8 +49,6 @@ Before `0.0.0`:
     *   `fill_control`
     *   `invoke_control`
     And how they affect `args_context`.
-    Apparently, they shouldn't be provided by data, they should be given by a function -
-    consider deleting FS_83_48_41_30 (prototype envelopes).
 
     Plan (TODO: merge this plan with "how search works"):
     *   Implement constant number of searches (S) per `data_envelope` required:

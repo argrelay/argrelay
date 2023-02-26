@@ -317,17 +317,16 @@ class ThisTestCase(TestCase):
 {ReservedEnvelopeClass.ClassFunction.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{ServiceEnvelopeClass.ClassCluster.name}:
+{ServiceEnvelopeClass.ClassService.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
-{ServiceEnvelopeClass.ClassService.name}:
-{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.InitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
 {" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.192.168.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.172.16.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {ServiceArgType.AccessType.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
@@ -340,16 +339,13 @@ class ThisTestCase(TestCase):
 {ReservedEnvelopeClass.ClassFunction.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{ServiceEnvelopeClass.ClassCluster.name}:
+{ServiceEnvelopeClass.ClassHost.name}:
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa prod
 {" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} apac emea amer
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream
-{ServiceEnvelopeClass.ClassHost.name}:
-{" " * indent_size}{TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GRAY.value}IpAddress: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-2
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}IpAddress: ?{TermColor.RESET.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.172.16.7.2
 {ServiceArgType.AccessType.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
@@ -417,7 +413,7 @@ class ThisTestCase(TestCase):
             ),
             (
                 line_no(), RunMode.CompletionMode, "some_command goto host prod-apac-downstream wert-pd-1 |", CompType.PrefixShown,
-                3,
+                2,
                 {
                     ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.DefaultValue),
                 },
@@ -425,7 +421,7 @@ class ThisTestCase(TestCase):
             ),
             (
                 line_no(), RunMode.CompletionMode, "some_command goto host prod-apac-downstream wert-pd-1 rw |", CompType.PrefixShown,
-                3,
+                2,
                 {
                     ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.ExplicitPosArg),
                 },
@@ -433,7 +429,7 @@ class ThisTestCase(TestCase):
             ),
             (
                 line_no(), RunMode.CompletionMode, "some_command goto host dev-apac-upstream zxcv-du |", CompType.PrefixShown,
-                3,
+                2,
                 {
                     ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.DefaultValue),
                 },
@@ -576,19 +572,19 @@ class ThisTestCase(TestCase):
             invocation_input = EnvMockBuilder.invocation_input
             self.assertEqual(
                 ServiceEnvelopeClass.ClassService.name,
-                invocation_input.data_envelopes[2][ReservedArgType.EnvelopeClass.name]
+                invocation_input.data_envelopes[1][ReservedArgType.EnvelopeClass.name]
             )
             self.assertEqual(
                 "prod-apac-downstream",
-                invocation_input.data_envelopes[2][ServiceArgType.ClusterName.name]
+                invocation_input.data_envelopes[1][ServiceArgType.ClusterName.name]
             )
             self.assertEqual(
                 "wert-pd-1",
-                invocation_input.data_envelopes[2][ServiceArgType.HostName.name]
+                invocation_input.data_envelopes[1][ServiceArgType.HostName.name]
             )
             self.assertEqual(
                 "tt1",
-                invocation_input.data_envelopes[2][ServiceArgType.ServiceName.name]
+                invocation_input.data_envelopes[1][ServiceArgType.ServiceName.name]
             )
             self.assertTrue(True)
 
@@ -612,7 +608,7 @@ class ThisTestCase(TestCase):
             print(EnvMockBuilder.invocation_input)
             invocation_input = EnvMockBuilder.invocation_input
             # 1st:
-            vararg_ipos_0 = 2
+            vararg_ipos_0 = 1
             self.assertEqual(
                 ServiceEnvelopeClass.ClassService.name,
                 invocation_input.data_envelopes[vararg_ipos_0][ReservedArgType.EnvelopeClass.name]

@@ -97,6 +97,7 @@ class ThisTestCase(TestCase):
                     service_name = table_row[f"`{ServiceArgType.ServiceName}`"].strip().strip("`")
 
                     ip_address = table_row[f"`{ServiceArgType.IpAddress}`"].strip().strip("`")
+                    data_center = table_row[f"`{ServiceArgType.DataCenter}`"].strip().strip("`")
 
                     # Whether `ServiceName` specified:
                     is_cluster = host_name == ""
@@ -116,12 +117,18 @@ class ThisTestCase(TestCase):
                         })
                         self.find_single_data_envelope(mongo_col, query_dict)
                     else:
-                        # TODO: FS_82_35_57_62: current data is indexed by `ClusterName` only,
-                        #       fix it to include all other arg types,
-                        #       remove keys for now:
-                        del query_dict[ServiceArgType.CodeMaturity.name]
-                        del query_dict[ServiceArgType.GeoRegion.name]
-                        del query_dict[ServiceArgType.FlowStage.name]
+
+                        # If in `dc.AB`, the first digit `A` is non-zero,
+                        # it must be another data center with another IP address:
+                        if data_center[3] != "0":
+                            self.assertTrue("ip.172.16" in ip_address)
+                        else:
+                            self.assertTrue("ip.192.168" in ip_address)
+
+                        # TODO: FS_82_35_57_62: when both host and services are separately
+                        #                       indexed (without pending cluster),
+                        #                       add tests that providing ip to both host and service function lookup
+                        #                       immediately selects cluster implicitly.
 
                         query_dict.update({
                             ServiceArgType.HostName.name: host_name,
@@ -152,19 +159,29 @@ class ThisTestCase(TestCase):
                             service_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             # Both host and service should have same host name:
-                            self.assertTrue(
+                            self.assertEquals(
                                 host_data_envelope[ServiceArgType.HostName.name],
                                 service_data_envelope[ServiceArgType.HostName.name],
                             )
 
                             # IP address should match:
-                            self.assertTrue(
+                            self.assertEquals(
                                 host_data_envelope[ServiceArgType.IpAddress.name],
                                 service_data_envelope[ServiceArgType.IpAddress.name],
                             )
-                            self.assertTrue(
+                            self.assertEquals(
                                 ip_address,
                                 service_data_envelope[ServiceArgType.IpAddress.name],
+                            )
+
+                            # Data centers should match:
+                            self.assertEquals(
+                                host_data_envelope[ServiceArgType.DataCenter.name],
+                                service_data_envelope[ServiceArgType.DataCenter.name],
+                            )
+                            self.assertEquals(
+                                data_center,
+                                service_data_envelope[ServiceArgType.DataCenter.name],
                             )
 
     def find_single_data_envelope(self, mongo_col, query_dict) -> dict:

@@ -31,9 +31,6 @@ envelope_payload_ = "envelope_payload"
 Data `argrelay` does not inspect.
 """
 
-init_control_ = "init_control"
-
-
 class DataEnvelopeSchema(Schema):
     """
     Schema for all :class:`StaticDataSchema.data_envelopes`
@@ -80,15 +77,6 @@ class DataEnvelopeSchema(Schema):
         required = False,
     )
 
-    """
-    List of arg types to be pushed to the next `args_context` to query next `data_envelope`-s.
-    """
-    init_control = fields.List(
-        fields.String(),
-        # TODO: make it required for predictability - isn't it required?
-        required = False,
-    )
-
     @validates_schema
     def validate_known(self, input_dict, **kwargs):
         if input_dict[ReservedArgType.EnvelopeClass.name] == ReservedEnvelopeClass.ClassFunction.name:
@@ -102,9 +90,6 @@ data_envelope_desc = TypeDesc(
         envelope_id_: "some_unique_id",
         instance_data_: function_envelope_instance_data_desc.dict_example,
         envelope_payload_: {},
-        init_control_: [
-            "SomeTypeB",
-        ],
         ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
         "SomeTypeA": "A_value_1",
         "SomeTypeB": "B_value_1",
