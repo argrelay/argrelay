@@ -128,7 +128,7 @@ class ThisTestCase(TestCase):
                 "skips suggestion for `ServiceArgType.GeoRegion`",
             ),
             (
-                line_no(), "some_command host qa upstream amer qw goto ro s_c green |", CompType.PrefixShown,
+                line_no(), "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |", CompType.PrefixShown,
                 "",
                 "No more suggestions when all \"coordinates\" specified",
             ),
@@ -327,6 +327,7 @@ class ThisTestCase(TestCase):
 {" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
 {" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.192.168.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {ServiceArgType.AccessType.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
@@ -348,6 +349,7 @@ class ThisTestCase(TestCase):
 {" " * indent_size}{TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GRAY.value}IpAddress: [none]{TermColor.RESET.value}
 {ServiceArgType.AccessType.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
