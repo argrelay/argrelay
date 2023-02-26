@@ -7,6 +7,7 @@ from cachetools import TTLCache
 from pymongo.collection import Collection
 from pymongo.database import Database
 
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 from argrelay.relay_server.QueryResult import QueryResult
@@ -37,12 +38,36 @@ class QueryEngine:
         )
         self.enable_query_cache = query_cache_config.enable_query_cache
 
-    def query_envelopes(
+    def query_data_envelopes(
+        self,
+        query_dict: dict,
+    ) -> list[dict]:
+        """
+        This query is used for final invocation for vararg-like multiple envelopes (FS_18_64_57_18).
+        Therefore, it is not latency-sensitive (results are not cached).
+        """
+
+        query_res = self.mongo_col.find(query_dict)
+        return list(iter(query_res))
+
+    def query_prop_values(
         self,
         query_dict: dict,
         search_control: SearchControl,
         assigned_types_to_values: dict[str, AssignedValue],
-    ):
+    ) -> QueryResult:
+        """
+        Query values per types in `search_control` and populates `remaining_types_to_values`.
+
+        This query is used in completion which makes it latency-sensitive (results are cached).
+
+        It also combines:
+        *   counting total `found_count` of `data_envelope`-s returned and
+        *   storing the last `data_envelope`.
+        The last `data_envelope` is only useful when `found_count` is one (making it unambiguous `data_envelope`).
+        To search all `data_envelope`, use `query_data_envelopes` function.
+        """
+
         if self.enable_query_cache:
             ElapsedTime.measure("before_cache_lookup")
             query_key = json.dumps(query_dict, separators = (",", ":"))
@@ -51,7 +76,7 @@ class QueryEngine:
             if query_result:
                 return copy.deepcopy(query_result)
 
-            query_result = self.run_query_and_process_results(
+            query_result = self._query_prop_values(
                 assigned_types_to_values,
                 query_dict,
                 search_control,
@@ -59,7 +84,7 @@ class QueryEngine:
 
             self.query_cache[query_key] = copy.deepcopy(query_result)
         else:
-            query_result = self.run_query_and_process_results(
+            query_result = self._query_prop_values(
                 assigned_types_to_values,
                 query_dict,
                 search_control,
@@ -67,16 +92,17 @@ class QueryEngine:
         # No cache -> no deep copy (throw away result):
         return query_result
 
-    def run_query_and_process_results(
+    def _query_prop_values(
         self,
         assigned_types_to_values,
         query_dict,
         search_control,
-    ):
+    ) -> QueryResult:
+
         ElapsedTime.measure("before_mongo_find")
         query_res = self.mongo_col.find(query_dict)
         ElapsedTime.measure("after_mongo_find")
-        query_result = self.process_results(
+        query_result = self._process_prop_values(
             query_res,
             search_control,
             assigned_types_to_values,
@@ -85,7 +111,7 @@ class QueryEngine:
         return query_result
 
     @staticmethod
-    def process_results(
+    def _process_prop_values(
         query_res,
         search_control: SearchControl,
         assigned_types_to_values: dict[str, AssignedValue],
@@ -95,6 +121,7 @@ class QueryEngine:
         *   `found_count`
         *   `remaining_types_to_values`
         """
+
         remaining_types_to_values: dict[str, list[str]] = {}
         data_envelope = None
         found_count = 0
@@ -125,3 +152,14 @@ class QueryEngine:
             found_count,
             remaining_types_to_values,
         )
+
+
+def populate_query_dict(envelope_container):
+    query_dict = {
+        ReservedArgType.EnvelopeClass.name: envelope_container.search_control.envelope_class,
+    }
+    # FS_31_70_49_15: populate arg values to search from the context:
+    for arg_type in envelope_container.search_control.types_to_keys_dict.keys():
+        if arg_type in envelope_container.assigned_types_to_values:
+            query_dict[arg_type] = envelope_container.assigned_types_to_values[arg_type].arg_value
+    return query_dict

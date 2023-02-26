@@ -3,13 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from argrelay.enum_desc.ArgSource import ArgSource
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
 indent_size = 2
+
 
 @dataclass
 class EnvelopeContainer:
@@ -67,7 +67,7 @@ class EnvelopeContainer:
                         )
 
     @staticmethod
-    def print_help(envelope_containers: list[EnvelopeContainer]):
+    def describe_data(envelope_containers: list[EnvelopeContainer]):
         eprint()
         # TODO: print colorized command line (reordered by `search_control`) with consumed tokens, unconsumed tokens, tangent token
         is_first_missing_found: bool = False

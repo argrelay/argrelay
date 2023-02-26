@@ -6,7 +6,7 @@ from dataclasses import dataclass
 @dataclass
 class QueryResult:
     """
-    Results of a query via `QueryEngine`.
+    Results of a query via `QueryEngine.query_prop_values`.
     """
 
     data_envelope: dict

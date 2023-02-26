@@ -32,7 +32,7 @@ mongo_server_config_desc = TypeDesc(
     dict_schema = MongoServerConfigSchema(),
     ref_name = MongoServerConfigSchema.__name__,
     dict_example = {
-        database_name_: "test",
+        database_name_: "argrelay",
         start_server_: False,
         server_start_command_:
             "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod"

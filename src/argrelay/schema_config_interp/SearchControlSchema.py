@@ -14,6 +14,7 @@ keys_to_types_list_ = "keys_to_types_list"
 List of keys to use for named args during interpretation and arg types to use in query.
 """
 
+
 class SearchControlSchema(Schema):
     """
     Implements FS_31_70_49_15 # search_control

@@ -96,6 +96,8 @@ class ThisTestCase(TestCase):
                     host_name = table_row[f"`{ServiceArgType.HostName}`"].strip().strip("`")
                     service_name = table_row[f"`{ServiceArgType.ServiceName}`"].strip().strip("`")
 
+                    ip_address = table_row[f"`{ServiceArgType.IpAddress}`"].strip().strip("`")
+
                     # Whether `ServiceName` specified:
                     is_cluster = host_name == ""
                     # Whether `ServiceName` specified:
@@ -129,20 +131,41 @@ class ThisTestCase(TestCase):
                                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                             })
                             # Ensure `HostName` contains abbreviation of (`CodeMaturity`, `FlowStage`) as its suffix:
-                            data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
+                            host_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
                             self.assertTrue(
                                 code_maturity[0]
                                 +
                                 flow_stage[0]
                                 in
-                                data_envelope[ServiceArgType.HostName.name]
+                                host_data_envelope[ServiceArgType.HostName.name]
                             )
                         else:
+                            query_dict.update({
+                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                            })
+                            host_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
+
                             query_dict.update({
                                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                                 ServiceArgType.ServiceName.name: service_name,
                             })
-                            self.find_single_data_envelope(mongo_col, query_dict)
+                            service_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
+
+                            # Both host and service should have same host name:
+                            self.assertTrue(
+                                host_data_envelope[ServiceArgType.HostName.name],
+                                service_data_envelope[ServiceArgType.HostName.name],
+                            )
+
+                            # IP address should match:
+                            self.assertTrue(
+                                host_data_envelope[ServiceArgType.IpAddress.name],
+                                service_data_envelope[ServiceArgType.IpAddress.name],
+                            )
+                            self.assertTrue(
+                                ip_address,
+                                service_data_envelope[ServiceArgType.IpAddress.name],
+                            )
 
     def find_single_data_envelope(self, mongo_col, query_dict) -> dict:
         query_res = mongo_col.find(query_dict)

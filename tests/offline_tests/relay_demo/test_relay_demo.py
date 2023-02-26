@@ -5,6 +5,7 @@ from unittest import TestCase, skip
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServiceInvocator import ServiceInvocator
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
@@ -127,35 +128,34 @@ class ThisTestCase(TestCase):
                 "skips suggestion for `ServiceArgType.GeoRegion`",
             ),
             (
-                line_no(), "some_command host qa upstream amer qw goto ro s_c green |", CompType.PrefixShown,
+                line_no(), "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |", CompType.PrefixShown,
                 "",
                 "No more suggestions when all \"coordinates\" specified",
             ),
             (
                 line_no(), "some_command upstream goto host |", CompType.PrefixHidden,
-                "dev\nqa",
+                "dev\nqa\nprod",
                 "`PrefixHidden`: arg values for `ClusterName` search is specified ahead function query "
                 "but order is \"ignored\"",
             ),
             (
                 line_no(), "some_command upstream goto host |", CompType.SubsequentHelp,
-                "dev\nqa",
+                "dev\nqa\nprod",
                 "`SubsequentHelp` behaves the same way as `PrefixHidden`",
             ),
             (
                 line_no(), "some_command host goto upstream a|", CompType.SubsequentHelp,
-                "amer\napac",
+                "apac\namer",
                 "Suggestions for subsequent Tab are limited by prefix",
             ),
             (
                 line_no(),
-                "some_command goto upstream qa apac desc host |", CompType.SubsequentHelp,
+                "some_command goto upstream dev amer desc host |", CompType.SubsequentHelp,
                 "",
                 "FS_23_62_89_43: "
-                "`ServiceArgType.CodeMaturity` = `qa` singles out `ServiceEnvelopeClass.ClassCluster` which "
-                "skips suggestion for `ServiceArgType.GeoRegion`, then this cluster has only one "
-                "`ServiceEnvelopeClass.ClassHost` = `sdfg` which also skips host suggestion "
-                "leaving `ServiceArgType.AccessType` to be the next to suggest which has a default "
+                "`ServiceArgType.CodeMaturity` = `dev` and `ServiceArgType.GeoRegion` = `amer` "
+                "single out one host and one service, leaving only `ServiceArgType.AccessType` "
+                "to be the next to suggest which has a default "
                 "leading to no suggestions at all.",
             ),
             (
@@ -327,6 +327,7 @@ class ThisTestCase(TestCase):
 {" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
 {" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.192.168.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {ServiceArgType.AccessType.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
@@ -340,14 +341,15 @@ class ThisTestCase(TestCase):
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassCluster.name}:
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa prod
 {" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} amer emea apac
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-amer-upstream dev-emea-upstream dev-apac-upstream qa-apac-upstream
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} apac emea amer
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream
 {ServiceEnvelopeClass.ClassHost.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}ClusterName: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GRAY.value}HostName: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.DARK_GRAY.value}IpAddress: [none]{TermColor.RESET.value}
 {ServiceArgType.AccessType.name}:
 {" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
 """,
@@ -391,7 +393,7 @@ class ThisTestCase(TestCase):
                         .set_capture_stderr(True)
                     )
                     with inner_env_mock_builder.build():
-                        EnvelopeContainer.print_help(interp_ctx.envelope_containers)
+                        EnvelopeContainer.describe_data(interp_ctx.envelope_containers)
 
                         self.maxDiff = None
                         self.assertEqual(
@@ -553,8 +555,9 @@ class ThisTestCase(TestCase):
                     expected_assignments,
                 )
 
-    def test_capture_invocation_input(self):
-        test_line = "some_command goto service prod wert-pd-1 |"
+    # TODO: generalize and factor out common part in capture_invocation_input_1 and capture_invocation_input_2:
+    def test_capture_invocation_input_1(self):
+        test_line = "some_command goto service prod downstream wert-pd-1 |"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()
@@ -588,3 +591,51 @@ class ThisTestCase(TestCase):
                 invocation_input.data_envelopes[2][ServiceArgType.ServiceName.name]
             )
             self.assertTrue(True)
+
+    # TODO: generalize and factor out common part in capture_invocation_input_1 and capture_invocation_input_2:
+    def test_capture_invocation_input_2(self):
+        test_line = "some_command list service dev upstream emea |"
+        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+        env_mock_builder = (
+            EnvMockBuilder()
+            .set_run_mode(RunMode.InvocationMode)
+            .set_command_line(command_line)
+            .set_cursor_cpos(cursor_cpos)
+            .set_comp_type(CompType.InvokeAction)
+            .set_test_data_ids_to_load([
+                "TD_63_37_05_36",  # demo
+            ])
+            .set_capture_invocator_invocation_input(ServiceInvocator)
+        )
+        with env_mock_builder.build():
+            __main__.main()
+            print(EnvMockBuilder.invocation_input)
+            invocation_input = EnvMockBuilder.invocation_input
+            # 1st:
+            vararg_ipos_0 = 2
+            self.assertEqual(
+                ServiceEnvelopeClass.ClassService.name,
+                invocation_input.data_envelopes[vararg_ipos_0][ReservedArgType.EnvelopeClass.name]
+            )
+            self.assertEqual(
+                "dev-emea-upstream",
+                invocation_input.data_envelopes[vararg_ipos_0][ServiceArgType.ClusterName.name]
+            )
+            self.assertEqual(
+                "s_a",
+                invocation_input.data_envelopes[vararg_ipos_0][ServiceArgType.ServiceName.name]
+            )
+            # 2nd:
+            vararg_ipos_1 = vararg_ipos_0 + 1
+            self.assertEqual(
+                ServiceEnvelopeClass.ClassService.name,
+                invocation_input.data_envelopes[vararg_ipos_1][ReservedArgType.EnvelopeClass.name]
+            )
+            self.assertEqual(
+                "dev-emea-upstream",
+                invocation_input.data_envelopes[vararg_ipos_1][ServiceArgType.ClusterName.name]
+            )
+            self.assertEqual(
+                "s_b",
+                invocation_input.data_envelopes[vararg_ipos_1][ServiceArgType.ServiceName.name]
+            )
