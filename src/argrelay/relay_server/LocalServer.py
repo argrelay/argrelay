@@ -52,30 +52,39 @@ class LocalServer:
         Calls each plugin to update :class:`StaticData`.
         """
 
-        for plugin_id in self.server_config.plugin_id_load_list:
-            plugin_entry = self.server_config.plugin_dict[plugin_id]
+        for plugin_instance_id in self.server_config.plugin_instance_id_load_list:
+            plugin_entry = self.server_config.plugin_dict[plugin_instance_id]
 
             if plugin_entry.plugin_type == PluginType.LoaderPlugin:
-                plugin_object: AbstractLoader = instantiate_plugin(plugin_entry)
+                plugin_object: AbstractLoader = instantiate_plugin(
+                    plugin_instance_id,
+                    plugin_entry,
+                )
                 plugin_object.activate_plugin()
                 # Store instance of `AbstractLoader` under specified id for future use:
-                self.server_config.data_loaders[plugin_id] = plugin_object
+                self.server_config.data_loaders[plugin_instance_id] = plugin_object
                 # Use loader to update data:
                 self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
                 continue
 
             if plugin_entry.plugin_type == PluginType.InterpFactoryPlugin:
-                plugin_object: AbstractInterpFactory = instantiate_plugin(plugin_entry)
+                plugin_object: AbstractInterpFactory = instantiate_plugin(
+                    plugin_instance_id,
+                    plugin_entry,
+                )
                 plugin_object.activate_plugin()
                 # Store instance of `AbstractInterpFactory` under specified id for future use:
-                self.server_config.interp_factories[plugin_id] = plugin_object
+                self.server_config.interp_factories[plugin_instance_id] = plugin_object
                 continue
 
             if plugin_entry.plugin_type == PluginType.InvocatorPlugin:
-                plugin_object: AbstractInvocator = instantiate_plugin(plugin_entry)
+                plugin_object: AbstractInvocator = instantiate_plugin(
+                    plugin_instance_id,
+                    plugin_entry,
+                )
                 plugin_object.activate_plugin()
                 # Store instance of `AbstractInvocator` under specified id for future use:
-                self.server_config.action_invocators[plugin_id] = plugin_object
+                self.server_config.action_invocators[plugin_instance_id] = plugin_object
                 continue
 
         eprint("validating data...")
@@ -104,10 +113,16 @@ class LocalServer:
 
     def _load_mongo_data(self):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
-        MongoClientWrapper.store_envelopes(mongo_db, self.server_config.static_data)
+        MongoClientWrapper.store_envelopes(
+            mongo_db,
+            self.server_config.static_data,
+        )
 
     def _create_mongo_index(self):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
         # Include `envelope_class` field into index by default:
         self.server_config.static_data.known_arg_types.append(ReservedArgType.EnvelopeClass.name)
-        MongoClientWrapper.create_index(mongo_db, self.server_config.static_data)
+        MongoClientWrapper.create_index(
+            mongo_db,
+            self.server_config.static_data,
+        )

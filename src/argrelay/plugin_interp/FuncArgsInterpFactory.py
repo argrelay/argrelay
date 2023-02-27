@@ -11,17 +11,33 @@ from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list
 
 class FuncArgsInterpFactory(AbstractInterpFactory):
 
-    def __init__(self, config_dict: dict):
-        super().__init__(config_dict)
+    def __init__(
+        self,
+        plugin_instance_id: str,
+        config_dict: dict,
+    ):
+        super().__init__(
+            plugin_instance_id,
+            config_dict,
+        )
         func_args_interp_config_desc.validate_dict(config_dict)
 
-    def create_interp(self, interp_ctx: InterpContext) -> FuncArgsInterp:
+    def create_interp(
+        self,
+        interp_ctx: InterpContext,
+    ) -> FuncArgsInterp:
         raise NotImplementedError
 
-    def validate_loaded_data(self, static_data: "StaticData"):
+    def validate_loaded_data(
+        self,
+        static_data: "StaticData",
+    ):
         self._validate_function_envelopes_unambiguously_qualified(static_data)
 
-    def _validate_function_envelopes_unambiguously_qualified(self, static_data: "StaticData"):
+    def _validate_function_envelopes_unambiguously_qualified(
+        self,
+        static_data: "StaticData",
+    ):
         """
         Verify that all arg types listed in `function_search_control` uniquely identify function
 

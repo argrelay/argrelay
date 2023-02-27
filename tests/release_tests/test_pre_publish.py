@@ -39,8 +39,8 @@ class ThisTestCase(TestCase):
             server_config: ServerConfig = server_config_desc.from_default_file()
             found_one = False
             git_loader_plugin = None
-            for plugin_id in server_config.plugin_id_load_list:
-                plugin_item = server_config.plugin_dict[plugin_id]
+            for plugin_instance_id in server_config.plugin_instance_id_load_list:
+                plugin_item = server_config.plugin_dict[plugin_instance_id]
                 if (
                     plugin_item.plugin_module_name == GitRepoLoader_module.__name__
                     and

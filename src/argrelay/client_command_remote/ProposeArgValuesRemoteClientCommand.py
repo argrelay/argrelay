@@ -75,14 +75,14 @@ Connection: close\r
         # First line, second space-delimited substring:
         # HTTP/1.1 200 OK\r\n
         response_status_line = response_str[:response_str.find("\r")]
-        first_space_ipos = response_status_line.find(" ")
+        first_space_cpos = response_status_line.find(" ")
         response_status_code = int(
-            response_status_line[first_space_ipos + 1:first_space_ipos + 1 + 3]
+            response_status_line[first_space_cpos + 1:first_space_cpos + 1 + 3]
         )
         # Content after headers (after empty line):
-        content_ipos = response_str.find("\r\n\r\n") + 4
-        if content_ipos < len(response_str):
-            response_body_str = response_str[content_ipos:]
+        content_cpos = response_str.find("\r\n\r\n") + 4
+        if content_cpos < len(response_str):
+            response_body_str = response_str[content_cpos:]
         else:
             response_body_str = ""
 

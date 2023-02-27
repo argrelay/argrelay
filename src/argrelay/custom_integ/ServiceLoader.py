@@ -26,7 +26,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_id_,
+    invocator_plugin_instance_id_,
     search_control_list_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
@@ -89,19 +89,29 @@ class ServiceLoader(AbstractLoader):
 
     def __init__(
         self,
+        plugin_instance_id: str,
         config_dict: dict,
     ):
-        super().__init__(config_dict)
+        super().__init__(
+            plugin_instance_id,
+            config_dict,
+        )
         service_loader_config_desc.validate_dict(config_dict)
 
-    def update_static_data(self, static_data: StaticData) -> StaticData:
+    def update_static_data(
+        self,
+        static_data: StaticData,
+    ) -> StaticData:
 
         static_data = self.load_data_envelopes(static_data)
 
         return static_data
 
     # noinspection PyMethodMayBeStatic
-    def load_data_envelopes(self, static_data: StaticData) -> StaticData:
+    def load_data_envelopes(
+        self,
+        static_data: StaticData,
+    ) -> StaticData:
         """
         The loader writes samples into `static_data[data_envelopes_]` simply from code (without any data source).
         """
@@ -129,7 +139,10 @@ class ServiceLoader(AbstractLoader):
         return static_data
 
     # noinspection PyMethodMayBeStatic
-    def generate_envelope_id(self, data_envelopes: list):
+    def generate_envelope_id(
+        self,
+        data_envelopes: list,
+    ):
         for data_envelope in data_envelopes:
             if envelope_id_ not in data_envelope:
                 if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
@@ -148,7 +161,9 @@ class ServiceLoader(AbstractLoader):
                     )
 
     @staticmethod
-    def populate_common_functions(data_envelopes: list):
+    def populate_common_functions(
+        data_envelopes: list,
+    ):
         data_envelopes.extend([
 
             ############################################################################################################
@@ -160,7 +175,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: goto_host_funct_,
                 instance_data_: {
-                    invocator_plugin_id_: ServiceInvocator.__name__,
+                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
                     search_control_list_: [
                         host_search_control,
                         access_search_control,
@@ -173,7 +188,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: goto_service_funct_,
                 instance_data_: {
-                    invocator_plugin_id_: ServiceInvocator.__name__,
+                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
                     search_control_list_: [
                         service_search_control,
                         access_search_control,
@@ -186,7 +201,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: "desc_host",
                 instance_data_: {
-                    invocator_plugin_id_: NoopInvocator.__name__,
+                    invocator_plugin_instance_id_: NoopInvocator.__name__,
                     search_control_list_: [
                         host_search_control,
                     ],
@@ -198,7 +213,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: "desc_service",
                 instance_data_: {
-                    invocator_plugin_id_: NoopInvocator.__name__,
+                    invocator_plugin_instance_id_: NoopInvocator.__name__,
                     search_control_list_: [
                         service_search_control,
                     ],
@@ -211,7 +226,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: list_host_func_,
                 instance_data_: {
-                    invocator_plugin_id_: ServiceInvocator.__name__,
+                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
                     search_control_list_: [
                         host_search_control,
                     ],
@@ -224,7 +239,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: list_service_func_,
                 instance_data_: {
-                    invocator_plugin_id_: ServiceInvocator.__name__,
+                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
                     search_control_list_: [
                         service_search_control,
                     ],
@@ -235,7 +250,10 @@ class ServiceLoader(AbstractLoader):
             },
         ])
 
-    def is_test_data_allowed(self, test_data_id: str) -> bool:
+    def is_test_data_allowed(
+        self,
+        test_data_id: str,
+    ) -> bool:
         if test_data_id in self.config_dict[test_data_ids_to_load_]:
             return True
         return False
@@ -262,7 +280,10 @@ class ServiceLoader(AbstractLoader):
             },
         ])
 
-    def populate_TD_63_37_05_36_default(self, data_envelopes: list):
+    def populate_TD_63_37_05_36_default(
+        self,
+        data_envelopes: list,
+    ):
         """
         Populates TD_63_37_05_36 # demo
         """
@@ -973,7 +994,10 @@ class ServiceLoader(AbstractLoader):
             },
         ])
 
-    def populate_TD_76_09_29_31_overlapped(self, data_envelopes: list):
+    def populate_TD_76_09_29_31_overlapped(
+        self,
+        data_envelopes: list,
+    ):
         if not self.is_test_data_allowed("TD_76_09_29_31"):
             return
 
@@ -985,14 +1009,23 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_payload_: {
                 },
-                # TODO: Fix test_data: TD_76_09_29_31 # overlapped:
-                #       there is no overlap after introduction of ClusterName.
                 test_data_: "TD_76_09_29_31",  # overlapped
                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                 ServiceArgType.CodeMaturity.name: "dev",
-                ServiceArgType.GeoRegion.name: "amer.us",
+                ServiceArgType.GeoRegion.name: "amer",
                 ServiceArgType.FlowStage.name: "downstream",
-                ServiceArgType.ClusterName.name: "dev-amer.us-downstream",
+                ServiceArgType.ClusterName.name: "dev-amer-downstream",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
             },
 
             ############################################################################################################
@@ -1001,16 +1034,62 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_payload_: {
                 },
-                # TODO: Fix test_data: TD_76_09_29_31 # overlapped:
-                #       there is no overlap after introduction of ClusterName.
                 test_data_: "TD_76_09_29_31",  # overlapped
                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.ClusterName.name: "dev-amer.us-downstream",
-                ServiceArgType.HostName.name: "amer.us",
+                ServiceArgType.CodeMaturity.name: "dev",
+                # TD_76_09_29_31 GeoRegion set overlaps with HostName set:
+                ServiceArgType.GeoRegion.name: "amer",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-amer-downstream",
+                # TD_76_09_29_31 HostName set overlaps with GeoRegion set:
+                ServiceArgType.HostName.name: "amer",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "amer",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-amer-downstream",
+                # HostName is intentionally mathing another HostName from different GeoRegion (also named alike):
+                ServiceArgType.HostName.name: "emea",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.CodeMaturity.name: "dev",
+                # TD_76_09_29_31 GeoRegion set overlaps with HostName set:
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+                # TD_76_09_29_31 HostName set overlaps with GeoRegion set:
+                ServiceArgType.HostName.name: "emea",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.CodeMaturity.name: "dev",
+                ServiceArgType.GeoRegion.name: "emea",
+                ServiceArgType.FlowStage.name: "downstream",
+                ServiceArgType.ClusterName.name: "dev-emea-downstream",
+                # HostName is intentionally mathing another HostName from different GeoRegion (also named alike):
+                ServiceArgType.HostName.name: "amer",
             },
         ])
 
-    def populate_TD_38_03_48_51_large_generated(self, data_envelopes: list):
+    def populate_TD_38_03_48_51_large_generated(
+        self,
+        data_envelopes: list,
+    ):
         """
         TD_38_03_48_51: generate large data set
         """
@@ -1079,7 +1158,10 @@ class ServiceLoader(AbstractLoader):
 
                             data_envelopes.append(generated_service)
 
-    def populate_TD_43_24_76_58_single(self, data_envelopes: list):
+    def populate_TD_43_24_76_58_single(
+        self,
+        data_envelopes: list,
+    ):
         if not self.is_test_data_allowed("TD_43_24_76_58"):
             return
 

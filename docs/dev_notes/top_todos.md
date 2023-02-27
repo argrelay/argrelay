@@ -6,9 +6,6 @@ To demo:
 
 *   In describe, show other arg value options when default value is applied. Use different color for Implicit, Explicit, Default (just like for none).
 
-*   Populate TD_63_37_05_36 demo services data.
-    Complete demo data: add (1) data center, (2) server rack, (3) process id, to demo data.
-
 *   Meta functions:
     *   List all objects of specified query.
     *   Show catalog of functions.
@@ -21,6 +18,11 @@ To demo:
     https://stackoverflow.com/questions/7267185/bash-autocompletion-add-description-for-possible-completions/10130007#10130007
 
 *   If there are multiple `data_envelope` anywhere in `query_plan` (as last `data_envelope` or not), it should be possible to hit enter and provide some meaningful action for the list of these `data_envelope`-s of one clas currently found (even if function needs envelopes of subsequent classes).
+
+*   Consumed and unconsumed tokens:
+    *   Display them in description.
+    *   Send them to invocation (e.g. to decide to run or not to run function and how they can be used).
+    *   Verify them in tests.
 
 *   Add named args.
 

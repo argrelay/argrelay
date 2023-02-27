@@ -427,6 +427,11 @@ def _mock_invocator_plugin(path_to_invoke_action):
 
 
 def capture_invocation_input(invocation_input: InvocationInput):
+    """
+    This body substitutes (mocks) `invoke_action` func in invocator plugins.
+
+    Instead of executing func logic, it only captures its input for verifications in tests.
+    """
     EnvMockBuilder.invocation_input = dataclasses.replace(invocation_input)
 
 

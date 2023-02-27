@@ -16,7 +16,7 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev20",
+    version = "0.0.0.dev21",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Bash Tab-completion (data) server",
@@ -80,6 +80,7 @@ setuptools.setup(
         # Use `mongomock` as replacement for Mongo DB in simple prod cases:
         "mongomock",
         "requests",
+        "cachetools",
     ],
     tests_require = tests_require,
     extras_require = extras_require,

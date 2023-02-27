@@ -1,20 +1,31 @@
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.schema_config_core_server.FirstArgInterpFactorySchema import first_arg_interp_config_desc
+from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
 
 
 class FirstArgInterpFactory(AbstractInterpFactory):
+    """
+    Implements FS_42_76_93_51.
+    """
 
     def __init__(
         self,
+        plugin_instance_id: str,
         config_dict: dict,
     ):
-        super().__init__(config_dict)
-        first_arg_interp_config_desc.validate_dict(config_dict)
+        super().__init__(
+            plugin_instance_id,
+            config_dict,
+        )
+        first_arg_interp_factory_config_desc.validate_dict(config_dict)
 
     def create_interp(
         self,
         interp_ctx: InterpContext,
     ) -> FirstArgInterp:
-        return FirstArgInterp(interp_ctx, self.config_dict)
+        return FirstArgInterp(
+            self.plugin_instance_id,
+            self.config_dict,
+            interp_ctx,
+        )

@@ -6,7 +6,7 @@ from argrelay.misc_helper.TypeDesc import TypeDesc
 first_arg_vals_to_next_interp_factory_ids_ = "first_arg_vals_to_next_interp_factory_ids"
 
 
-class FirstArgInterpConfigSchema(Schema):
+class FirstArgInterpFactoryConfigSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
@@ -18,14 +18,14 @@ class FirstArgInterpConfigSchema(Schema):
     )
 
 
-first_arg_interp_config_example = {
+first_arg_interp_factory_config_example = {
     first_arg_vals_to_next_interp_factory_ids_: {
         "some_command": DemoInterpFactory.__name__,
     },
 }
-first_arg_interp_config_desc = TypeDesc(
-    dict_schema = FirstArgInterpConfigSchema(),
-    ref_name = FirstArgInterpConfigSchema.__name__,
-    dict_example = first_arg_interp_config_example,
+first_arg_interp_factory_config_desc = TypeDesc(
+    dict_schema = FirstArgInterpFactoryConfigSchema(),
+    ref_name = FirstArgInterpFactoryConfigSchema.__name__,
+    dict_example = first_arg_interp_factory_config_example,
     default_file_path = "",
 )

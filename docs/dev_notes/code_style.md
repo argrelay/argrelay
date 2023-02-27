@@ -61,15 +61,18 @@ preferring (not immediately obvious) practical properties.
     ```python
     def __init__(
         self,
+        plugin_instance_id: str,
         config_dict: dict,
     ):
+        self.plugin_instance_id = plugin_instance_id
         self.config_dict = config_dict
     ```
 
     instead of this:
 
     ```python
-    def __init__(self, config_dict: dict):
+    def __init__(self, plugin_instance_id: str, config_dict: dict):
+        self.plugin_instance_id = plugin_instance_id
         self.config_dict = config_dict
     ```
 

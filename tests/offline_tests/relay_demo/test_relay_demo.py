@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from unittest import TestCase, skip
-
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
@@ -20,12 +18,14 @@ from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import line_no, parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
-    EnvMockBuilder
+    EnvMockBuilder,
 )
+from argrelay.test_helper.InOutTestCase import InOutTestCase
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(InOutTestCase):
 
+    # TODO: use unified `verify_output` everywhere
     def verify_assignments(
         self,
         test_data,
@@ -66,6 +66,7 @@ class ThisTestCase(TestCase):
                         [arg_type]
                     )
 
+    # TODO: use unified `verify_output` everywhere
     def run_completion_mode_test(
         self,
         test_data,
@@ -103,7 +104,7 @@ class ThisTestCase(TestCase):
 
             (
                 line_no(), "some_command |", CompType.PrefixHidden,
-                "goto\ndesc\nlist",
+                "intercept\ngoto\ndesc\nlist",
                 "Suggest from the set of values for the first unassigned arg type",
             ),
             (
@@ -209,47 +210,147 @@ class ThisTestCase(TestCase):
                     expected_suggestions,
                 )
 
-    # TODO: Fix test_data: TD_76_09_29_31: # overlapped:
-    #       there is no overlap after introduction of ClusterName.
-    @skip
     def test_propose_auto_comp_TD_76_09_29_31_overlapped(self):
         """
         Test arg values suggestion with TD_76_09_29_31 # overlapped
         """
 
-        # @formatter:off
         test_cases = [
-              (
-                line_no(), "some_command host dev goto downstream |", CompType.MenuCompletion,
-                "emea\namer.us",
-                "Suggestions for next \"coordinate\" are arg values pre-filtered by selection of previous arg values",
-            ),
-            # TODO: Fix test_data: TD_76_09_29_31: # overlapped:
-            #       there is no overlap after introduction of ClusterName.
             (
-                line_no(), "some_command goto host dev downstream amer.us amer.u|", CompType.PrefixShown,
-                "",
+                line_no(),
+                "some_command host dev goto downstream |",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                ["amer", "emea"],
+                {},
+                None,
+                "TD_76_09_29_31: GeoRegion set is suggested (while HostName set is the same)",
+            ),
+            (
+                line_no(),
+                "some_command host dev goto downstream amer |",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                ["amer", "emea"],
+                {},
+                None,
+                "TD_76_09_29_31: HostName set is suggested (while GeoRegion set is the same)",
+            ),
+            (
+                line_no(),
+                "some_command goto host dev downstream amer am|",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                ["amer"],
+                {},
+                None,
                 "TD_76_09_29_31 # overlapped: one of the explicit value matches more than one type, "
-                "but it is not assigned to all arg types => some suggestion for missing arg types",
+                "but it is not assigned to all arg types => some suggestion for incomplete missing arg types",
+            ),
+            (
+                line_no(),
+                "some_command goto host dev downstream amer amer |",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                [],
+                {},
+                None,
+                "TD_76_09_29_31 # overlapped: all values assigned - no more suggestions",
+            ),
+            (
+                line_no(),
+                "some_command host dev goto downstream amer amer |",
+                RunMode.InvocationMode,
+                CompType.InvokeAction,
+                [],
+                {
+                    0: {
+                        GlobalArgType.ObjectSelector.name: AssignedValue("host", ArgSource.ExplicitPosArg),
+                    },
+                    1: {
+                        ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.GeoRegion.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
+                        ServiceArgType.FlowStage.name: AssignedValue("downstream", ArgSource.ExplicitPosArg),
+                        ServiceArgType.ClusterName.name: AssignedValue("dev-amer-downstream", ArgSource.ImplicitValue),
+                        ServiceArgType.HostName.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
+                    },
+                },
+                # TODO: add verification of consumed and unconsumed tokens
+                ErrorInvocator,
+                "TD_76_09_29_31: Both GeoRegion and HostName are correctly assigned",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
                 (
                     line_number,
                     test_line,
+                    run_mode,
                     comp_type,
                     expected_suggestions,
+                    envelope_ipos_to_expected_assignments,
+                    invocator_class,
                     case_comment,
                 ) = test_case
 
-                self.run_completion_mode_test(
+                self.verify_output(
                     "TD_76_09_29_31",  # overlapped
                     test_line,
+                    run_mode,
                     comp_type,
                     expected_suggestions,
+                    envelope_ipos_to_expected_assignments,
+                    invocator_class,
+                )
+
+    def test_FS_06_99_43_60_varargs(self):
+        """
+        Test multiple `data_envelope`-s FS_06_99_43_60 # varargs
+        """
+
+        test_cases = [
+            (
+                line_no(),
+                "some_command goto service s_b prod |",
+                RunMode.InvocationMode,
+                CompType.InvokeAction,
+                [],
+                {
+                    0: {
+                        GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
+                    },
+                    1: {},
+                    2: {},
+                },
+                ErrorInvocator,
+                "FS_06_99_43_60: Invocation happens with ambiguous services to select - "
+                "without narrowing down to single service object",
+            ),
+        ]
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    test_line,
+                    run_mode,
+                    comp_type,
+                    expected_suggestions,
+                    envelope_ipos_to_expected_assignments,
+                    invocator_class,
+                    case_comment,
+                ) = test_case
+
+                self.verify_output(
+                    "TD_63_37_05_36",  # overlapped
+                    test_line,
+                    run_mode,
+                    comp_type,
+                    expected_suggestions,
+                    envelope_ipos_to_expected_assignments,
+                    invocator_class,
                 )
 
     def test_propose_auto_comp_TD_43_24_76_58_single(self):
@@ -311,8 +412,21 @@ class ThisTestCase(TestCase):
         # @formatter:off
         test_cases = [
             (
+                line_no(), "some_command list service dev upstream amer |", CompType.DescribeArgs,
+                "Not only `goto`, also `list` and anything else should work.",
+                None,
+            ),
+            (
+                line_no(), "some_command goto service s_b prod qwer-pd-2 |", CompType.DescribeArgs,
+                "If current command search results in ambiguous results (more than one `data_envelope`), "
+                "it should still work.",
+                # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stderr output.
+                None,
+            ),
+            (
                 line_no(), "some_command goto service dev emea upstream s_|  ", CompType.DescribeArgs,
-                "FS_23_62_89_43: tangent token is taken into account in describe",
+                # TODO: make another test where set of suggestion listed for tangent token is reduced to those matching this token as prefix (currently selected includes all because all match that prefix).
+                "FS_23_62_89_43: tangent token is taken into account in describe.",
                 f"""
 {ReservedEnvelopeClass.ClassFunction.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
@@ -333,7 +447,7 @@ class ThisTestCase(TestCase):
             ),
             (
                 line_no(), "some_command goto host upstream |", CompType.DescribeArgs,
-                "Envelopes ",
+                "Regular description with some props specified (FlowStage) and many still to be narrowed down.",
                 # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
 {ReservedEnvelopeClass.ClassFunction.name}:
@@ -379,8 +493,12 @@ class ThisTestCase(TestCase):
                     assert isinstance(command_obj, AbstractLocalClientCommand)
                     interp_ctx = command_obj.interp_ctx
 
+                    if not stderr_output:
+                        # Output is not specified - not to be asserted:
+                        continue
+
                     # TODO: Running print again with capturing `stderr`
-                    #       (executing end-to-end above generates noise output by server logic).
+                    #       (executing end-to-end above generates noise output on stdout by local server logic).
                     #       A proper implementation would be getting `DescribeArgs`'s response_dict
                     #       and printing it again.
                     inner_env_mock_builder = (
@@ -552,6 +670,7 @@ class ThisTestCase(TestCase):
                 )
 
     # TODO: generalize and factor out common part in capture_invocation_input_1 and capture_invocation_input_2:
+    # TODO: use unified `verify_output` everywhere
     def test_capture_invocation_input_1(self):
         test_line = "some_command goto service prod downstream wert-pd-1 |"
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
