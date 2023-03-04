@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from argrelay.runtime_data.PluginEntry import PluginEntry
@@ -16,7 +18,7 @@ class InvocationInput:
     It is assumed that server and client code, if not of the same version, at least, compatible.
     """
 
-    data_envelopes: list
+    data_envelopes: list[dict]
     """
     Envelopes copied from `InterpContext` at the end of command line interpretation on the server side.
     """

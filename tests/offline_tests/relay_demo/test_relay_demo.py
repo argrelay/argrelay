@@ -312,6 +312,29 @@ class ThisTestCase(InOutTestCase):
         test_cases = [
             (
                 line_no(),
+                "some_command relay_demo list host dev |",
+                RunMode.InvocationMode,
+                CompType.InvokeAction,
+                [],
+                {},
+                # TODO: Make generic validator be able to verify payload (not only`interp_ctx` passed from local client).
+                # {
+                #     0: {
+                #         GlobalArgType.ActionType.name: AssignedValue("list", ArgSource.ExplicitPosArg),
+                #         GlobalArgType.ObjectSelector.name: AssignedValue("host", ArgSource.ExplicitPosArg),
+                #     },
+                #     1: {
+                #         ServiceArgType.HostName.name: "asdf-du",
+                #         HostName': "zxcv-du"
+                #     },
+                #     2: {},
+                # },
+                # TODO: It works whether there is ErrorInvocator or ServiceInvocator. Why?
+                ServiceInvocator,
+                "Basic test that list list objects"
+            ),
+            (
+                line_no(),
                 "some_command goto service s_b prod |",
                 RunMode.InvocationMode,
                 CompType.InvokeAction,

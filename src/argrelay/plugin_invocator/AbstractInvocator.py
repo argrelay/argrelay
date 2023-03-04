@@ -35,10 +35,10 @@ def get_func_name_from_container(
 
 
 def get_func_name_from_envelope(
-    interp_ctx: "InterpContext",
+    data_envelopes: list[dict],
 ):
-    func_data_envelope = interp_ctx.data_envelopes[(
-        interp_ctx.curr_interp.base_envelope_ipos + function_envelope_ipos_
+    func_data_envelope = data_envelopes[(
+        function_envelope_ipos_
     )]
     func_name = func_data_envelope[envelope_id_]
     return func_name

@@ -18,7 +18,6 @@ from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
-from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
@@ -147,7 +146,7 @@ class ServiceInvocator(AbstractInvocator):
         if func_name == list_host_func_:
             for data_envelope in invocation_input.data_envelopes[host_envelope_ipos_:]:
                 print(data_envelope)
-        if func_name == list_service_func_:
+        elif func_name == list_service_func_:
             for data_envelope in invocation_input.data_envelopes[service_envelope_ipos_:]:
                 print(data_envelope)
         else:
