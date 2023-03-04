@@ -23,7 +23,11 @@ class InvocationInputSchema(Schema):
 
     data_envelopes = fields.List(
         FilteredDict(
-            filtered_keys = [mongo_id_]
+            filtered_keys = [mongo_id_],
+            # Some `data_envelope`-s may not be found by search -
+            # instead of redirecting invocation to something like `ErrorInvocator` on server side,
+            # send `None` items to decide how to handle that on client side.
+            allow_none = True,
         ),
         required = True,
     )

@@ -21,21 +21,26 @@ query_cache_config:
     query_cache_ttl_sec: 60
     query_cache_max_size_bytes: 1048576 # 1MiB
 
-plugin_id_load_list:
+plugin_instance_id_load_list:
 
     -   FirstArgInterpFactory
+    -   TreePathInterpFactory
+    -   DemoInterpFactory.intercept_func
     -   DemoInterpFactory
 
     -   NoopLoader
+    -   InterceptorLoader
     -   ServiceLoader
     -   GitRepoLoader
 
     -   NoopInvocator
+    -   InterceptorInvocator
     -   ServiceInvocator
     -   GitRepoInvocator
     -   ErrorInvocator
 
 plugin_dict:
+
     FirstArgInterpFactory:
         plugin_module_name: argrelay.plugin_interp.FirstArgInterpFactory
         plugin_class_name: FirstArgInterpFactory
@@ -43,9 +48,32 @@ plugin_dict:
         plugin_config:
             first_arg_vals_to_next_interp_factory_ids:
                 # This binding uses existing file system name `relay_demo`:
-                relay_demo: DemoInterpFactory
+                relay_demo: TreePathInterpFactory
                 # Another equivalent binding (but `some_command` does not exist in this repo):
-                some_command: DemoInterpFactory
+                some_command: TreePathInterpFactory
+
+    TreePathInterpFactory:
+        plugin_module_name: argrelay.plugin_interp.TreePathInterpFactory
+        plugin_class_name: TreePathInterpFactory
+        plugin_type: InterpFactoryPlugin
+        plugin_config:
+            interp_selector_tree:
+                intercept: DemoInterpFactory.intercept_func
+                "": DemoInterpFactory
+
+    DemoInterpFactory.intercept_func:
+        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
+        plugin_class_name: DemoInterpFactory
+        plugin_type: InterpFactoryPlugin
+        plugin_config:
+            function_search_control:
+                envelope_class: ClassFunction
+                keys_to_types_list:
+                    -   action: ActionType
+            function_init_control:
+                init_types_to_values:
+                    ActionType: "intercept"
+                    ObjectSelector: "none"
 
     DemoInterpFactory:
         plugin_module_name: argrelay.custom_integ.DemoInterpFactory
@@ -57,10 +85,18 @@ plugin_dict:
                 keys_to_types_list:
                     -   action: ActionType
                     -   selector: ObjectSelector
+            function_init_control:
+                init_types_to_values: {}
 
     NoopLoader:
-        plugin_module_name: argrelay.misc_helper.NoopLoader
+        plugin_module_name: argrelay.plugin_loader.NoopLoader
         plugin_class_name: NoopLoader
+        plugin_type: LoaderPlugin
+        plugin_config: { }
+
+    InterceptorLoader:
+        plugin_module_name: argrelay.plugin_loader.InterceptorLoader
+        plugin_class_name: InterceptorLoader
         plugin_type: LoaderPlugin
         plugin_config: { }
 
@@ -85,6 +121,12 @@ plugin_dict:
     NoopInvocator:
         plugin_module_name: argrelay.plugin_invocator.NoopInvocator
         plugin_class_name: NoopInvocator
+        plugin_type: InvocatorPlugin
+        plugin_config: { }
+
+    InterceptorInvocator:
+        plugin_module_name: argrelay.plugin_invocator.InterceptorInvocator
+        plugin_class_name: InterceptorInvocator
         plugin_type: InvocatorPlugin
         plugin_config: { }
 

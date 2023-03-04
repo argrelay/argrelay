@@ -10,11 +10,11 @@ class ErrorInvocator(AbstractInvocator):
 
     def run_invoke_control(
         self,
-        local_server: LocalServer,
         interp_ctx: InterpContext,
+        local_server: LocalServer,
     ) -> InvocationInput:
         invocator_plugin_entry = local_server.server_config.plugin_dict[self.__class__.__name__]
-        data_envelopes = get_data_envelopes(interp_ctx.envelope_containers)
+        data_envelopes = get_data_envelopes(interp_ctx)
         invocation_input = InvocationInput(
             invocator_plugin_entry = invocator_plugin_entry,
             data_envelopes = data_envelopes,

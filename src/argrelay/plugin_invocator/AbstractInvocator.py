@@ -5,7 +5,7 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
-from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
+from argrelay.runtime_context.InterpContext import function_envelope_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -18,18 +18,28 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
 
-def get_data_envelopes(envelope_containers):
-    return [envelope_container.data_envelope for envelope_container in envelope_containers]
+def get_data_envelopes(
+    interp_ctx: "InterpContext",
+):
+    return [envelope_container.data_envelope for envelope_container in interp_ctx.envelope_containers]
 
 
-def get_func_name_from_container(envelope_containers):
-    func_data_envelope = envelope_containers[function_envelope_ipos_].data_envelope
+def get_func_name_from_container(
+    interp_ctx: "InterpContext",
+):
+    func_data_envelope = interp_ctx.envelope_containers[(
+        interp_ctx.curr_interp.base_envelope_ipos + function_envelope_ipos_
+    )].data_envelope
     func_name = func_data_envelope[envelope_id_]
     return func_name
 
 
-def get_func_name_from_envelope(data_envelopes):
-    func_data_envelope = data_envelopes[function_envelope_ipos_]
+def get_func_name_from_envelope(
+    interp_ctx: "InterpContext",
+):
+    func_data_envelope = interp_ctx.data_envelopes[(
+        interp_ctx.curr_interp.base_envelope_ipos + function_envelope_ipos_
+    )]
     func_name = func_data_envelope[envelope_id_]
     return func_name
 
@@ -63,15 +73,20 @@ class AbstractInvocator(AbstractPlugin):
 
     def run_fill_control(
         self,
-        envelope_containers: list[EnvelopeContainer],
-        curr_container_ipos: int,
+        interp_ctx: "InterpContext",
+    ):
+        pass
+
+    def run_interp_control(
+        self,
+        curr_interp: "AbstractInterp",
     ):
         pass
 
     def run_invoke_control(
         self,
+        interp_ctx: "InterpContext",
         local_server: "LocalServer",
-        interp_ctx: InterpContext,
     ) -> InvocationInput:
         """
         Server-side entry point.

@@ -53,7 +53,7 @@ class InterpContext:
     Each `envelope_container` wraps `data_envelope`-s matching query and some associated data.
     """
 
-    curr_container: EnvelopeContainer = field(init = False, default_factory = lambda: EnvelopeContainer())
+    curr_container: EnvelopeContainer = field(init = False, default = None)
     """
     One of the `envelope_containers` currently being searched.
     """
@@ -79,7 +79,6 @@ class InterpContext:
 
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
-        self.envelope_containers.append(self.curr_container)
 
     def _init_unconsumed_tokens(self):
         return [
@@ -98,7 +97,10 @@ class InterpContext:
             )
         ]
 
-    def create_containers(self, search_control_list: list[SearchControl]):
+    def alloc_searchable_containers(
+        self,
+        search_control_list: list[SearchControl],
+    ):
         for search_control in search_control_list:
             envelope_container = EnvelopeContainer(search_control)
             self.envelope_containers.append(envelope_container)
@@ -114,7 +116,11 @@ class InterpContext:
         )
 
     def query_prop_values(self):
-        if not self.curr_container.search_control.envelope_class:
+        if not (
+            self.curr_container
+            and
+            self.curr_container.search_control.envelope_class
+        ):
             # If `ReservedArgType.EnvelopeClass` is not specified, nothing to search:
             return
 
@@ -142,7 +148,7 @@ class InterpContext:
 
         interp_n: int = 0
         self.curr_interp = self.create_next_interp(first_interp_factory_id)
-        while self.curr_interp:
+        while True:
             interp_n += 1
 
             # Query envelope values only - they will be used for consumption of command line args:
@@ -155,7 +161,8 @@ class InterpContext:
 
             ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {type(self.curr_interp).__name__}")
             self.query_prop_values()
-            self.curr_container.populate_implicit_arg_values()
+            if self.curr_container:
+                self.curr_container.populate_implicit_arg_values()
 
             if self.parsed_ctx.comp_type == CompType.DescribeArgs:
                 # Describing args will need to show options except default - query values before defaults:
@@ -194,7 +201,11 @@ class InterpContext:
                     f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}"
                 )
                 self.prev_interp = self.curr_interp
-                self.curr_interp = self.curr_interp.next_interp()
+                next_interp = self.curr_interp.next_interp()
+                if next_interp:
+                    self.curr_interp = next_interp
+                else:
+                    return
             else:
                 raise RuntimeError(interp_step)
 
@@ -206,9 +217,14 @@ class InterpContext:
     def propose_arg_values(self) -> list[str]:
         return self.comp_suggestions
 
-    def create_next_interp(self, interp_factory_id: str) -> "AbstractInterp":
+    def create_next_interp(
+        self,
+        interp_factory_id: str,
+    ) -> "AbstractInterp":
         interp_factory: "AbstractInterpFactory" = self.interp_factories[interp_factory_id]
-        return interp_factory.create_interp(self)
+        return interp_factory.create_interp(
+            self,
+        )
 
     def print_debug(self, end_str: str = "\n") -> None:
         if not self.parsed_ctx.is_debug_enabled:

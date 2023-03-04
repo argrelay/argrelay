@@ -15,14 +15,14 @@ class ServerConfig:
     mongo_config: MongoConfig
     query_cache_config: QueryCacheConfig
 
-    plugin_id_load_list: list[str]
+    plugin_instance_id_load_list: list[str]
     """
-    List of `plugin_id`s in order of loading. Each `plugin_id` is a key into `plugin_dict`.
+    List of `plugin_instance_id`s in order of loading. Each `plugin_instance_id` is a key into `plugin_dict`.
     """
 
     plugin_dict: dict[str, PluginEntry]
     """
-    Key = `plugin_id`
+    Key = `plugin_instance_id`
     """
 
     static_data: StaticData

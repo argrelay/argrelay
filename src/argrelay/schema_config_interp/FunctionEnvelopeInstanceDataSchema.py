@@ -3,7 +3,7 @@ from marshmallow import Schema, RAISE, fields
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
-invocator_plugin_id_ = "invocator_plugin_id"
+invocator_plugin_instance_id_ = "invocator_plugin_instance_id"
 search_control_list_ = "search_control_list"
 
 
@@ -16,7 +16,7 @@ class FunctionEnvelopeInstanceDataSchema(Schema):
         unknown = RAISE
         strict = True
 
-    invocator_plugin_id = fields.String(
+    invocator_plugin_instance_id = fields.String(
         required = True,
     )
 
@@ -30,7 +30,7 @@ function_envelope_instance_data_desc = TypeDesc(
     dict_schema = FunctionEnvelopeInstanceDataSchema(),
     ref_name = FunctionEnvelopeInstanceDataSchema.__name__,
     dict_example = {
-        invocator_plugin_id_: "NoopInvocator",
+        invocator_plugin_instance_id_: "NoopInvocator",
         search_control_list_: [
             search_control_desc.dict_example,
         ],

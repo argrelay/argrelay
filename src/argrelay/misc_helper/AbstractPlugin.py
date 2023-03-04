@@ -3,12 +3,15 @@ from typing import Type
 
 
 class AbstractPlugin:
+    plugin_instance_id: str
     config_dict: dict
 
     def __init__(
         self,
+        plugin_instance_id: str,
         config_dict: dict,
     ):
+        self.plugin_instance_id = plugin_instance_id
         self.config_dict = config_dict
 
     def activate_plugin(self):
@@ -37,7 +40,13 @@ def import_plugin_class(plugin_entry):
     return plugin_class
 
 
-def instantiate_plugin(plugin_entry):
+def instantiate_plugin(
+    plugin_instance_id: str,
+    plugin_entry,
+):
     plugin_class = import_plugin_class(plugin_entry)
-    plugin_object: AbstractPlugin = plugin_class(plugin_entry.plugin_config)
+    plugin_object: AbstractPlugin = plugin_class(
+        plugin_instance_id,
+        plugin_entry.plugin_config,
+    )
     return plugin_object

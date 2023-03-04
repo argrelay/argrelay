@@ -5,5 +5,8 @@ from argrelay.runtime_context.InterpContext import InterpContext
 
 class AbstractInterpFactory(AbstractPlugin):
 
-    def create_interp(self, interp_ctx: InterpContext) -> AbstractInterp:
+    def create_interp(
+        self,
+        interp_ctx: InterpContext,
+    ) -> AbstractInterp:
         pass

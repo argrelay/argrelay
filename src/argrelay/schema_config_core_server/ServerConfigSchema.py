@@ -13,7 +13,7 @@ from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 connection_config_ = "connection_config"
 mongo_config_ = "mongo_config"
 query_cache_config_ = "query_cache_config"
-plugin_id_load_list_ = "plugin_id_load_list"
+plugin_instance_id_load_list_ = "plugin_instance_id_load_list"
 plugin_dict_ = "plugin_dict"
 static_data_ = "static_data"
 
@@ -38,13 +38,13 @@ class ServerConfigSchema(Schema):
         required = True,
     )
 
-    # Lists `plugin_id`-s to specify load order for the plugins and their activation.
-    plugin_id_load_list = fields.List(
+    # Lists `plugin_instance_id`-s to specify load order for the plugins and their activation.
+    plugin_instance_id_load_list = fields.List(
         fields.String(),
         required = True,
     )
 
-    # Plugin config data: key = `plugin_id`, value = `plugin_entry`:
+    # Plugin config data: key = `plugin_instance_id`, value = `plugin_entry`:
     plugin_dict = fields.Dict(
         keys = fields.String(),
         values = fields.Nested(plugin_entry_desc.dict_schema),
@@ -56,26 +56,27 @@ class ServerConfigSchema(Schema):
         required = True,
     )
 
-    # No interp_factories field for schema - it is generated for ServerConfig internally based on `plugin_id_load_list`.
+    # No interp_factories field for schema -
+    # it is generated for ServerConfig internally based on `plugin_instance_id_load_list`.
 
     @post_load
     def make_object(self, input_dict, **kwargs):
-        # Populate `plugin_id` from `plugin_dict` into each
+        # Populate `plugin_instance_id` from `plugin_dict` into each
         return ServerConfig(
             connection_config = input_dict[connection_config_],
             mongo_config = input_dict[mongo_config_],
             query_cache_config = input_dict[query_cache_config_],
-            plugin_id_load_list = input_dict[plugin_id_load_list_],
+            plugin_instance_id_load_list = input_dict[plugin_instance_id_load_list_],
             plugin_dict = input_dict[plugin_dict_],
             static_data = input_dict[static_data_],
         )
 
     @validates_schema
     def validate_known(self, input_dict, **kwargs):
-        for plugin_id in input_dict[plugin_id_load_list_]:
-            # Ensure every `plugin_id` is defined in `plugin_dict`:
-            if plugin_id not in input_dict[plugin_dict_]:
-                raise ValidationError(f"`{plugin_id}` is not defined in `{plugin_dict_}`")
+        for plugin_instance_id in input_dict[plugin_instance_id_load_list_]:
+            # Ensure every `plugin_instance_id` is defined in `plugin_dict`:
+            if plugin_instance_id not in input_dict[plugin_dict_]:
+                raise ValidationError(f"`{plugin_instance_id}` is not defined in `{plugin_dict_}`")
 
 
 server_config_desc = TypeDesc(
@@ -85,11 +86,11 @@ server_config_desc = TypeDesc(
         connection_config_: connection_config_desc.dict_example,
         mongo_config_: mongo_config_desc.dict_example,
         query_cache_config_: query_cache_config_desc.dict_example,
-        plugin_id_load_list_: [
-            "some_plugin_id",
+        plugin_instance_id_load_list_: [
+            "some_plugin_instance_id",
         ],
         plugin_dict_: {
-            "some_plugin_id": plugin_entry_desc.dict_example,
+            "some_plugin_instance_id": plugin_entry_desc.dict_example,
         },
         static_data_: static_data_desc.dict_example,
     },

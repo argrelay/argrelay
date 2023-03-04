@@ -10,14 +10,15 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
 from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_id_load_list_, static_data_, plugin_dict_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_id_load_list_, static_data_, plugin_dict_
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
-from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_
+from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_, function_init_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_id_,
+    invocator_plugin_instance_id_,
     search_control_list_,
 )
+from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_
 from argrelay.schema_config_interp.SearchControlSchema import envelope_class_, keys_to_types_list_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
@@ -46,11 +47,11 @@ class ThisTestCase(TestCase):
         type_2 = "whatever_type_2"
 
         # Configure new `FuncArgsInterpFactory`:
-        plugin_id = FuncArgsInterpFactory.__name__ + ".test"
-        assert plugin_id not in server_config_dict[plugin_id_load_list_]
-        assert plugin_id not in server_config_dict[plugin_dict_]
-        server_config_dict[plugin_id_load_list_].append(plugin_id)
-        server_config_dict[plugin_dict_][plugin_id] = {
+        plugin_instance_id = FuncArgsInterpFactory.__name__ + ".test"
+        assert plugin_instance_id not in server_config_dict[plugin_instance_id_load_list_]
+        assert plugin_instance_id not in server_config_dict[plugin_dict_]
+        server_config_dict[plugin_instance_id_load_list_].append(plugin_instance_id)
+        server_config_dict[plugin_dict_][plugin_instance_id] = {
             plugin_module_name_: FuncArgsInterpFactory.__module__,
             plugin_class_name_: FuncArgsInterpFactory.__name__,
             plugin_type_: PluginType.InterpFactoryPlugin.name,
@@ -62,6 +63,10 @@ class ThisTestCase(TestCase):
                         {type_2: type_2},
                     ]
                 },
+                function_init_control_: {
+                    init_types_to_values_: {
+                    },
+                },
             }
         }
 
@@ -69,7 +74,7 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_1",
             instance_data_: {
-                invocator_plugin_id_: NoopInvocator.__name__,
+                invocator_plugin_instance_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -80,7 +85,7 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_2",
             instance_data_: {
-                invocator_plugin_id_: NoopInvocator.__name__,
+                invocator_plugin_instance_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -106,7 +111,7 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_3",
             instance_data_: {
-                invocator_plugin_id_: NoopInvocator.__name__,
+                invocator_plugin_instance_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,

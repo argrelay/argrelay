@@ -44,10 +44,10 @@ def set_default_to(arg_type, arg_val, envelope_container):
 
 def redirect_to_error(interp_ctx, server_config):
     # Redirect to `ErrorInvocator`:
-    invocator_plugin_id = ErrorInvocator.__name__
+    invocator_plugin_instance_id = ErrorInvocator.__name__
     invocation_input = InvocationInput(
-        invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_id],
-        data_envelopes = get_data_envelopes(interp_ctx.envelope_containers),
+        invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_instance_id],
+        data_envelopes = get_data_envelopes(interp_ctx),
         custom_plugin_data = {},
     )
     return invocation_input
@@ -57,25 +57,28 @@ class ServiceInvocator(AbstractInvocator):
 
     def __init__(
         self,
+        plugin_instance_id: str,
         config_dict: dict,
     ):
-        super().__init__(config_dict)
+        super().__init__(
+            plugin_instance_id,
+            config_dict,
+        )
 
     def run_fill_control(
         self,
-        envelope_containers: list[EnvelopeContainer],
-        curr_container_ipos: int,
+        interp_ctx: "InterpContext",
     ):
-        func_name = get_func_name_from_container(envelope_containers)
+        func_name = get_func_name_from_container(interp_ctx)
         if func_name in [
             goto_host_funct_,
             goto_service_funct_,
         ]:
             assert host_envelope_ipos_ == service_envelope_ipos_
             object_envelope_ipos_ = host_envelope_ipos_
-            if curr_container_ipos == access_envelope_ipos_:
-                object_envelope = envelope_containers[object_envelope_ipos_].data_envelope
-                access_container = envelope_containers[access_envelope_ipos_]
+            if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_:
+                object_envelope = interp_ctx.envelope_containers[interp_ctx.curr_interp.base_envelope_ipos + object_envelope_ipos_].data_envelope
+                access_container = interp_ctx.envelope_containers[interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_]
                 code_arg_type = ServiceArgType.CodeMaturity.name
                 if code_arg_type in object_envelope:
                     code_arg_val = object_envelope[code_arg_type]
@@ -93,12 +96,12 @@ class ServiceInvocator(AbstractInvocator):
 
     def run_invoke_control(
         self,
-        local_server: LocalServer,
         interp_ctx: InterpContext,
+        local_server: LocalServer,
     ) -> InvocationInput:
         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
 
-        func_name = get_func_name_from_container(interp_ctx.envelope_containers)
+        func_name = get_func_name_from_container(interp_ctx)
 
         if func_name in [
             goto_host_funct_,
@@ -116,13 +119,13 @@ class ServiceInvocator(AbstractInvocator):
             assert vararg_data_envelope_ipos == host_envelope_ipos_ == service_envelope_ipos_
             if interp_ctx.curr_container_ipos >= host_envelope_ipos_:
                 query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_data_envelope_ipos])
-                invocator_plugin_id = ServiceInvocator.__name__
+                invocator_plugin_instance_id = ServiceInvocator.__name__
 
                 invocation_input = InvocationInput(
-                    invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_id],
+                    invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
                     data_envelopes = (
                         # existing envelopes (until vararg one):
-                        get_data_envelopes(interp_ctx.envelope_containers)[:vararg_data_envelope_ipos]
+                        get_data_envelopes(interp_ctx)[:vararg_data_envelope_ipos]
                         +
                         # all envelopes in vararg set:
                         local_server.get_query_engine().query_data_envelopes(query_dict)

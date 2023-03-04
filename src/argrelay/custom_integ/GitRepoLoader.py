@@ -9,6 +9,7 @@ from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.GitRepoInvocator import GitRepoInvocator
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_plugin_enabled_
+from argrelay.custom_integ.value_constants import desc_repo_func_, desc_commit_func_
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -21,7 +22,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_id_,
+    invocator_plugin_instance_id_,
     search_control_list_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
@@ -31,9 +32,13 @@ class GitRepoLoader(AbstractLoader):
 
     def __init__(
         self,
+        plugin_instance_id: str,
         config_dict: dict,
     ):
-        super().__init__(config_dict)
+        super().__init__(
+            plugin_instance_id,
+            config_dict,
+        )
         git_repo_loader_config_desc.validate_dict(config_dict)
 
     def update_static_data(self, static_data: StaticData) -> StaticData:
@@ -176,9 +181,9 @@ class GitRepoLoader(AbstractLoader):
         }
 
         given_function_envelope = {
-            envelope_id_: "desc_repo",
+            envelope_id_: desc_repo_func_,
             instance_data_: {
-                invocator_plugin_id_: GitRepoInvocator.__name__,
+                invocator_plugin_instance_id_: GitRepoInvocator.__name__,
                 search_control_list_: [
                     repo_search_control,
                 ],
@@ -190,9 +195,9 @@ class GitRepoLoader(AbstractLoader):
         data_envelopes.append(given_function_envelope)
 
         given_function_envelope = {
-            envelope_id_: "desc_commit",
+            envelope_id_: desc_commit_func_,
             instance_data_: {
-                invocator_plugin_id_: GitRepoInvocator.__name__,
+                invocator_plugin_instance_id_: GitRepoInvocator.__name__,
                 search_control_list_: [
                     commit_search_control,
                 ],

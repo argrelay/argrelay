@@ -14,12 +14,18 @@ class NamedNoopInterp(AbstractInterp):
 
     instance_name: str
 
-    def __init__(self, interp_ctx: InterpContext, config_dict: dict):
-        super().__init__(interp_ctx, config_dict)
+    def __init__(
+        self,
+        interp_factory_id,
+        config_dict: dict,
+        interp_ctx: InterpContext,
+    ):
+        super().__init__(
+            interp_factory_id,
+            config_dict,
+            interp_ctx,
+        )
         self.instance_name = config_dict["instance_name"]
 
     def try_iterate(self) -> InterpStep:
         return InterpStep.NextInterp
-
-    def next_interp(self) -> "AbstractInterp":
-        return None
