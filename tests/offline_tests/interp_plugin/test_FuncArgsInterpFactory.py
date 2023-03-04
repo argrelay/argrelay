@@ -12,7 +12,7 @@ from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_id_load_list_, static_data_, plugin_dict_
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_, init_control_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
 from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_id_,
@@ -72,7 +72,6 @@ class ThisTestCase(TestCase):
                 invocator_plugin_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
-            init_control_: [],
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
@@ -84,7 +83,6 @@ class ThisTestCase(TestCase):
                 invocator_plugin_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
-            init_control_: [],
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             type_1: "type_1_value_2",
             type_2: "type_2_value_2",
@@ -111,7 +109,6 @@ class ThisTestCase(TestCase):
                 invocator_plugin_id_: NoopInvocator.__name__,
                 search_control_list_: [],
             },
-            init_control_: [],
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",

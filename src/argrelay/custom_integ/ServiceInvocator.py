@@ -22,10 +22,9 @@ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
-cluster_envelope_ipos_ = 1
-host_envelope_ipos_ = 2
-service_envelope_ipos_ = 2
-access_envelope_ipos_ = 3
+host_envelope_ipos_ = 1
+service_envelope_ipos_ = 1
+access_envelope_ipos_ = 2
 
 
 def set_default_to(arg_type, arg_val, envelope_container):
@@ -72,12 +71,14 @@ class ServiceInvocator(AbstractInvocator):
             goto_host_funct_,
             goto_service_funct_,
         ]:
+            assert host_envelope_ipos_ == service_envelope_ipos_
+            object_envelope_ipos_ = host_envelope_ipos_
             if curr_container_ipos == access_envelope_ipos_:
-                cluster_envelope = envelope_containers[cluster_envelope_ipos_].data_envelope
+                object_envelope = envelope_containers[object_envelope_ipos_].data_envelope
                 access_container = envelope_containers[access_envelope_ipos_]
                 code_arg_type = ServiceArgType.CodeMaturity.name
-                if code_arg_type in cluster_envelope:
-                    code_arg_val = cluster_envelope[code_arg_type]
+                if code_arg_type in object_envelope:
+                    code_arg_val = object_envelope[code_arg_type]
                     if code_arg_val == "prod":
                         set_default_to(ServiceArgType.AccessType.name, "ro", access_container)
                     else:

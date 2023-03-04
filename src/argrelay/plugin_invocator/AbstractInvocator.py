@@ -10,7 +10,6 @@ from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
-    init_control_,
     envelope_id_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
@@ -58,12 +57,6 @@ class AbstractInvocator(AbstractPlugin):
         curr_container_ipos: int,
     ):
         self.init_envelope_class(
-            envelope_containers,
-            curr_container_ipos,
-        )
-
-        # Take from prev container:
-        self.use_init_control_from_data_envelope(
             envelope_containers,
             curr_container_ipos,
         )
@@ -116,34 +109,3 @@ class AbstractInvocator(AbstractPlugin):
             curr_container.search_control.envelope_class,
             ArgSource.InitValue,
         )
-
-    @staticmethod
-    def use_init_control_from_data_envelope(
-        envelope_containers: list[EnvelopeContainer],
-        curr_container_ipos: int,
-    ):
-        """
-        FS_46_96_59_05: default implementation of `init_control` (based on `init_control` in `data_envelope`)
-
-        Copy arg value from prev `data_envelope` for arg types specified in `init_control` into next `args_context`.
-        """
-
-        curr_container = envelope_containers[curr_container_ipos]
-        prev_envelope = envelope_containers[curr_container_ipos - 1]
-        if init_control_ in prev_envelope.data_envelope:
-            arg_type_list_to_push = prev_envelope.data_envelope[init_control_]
-            for arg_type_to_push in arg_type_list_to_push:
-                if arg_type_to_push in prev_envelope.data_envelope:
-                    if arg_type_to_push in curr_container.assigned_types_to_values:
-                        arg_value = curr_container.assigned_types_to_values[arg_type_to_push]
-                        if arg_value.arg_source.value < ArgSource.InitValue.value:
-                            # Override value with source of higher priority:
-                            arg_value.arg_source = ArgSource.InitValue
-                            arg_value.arg_value = prev_envelope.data_envelope[arg_type_to_push]
-                    else:
-                        curr_container.assigned_types_to_values[
-                            arg_type_to_push
-                        ] = AssignedValue(
-                            prev_envelope.data_envelope[arg_type_to_push],
-                            ArgSource.InitValue,
-                        )
