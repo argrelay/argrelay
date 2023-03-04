@@ -8,7 +8,7 @@ To demo:
 
 *   Meta functions:
     *   List all objects of specified query.
-    *   Show catalog of functions.
+    *   Show catalog of functions (with `help_hint`-s).
 
 *   List data = function with multiple envelopes
 *   FS_18_64_57_18: varargs
@@ -30,13 +30,9 @@ Integration:
 
 *   FS_61_67_08_53: arbitrary text args.
 
-*   Fix arg overlap test data TD_76_09_29_31 and test cases.
-
 *   Live status / live updates.
     Design support for online data updates.
     It should be an API to {get, set} envelope.
-
-*   Fix perf output in server-side logs.
 
 Before `0.0.0`:
 
@@ -101,6 +97,8 @@ Ease consumption for public:
 *   Extend EnvMock to help testing on external project side.
     Basically, the main one is a mock to ensure some function is called (although, that's easily done without EnvMock).
 
+*   Make operation to dump entire server config for support (without going to the server).
+
 Perf:
 
 *   Try querying values only - many queries may only need values (to provide suggestion) not entire `data_envelope`-s:
@@ -121,8 +119,6 @@ Extra:
 
 *   Try to reduce number of search requests (e.g.) file it as known issue to fix.
 
-*   Think to start each arg as `ArgSource.UnassignedValue` (or at least mark it in the described arg output as this).
-
 *   Consider splitting argrelay -> argrelay-core, argrelay-integ (server and client), argrelay-demo, while keeping argrelay as an easy to install package.
 
 *   Make ErrorInvocator exit with specified code, print specified message, etc.
@@ -131,3 +127,9 @@ Extra:
 
 *   Describe selected service (extra meta or show payload?).
     Print `help_doc` (FS_94_30_49_28)?
+
+*   Run mongodb with reloader in debugger (need to fix reload handling).
+
+*   Ensure parser works with other commands (with `|` pipes, loops, etc.) - just dry to not e the limitations.
+
+*   Add an operation to dump entire server state as config.
