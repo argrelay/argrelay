@@ -29,6 +29,10 @@ class InterceptLoader(AbstractLoader):
                 ],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedArgType.HelpHint.name: (
+                "Intercept and print `InvocationPayload` "
+                "for specified function and its args"
+            ),
             GlobalArgType.FunctionCategory.name: "internal",
             GlobalArgType.ActionType.name: "intercept",
             GlobalArgType.ObjectSelector.name: "func",

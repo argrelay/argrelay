@@ -29,6 +29,7 @@ class HelpLoader(AbstractLoader):
                 ],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedArgType.HelpHint.name: "List defined function matching search criteria with their help hints",
             GlobalArgType.FunctionCategory.name: "internal",
             GlobalArgType.ActionType.name: "help",
             GlobalArgType.ObjectSelector.name: "func",

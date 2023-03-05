@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from argrelay.custom_integ.DemoInterpFactory import DemoInterpFactory
 from argrelay.custom_integ.ServiceInvocator import redirect_to_no_func_error
+from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
@@ -75,11 +76,13 @@ class HelpInvocator(InterceptInvocator):
                     # There should be only one (key, value) pair:
                     key_name = next(iter(keys_to_types))
                     type_name = keys_to_types[key_name]
-                    print(f"{data_envelope[type_name]}", end = " ")
+                    # TODO: fix hack: display all funcions "internal" and "external" rather than removing "externl" criteria:
+                    if type_name != GlobalArgType.FunctionCategory.name:
+                        print(f"{data_envelope[type_name]}", end = " ")
 
                 # TODO: perform color control only if the output is a terminal:
 
-                print(TermColor.DARK_GREEN.value, end = "")
+                print(TermColor.DARK_GRAY.value, end = "")
                 print("#", end = " ")
                 print(TermColor.RESET.value, end = "")
 
@@ -92,10 +95,14 @@ class HelpInvocator(InterceptInvocator):
                     print(f"[no `{envelope_id_}`]", end = " ")
                     print(TermColor.RESET.value, end = "")
 
+                print(TermColor.DARK_GREEN.value, end = "")
+                print("#", end = " ")
+                print(TermColor.RESET.value, end = "")
+
                 if ReservedArgType.HelpHint.name in data_envelope:
                     print(TermColor.DARK_GREEN.value, end = "")
                     print(
-                        f"{ReservedArgType.HelpHint.name}: {data_envelope[ReservedArgType.HelpHint.name]}",
+                        f"{data_envelope[ReservedArgType.HelpHint.name]}",
                         end = " ",
                     )
                     print(TermColor.RESET.value, end = "")
