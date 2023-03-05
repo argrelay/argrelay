@@ -56,6 +56,16 @@ pip freeze | grep -v '#egg=argrelay$' >> requirements.txt
 git update-index --refresh
 git diff-index --quiet HEAD --
 
+# Get path of `argrelay` module:
+argrelay_version="$(
+python << 'PYTHON_GET_PACKAGE_VERSION_EOF'
+import pkg_resources
+print(pkg_resources.require("argrelay")[0].version)
+PYTHON_GET_PACKAGE_VERSION_EOF
+)"
+echo "argrelay version: ${argrelay_version}"
+exit 1
+
 # TODO: For proper releases, ensure that:
 #       * the commit is on public `main` branch
 #       * it is tagged and the tag name matches that of `setup.py`
