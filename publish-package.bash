@@ -63,13 +63,30 @@ import pkg_resources
 print(pkg_resources.require("argrelay")[0].version)
 PYTHON_GET_PACKAGE_VERSION_EOF
 )"
-echo "argrelay version: ${argrelay_version}"
-exit 1
 
-# TODO: For proper releases, ensure that:
-#       * the commit is on public `main` branch
-#       * it is tagged and the tag name matches that of `setup.py`
-#       * anything else?
+echo "argrelay version: ${argrelay_version}"
+
+if [[ "${argrelay_version}" =~ -dev.[[:digit:]]*$ ]]
+then
+    echo "handle dev version"
+else
+    echo "handle non-dev version"
+
+    git_tag="$(git describe --tags)"
+    echo "git_tag: ${git_tag}"
+
+    if [[ "v${argrelay_version}" != "${git_tag}" ]]
+    then
+        # TODO: try for non-dev release:
+        exit 1
+        git tag "v${argrelay_version}"
+    fi
+    # TODO: For proper releases, ensure that:
+    #       * the commit is on public `main` branch
+    #       * it is tagged and the tag name matches that of `setup.py`
+    #       * anything else?
+fi
+exit 1
 
 # Clean up previously built packages:
 rm -rf ./dist/
@@ -79,9 +96,7 @@ python -m tox
 
 # Apparently, `tox` already builds `sdist`, for example:
 # ./.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
-# TODO: Is there a way to make `tox` publish the package?
-# However, the following are the staps found in majority of the web resources.
-
+# However, the following are the staps found in majority of the web resources:
 python setup.py sdist
 pip install twine
 # This will prompt for login credentials:
