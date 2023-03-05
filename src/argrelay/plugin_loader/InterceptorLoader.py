@@ -29,6 +29,7 @@ class InterceptorLoader(AbstractLoader):
                 ],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            GlobalArgType.FunctionCategory.name: "internal",
             GlobalArgType.ActionType.name: "intercept",
             GlobalArgType.ObjectSelector.name: "none",
         }

@@ -189,6 +189,7 @@ class GitRepoLoader(AbstractLoader):
                 ],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            GlobalArgType.FunctionCategory.name: "external",
             GlobalArgType.ActionType.name: "desc",
             GlobalArgType.ObjectSelector.name: "repo",
         }
@@ -203,6 +204,7 @@ class GitRepoLoader(AbstractLoader):
                 ],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            GlobalArgType.FunctionCategory.name: "external",
             GlobalArgType.ActionType.name: "desc",
             GlobalArgType.ObjectSelector.name: "commit",
         }

@@ -41,6 +41,9 @@ class InOutTestCase(TestCase):
         with env_mock_builder.build():
             command_obj = __main__.main()
             assert isinstance(command_obj, AbstractLocalClientCommand)
+
+            # TODO: Be able to choose to verify output payload instead of server-side internal data
+            #       (only available in tests when `LocalClient` and `LocalServer` are used).
             interp_ctx = command_obj.interp_ctx
 
             # TODO: Currently, this verifier ensures what things exists.

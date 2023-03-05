@@ -74,10 +74,20 @@ class ServiceInvocator(AbstractInvocator):
             goto_service_funct_,
         ]:
             assert host_envelope_ipos_ == service_envelope_ipos_
-            object_envelope_ipos_ = host_envelope_ipos_
+            object_envelope_ipos = host_envelope_ipos_
+
+            # If need to specify `AccessType` `data_envelope`:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_:
-                object_envelope = interp_ctx.envelope_containers[interp_ctx.curr_interp.base_envelope_ipos + object_envelope_ipos_].data_envelope
-                access_container = interp_ctx.envelope_containers[interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_]
+                # Take object found so far:
+                object_envelope = interp_ctx.envelope_containers[(
+                    interp_ctx.curr_interp.base_envelope_ipos + object_envelope_ipos
+                )].data_envelope
+
+                access_container = interp_ctx.envelope_containers[(
+                    interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_
+                )]
+
+                # Select default value to search `AccessType` `data_envelope` based on `CodeMaturity`:
                 code_arg_type = ServiceArgType.CodeMaturity.name
                 if code_arg_type in object_envelope:
                     code_arg_val = object_envelope[code_arg_type]
@@ -85,6 +95,7 @@ class ServiceInvocator(AbstractInvocator):
                         set_default_to(ServiceArgType.AccessType.name, "ro", access_container)
                     else:
                         set_default_to(ServiceArgType.AccessType.name, "rw", access_container)
+
         elif func_name in [
             list_host_func_,
             list_service_func_,
@@ -106,6 +117,7 @@ class ServiceInvocator(AbstractInvocator):
             goto_host_funct_,
             goto_service_funct_,
         ]:
+            # Actual implementation is not defined for demo:
             return redirect_to_error(
                 interp_ctx,
                 local_server.server_config,
@@ -116,10 +128,13 @@ class ServiceInvocator(AbstractInvocator):
         ]:
             vararg_data_envelope_ipos = host_envelope_ipos_
             assert vararg_data_envelope_ipos == host_envelope_ipos_ == service_envelope_ipos_
-            if interp_ctx.curr_container_ipos >= host_envelope_ipos_:
+            # Verify that func is selected and all we have is 0...N objects to select by query:
+            if interp_ctx.curr_container_ipos >= vararg_data_envelope_ipos:
+                # Search `data_envelope`-s based on existing args on command line:
                 query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_data_envelope_ipos])
+                # Plugin to invoke on client side:
                 invocator_plugin_instance_id = ServiceInvocator.__name__
-
+                # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput(
                     invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
                     data_envelopes = (
@@ -138,10 +153,15 @@ class ServiceInvocator(AbstractInvocator):
                     local_server.server_config,
                 )
         else:
+            # Plugin is given a function name it does not know:
             raise RuntimeError
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
+        """
+        Print `data_envelope`-s received from server on client side.
+        """
+
         func_name = get_func_name_from_envelope(invocation_input.data_envelopes)
         if func_name == list_host_func_:
             for data_envelope in invocation_input.data_envelopes[host_envelope_ipos_:]:

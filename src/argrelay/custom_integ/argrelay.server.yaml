@@ -69,9 +69,13 @@ plugin_dict:
             function_search_control:
                 envelope_class: ClassFunction
                 keys_to_types_list:
+                    -   category: FunctionCategory
                     -   action: ActionType
+                    -   object: ObjectSelector
             function_init_control:
                 init_types_to_values:
+                    # Note that it already specifies all "coordinates" specifically for `intercept` func.
+                    FunctionCategory: "internal"
                     ActionType: "intercept"
                     ObjectSelector: "none"
 
@@ -83,10 +87,12 @@ plugin_dict:
             function_search_control:
                 envelope_class: ClassFunction
                 keys_to_types_list:
+                    -   category: FunctionCategory
                     -   action: ActionType
-                    -   selector: ObjectSelector
+                    -   object: ObjectSelector
             function_init_control:
-                init_types_to_values: {}
+                init_types_to_values:
+                    FunctionCategory: "external"
 
     NoopLoader:
         plugin_module_name: argrelay.plugin_loader.NoopLoader

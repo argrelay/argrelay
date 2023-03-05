@@ -2,6 +2,8 @@ from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_helper import line_no
@@ -16,6 +18,17 @@ class ThisTestCase(InOutTestCase):
         """
 
         test_cases = [
+            (
+                line_no(),
+                "some_command intercept |",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                ["goto", "desc", "list"],
+                None,
+                None,
+                "If `intercept` is already selected (which has `FunctionCategory` = `internal`), "
+                "it should not be suggested during selection of `external` function.",
+            ),
             (
                 line_no(),
                 "some_command intercept goto service s_b prod |",
@@ -34,10 +47,12 @@ class ThisTestCase(InOutTestCase):
                 [],
                 {
                     0: {
+                        GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
                         GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
                         GlobalArgType.ObjectSelector.name: AssignedValue("none", ArgSource.InitValue),
                     },
                     1: {
+                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
                         GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
                         GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
@@ -58,22 +73,23 @@ class ThisTestCase(InOutTestCase):
                 [],
                 {
                     0: {
+                        GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
                         GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
                         GlobalArgType.ObjectSelector.name: AssignedValue("none", ArgSource.InitValue),
                     },
                     1: {
-                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.ExplicitPosArg),
-                    },
-                    2: {
-                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.ExplicitPosArg),
-                    },
-                    3: {
-                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.ExplicitPosArg),
+                        # Only `ArgSource.InitValue` as nothing else could be determined:
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
                     },
                 },
                 None,
                 # TODO: This only captures the behavior of such command line.
-                #       Currently, it simply results in extra `envelope_id` = `intercept_func` for each `intercept`.
+                #       Currently, it cannot select another `intercept` function
+                #       because `ArgSource.InitValue` is set to `external` subsequently.
                 "Prepend `intercept` by another `intercept` multiple times.",
             ),
         ]
