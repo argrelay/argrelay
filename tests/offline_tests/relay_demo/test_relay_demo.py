@@ -104,7 +104,7 @@ class ThisTestCase(InOutTestCase):
 
             (
                 line_no(), "some_command |", CompType.PrefixHidden,
-                "goto\ndesc\nlist",
+                "help\nintercept\ngoto\ndesc\nlist",
                 # TODO: Maybe we should suggest selection for `internal` func like `intercept` as well?
                 "Suggest from the set of values for the first unassigned arg type.",
             ),

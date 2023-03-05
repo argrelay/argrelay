@@ -59,6 +59,8 @@ plugin_dict:
         plugin_config:
             interp_selector_tree:
                 intercept: DemoInterpFactory.intercept_func
+                # TODO: implement `help` by listing function's `help_hint`:
+                help: NoopInvocator
                 "": DemoInterpFactory
 
     DemoInterpFactory.intercept_func:

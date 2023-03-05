@@ -81,6 +81,8 @@ class ParsedContext(InputContext):
         line_len = len(command_line)
 
         # Init with defaults:
+        # TODO: FS_23_62_89_43: Tangent token ipos should always be above zero and point to
+        #                       (possibly surrogate missing empty) token ipos within command line.
         all_tokens = []
         tan_token_ipos = -1
         tan_token_l_cpos = -1
