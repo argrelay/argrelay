@@ -13,7 +13,7 @@ An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
 **Original use case:**<br/>
-Auto-complete based on large (config) data sets.[^1]
+Auto-complete based on large structured data sets (e.g. config or ref data).[^1]
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
@@ -24,9 +24,9 @@ to run a standby data server.
 > even if someone manages to generate Bash completion config,<br/>
 > it takes considerable time to load it for every shell instance.
 
-**Accidental use case:**<br/>
-Sever-side catalogues of functions on related (live) data<br/>
-select-able by auto-complete-able keywords on client-side -<br/>
+**Extended use case:**<br/>
+Catalogues of searchable functions and (live) data<br/>
+with auto-completion of keywords -<br/>
 **directly from standard shell**.
 
 # What's in a name?

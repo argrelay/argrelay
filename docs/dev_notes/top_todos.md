@@ -6,6 +6,8 @@ To demo:
 
 *   In describe, show other arg value options when default value is applied. Use different color for Implicit, Explicit, Default (just like for none).
 
+*   If command accept one envelope, but not yet disambiguated, then it should be possible to provide generic hook to list envelopes based on existing filter.
+
 *   Meta functions:
     *   List all objects of specified query.
     *   Show catalog of functions (with `help_hint`-s).
@@ -112,6 +114,11 @@ Docs:
 
 Extra:
 
+*   Consider adding options to be able to limit possible values for some selected tree leaf (FS_01_89_09_24 tree).
+    Currently, we can specify `ArgSource.InitValue` to one value which will reduce search results (and limit values).
+    But that requires introduction of special field on `data_envlope`-s.
+    Maybe it should be possible to exclude certain values from suggestions for specific arg type?
+
 *   Search via different collections: https://github.com/uvsmtid/argrelay/issues/10
     Query specific Mongo DB collection.
 
@@ -133,3 +140,7 @@ Extra:
 *   Ensure parser works with other commands (with `|` pipes, loops, etc.) - just dry to not e the limitations.
 
 *   Add an operation to dump entire server state as config.
+
+*   Add `echo` command to test arbitrary tail args.
+
+*   Add `describe` internal command to do exactly the same what Ctrl +Alt + Q does, but via Invocation.
