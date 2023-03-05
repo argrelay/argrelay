@@ -2,9 +2,10 @@ from unittest import TestCase
 
 from argrelay.custom_integ.DemoInterpFactoryConfigSchema import demo_interp_factory_config_desc
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
+from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
+from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import error_invocator_custom_data_desc
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
-from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
 from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_client_config_desc
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
 from argrelay.schema_config_core_server.MongoServerConfigSchema import mongo_server_config_desc
@@ -51,6 +52,7 @@ class ThisTestCase(TestCase):
             (line_no(), interp_result_desc),
             (line_no(), assigned_value_desc),
             (line_no(), envelope_container_desc),
+            (line_no(), error_invocator_custom_data_desc),
         ]
         for test_case in test_cases:
             with self.subTest(test_case):

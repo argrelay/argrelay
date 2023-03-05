@@ -13,7 +13,7 @@ An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
 **Original use case:**<br/>
-Auto-complete based on large (config) data sets.[^1]
+Auto-complete based on large structured data sets (e.g. config or ref data).[^1]
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
@@ -24,9 +24,9 @@ to run a standby data server.
 > even if someone manages to generate Bash completion config,<br/>
 > it takes considerable time to load it for every shell instance.
 
-**Accidental use case:**<br/>
-Sever-side catalogues of functions on related (live) data<br/>
-select-able by auto-complete-able keywords on client-side -<br/>
+**Extended use case:**<br/>
+Catalogues of searchable functions and (live) data<br/>
+with auto-completion of keywords -<br/>
 **directly from standard shell**.
 
 # What's in a name?
@@ -66,7 +66,8 @@ To clarify,<br/>
     *   objects the server can search
     *   grammar the command line can have
 *   **Interfaces** to bind these all together.
-*   **Demo** plugins to show examples.
+*   **Demo** example to start from.
+*   **Testing** support and coverage.
 
 # CLI-friendly completion: primary focus
 
@@ -301,12 +302,15 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
     If hard-coding is boring, soft-code to load it from external data source.
 
-*   Replace `ErrorInvocator.py` plugin to execute something useful when use hits `Enter`.
+*   Replace [redirect to `ErrorInvocator.py` plugin][link_to_redirect_to_error]<br/>
+    to execute something useful instead when use hits `Enter`.
 
 *   ...
 
-*   Once custom integration is done, make a point -<br/>
-    [record a demo screencast][screen_cast_notes.md] for your team.
+*   Many features and docs are actively taking their shape -<br/>
+    any (minimal, unfiltered, first-thought) feedback is welcome.
+
+    [Raise questions or suggestions as issues][repo_issues] to influence the dev direction.
 
 ### [footnotes]
 
@@ -332,7 +336,8 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 [MongoDB]: https://www.mongodb.com/
 [dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
 [TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md
-[screen_cast_notes.md]: docs/dev_notes/screen_cast_notes.md
 [earlier_stack_question]: https://stackoverflow.com/questions/74996560/
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
 [how_search_works.md]: docs/dev_notes/how_search_works.md
+[link_to_redirect_to_error]: https://github.com/uvsmtid/argrelay/blob/6b28badd41ed697089305a01ba2da566573138b4/src/argrelay/custom_integ/ServiceInvocator.py#L110
+[repo_issues]: https://github.com/uvsmtid/argrelay/issues

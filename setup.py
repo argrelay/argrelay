@@ -16,7 +16,14 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    version = "0.0.0.dev21",
+    # Follow version format used in `semver` itself specify clean version (and Git tag is prefixed with `v`):
+    # https://github.com/semver/semver/releases/tag/v2.0.0
+    # https://github.com/semver/semver/blob/a4f21e1a6fdf7d1a78a2d965889d958f96b11b42/package.json#L3
+    # See also about `v` in version:
+    # https://github.com/semver/semver/blob/a4f21e1a6fdf7d1a78a2d965889d958f96b11b42/semver.md#L329
+    # See also about pre-release versions:
+    # https://github.com/semver/semver/blob/a4f21e1a6fdf7d1a78a2d965889d958f96b11b42/semver.md#L93
+    version = "0.0.0-dev.23",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Bash Tab-completion (data) server",

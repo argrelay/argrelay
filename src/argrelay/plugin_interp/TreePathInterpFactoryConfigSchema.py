@@ -7,6 +7,7 @@ interp_selector_tree_ = "interp_selector_tree"
 
 default_leaf_ = ""
 
+
 class TreePathInterpFactoryConfigSchema(Schema):
     class Meta:
         unknown = RAISE

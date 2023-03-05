@@ -4,6 +4,11 @@ from argrelay.handler_request.AbstractServerRequestHandler import AbstractServer
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
+from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import (
+    error_message_,
+    error_invocator_custom_data_desc,
+    error_code_,
+)
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InputContext import InputContext
@@ -28,6 +33,9 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
 
         self.interpret_command(self.local_server, input_ctx)
         ElapsedTime.measure("after_interpret_command")
+        is_error = False
+        error_message = ""
+        error_code = 0
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
@@ -38,7 +46,9 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
                 invocator_plugin_instance_id_
             ]
         else:
-            # TODO: Think how to pass info about failure - customize ErrorInvocator:
+            is_error = True
+            error_message = "ERROR: function is not selected"
+            error_code = 1
             invocator_plugin_instance_id = ErrorInvocator.__name__
 
         invocator_plugin: AbstractInvocator = self.local_server.server_config.action_invocators[
@@ -48,5 +58,13 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
             self.interp_ctx,
             self.local_server,
         )
+
+        if is_error:
+            invocation_input.custom_plugin_data = {
+                error_message_: error_message,
+                error_code_: error_code,
+            }
+            error_invocator_custom_data_desc.validate_dict(invocation_input.custom_plugin_data)
+
         response_dict = invocation_input_desc.dict_schema.dump(invocation_input)
         return response_dict

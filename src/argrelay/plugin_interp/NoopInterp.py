@@ -3,16 +3,16 @@ from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 
 
-class NamedNoopInterp(AbstractInterp):
+class NoopInterp(AbstractInterp):
     """
     Interpreter which does nothing
 
     Actually, it:
-    *   stops processing of the command line on itself (as `next_interp` returns `None`
-    *   names itself based on config
+    *   stops processing of the command line on itself (as `next_interp` returns `None` by default)
+    *   sets `arbitrary_comment` based on config
     """
 
-    instance_name: str
+    arbitrary_comment: str
 
     def __init__(
         self,
@@ -25,7 +25,7 @@ class NamedNoopInterp(AbstractInterp):
             config_dict,
             interp_ctx,
         )
-        self.instance_name = config_dict["instance_name"]
+        self.arbitrary_comment = config_dict["arbitrary_comment"]
 
     def try_iterate(self) -> InterpStep:
         return InterpStep.NextInterp

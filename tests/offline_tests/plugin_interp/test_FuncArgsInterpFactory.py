@@ -10,10 +10,17 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
 from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_id_load_list_, static_data_, plugin_dict_
+from argrelay.schema_config_core_server.ServerConfigSchema import (
+    plugin_instance_id_load_list_,
+    static_data_,
+    plugin_dict_,
+)
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
-from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_, function_init_control_
+from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import (
+    function_search_control_,
+    function_init_control_,
+)
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     invocator_plugin_instance_id_,
     search_control_list_,

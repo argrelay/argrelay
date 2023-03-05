@@ -19,6 +19,9 @@ demo_interp_factory_config_example = {
         envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
         keys_to_types_list_: [
             {
+                "category": GlobalArgType.FunctionCategory.name,
+            },
+            {
                 "action": GlobalArgType.ActionType.name,
             },
             {
@@ -28,8 +31,9 @@ demo_interp_factory_config_example = {
     },
     function_init_control_: {
         init_types_to_values_: {
+            GlobalArgType.FunctionCategory.name: "internal",
             GlobalArgType.ActionType.name: "intercept",
-            GlobalArgType.ObjectSelector.name: "none",
+            GlobalArgType.ObjectSelector.name: "func",
         },
     },
 }

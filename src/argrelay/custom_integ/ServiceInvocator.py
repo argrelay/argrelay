@@ -15,10 +15,14 @@ from argrelay.plugin_invocator.AbstractInvocator import (
     get_func_name_from_envelope,
 )
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
+from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import (
+    error_message_,
+    error_code_,
+    error_invocator_custom_data_desc,
+)
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
-from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
@@ -42,13 +46,35 @@ def set_default_to(arg_type, arg_val, envelope_container):
             pass
 
 
-def redirect_to_error(interp_ctx, server_config):
+def redirect_to_no_func_error(
+    interp_ctx,
+    server_config,
+):
+    return redirect_to_error(
+        interp_ctx,
+        server_config,
+        "ERROR: objects cannot be searched until function is fully qualified",
+        1,
+    )
+
+
+def redirect_to_error(
+    interp_ctx,
+    server_config,
+    error_message,
+    error_code,
+):
     # Redirect to `ErrorInvocator`:
     invocator_plugin_instance_id = ErrorInvocator.__name__
+    custom_plugin_data = {
+        error_message_: error_message,
+        error_code_: error_code,
+    }
+    error_invocator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput(
         invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_instance_id],
         data_envelopes = get_data_envelopes(interp_ctx),
-        custom_plugin_data = {},
+        custom_plugin_data = custom_plugin_data,
     )
     return invocation_input
 
@@ -75,10 +101,20 @@ class ServiceInvocator(AbstractInvocator):
             goto_service_funct_,
         ]:
             assert host_envelope_ipos_ == service_envelope_ipos_
-            object_envelope_ipos_ = host_envelope_ipos_
+            object_envelope_ipos = host_envelope_ipos_
+
+            # If need to specify `AccessType` `data_envelope`:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_:
-                object_envelope = interp_ctx.envelope_containers[interp_ctx.curr_interp.base_envelope_ipos + object_envelope_ipos_].data_envelope
-                access_container = interp_ctx.envelope_containers[interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_]
+                # Take object found so far:
+                object_envelope = interp_ctx.envelope_containers[(
+                    interp_ctx.curr_interp.base_envelope_ipos + object_envelope_ipos
+                )].data_envelope
+
+                access_container = interp_ctx.envelope_containers[(
+                    interp_ctx.curr_interp.base_envelope_ipos + access_envelope_ipos_
+                )]
+
+                # Select default value to search `AccessType` `data_envelope` based on `CodeMaturity`:
                 code_arg_type = ServiceArgType.CodeMaturity.name
                 if code_arg_type in object_envelope:
                     code_arg_val = object_envelope[code_arg_type]
@@ -86,6 +122,7 @@ class ServiceInvocator(AbstractInvocator):
                         set_default_to(ServiceArgType.AccessType.name, "ro", access_container)
                     else:
                         set_default_to(ServiceArgType.AccessType.name, "rw", access_container)
+
         elif func_name in [
             list_host_func_,
             list_service_func_,
@@ -107,9 +144,12 @@ class ServiceInvocator(AbstractInvocator):
             goto_host_funct_,
             goto_service_funct_,
         ]:
+            # Actual implementation is not defined for demo:
             return redirect_to_error(
                 interp_ctx,
                 local_server.server_config,
+                "INFO: command executed successfully: demo implementation is a stub",
+                0,
             )
         elif func_name in [
             list_host_func_,
@@ -117,10 +157,13 @@ class ServiceInvocator(AbstractInvocator):
         ]:
             vararg_data_envelope_ipos = host_envelope_ipos_
             assert vararg_data_envelope_ipos == host_envelope_ipos_ == service_envelope_ipos_
-            if interp_ctx.curr_container_ipos >= host_envelope_ipos_:
+            # Verify that func is selected and all what is left to do is to query 0...N objects:
+            if interp_ctx.curr_container_ipos >= vararg_data_envelope_ipos:
+                # Search `data_envelope`-s based on existing args on command line:
                 query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_data_envelope_ipos])
+                # Plugin to invoke on client side:
                 invocator_plugin_instance_id = ServiceInvocator.__name__
-
+                # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput(
                     invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
                     data_envelopes = (
@@ -134,20 +177,25 @@ class ServiceInvocator(AbstractInvocator):
                 )
                 return invocation_input
             else:
-                return redirect_to_error(
+                return redirect_to_no_func_error(
                     interp_ctx,
                     local_server.server_config,
                 )
         else:
+            # Plugin is given a function name it does not know:
             raise RuntimeError
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
+        """
+        Print `data_envelope`-s received from server on client side.
+        """
+
         func_name = get_func_name_from_envelope(invocation_input.data_envelopes)
         if func_name == list_host_func_:
             for data_envelope in invocation_input.data_envelopes[host_envelope_ipos_:]:
                 print(data_envelope)
-        if func_name == list_service_func_:
+        elif func_name == list_service_func_:
             for data_envelope in invocation_input.data_envelopes[service_envelope_ipos_:]:
                 print(data_envelope)
         else:

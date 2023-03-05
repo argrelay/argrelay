@@ -104,8 +104,9 @@ class ThisTestCase(InOutTestCase):
 
             (
                 line_no(), "some_command |", CompType.PrefixHidden,
-                "intercept\ngoto\ndesc\nlist",
-                "Suggest from the set of values for the first unassigned arg type",
+                "help\nintercept\ngoto\ndesc\nlist",
+                # TODO: Maybe we should suggest selection for `internal` func like `intercept` as well?
+                "Suggest from the set of values for the first unassigned arg type.",
             ),
             (
                 line_no(), "some_command goto host dev amer upstream qwer|  ", CompType.PrefixShown,
@@ -312,12 +313,36 @@ class ThisTestCase(InOutTestCase):
         test_cases = [
             (
                 line_no(),
+                "some_command relay_demo list host dev |",
+                RunMode.InvocationMode,
+                CompType.InvokeAction,
+                [],
+                {},
+                # TODO: Make generic validator be able to verify payload (not only`interp_ctx` passed from local client).
+                # {
+                #     0: {
+                #         GlobalArgType.ActionType.name: AssignedValue("list", ArgSource.ExplicitPosArg),
+                #         GlobalArgType.ObjectSelector.name: AssignedValue("host", ArgSource.ExplicitPosArg),
+                #     },
+                #     1: {
+                #         ServiceArgType.HostName.name: "asdf-du",
+                #         HostName': "zxcv-du"
+                #     },
+                #     2: {},
+                # },
+                # TODO: It works whether there is ErrorInvocator or ServiceInvocator. Why?
+                ServiceInvocator,
+                "Basic test that list list objects"
+            ),
+            (
+                line_no(),
                 "some_command goto service s_b prod |",
                 RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
                 {
                     0: {
+                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
                         GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
                         GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
@@ -429,6 +454,7 @@ class ThisTestCase(InOutTestCase):
                 "FS_23_62_89_43: tangent token is taken into account in describe.",
                 f"""
 {ReservedEnvelopeClass.ClassFunction.name}:
+{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassService.name}:
@@ -451,6 +477,7 @@ class ThisTestCase(InOutTestCase):
                 # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
 {ReservedEnvelopeClass.ClassFunction.name}:
+{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassHost.name}:
@@ -566,6 +593,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(), RunMode.InvocationMode, "some_command desc host zxcv|", CompType.PrefixShown,
                 0,
                 {
+                    GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
                     GlobalArgType.ActionType.name: AssignedValue("desc", ArgSource.ExplicitPosArg),
                     ServiceArgType.AccessType.name: None,
                 },
@@ -575,6 +603,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(), RunMode.CompletionMode, "some_command goto |", CompType.PrefixShown,
                 0,
                 {
+                    GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
                     GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
                     GlobalArgType.ObjectSelector.name: None,
                 },
@@ -584,6 +613,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(), RunMode.CompletionMode, "some_command goto service |", CompType.PrefixShown,
                 0,
                 {
+                    GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
                     GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
                     GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
                 },

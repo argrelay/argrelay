@@ -56,10 +56,41 @@ pip freeze | grep -v '#egg=argrelay$' >> requirements.txt
 git update-index --refresh
 git diff-index --quiet HEAD --
 
-# TODO: For proper releases, ensure that:
-#       * the commit is on public `main` branch
-#       * it is tagged and the tag name matches that of `setup.py`
-#       * anything else?
+# Get versin of `argrelay` module:
+# TODO: Reimplement this - it gets version of deployed package rather than current version in sources:
+#       Actually! It does read correct version, but replaces `-` with a `.` in version string!
+argrelay_version="$(
+python << 'PYTHON_GET_PACKAGE_VERSION_EOF'
+from pkg_resources import get_distribution
+print(get_distribution("argrelay").version)
+PYTHON_GET_PACKAGE_VERSION_EOF
+)"
+
+echo "argrelay version: ${argrelay_version}"
+
+# TODO: This entire if/else is noop - it has to be fixed when version is reliably extracted from sources:
+if [[ "${argrelay_version}" =~ -dev.[[:digit:]]*$ ]]
+then
+    echo "handle dev version"
+else
+    echo "handle non-dev version"
+
+    set +e # TODO: remove disabling of errors
+    git_tag="$(git describe --tags)"
+    set -e
+    echo "git_tag: ${git_tag}"
+
+    if [[ "v${argrelay_version}" != "${git_tag}" ]]
+    then
+        # TODO: try for non-dev release:
+        # git tag "v${argrelay_version}"
+        echo "doing nothing for now..."
+    fi
+    # TODO: For proper releases, ensure that:
+    #       * the commit is on public `main` branch
+    #       * it is tagged and the tag name matches that of `setup.py`
+    #       * anything else?
+fi
 
 # Clean up previously built packages:
 rm -rf ./dist/
@@ -69,9 +100,7 @@ python -m tox
 
 # Apparently, `tox` already builds `sdist`, for example:
 # ./.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
-# TODO: Is there a way to make `tox` publish the package?
-# However, the following are the staps found in majority of the web resources.
-
+# However, the following are the staps found in majority of the web resources:
 python setup.py sdist
 pip install twine
 # This will prompt for login credentials:

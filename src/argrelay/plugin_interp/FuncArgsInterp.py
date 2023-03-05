@@ -186,7 +186,7 @@ class FuncArgsInterp(AbstractInterp):
             return None
 
     def propose_arg_completion(self) -> None:
-        self.interp_ctx.comp_suggestions = self.propose_auto_comp_list()
+        self.interp_ctx.comp_suggestions.extend(self.propose_auto_comp_list())
 
     def propose_auto_comp_list(self) -> list[str]:
 
@@ -242,7 +242,7 @@ class FuncArgsInterp(AbstractInterp):
         *   missing = because this arg type is not specified yet
         *   next = because arg types are tired in specific order
         """
-        proposed_tokens: list[str] = []
+        proposed_values: list[str] = []
 
         # Return filtered value set from the next missing arg:
         for arg_type in self.interp_ctx.curr_container.search_control.types_to_keys_dict.keys():
@@ -252,19 +252,18 @@ class FuncArgsInterp(AbstractInterp):
                 and
                 arg_type in self.interp_ctx.curr_container.remaining_types_to_values
             ):
-                proposed_tokens = [
+                proposed_values = [
                     x for x in self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
                     if (
                         isinstance(x, str)
                         and
-                        # Note that we have an option here: filter `startswith` or `in`, but Bash auto-completion
-                        # color-highlights according to `startswith` only (so `startswith` only):
+                        # FS_32_05_46_00: using `startwith`:
                         x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)
                         # TODO: Support list[str] - what if one type can have list of values (and we need to match any as in OR)?
                     )
                 ]
-                if proposed_tokens:
+                if proposed_values:
                     # Collect only until the first proposed value set from missing args:
                     break
 
-        return proposed_tokens
+        return proposed_values
