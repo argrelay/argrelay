@@ -59,8 +59,8 @@ git diff-index --quiet HEAD --
 # Get path of `argrelay` module:
 argrelay_version="$(
 python << 'PYTHON_GET_PACKAGE_VERSION_EOF'
-import pkg_resources
-print(pkg_resources.require("argrelay")[0].version)
+from pkg_resources import get_distribution
+print(get_distribution("argrelay").version)
 PYTHON_GET_PACKAGE_VERSION_EOF
 )"
 
