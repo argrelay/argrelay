@@ -31,13 +31,13 @@ plugin_instance_id_load_list:
     -   NoopInterpFactory
 
     -   NoopLoader
-    -   InterceptorLoader
+    -   InterceptLoader
     -   HelpInvocator
     -   ServiceLoader
     -   GitRepoLoader
 
     -   NoopInvocator
-    -   InterceptorInvocator
+    -   InterceptInvocator
     -   HelpLoader
     -   ServiceInvocator
     -   GitRepoInvocator
@@ -130,9 +130,9 @@ plugin_dict:
         plugin_type: LoaderPlugin
         plugin_config: { }
 
-    InterceptorLoader:
-        plugin_module_name: argrelay.plugin_loader.InterceptorLoader
-        plugin_class_name: InterceptorLoader
+    InterceptLoader:
+        plugin_module_name: argrelay.plugin_loader.InterceptLoader
+        plugin_class_name: InterceptLoader
         plugin_type: LoaderPlugin
         plugin_config: { }
 
@@ -166,9 +166,9 @@ plugin_dict:
         plugin_type: InvocatorPlugin
         plugin_config: { }
 
-    InterceptorInvocator:
-        plugin_module_name: argrelay.plugin_invocator.InterceptorInvocator
-        plugin_class_name: InterceptorInvocator
+    InterceptInvocator:
+        plugin_module_name: argrelay.plugin_invocator.InterceptInvocator
+        plugin_class_name: InterceptInvocator
         plugin_type: InvocatorPlugin
         plugin_config: { }
 
@@ -210,5 +210,5 @@ static_data:
     # TODO: rename to make it explicit that it is indexed fields.
     known_arg_types: [ ]
 
-    # TODO: define internal function here instead of trivial `InterceptorLoader` and `HelpLoader` plugins:
+    # TODO: define internal function here instead of trivial `InterceptLoader` and `HelpLoader` plugins:
     data_envelopes: [ ]

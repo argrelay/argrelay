@@ -2,7 +2,7 @@ from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
-from argrelay.plugin_invocator.InterceptorInvocator import InterceptorInvocator
+from argrelay.plugin_invocator.InterceptInvocator import InterceptInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
@@ -12,7 +12,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
 )
 
 
-class InterceptorLoader(AbstractLoader):
+class InterceptLoader(AbstractLoader):
 
     def update_static_data(
         self,
@@ -24,7 +24,7 @@ class InterceptorLoader(AbstractLoader):
         given_function_envelope = {
             envelope_id_: SpecialFunc.intercept_func.name,
             instance_data_: {
-                invocator_plugin_instance_id_: InterceptorInvocator.__name__,
+                invocator_plugin_instance_id_: InterceptInvocator.__name__,
                 search_control_list_: [
                 ],
             },

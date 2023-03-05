@@ -7,7 +7,7 @@ from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_invocator.AbstractInvocator import get_data_envelopes
-from argrelay.plugin_invocator.InterceptorInvocator import InterceptorInvocator
+from argrelay.plugin_invocator.InterceptInvocator import InterceptInvocator
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
@@ -18,8 +18,8 @@ from argrelay.schema_config_interp.SearchControlSchema import search_control_des
 
 subsequent_function_envelope_ipos_ = function_envelope_ipos_ + 1
 
-# TODO: It inherits `InterceptorInvocator`, but it makes more sense to have common base class instead.
-class HelpInvocator(InterceptorInvocator):
+# TODO: It inherits `InterceptInvocator`, but it makes more sense to have common base class instead.
+class HelpInvocator(InterceptInvocator):
 
     def run_interp_control(
         self,

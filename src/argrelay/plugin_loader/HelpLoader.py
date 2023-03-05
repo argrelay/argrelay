@@ -3,7 +3,6 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_invocator.HelpInvocator import HelpInvocator
-from argrelay.plugin_invocator.InterceptorInvocator import InterceptorInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_

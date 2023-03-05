@@ -12,8 +12,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, insta
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_instance_id_
 
 
-# TODO: Rename to `InterceptInvocator`
-class InterceptorInvocator(AbstractInvocator):
+class InterceptInvocator(AbstractInvocator):
 
     def __init__(
         self,
