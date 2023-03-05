@@ -79,7 +79,7 @@ plugin_dict:
                     # Note that it already specifies all "coordinates" specifically for `intercept` func.
                     FunctionCategory: "internal"
                     ActionType: "intercept"
-                    ObjectSelector: "none"
+                    ObjectSelector: "func"
 
     DemoInterpFactory:
         plugin_module_name: argrelay.custom_integ.DemoInterpFactory

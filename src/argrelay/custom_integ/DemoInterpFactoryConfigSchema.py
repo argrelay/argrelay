@@ -33,7 +33,7 @@ demo_interp_factory_config_example = {
         init_types_to_values_: {
             GlobalArgType.FunctionCategory.name: "internal",
             GlobalArgType.ActionType.name: "intercept",
-            GlobalArgType.ObjectSelector.name: "none",
+            GlobalArgType.ObjectSelector.name: "func",
         },
     },
 }

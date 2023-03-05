@@ -49,7 +49,7 @@ class ThisTestCase(InOutTestCase):
                     0: {
                         GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
                         GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("none", ArgSource.InitValue),
+                        GlobalArgType.ObjectSelector.name: AssignedValue("func", ArgSource.InitValue),
                     },
                     1: {
                         GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
@@ -75,7 +75,7 @@ class ThisTestCase(InOutTestCase):
                     0: {
                         GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
                         GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("none", ArgSource.InitValue),
+                        GlobalArgType.ObjectSelector.name: AssignedValue("func", ArgSource.InitValue),
                     },
                     1: {
                         # Only `ArgSource.InitValue` as nothing else could be determined:
