@@ -9,10 +9,10 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
+from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_vals_to_next_interp_factory_ids_
 from argrelay.plugin_interp.NoopInterp import NoopInterp
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.relay_client import __main__
-from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_vals_to_next_interp_factory_ids_
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_id_load_list_, plugin_dict_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,

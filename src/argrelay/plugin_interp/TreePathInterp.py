@@ -7,6 +7,7 @@ from argrelay.runtime_context.InterpContext import InterpContext
 
 default_tree_leaf_ = ""
 
+
 def fetch_tree_node(
     tree_dict: dict,
     node_path: list[str],

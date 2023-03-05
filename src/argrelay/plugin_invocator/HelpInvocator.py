@@ -19,6 +19,7 @@ from argrelay.schema_config_interp.SearchControlSchema import search_control_des
 
 subsequent_function_envelope_ipos_ = function_envelope_ipos_ + 1
 
+
 # TODO: It inherits `InterceptInvocator`, but it makes more sense to have common base class instead.
 class HelpInvocator(InterceptInvocator):
 

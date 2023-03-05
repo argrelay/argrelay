@@ -6,6 +6,7 @@ error_message_ = "error_message"
 
 error_code_ = "error_code"
 
+
 class ErrorInvocatorCustomDataSchema(Schema):
     class Meta:
         unknown = RAISE

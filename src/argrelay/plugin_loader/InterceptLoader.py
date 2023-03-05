@@ -18,7 +18,6 @@ class InterceptLoader(AbstractLoader):
         self,
         static_data: StaticData,
     ) -> StaticData:
-
         data_envelopes = static_data.data_envelopes
 
         given_function_envelope = {

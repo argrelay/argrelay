@@ -1,7 +1,7 @@
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp
-from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
+from argrelay.runtime_context.InterpContext import InterpContext
 
 
 class FirstArgInterpFactory(AbstractInterpFactory):

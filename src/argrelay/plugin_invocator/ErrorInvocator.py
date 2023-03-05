@@ -35,4 +35,3 @@ class ErrorInvocator(AbstractInvocator):
                 error_code = invocation_input.custom_plugin_data[error_code_]
         eprint(error_message)
         sys.exit(error_code)
-

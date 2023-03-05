@@ -28,8 +28,8 @@ class InterceptInvocator(AbstractInvocator):
         self,
         function_data_envelope: dict,
     ) -> list[SearchControl]:
-            # Nothing to search (only if next interpreter needs more, but this one is done):
-            return []
+        # Nothing to search (only if next interpreter needs more, but this one is done):
+        return []
 
     def run_interp_control(
         self,
@@ -43,7 +43,6 @@ class InterceptInvocator(AbstractInvocator):
         interp_ctx: InterpContext,
         local_server: LocalServer,
     ) -> InvocationInput:
-
         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
 
         # TODO: Fail (send to ErrorInvocator) if next function is not specified -

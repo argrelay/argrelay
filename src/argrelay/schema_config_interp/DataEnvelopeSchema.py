@@ -31,6 +31,7 @@ envelope_payload_ = "envelope_payload"
 Data `argrelay` does not inspect.
 """
 
+
 class DataEnvelopeSchema(Schema):
     """
     Schema for all :class:`StaticDataSchema.data_envelopes`

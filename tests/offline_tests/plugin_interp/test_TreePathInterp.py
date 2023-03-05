@@ -1,5 +1,3 @@
-from unittest import TestCase
-
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.TreePathInterp import fetch_tree_node

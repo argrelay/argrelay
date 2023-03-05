@@ -57,6 +57,7 @@ def redirect_to_no_func_error(
         1,
     )
 
+
 def redirect_to_error(
     interp_ctx,
     server_config,

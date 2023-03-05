@@ -1,12 +1,5 @@
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.RunMode import RunMode
-from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
-from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_helper import line_no
 from argrelay.test_helper.InOutTestCase import InOutTestCase
 
@@ -25,8 +18,15 @@ class ThisTestCase(InOutTestCase):
                 RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
-                {},
-                ErrorInvocator,
+                {
+                    0: {},  # help itself
+                    1: {
+                        # (goto, desc, list) x (host, service) external functions:
+                        # TODO: Universal verifier: be able to verify arbitrary data on `EnvelopeContainer`, not only assigned types to values.
+                        # "found_count": 6
+                    }
+                },
+                None,
                 "Execute help with no args.",
             ),
         ]

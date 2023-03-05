@@ -2,7 +2,6 @@ from enum import Enum, auto
 
 
 class GlobalArgType(Enum):
-
     FunctionCategory = auto()
     """
     A way to separate functions in different "buckets".

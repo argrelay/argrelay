@@ -2,8 +2,8 @@ from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper import ensure_value_is_enum
-from argrelay.plugin_loader.NoopLoader import NoopLoader
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.plugin_loader.NoopLoader import NoopLoader
 from argrelay.runtime_data.PluginEntry import PluginEntry
 
 plugin_config_ = "plugin_config"

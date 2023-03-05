@@ -49,4 +49,3 @@ class ThisTestCase(TestCase):
                 invocation_input.data_envelopes[1][ServiceArgType.ServiceName.name]
             )
             self.assertTrue(True)
-
