@@ -21,8 +21,8 @@ class ErrorInvocatorCustomDataSchema(Schema):
 
 
 error_invocator_custom_data_example = {
-    error_message_: "INFO: command executed: this is a stub",
-    error_code_: 1,
+    error_message_: "INFO: command executed successfully: this is a stub",
+    error_code_: 0,
 }
 error_invocator_custom_data_desc = TypeDesc(
     dict_schema = ErrorInvocatorCustomDataSchema(),

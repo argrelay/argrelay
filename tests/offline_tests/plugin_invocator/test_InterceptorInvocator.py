@@ -21,17 +21,6 @@ class ThisTestCase(InOutTestCase):
         test_cases = [
             (
                 line_no(),
-                "some_command help |",
-                RunMode.InvocationMode,
-                CompType.InvokeAction,
-                [],
-                {},
-                ErrorInvocator,
-                # TODO: FS_71_87_33_52: move to separate test set.
-                "Execute help with no args.",
-            ),
-            (
-                line_no(),
                 "some_command intercept |",
                 RunMode.CompletionMode,
                 CompType.PrefixShown,

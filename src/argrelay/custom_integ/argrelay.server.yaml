@@ -19,23 +19,26 @@ mongo_config:
 query_cache_config:
     enable_query_cache: True
     query_cache_ttl_sec: 60
-    query_cache_max_size_bytes: 1048576 # 1MiB
+    query_cache_max_size_bytes: 1048576 # 1 MiB
 
 plugin_instance_id_load_list:
 
     -   FirstArgInterpFactory
     -   TreePathInterpFactory
     -   DemoInterpFactory.intercept_func
+    -   DemoInterpFactory.help_func
     -   DemoInterpFactory
     -   NoopInterpFactory
 
     -   NoopLoader
     -   InterceptorLoader
+    -   HelpInvocator
     -   ServiceLoader
     -   GitRepoLoader
 
     -   NoopInvocator
     -   InterceptorInvocator
+    -   HelpLoader
     -   ServiceInvocator
     -   GitRepoInvocator
     -   ErrorInvocator
@@ -60,8 +63,7 @@ plugin_dict:
         plugin_config:
             interp_selector_tree:
                 intercept: DemoInterpFactory.intercept_func
-                # TODO: implement `help` by listing function's `help_hint`:
-                help: NoopInterpFactory
+                help: DemoInterpFactory.help_func
                 "": DemoInterpFactory
 
     DemoInterpFactory.intercept_func:
@@ -82,7 +84,7 @@ plugin_dict:
                     ActionType: "intercept"
                     ObjectSelector: "func"
 
-    DemoInterpFactory.func_help:
+    DemoInterpFactory.help_func:
         plugin_module_name: argrelay.custom_integ.DemoInterpFactory
         plugin_class_name: DemoInterpFactory
         plugin_type: InterpFactoryPlugin
@@ -95,9 +97,9 @@ plugin_dict:
                     -   object: ObjectSelector
             function_init_control:
                 init_types_to_values:
-                    # Note that it already specifies all "coordinates" specifically for `intercept` func.
+                    # Note that it already specifies all "coordinates" specifically for `help` func.
                     FunctionCategory: "internal"
-                    ActionType: "intercept"
+                    ActionType: "help"
                     ObjectSelector: "func"
 
     DemoInterpFactory:
@@ -134,6 +136,12 @@ plugin_dict:
         plugin_type: LoaderPlugin
         plugin_config: { }
 
+    HelpLoader:
+        plugin_module_name: argrelay.plugin_loader.HelpLoader
+        plugin_class_name: HelpLoader
+        plugin_type: LoaderPlugin
+        plugin_config: { }
+
     ServiceLoader:
         plugin_module_name: argrelay.custom_integ.ServiceLoader
         plugin_class_name: ServiceLoader
@@ -164,6 +172,12 @@ plugin_dict:
         plugin_type: InvocatorPlugin
         plugin_config: { }
 
+    HelpInvocator:
+        plugin_module_name: argrelay.plugin_invocator.HelpInvocator
+        plugin_class_name: HelpInvocator
+        plugin_type: InvocatorPlugin
+        plugin_config: { }
+
     ServiceInvocator:
         plugin_module_name: argrelay.custom_integ.ServiceInvocator
         plugin_class_name: ServiceInvocator
@@ -182,13 +196,19 @@ plugin_dict:
         plugin_type: InvocatorPlugin
         plugin_config: { }
 
-# Statically defined `static_data` - and it is not a tautology!
-# This data is loaded as part of the config on start (and will be available even when all loader plugins removed).
-# Loader plugins are also supposed to add more data (but they also can modify or completely remove it).
+
+# TODO: Currently, loader plugins write their data under `data_envelope`-s section on start.
+#       Data by loader plugins has to be loaded via the same API which should be exposed via REST
+#       (plugin may use direct API calls as they are within the same process with the server).
+
+# This data is loaded as part of the config on start (and will be available even if all loader plugins removed).
+# Loader plugins are also supposed to add more data (but they also can modify or completely remove data defined below).
 static_data:
 
     first_interp_factory_id: FirstArgInterpFactory
 
+    # TODO: rename to make it explicit that it is indexed fields.
     known_arg_types: [ ]
 
+    # TODO: define internal function here instead of trivial `InterceptorLoader` and `HelpLoader` plugins:
     data_envelopes: [ ]

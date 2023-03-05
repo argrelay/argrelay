@@ -13,6 +13,7 @@ class StaticData:
 
     known_arg_types: list = field(init = True, default_factory = lambda: [])
     """
+    TODO: rename to make it explicit that it is indexed fields.
     Field `known_arg_types` lists fields of `data_envelop` - they are used to create MongoDB index.
     """
 

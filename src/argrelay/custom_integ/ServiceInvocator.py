@@ -15,6 +15,11 @@ from argrelay.plugin_invocator.AbstractInvocator import (
     get_func_name_from_envelope,
 )
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
+from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import (
+    error_message_,
+    error_code_,
+    error_invocator_custom_data_desc,
+)
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
@@ -41,13 +46,34 @@ def set_default_to(arg_type, arg_val, envelope_container):
             pass
 
 
-def redirect_to_error(interp_ctx, server_config):
+def redirect_to_no_func_error(
+    interp_ctx,
+    server_config,
+):
+    return redirect_to_error(
+        interp_ctx,
+        server_config,
+        "ERROR: objects cannot be searched until function is fully qualified",
+        1,
+    )
+
+def redirect_to_error(
+    interp_ctx,
+    server_config,
+    error_message,
+    error_code,
+):
     # Redirect to `ErrorInvocator`:
     invocator_plugin_instance_id = ErrorInvocator.__name__
+    custom_plugin_data = {
+        error_message_: error_message,
+        error_code_: error_code,
+    }
+    error_invocator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput(
         invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_instance_id],
         data_envelopes = get_data_envelopes(interp_ctx),
-        custom_plugin_data = {},
+        custom_plugin_data = custom_plugin_data,
     )
     return invocation_input
 
@@ -121,6 +147,8 @@ class ServiceInvocator(AbstractInvocator):
             return redirect_to_error(
                 interp_ctx,
                 local_server.server_config,
+                "INFO: command executed successfully: demo implementation is a stub",
+                0,
             )
         elif func_name in [
             list_host_func_,
@@ -128,7 +156,7 @@ class ServiceInvocator(AbstractInvocator):
         ]:
             vararg_data_envelope_ipos = host_envelope_ipos_
             assert vararg_data_envelope_ipos == host_envelope_ipos_ == service_envelope_ipos_
-            # Verify that func is selected and all we have is 0...N objects to select by query:
+            # Verify that func is selected and all what is left to do is to query 0...N objects:
             if interp_ctx.curr_container_ipos >= vararg_data_envelope_ipos:
                 # Search `data_envelope`-s based on existing args on command line:
                 query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_data_envelope_ipos])
@@ -148,7 +176,7 @@ class ServiceInvocator(AbstractInvocator):
                 )
                 return invocation_input
             else:
-                return redirect_to_error(
+                return redirect_to_no_func_error(
                     interp_ctx,
                     local_server.server_config,
                 )

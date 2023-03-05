@@ -12,6 +12,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, insta
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_instance_id_
 
 
+# TODO: Rename to `InterceptInvocator`
 class InterceptorInvocator(AbstractInvocator):
 
     def __init__(
@@ -28,16 +29,7 @@ class InterceptorInvocator(AbstractInvocator):
         self,
         function_data_envelope: dict,
     ) -> list[SearchControl]:
-        is_default_impl = False
-        is_proper_impl = False
-        # Default implementation:
-        if is_default_impl:
-            return self.extract_search_control_from_function_data_envelope(function_data_envelope)
-        elif is_proper_impl:
-            # TODO: invoke interpretation for the rest of the command line:
-            pass
-        else:
-            # TODO: stub (no interpretation, no search, nothing):
+            # Nothing to search (only if next interpreter needs more, but this one is done):
             return []
 
     def run_interp_control(
@@ -55,6 +47,8 @@ class InterceptorInvocator(AbstractInvocator):
 
         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
 
+        # TODO: Fail (send to ErrorInvocator) if next function is not specified -
+        #       showing the payload in this case is misleading.
         function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
         invocator_plugin_instance_id = function_envelope.data_envelope[instance_data_][invocator_plugin_instance_id_]
         invocation_input = InvocationInput(

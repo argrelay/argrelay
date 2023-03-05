@@ -26,7 +26,7 @@ class ErrorInvocator(AbstractInvocator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        error_message = "INFO: command executed: this is a stub"
+        error_message = "ERROR: unknown error"
         error_code = 1
         if invocation_input.custom_plugin_data:
             if error_message_ in invocation_input.custom_plugin_data:
