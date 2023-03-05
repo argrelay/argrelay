@@ -9,8 +9,8 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
-from argrelay.plugin_interp.NamedNoopInterp import NamedNoopInterp
-from argrelay.plugin_interp.NamedNoopInterpFactory import NamedNoopInterpFactory
+from argrelay.plugin_interp.NoopInterp import NoopInterp
+from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.relay_client import __main__
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_vals_to_next_interp_factory_ids_
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_id_load_list_, plugin_dict_
@@ -37,11 +37,11 @@ class ThisTestCase(TestCase):
             "known_command2",
         ]
 
-        # Patch server config for FirstArgInterpFactory - bind all `first_command_names` to NamedNoopInterpFactory:
+        # Patch server config for FirstArgInterpFactory - bind all `first_command_names` to NoopInterpFactory:
         first_arg_vals_to_next_interp_factory_ids = {}
         for first_command_name in first_command_names:
             # Compose same plugin id (as below):
-            plugin_instance_id = NamedNoopInterpFactory.__name__ + "." + first_command_name
+            plugin_instance_id = NoopInterpFactory.__name__ + "." + first_command_name
             first_arg_vals_to_next_interp_factory_ids[first_command_name] = plugin_instance_id
         server_config_dict = load_custom_integ_server_config_dict()
         plugin_entry = server_config_dict[plugin_dict_][FirstArgInterpFactory.__name__]
@@ -49,16 +49,16 @@ class ThisTestCase(TestCase):
             first_arg_vals_to_next_interp_factory_ids_: first_arg_vals_to_next_interp_factory_ids,
         }
 
-        # Patch server config to add NamedNoopInterpFactory (2 plugin instances):
+        # Patch server config to add NoopInterpFactory (2 plugin instances):
         for first_command_name in first_command_names:
             # Compose same plugin id (as above):
-            plugin_instance_id = NamedNoopInterpFactory.__name__ + "." + first_command_name
+            plugin_instance_id = NoopInterpFactory.__name__ + "." + first_command_name
             plugin_entry = {
-                plugin_module_name_: NamedNoopInterpFactory.__module__,
-                plugin_class_name_: NamedNoopInterpFactory.__name__,
+                plugin_module_name_: NoopInterpFactory.__module__,
+                plugin_class_name_: NoopInterpFactory.__name__,
                 plugin_type_: PluginType.InterpFactoryPlugin.name,
                 plugin_config_: {
-                    "instance_name": first_command_name,
+                    "arbitrary_comment": first_command_name,
                 },
             }
             assert plugin_instance_id not in server_config_dict[plugin_dict_]
@@ -84,13 +84,13 @@ class ThisTestCase(TestCase):
             first_token_value = interp_ctx.parsed_ctx.all_tokens[0]
 
             interp_factory_id = first_arg_vals_to_next_interp_factory_ids[first_token_value]
-            interp_factory_instance: NamedNoopInterpFactory = interp_ctx.interp_factories[interp_factory_id]
-            prev_interp: NamedNoopInterp = interp_ctx.prev_interp
+            interp_factory_instance: NoopInterpFactory = interp_ctx.interp_factories[interp_factory_id]
+            prev_interp: NoopInterp = interp_ctx.prev_interp
 
             self.assertTrue(
-                prev_interp.instance_name
+                prev_interp.arbitrary_comment
                 ==
-                interp_factory_instance.config_dict["instance_name"]
+                interp_factory_instance.config_dict["arbitrary_comment"]
                 ==
                 first_token_value,
                 "config instructs to name interp instance as the first token it binds to",

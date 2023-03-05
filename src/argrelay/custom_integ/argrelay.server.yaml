@@ -27,6 +27,7 @@ plugin_instance_id_load_list:
     -   TreePathInterpFactory
     -   DemoInterpFactory.intercept_func
     -   DemoInterpFactory
+    -   NoopInterpFactory
 
     -   NoopLoader
     -   InterceptorLoader
@@ -60,7 +61,7 @@ plugin_dict:
             interp_selector_tree:
                 intercept: DemoInterpFactory.intercept_func
                 # TODO: implement `help` by listing function's `help_hint`:
-                help: NoopInvocator
+                help: NoopInterpFactory
                 "": DemoInterpFactory
 
     DemoInterpFactory.intercept_func:
@@ -95,6 +96,13 @@ plugin_dict:
             function_init_control:
                 init_types_to_values:
                     FunctionCategory: "external"
+
+    NoopInterpFactory:
+        plugin_module_name: argrelay.plugin_interp.NoopInterpFactory
+        plugin_class_name: NoopInterpFactory
+        plugin_type: InterpFactoryPlugin
+        plugin_config:
+            arbitrary_comment: "test plugin"
 
     NoopLoader:
         plugin_module_name: argrelay.plugin_loader.NoopLoader
