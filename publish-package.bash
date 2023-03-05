@@ -56,7 +56,8 @@ pip freeze | grep -v '#egg=argrelay$' >> requirements.txt
 git update-index --refresh
 git diff-index --quiet HEAD --
 
-# Get path of `argrelay` module:
+# Get versin of `argrelay` module:
+# TODO: reimplement this - it gets version of deployed package rather than current version in sources:
 argrelay_version="$(
 python << 'PYTHON_GET_PACKAGE_VERSION_EOF'
 from pkg_resources import get_distribution
@@ -66,27 +67,29 @@ PYTHON_GET_PACKAGE_VERSION_EOF
 
 echo "argrelay version: ${argrelay_version}"
 
+# TODO: This entire if/else is noop - it has to be fixed when version is reliably extracted from sources:
 if [[ "${argrelay_version}" =~ -dev.[[:digit:]]*$ ]]
 then
     echo "handle dev version"
 else
     echo "handle non-dev version"
 
+    set +e # TODO: remove disabling of errors
     git_tag="$(git describe --tags)"
+    set -e
     echo "git_tag: ${git_tag}"
 
     if [[ "v${argrelay_version}" != "${git_tag}" ]]
     then
         # TODO: try for non-dev release:
-        exit 1
-        git tag "v${argrelay_version}"
+        # git tag "v${argrelay_version}"
+        echo "doing nothing for now..."
     fi
     # TODO: For proper releases, ensure that:
     #       * the commit is on public `main` branch
     #       * it is tagged and the tag name matches that of `setup.py`
     #       * anything else?
 fi
-exit 1
 
 # Clean up previously built packages:
 rm -rf ./dist/
