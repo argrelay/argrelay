@@ -57,7 +57,8 @@ git update-index --refresh
 git diff-index --quiet HEAD --
 
 # Get versin of `argrelay` module:
-# TODO: reimplement this - it gets version of deployed package rather than current version in sources:
+# TODO: Reimplement this - it gets version of deployed package rather than current version in sources:
+#       Actually! It does read correct version, but replaces `-` with a `.` in version string!
 argrelay_version="$(
 python << 'PYTHON_GET_PACKAGE_VERSION_EOF'
 from pkg_resources import get_distribution
