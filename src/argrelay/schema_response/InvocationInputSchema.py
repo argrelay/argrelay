@@ -1,6 +1,7 @@
 from marshmallow import Schema, RAISE, fields, post_load, pre_dump
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import error_invocator_custom_data_desc
 from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
@@ -54,7 +55,7 @@ class InvocationInputSchema(Schema):
         return InvocationInput(
             invocator_plugin_entry = input_dict[invocator_plugin_entry_],
             data_envelopes = input_dict[data_envelopes_],
-            custom_plugin_data = {},
+            custom_plugin_data = input_dict[custom_plugin_data_],
         )
 
 
@@ -63,7 +64,7 @@ _invocation_input_example = {
     data_envelopes_: [
         data_envelope_desc.dict_example,
     ],
-    custom_plugin_data_: {},
+    custom_plugin_data_: error_invocator_custom_data_desc.dict_example,
 }
 
 invocation_input_desc = TypeDesc(

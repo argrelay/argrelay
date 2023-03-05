@@ -82,6 +82,24 @@ plugin_dict:
                     ActionType: "intercept"
                     ObjectSelector: "func"
 
+    DemoInterpFactory.func_help:
+        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
+        plugin_class_name: DemoInterpFactory
+        plugin_type: InterpFactoryPlugin
+        plugin_config:
+            function_search_control:
+                envelope_class: ClassFunction
+                keys_to_types_list:
+                    -   category: FunctionCategory
+                    -   action: ActionType
+                    -   object: ObjectSelector
+            function_init_control:
+                init_types_to_values:
+                    # Note that it already specifies all "coordinates" specifically for `intercept` func.
+                    FunctionCategory: "internal"
+                    ActionType: "intercept"
+                    ObjectSelector: "func"
+
     DemoInterpFactory:
         plugin_module_name: argrelay.custom_integ.DemoInterpFactory
         plugin_class_name: DemoInterpFactory
