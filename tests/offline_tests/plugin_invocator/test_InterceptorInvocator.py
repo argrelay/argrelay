@@ -24,7 +24,7 @@ class ThisTestCase(InOutTestCase):
                 ["qwer-pd-1", "qwer-pd-2"],
                 None,
                 None,
-                "",
+                "Completion continues to be driven by function selected via `goto` and `service`.",
             ),
             (
                 line_no(),
@@ -33,6 +33,10 @@ class ThisTestCase(InOutTestCase):
                 CompType.InvokeAction,
                 [],
                 {
+                    0: {
+                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
+                        GlobalArgType.ObjectSelector.name: AssignedValue("none", ArgSource.InitValue),
+                    },
                     1: {
                         GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
                         GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
@@ -44,7 +48,33 @@ class ThisTestCase(InOutTestCase):
                     },
                 },
                 None,
-                "",
+                "Invocation payload is provided by function selected via `goto` and `service`.",
+            ),
+            (
+                line_no(),
+                "some_command intercept intercept intercept intercept |",
+                RunMode.InvocationMode,
+                CompType.InvokeAction,
+                [],
+                {
+                    0: {
+                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
+                        GlobalArgType.ObjectSelector.name: AssignedValue("none", ArgSource.InitValue),
+                    },
+                    1: {
+                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.ExplicitPosArg),
+                    },
+                    2: {
+                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.ExplicitPosArg),
+                    },
+                    3: {
+                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.ExplicitPosArg),
+                    },
+                },
+                None,
+                # TODO: This only captures the behavior of such command line.
+                #       Currently, it simply results in extra `envelope_id` = `intercept_func` for each `intercept`.
+                "Prepend `intercept` by another `intercept` multiple times.",
             ),
         ]
 

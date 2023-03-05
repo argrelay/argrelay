@@ -43,6 +43,13 @@ class InOutTestCase(TestCase):
             assert isinstance(command_obj, AbstractLocalClientCommand)
             interp_ctx = command_obj.interp_ctx
 
+            # TODO: Currently, this verifier ensures what things exists.
+            #       Add a way to ensure what things do not exists.
+            #       For example,
+            #       * no `data_envelope` number N.
+            #       * `data_envelope` does not have field A.
+            #       * `data_envelope` does not have value 'x' for field A.
+
             if envelope_ipos_to_expected_assignments:
                 for envelope_ipos in envelope_ipos_to_expected_assignments.keys():
                     # Verify `envelope_container` of `envelope_ipos` exists in the list:
