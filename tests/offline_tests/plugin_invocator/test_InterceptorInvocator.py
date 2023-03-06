@@ -41,6 +41,28 @@ class ThisTestCase(InOutTestCase):
             ),
             (
                 line_no(),
+                "some_command intercept hel|",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                [],
+                {},
+                None,
+                "For `intercept` only `external` functions are allowed - "
+                "`help` is not suggested.",
+            ),
+            (
+                line_no(),
+                "some_command intercept got|",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                ["goto"],
+                {},
+                None,
+                "For `intercept` only `external` functions are allowed - "
+                "`goto` is suggested.",
+            ),
+            (
+                line_no(),
                 "some_command intercept goto service s_b prod qwer-pd-2 |",
                 RunMode.InvocationMode,
                 CompType.InvokeAction,

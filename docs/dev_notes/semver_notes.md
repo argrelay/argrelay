@@ -8,3 +8,6 @@ For `argrelay`, there are multiple interfaces:
 *   client-server REST interface
 
 
+See also [version format][version_format.md].
+
+[version_format.md]: version_format.md

@@ -27,7 +27,8 @@ plugin_instance_id_load_list:
     -   TreePathInterpFactory
     -   DemoInterpFactory.intercept_func
     -   DemoInterpFactory.help_func
-    -   DemoInterpFactory
+    -   DemoInterpFactory.external
+    -   DemoInterpFactory.any
     -   NoopInterpFactory
 
     -   NoopLoader
@@ -64,7 +65,7 @@ plugin_dict:
             interp_selector_tree:
                 intercept: DemoInterpFactory.intercept_func
                 help: DemoInterpFactory.help_func
-                "": DemoInterpFactory
+                "": DemoInterpFactory.external
 
     DemoInterpFactory.intercept_func:
         plugin_module_name: argrelay.custom_integ.DemoInterpFactory
@@ -102,7 +103,7 @@ plugin_dict:
                     ActionType: "help"
                     ObjectSelector: "func"
 
-    DemoInterpFactory:
+    DemoInterpFactory.external:
         plugin_module_name: argrelay.custom_integ.DemoInterpFactory
         plugin_class_name: DemoInterpFactory
         plugin_type: InterpFactoryPlugin
@@ -116,6 +117,20 @@ plugin_dict:
             function_init_control:
                 init_types_to_values:
                     FunctionCategory: "external"
+
+    DemoInterpFactory.any:
+        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
+        plugin_class_name: DemoInterpFactory
+        plugin_type: InterpFactoryPlugin
+        plugin_config:
+            function_search_control:
+                envelope_class: ClassFunction
+                keys_to_types_list:
+                    -   category: FunctionCategory
+                    -   action: ActionType
+                    -   object: ObjectSelector
+            function_init_control:
+                init_types_to_values: { }
 
     NoopInterpFactory:
         plugin_module_name: argrelay.plugin_interp.NoopInterpFactory
@@ -170,13 +185,17 @@ plugin_dict:
         plugin_module_name: argrelay.plugin_invocator.InterceptInvocator
         plugin_class_name: InterceptInvocator
         plugin_type: InvocatorPlugin
-        plugin_config: { }
+        plugin_config:
+            # `intercept` works only with `external` functions:
+            next_interp_plugin_instance_id: DemoInterpFactory.external
 
     HelpInvocator:
         plugin_module_name: argrelay.plugin_invocator.HelpInvocator
         plugin_class_name: HelpInvocator
         plugin_type: InvocatorPlugin
-        plugin_config: { }
+        plugin_config:
+            # `help` works with any (`external`, or `internal`, or ...) functions:
+            next_interp_plugin_instance_id: DemoInterpFactory.any
 
     ServiceInvocator:
         plugin_module_name: argrelay.custom_integ.ServiceInvocator

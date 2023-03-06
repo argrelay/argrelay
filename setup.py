@@ -16,17 +16,11 @@ extras_require = {
 
 setuptools.setup(
     name = "argrelay",
-    # Follow version format used in `semver` itself specify clean version (and Git tag is prefixed with `v`):
-    # https://github.com/semver/semver/releases/tag/v2.0.0
-    # https://github.com/semver/semver/blob/a4f21e1a6fdf7d1a78a2d965889d958f96b11b42/package.json#L3
-    # See also about `v` in version:
-    # https://github.com/semver/semver/blob/a4f21e1a6fdf7d1a78a2d965889d958f96b11b42/semver.md#L329
-    # See also about pre-release versions:
-    # https://github.com/semver/semver/blob/a4f21e1a6fdf7d1a78a2d965889d958f96b11b42/semver.md#L93
-    version = "0.0.0-dev.23",
+    # See `docs/dev_notes/version_format.md`:
+    version = "0.0.0.dev27",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
-    description = "Bash Tab-completion (data) server",
+    description = "Bash Tab-completion (data) server - total recall",
     long_description = long_description,
     long_description_content_type = "text/markdown",
     keywords = "argparse, argcomplete, bash, complete",
