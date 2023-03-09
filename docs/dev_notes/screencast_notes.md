@@ -1,6 +1,7 @@
 
-This doc notes down steps to record screencast
-(e.g. after integrating `argrelay` with custom data source).
+This doc notes down steps to record screencast.
+
+See [`run_demo.bash`][run_demo.bash] for automatic demo.
 
 Install [`asciinema`][asciinema]:
 
@@ -20,7 +21,7 @@ To hide all unnecessary details in Bash prompt, for example,
 place this at the bottom of your `~/.bashrc` temporarily:
 
 ```sh
-export PS1="\[\e[90m\](relay_demo) \u@oven \W:\n\[\e[0m\] "
+export PS1="\[\e[90m\]argrelay.git:\[\e[0m\] "
 ```
 
 Start recording:
@@ -33,3 +34,4 @@ asciinema rec --stdin
 
 [asciinema]: https://github.com/asciinema/asciinema
 [generate_GIF]: https://dstein64.github.io/gifcast/
+[run_demo.bash]: ../../scripts/run_demo.bash

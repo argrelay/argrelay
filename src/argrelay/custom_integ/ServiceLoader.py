@@ -65,10 +65,10 @@ service_search_control = {
         {"stage": ServiceArgType.FlowStage.name},
         {"region": ServiceArgType.GeoRegion.name},
         {"cluster": ServiceArgType.ClusterName.name},
-        # ClassHost:
-        {"host": ServiceArgType.HostName.name},
         # ClassService:
         {"service": ServiceArgType.ServiceName.name},
+        # ClassHost:
+        {"host": ServiceArgType.HostName.name},
         # ---
         {"status": ServiceArgType.LiveStatus.name},
         {"dc": ServiceArgType.DataCenter.name},
@@ -185,7 +185,6 @@ class ServiceLoader(AbstractLoader):
 
         data_envelopes.extend(help_hint_envelopes)
 
-
     @staticmethod
     def populate_common_functions(
         data_envelopes: list,
@@ -256,7 +255,6 @@ class ServiceLoader(AbstractLoader):
                 GlobalArgType.ActionType.name: "desc",
                 GlobalArgType.ObjectSelector.name: "service",
             },
-            # TODO: FS_18_64_57_18: How to specify `list_host` which will list all hosts matching criteria (instead of trying to find one)?
             {
                 envelope_id_: list_host_func_,
                 instance_data_: {
@@ -271,7 +269,6 @@ class ServiceLoader(AbstractLoader):
                 GlobalArgType.ActionType.name: "list",
                 GlobalArgType.ObjectSelector.name: "host",
             },
-            # TODO: FS_18_64_57_18: How to specify `list_service` which will list all services matching criteria (instead of trying to find one)?
             {
                 envelope_id_: list_service_func_,
                 instance_data_: {
@@ -646,6 +643,19 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.GeoRegion.name: "apac",
                 ServiceArgType.FlowStage.name: "upstream",
                 ServiceArgType.ClusterName.name: "prod-apac-upstream",
+                ServiceArgType.DataCenter.name: "dc.07",
+                ServiceArgType.HostName.name: "qwer-pd-3",
+                ServiceArgType.IpAddress.name: "ip.192.168.7.2",
+            },
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.CodeMaturity.name: "prod",
+                ServiceArgType.GeoRegion.name: "apac",
+                ServiceArgType.FlowStage.name: "upstream",
+                ServiceArgType.ClusterName.name: "prod-apac-upstream",
                 ServiceArgType.DataCenter.name: "dc.77",
                 ServiceArgType.HostName.name: "qwer-pd-2",
                 ServiceArgType.IpAddress.name: "ip.172.16.7.2",
@@ -942,8 +952,8 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.FlowStage.name: "upstream",
                 ServiceArgType.ClusterName.name: "prod-apac-upstream",
                 ServiceArgType.DataCenter.name: "dc.07",
-                ServiceArgType.HostName.name: "qwer-pd-1",
-                ServiceArgType.IpAddress.name: "ip.192.168.7.1",
+                ServiceArgType.HostName.name: "qwer-pd-3",
+                ServiceArgType.IpAddress.name: "ip.192.168.7.2",
                 ServiceArgType.ServiceName.name: "s_c",
             },
             {

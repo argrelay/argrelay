@@ -43,7 +43,7 @@ class QueryEngine:
         query_dict: dict,
     ) -> list[dict]:
         """
-        This query is used for final invocation for vararg-like multiple envelopes (FS_18_64_57_18).
+        This query is used for final invocation for vararg-like multiple `data_envelope`-s (FS_18_64_57_18).
         Therefore, it is not latency-sensitive (results are not cached).
         """
 

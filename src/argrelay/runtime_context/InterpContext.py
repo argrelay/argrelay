@@ -222,9 +222,9 @@ class InterpContext:
         FS_71_87_33_52: remove `help_hint` (after first space) if there is only one option
         """
         if len(self.comp_suggestions) == 1:
-            first_space = self.comp_suggestions[0].find(' ')
-            if first_space >= 0:
-                self.comp_suggestions[0] = self.comp_suggestions[0][:first_space]
+            first_space_ipos = self.comp_suggestions[0].find(' ')
+            if first_space_ipos >= 0:
+                self.comp_suggestions[0] = self.comp_suggestions[0][:first_space_ipos]
         return self.comp_suggestions
 
     def create_next_interp(

@@ -13,7 +13,7 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
 from argrelay.relay_client import __main__
-from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer, indent_size
+from argrelay.runtime_context.EnvelopeContainer import indent_size
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.schema_response.InterpResult import InterpResult
@@ -325,7 +325,7 @@ class ThisTestCase(InOutTestCase):
                 CompType.InvokeAction,
                 [],
                 {},
-                # TODO: Make generic validator be able to verify payload (not only`interp_ctx` passed from local client).
+                # TODO: Make generic validator be able to verify payload (not only `interp_ctx` passed from local client).
                 # {
                 #     0: {
                 #         GlobalArgType.ActionType.name: AssignedValue("list", ArgSource.ExplicitPosArg),
@@ -470,8 +470,8 @@ class ThisTestCase(InOutTestCase):
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
+{" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLACK.value}LiveStatus: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.172.16.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
@@ -489,13 +489,13 @@ class ThisTestCase(InOutTestCase):
 {" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{ServiceEnvelopeClass.ClassHost.name}: 9
+{ServiceEnvelopeClass.ClassHost.name}: 10
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa prod
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} apac emea amer
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-2
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}IpAddress: ?{TermColor.RESET.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.172.16.7.2
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-3 qwer-pd-2
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}IpAddress: ?{TermColor.RESET.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 ip.172.16.7.2
 {ServiceArgType.AccessType.name}: 0
 {" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
 """,

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from argrelay.runtime_data.PluginEntry import PluginEntry
 
 
+# TODO: Combine InterpResult and InvocationInput - only one need to exits
 @dataclass
 class InvocationInput:
     """

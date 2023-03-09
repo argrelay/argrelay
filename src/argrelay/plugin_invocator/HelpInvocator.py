@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.DemoInterpFactory import DemoInterpFactory
 from argrelay.custom_integ.ServiceInvocator import redirect_to_no_func_error
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor

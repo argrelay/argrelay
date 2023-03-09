@@ -1,10 +1,10 @@
 
 Project status: working prototype
 
-[![asciicast](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL.svg)](https://asciinema.org/a/mkjmtGTShGpXHJ7kwojoSXyTL)
+[![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
 
 <!--
-See: docs/dev_notes/screen_cast_notes.md
+See: docs/dev_notes/screencast_notes.md
 -->
 
 # What's this?
@@ -12,8 +12,10 @@ See: docs/dev_notes/screen_cast_notes.md
 An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
-**Original use case:**<br/>
-Auto-complete based on large structured data sets (e.g. config or ref data).[^1]
+### Original use case
+
+Auto-complete based on arbitrary structured data sets (e.g. config or ref data)</br>
+**directly from standard shell**.[^1]
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
 (the client has to start and find relevant data on each Tab-request).
@@ -24,39 +26,84 @@ to run a standby data server.
 > even if someone manages to generate Bash completion config,<br/>
 > it takes considerable time to load it for every shell instance.
 
-**Extended use case:**<br/>
+Unlike static|generated|offline index, standby server also naturally supports dynamic data.
+
+<!--
+### Extended use case
+
 Catalogues of searchable functions and (live) data<br/>
-with auto-completion of keywords -<br/>
-**directly from standard shell**.
+with auto-completion of keywords.
+-->
 
 # What's in a name?
 
-Eventually, `argrelay` will "relay" (hence, the name) command line arguments to<br/>
-user domain-specific command/procedure.
+Eventually, `argrelay` will "relay" command line arguments (hence, the name)<br/>
+with associated data to user domain-specific program.
 
-To clarify,<br/>
-`argrelay` _framework_ can be compared with (independent)<br/>
-`argparse` _library_:
+To clarify, let's compare side-by-side<br/>
+(independent) `argparse` _library_ and `argrelay` _framework_:
 
-| Category       | `argparse` is a library                                 | `argrelay` is a framework                                                   |
-|:---------------|:--------------------------------------------------------|:----------------------------------------------------------------------------|
-| Given:         | `A.py` is some script                                   | `A_relay` is a "wrapper" command<br/> configured in Bash to call `argrelay` |
-| In Bash:       | type `A.py` to execute it                               | type `A_relay` to let `argrelay` decide<br/> whether to execute `A.py`      |
-| Execution:     | `A.py` calls `argparse` library                         | `A.py` is called by the framework<br/> when `A_relay` is invoked            |
-| Function:      | `A.py` directly does<br/> some domain-specific task     | `A_relay` directly only "relays"<br/> the command line to `argrelay`        |
-| CLI source:    | `A.py` defines its CLI<br/> itself via `argparse`       | CLI for `A_relay` is defined by<br/> the framework via configs/plugins/data |
-| CLI is:        | mostly code-driven                                      | mostly data-driven                                                          |
-| Modify CLI:    | modify `A.py`                                           | keep `A.py` intact,<br/> re-configure `argrelay` instead                    |
-| Prog lang:     | `A.py` has to be<br/> a Python script to use `argparse` | `A.py` can be anything<br/> somehow executable by `argrelay`                |
-| **Important:** | `A.py`/`argparse` have no domain data<br/> to query     | `A_relay` may access any<br/> domain data from `argrelay` server            |
+```mermaid
+graph RL;
+
+    %% user --> library
+    %% user --> framework
+
+    subgraph `argparse` library
+
+        direction LR
+
+        some.py <--> argparse;
+
+    end
+
+    argrelay_client -. delegates = relays .-> some.py;
+
+    subgraph `argrelay` framework
+
+        direction TB
+
+        subgraph client
+
+            direction LR
+
+            relay2some --> argrelay_client[argrelay client];
+
+        end
+        
+        subgraph server
+
+            direction TB
+
+            argrelay_server[argrelay server] <--> data[(data)];
+
+        end
+
+    end
+
+```
+
+| Category       | `argparse` is a library                                    | `argrelay` is a framework                                                      |
+|:---------------|:-----------------------------------------------------------|:-------------------------------------------------------------------------------|
+| Given:         | `some.py` is some script                                   | `relay2some` is a "wrapper" command<br/> configured in Bash to call `argrelay` |
+| In Bash:       | type `some.py` to execute it                               | type `relay2some` to let `argrelay` decide<br/> whether to execute `some.py`   |
+| Execution:     | `some.py` calls `argparse` library                         | `some.py` is called by the framework<br/> when `relay2some` is invoked         |
+| Function:      | `some.py` directly does<br/> domain-specific task          | `relay2some` directly only "relays"<br/> the command line to `argrelay`        |
+| CLI source:    | `some.py` defines its CLI<br/> itself via `argparse`       | CLI for `relay2some` is defined by<br/> the framework via configs/plugins/data |
+| CLI is:        | mostly code-driven                                         | mostly data-driven                                                             |
+| Modify CLI:    | modify `some.py`                                           | keep `some.py` intact,<br/> re-configure `argrelay` instead                    |
+| Prog lang:     | `some.py` has to be<br/> a Python script to use `argparse` | `some.py` can be anything<br/> somehow executable by `argrelay`                |
+| **Important:** | `some.py`/`argparse` have<br/> no domain data to query     | `relay2some` may access any<br/> domain data from `argrelay` server            |
 
 # What's missing?
 
+`argrelay` excludes:
 *   Any (real) domain-specific data
 *   Any (useful) domain-specific plugins
 
 # What's in the package?
 
+`argrelay` includes:
 *   **Client** to be invoked by Bash hook on every Tab to<br/>
     send command line arguments to the server.
 *   **Server** to parse command line and propose values from<br/>
@@ -79,15 +126,16 @@ GUI-s do not have the restrictions CLI-s have:
 <details>
 <summary>show example</summary>
 For example, in GUI-s, typing a query into a search bar may easily be accompanied by<br/>
-(1) a separate (from the search bar) area<br/>
+(1) a separate (from the search bar) window area<br/>
 (2) with individually selectable<br/>
 (3) full-text-search results<br/>
-(4) populated in async execution.<br/>
+(4) populated **asyncly** with typing.<br/>
 
 In CLI-s, `grep` does (3) full-text-search, but what about the rest (1), (2), (4)?
 
-To facilitate selection of results via auto-completion,<br/>
-catalogue-like navigation (rather than full-text-search) seems the answer.
+To facilitate selection of results,<br/>
+catalogue-like navigation with auto-completion (rather than full-text-search)<br/>
+seems the answer.
 </details>
 
 # Syntax: origin story
@@ -173,19 +221,19 @@ an action and any object it requires.
 Not every combination of enum values may point to an existing object.
 
 For data with sparse object spaces,<br/>
-the CLI-suggestion should be limited by coordinates applicable to<br/>
+the CLI-suggestion can be shaped by coordinates applicable to<br/>
 remaining (narrowed down) object sets.
 
 ### Differentiate on purpose
 
 All above may be an obvious approach to come up with,<br/>
-but it is not ordinary for CLI-s of most common commands:
+but it is not ordinary for CLI-s of most common commands (due to lack of data):
 
 | Common commands (think `ls`, `git`, `ssh`, ...):                            | `argrelay`-wrapped actions:                           |
 |:----------------------------------------------------------------------------|:------------------------------------------------------|
 | have succinct syntax and prefer<br/> single-char switches (defined by code) | prefer explicit "enum language"<br/> defined by data  |
 | rely on humans to memorize syntax<br/> (options, ordering, etc.)            | assume humans have<br/> a loose idea about the syntax |
-| auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific index       |
+| auto-complete only for objects<br/> known to the OS (hosts, files, etc.)    | auto-complete from<br/> a domain-specific data        |
 
 </details>
 
@@ -193,7 +241,8 @@ Learn more about [how search works][how_search_works.md].
 
 # Quick demo
 
-This is a non-intrusive demo (without permanent changes to user env).
+This is a non-intrusive demo<br/>
+(without permanent changes to user env, e.g. no `~/.bashrc` changes).
 
 Clone this repo somewhere.
 
@@ -282,7 +331,7 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
 *   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md] for permanent setup.
 
-*   Modify `ServiceLoader.py` plugin to provide data beyond [demo data set][TD_63_37_05_36.demo_services_data.md].
+*   Modify [`ServiceLoader.py` plugin][link_to_load_data_envelopes] to provide data beyond [demo data set][TD_63_37_05_36.demo_services_data.md].
 
     The data can be simply hard-coded with different `test_data` tag<br/>
     (other than `TD_63_37_05_36` demo) and selected in `argrelay.server.yaml`:
@@ -339,5 +388,6 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 [earlier_stack_question]: https://stackoverflow.com/questions/74996560/
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
 [how_search_works.md]: docs/dev_notes/how_search_works.md
-[link_to_redirect_to_error]: https://github.com/uvsmtid/argrelay/blob/6b28badd41ed697089305a01ba2da566573138b4/src/argrelay/custom_integ/ServiceInvocator.py#L110
+[link_to_redirect_to_error]: https://github.com/uvsmtid/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceInvocator.py#L148
+[link_to_load_data_envelopes]: https://github.com/uvsmtid/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceLoader.py#L111
 [repo_issues]: https://github.com/uvsmtid/argrelay/issues

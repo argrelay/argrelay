@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.DemoInterpFactory import DemoInterpFactory
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator, get_data_envelopes
@@ -12,6 +11,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, insta
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_instance_id_
 
 next_interp_plugin_instance_id_ = "next_interp_plugin_instance_id"
+
 
 class InterceptInvocator(AbstractInvocator):
 

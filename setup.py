@@ -17,7 +17,7 @@ extras_require = {
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.0.0.dev27",
+    version = "0.0.0.dev28",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Bash Tab-completion (data) server - total recall",

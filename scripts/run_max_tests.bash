@@ -2,14 +2,17 @@
 
 # This script tries to run maximum test set.
 # It is expected to be run from `dev-shell.bash`.
+# It must be run from repo root:
+#     ./scripts/run_max_tests.bash
+
 # See `tests/readme.md`.
 # It also allows running tests:
 # *   in specific dir only:
-#         max-test.bash path/to/dir
+#         run_max_tests.bash path/to/dir
 # *   in specific test file only
-#         max-test.bash path/to/file
+#         run_max_tests.bash path/to/file
 # *   in specific test method only
-#         max-test.bash path/to/file method
+#         run_max_tests.bash path/to/file method
 
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
@@ -65,7 +68,7 @@ then
     exit 0
 fi
 
-# Niether dir nor file:
+# Neither dir nor file:
 echo "ERROR: specify valid dir path or file path: ${input_path}" 1>&2
 exit 1
 
