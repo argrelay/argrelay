@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
 # Publish artifacts to pypi.org.
-# See: docs/dev_notes/release_procedure.md
-# TODO: Merge in a single "atomic" step to make a release:
-#       (1) create tag, (2) build, (3) publish, ...
-#       At the moment, at least until first version `0.0.0`,
-#       artifacts are published under `0.0.0.devN` version from any commit
-#       (which may not be even seen publicly) and they may also deleted
-#       from pypi.org as test uploads.
+# See: `docs/dev_notes/release_procedure.md`.
+# See: `docs/dev_notes/version_format.md`.
+# Merge in a single "atomic" step to make a release:
+# - ensure no local modifications
+# - ensure commit is published
+# - build and test
+# - create tag
+# - publish package
 
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
@@ -27,7 +28,7 @@ cd "${script_dir}" || exit 1
 # Ensure the script was started in `dev-shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]
 then
-    echo "ERROR: Run this script under \`dev-shell.bash\`." 2>&1
+    echo "ERROR: Run this script under \`dev-shell.bash\`." 1>&2
     exit 1
 fi
 
@@ -39,6 +40,9 @@ source ./python-conf.bash
 
 # Use `"${path_to_venvX}"` (if does not exists, run `build-git-env.bash`):
 source "${path_to_venvX}"/bin/activate
+
+# Re-install some itself:
+pip install -e .
 
 # Update `requirements.txt` to know what was there at the time of publishing:
 cat << 'REQUIREMENTS_EOF' > ./requirements.txt
@@ -54,43 +58,30 @@ pip freeze | grep -v '#egg=argrelay$' >> requirements.txt
 # Ensure all changes are committed:
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes/3879077#3879077
 git update-index --refresh
-git diff-index --quiet HEAD --
+if ! git diff-index --quiet HEAD --
+then
+    echo "ERROR: uncommitted changes" 1>&2
+    exit 1
+fi
 
-# Get versin of `argrelay` module:
-# TODO: Reimplement this - it gets version of deployed package rather than current version in sources:
-#       Actually! It does read correct version, but replaces `-` with a `.` in version string!
+# See also: `docs/dev_notes/version_format.md`.
+# Get version of `argrelay` distribution:
 argrelay_version="$(
 python << 'PYTHON_GET_PACKAGE_VERSION_EOF'
 from pkg_resources import get_distribution
 print(get_distribution("argrelay").version)
 PYTHON_GET_PACKAGE_VERSION_EOF
 )"
+echo "INFO: argrelay version: ${argrelay_version}" 1>&2
 
-echo "argrelay version: ${argrelay_version}"
-
-# TODO: This entire if/else is noop - it has to be fixed when version is reliably extracted from sources:
-if [[ "${argrelay_version}" =~ -dev.[[:digit:]]*$ ]]
+# Determine if it is a dev version (which relaxes many check):
+if [[ "${argrelay_version}" =~ .dev.[[:digit:]]*$ ]]
 then
-    echo "handle dev version"
+    is_dev_version="true"
 else
-    echo "handle non-dev version"
-
-    set +e # TODO: remove disabling of errors
-    git_tag="$(git describe --tags)"
-    set -e
-    echo "git_tag: ${git_tag}"
-
-    if [[ "v${argrelay_version}" != "${git_tag}" ]]
-    then
-        # TODO: try for non-dev release:
-        # git tag "v${argrelay_version}"
-        echo "doing nothing for now..."
-    fi
-    # TODO: For proper releases, ensure that:
-    #       * the commit is on public `main` branch
-    #       * it is tagged and the tag name matches that of `setup.py`
-    #       * anything else?
+    is_dev_version="false"
 fi
+echo "INFO: is_dev_version: ${is_dev_version}" 1>&2
 
 # Clean up previously built packages:
 rm -rf ./dist/
@@ -98,11 +89,55 @@ rm -rf ./dist/
 # Build and test:
 python -m tox
 
+# Fetch from upstream:
+git_main_remote="origin"
+git fetch "${git_main_remote}"
+
+# Check if current commit is in the main branch:
+git_main_branch="main"
+if ! git merge-base --is-ancestor HEAD "${git_main_remote}/${git_main_branch}"
+then
+    if [[ "${is_dev_version}" == "true" ]]
+    then
+        echo "WARN: current HEAD is not in ${git_main_remote}/${git_main_branch}" 1>&2
+    else
+        echo "ERROR: current HEAD is not in ${git_main_remote}/${git_main_branch}" 1>&2
+        exit 1
+    fi
+else
+    echo "INFO: current HEAD is in ${git_main_remote}/${git_main_branch}" 1>&2
+fi
+
+git_tag="$(git describe --tags)"
+echo "INFO: curr git_tag: ${git_tag}" 1>&2
+
+# Versions has to be prefixed with `v` in tag:
+if [[ "v${argrelay_version}" != "${git_tag}" ]]
+then
+    git_tag="v${argrelay_version}"
+    echo "INFO: next git_tag: ${git_tag}" 1>&2
+    # No matching tag exists yet:
+    git tag "${git_tag}"
+else
+    # Matching tag already exists - either already released or something is wrong.
+    # It can be fixed by removing the tag, but user has to do it consciously.
+    echo "ERROR: tag already exits: ${git_tag}" 1>&2
+    exit 1
+fi
+
+# Push to remote only if it is non-dev version:
+if [[ "${is_dev_version}" == "true" ]]
+then
+    echo "WARN: tag is not pushed to remote: ${git_tag}" 1>&2
+else
+    echo "INFO: tag is about to be pushed to remote: ${git_tag}" 1>&2
+    git push "${git_main_remote}" "${git_tag}"
+fi
+
 # Apparently, `tox` already builds `sdist`, for example:
 # ./.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
 # However, the following are the staps found in majority of the web resources:
 python setup.py sdist
 pip install twine
 # This will prompt for login credentials:
-twine upload dist/*
-
+twine upload "dist/argrelay-${argrelay_version}.tar.gz"

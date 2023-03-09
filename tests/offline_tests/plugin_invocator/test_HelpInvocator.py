@@ -29,6 +29,16 @@ class ThisTestCase(InOutTestCase):
                 None,
                 "Execute help with no args.",
             ),
+            (
+                line_no(),
+                "some_command help interc|",
+                RunMode.CompletionMode,
+                CompType.PrefixShown,
+                ["intercept"],
+                {},
+                None,
+                "For `help` even `internal` functions are allowed.",
+            ),
         ]
 
         for test_case in test_cases:

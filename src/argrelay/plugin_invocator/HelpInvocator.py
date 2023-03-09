@@ -28,9 +28,7 @@ class HelpInvocator(InterceptInvocator):
         curr_interp: AbstractInterp,
     ) -> str:
         # TODO: This must be special interpreter which is configured only to search functions (without their args).
-        # TODO: Is there a way to include both "internal" and "external" funcs ("internal" are missing).
-        # TODO: make it configurable:
-        return DemoInterpFactory.__name__
+        return super().run_interp_control(curr_interp)
 
     def run_invoke_control(
         self,
@@ -77,9 +75,7 @@ class HelpInvocator(InterceptInvocator):
                     # There should be only one (key, value) pair:
                     key_name = next(iter(keys_to_types))
                     type_name = keys_to_types[key_name]
-                    # TODO: fix hack: display all funcions "internal" and "external" rather than removing "externl" criteria:
-                    if type_name != GlobalArgType.FunctionCategory.name:
-                        print(f"{data_envelope[type_name]}", end = " ")
+                    print(f"{data_envelope[type_name]}", end = " ")
 
                 # TODO: perform color control only if the output is a terminal:
 

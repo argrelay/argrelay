@@ -11,6 +11,7 @@ from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_instance_id_
 
+next_interp_plugin_instance_id_ = "next_interp_plugin_instance_id"
 
 class InterceptInvocator(AbstractInvocator):
 
@@ -35,8 +36,7 @@ class InterceptInvocator(AbstractInvocator):
         self,
         curr_interp: AbstractInterp,
     ) -> str:
-        # TODO: make it configurable:
-        return DemoInterpFactory.__name__
+        return self.config_dict[next_interp_plugin_instance_id_]
 
     def run_invoke_control(
         self,
