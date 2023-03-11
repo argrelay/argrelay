@@ -72,6 +72,8 @@ def redirect_to_error(
     }
     error_invocator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput(
+        all_tokens = interp_ctx.parsed_ctx.all_tokens,
+        consumed_tokens = interp_ctx.consumed_tokens,
         invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_instance_id],
         data_envelopes = get_data_envelopes(interp_ctx),
         custom_plugin_data = custom_plugin_data,
@@ -165,6 +167,8 @@ class ServiceInvocator(AbstractInvocator):
                 invocator_plugin_instance_id = ServiceInvocator.__name__
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput(
+                    all_tokens = interp_ctx.parsed_ctx.all_tokens,
+                    consumed_tokens = interp_ctx.consumed_tokens,
                     invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
                     data_envelopes = (
                         # existing envelopes (until vararg one):

@@ -13,6 +13,8 @@ class NoopInvocator(AbstractInvocator):
         local_server: LocalServer,
     ) -> InvocationInput:
         invocation_input = InvocationInput(
+            all_tokens = interp_ctx.parsed_ctx.all_tokens,
+            consumed_tokens = interp_ctx.consumed_tokens,
             invocator_plugin_entry = local_server.server_config.plugin_dict[self.__class__.__name__],
             data_envelopes = [
                 data_envelope_desc.dict_example,

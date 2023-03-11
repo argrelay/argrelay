@@ -36,6 +36,8 @@ class GitRepoInvocator(AbstractInvocator):
         function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
         invocator_plugin_instance_id = function_envelope.data_envelope[instance_data_][invocator_plugin_instance_id_]
         invocation_input = InvocationInput(
+            all_tokens = interp_ctx.parsed_ctx.all_tokens,
+            consumed_tokens = interp_ctx.consumed_tokens,
             invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
             data_envelopes = get_data_envelopes(interp_ctx),
             custom_plugin_data = {},

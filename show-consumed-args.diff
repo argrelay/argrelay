@@ -1,0 +1,907 @@
+diff --git a/src/argrelay/custom_integ/GitRepoInvocator.py b/src/argrelay/custom_integ/GitRepoInvocator.py
+index 2b44431..e464300 100644
+--- a/src/argrelay/custom_integ/GitRepoInvocator.py
++++ b/src/argrelay/custom_integ/GitRepoInvocator.py
+@@ -24,30 +24,32 @@ class GitRepoInvocator(AbstractInvocator):
+         )
+ 
+     def run_invoke_control(
+         self,
+         interp_ctx: InterpContext,
+         local_server: LocalServer,
+     ) -> InvocationInput:
+ 
+         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
+ 
+         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
+         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
+         function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
+         invocator_plugin_instance_id = function_envelope.data_envelope[instance_data_][invocator_plugin_instance_id_]
+         invocation_input = InvocationInput(
++            all_tokens = interp_ctx.parsed_ctx.all_tokens,
++            consumed_tokens = interp_ctx.consumed_tokens,
+             invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+             data_envelopes = get_data_envelopes(interp_ctx),
+             custom_plugin_data = {},
+         )
+         return invocation_input
+ 
+     @staticmethod
+     def invoke_action(invocation_input: InvocationInput):
+         if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == desc_repo_func_:
+             repo_envelope = invocation_input.data_envelopes[repo_envelope_ipos_]
+             abs_repo_path = repo_envelope[envelope_payload_]["abs_repo_path"]
+             # List Git repo dir:
+             subproc = subprocess.run(
+                 [
+                     "ls",
+diff --git a/src/argrelay/custom_integ/ServiceInvocator.py b/src/argrelay/custom_integ/ServiceInvocator.py
+index 89e5988..4f434a4 100644
+--- a/src/argrelay/custom_integ/ServiceInvocator.py
++++ b/src/argrelay/custom_integ/ServiceInvocator.py
+@@ -60,30 +60,32 @@ def redirect_to_no_func_error(
+ 
+ def redirect_to_error(
+     interp_ctx,
+     server_config,
+     error_message,
+     error_code,
+ ):
+     # Redirect to `ErrorInvocator`:
+     invocator_plugin_instance_id = ErrorInvocator.__name__
+     custom_plugin_data = {
+         error_message_: error_message,
+         error_code_: error_code,
+     }
+     error_invocator_custom_data_desc.validate_dict(custom_plugin_data)
+     invocation_input = InvocationInput(
++        all_tokens = interp_ctx.parsed_ctx.all_tokens,
++        consumed_tokens = interp_ctx.consumed_tokens,
+         invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_instance_id],
+         data_envelopes = get_data_envelopes(interp_ctx),
+         custom_plugin_data = custom_plugin_data,
+     )
+     return invocation_input
+ 
+ 
+ class ServiceInvocator(AbstractInvocator):
+ 
+     def __init__(
+         self,
+         plugin_instance_id: str,
+         config_dict: dict,
+     ):
+         super().__init__(
+@@ -153,30 +155,32 @@ class ServiceInvocator(AbstractInvocator):
+             )
+         elif func_name in [
+             list_host_func_,
+             list_service_func_,
+         ]:
+             vararg_data_envelope_ipos = host_envelope_ipos_
+             assert vararg_data_envelope_ipos == host_envelope_ipos_ == service_envelope_ipos_
+             # Verify that func is selected and all what is left to do is to query 0...N objects:
+             if interp_ctx.curr_container_ipos >= vararg_data_envelope_ipos:
+                 # Search `data_envelope`-s based on existing args on command line:
+                 query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_data_envelope_ipos])
+                 # Plugin to invoke on client side:
+                 invocator_plugin_instance_id = ServiceInvocator.__name__
+                 # Package into `InvocationInput` payload object:
+                 invocation_input = InvocationInput(
++                    all_tokens = interp_ctx.parsed_ctx.all_tokens,
++                    consumed_tokens = interp_ctx.consumed_tokens,
+                     invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+                     data_envelopes = (
+                         # existing envelopes (until vararg one):
+                         get_data_envelopes(interp_ctx)[:vararg_data_envelope_ipos]
+                         +
+                         # all envelopes in vararg set:
+                         local_server.get_query_engine().query_data_envelopes(query_dict)
+                     ),
+                     custom_plugin_data = {},
+                 )
+                 return invocation_input
+             else:
+                 return redirect_to_no_func_error(
+                     interp_ctx,
+                     local_server.server_config,
+diff --git a/src/argrelay/enum_desc/TermColor.py b/src/argrelay/enum_desc/TermColor.py
+index 24f16c8..f6af202 100644
+--- a/src/argrelay/enum_desc/TermColor.py
++++ b/src/argrelay/enum_desc/TermColor.py
+@@ -1,27 +1,33 @@
+ from enum import Enum
+ 
+ 
+ class TermColor(Enum):
+     """
+     Color codes for terminal text
+     """
+ 
+-    DARK_RED = '\033[31m'
+-    DARK_GREEN = '\033[32m'
+-    DARK_YELLOW = '\033[33m'
+-    DARK_GRAY = '\033[90m'
++    DARK_BLACK = "\033[30m"
++    DARK_RED = "\033[31m"
++    DARK_GREEN = "\033[32m"
++    DARK_YELLOW = "\033[33m"
++    DARK_BLUE = "\033[34m"
++    DARK_MAGENTA = "\033[35m"
++    DARK_CYAN = "\033[36m"
++    DARK_WHITE = "\033[37m"
+ 
+-    BRIGHT_BLUE = '\033[94m'
+-    BRIGHT_CYAN = '\033[96m'
+-    BRIGHT_GREEN = '\033[92m'
+-    BRIGHT_YELLOW = '\033[93m'
+-    BRIGHT_RED = '\033[91m'
+-    BRIGHT_GRAY = '\033[37m'
++    BRIGHT_BLACK = "\033[90m"
++    BRIGHT_RED = "\033[91m"
++    BRIGHT_GREEN = "\033[92m"
++    BRIGHT_YELLOW = "\033[93m"
++    BRIGHT_BLUE = "\033[94m"
++    BRIGHT_MAGENTA = "\033[95m"
++    BRIGHT_CYAN = "\033[96m"
++    BRIGHT_WHITE = "\033[97m"
+ 
+-    DEBUG = DARK_GRAY
++    DEBUG = BRIGHT_BLACK
+     INFO = BRIGHT_GREEN
+ 
+-    WARNING = '\033[93m'
+-    FAIL = '\033[91m'
++    WARNING = BRIGHT_YELLOW
++    FAIL = BRIGHT_RED
+ 
+-    RESET = '\033[0m'
++    RESET = "\033[0m"
+diff --git a/src/argrelay/handler_request/DescribeLineArgsServerRequestHandler.py b/src/argrelay/handler_request/DescribeLineArgsServerRequestHandler.py
+index fb04e5d..72332ed 100644
+--- a/src/argrelay/handler_request/DescribeLineArgsServerRequestHandler.py
++++ b/src/argrelay/handler_request/DescribeLineArgsServerRequestHandler.py
+@@ -1,29 +1,36 @@
+ from argrelay.enum_desc.CompType import CompType
+ 
+ from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
+ from argrelay.misc_helper.ElapsedTime import ElapsedTime
+ from argrelay.relay_server.LocalServer import LocalServer
+ from argrelay.runtime_context.InputContext import InputContext
+-from argrelay.schema_response.InterpResultSchema import interp_result_desc, envelope_containers_
++from argrelay.schema_response.InterpResultSchema import (
++    interp_result_desc,
++    envelope_containers_,
++    all_tokens_,
++    consumed_tokens_,
++)
+ 
+ 
+ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
+ 
+     def __init__(
+         self,
+         local_server: LocalServer,
+     ):
+         super().__init__(
+             local_server = local_server,
+         )
+ 
+     def handle_request(self, input_ctx: InputContext) -> dict:
+         assert input_ctx.comp_type == CompType.DescribeArgs
+ 
+         self.interpret_command(self.local_server, input_ctx)
+         ElapsedTime.measure("after_interpret_command")
+ 
+         response_dict = interp_result_desc.dict_schema.dump({
++            all_tokens_: self.interp_ctx.parsed_ctx.all_tokens,
++            consumed_tokens_: self.interp_ctx.consumed_tokens,
+             envelope_containers_: self.interp_ctx.envelope_containers,
+         })
+         return response_dict
+diff --git a/src/argrelay/handler_response/DescribeLineArgsClientResponseHandler.py b/src/argrelay/handler_response/DescribeLineArgsClientResponseHandler.py
+index 1c4ee17..106004b 100644
+--- a/src/argrelay/handler_response/DescribeLineArgsClientResponseHandler.py
++++ b/src/argrelay/handler_response/DescribeLineArgsClientResponseHandler.py
+@@ -1,21 +1,21 @@
+ from __future__ import annotations
+ 
+ from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
+ from argrelay.misc_helper.ElapsedTime import ElapsedTime
+ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
++from argrelay.schema_response.InterpResult import InterpResult
+ from argrelay.schema_response.InterpResultSchema import interp_result_desc, envelope_containers_
+ 
+ 
+ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
+ 
+     def __init__(
+         self,
+     ):
+         super().__init__(
+         )
+ 
+     def handle_response(self, response_dict: dict):
+-        response_object = interp_result_desc.dict_schema.load(response_dict)
++        interp_result: InterpResult = interp_result_desc.dict_schema.load(response_dict)
+         ElapsedTime.measure("after_object_creation")
+-        envelope_containers: list[EnvelopeContainer] = response_object[envelope_containers_]
+-        EnvelopeContainer.describe_data(envelope_containers)
++        interp_result.describe_data()
+diff --git a/src/argrelay/plugin_invocator/ErrorInvocator.py b/src/argrelay/plugin_invocator/ErrorInvocator.py
+index f72f9cc..88b3f07 100644
+--- a/src/argrelay/plugin_invocator/ErrorInvocator.py
++++ b/src/argrelay/plugin_invocator/ErrorInvocator.py
+@@ -6,30 +6,32 @@ from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import error_messa
+ from argrelay.plugin_invocator.InvocationInput import InvocationInput
+ from argrelay.relay_server.LocalServer import LocalServer
+ from argrelay.runtime_context.InterpContext import InterpContext
+ 
+ 
+ class ErrorInvocator(AbstractInvocator):
+ 
+     def run_invoke_control(
+         self,
+         interp_ctx: InterpContext,
+         local_server: LocalServer,
+     ) -> InvocationInput:
+         invocator_plugin_entry = local_server.server_config.plugin_dict[self.__class__.__name__]
+         data_envelopes = get_data_envelopes(interp_ctx)
+         invocation_input = InvocationInput(
++            all_tokens = interp_ctx.parsed_ctx.all_tokens,
++            consumed_tokens = interp_ctx.consumed_tokens,
+             invocator_plugin_entry = invocator_plugin_entry,
+             data_envelopes = data_envelopes,
+             custom_plugin_data = {},
+         )
+         return invocation_input
+ 
+     @staticmethod
+     def invoke_action(invocation_input: InvocationInput):
+         error_message = "ERROR: unknown error"
+         error_code = 1
+         if invocation_input.custom_plugin_data:
+             if error_message_ in invocation_input.custom_plugin_data:
+                 error_message = invocation_input.custom_plugin_data[error_message_]
+             if error_code_ in invocation_input.custom_plugin_data:
+                 error_code = invocation_input.custom_plugin_data[error_code_]
+diff --git a/src/argrelay/plugin_invocator/HelpInvocator.py b/src/argrelay/plugin_invocator/HelpInvocator.py
+index dfd0659..fcf63be 100644
+--- a/src/argrelay/plugin_invocator/HelpInvocator.py
++++ b/src/argrelay/plugin_invocator/HelpInvocator.py
+@@ -35,30 +35,32 @@ class HelpInvocator(InterceptInvocator):
+         interp_ctx: InterpContext,
+         local_server: LocalServer,
+     ) -> InvocationInput:
+         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
+ 
+         if interp_ctx.curr_container_ipos >= subsequent_function_envelope_ipos_:
+             subsequent_function_container = interp_ctx.envelope_containers[(
+                 subsequent_function_envelope_ipos_
+             )]
+             query_dict = populate_query_dict(subsequent_function_container)
+             invocator_plugin_instance_id = HelpInvocator.__name__
+ 
+             custom_plugin_data = search_control_desc.dict_schema.dump(subsequent_function_container.search_control)
+ 
+             invocation_input = InvocationInput(
++                all_tokens = interp_ctx.parsed_ctx.all_tokens,
++                consumed_tokens = interp_ctx.consumed_tokens,
+                 invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+                 data_envelopes = (
+                     # Envelope of `SpecialFunc.help_func`:
+                     get_data_envelopes(interp_ctx)[:subsequent_function_envelope_ipos_]
+                     +
+                     # These must be function envelopes found via query:
+                     local_server.get_query_engine().query_data_envelopes(query_dict)
+                 ),
+                 custom_plugin_data = custom_plugin_data,
+             )
+             return invocation_input
+         else:
+             return redirect_to_no_func_error(
+                 interp_ctx,
+                 local_server.server_config,
+@@ -67,36 +69,36 @@ class HelpInvocator(InterceptInvocator):
+     @staticmethod
+     def invoke_action(invocation_input: InvocationInput):
+         search_control: SearchControl = search_control_desc.dict_schema.load(invocation_input.custom_plugin_data)
+         if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == SpecialFunc.help_func.name:
+             for data_envelope in invocation_input.data_envelopes[subsequent_function_envelope_ipos_:]:
+ 
+                 # Print fields from search control:
+                 for keys_to_types in search_control.keys_to_types_list:
+                     # There should be only one (key, value) pair:
+                     key_name = next(iter(keys_to_types))
+                     type_name = keys_to_types[key_name]
+                     print(f"{data_envelope[type_name]}", end = " ")
+ 
+                 # TODO: perform color control only if the output is a terminal:
+ 
+-                print(TermColor.DARK_GRAY.value, end = "")
++                print(TermColor.BRIGHT_BLACK.value, end = "")
+                 print("#", end = " ")
+                 print(TermColor.RESET.value, end = "")
+ 
+                 if envelope_id_ in data_envelope:
+-                    print(TermColor.DARK_GRAY.value, end = "")
++                    print(TermColor.BRIGHT_BLACK.value, end = "")
+                     print(f"{data_envelope[envelope_id_]}", end = " ")
+                     print(TermColor.RESET.value, end = "")
+                 else:
+                     print(TermColor.DARK_RED.value, end = "")
+                     print(f"[no `{envelope_id_}`]", end = " ")
+                     print(TermColor.RESET.value, end = "")
+ 
+                 print(TermColor.DARK_GREEN.value, end = "")
+                 print("#", end = " ")
+                 print(TermColor.RESET.value, end = "")
+ 
+                 if ReservedArgType.HelpHint.name in data_envelope:
+                     print(TermColor.DARK_GREEN.value, end = "")
+                     print(
+                         f"{data_envelope[ReservedArgType.HelpHint.name]}",
+diff --git a/src/argrelay/plugin_invocator/InterceptInvocator.py b/src/argrelay/plugin_invocator/InterceptInvocator.py
+index 32aa4ee..3a4d30d 100644
+--- a/src/argrelay/plugin_invocator/InterceptInvocator.py
++++ b/src/argrelay/plugin_invocator/InterceptInvocator.py
+@@ -38,26 +38,28 @@ class InterceptInvocator(AbstractInvocator):
+     ) -> str:
+         return self.config_dict[next_interp_plugin_instance_id_]
+ 
+     def run_invoke_control(
+         self,
+         interp_ctx: InterpContext,
+         local_server: LocalServer,
+     ) -> InvocationInput:
+         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
+ 
+         # TODO: Fail (send to ErrorInvocator) if next function is not specified -
+         #       showing the payload in this case is misleading.
+         function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
+         invocator_plugin_instance_id = function_envelope.data_envelope[instance_data_][invocator_plugin_instance_id_]
+         invocation_input = InvocationInput(
++            all_tokens = interp_ctx.parsed_ctx.all_tokens,
++            consumed_tokens = interp_ctx.consumed_tokens,
+             invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+             data_envelopes = get_data_envelopes(interp_ctx),
+             custom_plugin_data = {},
+         )
+         return invocation_input
+ 
+     @staticmethod
+     def invoke_action(invocation_input: InvocationInput):
+         if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == SpecialFunc.intercept_func.name:
+             # TODO: Print without first function `data_envelope` belonging to `intercept` function:
+             print(invocation_input)
+diff --git a/src/argrelay/plugin_invocator/InvocationInput.py b/src/argrelay/plugin_invocator/InvocationInput.py
+index 6a2ed0b..cca8970 100644
+--- a/src/argrelay/plugin_invocator/InvocationInput.py
++++ b/src/argrelay/plugin_invocator/InvocationInput.py
+@@ -1,28 +1,39 @@
+ from __future__ import annotations
+ 
+ from dataclasses import dataclass
+ 
+ from argrelay.runtime_data.PluginEntry import PluginEntry
+ 
+ 
+ @dataclass
+ class InvocationInput:
+     """
+     See :class:`InvocationInputSchema`
+     """
+ 
++    all_tokens: list[str]
++    """
++    Copy from `ParsedContext.all_tokens` - command line args.
++    """
++
++    consumed_tokens: list[int]
++    """
++    Copy from `InterpContext.consumed_tokens` -
++    indexes into `all_tokens` pointing to tokens consumed during interpretation.
++    """
++
+     invocator_plugin_entry: PluginEntry
+     """
+     The `PluginEntry` taken from config on the server side to let client invoke that plugin.
+ 
+     It is assumed that server and client code, if not of the same version, at least, compatible.
+     """
+ 
+     data_envelopes: list[dict]
+     """
+     Envelopes copied from `InterpContext` at the end of command line interpretation on the server side.
+     """
+ 
+     custom_plugin_data: dict
+     """
+     A placeholder dict for exclusive use by plugin.
+diff --git a/src/argrelay/plugin_invocator/NoopInvocator.py b/src/argrelay/plugin_invocator/NoopInvocator.py
+index a686088..d31e550 100644
+--- a/src/argrelay/plugin_invocator/NoopInvocator.py
++++ b/src/argrelay/plugin_invocator/NoopInvocator.py
+@@ -1,27 +1,29 @@
+ from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
+ from argrelay.plugin_invocator.InvocationInput import InvocationInput
+ from argrelay.relay_server.LocalServer import LocalServer
+ from argrelay.runtime_context.InterpContext import InterpContext
+ from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
+ 
+ 
+ class NoopInvocator(AbstractInvocator):
+ 
+     def run_invoke_control(
+         self,
+         interp_ctx: InterpContext,
+         local_server: LocalServer,
+     ) -> InvocationInput:
+         invocation_input = InvocationInput(
++            all_tokens = interp_ctx.parsed_ctx.all_tokens,
++            consumed_tokens = interp_ctx.consumed_tokens,
+             invocator_plugin_entry = local_server.server_config.plugin_dict[self.__class__.__name__],
+             data_envelopes = [
+                 data_envelope_desc.dict_example,
+             ],
+             custom_plugin_data = {},
+         )
+         return invocation_input
+ 
+     @staticmethod
+     def invoke_action(invocation_input: InvocationInput):
+         # Do nothing:
+         pass
+diff --git a/src/argrelay/runtime_context/EnvelopeContainer.py b/src/argrelay/runtime_context/EnvelopeContainer.py
+index 60e2efe..215440b 100644
+--- a/src/argrelay/runtime_context/EnvelopeContainer.py
++++ b/src/argrelay/runtime_context/EnvelopeContainer.py
+@@ -68,49 +68,52 @@ class EnvelopeContainer:
+ 
+     @staticmethod
+     def describe_data(envelope_containers: list[EnvelopeContainer]):
+         eprint()
+         # TODO: print colorized command line (reordered by `search_control`) with consumed tokens, unconsumed tokens, tangent token
+         is_first_missing_found: bool = False
+         for envelope_container in envelope_containers:
+             eprint(f"{envelope_container.search_control.envelope_class}:")
+ 
+             for key_to_type_dict in envelope_container.search_control.keys_to_types_list:
+                 arg_key = next(iter(key_to_type_dict))
+                 arg_type = key_to_type_dict[arg_key]
+ 
+                 if arg_type in envelope_container.assigned_types_to_values:
+                     eprint(" " * indent_size, end = "")
+-                    eprint(TermColor.DARK_GREEN.value, end = "")
++                    if envelope_container.assigned_types_to_values[arg_type].arg_source == ArgSource.ExplicitPosArg:
++                        eprint(TermColor.BRIGHT_BLUE.value, end = "")
++                    else:
++                        eprint(TermColor.DARK_GREEN.value, end = "")
+                     eprint(f"{arg_type}:", end = "")
+                     eprint(
+                         f" {envelope_container.assigned_types_to_values[arg_type].arg_value} " +
+                         f"[{envelope_container.assigned_types_to_values[arg_type].arg_source.name}]",
+                         end = ""
+                     )
+                     eprint(TermColor.RESET.value, end = "")
+                 elif arg_type in envelope_container.remaining_types_to_values:
+                     eprint(" " * indent_size, end = "")
+                     eprint(TermColor.BRIGHT_YELLOW.value, end = "")
+                     if not is_first_missing_found:
+                         eprint(f"*{arg_type}:", end = "")
+                         is_first_missing_found = True
+                     else:
+                         eprint(f"{arg_type}:", end = "")
+                     eprint(f" ?", end = "")
+                     eprint(TermColor.RESET.value, end = "")
+                     eprint(
+                         f" {' '.join(envelope_container.remaining_types_to_values[arg_type])}",
+                         end = ""
+                     )
+                 else:
+                     # The arg type is in the remaining but data have no arg values to suggest.
+                     # Such arg types are shown because they are part of `search_control`.
+                     # But they cannot be specified for current situation, otherwise, if already no data,
+                     # any arg value assigned to such arg type would return no results.
+                     eprint(" " * indent_size, end = "")
+-                    eprint(TermColor.DARK_GRAY.value, end = "")
++                    eprint(TermColor.BRIGHT_BLACK.value, end = "")
+                     eprint(f"{arg_type}:", end = "")
+                     eprint(" [none]", end = "")
+                     eprint(TermColor.RESET.value, end = "")
+ 
+                 eprint()
+diff --git a/src/argrelay/schema_response/InterpResult.py b/src/argrelay/schema_response/InterpResult.py
+new file mode 100644
+index 0000000..ca73934
+--- /dev/null
++++ b/src/argrelay/schema_response/InterpResult.py
+@@ -0,0 +1,38 @@
++from __future__ import annotations
++
++from dataclasses import dataclass
++
++from argrelay.enum_desc.TermColor import TermColor
++from argrelay.misc_helper import eprint
++from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
++
++
++@dataclass
++class InterpResult:
++    """
++    See :class:`InterpResultSchema`
++    """
++
++    all_tokens: list[str]
++    """
++    Copy from `ParsedContext.all_tokens` - command line args.
++    """
++
++    consumed_tokens: list[int]
++    """
++    Copy from `InterpContext.consumed_tokens` -
++    indexes into `all_tokens` pointing to tokens consumed during interpretation.
++    """
++
++    envelope_containers: list[EnvelopeContainer]
++
++    def describe_data(self):
++        eprint()
++
++        for i in range(len(self.all_tokens)):
++            if i in self.consumed_tokens:
++                eprint(f"{TermColor.BRIGHT_BLUE.value}{self.all_tokens[i]}{TermColor.RESET.value}", end = " ")
++            else:
++                eprint(f"{TermColor.DARK_MAGENTA.value}{self.all_tokens[i]}{TermColor.RESET.value}", end = " ")
++
++        EnvelopeContainer.describe_data(self.envelope_containers)
+diff --git a/src/argrelay/schema_response/InterpResultSchema.py b/src/argrelay/schema_response/InterpResultSchema.py
+index 1c3fc9c..d1123fc 100644
+--- a/src/argrelay/schema_response/InterpResultSchema.py
++++ b/src/argrelay/schema_response/InterpResultSchema.py
+@@ -1,33 +1,80 @@
+-from marshmallow import Schema, RAISE, fields
++from marshmallow import Schema, RAISE, fields, pre_dump, post_load
+ 
+ from argrelay.misc_helper.TypeDesc import TypeDesc
+ from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
++from argrelay.schema_response.InterpResult import InterpResult
+ 
+ """
+ Schema for the result of interpretation taken from :class:`InterpContext`
+ """
+ 
++all_tokens_ = "all_tokens"
++consumed_tokens_ = "consumed_tokens"
+ envelope_containers_ = "envelope_containers"
+ 
+ 
+ class InterpResultSchema(Schema):
+     class Meta:
+         unknown = RAISE
+         ordered = True
+ 
++    all_tokens = fields.List(
++        fields.String(),
++        required = True,
++    )
++
++    consumed_tokens = fields.List(
++        fields.Integer(),
++        required = True,
++    )
++
+     envelope_containers = fields.List(
+         fields.Nested(envelope_container_desc.dict_schema),
+         required = True,
+     )
+ 
++    @pre_dump
++    def make_dict(self, input_object: InterpResult, **kwargs):
++        if isinstance(input_object, InterpResult):
++            return {
++                all_tokens_: input_object.all_tokens,
++                consumed_tokens_: input_object.consumed_tokens,
++                envelope_containers_: input_object.envelope_containers,
++            }
++        else:
++            # Assuming it is as dict:
++            return input_object
++        pass
++
++    @post_load
++    def make_object(self, input_dict, **kwargs):
++        return InterpResult(
++            all_tokens = input_dict[all_tokens_],
++            consumed_tokens = input_dict[consumed_tokens_],
++            envelope_containers = input_dict[envelope_containers_],
++        )
++
+ 
+ interp_result_desc = TypeDesc(
+     dict_schema = InterpResultSchema(),
+     ref_name = InterpResultSchema.__name__,
+     dict_example = {
++        all_tokens_: [
++            "some_command",
++            "unrecognized_token",
++            "goto",
++            "host",
++            "prod",
++        ],
++        consumed_tokens_: [
++            0,
++            2,
++            3,
++            4,
++        ],
+         envelope_containers_: [
+             envelope_container_desc.dict_example,
+-        ]
++        ],
+     },
+     default_file_path = "",
+ )
+diff --git a/src/argrelay/schema_response/InvocationInputSchema.py b/src/argrelay/schema_response/InvocationInputSchema.py
+index 050db65..0f8bac1 100644
+--- a/src/argrelay/schema_response/InvocationInputSchema.py
++++ b/src/argrelay/schema_response/InvocationInputSchema.py
+@@ -1,75 +1,104 @@
+ from marshmallow import Schema, RAISE, fields, post_load, pre_dump
+ 
+ from argrelay.misc_helper.TypeDesc import TypeDesc
+ from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import error_invocator_custom_data_desc
+ from argrelay.plugin_invocator.InvocationInput import InvocationInput
+ from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
+ from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
+ from argrelay.schema_response.FilteredDict import FilteredDict
+ 
++all_tokens_ = "all_tokens"
++consumed_tokens_ = "consumed_tokens"
+ invocator_plugin_entry_ = "invocator_plugin_entry"
+ data_envelopes_ = "data_envelopes"
+ custom_plugin_data_ = "custom_plugin_data"
+ 
+ 
+ class InvocationInputSchema(Schema):
+     class Meta:
+         unknown = RAISE
+         ordered = True
+ 
++    all_tokens = fields.List(
++        fields.String(),
++        required = True,
++    )
++
++    consumed_tokens = fields.List(
++        fields.Integer(),
++        required = True,
++    )
++
+     invocator_plugin_entry = fields.Nested(
+         plugin_entry_desc.dict_schema,
+         required = True,
+     )
+ 
+     data_envelopes = fields.List(
+         FilteredDict(
+             filtered_keys = [mongo_id_],
+             # Some `data_envelope`-s may not be found by search -
+             # instead of redirecting invocation to something like `ErrorInvocator` on server side,
+             # send `None` items to decide how to handle that on client side.
+             allow_none = True,
+         ),
+         required = True,
+     )
+ 
+     custom_plugin_data = fields.Dict(
+         required = False,
+     )
+ 
+     @pre_dump
+     def make_dict(self, input_object: InvocationInput, **kwargs):
+         if isinstance(input_object, InvocationInput):
+             return {
++                all_tokens_: input_object.all_tokens,
++                consumed_tokens_: input_object.consumed_tokens,
+                 invocator_plugin_entry_: input_object.invocator_plugin_entry,
+                 data_envelopes_: input_object.data_envelopes,
+                 custom_plugin_data_: input_object.custom_plugin_data,
+             }
+         else:
+             # Assuming it is as dict:
+             return input_object
+         pass
+ 
+     @post_load
+     def make_object(self, input_dict, **kwargs):
+         return InvocationInput(
++            all_tokens = input_dict[all_tokens_],
++            consumed_tokens = input_dict[consumed_tokens_],
+             invocator_plugin_entry = input_dict[invocator_plugin_entry_],
+             data_envelopes = input_dict[data_envelopes_],
+             custom_plugin_data = input_dict[custom_plugin_data_],
+         )
+ 
+ 
+ _invocation_input_example = {
++    all_tokens_: [
++        "some_command",
++        "unrecognized_token",
++        "goto",
++        "host",
++        "prod",
++    ],
++    consumed_tokens_: [
++        0,
++        2,
++        3,
++        4,
++    ],
+     invocator_plugin_entry_: plugin_entry_desc.dict_example,
+     data_envelopes_: [
+         data_envelope_desc.dict_example,
+     ],
+     custom_plugin_data_: error_invocator_custom_data_desc.dict_example,
+ }
+ 
+ invocation_input_desc = TypeDesc(
+     dict_schema = InvocationInputSchema(),
+     ref_name = InvocationInputSchema.__name__,
+     dict_example = _invocation_input_example,
+     default_file_path = "",
+ )
+diff --git a/tests/offline_tests/relay_demo/test_relay_demo.py b/tests/offline_tests/relay_demo/test_relay_demo.py
+index 12ab0c0..27807ab 100755
+--- a/tests/offline_tests/relay_demo/test_relay_demo.py
++++ b/tests/offline_tests/relay_demo/test_relay_demo.py
+@@ -4,30 +4,31 @@ from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLoc
+ from argrelay.custom_integ.ServiceArgType import ServiceArgType
+ from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+ from argrelay.custom_integ.ServiceInvocator import ServiceInvocator
+ from argrelay.enum_desc.ArgSource import ArgSource
+ from argrelay.enum_desc.CompType import CompType
+ from argrelay.enum_desc.GlobalArgType import GlobalArgType
+ from argrelay.enum_desc.ReservedArgType import ReservedArgType
+ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+ from argrelay.enum_desc.RunMode import RunMode
+ from argrelay.enum_desc.TermColor import TermColor
+ from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
+ from argrelay.relay_client import __main__
+ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer, indent_size
+ from argrelay.runtime_data.AssignedValue import AssignedValue
+ from argrelay.schema_response.ArgValuesSchema import arg_values_
++from argrelay.schema_response.InterpResult import InterpResult
+ from argrelay.test_helper import line_no, parse_line_and_cpos
+ from argrelay.test_helper.EnvMockBuilder import (
+     EnvMockBuilder,
+ )
+ from argrelay.test_helper.InOutTestCase import InOutTestCase
+ 
+ 
+ class ThisTestCase(InOutTestCase):
+ 
+     # TODO: use unified `verify_output` everywhere
+     def verify_assignments(
+         self,
+         test_data,
+         test_line,
+         comp_type,
+@@ -441,66 +442,68 @@ class ThisTestCase(InOutTestCase):
+                 "Not only `goto`, also `list` and anything else should work.",
+                 None,
+             ),
+             (
+                 line_no(), "some_command goto service s_b prod qwer-pd-2 |", CompType.DescribeArgs,
+                 "If current command search results in ambiguous results (more than one `data_envelope`), "
+                 "it should still work.",
+                 # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stderr output.
+                 None,
+             ),
+             (
+                 line_no(), "some_command goto service dev emea upstream s_|  ", CompType.DescribeArgs,
+                 # TODO: make another test where set of suggestion listed for tangent token is reduced to those matching this token as prefix (currently selected includes all because all match that prefix).
+                 "FS_23_62_89_43: tangent token is taken into account in describe.",
+                 f"""
++{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}service{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}dev{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}emea{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} {TermColor.DARK_MAGENTA.value}s_{TermColor.RESET.value} 
+ {ReservedEnvelopeClass.ClassFunction.name}:
+ {" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
+-{" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+-{" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+ {ServiceEnvelopeClass.ClassService.name}:
+-{" " * indent_size}{TermColor.DARK_GREEN.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+-{" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+-{" " * indent_size}{TermColor.DARK_GREEN.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+ {" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+ {" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+ {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
+-{" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLACK.value}LiveStatus: [none]{TermColor.RESET.value}
+ {" " * indent_size}{TermColor.DARK_GREEN.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+ {" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.172.16.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+ {ServiceArgType.AccessType.name}:
+-{" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
+ """,
+             ),
+             (
+                 line_no(), "some_command goto host upstream |", CompType.DescribeArgs,
+                 "Regular description with some props specified (FlowStage) and many still to be narrowed down.",
+                 # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
+                 f"""
++{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}host{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} 
+ {ReservedEnvelopeClass.ClassFunction.name}:
+ {" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
+-{" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+-{" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+ {ServiceEnvelopeClass.ClassHost.name}:
+ {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa prod
+-{" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+ {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} apac emea amer
+ {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream
+ {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-2
+ {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}IpAddress: ?{TermColor.RESET.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.172.16.7.2
+ {ServiceArgType.AccessType.name}:
+-{" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
++{" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
+ """,
+             ),
+         ]
+         # @formatter:on
+ 
+         for test_case in test_cases:
+             with self.subTest(test_case):
+                 (
+                     line_number,
+                     test_line,
+                     comp_type,
+                     case_comment,
+                     stderr_output,
+                 ) = test_case
+                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+@@ -522,31 +525,36 @@ class ThisTestCase(InOutTestCase):
+ 
+                     if not stderr_output:
+                         # Output is not specified - not to be asserted:
+                         continue
+ 
+                     # TODO: Running print again with capturing `stderr`
+                     #       (executing end-to-end above generates noise output on stdout by local server logic).
+                     #       A proper implementation would be getting `DescribeArgs`'s response_dict
+                     #       and printing it again.
+                     inner_env_mock_builder = (
+                         EnvMockBuilder()
+                         .set_mock_mongo_client(False)
+                         .set_capture_stderr(True)
+                     )
+                     with inner_env_mock_builder.build():
+-                        EnvelopeContainer.describe_data(interp_ctx.envelope_containers)
++                        interp_result: InterpResult = InterpResult(
++                            all_tokens = interp_ctx.parsed_ctx.all_tokens,
++                            consumed_tokens = interp_ctx.consumed_tokens,
++                            envelope_containers = interp_ctx.envelope_containers,
++                        )
++                        interp_result.describe_data()
+ 
+                         self.maxDiff = None
+                         self.assertEqual(
+                             stderr_output,
+                             inner_env_mock_builder.actual_stderr.getvalue()
+                         )
+ 
+     def test_arg_assignments_for_completion(self):
+         # @formatter:off
+         test_cases = [
+             (
+                 line_no(), RunMode.CompletionMode, "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
+                 1,
+                 {
+                     ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ImplicitValue),

@@ -18,6 +18,8 @@ class ErrorInvocator(AbstractInvocator):
         invocator_plugin_entry = local_server.server_config.plugin_dict[self.__class__.__name__]
         data_envelopes = get_data_envelopes(interp_ctx)
         invocation_input = InvocationInput(
+            all_tokens = interp_ctx.parsed_ctx.all_tokens,
+            consumed_tokens = interp_ctx.consumed_tokens,
             invocator_plugin_entry = invocator_plugin_entry,
             data_envelopes = data_envelopes,
             custom_plugin_data = {},

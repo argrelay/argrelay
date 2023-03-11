@@ -47,6 +47,8 @@ class HelpInvocator(InterceptInvocator):
             custom_plugin_data = search_control_desc.dict_schema.dump(subsequent_function_container.search_control)
 
             invocation_input = InvocationInput(
+                all_tokens = interp_ctx.parsed_ctx.all_tokens,
+                consumed_tokens = interp_ctx.consumed_tokens,
                 invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
                 data_envelopes = (
                     # Envelope of `SpecialFunc.help_func`:
@@ -79,12 +81,12 @@ class HelpInvocator(InterceptInvocator):
 
                 # TODO: perform color control only if the output is a terminal:
 
-                print(TermColor.DARK_GRAY.value, end = "")
+                print(TermColor.BRIGHT_BLACK.value, end = "")
                 print("#", end = " ")
                 print(TermColor.RESET.value, end = "")
 
                 if envelope_id_ in data_envelope:
-                    print(TermColor.DARK_GRAY.value, end = "")
+                    print(TermColor.BRIGHT_BLACK.value, end = "")
                     print(f"{data_envelope[envelope_id_]}", end = " ")
                     print(TermColor.RESET.value, end = "")
                 else:

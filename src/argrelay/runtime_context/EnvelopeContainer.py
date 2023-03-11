@@ -80,7 +80,10 @@ class EnvelopeContainer:
 
                 if arg_type in envelope_container.assigned_types_to_values:
                     eprint(" " * indent_size, end = "")
-                    eprint(TermColor.DARK_GREEN.value, end = "")
+                    if envelope_container.assigned_types_to_values[arg_type].arg_source == ArgSource.ExplicitPosArg:
+                        eprint(TermColor.BRIGHT_BLUE.value, end = "")
+                    else:
+                        eprint(TermColor.DARK_GREEN.value, end = "")
                     eprint(f"{arg_type}:", end = "")
                     eprint(
                         f" {envelope_container.assigned_types_to_values[arg_type].arg_value} " +
@@ -108,7 +111,7 @@ class EnvelopeContainer:
                     # But they cannot be specified for current situation, otherwise, if already no data,
                     # any arg value assigned to such arg type would return no results.
                     eprint(" " * indent_size, end = "")
-                    eprint(TermColor.DARK_GRAY.value, end = "")
+                    eprint(TermColor.BRIGHT_BLACK.value, end = "")
                     eprint(f"{arg_type}:", end = "")
                     eprint(" [none]", end = "")
                     eprint(TermColor.RESET.value, end = "")
