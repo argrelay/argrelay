@@ -16,6 +16,7 @@ from argrelay.relay_client import __main__
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer, indent_size
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
+from argrelay.schema_response.InterpResult import InterpResult
 from argrelay.test_helper import line_no, parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
     EnvMockBuilder,
@@ -453,22 +454,23 @@ class ThisTestCase(InOutTestCase):
                 # TODO: make another test where set of suggestion listed for tangent token is reduced to those matching this token as prefix (currently selected includes all because all match that prefix).
                 "FS_23_62_89_43: tangent token is taken into account in describe.",
                 f"""
+{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}service{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}dev{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}emea{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} {TermColor.DARK_MAGENTA.value}s_{TermColor.RESET.value} 
 {ReservedEnvelopeClass.ClassFunction.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassService.name}:
-{" " * indent_size}{TermColor.DARK_GREEN.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
-{" " * indent_size}{TermColor.DARK_GRAY.value}LiveStatus: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLACK.value}LiveStatus: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.172.16.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {ServiceArgType.AccessType.name}:
-{" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
 """,
             ),
             (
@@ -476,19 +478,20 @@ class ThisTestCase(InOutTestCase):
                 "Regular description with some props specified (FlowStage) and many still to be narrowed down.",
                 # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
+{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}host{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} 
 {ReservedEnvelopeClass.ClassFunction.name}:
 {" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {ServiceEnvelopeClass.ClassHost.name}:
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa prod
-{" " * indent_size}{TermColor.DARK_GREEN.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} apac emea amer
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-2
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}IpAddress: ?{TermColor.RESET.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.172.16.7.2
 {ServiceArgType.AccessType.name}:
-{" " * indent_size}{TermColor.DARK_GRAY.value}AccessType: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
 """,
             ),
         ]
@@ -534,7 +537,12 @@ class ThisTestCase(InOutTestCase):
                         .set_capture_stderr(True)
                     )
                     with inner_env_mock_builder.build():
-                        EnvelopeContainer.describe_data(interp_ctx.envelope_containers)
+                        interp_result: InterpResult = InterpResult(
+                            all_tokens = interp_ctx.parsed_ctx.all_tokens,
+                            consumed_tokens = interp_ctx.consumed_tokens,
+                            envelope_containers = interp_ctx.envelope_containers,
+                        )
+                        interp_result.describe_data()
 
                         self.maxDiff = None
                         self.assertEqual(

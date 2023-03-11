@@ -11,6 +11,17 @@ class InvocationInput:
     See :class:`InvocationInputSchema`
     """
 
+    all_tokens: list[str]
+    """
+    Copy from `ParsedContext.all_tokens` - command line args.
+    """
+
+    consumed_tokens: list[int]
+    """
+    Copy from `InterpContext.consumed_tokens` -
+    indexes into `all_tokens` pointing to tokens consumed during interpretation.
+    """
+
     invocator_plugin_entry: PluginEntry
     """
     The `PluginEntry` taken from config on the server side to let client invoke that plugin.

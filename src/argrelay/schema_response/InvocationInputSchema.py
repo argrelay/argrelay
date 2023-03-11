@@ -7,6 +7,8 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc,
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_response.FilteredDict import FilteredDict
 
+all_tokens_ = "all_tokens"
+consumed_tokens_ = "consumed_tokens"
 invocator_plugin_entry_ = "invocator_plugin_entry"
 data_envelopes_ = "data_envelopes"
 custom_plugin_data_ = "custom_plugin_data"
@@ -16,6 +18,16 @@ class InvocationInputSchema(Schema):
     class Meta:
         unknown = RAISE
         ordered = True
+
+    all_tokens = fields.List(
+        fields.String(),
+        required = True,
+    )
+
+    consumed_tokens = fields.List(
+        fields.Integer(),
+        required = True,
+    )
 
     invocator_plugin_entry = fields.Nested(
         plugin_entry_desc.dict_schema,
@@ -41,6 +53,8 @@ class InvocationInputSchema(Schema):
     def make_dict(self, input_object: InvocationInput, **kwargs):
         if isinstance(input_object, InvocationInput):
             return {
+                all_tokens_: input_object.all_tokens,
+                consumed_tokens_: input_object.consumed_tokens,
                 invocator_plugin_entry_: input_object.invocator_plugin_entry,
                 data_envelopes_: input_object.data_envelopes,
                 custom_plugin_data_: input_object.custom_plugin_data,
@@ -53,6 +67,8 @@ class InvocationInputSchema(Schema):
     @post_load
     def make_object(self, input_dict, **kwargs):
         return InvocationInput(
+            all_tokens = input_dict[all_tokens_],
+            consumed_tokens = input_dict[consumed_tokens_],
             invocator_plugin_entry = input_dict[invocator_plugin_entry_],
             data_envelopes = input_dict[data_envelopes_],
             custom_plugin_data = input_dict[custom_plugin_data_],
@@ -60,6 +76,19 @@ class InvocationInputSchema(Schema):
 
 
 _invocation_input_example = {
+    all_tokens_: [
+        "some_command",
+        "unrecognized_token",
+        "goto",
+        "host",
+        "prod",
+    ],
+    consumed_tokens_: [
+        0,
+        2,
+        3,
+        4,
+    ],
     invocator_plugin_entry_: plugin_entry_desc.dict_example,
     data_envelopes_: [
         data_envelope_desc.dict_example,

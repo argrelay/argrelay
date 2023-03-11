@@ -4,7 +4,12 @@ from argrelay.handler_request.AbstractServerRequestHandler import AbstractServer
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InputContext import InputContext
-from argrelay.schema_response.InterpResultSchema import interp_result_desc, envelope_containers_
+from argrelay.schema_response.InterpResultSchema import (
+    interp_result_desc,
+    envelope_containers_,
+    all_tokens_,
+    consumed_tokens_,
+)
 
 
 class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
@@ -24,6 +29,8 @@ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
         ElapsedTime.measure("after_interpret_command")
 
         response_dict = interp_result_desc.dict_schema.dump({
+            all_tokens_: self.interp_ctx.parsed_ctx.all_tokens,
+            consumed_tokens_: self.interp_ctx.consumed_tokens,
             envelope_containers_: self.interp_ctx.envelope_containers,
         })
         return response_dict
