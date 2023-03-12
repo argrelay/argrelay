@@ -24,6 +24,8 @@ set -u
 # Switch to dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${script_dir}" || exit 1
+# Change to one level up (from `scripts` to repo root):
+cd ".." || exit 1
 
 # Ensure the script was started in `dev-shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]
