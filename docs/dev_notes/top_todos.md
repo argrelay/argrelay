@@ -4,31 +4,27 @@ TODO: top todos
 
 To demo:
 
-*   In describe, show other arg value options when default value is applied. Use different color for Implicit, Explicit, Default (just like for none).
+*   Consumed and unconsumed tokens:
+    *   Send them to invocation (e.g. to decide to run or not to run function and how they can be used).
+    *   Verify them in tests.
+
+*   In describe, show other arg value options when default value is applied.
 
 *   If command accept one envelope, but not yet disambiguated, then it should be possible to provide generic hook to list envelopes based on existing filter.
 
-*   Meta functions:
-    *   List all objects of specified query.
-    *   Show catalog of functions (with `help_hint`-s).
+*   Meta function: list all objects of specified query.
+*   Meta function: get and set objects (via corresponding API).
 
-*   List data = function with multiple envelopes
-*   FS_18_64_57_18: varargs
-
-*   Print `help_hint` (FS_71_87_33_52).
-    Try help for every suggested option:
-    https://stackoverflow.com/questions/7267185/bash-autocompletion-add-description-for-possible-completions/10130007#10130007
-
-*   If there are multiple `data_envelope` anywhere in `query_plan` (as last `data_envelope` or not), it should be possible to hit enter and provide some meaningful action for the list of these `data_envelope`-s of one clas currently found (even if function needs envelopes of subsequent classes).
-
-*   Consumed and unconsumed tokens:
-    *   Display them in description.
-    *   Send them to invocation (e.g. to decide to run or not to run function and how they can be used).
-    *   Verify them in tests.
+*   If there are multiple `data_envelope` anywhere in `query_plan` (as last `data_envelope` or not),
+    it should be possible to hit enter and provide some meaningful action for the list of
+    these currently found `data_envelope`-s of the same single class
+    (even if function needs envelopes of subsequent classes).
 
 *   Add named args.
 
 Integration:
+
+*   Make it possible to reuse (rather than copy and modify) every integration script.
 
 *   FS_61_67_08_53: arbitrary text args.
 
@@ -36,7 +32,13 @@ Integration:
     Design support for online data updates.
     It should be an API to {get, set} envelope.
 
+*   Search via different collections: https://github.com/uvsmtid/argrelay/issues/10
+    Query specific Mongo DB collection.
+
 Before `0.0.0`:
+
+*   Rename `Invocator` -> `Delegator`.
+    Is there any other weird names?
 
 *   Translate class-level vars to instance-level ones.
 
@@ -82,11 +84,12 @@ Before `0.0.0`:
 
 *   Add consciously written semver doc.
 
-*   Add release automation script to enforce non-dev version publishing.
-
 Ease consumption for public:
 
 *   Make server config composable (allow including other files).
+
+*   Extend EnvMock to help testing on external project side.
+    Basically, the main one is a mock to ensure some function is called (although, that's easily done without EnvMock).
 
 *   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).
     Use `help_hint` (FS_71_87_33_52) for selection of the repo.
@@ -95,9 +98,6 @@ Ease consumption for public:
 
 *   Think of integration with `tmux` specifically, or other ways to open new shell windows in general.
     Use `tmux` integration (built-in optional feature).
-
-*   Extend EnvMock to help testing on external project side.
-    Basically, the main one is a mock to ensure some function is called (although, that's easily done without EnvMock).
 
 *   Make operation to dump entire server config for support (without going to the server).
 
@@ -119,16 +119,11 @@ Extra:
     But that requires introduction of special field on `data_envlope`-s.
     Maybe it should be possible to exclude certain values from suggestions for specific arg type?
 
-*   Search via different collections: https://github.com/uvsmtid/argrelay/issues/10
-    Query specific Mongo DB collection.
-
 *   Add test coverage reporting and cover most important logic.
 
 *   Try to reduce number of search requests (e.g.) file it as known issue to fix.
 
 *   Consider splitting argrelay -> argrelay-core, argrelay-integ (server and client), argrelay-demo, while keeping argrelay as an easy to install package.
-
-*   Make ErrorInvocator exit with specified code, print specified message, etc.
 
 *   Check start of mongo db server by client connection (instead of delay).
 
@@ -136,10 +131,6 @@ Extra:
     Print `help_doc` (FS_94_30_49_28)?
 
 *   Run mongodb with reloader in debugger (need to fix reload handling).
-
-*   Ensure parser works with other commands (with `|` pipes, loops, etc.) - just dry to not e the limitations.
-
-*   Add an operation to dump entire server state as config.
 
 *   Add `echo` command to test arbitrary tail args.
 

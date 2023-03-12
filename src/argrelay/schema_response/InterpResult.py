@@ -7,6 +7,7 @@ from argrelay.misc_helper import eprint
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 
 
+# TODO: Combine InterpResult and InvocationInput - only one need to exits
 @dataclass
 class InterpResult:
     """

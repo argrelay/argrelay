@@ -3,7 +3,7 @@
 # Publish artifacts to pypi.org.
 # See: `docs/dev_notes/release_procedure.md`.
 # See: `docs/dev_notes/version_format.md`.
-# Merge in a single "atomic" step to make a release:
+# A single "atomic" step to make a release:
 # - ensure no local modifications
 # - ensure commit is published
 # - build and test
@@ -24,6 +24,8 @@ set -u
 # Switch to dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "${script_dir}" || exit 1
+# Change to one level up (from `scripts` to repo root):
+cd ".." || exit 1
 
 # Ensure the script was started in `dev-shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]
@@ -41,7 +43,7 @@ source ./python-conf.bash
 # Use `"${path_to_venvX}"` (if does not exists, run `build-git-env.bash`):
 source "${path_to_venvX}"/bin/activate
 
-# Re-install some itself:
+# Re-install itself:
 pip install -e .
 
 # Update `requirements.txt` to know what was there at the time of publishing:
@@ -74,12 +76,18 @@ PYTHON_GET_PACKAGE_VERSION_EOF
 )"
 echo "INFO: argrelay version: ${argrelay_version}" 1>&2
 
-# Determine if it is a dev version (which relaxes many check):
-if [[ "${argrelay_version}" =~ .dev.[[:digit:]]*$ ]]
+# Determine if it is a dev version (which relaxes many checks):
+if [[ "${argrelay_version}" =~ ^[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\.dev.[[:digit:]]*$ ]]
 then
+    echo "INFO: dev version pattern: ${argrelay_version}" 1>&2
     is_dev_version="true"
-else
+elif [[ "${argrelay_version}" =~ ^[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*$ ]]
+then
+    echo "INFO: release version pattern: ${argrelay_version}" 1>&2
     is_dev_version="false"
+else
+    echo "ERROR: unrecognized version pattern: ${argrelay_version}" 1>&2
+    exit 1
 fi
 echo "INFO: is_dev_version: ${is_dev_version}" 1>&2
 
@@ -141,3 +149,6 @@ python setup.py sdist
 pip install twine
 # This will prompt for login credentials:
 twine upload "dist/argrelay-${argrelay_version}.tar.gz"
+
+# Change version to non-release-able to force user to change it later:
+sed --in-place "s/${argrelay_version}/change-from-intentionally-wrong.${argrelay_version}/g" "setup.py"

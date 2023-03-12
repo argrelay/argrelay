@@ -1,6 +1,5 @@
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.misc_helper import eprint
 from argrelay.relay_server.QueryEngine import QueryEngine
 
 
@@ -30,9 +29,6 @@ class HelpHintCache:
                 self.help_hint_dict[arg_type] = {}
             self.help_hint_dict[arg_type][arg_value] = help_hint
 
-        # TODO: clean up: debug only:
-        eprint(f"help_hint_dict: {self.help_hint_dict}")
-
     def get_value_with_help_hint(
         self,
         arg_type: str,
@@ -42,4 +38,3 @@ class HelpHintCache:
             if arg_value in self.help_hint_dict[arg_type]:
                 return f"{arg_value} # {self.help_hint_dict[arg_type][arg_value]}"
         return arg_value
-

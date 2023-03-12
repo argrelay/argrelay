@@ -69,7 +69,7 @@ class EnvelopeContainer:
     @staticmethod
     def describe_data(envelope_containers: list[EnvelopeContainer]):
         eprint()
-        # TODO: print colorized command line (reordered by `search_control`) with consumed tokens, unconsumed tokens, tangent token
+        # TODO: indicate token position - perform opposite of `parse_line_and_cpos`
         is_first_missing_found: bool = False
         for envelope_container in envelope_containers:
             eprint(f"{envelope_container.search_control.envelope_class}: {envelope_container.found_count}")

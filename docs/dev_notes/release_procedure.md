@@ -1,20 +1,17 @@
 
-The procedure is rather manual at the moment (not run by some specific CI platform).
+The procedure is manual at the moment (not run by some specific CI platform).
 
-The details are automated/ensured via `publish-package.bash` script.
+The details are automated/ensured via `publish_package.bash` script.
 
 Just run and address any errors:
 
 ```sh
-./publish-package.bash
+./scripts/publish_package.bash
 ```
 
-TODO: There is no Git-tagged/versioned releases yet.
+# The meaning of version
 
-Until the very first release `0.0.0` (TODO),
-all published versions are pre-releases `0.0.0.devN`.
-
-There is no way to publish artifacts on pypi.org with the same version twice.
+There is no way to publish artifacts on pypi.org with the same version twice.<br/>
 The version in the metadata of the package has to be updated - see `setup.py`:
 
 ```diff
@@ -30,3 +27,26 @@ index e984f6b..e7a1475 100644
      author = "uvsmtid",
 ```
 
+The meaning of version:
+*   is **not** what is written in `setup.py`
+*   is what package that version on pypi.org points to
+
+In other words, until package of that version is published on pypi.org,<br/>
+there is no such version (no matter what `setup.py` says).<br/>
+And if `setup.py` indicates some version,<br/>
+it does not mean it corresponds to the version published on pypi.org.
+
+See also [version_format.md][version_format.md].
+
+# Ensuring Git tag points to the version on pypi.org
+
+Non-`dev` releases can only be done from the `main` branch - the commit must already exist there.
+
+This means the version will appear earlier in `setup.py` on the `main` branch<br/>
+than corresponding version of the package on pypi.org.
+
+The same version may exist in `setup.py` on `main` branch across multiple commits<br/>
+until single Git tag marks one of them the moment when package is published to pypi.org.<br/>
+Script `publish_package.bash` ensures that Git tag corresponds to pypi.org-published version.
+
+[version_format.md]: version_format.md
