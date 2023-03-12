@@ -8,6 +8,7 @@ from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
@@ -37,6 +38,8 @@ class InterpContext:
     """
 
     query_engine: QueryEngine
+
+    help_hint_cache: HelpHintCache
 
     unconsumed_tokens: list[int] = field(init = False)
     """
@@ -75,7 +78,7 @@ class InterpContext:
     Current interpreter during command line interpretation.
     """
 
-    comp_suggestions: list = field(init = False, default_factory = lambda: [])
+    comp_suggestions: list[str] = field(init = False, default_factory = lambda: [])
 
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
@@ -215,6 +218,13 @@ class InterpContext:
             self.curr_interp.propose_arg_completion()
 
     def propose_arg_values(self) -> list[str]:
+        """
+        FS_71_87_33_52: remove `help_hint` (after first space) if there is only one option
+        """
+        if len(self.comp_suggestions) == 1:
+            first_space = self.comp_suggestions[0].find(' ')
+            if first_space >= 0:
+                self.comp_suggestions[0] = self.comp_suggestions[0][:first_space]
         return self.comp_suggestions
 
     def create_next_interp(

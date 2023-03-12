@@ -253,7 +253,9 @@ class FuncArgsInterp(AbstractInterp):
                 arg_type in self.interp_ctx.curr_container.remaining_types_to_values
             ):
                 proposed_values = [
-                    x for x in self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
+                    # FS_71_87_33_52: `help_hint`:
+                    self.interp_ctx.help_hint_cache.get_value_with_help_hint(arg_type, x)
+                    for x in self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
                     if (
                         isinstance(x, str)
                         and

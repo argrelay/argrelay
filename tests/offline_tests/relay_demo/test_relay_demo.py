@@ -93,7 +93,7 @@ class ThisTestCase(InOutTestCase):
             actual_suggestions = "\n".join(command_obj.response_dict[arg_values_])
             self.assertEqual(expected_suggestions, actual_suggestions)
 
-    def test_propose_auto_comp_TD_63_37_05_36_default(self):
+    def test_propose_auto_comp_TD_63_37_05_36_demo(self):
         """
         Test arg values suggestion with TD_63_37_05_36 # demo
         """
@@ -191,6 +191,12 @@ class ThisTestCase(InOutTestCase):
                 line_no(), "some_command goto service q| whatever", CompType.PrefixHidden,
                 "qa",
                 "Unrecognized value does not obstruct suggestion",
+            ),
+            (
+                line_no(), "some_command goto host ip.192.168.1|", CompType.PrefixHidden,
+                "ip.192.168.1.1 # zxcv-du\nip.192.168.1.3 # poiu-dd",
+                "FS_71_87_33_52: If there are more than one suggestion and help_hint exists, "
+                "options are returned with hints",
             ),
         ]
         # @formatter:on
@@ -455,11 +461,11 @@ class ThisTestCase(InOutTestCase):
                 "FS_23_62_89_43: tangent token is taken into account in describe.",
                 f"""
 {TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}service{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}dev{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}emea{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} {TermColor.DARK_MAGENTA.value}s_{TermColor.RESET.value} 
-{ReservedEnvelopeClass.ClassFunction.name}:
+{ReservedEnvelopeClass.ClassFunction.name}: 1
 {" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{ServiceEnvelopeClass.ClassService.name}:
+{ServiceEnvelopeClass.ClassService.name}: 2
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
@@ -469,7 +475,7 @@ class ThisTestCase(InOutTestCase):
 {" " * indent_size}{TermColor.BRIGHT_BLACK.value}LiveStatus: [none]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.172.16.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
-{ServiceArgType.AccessType.name}:
+{ServiceArgType.AccessType.name}: 0
 {" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
 """,
             ),
@@ -479,18 +485,18 @@ class ThisTestCase(InOutTestCase):
                 # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
 {TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}host{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} 
-{ReservedEnvelopeClass.ClassFunction.name}:
+{ReservedEnvelopeClass.ClassFunction.name}: 1
 {" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{ServiceEnvelopeClass.ClassHost.name}:
+{ServiceEnvelopeClass.ClassHost.name}: 9
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa prod
 {" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} apac emea amer
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-2
 {" " * indent_size}{TermColor.BRIGHT_YELLOW.value}IpAddress: ?{TermColor.RESET.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.172.16.7.2
-{ServiceArgType.AccessType.name}:
+{ServiceArgType.AccessType.name}: 0
 {" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
 """,
             ),

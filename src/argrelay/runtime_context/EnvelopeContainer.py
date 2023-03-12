@@ -72,7 +72,7 @@ class EnvelopeContainer:
         # TODO: print colorized command line (reordered by `search_control`) with consumed tokens, unconsumed tokens, tangent token
         is_first_missing_found: bool = False
         for envelope_container in envelope_containers:
-            eprint(f"{envelope_container.search_control.envelope_class}:")
+            eprint(f"{envelope_container.search_control.envelope_class}: {envelope_container.found_count}")
 
             for key_to_type_dict in envelope_container.search_control.keys_to_types_list:
                 arg_key = next(iter(key_to_type_dict))
