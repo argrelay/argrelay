@@ -134,6 +134,8 @@ class ServiceLoader(AbstractLoader):
 
         self.generate_envelope_id(data_envelopes)
 
+        self.generate_help_hints(data_envelopes)
+
         static_data.data_envelopes.extend(data_envelopes)
 
         return static_data
@@ -141,7 +143,7 @@ class ServiceLoader(AbstractLoader):
     # noinspection PyMethodMayBeStatic
     def generate_envelope_id(
         self,
-        data_envelopes: list,
+        data_envelopes: list[dict],
     ):
         for data_envelope in data_envelopes:
             if envelope_id_ not in data_envelope:
@@ -159,6 +161,30 @@ class ServiceLoader(AbstractLoader):
                         + "." +
                         data_envelope[ServiceArgType.ServiceName.name]
                     )
+
+    @staticmethod
+    def generate_help_hints(
+        data_envelopes: list[dict],
+    ):
+        """
+        Function demos FS_71_87_33_52 help_hint for `ServiceArgType.IpAddress`.
+
+        It simply generates `data_envelope`-s of `ReservedEnvelopeClass.ClassHelp` for
+        values of `ServiceArgType.IpAddress` equal to corresponding `ServiceArgType.HostName`.
+        """
+        help_hint_envelopes = []
+        for data_envelope in data_envelopes:
+            if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
+                if ServiceArgType.IpAddress.name in data_envelope:
+                    help_hint_envelopes.append({
+                        f"{ReservedArgType.EnvelopeClass.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
+                        f"{ReservedArgType.ArgType.name}": f"{ServiceArgType.IpAddress.name}",
+                        f"{ReservedArgType.ArgValue.name}": f"{data_envelope[ServiceArgType.IpAddress.name]}",
+                        f"{ReservedArgType.HelpHint.name}": f"{data_envelope[ServiceArgType.HostName.name]}",
+                    })
+
+        data_envelopes.extend(help_hint_envelopes)
+
 
     @staticmethod
     def populate_common_functions(

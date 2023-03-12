@@ -6,6 +6,7 @@ from argrelay.handler_request.AbstractServerRequestHandler import AbstractServer
 from argrelay.handler_request.DescribeLineArgsServerRequestHandler import DescribeLineArgsServerRequestHandler
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLineArgsServerRequestHandler
+from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_request.RequestContextSchema import request_context_desc
@@ -65,6 +66,8 @@ def create_blueprint(local_server: LocalServer):
         send_plain_text = True
         try:
             if send_plain_text:
+                # TODO: clean up: debug only:
+                eprint(f"response_dict[arg_values_]: {response_dict[arg_values_]}")
                 return "\n".join(response_dict[arg_values_])
             else:
                 response_json = arg_values_desc.dict_schema.dumps(response_dict)
