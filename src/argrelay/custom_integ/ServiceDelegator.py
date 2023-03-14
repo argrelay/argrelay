@@ -8,19 +8,19 @@ from argrelay.custom_integ.value_constants import (
     list_host_func_,
 )
 from argrelay.enum_desc.ArgSource import ArgSource
-from argrelay.plugin_invocator.AbstractInvocator import (
-    AbstractInvocator,
+from argrelay.plugin_delegator.AbstractDelegator import (
+    AbstractDelegator,
     get_data_envelopes,
     get_func_name_from_container,
     get_func_name_from_envelope,
 )
-from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
-from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import (
+from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_message_,
     error_code_,
-    error_invocator_custom_data_desc,
+    error_delegator_custom_data_desc,
 )
-from argrelay.plugin_invocator.InvocationInput import InvocationInput
+from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
 from argrelay.runtime_context.InterpContext import InterpContext
@@ -64,24 +64,24 @@ def redirect_to_error(
     error_message,
     error_code,
 ):
-    # Redirect to `ErrorInvocator`:
-    invocator_plugin_instance_id = ErrorInvocator.__name__
+    # Redirect to `ErrorDelegator`:
+    delegator_plugin_instance_id = ErrorDelegator.__name__
     custom_plugin_data = {
         error_message_: error_message,
         error_code_: error_code,
     }
-    error_invocator_custom_data_desc.validate_dict(custom_plugin_data)
+    error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput(
         all_tokens = interp_ctx.parsed_ctx.all_tokens,
         consumed_tokens = interp_ctx.consumed_tokens,
-        invocator_plugin_entry = server_config.plugin_dict[invocator_plugin_instance_id],
+        delegator_plugin_entry = server_config.plugin_dict[delegator_plugin_instance_id],
         data_envelopes = get_data_envelopes(interp_ctx),
         custom_plugin_data = custom_plugin_data,
     )
     return invocation_input
 
 
-class ServiceInvocator(AbstractInvocator):
+class ServiceDelegator(AbstractDelegator):
 
     def __init__(
         self,
@@ -164,12 +164,12 @@ class ServiceInvocator(AbstractInvocator):
                 # Search `data_envelope`-s based on existing args on command line:
                 query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_data_envelope_ipos])
                 # Plugin to invoke on client side:
-                invocator_plugin_instance_id = ServiceInvocator.__name__
+                delegator_plugin_instance_id = ServiceDelegator.__name__
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput(
                     all_tokens = interp_ctx.parsed_ctx.all_tokens,
                     consumed_tokens = interp_ctx.consumed_tokens,
-                    invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+                    delegator_plugin_entry = local_server.server_config.plugin_dict[delegator_plugin_instance_id],
                     data_envelopes = (
                         # existing envelopes (until vararg one):
                         get_data_envelopes(interp_ctx)[:vararg_data_envelope_ipos]

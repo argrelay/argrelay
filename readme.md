@@ -1,17 +1,20 @@
 
 Project status: working prototype
 
+<a name="argrelay-secreencast"></a>
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
 
 <!--
 See: docs/dev_notes/screencast_notes.md
 -->
 
+<a name="argrelay-about"></a>
 # What's this?
 
 An integration framework to provide contextual Tab-auto-completion<br/>
 for command line interfaces (CLI) in Bash shell.
 
+<a name="argrelay-original-use-case"></a>
 ### Original use case
 
 Auto-complete based on arbitrary structured data sets (e.g. config or ref data)</br>
@@ -28,13 +31,17 @@ to run a standby data server.
 
 Unlike static|generated|offline index, standby server also naturally supports dynamic data.
 
-<!--
-### Extended use case
+<a name="argrelay-accidental-use-case"></a>
+### Accidental use cases
 
-Catalogues of searchable functions and (live) data<br/>
-with auto-completion of keywords.
--->
+Familiar shell with:
+*   data-intensive CLI
+*   minimalistic query syntax (to fit well for quickly typed commands)
+*   seamless search
+*   large catalogues of discoverable functions
+*   live data updates
 
+<a name="argrelay-name"></a>
 # What's in a name?
 
 Eventually, `argrelay` will "relay" command line arguments (hence, the name)<br/>
@@ -95,12 +102,14 @@ graph RL;
 | Prog lang:     | `some.py` has to be<br/> a Python script to use `argparse` | `some.py` can be anything<br/> somehow executable by `argrelay`                |
 | **Important:** | `some.py`/`argparse` have<br/> no domain data to query     | `relay2some` may access any<br/> domain data from `argrelay` server            |
 
+<a name="argrelay-includes"></a>
 # What's missing?
 
 `argrelay` excludes:
 *   Any (real) domain-specific data
 *   Any (useful) domain-specific plugins
 
+<a name="argrelay-excludes"></a>
 # What's in the package?
 
 `argrelay` includes:
@@ -116,12 +125,13 @@ graph RL;
 *   **Demo** example to start from.
 *   **Testing** support and coverage.
 
+<a name="argrelay-focus"></a>
 # CLI-friendly completion: primary focus
 
 GUI-s are secondary for `argrelay`'s niche because<br/>
 GUI-s do not have the restrictions CLI-s have:
-*   Technically, the server can handle requests for any GUI.
-*   But API-s are primarily feature-tailored to support CLI.
+*   Technically, the server can handle requests from anywhere (GUI).
+*   But primary API-s are feature-tailored to support CLI (because anyone can do GUI).
 
 <details>
 <summary>show example</summary>
@@ -129,7 +139,7 @@ For example, in GUI-s, typing a query into a search bar may easily be accompanie
 (1) a separate (from the search bar) window area<br/>
 (2) with individually selectable<br/>
 (3) full-text-search results<br/>
-(4) populated **asyncly** with typing.<br/>
+(4) populated **async-ly** with typing.<br/>
 
 In CLI-s, `grep` does (3) full-text-search, but what about the rest (1), (2), (4)?
 
@@ -138,6 +148,9 @@ catalogue-like navigation with auto-completion (rather than full-text-search)<br
 seems the answer.
 </details>
 
+Nevertheless, GUI can also benefit from minimalist single line structured search queries.
+
+<a name="argrelay-story"></a>
 # Syntax: origin story
 
 When an interface is limited...
@@ -239,6 +252,7 @@ but it is not ordinary for CLI-s of most common commands (due to lack of data):
 
 Learn more about [how search works][how_search_works.md].
 
+<a name="argrelay-demo"></a>
 # Quick demo
 
 This is a non-intrusive demo<br/>
@@ -246,8 +260,8 @@ This is a non-intrusive demo<br/>
 
 Clone this repo somewhere.
 
-If `dev-shell.bash` is run for the first time,<br/>
-it will ask to provide `python-conf.bash` file - follow instruction on error.
+If `dev_shell.bash` is run for the first time,<br/>
+it will ask to provide `python_conf.bash` file - follow instruction on error.
 
 To start both the server and the client,<br/>
 two terminal windows are required.
@@ -257,13 +271,13 @@ two terminal windows are required.
     Start the first sub-shell:
 
     ```sh
-    ./dev-shell.bash
+    ./dev_shell.bash
     ```
 
     In this sub-shell, start the server:
 
     ```sh
-    # in server `dev-shell.bash`:
+    # in server `dev_shell.bash`:
     run_argrelay_server
     ```
 
@@ -272,7 +286,7 @@ two terminal windows are required.
     Start the second sub-shell:
 
     ```sh
-    ./dev-shell.bash
+    ./dev_shell.bash
     ```
 
     While it is running (temporarily),<br/>
@@ -281,34 +295,35 @@ two terminal windows are required.
 *   Try to `Tab`-complete command `relay_demo` using [demo test data][TD_63_37_05_36.demo_services_data.md]:
 
     ```sh
-    # in client `dev-shell.bash`:
+    # in client `dev_shell.bash`:
     relay_demo goto host            # press Tab one or multiple times
     ```
 
     ```sh
-    # in client `dev-shell.bash`:
+    # in client `dev_shell.bash`:
     relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
     ```
 
 *   Inspect how auto-completion binds to `relay_demo` command:
 
     ```sh
-    # in client `dev-shell.bash`:
+    # in client `dev_shell.bash`:
     complete -p relay_demo
     ```
 
 *   Inspect client and server config:
 
-    *   server config: `~/.argrelay.server.yaml`
-    *   client config: `~/.argrelay.client.json`
+    *   server config: `~/.argrelay.conf.d/argrelay.server.yaml`
+    *   client config: `~/.argrelay.conf.d/argrelay.client.json`
 
 *   To clean up, exit the sub-shells:
 
     ```sh
-    # in client or server `dev-shell.bash`:
+    # in client or server `dev_shell.bash`:
     exit
     ```
 
+<a name="argrelay-backend"></a>
 # Data backend
 
 There are two options at the moment - both using [MongoDB][MongoDB] API:
@@ -327,6 +342,7 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 +    use_mongomock_only: False
 ```
 
+<a name="argrelay-next-steps"></a>
 # What's next?
 
 *   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md] for permanent setup.
@@ -351,7 +367,7 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
     If hard-coding is boring, soft-code to load it from external data source.
 
-*   Replace [redirect to `ErrorInvocator.py` plugin][link_to_redirect_to_error]<br/>
+*   Replace [redirect to `ErrorDelegator.py` plugin][link_to_redirect_to_error]<br/>
     to execute something useful instead when use hits `Enter`.
 
 *   ...
@@ -385,7 +401,7 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 [MongoDB]: https://www.mongodb.com/
 [dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
 [TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md
-[earlier_stack_question]: https://stackoverflow.com/questions/74996560/
+[earlier_stack_question]: https://stackoverflow.com/q/74996560/441652
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
 [how_search_works.md]: docs/dev_notes/how_search_works.md
 [link_to_redirect_to_error]: https://github.com/uvsmtid/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceInvocator.py#L148

@@ -30,7 +30,7 @@ class CustomFlaskApp(Flask):
     def run_with_config(self):
         self.run(
             # Contrary to "debug" keyword, if IDE debug is needed, set `debug` to `False` to avoid reloader:
-            # https://stackoverflow.com/questions/28241989/flask-app-restarting-with-stat/53790400#53790400
+            # https://stackoverflow.com/a/53790400/441652
             # NOTE: Disabled debug to make sure reloader does not restart server (which does not work with Mongo DB):
             debug = False,
             host = self.local_server.server_config.connection_config.server_host_name,

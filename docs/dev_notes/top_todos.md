@@ -24,6 +24,12 @@ To demo:
 
 Integration:
 
+*   Expect all files inside common `~/.argrelay` directory.
+    Make it point to `custom_integ_res` dir - since there is no other files, it works nicely.
+
+*   It should be possible to run some kind of "init" Python command immediately after `pip install argrelay`
+    to make all necessary setup for custom integration done.
+
 *   Make it possible to reuse (rather than copy and modify) every integration script.
 
 *   FS_61_67_08_53: arbitrary text args.
@@ -37,8 +43,7 @@ Integration:
 
 Before `0.0.0`:
 
-*   Rename `Invocator` -> `Delegator`.
-    Is there any other weird names?
+*   Rename weird names.
 
 *   Translate class-level vars to instance-level ones.
 
@@ -84,9 +89,20 @@ Before `0.0.0`:
 
 *   Add consciously written semver doc.
 
-Ease consumption for public:
+Ease integration into external project:
 
-*   Make server config composable (allow including other files).
+*   There is constant need to distinguish:
+    *   project_dir - the path to special dir (where venv is configured via relative path, artifacts generated, config files, etc.)
+    *   package_dir - the path to useful artifacts (where known after venv is sourced)
+
+*   Split `argrelay.server.yaml` into: `argrelay.common.yaml` and `argrelay.server.yaml`.
+
+*   Make it possible to override location of `argrelay.conf.d` via env var
+    (to allow experimental development co-exists).
+
+*   Make yaml config composable (to reduce chances of merging):
+    allow loading external config which should plug itself into existing config.
+    Maybe it should be possible to provide just configured plugins and they
 
 *   Extend EnvMock to help testing on external project side.
     Basically, the main one is a mock to ensure some function is called (although, that's easily done without EnvMock).
@@ -104,7 +120,7 @@ Ease consumption for public:
 Perf:
 
 *   Try querying values only - many queries may only need values (to provide suggestion) not entire `data_envelope`-s:
-    https://stackoverflow.com/questions/11973725/how-to-efficiently-perform-distinct-with-multiple-keys/11991854#11991854
+    https://stackoverflow.com/a/11991854/441652
 
 Docs:
 

@@ -50,7 +50,7 @@ class ThisTestCase(InOutTestCase):
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
-                    invocator_class,
+                    delegator_class,
                     case_comment,
                 ) = test_case
 
@@ -61,5 +61,5 @@ class ThisTestCase(InOutTestCase):
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
-                    invocator_class,
+                    delegator_class,
                 )

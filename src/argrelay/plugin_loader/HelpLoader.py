@@ -2,12 +2,12 @@ from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
-from argrelay.plugin_invocator.HelpInvocator import HelpInvocator
+from argrelay.plugin_delegator.HelpDelegator import HelpDelegator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_instance_id_,
+    delegator_plugin_instance_id_,
     search_control_list_,
 )
 
@@ -23,7 +23,7 @@ class HelpLoader(AbstractLoader):
         given_function_envelope = {
             envelope_id_: SpecialFunc.help_func.name,
             instance_data_: {
-                invocator_plugin_instance_id_: HelpInvocator.__name__,
+                delegator_plugin_instance_id_: HelpDelegator.__name__,
                 search_control_list_: [
                 ],
             },

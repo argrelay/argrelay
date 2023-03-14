@@ -19,7 +19,7 @@ Start client:
 ```
 
 Client: configure username and password:
-https://stackoverflow.com/questions/38921414/mongodb-what-are-the-default-user-and-password/38921949#38921949
+https://stackoverflow.com/a/38921949/441652
 
 ```
 use admin

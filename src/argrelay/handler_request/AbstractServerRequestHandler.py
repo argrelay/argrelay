@@ -35,7 +35,7 @@ class AbstractServerRequestHandler:
         self.interp_ctx = InterpContext(
             parsed_ctx = parsed_ctx,
             interp_factories = local_server.server_config.interp_factories,
-            action_invocators = local_server.server_config.action_invocators,
+            action_delegators = local_server.server_config.action_delegators,
             query_engine = local_server.get_query_engine(),
             help_hint_cache = local_server.help_hint_cache,
         )

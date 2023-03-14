@@ -9,10 +9,10 @@ Install [`asciinema`][asciinema]:
 sudo dnf install asciinema
 ```
 
-Go inside `dev-shell.bash`:
+Go inside `dev_shell.bash`:
 
 ```sh
-./dev-shell.bash
+./dev_shell.bash
 ```
 
 When `asciinema` starts, it spawns another user shell.

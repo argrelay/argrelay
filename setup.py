@@ -17,7 +17,7 @@ extras_require = {
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.0.0.dev28",
+    version = "0.0.0.dev31",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Bash Tab-completion (data) server - total recall",
@@ -58,14 +58,23 @@ setuptools.setup(
     },
     package_data = {
         "argrelay": [
-            "custom_integ/argrelay.server.yaml",
-            "custom_integ/argrelay.client.json",
-            "custom_integ/build-git-env.bash",
-            "custom_integ/build-pip-env.bash",
-            "custom_integ/deploy-artifacts.bash",
-            "custom_integ/dev-init.bash",
-            "custom_integ/dev-shell.bash",
-            "custom_integ/argrelay-rc.bash",
+
+            # config files:
+            "argrelay.conf.d/argrelay.server.yaml",
+            "argrelay.conf.d/argrelay.client.json",
+
+            # other resource files:
+            "custom_integ_res/argrelay_rc.bash",
+            "custom_integ_res/bootstrap_outside_venv.bash",
+            "custom_integ_res/bootstrap_inside_venv.bash",
+            "custom_integ_res/deploy_config_files.bash",
+            "custom_integ_res/deploy_files.bash",
+            "custom_integ_res/deploy_resource_files.bash",
+            "custom_integ_res/dev_shell.bash",
+            "custom_integ_res/generate_artifacts.bash",
+            "custom_integ_res/init_python.bash",
+            "custom_integ_res/init_shell_env.bash",
+            "custom_integ_res/run_project_build.bash",
         ],
     },
     include_package_data = True,

@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
+from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_data_envelopes
+from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator, get_data_envelopes
-from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
-from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_instance_id_
+from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
 
 next_interp_plugin_instance_id_ = "next_interp_plugin_instance_id"
 
 
-class InterceptInvocator(AbstractInvocator):
+class InterceptDelegator(AbstractDelegator):
 
     def __init__(
         self,
@@ -45,14 +45,14 @@ class InterceptInvocator(AbstractInvocator):
     ) -> InvocationInput:
         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
 
-        # TODO: Fail (send to ErrorInvocator) if next function is not specified -
+        # TODO: Fail (send to ErrorDelegator) if next function is not specified -
         #       showing the payload in this case is misleading.
         function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
-        invocator_plugin_instance_id = function_envelope.data_envelope[instance_data_][invocator_plugin_instance_id_]
+        delegator_plugin_instance_id = function_envelope.data_envelope[instance_data_][delegator_plugin_instance_id_]
         invocation_input = InvocationInput(
             all_tokens = interp_ctx.parsed_ctx.all_tokens,
             consumed_tokens = interp_ctx.consumed_tokens,
-            invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+            delegator_plugin_entry = local_server.server_config.plugin_dict[delegator_plugin_instance_id],
             data_envelopes = get_data_envelopes(interp_ctx),
             custom_plugin_data = {},
         )

@@ -1,17 +1,17 @@
 import subprocess
 
 from argrelay.custom_integ.value_constants import desc_repo_func_, desc_commit_func_
-from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator, get_data_envelopes
-from argrelay.plugin_invocator.InvocationInput import InvocationInput
+from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_data_envelopes
+from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, envelope_id_, instance_data_
-from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import invocator_plugin_instance_id_
+from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
 
 repo_envelope_ipos_ = 1
 
 
-class GitRepoInvocator(AbstractInvocator):
+class GitRepoDelegator(AbstractDelegator):
 
     def __init__(
         self,
@@ -34,11 +34,11 @@ class GitRepoInvocator(AbstractInvocator):
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
-        invocator_plugin_instance_id = function_envelope.data_envelope[instance_data_][invocator_plugin_instance_id_]
+        delegator_plugin_instance_id = function_envelope.data_envelope[instance_data_][delegator_plugin_instance_id_]
         invocation_input = InvocationInput(
             all_tokens = interp_ctx.parsed_ctx.all_tokens,
             consumed_tokens = interp_ctx.consumed_tokens,
-            invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+            delegator_plugin_entry = local_server.server_config.plugin_dict[delegator_plugin_instance_id],
             data_envelopes = get_data_envelopes(interp_ctx),
             custom_plugin_data = {},
         )

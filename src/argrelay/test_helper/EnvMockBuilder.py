@@ -28,8 +28,8 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
-from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
-from argrelay.plugin_invocator.InvocationInput import InvocationInput
+from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
@@ -77,7 +77,7 @@ class EnvMockBuilder:
 
     *   Simple selection of test data - see usage of: `set_test_data_ids_to_load`
 
-    *   Verifying plugin `InvocationInput` - see usage of: `invocator_plugin_invoke_action_func_path`
+    *   Verifying plugin `InvocationInput` - see usage of: `delegator_plugin_invoke_action_func_path`
 
     *   ...
 
@@ -122,7 +122,7 @@ class EnvMockBuilder:
         "TD_70_69_38_46",  # no data
     ]
 
-    invocator_plugin_invoke_action_func_path = None
+    delegator_plugin_invoke_action_func_path = None
     invocation_input: InvocationInput = None
 
     enable_query_cache: bool = True
@@ -214,16 +214,16 @@ class EnvMockBuilder:
         self.test_data_ids_to_load = test_data_ids_to_load
         return self
 
-    def set_capture_invocator_invocation_input(self, abstract_invocator: AbstractInvocator):
+    def set_capture_delegator_invocation_input(self, abstract_delegator: AbstractDelegator):
         """
-        This func causes `AbstractInvocator.invoke_action` to be mocked to capture `InvocationInput`
-        inside `ErrorInvocator.invocation_input` which test can then assert its data.
+        This func causes `AbstractDelegator.invoke_action` to be mocked to capture `InvocationInput`
+        inside `ErrorDelegator.invocation_input` which test can then assert its data.
         """
 
-        self.invocator_plugin_invoke_action_func_path = (
-            f"{abstract_invocator.__module__}"
+        self.delegator_plugin_invoke_action_func_path = (
+            f"{abstract_delegator.__module__}"
             "."
-            f"{abstract_invocator.__name__}"
+            f"{abstract_delegator.__name__}"
             "."
             "invoke_action"
         )
@@ -341,9 +341,9 @@ class EnvMockBuilder:
             if self.assert_on_close:
                 yield_list.append(exit_stack.enter_context(self.assert_all_cm()))
 
-            if self.invocator_plugin_invoke_action_func_path:
+            if self.delegator_plugin_invoke_action_func_path:
                 yield_list.append(exit_stack.enter_context(
-                    _mock_invocator_plugin(self.invocator_plugin_invoke_action_func_path)
+                    _mock_delegator_plugin(self.delegator_plugin_invoke_action_func_path)
                 ))
 
             yield yield_list
@@ -421,14 +421,14 @@ def _mock_stderr(stderr_f):
 
 
 @contextlib.contextmanager
-def _mock_invocator_plugin(path_to_invoke_action):
+def _mock_delegator_plugin(path_to_invoke_action):
     with mock.patch(path_to_invoke_action, capture_invocation_input) as mock_static:
         yield mock_static
 
 
 def capture_invocation_input(invocation_input: InvocationInput):
     """
-    This body substitutes (mocks) `invoke_action` func in invocator plugins.
+    This body substitutes (mocks) `invoke_action` func in `DelegatorPlugin`-s.
 
     Instead of executing func logic, it only captures its input for verifications in tests.
     """
@@ -436,14 +436,14 @@ def capture_invocation_input(invocation_input: InvocationInput):
 
 
 def load_custom_integ_server_config_dict() -> dict:
-    test_server_config_path = _get_resource_path("custom_integ/argrelay.server.yaml")
+    test_server_config_path = _get_resource_path("argrelay.conf.d/argrelay.server.yaml")
     with open(test_server_config_path) as f:
         server_config_dict = yaml.safe_load(f)
     return server_config_dict
 
 
 def load_custom_integ_client_config_dict() -> dict:
-    test_client_config_path = _get_resource_path("custom_integ/argrelay.client.json")
+    test_client_config_path = _get_resource_path("argrelay.conf.d/argrelay.client.json")
     with open(test_client_config_path) as f:
         client_config_dict = json.load(f)
     return client_config_dict

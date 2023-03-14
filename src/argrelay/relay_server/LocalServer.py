@@ -6,8 +6,8 @@ from argrelay.misc_helper import eprint
 from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
+from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine
@@ -83,14 +83,14 @@ class LocalServer:
                 self.server_config.interp_factories[plugin_instance_id] = plugin_object
                 continue
 
-            if plugin_entry.plugin_type == PluginType.InvocatorPlugin:
-                plugin_object: AbstractInvocator = instantiate_plugin(
+            if plugin_entry.plugin_type == PluginType.DelegatorPlugin:
+                plugin_object: AbstractDelegator = instantiate_plugin(
                     plugin_instance_id,
                     plugin_entry,
                 )
                 plugin_object.activate_plugin()
-                # Store instance of `AbstractInvocator` under specified id for future use:
-                self.server_config.action_invocators[plugin_instance_id] = plugin_object
+                # Store instance of `AbstractDelegator` under specified id for future use:
+                self.server_config.action_delegators[plugin_instance_id] = plugin_object
                 continue
 
         eprint("validating data...")
@@ -109,7 +109,7 @@ class LocalServer:
         all_plugins: [AbstractLoader] = []
         all_plugins.extend(self.server_config.data_loaders.values())
         all_plugins.extend(self.server_config.interp_factories.values())
-        all_plugins.extend(self.server_config.action_invocators.values())
+        all_plugins.extend(self.server_config.action_delegators.values())
 
         for plugin_instance in all_plugins:
             plugin_instance.validate_loaded_data(self.server_config.static_data)

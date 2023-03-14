@@ -1,15 +1,15 @@
 from marshmallow import Schema, RAISE, fields, post_load, pre_dump
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.plugin_invocator.ErrorInvocatorCustomDataSchema import error_invocator_custom_data_desc
-from argrelay.plugin_invocator.InvocationInput import InvocationInput
+from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
+from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_response.FilteredDict import FilteredDict
 
 all_tokens_ = "all_tokens"
 consumed_tokens_ = "consumed_tokens"
-invocator_plugin_entry_ = "invocator_plugin_entry"
+delegator_plugin_entry_ = "delegator_plugin_entry"
 data_envelopes_ = "data_envelopes"
 custom_plugin_data_ = "custom_plugin_data"
 
@@ -29,7 +29,7 @@ class InvocationInputSchema(Schema):
         required = True,
     )
 
-    invocator_plugin_entry = fields.Nested(
+    delegator_plugin_entry = fields.Nested(
         plugin_entry_desc.dict_schema,
         required = True,
     )
@@ -38,7 +38,7 @@ class InvocationInputSchema(Schema):
         FilteredDict(
             filtered_keys = [mongo_id_],
             # Some `data_envelope`-s may not be found by search -
-            # instead of redirecting invocation to something like `ErrorInvocator` on server side,
+            # instead of redirecting invocation to something like `ErrorDelegator` on server side,
             # send `None` items to decide how to handle that on client side.
             allow_none = True,
         ),
@@ -55,7 +55,7 @@ class InvocationInputSchema(Schema):
             return {
                 all_tokens_: input_object.all_tokens,
                 consumed_tokens_: input_object.consumed_tokens,
-                invocator_plugin_entry_: input_object.invocator_plugin_entry,
+                delegator_plugin_entry_: input_object.delegator_plugin_entry,
                 data_envelopes_: input_object.data_envelopes,
                 custom_plugin_data_: input_object.custom_plugin_data,
             }
@@ -69,7 +69,7 @@ class InvocationInputSchema(Schema):
         return InvocationInput(
             all_tokens = input_dict[all_tokens_],
             consumed_tokens = input_dict[consumed_tokens_],
-            invocator_plugin_entry = input_dict[invocator_plugin_entry_],
+            delegator_plugin_entry = input_dict[delegator_plugin_entry_],
             data_envelopes = input_dict[data_envelopes_],
             custom_plugin_data = input_dict[custom_plugin_data_],
         )
@@ -89,11 +89,11 @@ _invocation_input_example = {
         3,
         4,
     ],
-    invocator_plugin_entry_: plugin_entry_desc.dict_example,
+    delegator_plugin_entry_: plugin_entry_desc.dict_example,
     data_envelopes_: [
         data_envelope_desc.dict_example,
     ],
-    custom_plugin_data_: error_invocator_custom_data_desc.dict_example,
+    custom_plugin_data_: error_delegator_custom_data_desc.dict_example,
 }
 
 invocation_input_desc = TypeDesc(

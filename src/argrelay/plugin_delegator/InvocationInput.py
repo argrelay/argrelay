@@ -23,7 +23,7 @@ class InvocationInput:
     indexes into `all_tokens` pointing to tokens consumed during interpretation.
     """
 
-    invocator_plugin_entry: PluginEntry
+    delegator_plugin_entry: PluginEntry
     """
     The `PluginEntry` taken from config on the server side to let client invoke that plugin.
 

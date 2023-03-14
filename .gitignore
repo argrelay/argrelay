@@ -22,9 +22,10 @@ __pycache__/
 /run_argrelay_server
 /run_argrelay_client
 
-# Auto-created symlink by `argrelay-rc.bash` script:
+# Auto-created symlinks by `argrelay_rc.bash` script:
 /relay_demo
+/some_command
 
 # User-provided config (environment-dependent):
-/python-conf.bash
+/python_conf.bash
 

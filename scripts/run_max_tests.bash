@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 # This script tries to run maximum test set.
-# It is expected to be run from `dev-shell.bash`.
+
+# It is expected to be run from started `dev_shell.bash` session.
+
 # It must be run from repo root:
 #     ./scripts/run_max_tests.bash
 
@@ -25,10 +27,10 @@ set -u
 # Debug: Print commands before execution:
 #set -x
 
-# Ensure the script was started in `dev-shell.bash`:
+# Ensure the script was started in `dev_shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]
 then
-    echo "ERROR: Run this script under \`dev-shell.bash\`." 2>&1
+    echo "ERROR: Run this script under \`dev_shell.bash\`." 2>&1
     exit 1
 fi
 

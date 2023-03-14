@@ -57,7 +57,7 @@ class ThisTestCase(TestCase):
         print(response.json)
 
         # JSON string to Python object:
-        # https://stackoverflow.com/questions/6578986/how-to-convert-json-data-into-a-python-object/15882054#15882054
+        # https://stackoverflow.com/a/15882054/441652
         schema_obj = json.loads(response.text, object_hook = lambda d: SimpleNamespace(**d))
 
         # Ensure auto-magic schema generation provides example for Swagger UI:

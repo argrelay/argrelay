@@ -70,14 +70,14 @@ class ThisTestCase(TestCase):
 
     @skipIf(
         os.environ.get("ARGRELAY_DEV_SHELL", False) or os.environ.get("PYCHARM_HOSTED", False),
-        "Skip when in `dev-shell.bash` or IDE to allow deployed config files.",
+        "Skip when in `dev_shell.bash` or IDE to allow deployed config files.",
     )
     def test_config_files_are_not_deployed(self):
         """
         Ensure server and client config files are not deployed:
 
-        *   `~/.argrelay.server.yaml`
-        *   `~/.argrelay.client.json`
+        *   `~/.argrelay.conf.d/argrelay.server.yaml`
+        *   `~/.argrelay.conf.d/argrelay.client.json`
 
         Move them under different name to preserve or delete them completely.
 
@@ -85,8 +85,8 @@ class ThisTestCase(TestCase):
         """
 
         for file_path in [
-            os.path.expanduser("~") + "/" + ".argrelay.server.yaml",
-            os.path.expanduser("~") + "/" + ".argrelay.client.json",
+            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.server.yaml",
+            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.client.json",
         ]:
             self.assertFalse(os.path.exists(file_path))
 

@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
 # Publish artifacts to pypi.org.
+
+# It is expected to be run from started `dev_shell.bash`.
+
+# It must be run from repo root:
+#     ./scripts/publish_package.bash
+
 # See: `docs/dev_notes/release_procedure.md`.
 # See: `docs/dev_notes/version_format.md`.
 # A single "atomic" step to make a release:
@@ -27,20 +33,20 @@ cd "${script_dir}" || exit 1
 # Change to one level up (from `scripts` to repo root):
 cd ".." || exit 1
 
-# Ensure the script was started in `dev-shell.bash`:
+# Ensure the script was started in `dev_shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]
 then
-    echo "ERROR: Run this script under \`dev-shell.bash\`." 1>&2
+    echo "ERROR: Run this script under \`dev_shell.bash\`." 1>&2
     exit 1
 fi
 
-# Ensure any "privileges" of `dev-shell.bash` are disabled:
+# Ensure any "privileges" of `dev_shell.bash` are disabled:
 unset ARGRELAY_DEV_SHELL
 
 # Python config:
-source ./python-conf.bash
-
-# Use `"${path_to_venvX}"` (if does not exists, run `build-git-env.bash`):
+source ./python_conf.bash
+# Use `"${path_to_venvX}"` (if does not exists, run `init_python.bash` by starting `dev_shell.bash`):
+# shellcheck disable=SC2154
 source "${path_to_venvX}"/bin/activate
 
 # Re-install itself:
@@ -58,7 +64,7 @@ REQUIREMENTS_EOF
 pip freeze | grep -v '#egg=argrelay$' >> requirements.txt
 
 # Ensure all changes are committed:
-# https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes/3879077#3879077
+# https://stackoverflow.com/a/3879077/441652
 git update-index --refresh
 if ! git diff-index --quiet HEAD --
 then
@@ -69,10 +75,10 @@ fi
 # See also: `docs/dev_notes/version_format.md`.
 # Get version of `argrelay` distribution:
 argrelay_version="$(
-python << 'PYTHON_GET_PACKAGE_VERSION_EOF'
+python << 'python_get_package_version_EOF'
 from pkg_resources import get_distribution
 print(get_distribution("argrelay").version)
-PYTHON_GET_PACKAGE_VERSION_EOF
+python_get_package_version_EOF
 )"
 echo "INFO: argrelay version: ${argrelay_version}" 1>&2
 

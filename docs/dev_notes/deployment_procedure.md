@@ -1,7 +1,9 @@
 
 This doc describes `pip install` method from `dev_env_and_target_env_diff.md`.
 
-It is assumed the project using `argrelay` already has Python configured (e.g. via `venv`).
+# Installation
+
+It is assumed the project integrating with `argrelay` has Python already configured (e.g. via `venv`).
 
 To upgrade package:
 
@@ -12,48 +14,53 @@ pip install --upgrade argrelay
 If newer version does not show up, try this:
 
 ```sh
-pip uninstall argrelay
 pip install --upgrade --force-reinstall argrelay
 ```
 
-Note:
+Note:<br/>
 Forcing to download new version does not appear consistent.
-Apparently, there are many replicas with packages on the web.
-And some of them take minutes to get the latest updates.
+Apparently, depending on the replicas hosting the packages,
+sometimes it take minutes to get the latest updates.
+
+# Bootstrapping
 
 After installation, initial config files can be found
 together with installed package.
 
-Find `build-pip-env.bash` file, for example:
+Find `bootstrap_inside_venv.bash` script, for example:
 
 ```sh
-find . -name 'build-pip-env.bash'
-./venv/lib/python3.10/site-packages/argrelay/custom_integ/build-pip-env.bash
+find . -name 'bootstrap_inside_venv.bash'
+./venv/lib/python3.10/site-packages/argrelay/custom_integ_res/bootstrap_inside_venv.bash
 ```
 
 Run it to deploy necessary artifacts
-(into **current directory**, not where `build-pip-env.bash` is):
+(into **current directory**, not where `bootstrap_inside_venv.bash` is):
 
 ```sh
-./venv/lib/python3.10/site-packages/argrelay/custom_integ/build-pip-env.bash
+./venv/lib/python3.10/site-packages/argrelay/custom_integ_res/bootstrap_inside_venv.bash
 ```
 
-It will deploy:
+Depending on current state of config files, it may prompt for more info - follow the instructions.
+
+Eventually, it will deploy:
 
 *   Helper scripts in the **current directory**.
 
-*   User dot files (`~/.*`) for server and client config.
+*   Config files for server and client config into `~/argrelay.conf.d/.*`.
 
-To enable auto-completion:
+One of the deployed script is `dev_shell.bash` -
+it should work the same way as the demo in the main [readme.md][root_readme.md].
 
-*   Update deployed `argrelay-rc.bash`:
+# Next steps
 
-    Minimally, assign `PATH_TO_SCRIPTS` there to absolute path of **current directory**.
+This deployment targets mostly initial version.
 
-*   Source deployed `argrelay-rc.bash` from the **current directory** in `~/.bashrc`.
+Subsequent upgrades still need to re-run `bootstrap_inside_venv.bash` script.
 
-This deployment covers only vanilla version.
-
-Customization (with custom plugins) may require setting up additional dependencies - see `plugin_development.md`.
+However, most of the details come with customization (using custom plugins)<br/>
+which may require setting up additional dependencies - see `plugin_development.md`.
 
 To run real Mongo DB (instead of `mongomock`), see also `mongo_notes.md`.
+
+[root_readme.md]: ../../readme.md

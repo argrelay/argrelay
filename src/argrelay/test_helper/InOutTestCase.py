@@ -19,12 +19,12 @@ class InOutTestCase(TestCase):
         comp_type,
         expected_suggestions,
         envelope_ipos_to_expected_assignments,
-        invocator_class,
+        delegator_class,
     ):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
-        if invocator_class:
-            init_env_mock_builder = EnvMockBuilder().set_capture_invocator_invocation_input(invocator_class)
+        if delegator_class:
+            init_env_mock_builder = EnvMockBuilder().set_capture_delegator_invocation_input(delegator_class)
         else:
             init_env_mock_builder = EnvMockBuilder()
 
@@ -66,7 +66,7 @@ class InOutTestCase(TestCase):
                     "no assignments expected in `RunMode.CompletionMode`",
                 )
                 self.assertFalse(
-                    invocator_class,
+                    delegator_class,
                     "no invocation expected in `RunMode.CompletionMode`",
                 )
             elif run_mode == RunMode.InvocationMode:

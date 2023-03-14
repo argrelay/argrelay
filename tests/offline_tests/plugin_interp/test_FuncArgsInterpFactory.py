@@ -7,8 +7,8 @@ from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.RunMode import RunMode
+from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
-from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     plugin_instance_id_load_list_,
@@ -22,7 +22,7 @@ from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import (
     function_init_control_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_instance_id_,
+    delegator_plugin_instance_id_,
     search_control_list_,
 )
 from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_
@@ -81,7 +81,7 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_1",
             instance_data_: {
-                invocator_plugin_instance_id_: NoopInvocator.__name__,
+                delegator_plugin_instance_id_: NoopDelegator.__name__,
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -92,7 +92,7 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_2",
             instance_data_: {
-                invocator_plugin_instance_id_: NoopInvocator.__name__,
+                delegator_plugin_instance_id_: NoopDelegator.__name__,
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -118,7 +118,7 @@ class ThisTestCase(TestCase):
         given_function_envelope = {
             envelope_id_: "func_3",
             instance_data_: {
-                invocator_plugin_instance_id_: NoopInvocator.__name__,
+                delegator_plugin_instance_id_: NoopDelegator.__name__,
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
