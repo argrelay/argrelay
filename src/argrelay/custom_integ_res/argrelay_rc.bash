@@ -6,7 +6,7 @@
 
 # The main purposes of this script:
 # *   enable auto-completion for the commands
-# *   edd commands to PATH
+# *   add commands to PATH
 
 # Normally, this script is a symlink to orig artifact from `argrelay` distrib package.
 # The path where this symlink (or copy) is located is supposed to contain:
