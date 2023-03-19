@@ -12,7 +12,7 @@ See: docs/dev_notes/screencast_notes.md
 # What's this?
 
 An integration framework to provide contextual Tab-auto-completion<br/>
-for command line interfaces (CLI) in Bash shell.
+and search for command line interfaces (CLI) in Bash shell.
 
 <a name="argrelay-original-use-case"></a>
 ### Original use case
@@ -29,15 +29,14 @@ to run a standby data server.
 > even if someone manages to generate Bash completion config,<br/>
 > it takes considerable time to load it for every shell instance.
 
-Unlike static|generated|offline index, standby server also naturally supports dynamic data.
+Unlike static|generated|offline index, standby server also naturally supports dynamic data updates.
 
 <a name="argrelay-accidental-use-case"></a>
 ### Accidental use cases
 
-Familiar shell with:
-*   data-intensive CLI
-*   minimalistic query syntax (to fit well for quickly typed commands)
-*   seamless search
+Familiar terminal with:
+*   data-intensive CLI and seamless search
+*   minimalistic enum-based query syntax to command (not troubleshoot)
 *   large catalogues of discoverable functions
 *   live data updates
 
@@ -77,7 +76,7 @@ graph RL;
             relay2some --> argrelay_client[argrelay client];
 
         end
-        
+
         subgraph server
 
             direction TB

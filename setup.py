@@ -17,10 +17,10 @@ extras_require = {
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.0.0.dev31",
+    version = "0.0.0.dev37",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
-    description = "Bash Tab-completion (data) server - total recall",
+    description = "Tab-completion & data search server - total recall",
     long_description = long_description,
     long_description_content_type = "text/markdown",
     keywords = "argparse, argcomplete, bash, complete",
@@ -65,16 +65,15 @@ setuptools.setup(
 
             # other resource files:
             "custom_integ_res/argrelay_rc.bash",
-            "custom_integ_res/bootstrap_outside_venv.bash",
             "custom_integ_res/bootstrap_inside_venv.bash",
+            "custom_integ_res/bootstrap_outside_venv.bash",
+            "custom_integ_res/bootstrap_venv.bash",
             "custom_integ_res/deploy_config_files.bash",
             "custom_integ_res/deploy_files.bash",
             "custom_integ_res/deploy_resource_files.bash",
             "custom_integ_res/dev_shell.bash",
             "custom_integ_res/generate_artifacts.bash",
-            "custom_integ_res/init_python.bash",
             "custom_integ_res/init_shell_env.bash",
-            "custom_integ_res/run_project_build.bash",
         ],
     },
     include_package_data = True,

@@ -2,6 +2,7 @@ import os
 
 from marshmallow import Schema, RAISE, fields, post_load
 
+from argrelay.misc_helper import get_config_path
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
@@ -35,5 +36,5 @@ client_config_desc = TypeDesc(
         use_local_requests_: False,
         connection_config_: connection_config_desc.dict_example,
     },
-    default_file_path = os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.client.json",
+    default_file_path = get_config_path(".argrelay.conf.d/argrelay.client.json"),
 )

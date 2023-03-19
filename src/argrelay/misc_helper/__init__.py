@@ -1,5 +1,6 @@
 """
 """
+import os
 import sys
 
 
@@ -16,3 +17,7 @@ def ensure_value_is_enum(enum_value, enum_cls):
         return enum_cls[enum_value]
     else:
         return enum_value
+
+def get_config_path(conf_rel_path: str) -> str:
+    base_conf_dir = os.environ.get("ARGRELAY_CONF_BASE_DIR", os.path.expanduser("~"))
+    return f"{base_conf_dir}/{conf_rel_path}"

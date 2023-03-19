@@ -24,6 +24,8 @@ To demo:
 
 Integration:
 
+*   Add tests that config loading respects `ARGRELAY_CONF_BASE_DIR`.
+
 *   Expect all files inside common `~/.argrelay` directory.
     Make it point to `custom_integ_res` dir - since there is no other files, it works nicely.
 
@@ -90,6 +92,16 @@ Before `0.0.0`:
 *   Add consciously written semver doc.
 
 Ease integration into external project:
+
+*   Enable debug in all bootstrap scripts.
+
+*   Boostrap file names do not make much:
+    *   `bootstrap_outside_venv.bash`
+    *   `bootstrap_inside_venv.bash` - sometimes we want to boostrap within existing `venv` (inside) but still for development (symlinks, not copies)
+
+*   How to deal with `dev_shell.bash` symlink in custom project?
+    This symlink (unlike inside `argrelay` itself) is not pointing into existing file within the repo,
+    instead, it points into `argrelay` package which still has to be installed.
 
 *   There is constant need to distinguish:
     *   project_dir - the path to special dir (where venv is configured via relative path, artifacts generated, config files, etc.)

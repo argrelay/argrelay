@@ -11,37 +11,25 @@
 # Note that enabling exit on error (like `set -e` below) will exit parent
 # `dev_shell.bash` script (as this one is sourced) - that is intentional.
 
+# Debug: Print commands before execution:
+set -x
+# Debug: Print commands after reading from a script:
+set -v
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
 # Exit on non-zero exit code from a command:
 set -e
+# Inherit trap on ERR by sub-shells:
+set -E
 # Error on undefined variables:
 set -u
-# Debug: Print commands after reading from a script:
-#set -v
-# Debug: Print commands before execution:
-#set -x
 
-# This is why the script has to be symlinked to the project dir:
-./init_python.bash
+# The dir of the script:
+script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# It is expected that `dev_shell.bash` switches to the target project dir itself (not this script).
 
-# Activate pre-configured Python `venv`:
-source ./python_conf.bash
-# shellcheck disable=SC2154
-source "${path_to_venvX}"/bin/activate
-# Ensure refs to `argrelay` work when `dev_shell.bash` starts with empty `venv`:
-pip install argrelay
-
-# Get path of `argrelay` module:
-argrelay_path="$( dirname "$(
-python << 'python_module_path_EOF'
-import argrelay
-print(argrelay.__file__)
-python_module_path_EOF
-)" )"
-
-# Note that this is often redundant, but ensures `dev_shell.bash` session re-deploys anything missing:
-"${argrelay_path}"/custom_integ_res/bootstrap_outside_venv.bash
+# This is why `bootstrap_venv.bash` script has to be part of the project dir:
+./bootstrap_venv.bash
 
 # Enable auto-completion:
 source ./argrelay_rc.bash
@@ -57,7 +45,7 @@ done
 # (see enabling them for the duration of this script above):
 set +o pipefail
 set +e
+set +E
 set +u
 set +v
 set +x
-

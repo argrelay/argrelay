@@ -2,6 +2,7 @@ import os
 
 from marshmallow import Schema, fields, RAISE, post_load, validates_schema, ValidationError
 
+from argrelay.misc_helper import get_config_path
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
@@ -94,5 +95,5 @@ server_config_desc = TypeDesc(
         },
         static_data_: static_data_desc.dict_example,
     },
-    default_file_path = os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.server.yaml",
+    default_file_path = get_config_path(".argrelay.conf.d/argrelay.server.yaml"),
 )
