@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.custom_integ.ServiceInvocator import ServiceInvocator
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
@@ -11,7 +11,7 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.plugin_invocator.ErrorInvocator import ErrorInvocator
+from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.relay_client import __main__
 from argrelay.runtime_context.EnvelopeContainer import indent_size
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -284,7 +284,7 @@ class ThisTestCase(InOutTestCase):
                     },
                 },
                 # TODO: add verification of consumed and unconsumed tokens
-                ErrorInvocator,
+                ErrorDelegator,
                 "TD_76_09_29_31: Both GeoRegion and HostName are correctly assigned",
             ),
         ]
@@ -298,7 +298,7 @@ class ThisTestCase(InOutTestCase):
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
-                    invocator_class,
+                    delegator_class,
                     case_comment,
                 ) = test_case
 
@@ -309,7 +309,7 @@ class ThisTestCase(InOutTestCase):
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
-                    invocator_class,
+                    delegator_class,
                 )
 
     def test_FS_06_99_43_60_varargs(self):
@@ -337,8 +337,8 @@ class ThisTestCase(InOutTestCase):
                 #     },
                 #     2: {},
                 # },
-                # TODO: It works whether there is ErrorInvocator or ServiceInvocator. Why?
-                ServiceInvocator,
+                # TODO: It works whether there is ErrorDelegator or ServiceDelegator. Why?
+                ServiceDelegator,
                 "Basic test that list list objects"
             ),
             (
@@ -356,7 +356,7 @@ class ThisTestCase(InOutTestCase):
                     1: {},
                     2: {},
                 },
-                ErrorInvocator,
+                ErrorDelegator,
                 "FS_06_99_43_60: Invocation happens with ambiguous services to select - "
                 "without narrowing down to single service object",
             ),
@@ -371,7 +371,7 @@ class ThisTestCase(InOutTestCase):
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
-                    invocator_class,
+                    delegator_class,
                     case_comment,
                 ) = test_case
 
@@ -382,7 +382,7 @@ class ThisTestCase(InOutTestCase):
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
-                    invocator_class,
+                    delegator_class,
                 )
 
     def test_propose_auto_comp_TD_43_24_76_58_single(self):
@@ -727,7 +727,7 @@ class ThisTestCase(InOutTestCase):
             .set_test_data_ids_to_load([
                 "TD_63_37_05_36",  # demo
             ])
-            .set_capture_invocator_invocation_input(ErrorInvocator)
+            .set_capture_delegator_invocation_input(ErrorDelegator)
         )
         with env_mock_builder.build():
             __main__.main()
@@ -764,7 +764,7 @@ class ThisTestCase(InOutTestCase):
             .set_test_data_ids_to_load([
                 "TD_63_37_05_36",  # demo
             ])
-            .set_capture_invocator_invocation_input(ServiceInvocator)
+            .set_capture_delegator_invocation_input(ServiceDelegator)
         )
         with env_mock_builder.build():
             __main__.main()

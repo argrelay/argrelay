@@ -1,5 +1,5 @@
 # This is an `argrelay` server config.
-# To test, symlink this files as user dot file - see `dev-shell.bash` script.
+# To test, symlink this files as user dot file - see `dev_shell.bash` script.
 
 connection_config:
     server_host_name: localhost
@@ -33,16 +33,16 @@ plugin_instance_id_load_list:
 
     -   NoopLoader
     -   InterceptLoader
-    -   HelpInvocator
+    -   HelpDelegator
     -   ServiceLoader
     -   GitRepoLoader
 
-    -   NoopInvocator
-    -   InterceptInvocator
+    -   NoopDelegator
+    -   InterceptDelegator
     -   HelpLoader
-    -   ServiceInvocator
-    -   GitRepoInvocator
-    -   ErrorInvocator
+    -   ServiceDelegator
+    -   GitRepoDelegator
+    -   ErrorDelegator
 
 plugin_dict:
 
@@ -175,44 +175,44 @@ plugin_dict:
             is_plugin_enabled: False
             base_path: "~/repos"
 
-    NoopInvocator:
-        plugin_module_name: argrelay.plugin_invocator.NoopInvocator
-        plugin_class_name: NoopInvocator
-        plugin_type: InvocatorPlugin
+    NoopDelegator:
+        plugin_module_name: argrelay.plugin_delegator.NoopDelegator
+        plugin_class_name: NoopDelegator
+        plugin_type: DelegatorPlugin
         plugin_config: { }
 
-    InterceptInvocator:
-        plugin_module_name: argrelay.plugin_invocator.InterceptInvocator
-        plugin_class_name: InterceptInvocator
-        plugin_type: InvocatorPlugin
+    InterceptDelegator:
+        plugin_module_name: argrelay.plugin_delegator.InterceptDelegator
+        plugin_class_name: InterceptDelegator
+        plugin_type: DelegatorPlugin
         plugin_config:
             # `intercept` works only with `external` functions:
             next_interp_plugin_instance_id: DemoInterpFactory.external
 
-    HelpInvocator:
-        plugin_module_name: argrelay.plugin_invocator.HelpInvocator
-        plugin_class_name: HelpInvocator
-        plugin_type: InvocatorPlugin
+    HelpDelegator:
+        plugin_module_name: argrelay.plugin_delegator.HelpDelegator
+        plugin_class_name: HelpDelegator
+        plugin_type: DelegatorPlugin
         plugin_config:
             # `help` works with any (`external`, or `internal`, or ...) functions:
             next_interp_plugin_instance_id: DemoInterpFactory.any
 
-    ServiceInvocator:
-        plugin_module_name: argrelay.custom_integ.ServiceInvocator
-        plugin_class_name: ServiceInvocator
-        plugin_type: InvocatorPlugin
+    ServiceDelegator:
+        plugin_module_name: argrelay.custom_integ.ServiceDelegator
+        plugin_class_name: ServiceDelegator
+        plugin_type: DelegatorPlugin
         plugin_config: { }
 
-    GitRepoInvocator:
-        plugin_module_name: argrelay.custom_integ.GitRepoInvocator
-        plugin_class_name: GitRepoInvocator
-        plugin_type: InvocatorPlugin
+    GitRepoDelegator:
+        plugin_module_name: argrelay.custom_integ.GitRepoDelegator
+        plugin_class_name: GitRepoDelegator
+        plugin_type: DelegatorPlugin
         plugin_config: { }
 
-    ErrorInvocator:
-        plugin_module_name: argrelay.plugin_invocator.ErrorInvocator
-        plugin_class_name: ErrorInvocator
-        plugin_type: InvocatorPlugin
+    ErrorDelegator:
+        plugin_module_name: argrelay.plugin_delegator.ErrorDelegator
+        plugin_class_name: ErrorDelegator
+        plugin_type: DelegatorPlugin
         plugin_config: { }
 
 

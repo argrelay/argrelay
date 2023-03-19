@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.custom_integ.ServiceInvocator import ServiceInvocator
 from argrelay.custom_integ.ServiceLoaderConfigSchema import (
     service_loader_config_desc,
     test_data_ids_to_load_,
@@ -17,7 +17,7 @@ from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
-from argrelay.plugin_invocator.NoopInvocator import NoopInvocator
+from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -26,7 +26,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_instance_id_,
+    delegator_plugin_instance_id_,
     search_control_list_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
@@ -200,7 +200,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: goto_host_funct_,
                 instance_data_: {
-                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
                     search_control_list_: [
                         host_search_control,
                         access_search_control,
@@ -215,7 +215,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: goto_service_funct_,
                 instance_data_: {
-                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
                     search_control_list_: [
                         service_search_control,
                         access_search_control,
@@ -230,7 +230,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: "desc_host",
                 instance_data_: {
-                    invocator_plugin_instance_id_: NoopInvocator.__name__,
+                    delegator_plugin_instance_id_: NoopDelegator.__name__,
                     search_control_list_: [
                         host_search_control,
                     ],
@@ -244,7 +244,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: "desc_service",
                 instance_data_: {
-                    invocator_plugin_instance_id_: NoopInvocator.__name__,
+                    delegator_plugin_instance_id_: NoopDelegator.__name__,
                     search_control_list_: [
                         service_search_control,
                     ],
@@ -258,7 +258,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: list_host_func_,
                 instance_data_: {
-                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
                     search_control_list_: [
                         host_search_control,
                     ],
@@ -272,7 +272,7 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_id_: list_service_func_,
                 instance_data_: {
-                    invocator_plugin_instance_id_: ServiceInvocator.__name__,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
                     search_control_list_: [
                         service_search_control,
                     ],

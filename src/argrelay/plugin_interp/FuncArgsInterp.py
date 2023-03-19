@@ -6,8 +6,8 @@ from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialChar import SpecialChar
+from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.plugin_invocator.AbstractInvocator import AbstractInvocator
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InitControl import InitControl
 from argrelay.runtime_context.InterpContext import (
@@ -19,7 +19,7 @@ from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_, function_init_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_instance_id_,
+    delegator_plugin_instance_id_,
 )
 from argrelay.schema_config_interp.InitControlSchema import init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
@@ -54,7 +54,7 @@ class FuncArgsInterp(AbstractInterp):
         self._apply_function_search_control()
 
     def _apply_function_init_control(self):
-        # Function `init_control` is based on plugin config (rather than invocator plugin logic):
+        # Function `init_control` is based on plugin config (rather than logic):
         self.interp_ctx.curr_container.assigned_types_to_values[
             ReservedArgType.EnvelopeClass.name
         ] = AssignedValue(
@@ -147,29 +147,29 @@ class FuncArgsInterp(AbstractInterp):
             return InterpStep.StopAll
 
     def get_search_control_list(self) -> list[SearchControl]:
-        invocator_plugin = self.get_funct_invocator()
-        search_control_list: list[SearchControl] = invocator_plugin.run_search_control(self.get_funct_data_envelope())
+        delegator_plugin = self.get_funct_delegator()
+        search_control_list: list[SearchControl] = delegator_plugin.run_search_control(self.get_funct_data_envelope())
         return search_control_list
 
     def run_init_control(self):
-        invocator_plugin = self.get_funct_invocator()
-        invocator_plugin.run_init_control(
+        delegator_plugin = self.get_funct_delegator()
+        delegator_plugin.run_init_control(
             self.interp_ctx.envelope_containers,
             self.interp_ctx.curr_container_ipos,
         )
 
     def run_fill_control(self):
-        self.get_funct_invocator().run_fill_control(
+        self.get_funct_delegator().run_fill_control(
             self.interp_ctx,
         )
 
     def get_funct_data_envelope(self):
         return self.interp_ctx.envelope_containers[self.base_envelope_ipos + function_envelope_ipos_].data_envelope
 
-    def get_funct_invocator(self):
-        invocator_plugin_instance_id = self.get_funct_data_envelope()[instance_data_][invocator_plugin_instance_id_]
-        invocator_plugin: AbstractInvocator = self.interp_ctx.action_invocators[invocator_plugin_instance_id]
-        return invocator_plugin
+    def get_funct_delegator(self):
+        delegator_plugin_instance_id = self.get_funct_data_envelope()[instance_data_][delegator_plugin_instance_id_]
+        delegator_plugin: AbstractDelegator = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
+        return delegator_plugin
 
     def select_next_container(self):
         self.interp_ctx.curr_container_ipos += 1
@@ -178,8 +178,8 @@ class FuncArgsInterp(AbstractInterp):
         ]
 
     def next_interp(self) -> "AbstractInterp":
-        invocator_plugin = self.get_funct_invocator()
-        interp_factory_id = invocator_plugin.run_interp_control(self)
+        delegator_plugin = self.get_funct_delegator()
+        interp_factory_id = delegator_plugin.run_interp_control(self)
         if interp_factory_id:
             return self.interp_ctx.create_next_interp(interp_factory_id)
         else:

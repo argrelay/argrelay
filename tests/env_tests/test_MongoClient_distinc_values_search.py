@@ -14,7 +14,7 @@ class ThisTestCase(MongoClientTest):
     def test_live_envelope_searched_by_multiple_typed_vals(self):
         """
         Example to search distinct values for each field individually in single query:
-        https://stackoverflow.com/questions/63592489/get-distinct-values-from-each-field-within-mongodb-collection
+        https://stackoverflow.com/q/63592489/441652
         """
 
         mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)

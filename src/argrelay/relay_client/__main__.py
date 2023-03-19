@@ -11,7 +11,7 @@ def main():
     from argrelay.runtime_context.InputContext import InputContext
     ElapsedTime.measure("after_initial_imports")
 
-    file_path = os.path.expanduser("~") + "/" + ".argrelay.client.json"
+    file_path = os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.client.json"
     client_config = load_client_config(file_path)
     ElapsedTime.measure("after_loading_client_config")
 

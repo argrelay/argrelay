@@ -35,5 +35,5 @@ client_config_desc = TypeDesc(
         use_local_requests_: False,
         connection_config_: connection_config_desc.dict_example,
     },
-    default_file_path = os.path.expanduser("~") + "/" + ".argrelay.client.json",
+    default_file_path = os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.client.json",
 )

@@ -221,6 +221,7 @@ then
     press_tab
     type_string "p"
     press_tab
+    # TODO: instead of modifying `dev`->`prod` in-place, remove `dev`, add `prod` to the tail.
     # curr line: relay_demo goto service apac prod| downstream
 
     # Move cursor to EOL:
@@ -383,7 +384,7 @@ press_enter "${keystroke_pause}"
 press_enter "${keystroke_pause}"
 press_enter "${keystroke_pause}"
 press_enter
-type_comment "# Try it yourself by running \`./dev-shell.bash\` from the repo:"
+type_comment "# Try it yourself by running \`./dev_shell.bash\` from the repo:"
 press_enter
 type_comment "# https://github.com/uvsmtid/argrelay"
 press_enter

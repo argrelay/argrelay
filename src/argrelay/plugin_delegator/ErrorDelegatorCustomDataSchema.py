@@ -7,7 +7,7 @@ error_message_ = "error_message"
 error_code_ = "error_code"
 
 
-class ErrorInvocatorCustomDataSchema(Schema):
+class ErrorDelegatorCustomDataSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
@@ -21,13 +21,13 @@ class ErrorInvocatorCustomDataSchema(Schema):
     )
 
 
-error_invocator_custom_data_example = {
+error_delegator_custom_data_example = {
     error_message_: "INFO: command executed successfully: this is a stub",
     error_code_: 0,
 }
-error_invocator_custom_data_desc = TypeDesc(
-    dict_schema = ErrorInvocatorCustomDataSchema(),
-    ref_name = ErrorInvocatorCustomDataSchema.__name__,
-    dict_example = error_invocator_custom_data_example,
+error_delegator_custom_data_desc = TypeDesc(
+    dict_schema = ErrorDelegatorCustomDataSchema(),
+    ref_name = ErrorDelegatorCustomDataSchema.__name__,
+    dict_example = error_delegator_custom_data_example,
     default_file_path = "",
 )

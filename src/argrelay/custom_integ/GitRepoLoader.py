@@ -6,8 +6,8 @@ import subprocess
 from git import Repo
 
 from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoDelegator import GitRepoDelegator
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
-from argrelay.custom_integ.GitRepoInvocator import GitRepoInvocator
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import base_path_, git_repo_loader_config_desc, is_plugin_enabled_
 from argrelay.custom_integ.value_constants import desc_repo_func_, desc_commit_func_
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
@@ -22,7 +22,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    invocator_plugin_instance_id_,
+    delegator_plugin_instance_id_,
     search_control_list_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
@@ -183,7 +183,7 @@ class GitRepoLoader(AbstractLoader):
         given_function_envelope = {
             envelope_id_: desc_repo_func_,
             instance_data_: {
-                invocator_plugin_instance_id_: GitRepoInvocator.__name__,
+                delegator_plugin_instance_id_: GitRepoDelegator.__name__,
                 search_control_list_: [
                     repo_search_control,
                 ],
@@ -199,7 +199,7 @@ class GitRepoLoader(AbstractLoader):
         given_function_envelope = {
             envelope_id_: desc_commit_func_,
             instance_data_: {
-                invocator_plugin_instance_id_: GitRepoInvocator.__name__,
+                delegator_plugin_instance_id_: GitRepoDelegator.__name__,
                 search_control_list_: [
                     commit_search_control,
                 ],

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceInvocator import redirect_to_no_func_error
+from argrelay.custom_integ.ServiceDelegator import redirect_to_no_func_error
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
+from argrelay.plugin_delegator.AbstractDelegator import get_data_envelopes
+from argrelay.plugin_delegator.InterceptDelegator import InterceptDelegator
+from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.plugin_invocator.AbstractInvocator import get_data_envelopes
-from argrelay.plugin_invocator.InterceptInvocator import InterceptInvocator
-from argrelay.plugin_invocator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
 from argrelay.runtime_context.InterpContext import function_envelope_ipos_, InterpContext
@@ -18,8 +18,8 @@ from argrelay.schema_config_interp.SearchControlSchema import search_control_des
 subsequent_function_envelope_ipos_ = function_envelope_ipos_ + 1
 
 
-# TODO: It inherits `InterceptInvocator`, but it makes more sense to have common base class instead.
-class HelpInvocator(InterceptInvocator):
+# TODO: It inherits `InterceptDelegator`, but it makes more sense to have common base class instead.
+class HelpDelegator(InterceptDelegator):
 
     def run_interp_control(
         self,
@@ -40,14 +40,14 @@ class HelpInvocator(InterceptInvocator):
                 subsequent_function_envelope_ipos_
             )]
             query_dict = populate_query_dict(subsequent_function_container)
-            invocator_plugin_instance_id = HelpInvocator.__name__
+            delegator_plugin_instance_id = HelpDelegator.__name__
 
             custom_plugin_data = search_control_desc.dict_schema.dump(subsequent_function_container.search_control)
 
             invocation_input = InvocationInput(
                 all_tokens = interp_ctx.parsed_ctx.all_tokens,
                 consumed_tokens = interp_ctx.consumed_tokens,
-                invocator_plugin_entry = local_server.server_config.plugin_dict[invocator_plugin_instance_id],
+                delegator_plugin_entry = local_server.server_config.plugin_dict[delegator_plugin_instance_id],
                 data_envelopes = (
                     # Envelope of `SpecialFunc.help_func`:
                     get_data_envelopes(interp_ctx)[:subsequent_function_envelope_ipos_]

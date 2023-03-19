@@ -1,7 +1,7 @@
 
 Resources:
 
-*   Understand how `dev-shell.bash` enables command completion.
+*   Understand how `dev_shell.bash` enables command completion.
 
 *   Also, learn about `~/.inputrc` config - see docstring `CompType.py`.
 

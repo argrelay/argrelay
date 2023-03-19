@@ -45,7 +45,7 @@ class ThisTestCase(TestCase):
         pd.set_option("display.width", 1000)
 
         # Load Markdown table as data:
-        # https://stackoverflow.com/questions/60154404/is-there-the-equivalent-of-to-markdown-to-read-data/60156036#60156036
+        # https://stackoverflow.com/a/60156036/441652
         # Read a markdown file, getting the header from the first row and index from the second column:
         test_data = pd.read_table(
             StringIO(test_data),

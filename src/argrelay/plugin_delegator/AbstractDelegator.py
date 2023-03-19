@@ -3,7 +3,7 @@ from __future__ import annotations
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
-from argrelay.plugin_invocator.InvocationInput import InvocationInput
+from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import function_envelope_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
@@ -44,9 +44,9 @@ def get_func_name_from_envelope(
     return func_name
 
 
-class AbstractInvocator(AbstractPlugin):
+class AbstractDelegator(AbstractPlugin):
     """
-    Invocator plugin implements two sides:
+    `DelegatorPlugin` implements two sides:
     *   server-side `invoke_control` prepares data in :class:`InvocationInput` (whatever is necessary)
     *   client-side `invoke_action` uses data in :class:`InvocationInput` to execute the action anyway it can
 

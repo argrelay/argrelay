@@ -29,12 +29,12 @@ class InterpContext:
     # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that).
     interp_factories: dict[str, "AbstractInterpFactory"]
     """
-    Reference to `ServerConfig.action_invocators`.
+    Reference to `ServerConfig.action_delegators`.
     """
 
-    action_invocators: dict[str, "AbstractInvocator"]
+    action_delegators: dict[str, "AbstractDelegator"]
     """
-    Reference to `ServerConfig.action_invocators`.
+    Reference to `ServerConfig.action_delegators`.
     """
 
     query_engine: QueryEngine
