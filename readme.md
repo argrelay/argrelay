@@ -131,7 +131,7 @@ graph RL;
 GUI-s are secondary for `argrelay`'s niche because<br/>
 GUI-s do not have the restrictions CLI-s have:
 *   Technically, the server can handle requests from anywhere (GUI).
-*   But primary API-s are feature-tailored to support CLI (because anyone can do GUI).
+*   But primary API-s are feature-tailored to support CLI (because everyone does GUI).
 
 <details>
 <summary>show example</summary>
