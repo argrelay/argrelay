@@ -10,16 +10,18 @@
 #     grep -r WaylandEnable /etc/gdm/
 #     /etc/gdm/custom.conf:WaylandEnable=false
 
+# Debug: Print commands before execution:
+set -x
+# Debug: Print commands after reading from a script:
+set -v
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
 # Exit on non-zero exit code from a command:
 set -e
+# Inherit trap on ERR by sub-shells:
+set -E
 # Error on undefined variables:
 set -u
-# Debug: Print commands after reading from a script:
-set -v
-# Debug: Print commands before execution:
-set -x
 
 # The process requires two terminal windows:
 # - "target" window where keystrokes are simulated

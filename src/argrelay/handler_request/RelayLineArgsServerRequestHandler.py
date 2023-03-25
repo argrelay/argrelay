@@ -47,7 +47,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
             ]
         else:
             is_error = True
-            error_message = "ERROR: function is not selected"
+            error_message = "ERROR: Function is not selected, try help, or press Tab to complete selection."
             error_code = 1
             delegator_plugin_instance_id = ErrorDelegator.__name__
 

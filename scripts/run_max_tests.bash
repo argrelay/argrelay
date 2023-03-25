@@ -16,16 +16,18 @@
 # *   in specific test method only
 #         run_max_tests.bash path/to/file method
 
+# Debug: Print commands before execution:
+#set -x
+# Debug: Print commands after reading from a script:
+#set -v
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
 # Exit on non-zero exit code from a command:
 set -e
+# Inherit trap on ERR by sub-shells:
+set -E
 # Error on undefined variables:
 set -u
-# Debug: Print commands after reading from a script:
-#set -v
-# Debug: Print commands before execution:
-#set -x
 
 # Ensure the script was started in `dev_shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]

@@ -4,10 +4,15 @@
 # This is a custom build script *sourced* by `bootstrap_venv.bash`.
 # Python `venv` is already activated before it is sourced.
 
-# Normally, the build scripts like this for integration project should build it and test it.
+# Normally, the deploy scripts like this for integration project should pip-install it (in the editable mode).
 
-# It is fine to run tox on every start of `dev_shell` because
-# this `git_deployment` (FS_66_29_28_85) is only used by `argrelay` devs:
-# Build and test:
-python -m tox
+# Use editable install:
+# https://pip.pypa.io/en/latest/topics/local-project-installs/
+python -m pip install -e .[tests]
+
+if false
+then
+    # This is NOT necessary (extra dev dependencies):
+    python -m pip install -r requirements.txt
+fi
 ########################################################################################################################

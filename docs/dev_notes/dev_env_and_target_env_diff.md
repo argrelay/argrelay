@@ -1,4 +1,6 @@
 
+TODO: remove: this file is obsoleted by FS_85_33_46_53 `bootstrap_venv.bash`.
+
 There are two kinds of environments `argrelay` can be used:
 
 *   Development environment where `argrelay` Git repo is `git`-cloned to develop `argrelay` itself.
@@ -41,9 +43,25 @@ because all necessary artifacts are available after `git clone`.
 Other projects (integrating with `argrelay`) should run `bootstrap_outside_venv.bash` once at least to make
 `dev_shell.bash` available in the project dir.
 
+*   `bootstrap_venv.bash`
+
+    *   `python_conf.bash`
+
+    *   `deploy_project.bash` (provides `venv` for all scripts that follow)
+
+    *   `bootstrap_venv.bash` (call refreshed copy of itself recursively)
+
+    *   `deploy_config_files.bash` symlink
+
+    *   `deploy_resource_files.bash` symlink
+
+    *   `generate_artifacts.bash`
+
+    *   `build_project.bash`
+
 *   `bootstrap_outside_venv.bash`
 
-    *   `init_python.bash` (provides `venv` for all scripts that follow)
+    *   `bootstrap_venv.bash` (provides `venv` for all scripts that follow)
 
     *   `deploy_config_files.bash` symlink
 
@@ -56,7 +74,7 @@ Other projects (integrating with `argrelay`) should run `bootstrap_outside_venv.
 *   `bootstrap_inside_venv.bash`
 
     Note that, subsequently, after this bootstrap is done,
-    `dev_shell.bash` (via `init_python.bash`) will still prompt once to provide `python_conf.bash`.
+    `dev_shell.bash` (via `bootstrap_venv.bash`) will still prompt once to provide `python_conf.bash`.
 
     *   `deploy_config_files.bash` copy
 
@@ -70,11 +88,11 @@ Other projects (integrating with `argrelay`) should run `bootstrap_outside_venv.
 
     *   `init_shell_env.bash`
 
-        *   `init_python.bash`
+        *   `bootstrap_venv.bash`
             (so that subsequent call `bootstrap_outside_venv.bash` goes to package artifact in `venv`)
 
         *   `bootstrap_outside_venv.bash` (again, every time - see annotations above)
-            *   `init_python.bash`
+            *   `bootstrap_venv.bash`
             *   `deploy_config_files.bash`
             *   `deploy_resource_files.bash`
             *   `generate_artifacts.bash`

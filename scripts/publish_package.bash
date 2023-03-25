@@ -16,16 +16,18 @@
 # - create tag
 # - publish package
 
+# Debug: Print commands before execution:
+#set -x
+# Debug: Print commands after reading from a script:
+#set -v
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
 # Exit on non-zero exit code from a command:
 set -e
+# Inherit trap on ERR by sub-shells:
+set -E
 # Error on undefined variables:
 set -u
-# Debug: Print commands after reading from a script:
-#set -v
-# Debug: Print commands before execution:
-#set -x
 
 # Switch to dir of the script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -45,7 +47,7 @@ unset ARGRELAY_DEV_SHELL
 
 # Python config:
 source ./python_conf.bash
-# Use `"${path_to_venvX}"` (if does not exists, run `init_python.bash` by starting `dev_shell.bash`):
+# Use `"${path_to_venvX}"` (if does not exists, run `bootstrap_venv.bash` by starting `dev_shell.bash`):
 # shellcheck disable=SC2154
 source "${path_to_venvX}"/bin/activate
 

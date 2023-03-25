@@ -68,9 +68,18 @@ class ThisTestCase(TestCase):
             self.assertTrue(os.path.isdir("env_tests"))
             self.assertFalse(os.path.exists("env_tests/__init__.py"))
 
+    def test_config_base_dir_is_not_overriden(self):
+        """
+        `ARGRELAY_CONF_BASE_DIR` should not be defined
+
+        This is to ensure clean env (without overrides) works as priority.
+        """
+
+        self.assertTrue("ARGRELAY_CONF_BASE_DIR" not in os.environ)
+
     @skipIf(
         os.environ.get("ARGRELAY_DEV_SHELL", False) or os.environ.get("PYCHARM_HOSTED", False),
-        "Skip when in `dev_shell.bash` or IDE to allow deployed config files.",
+        "To allow deployed config files, skip when in `dev_shell.bash` or in IDE.",
     )
     def test_config_files_are_not_deployed(self):
         """
@@ -82,6 +91,8 @@ class ThisTestCase(TestCase):
         Move them under different name to preserve or delete them completely.
 
         This, in turn ensures that no other tests rely on their existence (and use proper file access mocking).
+
+        Note that `test_config_base_dir_is_not_overriden` ensures that we only need to test for ~ = user home.
         """
 
         for file_path in [

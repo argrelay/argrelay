@@ -5,3 +5,4 @@ There are several `feature_status`-es:
 *   `TODO`: clear how it should work, but not implemented.
 *   `TEST`: implemented and seems working - cover by tests.
 *   `DONE`: all good, maintain.
+*   `OBSOLETE`: no more applicable.

@@ -1,4 +1,6 @@
 
+TODO: Content of this file is obsolete due to FS_85_33_46_53 `bootstrap_venv.bash`. To be updated.
+
 This doc describes `pip install` method from `dev_env_and_target_env_diff.md`.
 
 # Installation
