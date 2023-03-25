@@ -31,14 +31,15 @@ to run a standby data server.
 
 Unlike static|generated|offline index, standby server also naturally supports dynamic data updates.
 
+<!--
 <a name="argrelay-accidental-use-case"></a>
 ### Accidental use cases
 
 Familiar terminal with:
-*   data-intensive CLI and seamless search
-*   minimalistic enum-based query syntax to command (not troubleshoot)
-*   large catalogues of discoverable functions
-*   live data updates
+*   data-intensive CLI and seamless search through live data
+*   minimalistic enum-based query syntax
+*   catalogues of selectable functions with unified/redefined CLI
+-->
 
 <a name="argrelay-name"></a>
 # What's in a name?
