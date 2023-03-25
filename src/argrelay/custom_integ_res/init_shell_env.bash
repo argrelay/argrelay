@@ -43,9 +43,9 @@ done
 
 # Disable exit on errors and any extra debug info for interactive shell
 # (see enabling them for the duration of this script above):
-set +o pipefail
-set +e
-set +E
 set +u
+set +E
+set +e
+set +o pipefail
 set +v
 set +x

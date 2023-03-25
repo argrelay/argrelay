@@ -143,11 +143,12 @@ bind -x '"\eQ":"invoke_completion"'
 PATH="${script_dir}:${PATH}"
 export PATH
 
+# TODO: Figure out how to save these settings on start and enter on exit.
 # Disable exit on errors and any extra debug info for interactive shell
 # (see enabling them for the duration of this script above):
-#set +o pipefail
-#set +e
-#set +E
 #set +u
+#set +E
+#set +e
+#set +o pipefail
 #set +v
 #set +x
