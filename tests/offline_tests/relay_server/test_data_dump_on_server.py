@@ -8,7 +8,7 @@ from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.server_spec.const_int import (
     RELAY_LINE_ARGS_PATH,
 )
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
@@ -24,11 +24,7 @@ class ThisTestCase(TestCase):
         """
 
         env_mock_builder = (
-            # Server-only mock:
-            EnvMockBuilder()
-            .set_mock_client_config_file_read(False)
-            .set_mock_client_input(False)
-            .set_client_config_with_local_server(False)
+            ServerOnlyEnvMockBuilder()
             # Load all data:
             .set_test_data_ids_to_load([
                 "TD_63_37_05_36"  # demo

@@ -91,7 +91,9 @@ class EnvMockBuilder:
     command_args: list[str] = field(default_factory = lambda: [])
     _command_args_are_set: bool = False
 
-    cursor_cpos: int = 0
+    cursor_cpos: int = -1
+    _cursor_cpos_is_set: bool = False
+
     comp_type: CompType = CompType.PrefixShown
     comp_key: int = 0
 
@@ -136,7 +138,6 @@ class EnvMockBuilder:
         Used as input for `RunMode.CompletionMode` because `COMP_LINE` is env var what Bash sets
         """
         self.command_line = command_line
-        self.cursor_cpos = len(self.command_line)
         self._command_line_is_set = True
         return self
 
@@ -150,6 +151,7 @@ class EnvMockBuilder:
 
     def set_cursor_cpos(self, cursor_cpos: int):
         self.cursor_cpos = cursor_cpos
+        self._cursor_cpos_is_set = True
         return self
 
     def set_comp_type(self, comp_type: CompType):
@@ -253,6 +255,12 @@ class EnvMockBuilder:
         # Ensure there are no false expectations if conflicting setup is done:
         assert not (self._command_line_is_set and self._command_args_are_set), "both cannot be true"
 
+        if self._command_line_is_set:
+            assert self._cursor_cpos_is_set, "setting command line (in CompletionMode) requires cursor cpos"
+
+        if self._command_args_are_set:
+            assert not self._cursor_cpos_is_set, "if args are set (in InvocationMode), cursor pos is not set"
+
         if self.is_client_config_with_local_server:
             # So far, local server is only used for testing (which implies using mocked client config file access).
             # If fails here, for consistency, either enable client config file mocking or disable local server.
@@ -307,6 +315,7 @@ class EnvMockBuilder:
 
             if self._mock_client_input:
                 if self.run_mode == RunMode.CompletionMode:
+                    # TODO: make explicit function "mock_client_input_on_CompletionMode" with all three args required.
                     yield_list.append(exit_stack.enter_context(
                         _mock_client_input_in_completion_mode(
                             self.command_line,
@@ -315,18 +324,23 @@ class EnvMockBuilder:
                         )
                     ))
                 elif self.run_mode == RunMode.InvocationMode:
+                    # TODO: make explicit function "mock_client_input_on_InvocationMode" with just command_args.
                     if self._command_args_are_set:
+                        # TODO: do not branch here, branch on mock setup (in client tests) to make it explicit/conscious that InvocationMode is not about command_line, but command_args.
                         yield_list.append(exit_stack.enter_context(
                             _mock_client_input_in_invocation_mode_with_args(
                                 self.command_args,
                             )
                         ))
-                    else:
+                    elif self._command_line_is_set:
+                        # TODO: do not branch here, branch on mock setup (in client tests) to make it explicit/conscious that InvocationMode is not about command_line, but command_args.
                         yield_list.append(exit_stack.enter_context(
                             _mock_client_input_in_invocation_mode_with_line(
                                 self.command_line,
                             )
                         ))
+                    else:
+                        raise RuntimeError
                 else:
                     raise RuntimeError
 
@@ -375,6 +389,46 @@ class EnvMockBuilder:
         self.file_mock.path_to_mock[file_path].assert_called_with(file_path)
 
 
+@dataclass
+class ServerOnlyEnvMockBuilder(EnvMockBuilder):
+    """
+    Used in tests where client code is not invoked.
+    """
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+        # TODO: enable validation that client code is not invoked:
+        # For server-only test, client config file read should not happen.
+        # Disable expectations:
+        self.set_mock_client_config_file_read(False)
+        # For server-only test, client code is not used, but if it is, try to fail via REST API:
+        self.set_client_config_with_local_server(False)
+        # For server-only test, client input mocking is not required:
+        self.set_mock_client_input(False)
+
+
+@dataclass
+class LiveServerEnvMockBuilder(EnvMockBuilder):
+    """
+    Used in tests where client talks to some live server.
+
+    The purpose of this mock is to test server data (rather than code).
+    """
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+        # TODO: enable validation that client code is not invoked:
+        # For live server test, server config file read should not happen by in-process server code.
+        # Disable expectations:
+        self.set_mock_server_config_file_read(False)
+        # For live server test, running local server contradicts with the purpose:
+        self.set_client_config_with_local_server(False)
+
+
 @contextlib.contextmanager
 def _mongo_client_mock_manager():
     get_mongo_client_orig = MongoClientWrapper.get_mongo_client
@@ -395,11 +449,9 @@ def _mock_client_input_in_completion_mode(command_line: str, cursor_cpos: int, c
         yield env_mock
 
 
-@contextlib.contextmanager
 def _mock_client_input_in_invocation_mode_with_line(command_line: str):
     command_args = re.compile(SpecialChar.TokenDelimiter.value).split(command_line)
-    with mock.patch.object(sys, "argv", command_args) as argv_mock:
-        yield argv_mock
+    return _mock_client_input_in_invocation_mode_with_args(command_args)
 
 
 @contextlib.contextmanager

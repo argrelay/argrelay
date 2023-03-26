@@ -14,7 +14,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
 from argrelay.test_helper import change_to_known_repo_path
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
@@ -28,11 +28,7 @@ class ThisTestCase(TestCase):
         # * `load_custom_integ_server_config_dict`
         # * `load_custom_integ_client_config_dict`
         env_mock_builder = (
-            EnvMockBuilder()
-            # TODO: have pre-configured mocks: with client, without client, any other variants?
-            # Not running the client in ths test:
-            .set_client_config_with_local_server(False)
-            .set_mock_client_config_file_read(False)
+            ServerOnlyEnvMockBuilder()
         )
         with env_mock_builder.build():
 

@@ -95,6 +95,7 @@ server_config_desc = TypeDesc(
         connection_config_: connection_config_desc.dict_example,
         mongo_config_: mongo_config_desc.dict_example,
         query_cache_config_: query_cache_config_desc.dict_example,
+        gui_banner_config_: gui_banner_config_desc.dict_example,
         plugin_instance_id_load_list_: [
             "some_plugin_instance_id",
         ],
