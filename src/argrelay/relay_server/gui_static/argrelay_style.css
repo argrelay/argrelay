@@ -1,0 +1,127 @@
+
+* {
+    font-family: monospace;
+}
+
+.top_container {
+    margin-top: 1em;
+}
+
+.box_label {
+    width: 100%;
+    color: skyblue;
+    text-align: right;
+}
+
+#argrelay_banner {
+    font-size: large;
+    color: black;
+    text-align: center;
+}
+
+/***********************************************************************************************************************
+Input elements
+***********************************************************************************************************************/
+
+#command_history,
+#command_line_input {
+    width: 100%;
+    border-width: 1px;
+
+    /*
+    Limit size of the input element to the container:
+    https://stackoverflow.com/a/21345170/441652
+    */
+    box-sizing: border-box;
+
+    background-color: whitesmoke;
+}
+
+#command_history {
+    color: grey;
+}
+
+#command_line_input {
+    color: black;
+}
+
+/***********************************************************************************************************************
+Output elements
+***********************************************************************************************************************/
+
+#suggestion_output,
+#describe_output,
+#invocation_output {
+    min-height: 1px;
+    background-color: whitesmoke;
+    border-color: gray;
+    border-style: none;
+}
+
+#invocation_output {
+    color: teal;
+    white-space: pre;
+}
+
+/***********************************************************************************************************************
+Suggestion details
+***********************************************************************************************************************/
+
+#suggestion_output {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.suggested_item {
+    white-space: nowrap;
+    width: fit-content;
+    color: blue;
+    margin: 0.2em;
+    padding: 0.2em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+}
+
+.input_part {
+}
+
+.incomplete_part {
+    background-color: palegreen;
+}
+
+.unique_part {
+    background-color: lightpink;
+}
+
+.comment_part {
+    color: darkgreen;
+}
+
+/***********************************************************************************************************************
+Search outline details
+***********************************************************************************************************************/
+
+.arg_list_container {
+    margin-left: 2em;
+}
+
+.explicit_arg_value {
+    color: purple;
+}
+
+.selected_arg_value {
+    color: darkgreen;
+}
+
+.unknown_arg_value {
+    color: darkorange;
+}
+
+.suggested_arg_value {
+    color: blue;
+}
+
+.no_data {
+    color: grey;
+}

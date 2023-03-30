@@ -27,6 +27,16 @@ A char index within a string.
 
 See also `ipos`.
 
+### `command_id`
+
+The very first arg on the command line (`PosArg` with 0 ipos = index 0).
+
+For example, `some_command` is `command_id` in this command line:
+
+```sh
+some_command goto host dev amer upstream qwer
+```
+
 # D
 
 ### `data_envelope`

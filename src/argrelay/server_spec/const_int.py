@@ -11,6 +11,7 @@ DEFAULT_OPEN_API_VERSION = "3.0.2"
 DESCRIBE_LINE_ARGS_PATH = "/describeLineArgs/"
 PROPOSE_ARG_VALUES_PATH = "/proposeArgValues/"
 RELAY_LINE_ARGS_PATH = "/relayLineArgs/"
+ARGRELAY_GUI_PATH = "/argrelay_gui/"
 
 # main:
 DEFAULT_IP_ADDRESS = "localhost"

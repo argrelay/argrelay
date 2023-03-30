@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{{ url_for("static", filename = "argrelay_style.css") }}"/>
+    <script
+        type="text/javascript"
+        src="{{ url_for("static", filename = "argrelay_client.js") }}"
+        propose_arg_values_url="{{ url_for("blueprint_api.propose_arg_values") }}"
+        describe_line_args_url="{{ url_for("blueprint_api.describe_line_args") }}"
+        relay_line_args_url="{{ url_for("blueprint_api.relay_line_args") }}"
+        defer
+    ></script>
+    <title>argrelay</title>
+</head>
+<body>
+
+    <div class="top_container">
+        <div id="argrelay_banner">
+        argrelay
+        </div>
+        {{ custom_html | safe }}
+    </div>
+
+    <div class="top_container">
+        <div
+            id="command_history_label"
+            class="box_label"
+            for="command_history"
+        >command history:</div>
+        <select id="command_history">
+        </select>
+    </div>
+
+    <div class="top_container">
+        <div
+            id="command_line_label"
+            class="box_label"
+            for="command_line_input"
+        >input command line:</div>
+        <input
+            id="command_line_input"
+            type="text"
+            placeholder="... select suggested args with Tab-auto-completion"
+        />
+    </div>
+
+    <div class="top_container">
+        <div
+            id="suggestion_output_label"
+            class="box_label"
+            for="suggestion_output"
+        >suggested args:</div>
+        <div id="suggestion_output">
+        </div>
+    </div>
+
+    <div class="top_container">
+        <div
+            id="describe_output_label"
+            class="box_label"
+            for="describe_output"
+        >search outline:</div>
+       <div id="describe_output">
+       </div>
+    </div>
+
+    <div class="top_container">
+        <div
+            id="invocation_output_label"
+            class="box_label"
+            for="invocation_output"
+        >last invocation response:</div>
+        <div id="invocation_output"></div>
+    </div>
+
+    <template id="envelope_container_temp">
+        <div>
+            <span class="envelope_class"></span>
+            <span class="found_count"></span>
+            <div class="arg_list_container">
+            </div>
+        </div>
+    </template>
+
+    <template id="arg_container_temp">
+        <div>
+            <span class="arg_type"></span>
+            <span class="arg_value"></span>
+            <span class="arg_source"></span>
+            <span class="remaining_values"></span>
+        </div>
+    </template>
+
+    <template id="command_history_option_temp">
+        <option value="item1">item1</option>
+    </template>
+
+    <template id="suggested_item_temp">
+        <div class="suggested_item"><span class="input_part"></span><span class="incomplete_part"></span><span class="unique_part"></span><span class="comment_part"></span></div>
+    </template>
+
+</body>
+</html>
