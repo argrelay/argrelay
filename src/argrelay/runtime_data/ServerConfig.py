@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from argrelay.mongo_data.MongoConfig import MongoConfig
+from argrelay.relay_server.GuiBannerConfig import GuiBannerConfig
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
@@ -14,6 +15,7 @@ class ServerConfig:
     connection_config: ConnectionConfig
     mongo_config: MongoConfig
     query_cache_config: QueryCacheConfig
+    gui_banner_config: GuiBannerConfig
 
     plugin_instance_id_load_list: list[str]
     """

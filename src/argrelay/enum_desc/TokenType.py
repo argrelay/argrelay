@@ -29,6 +29,7 @@ class TokenType(Enum):
 
 
 def get_token_type(all_tokens: list[str], token_ipos: int) -> TokenType:
+    # TODO: POC: Either remove it or implement properly: just testing named args:
     if all_tokens[token_ipos].endswith(SpecialChar.KeyValueDelimiter.value):
         return TokenType.KeyArg
     else:

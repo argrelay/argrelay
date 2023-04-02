@@ -21,6 +21,14 @@ query_cache_config:
     query_cache_ttl_sec: 60
     query_cache_max_size_bytes: 1048576 # 1 MiB
 
+gui_banner_config:
+    custom_html: |
+        <div style="color: skyblue; font-size: small;">
+        This is a demo GUI client accessing mocked data.</br>
+        Command invocation is disabled providing only server response.</br>
+        See <a href="https://github.com/uvsmtid/argrelay">more info about this project</a>.
+        </div>
+
 plugin_instance_id_load_list:
 
     -   FirstArgInterpFactory

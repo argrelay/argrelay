@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
+from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.plugin_interp.TreePathInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.runtime_context.InterpContext import InterpContext
 
@@ -66,8 +67,7 @@ class TreePathInterp(AbstractInterp):
                 return
 
             if not self.interp_ctx.unconsumed_tokens:
-                # Impossible to consume more arg - use default of the current sub-tree:
-                self.interp_factory_id = curr_sub_tree[default_tree_leaf_]
+                self.set_default_factory_id(curr_sub_tree)
                 return
 
             # Always consume next unconsumed token:
@@ -85,11 +85,17 @@ class TreePathInterp(AbstractInterp):
                     curr_sub_tree = curr_sub_tree[curr_token_value]
                     continue
                 else:
-                    # Impossible to consume more arg - use default of the current sub-tree:
-                    self.interp_factory_id = curr_sub_tree[default_tree_leaf_]
+                    self.set_default_factory_id(curr_sub_tree)
                     return
             else:
                 raise LookupError()
+
+    def set_default_factory_id(self, curr_sub_tree):
+        # Impossible to consume more arg - use default of the current sub-tree:
+        if default_tree_leaf_ in curr_sub_tree:
+            self.interp_factory_id = curr_sub_tree[default_tree_leaf_]
+        else:
+            self.interp_factory_id = NoopInterpFactory.__name__
 
     def try_iterate(self) -> InterpStep:
         return InterpStep.NextInterp

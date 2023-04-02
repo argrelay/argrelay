@@ -20,8 +20,8 @@ from argrelay.server_spec.const_int import (
 )
 
 
-def create_blueprint(local_server: LocalServer):
-    root_blueprint = Blueprint("root_blueprint", __name__)
+def create_blueprint_api(local_server: LocalServer):
+    blueprint_api = Blueprint("blueprint_api", __name__)
 
     describe_line_args_handler = DescribeLineArgsServerRequestHandler(local_server)
     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
@@ -44,7 +44,7 @@ def create_blueprint(local_server: LocalServer):
         return input_ctx
 
     # TODO: Add REST test on client and server side.
-    @root_blueprint.route(DESCRIBE_LINE_ARGS_PATH, methods = ['post'])
+    @blueprint_api.route(DESCRIBE_LINE_ARGS_PATH, methods = ['post'])
     @swag_from(DescribeLineArgsSpec.spec_data)
     def describe_line_args():
         input_ctx = create_input_ctx(RunMode.InvocationMode)
@@ -55,7 +55,7 @@ def create_blueprint(local_server: LocalServer):
         return response_json
 
     # TODO: Add REST test on client and server side.
-    @root_blueprint.route(PROPOSE_ARG_VALUES_PATH, methods = ['post'])
+    @blueprint_api.route(PROPOSE_ARG_VALUES_PATH, methods = ['post'])
     @swag_from(ProposeArgValuesSpec.spec_data)
     def propose_arg_values():
         input_ctx = create_input_ctx(RunMode.CompletionMode)
@@ -73,7 +73,7 @@ def create_blueprint(local_server: LocalServer):
             ElapsedTime.measure("before_sending_response")
 
     # TODO: Add REST test on client and server side.
-    @root_blueprint.route(RELAY_LINE_ARGS_PATH, methods = ['post'])
+    @blueprint_api.route(RELAY_LINE_ARGS_PATH, methods = ['post'])
     @swag_from(RelayLineArgsSpec.spec_data)
     def relay_line_args():
         input_ctx = create_input_ctx(RunMode.InvocationMode)
@@ -82,8 +82,8 @@ def create_blueprint(local_server: LocalServer):
         ElapsedTime.measure("before_sending_response")
         return response_json
 
-    @root_blueprint.teardown_request
+    @blueprint_api.teardown_request
     def show_teardown(exception):
         ElapsedTime.print_all_if_debug()
 
-    return root_blueprint
+    return blueprint_api
