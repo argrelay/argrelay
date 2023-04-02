@@ -11,7 +11,7 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.test_helper import change_to_known_repo_path, test_data_
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
@@ -63,10 +63,7 @@ class ThisTestCase(TestCase):
         print(test_data)
 
         env_mock_builder = (
-            EnvMockBuilder()
-            # Not using client:
-            .set_mock_client_config_file_read(False)
-            .set_client_config_with_local_server(False)
+            ServerOnlyEnvMockBuilder()
             .set_test_data_ids_to_load([
                 "TD_63_37_05_36",  # demo
             ])

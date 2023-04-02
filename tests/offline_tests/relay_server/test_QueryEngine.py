@@ -10,7 +10,7 @@ from argrelay.runtime_context.RequestContext import RequestContext
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import parse_line_and_cpos, line_no
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
@@ -52,16 +52,8 @@ class ThisTestCase(TestCase):
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 env_mock_builder = (
-                    EnvMockBuilder()
-                    .set_run_mode(RunMode.CompletionMode)
-                    .set_command_line(command_line)
-                    .set_cursor_cpos(cursor_cpos)
-                    .set_comp_type(comp_type)
+                    ServerOnlyEnvMockBuilder()
                     .set_enable_query_cache(enable_query_cache)
-                    # Server-only mock:
-                    .set_mock_client_config_file_read(False)
-                    .set_mock_client_input(False)
-                    .set_client_config_with_local_server(False)
                     .set_test_data_ids_to_load(["TD_63_37_05_36"])  # demo
                 )
                 with env_mock_builder.build():

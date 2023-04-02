@@ -10,7 +10,7 @@ from argrelay.schema_config_core_client.ConnectionConfigSchema import connection
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
 from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH, BASE_URL_FORMAT
 from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, LiveServerEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
@@ -42,10 +42,8 @@ class ThisTestCase(TestCase):
         responses.add(mocked_response)
 
         env_mock_builder = (
-            EnvMockBuilder()
+            LiveServerEnvMockBuilder()
             .set_client_config_dict(client_config_desc.dict_example)
-            .set_client_config_with_local_server(False)
-            .set_mock_server_config_file_read(False)
             .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)

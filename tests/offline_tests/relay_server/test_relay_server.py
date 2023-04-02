@@ -14,7 +14,7 @@ from argrelay.server_spec.const_int import (
     RELAY_LINE_ARGS_PATH,
 )
 from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH, server_op_data_schemas
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
@@ -25,11 +25,7 @@ class ThisTestCase(TestCase):
     def setUp(self):
 
         env_mock_builder = (
-            # Server-only mock:
-            EnvMockBuilder()
-            .set_mock_client_config_file_read(False)
-            .set_mock_client_input(False)
-            .set_client_config_with_local_server(False)
+            ServerOnlyEnvMockBuilder()
             # Load all data:
             .set_test_data_ids_to_load([])
         )

@@ -4,6 +4,10 @@ TODO: top todos
 
 To demo:
 
+*   Add color for envelope class in desc output - green if found, yellow if not yet, gray if only planned.
+
+*   Clean `#`-comments from command line arguments by parser.
+
 *   Consumed and unconsumed tokens:
     *   Send them to invocation (e.g. to decide to run or not to run function and how they can be used).
     *   Verify them in tests.
@@ -141,6 +145,10 @@ Docs:
     *   BUT: they are not naturally/intuitively inter-change-able as `data_envelope` properties are hardly `command_line` arguments.
 
 Extra:
+
+*   Make describe output take into account current prefix (incomplete and not yet consumed) arg
+    which matches several options (which are suggested on Tab, but describe should reduce output from all to just
+    data which pertain to options matching that prefix).
 
 *   Consider adding options to be able to limit possible values for some selected tree leaf (FS_01_89_09_24 tree).
     Currently, we can specify `ArgSource.InitValue` to one value which will reduce search results (and limit values).
