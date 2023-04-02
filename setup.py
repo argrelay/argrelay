@@ -17,7 +17,7 @@ extras_require = {
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.0.0.dev39",
+    version = "0.0.0.dev40",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server - total recall",
@@ -62,6 +62,11 @@ setuptools.setup(
             # config files:
             "argrelay.conf.d/argrelay.server.yaml",
             "argrelay.conf.d/argrelay.client.json",
+
+            # GUI client:
+            "relay_server/gui_static/argrelay_client.js",
+            "relay_server/gui_static/argrelay_style.css",
+            "relay_server/gui_templates/argrelay_main.html",
 
             # other resource files:
             "custom_integ_res/argrelay_rc.bash",

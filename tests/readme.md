@@ -32,3 +32,7 @@ The only useful practical difference between them are these directories:
     Separate category of tests which are okay to fail on branches
     (and it is okay not to run them to avoid the noise during development),
     but they will eventually need to pass before the release.
+
+*   `ui_tests`
+
+    Cypress tests for built-in UI - they are started manually and separately at the moment.

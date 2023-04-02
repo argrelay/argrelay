@@ -42,7 +42,29 @@ Input elements
 }
 
 #command_line_input {
-    color: black;
+    color: white;
+    background-color: black;
+}
+
+::placeholder {
+    color: skyblue;
+    text-align: right;
+}
+
+/***********************************************************************************************************************
+Input states
+***********************************************************************************************************************/
+
+.io_state_client_synced_input {
+    color: white !important;
+}
+
+.io_state_pending_request_input {
+    color: orange !important;
+}
+
+.io_state_pending_response_input {
+    color: dodgerblue !important;
 }
 
 /***********************************************************************************************************************

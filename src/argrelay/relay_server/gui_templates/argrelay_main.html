@@ -29,7 +29,10 @@
             class="box_label"
             for="command_history"
         >command history:</div>
-        <select id="command_history">
+        <select
+            id="command_history"
+            data-cy="command_history"
+        >
         </select>
     </div>
 
@@ -41,8 +44,11 @@
         >input command line:</div>
         <input
             id="command_line_input"
+            data-cy="command_line_input"
+            contenteditable="true"
+            spellcheck="false"
             type="text"
-            placeholder="... select suggested args with Tab-auto-completion"
+            placeholder="... type command selecting suggested args via Tab-auto-completion"
         />
     </div>
 
@@ -52,8 +58,10 @@
             class="box_label"
             for="suggestion_output"
         >suggested args:</div>
-        <div id="suggestion_output">
-        </div>
+        <div
+            id="suggestion_output"
+            data-cy="suggestion_output"
+        ></div>
     </div>
 
     <div class="top_container">
@@ -94,7 +102,7 @@
     </template>
 
     <template id="command_history_option_temp">
-        <option value="item1">item1</option>
+        <option value="-1">unknown_item</option>
     </template>
 
     <template id="suggested_item_temp">

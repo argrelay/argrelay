@@ -1,8 +1,9 @@
+import logging
 import os
 
 import pkg_resources
 from flasgger import Swagger
-from flask import Flask
+from flask import Flask, request
 
 from argrelay import relay_server
 from argrelay.relay_server.LocalServer import LocalServer
@@ -40,6 +41,12 @@ class CustomFlaskApp(Flask):
         self.local_server = LocalServer(server_config_desc.from_default_file())
 
     def run_with_config(self):
+        # Use custom logging at DEBUG level - see: `log_request` and `log_response:
+        self.logger.setLevel(logging.DEBUG)
+        # Log only at ERROR level by default logger:
+        # https://stackoverflow.com/a/18379764/441652
+        logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
         self.run(
             # Contrary to "debug" keyword, if IDE debug is needed, set `debug` to `False` to avoid reloader:
             # https://stackoverflow.com/a/53790400/441652
@@ -92,6 +99,32 @@ def create_app() -> CustomFlaskApp:
         template = swagger_template,
         config = swagger_config,
     )
+
+    @flask_app.before_request
+    def log_request():
+        flask_app.logger.debug(
+            "request: %s\n    headers: %s\n    body: %s",
+            request,
+            request.headers.__repr__(),
+            request.get_data(),
+        )
+
+    @flask_app.after_request
+    def log_response(response):
+        # Wrap into try/except because of this:
+        # https://stackoverflow.com/q/64006669/441652
+        # noinspection PyBroadException
+        try:
+            response_data = str(response.get_data())
+        except Exception as e:
+            response_data = str(e)
+        flask_app.logger.debug(
+            "response: %s\n    headers: %s\n    body: %s\n",
+            response,
+            response.headers.__repr__(),
+            response_data,
+        )
+        return response
 
     flask_app.register_blueprint(create_blueprint_api(flask_app.local_server))
     flask_app.register_blueprint(create_blueprint_gui(flask_app.local_server.server_config.gui_banner_config))

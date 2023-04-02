@@ -24,8 +24,8 @@ query_cache_config:
 gui_banner_config:
     custom_html: |
         <div style="color: skyblue; font-size: small;">
-        This is a demo GUI client accessing mocked data.</br>
-        Command invocation is disabled providing only server response.</br>
+        This is a demo GUI client accessing mocked data.<br/>
+        Command invocation is disabled providing only server response.<br/>
         See <a href="https://github.com/uvsmtid/argrelay">more info about this project</a>.
         </div>
 
@@ -173,6 +173,7 @@ plugin_dict:
             test_data_ids_to_load:
                 #-   TD_70_69_38_46  # no data
                 -   TD_63_37_05_36  # demo
+                # WARNING: with `mongomock` and not `enable_query_cache` requests run up for TD_38_03_48_51 may run up to 10 mins:
                 #-   TD_38_03_48_51  # large generated
 
     GitRepoLoader:

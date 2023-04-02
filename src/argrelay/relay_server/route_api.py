@@ -1,5 +1,5 @@
 from flasgger import swag_from
-from flask import request, Blueprint
+from flask import request, Blueprint, Response
 
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
@@ -65,10 +65,18 @@ def create_blueprint_api(local_server: LocalServer):
         send_plain_text = True
         try:
             if send_plain_text:
-                return "\n".join(response_dict[arg_values_])
+                # Plain text for minimal parsing (no lib required):
+                return Response(
+                    "\n".join(response_dict[arg_values_]),
+                    mimetype = "text/plain",
+                )
             else:
+                # JSON - parsing lib required:
                 response_json = arg_values_desc.dict_schema.dumps(response_dict)
-                return response_json
+                return Response(
+                    response_json,
+                    mimetype = "application/json",
+                )
         finally:
             ElapsedTime.measure("before_sending_response")
 
