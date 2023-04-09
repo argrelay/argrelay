@@ -19,7 +19,7 @@ npx cypress open
 *   Select E2E.
 *   Select Chrome.
 *   Press "Scaffold example specs".
-*   Try running `basic_checks.cy.js`.
+*   Try running `todo.cy.js`.
 
 In case of this error:
 
