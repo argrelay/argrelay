@@ -103,8 +103,9 @@ def create_app() -> CustomFlaskApp:
     @flask_app.before_request
     def log_request():
         flask_app.logger.debug(
-            "request: %s\n    headers: %s\n    body: %s",
+            "request: %s\n    source: %s\n    headers: %s\n    body: %s",
             request,
+            request.remote_addr,
             request.headers.__repr__(),
             request.get_data(),
         )
