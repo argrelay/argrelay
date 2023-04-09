@@ -47,6 +47,73 @@ Integration:
 *   Search via different collections: https://github.com/uvsmtid/argrelay/issues/10
     Query specific Mongo DB collection.
 
+GUI bits:
+
+*   Make input element classes as states:
+    *   client_server_synced
+    *   pending_request
+    *   pending_response
+    Test transition:
+    *   pending_response -> on_eq -> client_server_synced
+    *   pending_response -> on_response -> client_server_synced
+
+*   Add Swagger API link to the banner.
+
+*   Move gui under /gui and api under /api links.
+
+*   Rename ui into gui everywhere = convention.
+
+*   Add info descriptions (tooltip or question mark with description).
+
+*   When there is no common prefix, Tab should not work, flash command line with red color.
+
+*   When there is no common prefix, Tab should not work (do not replace current token).
+
+*   Show version on the web page.
+
+*   Add info that describe output is accessible in shell via Alt+Shift+Q.
+
+*   Test with lots of data - is there any issues with races between user input and server response?
+    PROGRESS:
+
+*   Handle `help` response differently - print help.
+
+*   Disable spellcheck on the command line field.
+    DONE:
+
+*   Add spinner when fetch is working. Or change color of the command line input.
+    PROGRESS:
+
+*   DONE: Set command line input to black.
+
+*   Tab should only work when no request is running. Actually, this is related to not showing suggestions when requests are running.
+
+*   Request should start when no request running and there is a change in input.
+    PROGRESS:
+
+*   Make command history a list (not drop down). Make it scrollable beyond 20 commands.
+
+*   When request is running suggestion should be empty and show somewhat a spinner (loading indicator) as they are invalid.
+    PROGRESS:
+
+*   Do not render query results if the command line is changed again on the result arrival.
+    PROGRESS:
+
+*   Run both queries as one. Update everything when both are over. Save results from each until both are over?
+    ABANDONED: Not needed as we want to update UI elements independently.
+    https://stackoverflow.com/a/55991456/441652
+
+*   Can we cancel request if new request has to be made and old one is invalid (e.g. caret has moved)?
+    PROGRESS:
+    https://stackoverflow.com/a/47250621/441652
+
+*   Fire suggestion request only if version of the command line has not changed for some time.
+    PROGRESS:
+
+*   Rename "describe" to "search" (outline) and implement function which does what Alt+Shift+Q does but on enter.
+
+*   Add note that dev/test/discovery/monitoring tool.
+
 Before `0.0.0`:
 
 *   Rename weird names.
