@@ -74,6 +74,9 @@ Output elements
 #suggestion_output,
 #describe_output,
 #invocation_output {
+}
+
+.output_box {
     min-height: 1px;
     background-color: whitesmoke;
     border-color: gray;
