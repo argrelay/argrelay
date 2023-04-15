@@ -52,6 +52,15 @@
         />
     </div>
 
+    <div class="legend_container">
+        <div class="legend_caption">
+            command line legend:
+        </div>
+        <div class="input_legend">
+            <span class="io_state_client_synced_input">[client_synced]</span><span class="io_state_pending_request_input">[pending_request]</span><span class="io_state_pending_response_input">[pending_response]</span>
+        </div>
+    </div>
+
     <div class="top_container">
         <div
             id="suggestion_output_label"
@@ -63,6 +72,15 @@
             class="output_box"
             data-cy="suggestion_output"
         >
+        </div>
+    </div>
+
+    <div class="legend_container">
+        <div class="legend_caption">
+            suggested arg legend:
+        </div>
+        <div class="output_legend">
+            <span class="input_part">[intput_prefix]</span><span class="incomplete_part">[common_infix]</span><span class="unique_part">[unique_tail]</span><span class="comment_part">[arg_comment]</span>
         </div>
     </div>
 
