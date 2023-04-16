@@ -24,9 +24,32 @@ query_cache_config:
 gui_banner_config:
     custom_html: |
         <div style="color: skyblue; font-size: small;">
-        This is a demo GUI client accessing mocked data.<br/>
-        Command invocation is disabled providing only server response.<br/>
+
+        To start, type either|or:
+        <ul>
+            <li>relay_demo goto host</li>
+            <li>relay_demo goto service</li>
+        </ul>
+        Then, narrow down search by... IP, region, etc.<br/>
+        <br/>
+        This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config to run CLI).<br/>
+        It is convenient for search, testing and command lookup.<br/>
+        The server data is mocked.<br/>
+        <br/>
+        Normally, CLI client is used to receive these responses from the server:
+        <ol>
+            <li>auto-completion options (on Tab)</li>
+            <li>search responses (on Alt+Shift+Q)</li>
+            <li>command invocation data (on Enter)</li>
+        </ol>
+        However, this GUI client is limited and slightly different from CLI client:
+        <ul>
+            <li>(1) Tab is only used to complete common_infix - request to provide suggestions is sent automatically on timeout.</li>
+            <li>(2) Search request (Alt+Shift+Q) is sent automatically on timeout.</li>
+            <li>(3) Command invocation (Enter) is disabled printing only invocation data from the server (use CLI client to run commands).</li>
+        </ul>
         See <a href="https://github.com/uvsmtid/argrelay">more info about this project</a>.
+
         </div>
 
 plugin_instance_id_load_list:
