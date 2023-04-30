@@ -17,9 +17,19 @@
 <body>
 
     <div class="top_container">
-        <div id="argrelay_banner">
+        <div id="argrelay_title">
         argrelay
         </div>
+        <div id="argrelay_version">
+        {{ argrelay_version }}
+        </div>
+        <div id="argrelay_api_docs">
+        <a href="{{ argrelay_api_docs_path }}" target="_blank">API docs</a>
+        </div>
+        <div id="argrelay_api_spec">
+        <a href="{{ argrelay_api_spec_path }}" target="_blank">API spec</a>
+        </div>
+
         {{ custom_html | safe }}
     </div>
 

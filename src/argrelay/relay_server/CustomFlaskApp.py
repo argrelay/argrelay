@@ -72,7 +72,7 @@ def create_app() -> CustomFlaskApp:
         "info": {
             "title": server_title,
             "version": server_version,
-            "description": f"{os.getcwd()}: run_argrelay_server",
+            "description": f"See <a href=\"{ARGRELAY_GUI_PATH}\" target=\"_blank\">built-in GUI</a>.",
         },
     }
 
@@ -129,6 +129,9 @@ def create_app() -> CustomFlaskApp:
         return redirect(ARGRELAY_GUI_PATH, code = 302)
 
     flask_app.register_blueprint(create_blueprint_api(flask_app.local_server))
-    flask_app.register_blueprint(create_blueprint_gui(flask_app.local_server.server_config.gui_banner_config))
+    flask_app.register_blueprint(create_blueprint_gui(
+        server_version,
+        flask_app.local_server.server_config.gui_banner_config,
+    ))
 
     return flask_app

@@ -13,10 +13,25 @@
     text-align: right;
 }
 
-#argrelay_banner {
-    font-size: large;
+#argrelay_title {
+    font-size: x-large;
     color: black;
-    text-align: center;
+    text-align: right;
+}
+
+#argrelay_version {
+    color: black;
+    text-align: right;
+}
+
+#argrelay_api_docs {
+    color: black;
+    text-align: right;
+}
+
+#argrelay_api_spec {
+    color: black;
+    text-align: right;
 }
 
 /***********************************************************************************************************************
