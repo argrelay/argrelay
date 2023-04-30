@@ -488,14 +488,14 @@ def capture_invocation_input(invocation_input: InvocationInput):
 
 
 def load_custom_integ_server_config_dict() -> dict:
-    test_server_config_path = _get_resource_path("argrelay.conf.d/argrelay.server.yaml")
+    test_server_config_path = _get_resource_path("sample_conf/argrelay.server.yaml")
     with open(test_server_config_path) as f:
         server_config_dict = yaml.safe_load(f)
     return server_config_dict
 
 
 def load_custom_integ_client_config_dict() -> dict:
-    test_client_config_path = _get_resource_path("argrelay.conf.d/argrelay.client.json")
+    test_client_config_path = _get_resource_path("sample_conf/argrelay.client.json")
     with open(test_client_config_path) as f:
         client_config_dict = json.load(f)
     return client_config_dict

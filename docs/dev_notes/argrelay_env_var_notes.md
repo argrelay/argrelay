@@ -7,9 +7,4 @@ These are environment variables used by `argrelay`:
 
 *   `ARGRELAY_CONF_BASE_DIR` specifies base dir for all config files (default ~ = user home).
 
-    If `ARGRELAY_CONF_BASE_DIR` is defined, config files will be looked up in:
-
-    ```sh
-    ls ${ARGRELAY_CONF_BASE_DIR}/.argrelay.conf.d/argrelay.server.yaml
-    ls ${ARGRELAY_CONF_BASE_DIR}/.argrelay.conf.d/argrelay.client.json
-    ```
+    See also `FS_16_07_78_84.conf_dir_priority.md`.

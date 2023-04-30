@@ -1,31 +1,22 @@
+# See FS_29_54_67_86 dir_structure.
 
 # Python
 __pycache__/
 /venv/
 /.tox/
 
-/build/
-
-# Python setuptools:
-/dist/
-
 # PyCharm
 /.idea/
+
+# Temporary dirs for Python tools:
+/build/
+/dist/
+
+# Target environment config:
+/conf/
 
 # Do not track files under drafts - they are shared across branch switching:
 /drafts/
 
 # Temporary files - generated or (not super-costly) recoverable.
 /temp/
-
-# Generated files:
-/run_argrelay_server
-/run_argrelay_client
-
-# Auto-created symlinks by `argrelay_rc.bash` script:
-/relay_demo
-/some_command
-
-# User-provided config (environment-dependent):
-/python_conf.bash
-

@@ -1,7 +1,7 @@
 
 This doc notes down steps to record screencast.
 
-See [`run_demo.bash`][run_demo.bash] for automatic demo.
+See [`^/exe/run_demo.bash`][run_demo.bash] for automatic demo.
 
 Install [`asciinema`][asciinema]:
 
@@ -9,10 +9,10 @@ Install [`asciinema`][asciinema]:
 sudo dnf install asciinema
 ```
 
-Go inside `dev_shell.bash`:
+Go inside `^/exe/dev_shell.bash`:
 
 ```sh
-./dev_shell.bash
+./exe/dev_shell.bash
 ```
 
 When `asciinema` starts, it spawns another user shell.
@@ -34,4 +34,4 @@ asciinema rec --stdin
 
 [asciinema]: https://github.com/asciinema/asciinema
 [generate_GIF]: https://dstein64.github.io/gifcast/
-[run_demo.bash]: ../../scripts/run_demo.bash
+[run_demo.bash]: ../../exe/run_demo.bash

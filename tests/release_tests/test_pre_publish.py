@@ -75,7 +75,7 @@ class ThisTestCase(TestCase):
 
     @skipIf(
         os.environ.get("ARGRELAY_DEV_SHELL", False) or os.environ.get("PYCHARM_HOSTED", False),
-        "To allow deployed config files, skip when in `dev_shell.bash` or in IDE.",
+        "To allow deployed config files, skip when in `^/exe/dev_shell.bash` or in IDE.",
     )
     def test_config_files_are_not_deployed(self):
         """

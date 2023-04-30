@@ -10,13 +10,13 @@ class ThisTestCase(TestCase):
     @skipIf(
         not os.environ.get("ARGRELAY_DEV_SHELL", False),
         """
-        Only `dev_shell.bash` controllably puts `${ARGRELAY_CLIENT_COMMAND}`into `PATH` env var.
+        Only `^/exe/dev_shell.bash` controllably puts `${ARGRELAY_CLIENT_COMMAND}`into `PATH` env var.
         Skip test otherwise.
         """,
     )
     def test_invoke_via_shell(self):
         """
-        Invokes client via generated `run_argrelay_client`.
+        Invokes client via generated `^/bin/run_argrelay_client`.
         """
 
         with change_to_known_repo_path("."):
