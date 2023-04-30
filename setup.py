@@ -17,7 +17,7 @@ extras_require = {
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.0.0.dev40",
+    version = "0.0.0.dev42",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server - total recall",
@@ -84,6 +84,10 @@ setuptools.setup(
     include_package_data = True,
     python_requires = ">=3.7",
     install_requires = [
+        # Use Flask 2.2.3 to avoid this error:
+        # ImportError: cannot import name 'JSONEncoder' from 'flask.json'
+        # https://stackoverflow.com/a/76116905/441652
+        "Flask==2.2.3",
         "PyYaml",
         "jsonschema",
         "flasgger",

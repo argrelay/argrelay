@@ -126,6 +126,13 @@ class prototype_state_class {
         }
     }
 
+    set_io_state_request_failed() {
+        if (this.io_state !== "request_failed") {
+            this.io_state = "request_failed";
+            this.map_io_state_to_gui_state();
+        }
+    }
+
     schedule_update(
         curr_version,
         curr_input_line,
@@ -187,6 +194,10 @@ class prototype_state_class {
                     // invalidate previous request:
                 }
                 break
+            case "request_failed":
+                this.set_io_state_request_failed();
+                // wait for input
+                return
             default:
                 console.log(`[${this.state_name}] io_state: ${this.io_state}`)
                 console.trace()
@@ -219,9 +230,16 @@ class prototype_state_class {
                     this.invalidate_state()
                 }
             })
-            .catch(error_reason => console.log(`[${this.state_name}] error_reason: ${error_reason}`))
+            .catch(error_reason => {
+                console.log(`[${this.state_name}] error_reason: ${error_reason}`)
+                this.set_io_state_request_failed()
+            })
             // Trigger check if input changed:
-            .finally(() => on_command_line_change())
+            .finally(() => {
+                if (this.io_state !== "request_failed") {
+                    on_command_line_change()
+                }
+            })
     }
 
     create_fetch_promise() {
@@ -268,6 +286,7 @@ class suggest_state_class extends prototype_state_class {
             "client_synced",
             "pending_request",
             "pending_response",
+            "request_failed",
         ]) {
             if (some_io_state === this.io_state) {
                 command_line_input_elem.classList.add(this.map_io_state_to_elem_class(some_io_state));
@@ -285,6 +304,8 @@ class suggest_state_class extends prototype_state_class {
                 return "io_state_pending_request_input"
             case "pending_response":
                 return "io_state_pending_response_input"
+            case "request_failed":
+                return "io_state_request_failed_input"
         }
     }
 

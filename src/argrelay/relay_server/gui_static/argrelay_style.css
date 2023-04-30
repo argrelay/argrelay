@@ -13,10 +13,47 @@
     text-align: right;
 }
 
-#argrelay_banner {
-    font-size: large;
+#argrelay_title {
+    font-size: x-large;
     color: black;
-    text-align: center;
+    text-align: right;
+}
+
+#argrelay_version {
+    color: black;
+    text-align: right;
+}
+
+#argrelay_api_docs {
+    color: black;
+    text-align: right;
+}
+
+#argrelay_api_spec {
+    color: black;
+    text-align: right;
+}
+
+/***********************************************************************************************************************
+Disable border for input elements
+***********************************************************************************************************************/
+
+select {
+    border: 0;
+    outline: 0;
+}
+
+select:focus {
+    outline: none;
+}
+
+input {
+    border: 0;
+    outline: 0;
+}
+
+input:focus {
+    outline: none;
 }
 
 /***********************************************************************************************************************
@@ -60,11 +97,16 @@ Input states
 }
 
 .io_state_pending_request_input {
-    color: orange !important;
+    color: yellow !important;
 }
 
 .io_state_pending_response_input {
-    color: dodgerblue !important;
+    color: lime !important;
+}
+
+.io_state_request_failed_input {
+    background-color: yellow !important;
+    color: red !important;
 }
 
 /***********************************************************************************************************************
@@ -74,6 +116,9 @@ Output elements
 #suggestion_output,
 #describe_output,
 #invocation_output {
+}
+
+.output_box {
     min-height: 1px;
     background-color: whitesmoke;
     border-color: gray;
@@ -83,6 +128,30 @@ Output elements
 #invocation_output {
     color: teal;
     white-space: pre;
+}
+
+/***********************************************************************************************************************
+Legend
+***********************************************************************************************************************/
+
+.legend_container {
+    margin-top: 0px;
+    display: flex;
+    justify-content: right;
+}
+
+.legend_caption {
+    color: skyblue;
+}
+
+.input_legend {
+    padding: 2px;
+    background-color: black;
+}
+
+.output_legend {
+    padding: 2px;
+    background-color: black;
 }
 
 /***********************************************************************************************************************
@@ -97,27 +166,30 @@ Suggestion details
 .suggested_item {
     white-space: nowrap;
     width: fit-content;
-    color: blue;
-    margin: 0.2em;
-    padding: 0.2em;
-    border-style: solid;
+    margin: 0 2px 2px 0;
+    padding: 2px;
+    background-color: black;
+    border-style: none;
     border-width: 1px;
     border-color: gray;
 }
 
 .input_part {
+    color: white;
 }
 
 .incomplete_part {
-    background-color: palegreen;
+    color: white;
+    background-color: green;
 }
 
 .unique_part {
-    background-color: lightpink;
+    color: white;
+    background-color: maroon;
 }
 
 .comment_part {
-    color: darkgreen;
+    color: skyblue;
 }
 
 /***********************************************************************************************************************

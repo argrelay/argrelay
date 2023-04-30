@@ -17,9 +17,19 @@
 <body>
 
     <div class="top_container">
-        <div id="argrelay_banner">
+        <div id="argrelay_title">
         argrelay
         </div>
+        <div id="argrelay_version">
+        {{ argrelay_version }}
+        </div>
+        <div id="argrelay_api_docs">
+        <a href="{{ argrelay_api_docs_path }}" target="_blank">API docs</a>
+        </div>
+        <div id="argrelay_api_spec">
+        <a href="{{ argrelay_api_spec_path }}" target="_blank">API spec</a>
+        </div>
+
         {{ custom_html | safe }}
     </div>
 
@@ -52,6 +62,15 @@
         />
     </div>
 
+    <div class="legend_container">
+        <div class="legend_caption">
+            command line legend:
+        </div>
+        <div class="input_legend">
+            <span class="io_state_client_synced_input">[client_synced]</span><span class="io_state_pending_request_input">[pending_request]</span><span class="io_state_pending_response_input">[pending_response]</span><span class="io_state_request_failed_input">[request_failed]</span>
+        </div>
+    </div>
+
     <div class="top_container">
         <div
             id="suggestion_output_label"
@@ -60,8 +79,19 @@
         >suggested args:</div>
         <div
             id="suggestion_output"
+            class="output_box"
             data-cy="suggestion_output"
-        ></div>
+        >
+        </div>
+    </div>
+
+    <div class="legend_container">
+        <div class="legend_caption">
+            suggested arg legend:
+        </div>
+        <div class="output_legend">
+            <span class="input_part">[intput_prefix]</span><span class="incomplete_part">[common_infix]</span><span class="unique_part">[unique_tail]</span><span class="comment_part">[arg_comment]</span>
+        </div>
     </div>
 
     <div class="top_container">
@@ -70,7 +100,10 @@
             class="box_label"
             for="describe_output"
         >search outline:</div>
-       <div id="describe_output">
+       <div
+           id="describe_output"
+           class="output_box"
+       >
        </div>
     </div>
 
@@ -80,7 +113,11 @@
             class="box_label"
             for="invocation_output"
         >last invocation response:</div>
-        <div id="invocation_output"></div>
+        <div
+            id="invocation_output"
+            class="output_box"
+        >
+        </div>
     </div>
 
     <template id="envelope_container_temp">

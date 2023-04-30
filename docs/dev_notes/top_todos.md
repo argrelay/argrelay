@@ -213,6 +213,8 @@ Docs:
 
 Extra:
 
+*   Add version arg type to the test data.
+
 *   Make describe output take into account current prefix (incomplete and not yet consumed) arg
     which matches several options (which are suggested on Tab, but describe should reduce output from all to just
     data which pertain to options matching that prefix).

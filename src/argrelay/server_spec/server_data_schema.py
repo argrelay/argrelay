@@ -30,6 +30,3 @@ server_op_data_schemas.components.schema(
     arg_values_desc.ref_name,
     schema = arg_values_desc.dict_schema,
 )
-
-# Run API docs UI at the root:
-API_DOCS_UI_PATH = "/"
