@@ -2,15 +2,14 @@ import logging
 import os
 
 import pkg_resources
-from flasgger import Swagger
-from flask import Flask, request
-
 from argrelay import relay_server
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.route_api import create_blueprint_api
 from argrelay.relay_server.route_gui import create_blueprint_gui
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH
+from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH, ARGRELAY_GUI_PATH
+from flasgger import Swagger
+from flask import Flask, request, redirect
 
 # Set this here (because `require` function may fail in other contexts):
 server_version = pkg_resources.require("argrelay")[0].version
@@ -124,6 +123,10 @@ def create_app() -> CustomFlaskApp:
             response_data,
         )
         return response
+
+    @flask_app.route("/")
+    def root_redirect():
+        return redirect(ARGRELAY_GUI_PATH, code = 302)
 
     flask_app.register_blueprint(create_blueprint_api(flask_app.local_server))
     flask_app.register_blueprint(create_blueprint_gui(flask_app.local_server.server_config.gui_banner_config))
