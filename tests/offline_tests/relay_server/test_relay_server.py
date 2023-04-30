@@ -7,13 +7,13 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_server.__main__ import create_app
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_request.RequestContextSchema import request_context_desc
-from argrelay.server_spec.const_int import API_SPEC
+from argrelay.server_spec.const_int import API_SPEC, API_DOCS_PATH
 from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
     PROPOSE_ARG_VALUES_PATH,
     RELAY_LINE_ARGS_PATH,
 )
-from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH, server_op_data_schemas
+from argrelay.server_spec.server_data_schema import server_op_data_schemas
 from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
 
 
@@ -92,7 +92,7 @@ class ThisTestCase(TestCase):
             )
 
     def test_get_api_docs_ui(self):
-        response = self.client.get(API_DOCS_UI_PATH)
+        response = self.client.get(API_DOCS_PATH)
         self.assertEqual(200, response.status_code)
 
     def test_describe_line_args(self):

@@ -10,8 +10,7 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.route_api import create_blueprint_api
 from argrelay.relay_server.route_gui import create_blueprint_gui
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.server_spec.const_int import API_SPEC
-from argrelay.server_spec.server_data_schema import API_DOCS_UI_PATH
+from argrelay.server_spec.const_int import API_SPEC, API_DOCS_PATH
 
 # Set this here (because `require` function may fail in other contexts):
 server_version = pkg_resources.require("argrelay")[0].version
@@ -88,10 +87,9 @@ def create_app() -> CustomFlaskApp:
                 "model_filter": lambda tag: True,
             },
         ],
-        # TODO: Is this needed? If removed, apidocs do not show:
         "static_url_path": "/flasgger_static",
         "swagger_ui": True,
-        "specs_route": API_DOCS_UI_PATH,
+        "specs_route": API_DOCS_PATH,
     }
 
     Swagger(
