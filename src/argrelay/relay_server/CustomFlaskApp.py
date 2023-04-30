@@ -10,7 +10,7 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.route_api import create_blueprint_api
 from argrelay.relay_server.route_gui import create_blueprint_gui
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.server_spec.const_int import API_SPEC, API_DOCS_PATH
+from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH
 
 # Set this here (because `require` function may fail in other contexts):
 server_version = pkg_resources.require("argrelay")[0].version
@@ -82,7 +82,7 @@ def create_app() -> CustomFlaskApp:
         "specs": [
             {
                 "endpoint": "relay_server",
-                "route": API_SPEC,
+                "route": API_SPEC_PATH,
                 "rule_filter": lambda rule: True,
                 "model_filter": lambda tag: True,
             },

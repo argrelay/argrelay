@@ -20,7 +20,7 @@ API_DOCS_PATH = "/argrelay_api/"
 DEFAULT_IP_ADDRESS = "localhost"
 DEFAULT_PORT_NUMBER = 8787
 
-API_SPEC = "/argrelay.relay_server.json"
+API_SPEC_PATH = "/argrelay_server_api_spec.json"
 
 # noinspection HttpUrlsUsage
 BASE_URL_FORMAT = "http://{server_host_name}:{server_port_number}"

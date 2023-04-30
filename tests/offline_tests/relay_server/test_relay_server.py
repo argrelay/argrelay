@@ -7,7 +7,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_server.__main__ import create_app
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_request.RequestContextSchema import request_context_desc
-from argrelay.server_spec.const_int import API_SPEC, API_DOCS_PATH
+from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH
 from argrelay.server_spec.const_int import (
     DESCRIBE_LINE_ARGS_PATH,
     PROPOSE_ARG_VALUES_PATH,
@@ -46,7 +46,7 @@ class ThisTestCase(TestCase):
 
     def test_api_spec(self):
         response = self.client.get(
-            API_SPEC,
+            API_SPEC_PATH,
             content_type = "application/json",
         )
         self.assertEqual(200, response.status_code)
@@ -131,7 +131,7 @@ class ThisTestCase(TestCase):
     # noinspection PyMethodMayBeStatic
     def test_auto_schema_is_in_response(self):
         response = self.client.get(
-            API_SPEC,
+            API_SPEC_PATH,
             content_type = "application/json",
         )
         self.assertEqual(200, response.status_code)
