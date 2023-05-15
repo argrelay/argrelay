@@ -1,5 +1,5 @@
 from flasgger import swag_from
-from flask import request, Blueprint, Response
+from flask import request, Blueprint, Response, abort
 
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
@@ -43,52 +43,79 @@ def create_blueprint_api(local_server: LocalServer):
         ElapsedTime.is_debug_enabled = input_ctx.is_debug_enabled
         return input_ctx
 
-    # TODO: Add REST test on client and server side.
-    @blueprint_api.route(DESCRIBE_LINE_ARGS_PATH, methods = ['post'])
+    @blueprint_api.route(
+        DESCRIBE_LINE_ARGS_PATH,
+        methods = ["post"],
+    )
     @swag_from(DescribeLineArgsSpec.spec_data)
     def describe_line_args():
-        input_ctx = create_input_ctx(RunMode.InvocationMode)
-        response_dict = describe_line_args_handler.handle_request(input_ctx)
-        response_json = interp_result_desc.dict_schema.dumps(response_dict)
+        try:
+            input_ctx = create_input_ctx(RunMode.InvocationMode)
+            response_dict = describe_line_args_handler.handle_request(input_ctx)
 
-        ElapsedTime.measure("before_sending_response")
-        return response_json
+            if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
+                response_json = interp_result_desc.dict_schema.dumps(response_dict)
+                return Response(
+                    response_json,
+                    mimetype = "application/json",
+                )
+            else:
+                # Not acceptable:
+                abort(406)
+        finally:
+            ElapsedTime.measure("before_sending_response")
 
-    # TODO: Add REST test on client and server side.
-    @blueprint_api.route(PROPOSE_ARG_VALUES_PATH, methods = ['post'])
+    @blueprint_api.route(
+        PROPOSE_ARG_VALUES_PATH,
+        methods = ["post"],
+    )
     @swag_from(ProposeArgValuesSpec.spec_data)
     def propose_arg_values():
-        input_ctx = create_input_ctx(RunMode.CompletionMode)
-        response_dict = propose_arg_values_handler.handle_request(input_ctx)
-
-        # Sending plain text is used for perf reasons on client side (minimal parsing required, minimal imports):
-        send_plain_text = True
         try:
-            if send_plain_text:
-                # Plain text for minimal parsing (no lib required):
+            input_ctx = create_input_ctx(RunMode.CompletionMode)
+            response_dict = propose_arg_values_handler.handle_request(input_ctx)
+
+            if request.accept_mimetypes["text/plain"] or len(request.accept_mimetypes) == 0:
+                # Sending plain text by default for simplest clients (who may not even specify headers)
+                # also serving perf reasons on client side (trivial parsing, no lib required, minimal imports):
                 return Response(
                     "\n".join(response_dict[arg_values_]),
                     mimetype = "text/plain",
                 )
-            else:
+            elif request.accept_mimetypes["application/json"]:
                 # JSON - parsing lib required:
                 response_json = arg_values_desc.dict_schema.dumps(response_dict)
                 return Response(
                     response_json,
                     mimetype = "application/json",
                 )
+            else:
+                # Not acceptable:
+                abort(406)
         finally:
             ElapsedTime.measure("before_sending_response")
 
-    # TODO: Add REST test on client and server side.
-    @blueprint_api.route(RELAY_LINE_ARGS_PATH, methods = ['post'])
+    @blueprint_api.route(
+        RELAY_LINE_ARGS_PATH,
+        methods = ["post"],
+    )
     @swag_from(RelayLineArgsSpec.spec_data)
     def relay_line_args():
-        input_ctx = create_input_ctx(RunMode.InvocationMode)
-        response_dict = relay_line_args_handler.handle_request(input_ctx)
-        response_json = invocation_input_desc.dict_schema.dumps(response_dict)
-        ElapsedTime.measure("before_sending_response")
-        return response_json
+        try:
+            input_ctx = create_input_ctx(RunMode.InvocationMode)
+            response_dict = relay_line_args_handler.handle_request(input_ctx)
+
+            if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
+                response_json = invocation_input_desc.dict_schema.dumps(response_dict)
+                return Response(
+                    response_json,
+                    mimetype = "application/json",
+                )
+            else:
+                # Not acceptable:
+                abort(406)
+        finally:
+            ElapsedTime.measure("before_sending_response")
 
     @blueprint_api.teardown_request
     def show_teardown(exception):

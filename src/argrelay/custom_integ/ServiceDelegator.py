@@ -19,6 +19,7 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_message_,
     error_code_,
     error_delegator_custom_data_desc,
+    error_delegator_stub_custom_data_example,
 )
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
@@ -150,8 +151,8 @@ class ServiceDelegator(AbstractDelegator):
             return redirect_to_error(
                 interp_ctx,
                 local_server.server_config,
-                "INFO: command executed successfully: demo implementation is a stub",
-                0,
+                error_delegator_stub_custom_data_example[error_message_],
+                error_delegator_stub_custom_data_example[error_code_],
             )
         elif func_name in [
             list_host_func_,

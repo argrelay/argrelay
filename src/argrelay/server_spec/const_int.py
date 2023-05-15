@@ -6,7 +6,8 @@ Internal constants
 UNUSED_TITLE = "argrelay"
 UNUSED_VERSION = "0.0.0"
 
-DEFAULT_OPEN_API_VERSION = "3.0.2"
+# This will make `apispec` generate schema compatible with `flasgger` (placing schemas under `#/definitions/`):
+DEFAULT_OPEN_API_VERSION = "2.0"
 
 # server_op paths:
 DESCRIBE_LINE_ARGS_PATH = "/describe_line_args/"
