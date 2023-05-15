@@ -10,9 +10,11 @@ cursor_cpos_ = "cursor_cpos"
 comp_type_ = "comp_type"
 is_debug_enabled_ = "is_debug_enabled"
 
+_sample_command_line = "some_command goto service "
+
 _request_context_example = {
-    command_line_: "some_command prod",
-    cursor_cpos_: str(16),
+    command_line_: _sample_command_line,
+    cursor_cpos_: len(_sample_command_line),
     comp_type_: CompType.PrefixShown.name,
     is_debug_enabled_: True,
 }
@@ -32,6 +34,7 @@ class RequestContextSchema(Schema):
     cursor_cpos = fields.Integer(
         required = True,
         metadata = {
+            "description": "Cursor position within command line (0 = before the first char)",
             "example": _request_context_example[cursor_cpos_],
         },
     )
@@ -39,12 +42,17 @@ class RequestContextSchema(Schema):
         CompType,
         required = True,
         metadata = {
+            "description": (
+                "Name for a completion type - see " + CompType.__name__ + " enum "
+                "(which maps into ASCII char sent by Bash to completion callback to indicate completion type)"
+            ),
             "example": _request_context_example[comp_type_],
         },
     )
     is_debug_enabled = fields.Boolean(
         required = True,
         metadata = {
+            "description": "Enable extra debug output",
             "example": _request_context_example[is_debug_enabled_],
         },
     )

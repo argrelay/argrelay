@@ -3,7 +3,7 @@
 # those required listed in `setup.py` script and can be installed as:
 # pip install -e .
 ###############################################################################
-apispec==6.2.0
+apispec==6.3.0
 attrs==22.2.0
 bleach==6.0.0
 cachetools==5.3.0
