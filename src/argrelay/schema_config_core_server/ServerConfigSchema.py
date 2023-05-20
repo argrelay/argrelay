@@ -104,5 +104,5 @@ server_config_desc = TypeDesc(
         },
         static_data_: static_data_desc.dict_example,
     },
-    default_file_path = get_config_path(".argrelay.conf.d/argrelay.server.yaml"),
+    default_file_path = get_config_path("argrelay.server.yaml"),
 )

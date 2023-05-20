@@ -36,5 +36,5 @@ client_config_desc = TypeDesc(
         use_local_requests_: False,
         connection_config_: connection_config_desc.dict_example,
     },
-    default_file_path = get_config_path(".argrelay.conf.d/argrelay.client.json"),
+    default_file_path = get_config_path("argrelay.client.json"),
 )

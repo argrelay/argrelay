@@ -2,14 +2,14 @@
 # `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
 # This script is NOT supposed to be run or sourced directly.
-# Instead, run `dev_shell.bash`.
+# Instead, run `^/exe/dev_shell.bash`.
 
 # The steps this script implements FS_58_61_77_69 dev_shell:
-# *   Runs `bootstrap_outside_venv.bash` to set up Python and artifacts.
-# *   Runs `argrelay_rc.bash` to configure auto-completion for this shell session.
+# *   Runs `^/exe/bootstrap_dev_env.bash` to set up Python and artifacts.
+# *   Runs `^/exe/argrelay_rc.bash` to configure auto-completion for this shell session.
 
 # Note that enabling exit on error (like `set -e` below) will exit parent
-# `dev_shell.bash` script (as this one is sourced) - that is intentional.
+# `^/exe/dev_shell.bash` script (as this one is sourced) - that is intentional.
 
 # Debug: Print commands before execution:
 set -x
@@ -24,21 +24,25 @@ set -E
 # Error on undefined variables:
 set -u
 
-# The dir of the script:
+# The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# It is expected that `dev_shell.bash` switches to the target project dir itself (not this script).
+# FS_29_54_67_86 dir_structure: `^/exe/` -> `^/`:
+argrelay_dir="$( dirname "${script_dir}" )"
 
-# This is why `bootstrap_venv.bash` script has to be part of the project dir:
-./bootstrap_venv.bash
+# It is expected that `^/exe/dev_shell.bash` switches to the target project dir itself (not this script).
+
+# FS_85_33_46_53: a copy of script `^/exe/bootstrap_dev_env.bash` has to be stored within the project
+# as the creator of everything:
+"${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
 # Enable auto-completion:
-source ./argrelay_rc.bash
+source "${argrelay_dir}/exe/argrelay_rc.bash"
 
 # Show commands configured for auto-completion:
 # shellcheck disable=SC2154
-for argrelay_command_name in "${argrelay_bind_commands[@]}"
+for argrelay_command_basename in "${argrelay_bind_command_basenames[@]}"
 do
-    complete -p "${argrelay_command_name}"
+    complete -p "${argrelay_command_basename}"
 done
 
 # Disable exit on errors and any extra debug info for interactive shell

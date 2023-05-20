@@ -260,8 +260,15 @@ This is a non-intrusive demo<br/>
 
 Clone this repo somewhere.
 
-If `dev_shell.bash` is run for the first time,<br/>
-it will ask to provide `python_conf.bash` file - follow instruction on error.
+Run `^/exe/bootstrap_dev_env.bash`:
+
+```sh
+./exe/bootstrap_dev_env.bash
+```
+
+If `^/exe/bootstrap_dev_env.bash` is run for the first time,<br/>
+it will ask to provide `^/conf/python_conf.bash` file and others.<br/>
+Follow instruction on error.
 
 To start both the server and the client,<br/>
 two terminal windows are required.
@@ -271,14 +278,14 @@ two terminal windows are required.
     Start the first sub-shell:
 
     ```sh
-    ./dev_shell.bash
+    ./exe/dev_shell.bash
     ```
 
     In this sub-shell, start the server:
 
     ```sh
-    # in server `dev_shell.bash`:
-    run_argrelay_server
+    # in server `^/exe/dev_shell.bash`:
+    ./bin/run_argrelay_server
     ```
 
 *   Client:
@@ -286,7 +293,7 @@ two terminal windows are required.
     Start the second sub-shell:
 
     ```sh
-    ./dev_shell.bash
+    ./exe/dev_shell.bash
     ```
 
     While it is running (temporarily),<br/>
@@ -295,19 +302,19 @@ two terminal windows are required.
 *   Try to `Tab`-complete command `relay_demo` using [demo test data][TD_63_37_05_36.demo_services_data.md]:
 
     ```sh
-    # in client `dev_shell.bash`:
+    # in client `^/exe/dev_shell.bash`:
     relay_demo goto host            # press Tab one or multiple times
     ```
 
     ```sh
-    # in client `dev_shell.bash`:
+    # in client `^/exe/dev_shell.bash`:
     relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
     ```
 
 *   Inspect how auto-completion binds to `relay_demo` command:
 
     ```sh
-    # in client `dev_shell.bash`:
+    # in client `^/exe/dev_shell.bash`:
     complete -p relay_demo
     ```
 
@@ -319,7 +326,7 @@ two terminal windows are required.
 *   To clean up, exit the sub-shells:
 
     ```sh
-    # in client or server `dev_shell.bash`:
+    # in client or server `^/exe/dev_shell.bash`:
     exit
     ```
 
@@ -344,8 +351,6 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
 <a name="argrelay-next-steps"></a>
 # What's next?
-
-*   After trying non-intrusive demo, try [intrusive one][dev_env_and_target_env_diff.md] for permanent setup.
 
 *   Modify [`ServiceLoader.py` plugin][link_to_load_data_envelopes] to provide data beyond [demo data set][TD_63_37_05_36.demo_services_data.md].
 
@@ -399,7 +404,6 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
 [MongoDB]: https://www.mongodb.com/
-[dev_env_and_target_env_diff.md]: docs/dev_notes/dev_env_and_target_env_diff.md
 [TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md
 [earlier_stack_question]: https://stackoverflow.com/q/74996560/441652
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/

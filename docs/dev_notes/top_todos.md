@@ -28,15 +28,10 @@ To demo:
 
 Integration:
 
-*   Add tests that config loading respects `ARGRELAY_CONF_BASE_DIR`.
+*   Review all locations where `.argrelay.conf.d` is mentioned - it is likely that `^/conf` has to be used there instead.
 
-*   Expect all files inside common `~/.argrelay` directory.
-    Make it point to `custom_integ_res` dir - since there is no other files, it works nicely.
-
-*   It should be possible to run some kind of "init" Python command immediately after `pip install argrelay`
-    to make all necessary setup for custom integration done.
-
-*   Make it possible to reuse (rather than copy and modify) every integration script.
+*   Add tests that config loading respects `ARGRELAY_CONF_BASE_DIR`, `~/.argrelay.conf.d`, or `^/conf`.
+    See FS_16_07_78_84.conf_dir_priority.md.
 
 *   FS_61_67_08_53: arbitrary text args.
 
@@ -111,6 +106,7 @@ GUI bits:
     PROGRESS:
 
 *   Rename "describe" to "search" (outline) and implement function which does what Alt+Shift+Q does but on enter.
+    Or maybe "itemize"?
 
 *   Add note that dev/test/discovery/monitoring tool.
 
@@ -166,11 +162,7 @@ Ease integration into external project:
 
 *   Enable debug in all bootstrap scripts.
 
-*   Boostrap file names do not make much:
-    *   `bootstrap_outside_venv.bash`
-    *   `bootstrap_inside_venv.bash` - sometimes we want to boostrap within existing `venv` (inside) but still for development (symlinks, not copies)
-
-*   How to deal with `dev_shell.bash` symlink in custom project?
+*   How to deal with `^/exe/dev_shell.bash` symlink in custom project?
     This symlink (unlike inside `argrelay` itself) is not pointing into existing file within the repo,
     instead, it points into `argrelay` package which still has to be installed.
 
@@ -180,7 +172,7 @@ Ease integration into external project:
 
 *   Split `argrelay.server.yaml` into: `argrelay.common.yaml` and `argrelay.server.yaml`.
 
-*   Make it possible to override location of `argrelay.conf.d` via env var
+*   Make it possible to override location of `^/conf/` via env var
     (to allow experimental development co-exists).
 
 *   Make yaml config composable (to reduce chances of merging):

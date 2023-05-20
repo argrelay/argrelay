@@ -1,5 +1,5 @@
 # This is an `argrelay` server config.
-# To test, symlink this files as user dot file - see `dev_shell.bash` script.
+# To test, symlink this files as user dot file - see `^/exe/dev_shell.bash` script.
 
 connection_config:
     server_host_name: localhost

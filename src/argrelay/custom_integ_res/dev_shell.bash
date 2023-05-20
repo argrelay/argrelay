@@ -17,15 +17,18 @@ set -E
 # Error on undefined variables:
 set -u
 
-# Switch to dir of the script:
+# The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-cd "${script_dir}" || exit 1
+# FS_29_54_67_86 dir_structure: `^/exe/` -> `^/`:
+argrelay_dir="$( dirname "${script_dir}" )"
 
-# Let some code know that it runs under `dev_shell.bash`:
+cd "${argrelay_dir}" || exit 1
+
+# Let some code know that it runs under `^/exe/dev_shell.bash`:
 ARGRELAY_DEV_SHELL="$(date)"
 export ARGRELAY_DEV_SHELL
 
-# The new shell executes `init_shell_env.bash` script as its init file:
+# The new shell executes `^/exe/init_shell_env.bash` script as its init file:
 # https://serverfault.com/questions/368054
-bash --init-file <(echo "source ~/.bashrc && source ./init_shell_env.bash")
+bash --init-file <(echo "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash")
 

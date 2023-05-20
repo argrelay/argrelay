@@ -21,16 +21,22 @@ set -u
 # If not set, default is empty (no recursion):
 recursion_flag="${1:-}"
 
-# Let some code think as if it runs under `dev_shell.bash` (to disable some tests):
+# Let some code think as if it runs under `^/exe/dev_shell.bash` (to disable some tests):
 ARGRELAY_DEV_SHELL="$(date)"
 export ARGRELAY_DEV_SHELL
 
-# The dir of the script:
+# The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# There are two ways this script is called:
+# FS_29_54_67_86 dir_structure: `^/exe/` -> `^/`:
+argrelay_dir="$( dirname "." )"
+
+# There are several cases this script is called:
 # *   (initial boostrap) directly: in that case `script_dir` is inside orig `argrelay` distrib package
-# *   (`dev_shell.bash`) indirectly: in that case `script_dir` is inside integration project dir
-# The curr dir is not change into `script_dir` to deploy files in the (curr) integration project directory.
+# *   (`^/exe/dev_shell.bash`) indirectly: in that case `script_dir` is in `^/exe/` inside integration project dir
+# *   (subsequent upgrade) directly: in that case `script_dir` is in `^/exe/` inside integration project dir
+
+# Ensure it is called from project root which should contain `^/exe/` dir:
+test -d "${argrelay_dir}/exe/"
 
 function detect_file_deployment_command {
     # Detect file deployment method based on path of the source (if copy) or the target (if symlink):
@@ -41,7 +47,8 @@ function detect_file_deployment_command {
     primary_path="$( realpath "${1}" )"
     # This is the target (if copy) or the link (if symlink):
     secondary_path="$( realpath "${2}" )"
-    # `venv` path from `python_conf.bash`:
+    # `venv` path from `^/conf/python_conf.bash`:
+    # shellcheck disable=SC2154
     abs_path_to_venvX="$( realpath "${path_to_venvX}")"
 
     if [[ "${primary_path}" == "${abs_path_to_venvX}"* ]]
@@ -126,16 +133,35 @@ python_module_path_EOF
     done
 }
 
+# See `FS_16_07_78_84.conf_dir_priority.md`:
+function print_argrelay_conf_dir {
+
+    if [[ -n "${ARGRELAY_CONF_BASE_DIR:-whatever}" ]]
+    then
+        # If ARGRELAY_CONF_BASE_DIR env var is not defined, use path to user home:
+        argrelay_conf_base_dir=~"/.argrelay.conf.d/"
+
+        # Path should be a directory or symlink to directory, otherwise default is `^/conf/`:
+        if [[ ! -e "${argrelay_conf_base_dir}" ]]
+        then
+            argrelay_conf_dir_path="${argrelay_dir}/conf/"
+        fi
+    else
+        argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
+    fi
+
+    echo "${argrelay_conf_dir_path}"
+}
+
 ########################################################################################################################
 # Phase 1: init Python
 
-if [[ ! -f "./python_conf.bash" ]]
+if [[ ! -f "${argrelay_dir}/conf/python_conf.bash" ]]
 then
-    echo "ERROR: \`$(pwd)/python_conf.bash\` does not exists" 1>&2
+    echo "ERROR: \`${argrelay_dir}/conf/python_conf.bash\` does not exists" 1>&2
     echo "It is required to init \`venv\` with specific base Python interpreter." 1>&2
-    echo "Provide \`$(pwd)/python_conf.bash\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${argrelay_dir}/conf/python_conf.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_project_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/uvsmtid/argrelay
@@ -144,8 +170,10 @@ then
 # It should rather be added to `.gitignore`.
 
 # Path to `venv` to create or reuse:
+# shellcheck disable=SC2034
 path_to_venvX="venv"
 # Path to specific Python interpreter (to override any default in the `PATH`):
+# shellcheck disable=SC2034
 path_to_pythonX="/usr/local/bin/python3.7"
 ########################################################################################################################
 deploy_project_EOF
@@ -155,7 +183,7 @@ fi
 # Load user config for env vars:
 # *   path_to_pythonX
 # *   path_to_venvX
-source ./python_conf.bash
+source "${argrelay_dir}/conf/python_conf.bash"
 # shellcheck disable=SC2154
 echo "path_to_venvX: ${path_to_venvX}"
 # shellcheck disable=SC2154
@@ -167,16 +195,16 @@ then
     pythonX_dirname="$(dirname "${path_to_pythonX}")"
 
     # Make `pythonX_basename` accessible throughout this script (until `venv` activation overrides it):
-    # shellcheck disable=SC2154 # `path_to_pythonX` is assigned in `python_conf.bash`:
+    # shellcheck disable=SC2154 # `path_to_pythonX` is assigned in `^/conf/python_conf.bash`:
     export PATH="${pythonX_dirname}:${PATH}"
 
     # Test python:
-    # shellcheck disable=SC2154 # `pythonX_basename` is assigned in `python_conf.bash`:
+    # shellcheck disable=SC2154 # `pythonX_basename` is assigned in `^/conf/python_conf.bash`:
     which "${pythonX_basename}"
     if ! "${pythonX_basename}" -c 'print("'"${pythonX_basename}"' from '"${pythonX_dirname}"' works")'
     then
         echo "ERROR: \`${pythonX_basename}\` from \`${pythonX_dirname}\` does not work" 1>&2
-        echo "Update \`$(pwd)/python_conf.bash\` to continue." 1>&2
+        echo "Update \`${argrelay_dir}/conf/python_conf.bash\` to continue." 1>&2
         exit 1
     fi
 
@@ -192,21 +220,22 @@ python -m pip install --upgrade pip
 ########################################################################################################################
 # Phase 2: deploy project
 
-if [[ ! -f "./deploy_project.bash" ]]
+if [[ ! -f "${argrelay_dir}/exe/deploy_project.bash" ]]
 then
-    echo "ERROR: \`$(pwd)/deploy_project.bash\` does not exists" 1>&2
+    echo "ERROR: \`${argrelay_dir}/exe/deploy_project.bash\` does not exists" 1>&2
     echo "It is required to install packages to extract artifacts from them." 1>&2
-    echo "Provide \`$(pwd)/deploy_project.bash\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${argrelay_dir}/exe/deploy_project.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
+    # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_project_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
-# This is a custom build script *sourced* by `bootstrap_venv.bash`.
+# This is a custom build script *sourced* by `^/exe/bootstrap_dev_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
-# Normally, the deploy scripts like this for integration project should pip-install it (in the editable mode).
+# Normally, for integration project, the deploy scripts like this should pip-install itself (in the editable mode).
 
 # Use editable install:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
@@ -222,8 +251,7 @@ deploy_project_EOF
     exit 1
 fi
 
-# TODO: source all *_conf files (make them non-executable) and remove all set -e in them:
-source ./deploy_project.bash
+source "${argrelay_dir}/exe/deploy_project.bash"
 
 # Get path of `argrelay` module:
 argrelay_module_file_path="$(
@@ -240,9 +268,9 @@ argrelay_module_dir_path="$( dirname "${argrelay_module_file_path}" )"
 if [[ -z "${recursion_flag}" ]]
 then
     # Overwrite itself:
-    cp -p "${argrelay_module_dir_path}"/custom_integ_res/bootstrap_venv.bash "."
+    cp -p "${argrelay_module_dir_path}/custom_integ_res/bootstrap_dev_env.bash" "${argrelay_dir}/exe/"
     # Recursively call itself again (now with `recursion_flag`:
-    ./bootstrap_venv.bash "recursion_flag"
+    "${argrelay_dir}/exe/bootstrap_dev_env.bash" "recursion_flag"
     # Recursive call should have executed the rest of file:
     exit 0
 fi
@@ -250,20 +278,21 @@ fi
 ########################################################################################################################
 # Phase 4: prepare artifacts: deploy configs (conditionally copies or symlinks)
 
-deploy_files_conf_path="./deploy_config_files_conf.bash"
+deploy_files_conf_path="${argrelay_dir}/exe/deploy_config_files_conf.bash"
 
 if [[ ! -f "${deploy_files_conf_path}" ]]
 then
-    echo "ERROR: \`$(pwd)/${deploy_files_conf_path}\` does not exists" 1>&2
+    echo "ERROR: \`${deploy_files_conf_path}\` does not exists" 1>&2
     echo "It is required to know list of configs to be deployed." 1>&2
-    echo "Provide \`$(pwd)/${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
     # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
+    # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_config_files_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/uvsmtid/argrelay
 # This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `bootstrap_venv.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `^/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying config files, format:
 # module_name relative_dir_path config_file_name
@@ -272,29 +301,23 @@ module_path_file_tuples=(
     #       customized `argrelay` config files instead (from its own module).
     #       Integration assumes different plugins, their configs, etc.
 
-    # For example (see `deploy_config_files.bash` from `argrelay` repo):
-    # project_module argrelay.conf.d argrelay.server.yaml
-    # project_module argrelay.conf.d argrelay.client.json
+    # For example:
+    # project_module sample_conf argrelay.server.yaml
+    # project_module sample_conf argrelay.client.json
 )
 ########################################################################################################################
 deploy_config_files_conf_EOF
     exit 1
 fi
 
-# If ARGRELAY_CONF_BASE_DIR is exported env var, argrelay_conf_base_dir is local:
-argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR:-$(eval echo ~)}"
-
-# Path `~/.argrelay.conf.d` should be a directory or symlink to directory.
-argrelay_conf_dir_path="${argrelay_conf_base_dir}/.argrelay.conf.d"
+argrelay_conf_dir_path="$( print_argrelay_conf_dir )"
 if [[ -e "${argrelay_conf_dir_path}" ]]
 then
     if [[ ! -d "${argrelay_conf_dir_path}" ]]
     then
-        echo "ERROR: path must be a dir or a symlink to dir: ${argrelay_conf_dir_path}" 1>&2
+        echo "ERROR: (see FS_16_07_78_84.conf_dir_priority.md) path must be a dir or a symlink to dir: ${argrelay_conf_dir_path}" 1>&2
         exit 1
     fi
-else
-    mkdir "${argrelay_conf_dir_path}"
 fi
 
 deploy_files_procedure "${deploy_files_conf_path}" "detect" "${argrelay_conf_dir_path}"
@@ -302,13 +325,13 @@ deploy_files_procedure "${deploy_files_conf_path}" "detect" "${argrelay_conf_dir
 ########################################################################################################################
 # Phase 5: prepare artifacts: deploy resources (symlinks)
 
-deploy_files_conf_path="./deploy_resource_files_conf.bash"
+deploy_files_conf_path="${argrelay_dir}/exe/deploy_resource_files_conf.bash"
 
 if [[ ! -f "${deploy_files_conf_path}" ]]
 then
-    echo "ERROR: \`$(pwd)/${deploy_files_conf_path}\` does not exists" 1>&2
+    echo "ERROR: \`${deploy_files_conf_path}\` does not exists" 1>&2
     echo "It is required to know list of resources to be deployed." 1>&2
-    echo "Provide \`$(pwd)/${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
     # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
@@ -316,7 +339,7 @@ then
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/uvsmtid/argrelay
 # This resource file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `bootstrap_venv.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `^/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying resource files, format:
 # module_name relative_dir_path resource_file_name
@@ -330,19 +353,26 @@ deploy_resource_files_conf_EOF
     exit 1
 fi
 
-deploy_files_procedure "${deploy_files_conf_path}" "symlink" "."
+deploy_files_procedure "${deploy_files_conf_path}" "symlink" "${argrelay_dir}/exe/"
 
 ########################################################################################################################
-# Phase 6: prepare artifacts: deploy resources (symlinks)
+# Phase 6: prepare artifacts: generate resources
 
-# Generate `run_argrelay_server`:
-cat << PYTHON_SERVER_EOF > ./run_argrelay_server
+# Generate `^/bin/run_argrelay_server`:
+cat << PYTHON_SERVER_EOF > "${argrelay_dir}/bin/run_argrelay_server"
 #!$(which python)
 # \`argrelay\`-generated integration file: https://github.com/uvsmtid/argrelay
 # It is NOT supposed to be version-controlled per project as it:
 # *   is generated
 # *   differs per environment (due to different abs path to \`venv\`)
 # It should rather be added to \`.gitignore\`.
+
+import os
+
+from argrelay import misc_helper
+
+# FS_29_54_67_86 dir_structure: \`^/bin/run_argrelay_server\` -> \`^/\`:
+misc_helper.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_server.__main__ import main
 
@@ -350,14 +380,21 @@ if __name__ == '__main__':
     main()
 PYTHON_SERVER_EOF
 
-# Generate `run_argrelay_client`:
-cat << PYTHON_CLIENT_EOF > ./run_argrelay_client
+# Generate `^/bin/run_argrelay_client`:
+cat << PYTHON_CLIENT_EOF > "${argrelay_dir}/bin/run_argrelay_client"
 #!$(which python)
 # \`argrelay\`-generated integration file: https://github.com/uvsmtid/argrelay
 # It is NOT supposed to be version-controlled per project as it:
 # *   is generated
 # *   differs per environment (due to different abs path to \`venv\`)
 # It should rather be added to \`.gitignore\`.
+
+import os
+
+from argrelay import misc_helper
+
+# FS_29_54_67_86 dir_structure: \`^/bin/run_argrelay_client\` -> \`^/\`:
+misc_helper.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_client.__main__ import main
 
@@ -366,30 +403,30 @@ if __name__ == '__main__':
 PYTHON_CLIENT_EOF
 
 # Make both executable:
-chmod u+x run_argrelay_server
-chmod u+x run_argrelay_client
+chmod u+x "${argrelay_dir}/bin/run_argrelay_client"
+chmod u+x "${argrelay_dir}/bin/run_argrelay_server"
 
 ########################################################################################################################
 # Phase 7: build project
 
-if [[ ! -f "./build_project.bash" ]]
+if [[ ! -f "${argrelay_dir}/exe/build_project.bash" ]]
 then
-    echo "ERROR: \`$(pwd)/build_project.bash\` does not exists" 1>&2
+    echo "ERROR: \`${argrelay_dir}/exe/build_project.bash\` does not exists" 1>&2
     echo "It is required as custom build step for integration project, but can do nothing." 1>&2
-    echo "Provide \`$(pwd)/build_project.bash\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${argrelay_dir}/exe/build_project.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
+    # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'build_project_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/uvsmtid/argrelay
 
-# This is a custom build script *sourced* by `bootstrap_venv.bash`.
+# This is a custom build script *sourced* by `^/exe/bootstrap_dev_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
 # Normally, the build scripts like this for integration project should build it and test it.
 
-# It is fine to run tox on every start of `dev_shell` because
-# this `git_deployment` (FS_66_29_28_85) is only used by `argrelay` devs:
+# It is fine to run tox on every start of FS_58_61_77_69 `dev_shell` because it is only used by `argrelay` devs:
 # Build and test:
 python -m tox
 ########################################################################################################################
@@ -398,7 +435,7 @@ build_project_EOF
 fi
 
 # Provide project-specific build script:
-source ./build_project.bash
+source "${argrelay_dir}/exe/build_project.bash"
 
 ########################################################################################################################
 # EOF

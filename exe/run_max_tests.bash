@@ -2,10 +2,10 @@
 
 # This script tries to run maximum test set.
 
-# It is expected to be run from started `dev_shell.bash` session.
+# It is expected to be run from started `^/exe/dev_shell.bash` session.
 
 # It must be run from repo root:
-#     ./scripts/run_max_tests.bash
+#     ./exe/run_max_tests.bash
 
 # See `tests/readme.md`.
 # It also allows running tests:
@@ -29,10 +29,10 @@ set -E
 # Error on undefined variables:
 set -u
 
-# Ensure the script was started in `dev_shell.bash`:
-if [[ -z "${ARGRELAY_DEV_SHELL:-whatever}" ]]
+# Ensure the script was started in `^/exe/dev_shell.bash`:
+if [[ -z "${ARGRELAY_DEV_SHELL:-}" ]]
 then
-    echo "ERROR: Run this script under \`dev_shell.bash\`." 2>&1
+    echo "ERROR: Run this script under \`^/exe/dev_shell.bash\`." 1>&2
     exit 1
 fi
 
