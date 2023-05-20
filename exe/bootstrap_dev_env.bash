@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# This script sets up Python and `venv`.
+# This script sets up dev env (re-installs packages in Python `venv`, sets up symlinks, and so on).
+# It is also sourced by `@/exe/init_shell_env.bash` to activate Python `venv`.
 
-# This script should ALWAYS be called with project dir = current dir.
+# This script should ALWAYS be called with project dir = current dir (see `argrelay_dir` below).
 
 # Debug: Print commands before execution:
 set -x
@@ -21,21 +22,24 @@ set -u
 # If not set, default is empty (no recursion):
 recursion_flag="${1:-}"
 
-# Let some code think as if it runs under `^/exe/dev_shell.bash` (to disable some tests):
-ARGRELAY_DEV_SHELL="$(date)"
-export ARGRELAY_DEV_SHELL
+# Let some code know that it runs under `@/exe/bootstrap_dev_env.bash` (e.g to run some tests conditionally):
+ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
+export ARGRELAY_BOOTSTRAP_DEV_ENV
 
 # The dir of this script:
+# shellcheck disable=SC2034
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# FS_29_54_67_86 dir_structure: `^/exe/` -> `^/`:
+# Note: In case of `bootstrap_dev_env.bash`, `argrelay_dir` is not `script_dir`, but always the current directory
+# (it is supposed to be started from the dir where project is being set up).
+# FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "." )"
 
 # There are several cases this script is called:
 # *   (initial boostrap) directly: in that case `script_dir` is inside orig `argrelay` distrib package
-# *   (`^/exe/dev_shell.bash`) indirectly: in that case `script_dir` is in `^/exe/` inside integration project dir
-# *   (subsequent upgrade) directly: in that case `script_dir` is in `^/exe/` inside integration project dir
+# *   (`@/exe/dev_shell.bash`) indirectly: in that case `script_dir` is in `@/exe/` inside integration project dir
+# *   (subsequent upgrade) directly: in that case `script_dir` is in `@/exe/` inside integration project dir
 
-# Ensure it is called from project root which should contain `^/exe/` dir:
+# Ensure it is called from project root which should contain `@/exe/` dir:
 test -d "${argrelay_dir}/exe/"
 
 function detect_file_deployment_command {
@@ -47,7 +51,7 @@ function detect_file_deployment_command {
     primary_path="$( realpath "${1}" )"
     # This is the target (if copy) or the link (if symlink):
     secondary_path="$( realpath "${2}" )"
-    # `venv` path from `^/conf/python_conf.bash`:
+    # `venv` path from `@/conf/python_conf.bash`:
     # shellcheck disable=SC2154
     abs_path_to_venvX="$( realpath "${path_to_venvX}")"
 
@@ -141,7 +145,7 @@ function print_argrelay_conf_dir {
         # If ARGRELAY_CONF_BASE_DIR env var is not defined, use path to user home:
         argrelay_conf_base_dir=~"/.argrelay.conf.d/"
 
-        # Path should be a directory or symlink to directory, otherwise default is `^/conf/`:
+        # Path should be a directory or symlink to directory, otherwise default is `@/conf/`:
         if [[ ! -e "${argrelay_conf_base_dir}" ]]
         then
             argrelay_conf_dir_path="${argrelay_dir}/conf/"
@@ -164,7 +168,7 @@ then
     echo "" 1>&2
     cat << 'deploy_project_EOF'
 ########################################################################################################################
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 # This config file is supposed to be provided by target environment (containing project integrated with `argrelay`).
 # It is NOT supposed to be version-controlled per project as it differs per environment.
 # It should rather be added to `.gitignore`.
@@ -195,11 +199,11 @@ then
     pythonX_dirname="$(dirname "${path_to_pythonX}")"
 
     # Make `pythonX_basename` accessible throughout this script (until `venv` activation overrides it):
-    # shellcheck disable=SC2154 # `path_to_pythonX` is assigned in `^/conf/python_conf.bash`:
+    # shellcheck disable=SC2154 # `path_to_pythonX` is assigned in `@/conf/python_conf.bash`:
     export PATH="${pythonX_dirname}:${PATH}"
 
     # Test python:
-    # shellcheck disable=SC2154 # `pythonX_basename` is assigned in `^/conf/python_conf.bash`:
+    # shellcheck disable=SC2154 # `pythonX_basename` is assigned in `@/conf/python_conf.bash`:
     which "${pythonX_basename}"
     if ! "${pythonX_basename}" -c 'print("'"${pythonX_basename}"' from '"${pythonX_dirname}"' works")'
     then
@@ -213,6 +217,14 @@ then
 fi
 
 source "${path_to_venvX}"/bin/activate
+
+if [[ -n "${ARGRELAY_DEV_SHELL:-}" ]]
+then
+    # Ths script is being sourced by `@/exe/init_shell_env.bash`.
+    # Bootstrap should have been completed before.
+    # Return, ignore the rest:
+    return 0
+fi
 
 # Continue with Python from `"${path_to_pythonX}"`:
 python -m pip install --upgrade pip
@@ -230,9 +242,9 @@ then
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_project_EOF'
 ########################################################################################################################
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# This is a custom build script *sourced* by `^/exe/bootstrap_dev_env.bash`.
+# This is a custom build script *sourced* by `@/exe/bootstrap_dev_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
 # Normally, for integration project, the deploy scripts like this should pip-install itself (in the editable mode).
@@ -244,7 +256,7 @@ python -m pip install -e .[tests]
 if false
 then
     # This is NOT necessary (extra dev dependencies):
-    python -m pip install -r requirements.txt
+    python -m pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
 fi
 ########################################################################################################################
 deploy_project_EOF
@@ -290,9 +302,9 @@ then
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_config_files_conf_EOF'
 ########################################################################################################################
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 # This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `^/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `@/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying config files, format:
 # module_name relative_dir_path config_file_name
@@ -304,6 +316,7 @@ module_path_file_tuples=(
     # For example:
     # project_module sample_conf argrelay.server.yaml
     # project_module sample_conf argrelay.client.json
+    # project_module sample_conf dev_env_packages.txt
 )
 ########################################################################################################################
 deploy_config_files_conf_EOF
@@ -337,9 +350,9 @@ then
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_resource_files_conf_EOF'
 ########################################################################################################################
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 # This resource file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `^/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `@/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying resource files, format:
 # module_name relative_dir_path resource_file_name
@@ -358,10 +371,10 @@ deploy_files_procedure "${deploy_files_conf_path}" "symlink" "${argrelay_dir}/ex
 ########################################################################################################################
 # Phase 6: prepare artifacts: generate resources
 
-# Generate `^/bin/run_argrelay_server`:
+# Generate `@/bin/run_argrelay_server`:
 cat << PYTHON_SERVER_EOF > "${argrelay_dir}/bin/run_argrelay_server"
 #!$(which python)
-# \`argrelay\`-generated integration file: https://github.com/uvsmtid/argrelay
+# \`argrelay\`-generated integration file: https://github.com/argrelay/argrelay
 # It is NOT supposed to be version-controlled per project as it:
 # *   is generated
 # *   differs per environment (due to different abs path to \`venv\`)
@@ -371,7 +384,7 @@ import os
 
 from argrelay import misc_helper
 
-# FS_29_54_67_86 dir_structure: \`^/bin/run_argrelay_server\` -> \`^/\`:
+# FS_29_54_67_86 dir_structure: \`@/bin/run_argrelay_server\` -> \`@/\`:
 misc_helper.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_server.__main__ import main
@@ -380,10 +393,10 @@ if __name__ == '__main__':
     main()
 PYTHON_SERVER_EOF
 
-# Generate `^/bin/run_argrelay_client`:
+# Generate `@/bin/run_argrelay_client`:
 cat << PYTHON_CLIENT_EOF > "${argrelay_dir}/bin/run_argrelay_client"
 #!$(which python)
-# \`argrelay\`-generated integration file: https://github.com/uvsmtid/argrelay
+# \`argrelay\`-generated integration file: https://github.com/argrelay/argrelay
 # It is NOT supposed to be version-controlled per project as it:
 # *   is generated
 # *   differs per environment (due to different abs path to \`venv\`)
@@ -393,7 +406,7 @@ import os
 
 from argrelay import misc_helper
 
-# FS_29_54_67_86 dir_structure: \`^/bin/run_argrelay_client\` -> \`^/\`:
+# FS_29_54_67_86 dir_structure: \`@/bin/run_argrelay_client\` -> \`@/\`:
 misc_helper.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_client.__main__ import main
@@ -419,9 +432,9 @@ then
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'build_project_EOF'
 ########################################################################################################################
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# This is a custom build script *sourced* by `^/exe/bootstrap_dev_env.bash`.
+# This is a custom build script *sourced* by `@/exe/bootstrap_dev_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
 # Normally, the build scripts like this for integration project should build it and test it.

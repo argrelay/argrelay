@@ -1,5 +1,5 @@
 # This is an `argrelay` server config.
-# To test, symlink this files as user dot file - see `^/exe/dev_shell.bash` script.
+# To test, symlink this files as user dot file - see `@/exe/dev_shell.bash` script.
 
 connection_config:
     server_host_name: localhost
@@ -22,16 +22,22 @@ query_cache_config:
     query_cache_max_size_bytes: 1048576 # 1 MiB
 
 gui_banner_config:
-    custom_html: |
-        <div style="color: skyblue; font-size: small;">
 
-        To start, type either|or:
+    header_html: |
+        <div style="color: grey; font-size: small;">
+
+        For example, type either|or:
         <ul>
             <li>relay_demo goto host</li>
             <li>relay_demo goto service</li>
         </ul>
-        Then, narrow down search by... IP, region, etc.<br/>
-        <br/>
+        Then, narrow down search by... IP, region, etc.
+
+        </div>
+
+    footer_html: |
+        <div style="color: grey; font-size: small;">
+
         This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config to run CLI).<br/>
         It is convenient for search, testing and command lookup.<br/>
         The server data is mocked.<br/>
@@ -48,7 +54,6 @@ gui_banner_config:
             <li>(2) Search request (Alt+Shift+Q) is sent automatically on timeout.</li>
             <li>(3) Command invocation (Enter) is disabled printing only invocation data from the server (use CLI client to run commands).</li>
         </ul>
-        See <a href="https://github.com/uvsmtid/argrelay">more info about this project</a>.
 
         </div>
 
@@ -96,6 +101,11 @@ plugin_dict:
             interp_selector_tree:
                 intercept: DemoInterpFactory.intercept_func
                 help: DemoInterpFactory.help_func
+                subtree:
+                    # child subtree matches parent:
+                    intercept: DemoInterpFactory.intercept_func
+                    help: DemoInterpFactory.help_func
+                    "": DemoInterpFactory.external
                 "": DemoInterpFactory.external
 
     DemoInterpFactory.intercept_func:

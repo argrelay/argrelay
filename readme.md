@@ -260,14 +260,14 @@ This is a non-intrusive demo<br/>
 
 Clone this repo somewhere.
 
-Run `^/exe/bootstrap_dev_env.bash`:
+Run `@/exe/bootstrap_dev_env.bash`:
 
 ```sh
 ./exe/bootstrap_dev_env.bash
 ```
 
-If `^/exe/bootstrap_dev_env.bash` is run for the first time,<br/>
-it will ask to provide `^/conf/python_conf.bash` file and others.<br/>
+If `@/exe/bootstrap_dev_env.bash` is run for the first time,<br/>
+it will ask to provide `@/conf/python_conf.bash` file and others.<br/>
 Follow instruction on error.
 
 To start both the server and the client,<br/>
@@ -284,7 +284,7 @@ two terminal windows are required.
     In this sub-shell, start the server:
 
     ```sh
-    # in server `^/exe/dev_shell.bash`:
+    # in server `@/exe/dev_shell.bash`:
     ./bin/run_argrelay_server
     ```
 
@@ -302,19 +302,19 @@ two terminal windows are required.
 *   Try to `Tab`-complete command `relay_demo` using [demo test data][TD_63_37_05_36.demo_services_data.md]:
 
     ```sh
-    # in client `^/exe/dev_shell.bash`:
+    # in client `@/exe/dev_shell.bash`:
     relay_demo goto host            # press Tab one or multiple times
     ```
 
     ```sh
-    # in client `^/exe/dev_shell.bash`:
+    # in client `@/exe/dev_shell.bash`:
     relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
     ```
 
 *   Inspect how auto-completion binds to `relay_demo` command:
 
     ```sh
-    # in client `^/exe/dev_shell.bash`:
+    # in client `@/exe/dev_shell.bash`:
     complete -p relay_demo
     ```
 
@@ -326,7 +326,7 @@ two terminal windows are required.
 *   To clean up, exit the sub-shells:
 
     ```sh
-    # in client or server `^/exe/dev_shell.bash`:
+    # in client or server `@/exe/dev_shell.bash`:
     exit
     ```
 
@@ -408,6 +408,6 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 [earlier_stack_question]: https://stackoverflow.com/q/74996560/441652
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
 [how_search_works.md]: docs/dev_notes/how_search_works.md
-[link_to_redirect_to_error]: https://github.com/uvsmtid/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceInvocator.py#L148
-[link_to_load_data_envelopes]: https://github.com/uvsmtid/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceLoader.py#L111
-[repo_issues]: https://github.com/uvsmtid/argrelay/issues
+[link_to_redirect_to_error]: https://github.com/argrelay/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceInvocator.py#L148
+[link_to_load_data_envelopes]: https://github.com/argrelay/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceLoader.py#L111
+[repo_issues]: https://github.com/argrelay/argrelay/issues

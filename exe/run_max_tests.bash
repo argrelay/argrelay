@@ -2,7 +2,7 @@
 
 # This script tries to run maximum test set.
 
-# It is expected to be run from started `^/exe/dev_shell.bash` session.
+# It is expected to be run from started `@/exe/dev_shell.bash` session.
 
 # It must be run from repo root:
 #     ./exe/run_max_tests.bash
@@ -17,9 +17,9 @@
 #         run_max_tests.bash path/to/file method
 
 # Debug: Print commands before execution:
-#set -x
+set -x
 # Debug: Print commands after reading from a script:
-#set -v
+set -v
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
 # Exit on non-zero exit code from a command:
@@ -29,16 +29,34 @@ set -E
 # Error on undefined variables:
 set -u
 
-# Ensure the script was started in `^/exe/dev_shell.bash`:
+# Ensure the script was started in `@/exe/dev_shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-}" ]]
 then
-    echo "ERROR: Run this script under \`^/exe/dev_shell.bash\`." 1>&2
+    echo "ERROR: Run this script under \`@/exe/dev_shell.bash\`." 1>&2
     exit 1
 fi
 
-default_test_dir="tests"
+# The dir of this script:
+script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
+argrelay_dir="$( dirname "${script_dir}" )"
+
+default_test_dir="${argrelay_dir}/tests"
 
 input_path="${1:-"${default_test_dir}"}"
+
+# Leave abs path as is, adjust relative:
+if [[ "${input_path:0:1}" != "/" ]]
+then
+    input_path="$(pwd)/${input_path}"
+fi
+
+# Activate `venv` to run tests.
+# Python config:
+source "${argrelay_dir}/conf/python_conf.bash"
+# Use `"${path_to_venvX}"` (if does not exists, run `@/exe/bootstrap_dev_env.bash` by starting `@/exe/dev_shell.bash`):
+# shellcheck disable=SC2154
+source "${path_to_venvX}"/bin/activate
 
 if [[ -d "${input_path}" ]]
 then

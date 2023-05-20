@@ -2,7 +2,7 @@
 
 # Publish artifacts to pypi.org.
 
-# It is expected to be run from started `^/exe/dev_shell.bash`.
+# It is expected to be run from started `@/exe/dev_shell.bash`.
 
 # It must be run from repo root:
 #     ./exe/publish_package.bash
@@ -31,32 +31,30 @@ set -u
 
 # The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# FS_29_54_67_86 dir_structure: `^/exe/` -> `^/`:
+# FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
-# Switch to `^/` to avoid creating temporary dirs somewhere else:
+
+# Switch to `@/` to avoid creating temporary dirs somewhere else:
 cd "${argrelay_dir}" || exit 1
 
-# Ensure the script was started in `^/exe/dev_shell.bash`:
+# Ensure the script was started in `@/exe/dev_shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-}" ]]
 then
-    echo "ERROR: Run this script under \`^/exe/dev_shell.bash\`." 1>&2
+    echo "ERROR: Run this script under \`@/exe/dev_shell.bash\`." 1>&2
     exit 1
 fi
 
-# Ensure any "privileges" of `^/exe/dev_shell.bash` are disabled:
-unset ARGRELAY_DEV_SHELL
-
 # Python config:
 source "${argrelay_dir}/conf/python_conf.bash"
-# Use `"${path_to_venvX}"` (if does not exists, run `^/exe/bootstrap_dev_env.bash` by starting `^/exe/dev_shell.bash`):
+# Use `"${path_to_venvX}"` (if does not exists, run `@/exe/bootstrap_dev_env.bash` by starting `@/exe/dev_shell.bash`):
 # shellcheck disable=SC2154
 source "${path_to_venvX}"/bin/activate
 
 # Re-install itself:
-pip install -e .
+pip install --force-reinstall -e .
 
-# Update `requirements.txt` to know what was there at the time of publishing:
-cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/requirements.txt"
+# Update `@/conf/dev_env_packages.txt` to know what was there at the time of publishing:
+cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
 ###############################################################################
 # Note that these dependencies are not necessarily required ones,
 # those required listed in `setup.py` script and can be installed as:
@@ -64,7 +62,7 @@ cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/requirements.txt"
 ###############################################################################
 REQUIREMENTS_EOF
 # Ignore `argrelay` itself (installed in editable mode):
-pip freeze | grep -v '#egg=argrelay$' >> requirements.txt
+pip freeze | grep -v '#egg=argrelay$' >> "${argrelay_dir}/conf/dev_env_packages.txt"
 
 # Ensure all changes are committed:
 # https://stackoverflow.com/a/3879077/441652
@@ -103,7 +101,14 @@ echo "INFO: is_dev_version: ${is_dev_version}" 1>&2
 # Clean up previously built packages:
 rm -rf "${argrelay_dir}/dist/"
 
-# Build and test:
+# Run max tests with `ARGRELAY_DEV_SHELL` defined:
+"${argrelay_dir}/exe/run_max_tests.bash"
+
+# Now prepare to run without `ARGRELAY_DEV_SHELL`.
+# Ensure any "privileges" of `@/exe/dev_shell.bash` are disabled:
+unset ARGRELAY_DEV_SHELL
+
+# Build and test via `tox`:
 python -m tox
 
 # Fetch from upstream:
@@ -152,7 +157,7 @@ else
 fi
 
 # Apparently, `tox` already builds `sdist`, for example:
-# ^/.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
+# @/.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
 # However, the following are the staps found in majority of the web resources:
 python setup.py sdist
 pip install twine

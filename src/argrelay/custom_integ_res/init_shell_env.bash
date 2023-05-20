@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 
 # This script is NOT supposed to be run or sourced directly.
-# Instead, run `^/exe/dev_shell.bash`.
+# Instead, run `@/exe/dev_shell.bash`.
 
 # The steps this script implements FS_58_61_77_69 dev_shell:
-# *   Runs `^/exe/bootstrap_dev_env.bash` to set up Python and artifacts.
-# *   Runs `^/exe/argrelay_rc.bash` to configure auto-completion for this shell session.
+# *   Runs `@/exe/bootstrap_dev_env.bash` to set up Python and artifacts.
+# *   Runs `@/exe/argrelay_rc.bash` to configure auto-completion for this shell session.
 
 # Note that enabling exit on error (like `set -e` below) will exit parent
-# `^/exe/dev_shell.bash` script (as this one is sourced) - that is intentional.
+# `@/exe/dev_shell.bash` script (as this one is sourced) - that is intentional.
 
 # Debug: Print commands before execution:
 set -x
@@ -26,14 +26,14 @@ set -u
 
 # The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# FS_29_54_67_86 dir_structure: `^/exe/` -> `^/`:
+# FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
 
-# It is expected that `^/exe/dev_shell.bash` switches to the target project dir itself (not this script).
+# It is expected that `@/exe/dev_shell.bash` switches to the target project dir itself (not this script).
 
-# FS_85_33_46_53: a copy of script `^/exe/bootstrap_dev_env.bash` has to be stored within the project
+# FS_85_33_46_53: a copy of script `@/exe/bootstrap_dev_env.bash` has to be stored within the project
 # as the creator of everything:
-"${argrelay_dir}/exe/bootstrap_dev_env.bash"
+source "${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
 # Enable auto-completion:
 source "${argrelay_dir}/exe/argrelay_rc.bash"

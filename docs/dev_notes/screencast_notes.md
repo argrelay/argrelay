@@ -1,7 +1,7 @@
 
 This doc notes down steps to record screencast.
 
-See [`^/exe/run_demo.bash`][run_demo.bash] for automatic demo.
+See [`@/exe/run_demo.bash`][run_demo.bash] for automatic demo.
 
 Install [`asciinema`][asciinema]:
 
@@ -9,7 +9,7 @@ Install [`asciinema`][asciinema]:
 sudo dnf install asciinema
 ```
 
-Go inside `^/exe/dev_shell.bash`:
+Go inside `@/exe/dev_shell.bash`:
 
 ```sh
 ./exe/dev_shell.bash

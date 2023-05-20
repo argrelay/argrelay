@@ -28,9 +28,9 @@ To demo:
 
 Integration:
 
-*   Review all locations where `.argrelay.conf.d` is mentioned - it is likely that `^/conf` has to be used there instead.
+*   Review all locations where `.argrelay.conf.d` is mentioned - it is likely that `@/conf` has to be used there instead.
 
-*   Add tests that config loading respects `ARGRELAY_CONF_BASE_DIR`, `~/.argrelay.conf.d`, or `^/conf`.
+*   Add tests that config loading respects `ARGRELAY_CONF_BASE_DIR`, `~/.argrelay.conf.d`, or `@/conf`.
     See FS_16_07_78_84.conf_dir_priority.md.
 
 *   FS_61_67_08_53: arbitrary text args.
@@ -39,7 +39,7 @@ Integration:
     Design support for online data updates.
     It should be an API to {get, set} envelope.
 
-*   Search via different collections: https://github.com/uvsmtid/argrelay/issues/10
+*   Search via different collections: https://github.com/argrelay/argrelay/issues/10
     Query specific Mongo DB collection.
 
 GUI bits:
@@ -162,7 +162,7 @@ Ease integration into external project:
 
 *   Enable debug in all bootstrap scripts.
 
-*   How to deal with `^/exe/dev_shell.bash` symlink in custom project?
+*   How to deal with `@/exe/dev_shell.bash` symlink in custom project?
     This symlink (unlike inside `argrelay` itself) is not pointing into existing file within the repo,
     instead, it points into `argrelay` package which still has to be installed.
 
@@ -172,7 +172,7 @@ Ease integration into external project:
 
 *   Split `argrelay.server.yaml` into: `argrelay.common.yaml` and `argrelay.server.yaml`.
 
-*   Make it possible to override location of `^/conf/` via env var
+*   Make it possible to override location of `@/conf/` via env var
     (to allow experimental development co-exists).
 
 *   Make yaml config composable (to reduce chances of merging):

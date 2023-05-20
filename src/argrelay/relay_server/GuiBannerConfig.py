@@ -3,4 +3,5 @@ from dataclasses import dataclass
 
 @dataclass
 class GuiBannerConfig:
-    custom_html: str
+    header_html: str
+    footer_html: str

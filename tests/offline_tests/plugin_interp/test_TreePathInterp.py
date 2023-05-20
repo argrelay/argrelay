@@ -54,7 +54,7 @@ class ThisTestCase(InOutTestCase):
                 "some_command |",
                 RunMode.CompletionMode,
                 CompType.PrefixShown,
-                ["help", "intercept", "goto", "desc", "list"],
+                ['help', 'intercept', 'subtree', 'goto', 'desc', 'list'],
                 {},
                 None,
                 "FS_01_89_09_24: `intercept` and `help` are suggested via tree search mechanism "

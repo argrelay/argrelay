@@ -37,7 +37,7 @@ find . -name 'bootstrap_dev_env.bash'
 ./venv/lib/python3.10/site-packages/argrelay/custom_integ_res/bootstrap_dev_env.bash
 ```
 
-Run it to deploy necessary artifacts from `^/` integration project root dir<br/>
+Run it to deploy necessary artifacts from `@/` integration project root dir<br/>
 (it creates necessary artifacts relative to the dir where it is called from, not where it resides):
 
 ```sh
@@ -52,16 +52,16 @@ Eventually, it will deploy:
 
 *   Config files for server and client config into `~/.argrelay.conf.d/.*`.
 
-*   Copy of itself in `^/exe/bootstrap_dev_env.bash` to be version controlled together with the integration project.
+*   Copy of itself in `@/exe/bootstrap_dev_env.bash` to be version controlled together with the integration project.
 
-One of the deployed script is `^/exe/dev_shell.bash` -
+One of the deployed script is `@/exe/dev_shell.bash` -
 it should work the same way as the demo in the main [readme.md][root_readme.md].
 
 # Next steps
 
 The steps above setup initial version.
 
-Subsequent `argrelay` version upgrades will need a re-run of `^/exe/bootstrap_dev_env.bash` script.
+Subsequent `argrelay` version upgrades will need a re-run of `@/exe/bootstrap_dev_env.bash` script.
 
 Most of the details specific to custom project come with customization (using custom plugins)<br/>
 which may require setting up additional dependencies - see `plugin_development.md`.

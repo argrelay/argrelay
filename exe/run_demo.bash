@@ -386,9 +386,9 @@ press_enter "${keystroke_pause}"
 press_enter "${keystroke_pause}"
 press_enter "${keystroke_pause}"
 press_enter
-type_comment "# Try it yourself by running \`^/exe/dev_shell.bash\` from the repo:"
+type_comment "# Try it yourself by running \`@/exe/dev_shell.bash\` from the repo:"
 press_enter
-type_comment "# https://github.com/uvsmtid/argrelay"
+type_comment "# https://github.com/argrelay/argrelay"
 press_enter
 type_string "exit"
 press_enter
