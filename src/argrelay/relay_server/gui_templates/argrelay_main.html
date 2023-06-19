@@ -18,19 +18,19 @@
 
     <div class="top_container">
         <div id="argrelay_title">
-        argrelay
+        <a class="argrelay_link" href="https://github.com/argrelay/argrelay" target="_blank">argrelay <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         <div id="argrelay_version">
-        {{ argrelay_version }}
+        <a class="argrelay_link" href="https://pypi.org/project/argrelay/{{ argrelay_version }}/" target="_blank">{{ argrelay_version }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         <div id="argrelay_api_docs">
-        <a href="{{ argrelay_api_docs_path }}" target="_blank">API docs</a>
+        <a class="argrelay_link" href="{{ argrelay_api_docs_path }}" target="_blank">API docs <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         <div id="argrelay_api_spec">
-        <a href="{{ argrelay_api_spec_path }}" target="_blank">API spec</a>
+        <a class="argrelay_link" href="{{ argrelay_api_spec_path }}" target="_blank">API spec <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
 
-        {{ custom_html | safe }}
+        {{ header_html | safe }}
     </div>
 
     <div class="top_container">
@@ -119,6 +119,14 @@
         >
         </div>
     </div>
+
+    <div class="top_container">
+        {{ footer_html | safe }}
+    </div>
+
+    <!------------------------------------------------------------------------------------------------------------------
+    Templates
+    ------------------------------------------------------------------------------------------------------------------->
 
     <template id="envelope_container_temp">
         <div>

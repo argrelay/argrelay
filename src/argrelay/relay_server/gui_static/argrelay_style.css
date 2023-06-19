@@ -9,7 +9,7 @@
 
 .box_label {
     width: 100%;
-    color: skyblue;
+    color: grey;
     text-align: right;
 }
 
@@ -17,6 +17,15 @@
     font-size: x-large;
     color: black;
     text-align: right;
+}
+
+.argrelay_link {
+    text-decoration: none;
+}
+
+.external_link_img {
+    height: 0.8em;
+    width: auto;
 }
 
 #argrelay_version {
@@ -84,7 +93,7 @@ Input elements
 }
 
 ::placeholder {
-    color: skyblue;
+    color: grey;
     text-align: right;
 }
 
@@ -141,7 +150,7 @@ Legend
 }
 
 .legend_caption {
-    color: skyblue;
+    color: grey;
 }
 
 .input_legend {
@@ -189,7 +198,7 @@ Suggestion details
 }
 
 .comment_part {
-    color: skyblue;
+    color: grey;
 }
 
 /***********************************************************************************************************************

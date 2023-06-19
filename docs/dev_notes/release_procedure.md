@@ -1,7 +1,7 @@
 
 The procedure is manual at the moment (not run by some specific CI platform).
 
-The details are automated/ensured via `^/exe/publish_package.bash` script.
+The details are automated/ensured via `@/exe/publish_package.bash` script.
 
 Just run and address any errors:
 
@@ -47,6 +47,6 @@ than corresponding version of the package on pypi.org.
 
 The same version may exist in `setup.py` on `main` branch across multiple commits<br/>
 until single Git tag marks one of them the moment when package is published to pypi.org.<br/>
-Script `^/exe/publish_package.bash` ensures that Git tag corresponds to pypi.org-published version.
+Script `@/exe/publish_package.bash` ensures that Git tag corresponds to pypi.org-published version.
 
 [version_format.md]: version_format.md

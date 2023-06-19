@@ -105,7 +105,7 @@ class ThisTestCase(InOutTestCase):
 
             (
                 line_no(), "some_command |", CompType.PrefixHidden,
-                "help\nintercept\ngoto\ndesc\nlist",
+                "help\nintercept\nsubtree\ngoto\ndesc\nlist",
                 # TODO: Maybe we should suggest selection for `internal` func like `intercept` as well?
                 "Suggest from the set of values for the first unassigned arg type.",
             ),
@@ -454,6 +454,18 @@ class ThisTestCase(InOutTestCase):
                 "it should still work.",
                 # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stderr output.
                 None,
+            ),
+            (
+                line_no(), "some_command |", CompType.DescribeArgs,
+                # TODO: FS_41_40_39_44: there must be a special line/field which lists `arg_value`-s based on FS_01_89_09_24 (tree path selecting interp):
+                "FS_41_40_39_44: TODO: suggest from tree path.",
+                f"""
+{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} 
+{ReservedEnvelopeClass.ClassFunction.name}: 6
+{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ActionType: ?{TermColor.RESET.value} goto desc list
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ObjectSelector: ?{TermColor.RESET.value} host service
+""",
             ),
             (
                 line_no(), "some_command goto service dev emea upstream s_|  ", CompType.DescribeArgs,

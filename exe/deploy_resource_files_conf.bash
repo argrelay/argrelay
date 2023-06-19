@@ -1,7 +1,7 @@
 ########################################################################################################################
-# `argrelay` integration file: https://github.com/uvsmtid/argrelay
+# `argrelay` integration file: https://github.com/argrelay/argrelay
 # This resource file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `^/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `@/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying resource files, format:
 # module_name relative_dir_path resource_file_name
