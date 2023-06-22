@@ -19,8 +19,21 @@ set -E
 # Error on undefined variables:
 set -u
 
-# If not set, default is empty (no recursion):
-recursion_flag="${1:-}"
+# Parse command line args:
+for arg_i in "${@}"
+do
+    if [[ "${arg_i}" == "recursion_flag" ]]
+    then
+        # If not set, default is empty (no recursion):
+        recursion_flag="recursion_flag"
+    fi
+    if [[ "${arg_i}" == "activate_venv_only_flag" ]]
+    then
+        # Used by `@/exe/dev_shell.bash` (by `@/exe/init_shell_env.bash`)
+        # to activate Python venv only:
+        activate_venv_only_flag="activate_venv_only_flag"
+    fi
+done
 
 # Let some code know that it runs under `@/exe/bootstrap_dev_env.bash` (e.g to run some tests conditionally):
 ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
@@ -41,6 +54,15 @@ argrelay_dir="$( dirname "." )"
 
 # Ensure it is called from project root which should contain `@/exe/` dir:
 test -d "${argrelay_dir}/exe/"
+
+# Bash does not allow `return` if the script is not sourced (`exit` must be used):
+# https://stackoverflow.com/a/49857550/441652
+if [[ "${0}" != "${BASH_SOURCE[0]}" ]]
+then
+    ret_command="return"
+else
+    ret_command="exit"
+fi
 
 function detect_file_deployment_command {
     # Detect file deployment method based on path of the source (if copy) or the target (if symlink):
@@ -179,6 +201,11 @@ path_to_venvX="venv"
 # Path to specific Python interpreter (to override any default in the `PATH`):
 # shellcheck disable=SC2034
 path_to_pythonX="/usr/local/bin/python3.7"
+# Custom prompt prefix - see:
+# https://docs.python.org/3/library/venv.html
+# --prompt PROMPT Provides an alternative prompt prefix for this environment.
+# shellcheck disable=SC2034
+venv_prompt_prefix="@"
 ########################################################################################################################
 deploy_project_EOF
     exit 1
@@ -192,6 +219,8 @@ source "${argrelay_dir}/conf/python_conf.bash"
 echo "path_to_venvX: ${path_to_venvX}"
 # shellcheck disable=SC2154
 echo "path_to_pythonX: ${path_to_pythonX}"
+# shellcheck disable=SC2154
+echo "venv_prompt_prefix: ${venv_prompt_prefix:-@}"
 
 if [ ! -e "${path_to_venvX}" ]
 then
@@ -212,18 +241,18 @@ then
         exit 1
     fi
 
-    # Prepare `"${path_to_venvX}"` - start with Python of specific version:
-    "${pythonX_basename}" -m venv "${path_to_venvX}"
+    # Start with Python of specific version to prepare `"${path_to_venvX}"`:
+    "${pythonX_basename}" -m venv --prompt "${venv_prompt_prefix:-@}" "${path_to_venvX}"
 fi
 
 source "${path_to_venvX}"/bin/activate
 
-if [[ -n "${ARGRELAY_DEV_SHELL:-}" ]]
+if [[ -n "${activate_venv_only_flag:-}" ]]
 then
-    # Ths script is being sourced by `@/exe/init_shell_env.bash`.
-    # Bootstrap should have been completed before.
-    # Return, ignore the rest:
-    return 0
+    # Ths script is being run by `@/exe/dev_shell.bash` (sourced by `@/exe/init_shell_env.bash`).
+    # If bootstrap procedure is required, call `@/exe/bootstrap_dev_env.bash` itself without `activate_venv_only_flag`.
+    # Python `venv` has already been activated - return, ignore the rest:
+    "${ret_command}" 0
 fi
 
 # Continue with Python from `"${path_to_pythonX}"`:
@@ -277,7 +306,7 @@ argrelay_module_dir_path="$( dirname "${argrelay_module_file_path}" )"
 ########################################################################################################################
 # Phase 3: recurse into fresh copy of itself
 
-if [[ -z "${recursion_flag}" ]]
+if [[ -z "${recursion_flag:-}" ]]
 then
     # Overwrite itself:
     cp -p "${argrelay_module_dir_path}/custom_integ_res/bootstrap_dev_env.bash" "${argrelay_dir}/exe/"
