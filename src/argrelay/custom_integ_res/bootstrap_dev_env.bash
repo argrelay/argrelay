@@ -479,6 +479,17 @@ fi
 # Provide project-specific build script:
 source "${argrelay_dir}/exe/build_project.bash"
 
+# Update `@/conf/dev_env_packages.txt` to know what was there at the time of publishing:
+cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
+###############################################################################
+# Note that these dependencies are not necessarily required ones,
+# those required listed in `setup.py` script and can be installed as:
+# pip install -e .
+###############################################################################
+REQUIREMENTS_EOF
+# Ignore `argrelay` itself (installed in editable mode):
+pip freeze --exclude-editable >> "${argrelay_dir}/conf/dev_env_packages.txt"
+
 ########################################################################################################################
 # EOF
 ########################################################################################################################

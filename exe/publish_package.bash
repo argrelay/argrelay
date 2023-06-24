@@ -47,19 +47,10 @@ fi
 # Ensure it is venv (`@/exe/dev_shell.bash` activates venv):
 test -n "${VIRTUAL_ENV}"
 
-# Re-install itself:
-pip install --force-reinstall -e .
-
-# Update `@/conf/dev_env_packages.txt` to know what was there at the time of publishing:
-cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
-###############################################################################
-# Note that these dependencies are not necessarily required ones,
-# those required listed in `setup.py` script and can be installed as:
-# pip install -e .
-###############################################################################
-REQUIREMENTS_EOF
-# Ignore `argrelay` itself (installed in editable mode):
-pip freeze | grep -v '#egg=argrelay$' >> "${argrelay_dir}/conf/dev_env_packages.txt"
+# Clear venv`:
+pip uninstall -y -r <( pip freeze )
+# Re-install itself only (with dependencies):
+"${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
 # Ensure all changes are committed:
 # https://stackoverflow.com/a/3879077/441652

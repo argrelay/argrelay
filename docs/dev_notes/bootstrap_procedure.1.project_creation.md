@@ -1,10 +1,10 @@
 
-This procedure describes using [`FS_85_33_46_53.bootstrap_dev_env.md`][FS_85_33_46_53.bootstrap_dev_env.md] feature
-to create new `argrelay`-based project from scratch.
+This procedure describes using [`FS_85_33_46_53.bootstrap_dev_env.md`][FS_85_33_46_53.bootstrap_dev_env.md] feature for step 1:
+1.  project creation from scratch: [`bootstrap_procedure.1.project_creation.md`][bootstrap_procedure.1.project_creation.md]
+2.  initial deployment for existing project: [`bootstrap_procedure.2.initial_deployment.md`][bootstrap_procedure.2.initial_deployment.md]
+3.  `argrelay` upgrade as (dependency for existing project): [`bootstrap_procedure.3.argrelay_upgrade.md`][bootstrap_procedure.3.argrelay_upgrade.md]
 
-If the project already exists, see [`bootstrap_procedure.subsequent_upgrade.md`][bootstrap_procedure.subsequent_upgrade.md] instead.
-
-# Initial `argrelay` setup via boostrap script
+# Project creation with boostrap script
 
 Obtain (copy and paste or download) [`bootstrap_dev_env.bash`][bootstrap_dev_env.bash] into temporary path,<br/>
 for example, `/tmp/bootstrap_dev_env.bash`.
@@ -18,7 +18,7 @@ cd path/to/project/dir
 bash /tmp/bootstrap_dev_env.bash
 ```
 
-It will likely fail first time (exits with code other than 0) due to missing setup files,<br/>
+It will likely fail first time (exits with code other than 0) due to missing config files,<br/>
 but it is meant to be re-run multiple times until it succeeds (until it exits with code 0).
 
 # Prepare `@/conf/` for the bootstrap of the current environment
@@ -118,11 +118,12 @@ This is a non-exhaustive list of reasons and clues how to address them:
 Eventually, when bootstrap succeeds (exits with code 0),<br/>
 its copy will be stored into `@/exe/bootstrap_dev_env.bash` (it should be version-controlled).
 
-For any subsequent upgrade, see [`bootstrap_procedure.subsequent_upgrade.md`][bootstrap_procedure.subsequent_upgrade.md].
-
 To see how it works, try [`FS_58_61_77_69.dev_shell.md`][FS_58_61_77_69.dev_shell.md].
 
-[bootstrap_procedure.subsequent_upgrade.md]: bootstrap_procedure.subsequent_upgrade.md
+[bootstrap_procedure.1.project_creation.md]: bootstrap_procedure.1.project_creation.md
+[bootstrap_procedure.2.initial_deployment.md]: bootstrap_procedure.2.initial_deployment.md
+[bootstrap_procedure.3.argrelay_upgrade.md]: bootstrap_procedure.3.argrelay_upgrade.md
+
 [FS_85_33_46_53.bootstrap_dev_env.md]: ../feature_stories/FS_85_33_46_53.bootstrap_dev_env.md
 [FS_29_54_67_86.dir_structure.md]: ../feature_stories/FS_29_54_67_86.dir_structure.md
 [FS_58_61_77_69.dev_shell.md]: ../feature_stories/FS_58_61_77_69.dev_shell.md
