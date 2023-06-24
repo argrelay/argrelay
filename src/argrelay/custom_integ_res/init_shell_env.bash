@@ -33,7 +33,7 @@ argrelay_dir="$( dirname "${script_dir}" )"
 
 # FS_85_33_46_53: a copy of script `@/exe/bootstrap_dev_env.bash` has to be stored within the project
 # as the creator of everything:
-source "${argrelay_dir}/exe/bootstrap_dev_env.bash"
+source "${argrelay_dir}/exe/bootstrap_dev_env.bash" activate_venv_only_flag
 
 # Enable auto-completion:
 source "${argrelay_dir}/exe/argrelay_rc.bash"

@@ -44,11 +44,8 @@ then
     exit 1
 fi
 
-# Python config:
-source "${argrelay_dir}/conf/python_conf.bash"
-# Use `"${path_to_venvX}"` (if does not exists, run `@/exe/bootstrap_dev_env.bash` by starting `@/exe/dev_shell.bash`):
-# shellcheck disable=SC2154
-source "${path_to_venvX}"/bin/activate
+# Ensure it is venv (`@/exe/dev_shell.bash` activates venv):
+test -n "${VIRTUAL_ENV}"
 
 # Re-install itself:
 pip install --force-reinstall -e .

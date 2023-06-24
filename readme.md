@@ -258,7 +258,7 @@ Learn more about [how search works][how_search_works.md].
 This is a non-intrusive demo<br/>
 (without permanent changes to user env, e.g. no `~/.bashrc` changes).
 
-Clone this repo somewhere.
+Clone this repo somewhere (`@/` is [the project root][FS_29_54_67_86.dir_structure.md]).
 
 Run `@/exe/bootstrap_dev_env.bash`:
 
@@ -320,8 +320,8 @@ two terminal windows are required.
 
 *   Inspect client and server config:
 
-    *   server config: `~/.argrelay.conf.d/argrelay.server.yaml`
-    *   client config: `~/.argrelay.conf.d/argrelay.client.json`
+    *   server config: `@/conf/argrelay.server.yaml`
+    *   client config: `@/conf/argrelay.client.json`
 
 *   To clean up, exit the sub-shells:
 
@@ -411,3 +411,5 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
 [link_to_redirect_to_error]: https://github.com/argrelay/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceInvocator.py#L148
 [link_to_load_data_envelopes]: https://github.com/argrelay/argrelay/blob/v0.0.0.dev27/src/argrelay/custom_integ/ServiceLoader.py#L111
 [repo_issues]: https://github.com/argrelay/argrelay/issues
+[FS_29_54_67_86.dir_structure.md]: docs/feature_stories/FS_29_54_67_86.dir_structure.md
+
