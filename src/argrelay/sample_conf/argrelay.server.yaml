@@ -215,7 +215,23 @@ plugin_dict:
         plugin_type: LoaderPlugin
         plugin_config:
             is_plugin_enabled: False
-            base_path: "~/repos"
+            load_repo_commits: False
+            repo_entries:
+                "~/repos":
+                    -   repo_rel_path: argrelay.git
+                        envelope_properties:
+                            GitRepoAlias: ar
+                            GitRepoContentType: code
+                    -   repo_rel_path: argcomplete.git
+                        is_repo_enabled: True
+                        envelope_properties:
+                            GitRepoAlias: ac
+                            GitRepoContentType: ref
+                    -   repo_rel_path: marshmallow.git
+                        is_repo_enabled: False
+                        envelope_properties:
+                            GitRepoAlias: mm
+                            GitRepoContentType: code
 
     NoopDelegator:
         plugin_module_name: argrelay.plugin_delegator.NoopDelegator

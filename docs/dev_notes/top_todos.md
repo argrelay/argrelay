@@ -162,18 +162,19 @@ Ease integration into external project:
 
 *   Enable debug in all bootstrap scripts.
 
-*   How to deal with `@/exe/dev_shell.bash` symlink in custom project?
-    This symlink (unlike inside `argrelay` itself) is not pointing into existing file within the repo,
-    instead, it points into `argrelay` package which still has to be installed.
-
 *   There is constant need to distinguish:
     *   project_dir - the path to special dir (where venv is configured via relative path, artifacts generated, config files, etc.)
     *   package_dir - the path to useful artifacts (where known after venv is sourced)
 
-*   Split `argrelay.server.yaml` into: `argrelay.common.yaml` and `argrelay.server.yaml`.
+*   Split `argrelay.server.yaml` into: `argrelay.plugins.yaml` and `argrelay.server.yaml`.
+    Or at least make it less confusing
+    (because client-side still uses `argrelay.server.yaml` to use plugin configuration on server response).
+    It should be called `argrelay.plugins.yaml` which is exactly the part seen and
+    reused by both server and client, right?
 
 *   Make it possible to override location of `@/conf/` via env var
     (to allow experimental development co-exists).
+    See `FS_16_07_78_84.conf_dir_priority.md` - is it done?
 
 *   Make yaml config composable (to reduce chances of merging):
     allow loading external config which should plug itself into existing config.
@@ -202,6 +203,7 @@ Docs:
 *   Split "arg" group of concepts (`arg_value`, `arg_type`) and "prop" group of concepts (`prop_value`, `prop_type`):
     *   `command_line` args are mapped to `data_envelope` props and almost identical
     *   BUT: they are not naturally/intuitively inter-change-able as `data_envelope` properties are hardly `command_line` arguments.
+    *   Maybe write doc on bounded contexts? Add dictionaries (ubiquitous language) per bash, client, server, data backend?
 
 Extra:
 
@@ -232,3 +234,5 @@ Extra:
 *   Add `echo` command to test arbitrary tail args.
 
 *   Add `describe` internal command to do exactly the same what Ctrl +Alt + Q does, but via Invocation.
+
+*   Split `intercept` into two `intercept_json` and `intercept_str` (Python __str__ output).

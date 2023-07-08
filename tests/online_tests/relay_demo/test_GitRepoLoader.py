@@ -5,8 +5,17 @@ from unittest import TestCase
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoEntryConfigSchema import (
+    repo_rel_path_,
+    is_repo_enabled_,
+    envelope_properties_,
+)
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
-from argrelay.custom_integ.GitRepoLoaderConfigSchema import base_path_, is_plugin_enabled_
+from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
+    is_plugin_enabled_,
+    load_repo_commits_,
+    repo_entries_,
+)
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.misc_helper import eprint
 from argrelay.relay_client import __main__
@@ -72,8 +81,42 @@ class ThisTestCase(TestCase):
                 line_no(), f"{GitRepoLoader.__name__} enabled with random temp dir",
                 {
                     is_plugin_enabled_: True,
-                    # Temporary `base_path`:
-                    base_path_: self.temp_dir.name,
+                    load_repo_commits_: True,
+                    repo_entries_: {
+                        self.temp_dir.name: [
+                            {
+                                repo_rel_path_: "qwer/abc",
+                                envelope_properties_: {
+                                    GitRepoArgType.GitRepoAlias.name: "ar",
+                                    GitRepoArgType.GitRepoContentType.name: "self",
+                                },
+                            },
+                            {
+                                repo_rel_path_: "qwer/xyz",
+                                is_repo_enabled_: True,
+                                envelope_properties_: {
+                                    GitRepoArgType.GitRepoAlias.name: "ac",
+                                    GitRepoArgType.GitRepoContentType.name: "code",
+                                },
+                            },
+                            {
+                                repo_rel_path_: "zxcv",
+                                is_repo_enabled_: True,
+                                envelope_properties_: {
+                                    GitRepoArgType.GitRepoAlias.name: "clone",
+                                    GitRepoArgType.GitRepoContentType.name: "self",
+                                },
+                            },
+                            {
+                                repo_rel_path_: "poiu",
+                                is_repo_enabled_: False,
+                                envelope_properties_: {
+                                    GitRepoArgType.GitRepoAlias.name: "missing",
+                                    GitRepoArgType.GitRepoContentType.name: "conf",
+                                },
+                            },
+                        ],
+                    },
                 },
             ),
         ]

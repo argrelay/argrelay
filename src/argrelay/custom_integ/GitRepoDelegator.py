@@ -1,6 +1,8 @@
-import subprocess
+from __future__ import annotations
 
-from argrelay.custom_integ.value_constants import desc_repo_func_, desc_commit_func_
+import subprocess
+from argrelay.custom_integ.value_constants import goto_repo_func_, desc_commit_func_
+from argrelay.misc_helper import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_data_envelopes
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
@@ -12,6 +14,9 @@ repo_envelope_ipos_ = 1
 
 
 class GitRepoDelegator(AbstractDelegator):
+    """
+    Implements FS_67_16_61_97 git_plugin.
+    """
 
     def __init__(
         self,
@@ -46,19 +51,23 @@ class GitRepoDelegator(AbstractDelegator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == desc_repo_func_:
+        if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == goto_repo_func_:
             repo_envelope = invocation_input.data_envelopes[repo_envelope_ipos_]
-            abs_repo_path = repo_envelope[envelope_payload_]["abs_repo_path"]
+            repo_root_abs_path = repo_envelope[envelope_payload_][repo_root_abs_path_]
+            eprint(f"INFO: starting subshell in: {repo_root_abs_path}")
             # List Git repo dir:
             subproc = subprocess.run(
                 [
-                    "ls",
-                    "-lrt",
-                    abs_repo_path,
+                    "bash",
+                    "-l",
                 ],
+                cwd = repo_root_abs_path
             )
             ret_code = subproc.returncode
             if ret_code != 0:
                 raise RuntimeError
         if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == desc_commit_func_:
             raise RuntimeError("not implemented")
+
+
+repo_root_abs_path_: str = "repo_root_abs_path"
