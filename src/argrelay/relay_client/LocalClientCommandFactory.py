@@ -12,16 +12,14 @@ from argrelay.server_spec.const_int import (
 
 
 class LocalClientCommandFactory(AbstractClientCommandFactory):
-    server_config: ServerConfig
-    local_server: LocalServer
 
     def __init__(self):
         self._start_local_server()
 
     def _start_local_server(self):
-        self.server_config = server_config_desc.from_default_file()
+        self.server_config: ServerConfig = server_config_desc.from_default_file()
         ElapsedTime.measure("after_server_config_load")
-        self.local_server = LocalServer(self.server_config)
+        self.local_server: LocalServer = LocalServer(self.server_config)
         self.local_server.start_local_server()
         ElapsedTime.measure("after_local_server_start")
 

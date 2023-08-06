@@ -17,26 +17,19 @@ from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 
 
 class QueryEngine:
-    mongo_db: Database
-
-    mongo_col: Collection
-
-    query_cache: TTLCache
-
-    enable_query_cache: bool
 
     def __init__(
         self,
         query_cache_config: QueryCacheConfig,
         mongo_db: Database,
     ):
-        self.mongo_db = mongo_db
-        self.mongo_col = self.mongo_db[data_envelopes_]
-        self.query_cache = TTLCache(
+        self.mongo_db: Database = mongo_db
+        self.mongo_col: Collection = self.mongo_db[data_envelopes_]
+        self.query_cache: TTLCache = TTLCache(
             maxsize = query_cache_config.query_cache_max_size_bytes,
             ttl = query_cache_config.query_cache_ttl_sec,
         )
-        self.enable_query_cache = query_cache_config.enable_query_cache
+        self.enable_query_cache: bool = query_cache_config.enable_query_cache
 
     def query_data_envelopes(
         self,

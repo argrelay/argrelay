@@ -43,7 +43,7 @@ class RequestContextSchema(Schema):
         required = True,
         metadata = {
             "description": (
-                "Name for a completion type - see " + CompType.__name__ + " enum "
+                "Name for a completion type - see " + CompType.__name__ + " enum " +
                 "(which maps into ASCII char sent by Bash to completion callback to indicate completion type)"
             ),
             "example": _request_context_example[comp_type_],

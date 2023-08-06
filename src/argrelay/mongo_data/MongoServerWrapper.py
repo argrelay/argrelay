@@ -6,12 +6,11 @@ from argrelay.mongo_data.MongoConfig import MongoConfig
 
 
 class MongoServerWrapper:
-    is_mongomock: bool
-    is_started: bool
-    mongo_proc: Popen
 
     def __init__(self):
-        self.is_started = False
+        self.is_mongomock: bool
+        self.is_started: bool = False
+        self.mongo_proc: Popen
 
     def start_mongo_server(self, mongo_config: MongoConfig):
 

@@ -8,14 +8,13 @@ from argrelay.runtime_context.RequestContext import RequestContext
 
 
 class AbstractServerRequestHandler:
-    local_server: LocalServer
-    interp_ctx: InterpContext
 
     def __init__(
         self,
         local_server: LocalServer,
     ):
-        self.local_server = local_server
+        self.local_server: LocalServer = local_server
+        self.interp_ctx: InterpContext
 
     def handle_request(self, input_ctx: InputContext) -> dict:
         raise NotImplementedError

@@ -7,7 +7,6 @@ ElapsedTime.measure("after_program_entry")
 
 def main():
     # Initial imports - see `completion_perf_notes.md`.
-    import os
     import sys
     from argrelay.runtime_context.InputContext import InputContext
     ElapsedTime.measure("after_initial_imports")

@@ -1,7 +1,7 @@
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
-from argrelay.server_spec.server_data_schema import server_op_data_schemas, get_schema_definitions
+from argrelay.server_spec.server_data_schema import get_schema_definitions
 
 spec_data = {
     "summary": "Provide input data to delegate execution of command on client side",
@@ -38,4 +38,3 @@ spec_data = {
         plugin_entry_desc.ref_name,
     ]),
 }
-

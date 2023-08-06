@@ -8,13 +8,12 @@ from argrelay.server_spec.const_int import (
 
 
 class RemoteClientCommandFactory(AbstractClientCommandFactory):
-    client_config: ClientConfig
 
     def __init__(
         self,
         client_config: ClientConfig,
     ):
-        self.client_config = client_config
+        self.client_config: ClientConfig = client_config
 
     # noinspection PyMethodMayBeStatic
     def create_command_by_server_path(self, server_path: str) -> "AbstractRemoteClientCommand":

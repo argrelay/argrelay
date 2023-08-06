@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
@@ -16,8 +16,8 @@ class InputContext(RequestContext):
     Immutable input data
     """
 
-    comp_key: str
-    run_mode: RunMode
+    comp_key: str = field()
+    run_mode: RunMode = field()
 
     @classmethod
     def from_request_context(

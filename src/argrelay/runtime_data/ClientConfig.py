@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 
 
 @dataclass(frozen = True)
 class ClientConfig:
-    use_local_requests: bool
-    connection_config: ConnectionConfig
+    use_local_requests: bool = field()
+    connection_config: ConnectionConfig = field()

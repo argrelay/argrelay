@@ -8,7 +8,7 @@ class DemoInterpFactory(AbstractInterpFactory):
 
     def __init__(
         self,
-        plugin_instance_id,
+        plugin_instance_id: str,
         config_dict: dict,
     ):
         super().__init__(

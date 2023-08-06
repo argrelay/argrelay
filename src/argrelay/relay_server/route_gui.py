@@ -1,11 +1,12 @@
+from flask import Blueprint
+from flask import render_template
+
 from argrelay.relay_server.GuiBannerConfig import GuiBannerConfig
 from argrelay.server_spec.const_int import (
     ARGRELAY_GUI_PATH,
     API_SPEC_PATH,
     API_DOCS_PATH,
 )
-from flask import Blueprint
-from flask import render_template
 
 
 def create_blueprint_gui(

@@ -1,5 +1,3 @@
-import os
-
 from marshmallow import Schema, fields, RAISE, post_load, validates_schema, ValidationError
 
 from argrelay.misc_helper import get_config_path

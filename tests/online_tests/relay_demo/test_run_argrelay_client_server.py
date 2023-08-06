@@ -1,9 +1,9 @@
 import os
 import signal
-import subprocess
-from contextlib import closing
-import time
 import socket
+import subprocess
+import time
+from contextlib import closing
 from unittest import TestCase, skipIf
 
 from argrelay.misc_helper import get_argrelay_dir
@@ -45,7 +45,6 @@ class ThisTestCase(TestCase):
         self.server_proc.communicate()
         self.assertEquals(0, self.server_proc.returncode)
 
-
     def test_invoke_via_shell(self):
         """
         Invokes client via generated `@/bin/run_argrelay_client`.
@@ -60,7 +59,6 @@ class ThisTestCase(TestCase):
             ret_code = client_proc.returncode
             if ret_code != 0:
                 raise RuntimeError
-
 
     @staticmethod
     def wait_for_connection_to_server():

@@ -24,22 +24,22 @@ class InterpContext:
     Mutable state for the process of command line interpretation.
     """
 
-    parsed_ctx: ParsedContext
+    parsed_ctx: ParsedContext = field()
 
     # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that).
-    interp_factories: dict[str, "AbstractInterpFactory"]
+    interp_factories: dict[str, "AbstractInterpFactory"] = field()
     """
     Reference to `ServerConfig.action_delegators`.
     """
 
-    action_delegators: dict[str, "AbstractDelegator"]
+    action_delegators: dict[str, "AbstractDelegator"] = field()
     """
     Reference to `ServerConfig.action_delegators`.
     """
 
-    query_engine: QueryEngine
+    query_engine: QueryEngine = field()
 
-    help_hint_cache: HelpHintCache
+    help_hint_cache: HelpHintCache = field()
 
     unconsumed_tokens: list[int] = field(init = False)
     """

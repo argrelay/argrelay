@@ -13,6 +13,7 @@ import re
 import sys
 from contextlib import ExitStack
 from dataclasses import dataclass, field
+from io import StringIO
 from unittest import mock
 
 import mongomock
@@ -83,51 +84,51 @@ class EnvMockBuilder:
 
     """
 
-    run_mode: RunMode = RunMode.CompletionMode
+    run_mode: RunMode = field(default = RunMode.CompletionMode)
 
-    command_line: str = ""
-    _command_line_is_set: bool = False
+    command_line: str = field(default = "")
+    _command_line_is_set: bool = field(default = False)
 
     command_args: list[str] = field(default_factory = lambda: [])
-    _command_args_are_set: bool = False
+    _command_args_are_set: bool = field(default = False)
 
-    cursor_cpos: int = -1
-    _cursor_cpos_is_set: bool = False
+    cursor_cpos: int = field(default = -1)
+    _cursor_cpos_is_set: bool = field(default = False)
 
-    comp_type: CompType = CompType.PrefixShown
-    comp_key: int = 0
+    comp_type: CompType = field(default = CompType.PrefixShown)
+    comp_key: int = field(default = 0)
 
-    _mock_client_input: bool = True
+    _mock_client_input: bool = field(default = True)
 
-    file_mock: OpenFileMock = OpenFileMock({})
+    file_mock: OpenFileMock = field(default = OpenFileMock({}))
 
     client_config_dict: dict = field(default_factory = lambda: load_custom_integ_client_config_dict())
-    mock_client_config_file_read: bool = True
-    is_client_config_with_local_server: bool = True
+    mock_client_config_file_read: bool = field(default = True)
+    is_client_config_with_local_server: bool = field(default = True)
 
     server_config_dict: dict = field(default_factory = lambda: load_custom_integ_server_config_dict())
-    mock_server_config_file_read: bool = True
-    is_server_config_with_mongo_start: bool = False
-    enable_demo_git_loader: bool = False
+    mock_server_config_file_read: bool = field(default = True)
+    is_server_config_with_mongo_start: bool = field(default = False)
+    enable_demo_git_loader: bool = field(default = False)
 
-    actual_stdout = None
-    capture_stdout: bool = False
+    actual_stdout: StringIO = field(default = None)
+    capture_stdout: bool = field(default = False)
 
-    actual_stderr = None
-    capture_stderr: bool = False
+    actual_stderr: StringIO = field(default = None)
+    capture_stderr: bool = field(default = False)
 
-    mock_mongo_client: bool = True
+    mock_mongo_client: bool = field(default = True)
 
-    assert_on_close: bool = True
+    assert_on_close: bool = field(default = True)
 
-    test_data_ids_to_load = [
+    test_data_ids_to_load: list[str] = field(default_factory = lambda: [
         "TD_70_69_38_46",  # no data
-    ]
+    ])
 
-    delegator_plugin_invoke_action_func_path = None
-    invocation_input: InvocationInput = None
+    delegator_plugin_invoke_action_func_path: str = field(default = None)
+    invocation_input: InvocationInput = field(default = None)
 
-    enable_query_cache: bool = True
+    enable_query_cache: bool = field(default = True)
 
     def set_run_mode(self, run_mode: RunMode):
         self.run_mode = run_mode

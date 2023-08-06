@@ -8,7 +8,7 @@ from argrelay.schema_request.RequestContextSchema import request_context_desc
 from argrelay.server_spec.const_int import (
     RELAY_LINE_ARGS_PATH,
 )
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):

@@ -11,21 +11,15 @@ class AbstractInterp:
     New instance of interpreter is created by (plugin implementing) `AbstractInterpFactory` for each request.
     """
 
-    interp_factory_id: str
-
-    config_dict: dict
-
-    interp_ctx: InterpContext
-
     def __init__(
         self,
         interp_factory_id: str,
         config_dict: dict,
         interp_ctx: InterpContext,
     ):
-        self.interp_factory_id = interp_factory_id
-        self.config_dict = config_dict
-        self.interp_ctx = interp_ctx
+        self.interp_factory_id: str = interp_factory_id
+        self.config_dict: dict = config_dict
+        self.interp_ctx: InterpContext = interp_ctx
         self.base_envelope_ipos: int = interp_ctx.curr_container_ipos
 
     def __repr__(self) -> str:

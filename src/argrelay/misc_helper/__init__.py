@@ -8,12 +8,15 @@ from os.path import dirname
 # FS_29_54_67_86 dir_structure: `@/src/argrelay/misc_helper/__init__.py` -> `@/`:
 _argrelay_dir = dirname(dirname(dirname(dirname(os.path.abspath(__file__)))))
 
+
 def set_argrelay_dir(argrelay_dir):
     global _argrelay_dir
     _argrelay_dir = argrelay_dir
 
+
 def get_argrelay_dir():
     return _argrelay_dir
+
 
 # noinspection SpellCheckingInspection
 def eprint(*args, **kwargs):

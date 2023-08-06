@@ -31,13 +31,6 @@ class TreePathInterp(AbstractInterp):
     Implements FS_01_89_09_24.
     """
 
-    interp_selector_tree: dict
-
-    interp_factory_id: str
-
-    # Token with ipos = 0 is the command name eaten by `FirstArgInterp`.
-    base_token_ipos: int = 1
-
     def __init__(
         self,
         interp_factory_id: str,
@@ -49,9 +42,12 @@ class TreePathInterp(AbstractInterp):
             config_dict,
             interp_ctx,
         )
-        self.interp_selector_tree = config_dict[interp_selector_tree_]
-        self.interp_factory_id = interp_factory_id
+        self.interp_selector_tree: dict = config_dict[interp_selector_tree_]
+        self.interp_factory_id: str = interp_factory_id
         self.node_path = []
+
+        # Token with ipos = 0 is the command name eaten by `FirstArgInterp`:
+        self.base_token_ipos: int = 1
 
     def consume_pos_args(self) -> None:
         """

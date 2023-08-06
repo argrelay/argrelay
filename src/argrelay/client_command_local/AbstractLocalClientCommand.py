@@ -9,11 +9,6 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
 class AbstractLocalClientCommand(AbstractClientCommand):
-    server_config: ServerConfig
-    local_server: LocalServer
-    request_handler: AbstractServerRequestHandler
-    response_dict: dict
-    interp_ctx: InterpContext
 
     def __init__(
         self,
@@ -25,9 +20,11 @@ class AbstractLocalClientCommand(AbstractClientCommand):
         super().__init__(
             response_handler,
         )
-        self.server_config = server_config
-        self.local_server = local_server
-        self.request_handler = request_handler
+        self.server_config: ServerConfig = server_config
+        self.local_server: LocalServer = local_server
+        self.request_handler: AbstractServerRequestHandler = request_handler
+        self.response_dict: dict
+        self.interp_ctx: InterpContext
 
     def execute_command(self, input_ctx: InputContext):
         self.response_dict = self.request_handler.handle_request(input_ctx)

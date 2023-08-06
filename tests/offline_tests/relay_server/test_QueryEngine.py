@@ -10,7 +10,7 @@ from argrelay.runtime_context.RequestContext import RequestContext
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import parse_line_and_cpos, line_no
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):

@@ -11,7 +11,7 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.test_helper import change_to_known_repo_path, test_data_
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
