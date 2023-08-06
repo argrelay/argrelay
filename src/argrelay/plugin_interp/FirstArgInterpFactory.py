@@ -31,7 +31,6 @@ class FirstArgInterpFactory(TreePathInterpFactory):
             converted_config,
         )
 
-
     def create_interp(
         self,
         interp_ctx: InterpContext,
@@ -41,6 +40,7 @@ class FirstArgInterpFactory(TreePathInterpFactory):
             self.config_dict,
             interp_ctx,
         )
+
 
 def convert_FirstArgInterpConfig_to_TreePathInterpFactoryConfig(config_dict: dict) -> dict:
     """

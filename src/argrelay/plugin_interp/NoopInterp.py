@@ -12,8 +12,6 @@ class NoopInterp(AbstractInterp):
     *   sets `arbitrary_comment` based on config
     """
 
-    arbitrary_comment: str
-
     def __init__(
         self,
         interp_factory_id,
@@ -25,7 +23,7 @@ class NoopInterp(AbstractInterp):
             config_dict,
             interp_ctx,
         )
-        self.arbitrary_comment = config_dict["arbitrary_comment"]
+        self.arbitrary_comment: str = config_dict["arbitrary_comment"]
 
     def try_iterate(self) -> InterpStep:
         return InterpStep.NextInterp

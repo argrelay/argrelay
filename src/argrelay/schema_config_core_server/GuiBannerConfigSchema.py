@@ -6,6 +6,7 @@ from argrelay.relay_server.GuiBannerConfig import GuiBannerConfig
 header_html_ = "header_html"
 footer_html_ = "footer_html"
 
+
 class GuiBannerConfigSchema(Schema):
     class Meta:
         unknown = RAISE
@@ -20,6 +21,7 @@ class GuiBannerConfigSchema(Schema):
             header_html = input_dict[header_html_],
             footer_html = input_dict[footer_html_],
         )
+
 
 gui_banner_config_desc = TypeDesc(
     dict_schema = GuiBannerConfigSchema(),

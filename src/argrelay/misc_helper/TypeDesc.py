@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import yaml
 from marshmallow import Schema, ValidationError
@@ -10,10 +10,10 @@ class TypeDesc:
     Type descriptor: schema, example, etc.
     """
 
-    dict_schema: Schema
-    ref_name: str
-    dict_example: dict
-    default_file_path: str
+    dict_schema: Schema = field()
+    ref_name: str = field()
+    dict_example: dict = field()
+    default_file_path: str = field()
 
     def from_default_file(self):
         return self.from_yaml_file(self.default_file_path)

@@ -9,4 +9,4 @@ class InitControl:
     Implements `init_control` (FS_46_96_59_05).
     """
 
-    init_types_to_values: dict[str, str] = field(default_factory = lambda: [])
+    init_types_to_values: dict[str, str] = field()

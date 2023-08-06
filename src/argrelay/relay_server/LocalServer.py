@@ -22,21 +22,18 @@ class LocalServer:
     The API-wrapper exposing `LocalServer` over the network is `CustomFlaskApp`.
     """
 
-    server_config: ServerConfig
-    mongo_server: MongoServerWrapper
-    mongo_client: MongoClient
-    query_engine: QueryEngine
-    help_hint_cache: HelpHintCache
-
-    def __init__(self, server_config: ServerConfig):
-        self.server_config = server_config
-        self.mongo_server = MongoServerWrapper()
-        self.mongo_client = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
-        self.query_engine = QueryEngine(
+    def __init__(
+        self,
+        server_config: ServerConfig,
+    ):
+        self.server_config: ServerConfig = server_config
+        self.mongo_server: MongoServerWrapper = MongoServerWrapper()
+        self.mongo_client: MongoClient = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
+        self.query_engine: QueryEngine = QueryEngine(
             self.server_config.query_cache_config,
             self.get_mongo_database(),
         )
-        self.help_hint_cache = HelpHintCache(
+        self.help_hint_cache: HelpHintCache = HelpHintCache(
             self.query_engine,
         )
 

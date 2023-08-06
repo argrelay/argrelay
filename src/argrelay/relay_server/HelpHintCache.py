@@ -12,8 +12,8 @@ class HelpHintCache:
         self,
         query_engine: QueryEngine,
     ):
-        self.query_engine = query_engine
-        self.help_hint_dict = {}
+        self.query_engine: QueryEngine = query_engine
+        self.help_hint_dict: dict = {}
 
     def populate_cache(self):
 

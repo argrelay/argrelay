@@ -10,12 +10,13 @@ class AbstractClient:
     An abstract `relay_client` to `relay_server`
     """
 
-    client_config: ClientConfig
-    command_factory: AbstractClientCommandFactory
-
-    def __init__(self, client_config: ClientConfig, command_factory: AbstractClientCommandFactory):
-        self.client_config = client_config
-        self.command_factory = command_factory
+    def __init__(
+        self,
+        client_config: ClientConfig,
+        command_factory: AbstractClientCommandFactory
+    ):
+        self.client_config: ClientConfig = client_config
+        self.command_factory: AbstractClientCommandFactory = command_factory
 
     # noinspection PyMethodMayBeStatic
     def make_request(self, input_ctx: InputContext) -> AbstractClientCommand:

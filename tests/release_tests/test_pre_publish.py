@@ -14,7 +14,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
 from argrelay.test_helper import change_to_known_repo_path
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, ServerOnlyEnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):

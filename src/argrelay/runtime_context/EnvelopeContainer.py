@@ -22,7 +22,7 @@ class EnvelopeContainer:
     A specs how to query `data_envelope` for this `EnvelopeContainer`.
     """
 
-    data_envelope: dict = field(default_factory = lambda: None)
+    data_envelope: dict = field(default = None)
     """
     If the last query finds (unique) single result,
     it contains `data_envelope` based on `search_control` and command line input.

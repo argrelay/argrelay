@@ -3,16 +3,14 @@ from typing import Type
 
 
 class AbstractPlugin:
-    plugin_instance_id: str
-    config_dict: dict
 
     def __init__(
         self,
         plugin_instance_id: str,
         config_dict: dict,
     ):
-        self.plugin_instance_id = plugin_instance_id
-        self.config_dict = config_dict
+        self.plugin_instance_id: str = plugin_instance_id
+        self.config_dict: dict = config_dict
 
     def activate_plugin(self):
         """

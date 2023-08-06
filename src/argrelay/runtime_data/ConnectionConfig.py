@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen = True)
 class ConnectionConfig:
-    server_host_name: str
-    server_port_number: int
+    server_host_name: str = field()
+    server_port_number: int = field()

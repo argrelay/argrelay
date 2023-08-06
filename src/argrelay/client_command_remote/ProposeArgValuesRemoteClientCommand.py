@@ -32,8 +32,8 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
         super().__init__(
             ProposeArgValuesClientResponseHandler(),
         )
-        self.connection_config = connection_config
-        self.server_path = PROPOSE_ARG_VALUES_PATH
+        self.connection_config: ConnectionConfig = connection_config
+        self.server_path: str = PROPOSE_ARG_VALUES_PATH
 
     def execute_command(self, input_ctx: InputContext):
 

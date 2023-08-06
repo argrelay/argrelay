@@ -4,7 +4,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.RunMode import RunMode
 from argrelay.relay_client import __main__
 from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, LiveServerEnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import LiveServerEnvMockBuilder
 
 
 class ThisTestCase(TestCase):

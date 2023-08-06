@@ -28,4 +28,3 @@ API_SPEC_PATH = "/argrelay_server_api_spec.json"
 
 # noinspection HttpUrlsUsage
 BASE_URL_FORMAT = "http://{server_host_name}:{server_port_number}"
-

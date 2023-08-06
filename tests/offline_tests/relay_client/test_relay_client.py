@@ -10,7 +10,7 @@ from argrelay.schema_config_core_client.ConnectionConfigSchema import connection
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
 from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH, BASE_URL_FORMAT
 from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, LiveServerEnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import LiveServerEnvMockBuilder
 
 
 class ThisTestCase(TestCase):

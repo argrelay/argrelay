@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
@@ -14,18 +14,18 @@ class InterpResult:
     See :class:`InterpResultSchema`
     """
 
-    all_tokens: list[str]
+    all_tokens: list[str] = field()
     """
     Copy from `ParsedContext.all_tokens` - command line args.
     """
 
-    consumed_tokens: list[int]
+    consumed_tokens: list[int] = field()
     """
     Copy from `InterpContext.consumed_tokens` -
     indexes into `all_tokens` pointing to tokens consumed during interpretation.
     """
 
-    envelope_containers: list[EnvelopeContainer]
+    envelope_containers: list[EnvelopeContainer] = field()
 
     def describe_data(self):
         eprint()

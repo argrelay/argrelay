@@ -39,6 +39,7 @@ class TreePathInterpFactoryConfigSchema(Schema):
             raise ValidationError(f"not a dict: {interp_selector_tree}")
         validate_tree_node(interp_selector_tree)
 
+
 tree_path_interp_factory_config_example = {
     interp_selector_tree_: {
         # TODO: This may not be currently configured plugin id:

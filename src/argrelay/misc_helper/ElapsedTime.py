@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import ClassVar
 
 from argrelay.misc_helper import eprint
@@ -16,8 +16,8 @@ class ElapsedTime:
     At the moment, a static singleton is enough as perf measurements are done with single client.
     """
 
-    name: str
-    ts: int
+    name: str = field()
+    ts: int = field()
 
     all_ts: ClassVar[list[ElapsedTime]] = []
 

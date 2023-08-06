@@ -12,22 +12,22 @@ from argrelay.runtime_data.StaticData import StaticData
 
 @dataclass
 class ServerConfig:
-    connection_config: ConnectionConfig
-    mongo_config: MongoConfig
-    query_cache_config: QueryCacheConfig
-    gui_banner_config: GuiBannerConfig
+    connection_config: ConnectionConfig = field()
+    mongo_config: MongoConfig = field()
+    query_cache_config: QueryCacheConfig = field()
+    gui_banner_config: GuiBannerConfig = field()
 
-    plugin_instance_id_load_list: list[str]
+    plugin_instance_id_load_list: list[str] = field()
     """
     List of `plugin_instance_id`s in order of loading. Each `plugin_instance_id` is a key into `plugin_dict`.
     """
 
-    plugin_dict: dict[str, PluginEntry]
+    plugin_dict: dict[str, PluginEntry] = field()
     """
     Key = `plugin_instance_id`
     """
 
-    static_data: StaticData
+    static_data: StaticData = field()
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
     data_loaders: dict[str, "AbstractLoader"] = field(default_factory = lambda: {})
