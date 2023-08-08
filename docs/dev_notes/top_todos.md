@@ -233,6 +233,6 @@ Extra:
 
 *   Add `echo` command to test arbitrary tail args.
 
-*   Add `describe` internal command to do exactly the same what Ctrl +Alt + Q does, but via Invocation.
+*   Add `describe` internal command to do exactly the same what Ctrl+Alt+Q does, but via Invocation.
 
 *   Split `intercept` into two `intercept_json` and `intercept_str` (Python __str__ output).
