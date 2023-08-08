@@ -256,7 +256,7 @@ then
 fi
 
 # Continue with Python from `"${path_to_pythonX}"`:
-python -m pip install pip
+python -m pip install --upgrade pip
 
 ########################################################################################################################
 # Phase 2: deploy project
