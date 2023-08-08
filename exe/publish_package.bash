@@ -47,9 +47,12 @@ fi
 # Ensure it is venv (`@/exe/dev_shell.bash` activates venv):
 test -n "${VIRTUAL_ENV}"
 
-# Clear venv`:
+# Clear venv (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
-# Re-install itself only (with dependencies):
+# Restore only registered packages
+# (if only dependencies are required, clear `@/conf/dev_env_packages.txt` first):
+pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
+# Re-install itself only (also restores missing dependencies):
 "${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
 # Ensure all changes are committed:
