@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from argrelay.enum_desc.ArgSource import ArgSource
-from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -186,7 +186,8 @@ class FuncArgsInterp(AbstractInterp):
             return None
 
     def propose_arg_completion(self) -> None:
-        self.interp_ctx.comp_suggestions.extend(self.propose_auto_comp_list())
+        comp_list = self.propose_auto_comp_list()
+        self.interp_ctx.comp_suggestions.extend(comp_list)
 
     def propose_auto_comp_list(self) -> list[str]:
 
@@ -202,38 +203,20 @@ class FuncArgsInterp(AbstractInterp):
                 if not type_name.startswith("_")
             ]
 
-        if self.interp_ctx.parsed_ctx.comp_type == CompType.SubsequentHelp:
+        if self.interp_ctx.parsed_ctx.comp_scope == CompScope.ScopeInitial:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
                 return self.remaining_from_next_missing_type()
             else:
-                # TODO: Suggest keys (:) of missing types instead - it is `SubsequentHelp`, user insist and wants something else:
                 return self.remaining_from_next_missing_type()
 
-        if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
-            if (
-                self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixHidden or
-                self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixShown or
-                self.interp_ctx.parsed_ctx.comp_type == CompType.MenuCompletion
-            ):
-                # Cannot complete => show first missing:
-                first_missing_type_values = self.remaining_from_next_missing_type()
-                if first_missing_type_values:
-                    return first_missing_type_values
-                else:
-                    return []
-        else:
-            if self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixHidden:
-                return self.remaining_from_next_missing_type()
-            if self.interp_ctx.parsed_ctx.comp_type == CompType.MenuCompletion:
-                # Note that this space will be cached by shell and used without completion script invocation
-                # until cycling through these options by repetitive menu completion is not over.
-                # TODO: Test cycling through options limited by current prefix (versus cycling through every item at current arg space):
-                return self.remaining_from_next_missing_type()
-            if self.interp_ctx.parsed_ctx.comp_type == CompType.PrefixShown:
-                # Can complete => show matching:
+        if self.interp_ctx.parsed_ctx.comp_scope == CompScope.ScopeSubsequent:
+            if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
                 return self.remaining_from_next_missing_type()
             else:
+                # TODO: Suggest keys (:) of missing types instead - it is `ScopeSubsequent`, user insist and wants something else:
                 return self.remaining_from_next_missing_type()
+
+        return []
 
     def remaining_from_next_missing_type(self) -> list[str]:
         """

@@ -1,5 +1,5 @@
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
-from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
 from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
@@ -15,11 +15,11 @@ spec_data = {
     ],
     "parameters": [
         {
-            "name": request_context_desc.ref_name,
+            "name": call_context_desc.ref_name,
             "in": "body",
             "required": True,
             "schema": {
-                "$ref": "#/definitions/" + request_context_desc.ref_name,
+                "$ref": "#/definitions/" + call_context_desc.ref_name,
             },
         },
     ],
@@ -35,7 +35,7 @@ spec_data = {
         },
     },
     "definitions": get_schema_definitions([
-        request_context_desc.ref_name,
+        call_context_desc.ref_name,
         interp_result_desc.ref_name,
         envelope_container_desc.ref_name,
         assigned_value_desc.ref_name,

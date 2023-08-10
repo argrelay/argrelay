@@ -21,17 +21,24 @@ import pkg_resources
 import yaml
 
 import argrelay
+from argrelay.client_spec.ShellContext import (
+    UNKNOWN_COMP_KEY,
+    ShellContext,
+    COMP_LINE_env_var,
+    COMP_POINT_env_var,
+    COMP_TYPE_env_var,
+    COMP_KEY_env_var,
+)
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import is_plugin_enabled_
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.custom_integ.ServiceLoaderConfigSchema import test_data_ids_to_load_
+from argrelay.enum_desc.CallConv import CallConv
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
-from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
@@ -44,6 +51,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     query_cache_config_,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
+from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_helper.OpenFileMock import OpenFileMock
 
 
@@ -84,8 +92,6 @@ class EnvMockBuilder:
 
     """
 
-    run_mode: RunMode = field(default = RunMode.CompletionMode)
-
     command_line: str = field(default = "")
     _command_line_is_set: bool = field(default = False)
 
@@ -96,7 +102,7 @@ class EnvMockBuilder:
     _cursor_cpos_is_set: bool = field(default = False)
 
     comp_type: CompType = field(default = CompType.PrefixShown)
-    comp_key: int = field(default = 0)
+    comp_key: str = field(default = UNKNOWN_COMP_KEY)
 
     _mock_client_input: bool = field(default = True)
 
@@ -130,10 +136,6 @@ class EnvMockBuilder:
 
     enable_query_cache: bool = field(default = True)
 
-    def set_run_mode(self, run_mode: RunMode):
-        self.run_mode = run_mode
-        return self
-
     def set_command_line(self, command_line: str):
         """
         Used as input for `RunMode.CompletionMode` because `COMP_LINE` is env var what Bash sets
@@ -159,7 +161,7 @@ class EnvMockBuilder:
         self.comp_type = comp_type
         return self
 
-    def set_comp_key(self, comp_key: int):
+    def set_comp_key(self, comp_key: str):
         self.comp_key = comp_key
         return self
 
@@ -315,17 +317,17 @@ class EnvMockBuilder:
                 yield_list.append(exit_stack.enter_context(_mongo_client_mock_manager()))
 
             if self._mock_client_input:
-                if self.run_mode == RunMode.CompletionMode:
-                    # TODO: make explicit function "mock_client_input_on_CompletionMode" with all three args required.
+                if CallConv.from_comp_type(self.comp_type) == CallConv.EnvVarsConv:
+                    # TODO: make explicit function "mock_client_input_in_env_vars" with all three args required.
                     yield_list.append(exit_stack.enter_context(
-                        _mock_client_input_in_completion_mode(
+                        _mock_client_input_in_env_vars(
                             self.command_line,
                             self.cursor_cpos,
                             self.comp_type,
                         )
                     ))
-                elif self.run_mode == RunMode.InvocationMode:
-                    # TODO: make explicit function "mock_client_input_on_InvocationMode" with just command_args.
+                elif CallConv.from_comp_type(self.comp_type) == CallConv.CliArgsConv:
+                    # TODO: make explicit function "mock_client_input_in_cli_args" with just command_args.
                     if self._command_args_are_set:
                         # TODO: do not branch here, branch on mock setup (in client tests) to make it explicit/conscious that InvocationMode is not about command_line, but command_args.
                         yield_list.append(exit_stack.enter_context(
@@ -440,12 +442,12 @@ def _mongo_client_mock_manager():
 
 
 @contextlib.contextmanager
-def _mock_client_input_in_completion_mode(command_line: str, cursor_cpos: int, comp_type: CompType):
+def _mock_client_input_in_env_vars(command_line: str, cursor_cpos: int, comp_type: CompType):
     with mock.patch.dict(os.environ, {
-        "COMP_LINE": command_line,
-        "COMP_POINT": str(cursor_cpos),
-        "COMP_TYPE": str(comp_type.value),
-        "COMP_KEY": str(0),
+        COMP_LINE_env_var: command_line,
+        COMP_POINT_env_var: str(cursor_cpos),
+        COMP_TYPE_env_var: str(comp_type.value),
+        COMP_KEY_env_var: UNKNOWN_COMP_KEY,
     }) as env_mock:
         yield env_mock
 
@@ -508,18 +510,26 @@ def _get_resource_path(rel_path: str):
     return test_server_config_path
 
 
-def default_test_parsed_context(command_line: str, cursor_cpos: int) -> ParsedContext:
+def default_test_parsed_context(
+    command_line: str,
+    cursor_cpos: int,
+) -> ParsedContext:
     return ParsedContext.from_instance(
-        default_test_input_context(command_line, cursor_cpos),
+        default_test_input_context(
+            command_line,
+            cursor_cpos,
+        ),
     )
 
 
-def default_test_input_context(command_line: str, cursor_cpos: int) -> InputContext:
-    return InputContext(
+def default_test_input_context(
+    command_line: str,
+    cursor_cpos: int,
+) -> CallContext:
+    return CallContext.from_shell_context(ShellContext(
         command_line = command_line,
         cursor_cpos = cursor_cpos,
         comp_type = CompType.PrefixShown,
+        comp_key = UNKNOWN_COMP_KEY,
         is_debug_enabled = False,
-        run_mode = RunMode.CompletionMode,
-        comp_key = str(0),
-    )
+    ))

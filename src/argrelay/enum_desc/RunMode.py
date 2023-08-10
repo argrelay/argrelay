@@ -1,8 +1,16 @@
+from __future__ import annotations
+
 from enum import Enum, auto
+
+from argrelay.enum_desc.CompType import CompType
 
 
 class RunMode(Enum):
     """
+    Note: `RunMode` became completely implied and not necessary information for logic (derived from other values).
+
+    See also `CallConv`.
+
     `RunMode` originates on the client side because of different user actions:
     *   `CompletionMode`: user hits `Tab` trying to complete command line arg.
     *   `InvocationMode`: user hits `Enter` trying to execute the command line.
@@ -22,3 +30,17 @@ class RunMode(Enum):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def from_comp_type(
+        cls,
+        comp_type: CompType,
+    ) -> RunMode:
+        """
+        Derive `RunMode` on client side from `CompType`.
+        """
+
+        if comp_type == CompType.InvokeAction:
+            return RunMode.InvocationMode
+        else:
+            return RunMode.CompletionMode

@@ -4,7 +4,6 @@ from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.relay_client import __main__
 from argrelay.test_helper import parse_line_and_cpos
@@ -19,7 +18,6 @@ class ThisTestCase(TestCase):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             LiveServerEnvMockBuilder()
-            .set_run_mode(RunMode.InvocationMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.InvokeAction)

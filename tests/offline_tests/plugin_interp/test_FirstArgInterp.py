@@ -5,7 +5,6 @@ from unittest import TestCase
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.PluginType import PluginType
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
@@ -69,7 +68,6 @@ class ThisTestCase(TestCase):
 
         env_mock_builder = (
             EnvMockBuilder()
-            .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.PrefixShown)
@@ -112,7 +110,6 @@ class ThisTestCase(TestCase):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()
-            .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)

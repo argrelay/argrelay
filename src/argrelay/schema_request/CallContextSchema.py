@@ -1,94 +1,107 @@
 from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 
-from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.CompScope import CompScope
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper import ensure_value_is_enum
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.runtime_context.RequestContext import RequestContext
+from argrelay.server_spec.CallContext import CallContext
 
+server_action_ = "server_action"
 command_line_ = "command_line"
 cursor_cpos_ = "cursor_cpos"
-comp_type_ = "comp_type"
+comp_scope_ = "comp_scope"
 is_debug_enabled_ = "is_debug_enabled"
 
 _sample_command_line = "some_command goto service "
 
-_request_context_example = {
+_call_context_example = {
+    server_action_: ServerAction.DescribeLineArgs.name,
     command_line_: _sample_command_line,
     cursor_cpos_: len(_sample_command_line),
-    comp_type_: CompType.PrefixShown.name,
+    comp_scope_: CompScope.ScopeInitial.name,
     is_debug_enabled_: True,
 }
 
 
-class RequestContextSchema(Schema):
+class CallContextSchema(Schema):
     class Meta:
         unknown = RAISE
         ordered = True
 
+    server_action = fields.Enum(
+        ServerAction,
+        required = True,
+        metadata = {
+            "description": (
+                "Action to perform - see " + ServerAction.__name__ + " enum"
+            ),
+            "example": _call_context_example[server_action_],
+        },
+    )
     command_line = fields.String(
         required = True,
         metadata = {
-            "example": _request_context_example[command_line_],
+            "example": _call_context_example[command_line_],
         },
     )
     cursor_cpos = fields.Integer(
         required = True,
         metadata = {
             "description": "Cursor position within command line (0 = before the first char)",
-            "example": _request_context_example[cursor_cpos_],
+            "example": _call_context_example[cursor_cpos_],
         },
     )
-    comp_type = fields.Enum(
-        CompType,
+    comp_scope = fields.Enum(
+        CompScope,
         required = True,
         metadata = {
-            "description": (
-                "Name for a completion type - see " + CompType.__name__ + " enum " +
-                "(which maps into ASCII char sent by Bash to completion callback to indicate completion type)"
-            ),
-            "example": _request_context_example[comp_type_],
+            "description": "Name for a completion scope - see " + CompScope.__name__ + " enum",
+            "example": _call_context_example[comp_scope_],
         },
     )
     is_debug_enabled = fields.Boolean(
         required = True,
         metadata = {
             "description": "Enable extra debug output",
-            "example": _request_context_example[is_debug_enabled_],
+            "example": _call_context_example[is_debug_enabled_],
         },
     )
 
     @pre_dump
-    def make_dict(self, input_object: RequestContext, **kwargs):
+    def make_dict(self, input_object: CallContext, **kwargs):
         # TODO: figure out to populate all automatically and reduce duplication - this is error-prone:
-        if isinstance(input_object, RequestContext):
+        if isinstance(input_object, CallContext):
             return {
+                server_action_: input_object.server_action,
                 command_line_: input_object.command_line,
                 cursor_cpos_: input_object.cursor_cpos,
-                comp_type_: ensure_value_is_enum(input_object.comp_type, CompType),
+                comp_scope_: ensure_value_is_enum(input_object.comp_scope, CompScope),
                 is_debug_enabled_: input_object.is_debug_enabled,
             }
         else:
             # Assuming it is as dict:
             return {
+                server_action_: ensure_value_is_enum(input_object[server_action_], ServerAction),
                 command_line_: input_object[command_line_],
                 cursor_cpos_: input_object[cursor_cpos_],
-                comp_type_: ensure_value_is_enum(input_object[comp_type_], CompType),
+                comp_scope_: ensure_value_is_enum(input_object[comp_scope_], CompScope),
                 is_debug_enabled_: input_object[is_debug_enabled_],
             }
 
     @post_load
     def make_object(self, input_dict, **kwargs):
-        return RequestContext(
+        return CallContext(
+            server_action = ensure_value_is_enum(input_dict[server_action_], ServerAction),
             command_line = input_dict[command_line_],
             cursor_cpos = input_dict[cursor_cpos_],
-            comp_type = ensure_value_is_enum(input_dict[comp_type_], CompType),
+            comp_scope = ensure_value_is_enum(input_dict[comp_scope_], CompScope),
             is_debug_enabled = input_dict[is_debug_enabled_],
         )
 
 
-request_context_desc = TypeDesc(
-    dict_schema = RequestContextSchema(),
-    ref_name = RequestContextSchema.__name__,
-    dict_example = _request_context_example,
+call_context_desc = TypeDesc(
+    dict_schema = CallContextSchema(),
+    ref_name = CallContextSchema.__name__,
+    dict_example = _call_context_example,
     default_file_path = "",
 )

@@ -1,5 +1,4 @@
-from argrelay.enum_desc.CompType import CompType
-
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -11,11 +10,11 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
 )
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.InterpContext import function_envelope_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay.server_spec.CallContext import CallContext
 
 
 class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
@@ -28,10 +27,13 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
             local_server = local_server,
         )
 
-    def handle_request(self, input_ctx: InputContext) -> dict:
-        assert input_ctx.comp_type == CompType.InvokeAction
+    def handle_request(
+        self,
+        call_ctx: CallContext,
+    ) -> dict:
+        assert call_ctx.server_action == ServerAction.RelayLineArgs
 
-        self.interpret_command(self.local_server, input_ctx)
+        self.interpret_command(self.local_server, call_ctx)
         ElapsedTime.measure("after_interpret_command")
         is_error = False
         error_message = ""

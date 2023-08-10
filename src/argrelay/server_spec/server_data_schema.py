@@ -10,7 +10,7 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
@@ -65,16 +65,16 @@ def get_schema_definitions(ref_names: list[str]):
 
 
 # Request: common for several API paths:
-# *   DESCRIBE_LINE_ARGS_PATH
-# *   PROPOSE_ARG_VALUES_PATH
-# *   RELAY_LINE_ARGS_PATH
-add_type_desc_to_schema(request_context_desc)
+# *   ServerAction.DescribeLineArgs
+# *   ServerAction.ProposeArgValues
+# *   ServerAction.RelayLineArgs
+add_type_desc_to_schema(call_context_desc)
 
-# Response for DESCRIBE_LINE_ARGS_PATH:
+# Response for ServerAction.DescribeLineArgs:
 add_type_desc_to_schema(interp_result_desc)
 
-# Response for PROPOSE_ARG_VALUES_PATH:
+# Response for ServerAction.ProposeArgValues:
 add_type_desc_to_schema(arg_values_desc)
 
-# Response for RELAY_LINE_ARGS_PATH:
+# Response for ServerAction.RelayLineArgs:
 add_type_desc_to_schema(invocation_input_desc)

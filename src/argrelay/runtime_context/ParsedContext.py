@@ -7,11 +7,11 @@ from dataclasses import dataclass, field
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
-from argrelay.runtime_context.InputContext import InputContext
+from argrelay.server_spec.CallContext import CallContext
 
 
 @dataclass(frozen = True)
-class ParsedContext(InputContext):
+class ParsedContext(CallContext):
     """
     Internal immutable parsed view of :class:`InputContext`
 
@@ -45,11 +45,16 @@ class ParsedContext(InputContext):
         object.__setattr__(self, 'tan_token_r_part', tan_token_r_part)
 
     @classmethod
-    def from_instance(cls, input_ctx: InputContext):
-        return cls(**dataclasses.asdict(input_ctx))
+    def from_instance(
+        cls,
+        call_ctx: CallContext,
+    ):
+        return cls(**dataclasses.asdict(call_ctx))
 
     @staticmethod
-    def parse_input(input_ctx: InputContext):
+    def parse_input(
+        call_ctx: CallContext,
+    ):
         """
         Given `|` is the cursor in this command line:
         ```
@@ -76,8 +81,8 @@ class ParsedContext(InputContext):
         )
         """
         # Wrap orig command line into delimiter for simplification:
-        command_line = f" {input_ctx.command_line} "
-        cursor_cpos = input_ctx.cursor_cpos + 1
+        command_line = f" {call_ctx.command_line} "
+        cursor_cpos = call_ctx.cursor_cpos + 1
         line_len = len(command_line)
 
         # Init with defaults:
@@ -142,6 +147,5 @@ class ParsedContext(InputContext):
         eprint(TermColor.DEBUG.value, end = "")
         eprint(f"sel_token_l_part: \"{self.tan_token_l_part}\"", end = " ")
         eprint(f"sel_token_r_part: \"{self.tan_token_r_part}\"", end = " ")
-        eprint(f"comp_type: {self.comp_type.name}", end = " ")
-        eprint(f"comp_key: {self.comp_key}", end = " ")
+        eprint(f"comp_scope: {self.comp_scope.name}", end = " ")
         eprint(TermColor.RESET.value, end = end_str)

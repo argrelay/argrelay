@@ -8,7 +8,7 @@ cd argrelay.git/tests/ui_tests
 npm install cypress --save-dev
 ```
 
-# Open Cypress
+# Open Cypress / Initially
 
 https://docs.cypress.io/guides/getting-started/opening-the-app
 
@@ -19,6 +19,11 @@ npx cypress open
 *   Select E2E.
 *   Select Chrome.
 *   Press "Scaffold example specs".
+
+# Open Cypress / Subsequently
+
+See `argrelay_gui` dir.
+
 *   Try running `basic_checks.cy.js`.
 
 In case of this error:
@@ -35,11 +40,11 @@ https://stackoverflow.com/a/69699772/441652
 export NODE_OPTIONS=--openssl-legacy-provider
 ```
 
-# Fist Cypress test
+# Run Cypress tests automatically
 
-See `argrelay_gui`.
-
-# Run Cypress tests
+To pass tests successfully:
+*   `TD_38_03_48_51` test data is required (which slows down responses due to its volume)
+*   server has to be started
 
 ```sh
 cd argrelay.git/tests/ui_tests

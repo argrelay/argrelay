@@ -16,7 +16,7 @@ describe('argrelay GUI', () => {
         // Simulate failure:
         cy
             .intercept('**', {forceNetworkError: true})
-            .as('failed')
+            .as('failed_request')
         // User types in command line:
         cy
             .get('[data-cy=command_line_input]')
@@ -25,7 +25,7 @@ describe('argrelay GUI', () => {
             .type(input_command)
         // Wait for failure:
         cy
-            .wait('@failed')
+            .wait('@failed_request')
             .should('have.property', 'error')
         // Command line is in failed state:
         cy

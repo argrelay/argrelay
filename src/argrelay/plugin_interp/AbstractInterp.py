@@ -47,4 +47,7 @@ class AbstractInterp:
         return None
 
     def is_pos_arg(self, token_ipos: int) -> bool:
-        return get_token_type(self.interp_ctx.parsed_ctx.all_tokens, token_ipos) == TokenType.PosArg
+        return get_token_type(
+            self.interp_ctx.parsed_ctx.all_tokens,
+            token_ipos,
+        ) == TokenType.PosArg

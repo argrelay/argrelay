@@ -23,7 +23,7 @@ class ElapsedTime:
 
     is_debug_enabled: bool = False
     """
-    This is normally set based on `RequestContext.is_debug_enabled`.
+    This is normally set based on `ShellContext.is_debug_enabled`.
     """
 
     def print(self, prev_ts: int):

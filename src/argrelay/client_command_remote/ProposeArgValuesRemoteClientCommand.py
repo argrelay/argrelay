@@ -1,11 +1,11 @@
 import socket
 
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_response.ProposeArgValuesClientResponseHandler import ProposeArgValuesClientResponseHandler
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
-from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
-from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH
+from argrelay.server_spec.CallContext import CallContext
 
 
 class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
@@ -17,25 +17,31 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
     Importing everything from `AbstractRemoteClientCommand` slows down startup and responses on `Tab` requests.
 
     Performance is not critical for other client commands
-    (e.g. `DESCRIBE_LINE_ARGS_PATH` or `RELAY_LINE_ARGS_PATH`).
+    (e.g. `ServerAction.DescribeLineArgs` or `ServerAction.RelayLineArgs`).
 
-    Because `Tab`-completion is latency-sensitive, `PROPOSE_ARG_VALUES_PATH` command uses this specialized client.
+    Because `Tab`-completion is latency-sensitive, `ServerAction.ProposeArgValues` command uses this specialized client.
     The drawback is that it also requires extra maintenance/testing.
     """
 
     # TODO: Provide test coverage for this special implementation.
+    #       Currently, it is only covered by end-to-end `test_run_argrelay_client_server.py`.
+    #       Write mocked test to cover internal logic like function `recvall` below.
 
     def __init__(
         self,
+        call_ctx: CallContext,
         connection_config: ConnectionConfig,
     ):
         super().__init__(
             ProposeArgValuesClientResponseHandler(),
         )
+        self.call_ctx: CallContext = call_ctx
         self.connection_config: ConnectionConfig = connection_config
-        self.server_path: str = PROPOSE_ARG_VALUES_PATH
+        self.server_path: str = ServerAction.ProposeArgValues.value
 
-    def execute_command(self, input_ctx: InputContext):
+    def execute_command(
+        self,
+    ):
 
         s = socket.socket(
             socket.AF_INET,
@@ -47,12 +53,14 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
             self.connection_config.server_port_number,
         ))
 
+        # TODO: add server_action
         request_body_str = (f"""\
 {{
-    "command_line": "{input_ctx.command_line}",
-    "cursor_cpos": {input_ctx.cursor_cpos},
-    "comp_type": "{input_ctx.comp_type.name}",
-    "is_debug_enabled": "{'true' if input_ctx.is_debug_enabled else 'false'}"
+    "server_action": "{self.call_ctx.server_action.name}",
+    "command_line": "{self.call_ctx.command_line}",
+    "cursor_cpos": {self.call_ctx.cursor_cpos},
+    "comp_scope": "{self.call_ctx.comp_scope.name}",
+    "is_debug_enabled": "{'true' if self.call_ctx.is_debug_enabled else 'false'}"
 }}
 """)
         request_body_len = len(request_body_str.encode())

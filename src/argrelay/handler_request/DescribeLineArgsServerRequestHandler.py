@@ -1,15 +1,14 @@
-from argrelay.enum_desc.CompType import CompType
-
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InputContext import InputContext
 from argrelay.schema_response.InterpResultSchema import (
     interp_result_desc,
     envelope_containers_,
     all_tokens_,
     consumed_tokens_,
 )
+from argrelay.server_spec.CallContext import CallContext
 
 
 class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
@@ -22,10 +21,13 @@ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
             local_server = local_server,
         )
 
-    def handle_request(self, input_ctx: InputContext) -> dict:
-        assert input_ctx.comp_type == CompType.DescribeArgs
+    def handle_request(
+        self,
+        call_ctx: CallContext,
+    ) -> dict:
+        assert call_ctx.server_action == ServerAction.DescribeLineArgs
 
-        self.interpret_command(self.local_server, input_ctx)
+        self.interpret_command(self.local_server, call_ctx)
         ElapsedTime.measure("after_interpret_command")
 
         response_dict = interp_result_desc.dict_schema.dump({

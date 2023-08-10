@@ -3,12 +3,12 @@ from unittest import TestCase, skip
 import responses
 
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.RunMode import RunMode
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
-from argrelay.server_spec.const_int import PROPOSE_ARG_VALUES_PATH, BASE_URL_FORMAT
+from argrelay.server_spec.const_int import BASE_URL_FORMAT
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import LiveServerEnvMockBuilder
 
@@ -34,7 +34,7 @@ class ThisTestCase(TestCase):
 
         mocked_response = responses.Response(
             method = "POST",
-            url = self.base_URL + PROPOSE_ARG_VALUES_PATH,
+            url = self.base_URL + ServerAction.ProposeArgValues.value,
             json = arg_values_desc.dict_example,
             status = 200,
             content_type = 'application/json'
@@ -44,7 +44,6 @@ class ThisTestCase(TestCase):
         env_mock_builder = (
             LiveServerEnvMockBuilder()
             .set_client_config_dict(client_config_desc.dict_example)
-            .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.PrefixShown)

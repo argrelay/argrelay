@@ -1,5 +1,4 @@
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_interp.TreePathInterp import fetch_tree_node
 from argrelay.test_helper import line_no
 from argrelay.test_helper.InOutTestCase import InOutTestCase
@@ -52,7 +51,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command |",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ['help', 'intercept', 'subtree', 'goto', 'desc', 'list'],
                 {},
@@ -63,7 +61,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command inter|",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["intercept"],
                 {},
@@ -73,7 +70,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["amer", "emea"],
                 {},
@@ -84,7 +80,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command | host qa upstream amer qw goto ro s_c green rtyu-qu",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 # TODO: FS_23_62_89_43: This can be fixed to take into account cursor position
                 #                       and suggest not only missing args for already populated command line,
@@ -102,7 +97,6 @@ class ThisTestCase(InOutTestCase):
                 (
                     line_number,
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
@@ -113,7 +107,6 @@ class ThisTestCase(InOutTestCase):
                 self.verify_output(
                     "TD_76_09_29_31",  # overlapped
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
