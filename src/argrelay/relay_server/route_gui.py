@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint
 from flask import render_template
 
@@ -12,6 +14,7 @@ from argrelay.server_spec.const_int import (
 def create_blueprint_gui(
     argrelay_version: str,
     gui_banner_config: GuiBannerConfig,
+    server_start_time: int,
 ):
     blueprint_gui = Blueprint(
         name = "blueprint_gui",
@@ -26,6 +29,7 @@ def create_blueprint_gui(
             argrelay_version = argrelay_version,
             argrelay_api_docs_path = API_DOCS_PATH,
             argrelay_api_spec_path = API_SPEC_PATH,
+            server_start_time = f"{datetime.utcfromtimestamp(server_start_time).isoformat()}Z",
             header_html = gui_banner_config.header_html,
             footer_html = gui_banner_config.footer_html,
         )

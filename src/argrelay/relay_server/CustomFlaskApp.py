@@ -130,6 +130,7 @@ def create_app() -> CustomFlaskApp:
     flask_app.register_blueprint(create_blueprint_gui(
         server_version,
         flask_app.local_server.server_config.gui_banner_config,
+        flask_app.local_server.server_start_time,
     ))
 
     return flask_app

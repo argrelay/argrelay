@@ -1,3 +1,5 @@
+import time
+
 from pymongo import MongoClient
 
 from argrelay.enum_desc.PluginType import PluginType
@@ -36,6 +38,8 @@ class LocalServer:
         self.help_hint_cache: HelpHintCache = HelpHintCache(
             self.query_engine,
         )
+        # seconds since epoch:
+        self.server_start_time: int = int(time.time())
 
     def start_local_server(self):
         self._activate_plugins()

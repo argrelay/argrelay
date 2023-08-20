@@ -241,4 +241,6 @@ Extra:
 
 *   Add directory for PID and other runtime data (is it `./var/`?).
 *   Collect usage statistic per plugin in runtime dir (`./var/`?).
+*   Add scripts to manage start/stop/check of the server to the framework.
 
+*   TODO: why `relay_demo subshell start` ALT+SHIFT+Q fails
