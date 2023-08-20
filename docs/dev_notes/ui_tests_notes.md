@@ -43,8 +43,8 @@ export NODE_OPTIONS=--openssl-legacy-provider
 # Run Cypress tests automatically
 
 To pass tests successfully:
+*   server has to be started (manually)
 *   `TD_38_03_48_51` test data is required (which slows down responses due to its volume)
-*   server has to be started
 
 ```sh
 cd argrelay.git/tests/ui_tests

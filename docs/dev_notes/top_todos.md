@@ -66,6 +66,8 @@ GUI bits:
 
 *   Show version on the web page.
 
+*   Be able to enable verbose server logging and disable it.
+
 *   Add info that describe output is accessible in shell via Alt+Shift+Q.
 
 *   Test with lots of data - is there any issues with races between user input and server response?
