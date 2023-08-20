@@ -1,10 +1,7 @@
-from argrelay.enum_desc.RunMode import RunMode
-
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.runtime_context.RequestContext import RequestContext
+from argrelay.server_spec.CallContext import CallContext
 
 
 class AbstractServerRequestHandler:
@@ -16,20 +13,18 @@ class AbstractServerRequestHandler:
         self.local_server: LocalServer = local_server
         self.interp_ctx: InterpContext
 
-    def handle_request(self, input_ctx: InputContext) -> dict:
+    def handle_request(
+        self,
+        call_ctx: CallContext,
+    ) -> dict:
         raise NotImplementedError
 
-    @staticmethod
-    def create_input_ctx(request_ctx: RequestContext, run_mode: RunMode):
-        input_ctx = InputContext.from_request_context(
-            request_ctx,
-            run_mode = run_mode,
-            comp_key = str(0),
-        )
-        return input_ctx
-
-    def interpret_command(self, local_server: LocalServer, input_ctx: InputContext):
-        parsed_ctx = ParsedContext.from_instance(input_ctx)
+    def interpret_command(
+        self,
+        local_server: LocalServer,
+        call_ctx: CallContext,
+    ) -> None:
+        parsed_ctx = ParsedContext.from_instance(call_ctx)
         # TODO: Split server_config and static_data (both top level, not config including data):
         self.interp_ctx = InterpContext(
             parsed_ctx = parsed_ctx,

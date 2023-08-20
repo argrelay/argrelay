@@ -1,13 +1,10 @@
 import dataclasses
 from unittest import TestCase
 
-from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_server.__main__ import create_app
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.schema_request.RequestContextSchema import request_context_desc
-from argrelay.server_spec.const_int import (
-    RELAY_LINE_ARGS_PATH,
-)
+from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
@@ -43,12 +40,12 @@ class ThisTestCase(TestCase):
             env_mock_builder.assert_server_config_read()
 
             data_obj = dataclasses.replace(
-                request_context_desc.dict_schema.load(request_context_desc.dict_example),
-                comp_type = CompType.InvokeAction,
+                call_context_desc.dict_schema.load(call_context_desc.dict_example),
+                server_action = ServerAction.RelayLineArgs,
                 command_line = "some_command goto service prod wert-pd-1",
             )
             response = self.client.post(
-                RELAY_LINE_ARGS_PATH,
-                json = request_context_desc.dict_schema.dumps(data_obj),
+                ServerAction.RelayLineArgs.value,
+                json = call_context_desc.dict_schema.dumps(data_obj),
             )
             self.assertEqual(200, response.status_code)

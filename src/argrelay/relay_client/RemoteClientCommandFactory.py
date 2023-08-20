@@ -1,10 +1,7 @@
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
 from argrelay.runtime_data.ClientConfig import ClientConfig
-from argrelay.server_spec.const_int import (
-    DESCRIBE_LINE_ARGS_PATH,
-    RELAY_LINE_ARGS_PATH,
-    PROPOSE_ARG_VALUES_PATH,
-)
+from argrelay.server_spec.CallContext import CallContext
 
 
 class RemoteClientCommandFactory(AbstractClientCommandFactory):
@@ -16,20 +13,32 @@ class RemoteClientCommandFactory(AbstractClientCommandFactory):
         self.client_config: ClientConfig = client_config
 
     # noinspection PyMethodMayBeStatic
-    def create_command_by_server_path(self, server_path: str) -> "AbstractRemoteClientCommand":
-        if server_path == DESCRIBE_LINE_ARGS_PATH:
+    def create_command_by_server_path(
+        self,
+        call_ctx: CallContext,
+    ) -> "AbstractRemoteClientCommand":
+        if call_ctx.server_action == ServerAction.DescribeLineArgs:
             from argrelay.client_command_remote.DescribeLineArgsRemoteClientCommand import (
                 DescribeLineArgsRemoteClientCommand,
             )
-            return DescribeLineArgsRemoteClientCommand(self.client_config.connection_config)
-        if server_path == PROPOSE_ARG_VALUES_PATH:
+            return DescribeLineArgsRemoteClientCommand(
+                call_ctx,
+                self.client_config.connection_config,
+            )
+        if call_ctx.server_action == ServerAction.ProposeArgValues:
             from argrelay.client_command_remote.ProposeArgValuesRemoteClientCommand import (
                 ProposeArgValuesRemoteClientCommand,
             )
-            return ProposeArgValuesRemoteClientCommand(self.client_config.connection_config)
-        if server_path == RELAY_LINE_ARGS_PATH:
+            return ProposeArgValuesRemoteClientCommand(
+                call_ctx,
+                self.client_config.connection_config,
+            )
+        if call_ctx.server_action == ServerAction.RelayLineArgs:
             from argrelay.client_command_remote.RelayLineArgsRemoteClientCommand import (
                 RelayLineArgsRemoteClientCommand,
             )
-            return RelayLineArgsRemoteClientCommand(self.client_config.connection_config)
+            return RelayLineArgsRemoteClientCommand(
+                call_ctx,
+                self.client_config.connection_config,
+            )
         raise RuntimeError

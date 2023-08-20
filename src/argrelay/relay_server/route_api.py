@@ -1,23 +1,18 @@
 from flasgger import swag_from
 from flask import request, Blueprint, Response, abort
 
-from argrelay.enum_desc.RunMode import RunMode
-from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.DescribeLineArgsServerRequestHandler import DescribeLineArgsServerRequestHandler
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLineArgsServerRequestHandler
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
 from argrelay.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
-from argrelay.server_spec.const_int import (
-    DESCRIBE_LINE_ARGS_PATH,
-    PROPOSE_ARG_VALUES_PATH,
-    RELAY_LINE_ARGS_PATH,
-)
+from argrelay.server_spec.CallContext import CallContext
 
 
 def create_blueprint_api(local_server: LocalServer):
@@ -27,31 +22,39 @@ def create_blueprint_api(local_server: LocalServer):
     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
     relay_line_args_handler = RelayLineArgsServerRequestHandler(local_server)
 
-    def create_input_ctx(run_mode: RunMode):
+    def create_call_ctx():
         ElapsedTime.clear_measurements()
         ElapsedTime.measure("before_request_payload_load")
         # TODO: Figure out why:
         #       *   requests by `ProposeArgValuesRemoteClientCommand` arrive as dict
+        #           (this is from different client implementation, but why does it cause that difference?)
         #       *   requests by `AbstractRemoteClientCommand` arrive as str
-        request_ctx = None
+        call_ctx: CallContext = None
         if isinstance(request.json, str):
-            request_ctx = request_context_desc.dict_schema.loads(request.json)
+            call_ctx = call_context_desc.dict_schema.loads(request.json)
         if isinstance(request.json, dict):
-            request_ctx = request_context_desc.dict_schema.load(request.json)
-        input_ctx = AbstractServerRequestHandler.create_input_ctx(request_ctx, run_mode)
+            call_ctx = call_context_desc.dict_schema.load(request.json)
+        # TODO: get rid of CallContext re-creation:
+        call_ctx = CallContext(
+            server_action = call_ctx.server_action,
+            command_line = call_ctx.command_line,
+            cursor_cpos = call_ctx.cursor_cpos,
+            comp_scope = call_ctx.comp_scope,
+            is_debug_enabled = call_ctx.is_debug_enabled,
+        )
         ElapsedTime.measure("after_input_context_creation")
-        ElapsedTime.is_debug_enabled = input_ctx.is_debug_enabled
-        return input_ctx
+        ElapsedTime.is_debug_enabled = call_ctx.is_debug_enabled
+        return call_ctx
 
     @blueprint_api.route(
-        DESCRIBE_LINE_ARGS_PATH,
+        ServerAction.DescribeLineArgs.value,
         methods = ["post"],
     )
     @swag_from(DescribeLineArgsSpec.spec_data)
     def describe_line_args():
         try:
-            input_ctx = create_input_ctx(RunMode.InvocationMode)
-            response_dict = describe_line_args_handler.handle_request(input_ctx)
+            call_ctx = create_call_ctx()
+            response_dict = describe_line_args_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
                 response_json = interp_result_desc.dict_schema.dumps(response_dict)
@@ -66,14 +69,14 @@ def create_blueprint_api(local_server: LocalServer):
             ElapsedTime.measure("before_sending_response")
 
     @blueprint_api.route(
-        PROPOSE_ARG_VALUES_PATH,
+        ServerAction.ProposeArgValues.value,
         methods = ["post"],
     )
     @swag_from(ProposeArgValuesSpec.spec_data)
     def propose_arg_values():
         try:
-            input_ctx = create_input_ctx(RunMode.CompletionMode)
-            response_dict = propose_arg_values_handler.handle_request(input_ctx)
+            call_ctx = create_call_ctx()
+            response_dict = propose_arg_values_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["text/plain"] or len(request.accept_mimetypes) == 0:
                 # Sending plain text by default for simplest clients (who may not even specify headers)
@@ -96,14 +99,14 @@ def create_blueprint_api(local_server: LocalServer):
             ElapsedTime.measure("before_sending_response")
 
     @blueprint_api.route(
-        RELAY_LINE_ARGS_PATH,
+        ServerAction.RelayLineArgs.value,
         methods = ["post"],
     )
     @swag_from(RelayLineArgsSpec.spec_data)
     def relay_line_args():
         try:
-            input_ctx = create_input_ctx(RunMode.InvocationMode)
-            response_dict = relay_line_args_handler.handle_request(input_ctx)
+            call_ctx = create_call_ctx()
+            response_dict = relay_line_args_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
                 response_json = invocation_input_desc.dict_schema.dumps(response_dict)

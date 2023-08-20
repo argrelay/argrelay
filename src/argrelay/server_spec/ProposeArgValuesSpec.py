@@ -1,4 +1,4 @@
-from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
 from argrelay.server_spec.server_data_schema import get_schema_definitions
 
@@ -13,11 +13,11 @@ spec_data = {
     ],
     "parameters": [
         {
-            "name": request_context_desc.ref_name,
+            "name": call_context_desc.ref_name,
             "in": "body",
             "required": True,
             "schema": {
-                "$ref": "#/definitions/" + request_context_desc.ref_name,
+                "$ref": "#/definitions/" + call_context_desc.ref_name,
             },
         },
     ],
@@ -34,7 +34,7 @@ spec_data = {
         },
     },
     "definitions": get_schema_definitions([
-        request_context_desc.ref_name,
+        call_context_desc.ref_name,
         arg_values_desc.ref_name,
     ]),
 }

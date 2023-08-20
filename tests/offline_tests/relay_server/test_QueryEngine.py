@@ -1,14 +1,13 @@
 from unittest import TestCase, mock
 
+from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.RunMode import RunMode
-from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_context.RequestContext import RequestContext
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
+from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_helper import parse_line_and_cpos, line_no
 from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
@@ -63,20 +62,19 @@ class ThisTestCase(TestCase):
                     local_server.start_local_server()
                     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
 
-                    request_ctx = RequestContext(
-                        command_line = command_line,
-                        cursor_cpos = cursor_cpos,
-                        comp_type = comp_type,
-                        is_debug_enabled = False,
-                    )
-
                     fq_method_name = f"{QueryEngine.__module__}.{QueryEngine._process_prop_values.__qualname__}"
 
                     # 1st run:
                     actual_suggestions_1st_run = "1st"
                     with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
                         actual_suggestions_1st_run = self.run_completion(
-                            request_ctx,
+                            CallContext.from_shell_context(ShellContext(
+                                command_line = command_line,
+                                cursor_cpos = cursor_cpos,
+                                comp_type = comp_type,
+                                is_debug_enabled = False,
+                                comp_key = UNKNOWN_COMP_KEY,
+                            )),
                             propose_arg_values_handler,
                             expected_suggestions,
                             method_mock,
@@ -87,7 +85,13 @@ class ThisTestCase(TestCase):
                     actual_suggestions_2nd_run = "2nd"
                     with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
                         actual_suggestions_2nd_run = self.run_completion(
-                            request_ctx,
+                            CallContext.from_shell_context(ShellContext(
+                                command_line = command_line,
+                                cursor_cpos = cursor_cpos,
+                                comp_type = comp_type,
+                                is_debug_enabled = False,
+                                comp_key = UNKNOWN_COMP_KEY,
+                            )),
                             propose_arg_values_handler,
                             expected_suggestions,
                             method_mock,
@@ -96,9 +100,15 @@ class ThisTestCase(TestCase):
                         )
                     self.assertEqual(actual_suggestions_1st_run, actual_suggestions_2nd_run)
 
-    def run_completion(self, request_ctx, propose_arg_values_handler, expected_suggestions, method_mock, is_called):
-        input_ctx = AbstractServerRequestHandler.create_input_ctx(request_ctx, RunMode.CompletionMode)
-        response_dict = propose_arg_values_handler.handle_request(input_ctx)
+    def run_completion(
+        self,
+        call_ctx: CallContext,
+        propose_arg_values_handler,
+        expected_suggestions,
+        method_mock,
+        is_called,
+    ):
+        response_dict = propose_arg_values_handler.handle_request(call_ctx)
         actual_suggestions = "\n".join(response_dict[arg_values_])
         self.assertEqual(expected_suggestions, actual_suggestions)
         self.assertEqual(method_mock.called, is_called)

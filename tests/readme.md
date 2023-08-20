@@ -1,4 +1,10 @@
 
+TODO: Update/change categories to include:
+    *   split `offline_tests`:
+        *   in_process_tests - tests which do not start other processes to communicate with
+        *   local_tests - tests which may start other processes to communicate with (potentially occupying port numbers)
+    *   redefine `online_tests` - these must be only those which connect to services outside of those controlled by the test code
+
 All tests for `argrelay` are integration at different degree
 (thin ~ single function or thick ~ almost entire client-side and server-side code).
 

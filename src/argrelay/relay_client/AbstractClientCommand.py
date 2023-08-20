@@ -1,5 +1,4 @@
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
-from argrelay.runtime_context.InputContext import InputContext
 
 
 class AbstractClientCommand:
@@ -10,5 +9,7 @@ class AbstractClientCommand:
     ):
         self.response_handler: AbstractClientResponseHandler = response_handler
 
-    def execute_command(self, input_ctx: InputContext):
+    def execute_command(
+        self,
+    ):
         pass

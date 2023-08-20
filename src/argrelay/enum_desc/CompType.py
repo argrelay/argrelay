@@ -59,15 +59,18 @@ class CompType(IntEnum):
     This happens on `menu-complete` - for example, on Shift-Tab given the `~/.inputrc` config above.
     Subsequent Shift-Tab-s do not invoke client - instead, Bash uses cashed suggestions and cycles through them.
     """
+    # TODO: Test if it is feasible to cycle through options limited by current prefix (versus cycling through every item at current arg space).
     MenuCompletion = 37  # ASCII '%'
 
     """
-    This is not sent by Bash. Instead, it is used to describe ags in given command line by invoking
-    completion programmatically via script bound to a selected key combination.
+    This `COMP_TYPE` value does not originate in Bash.
+    Instead, it is set by `argrelay` Bash config script when invoked via special key combination (e.g. `ALT+SHIFT+Q`).
+    It is used to describe args in the given command line.
     """
     DescribeArgs = 94  # ASCII '^'
 
     """
-    This is not sent by Bash. Instead, it is set programmatically on `RunMode.InvocationMode`.
+    This `COMP_TYPE` value does not originate in Bash.
+    Instead, it is set by `argrelay` client in `RunMode.InvocationMode`.
     """
     InvokeAction = 42  # ASCII '*'

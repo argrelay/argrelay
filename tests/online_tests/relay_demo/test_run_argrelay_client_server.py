@@ -6,10 +6,24 @@ import time
 from contextlib import closing
 from unittest import TestCase, skipIf
 
-from argrelay.misc_helper import get_argrelay_dir
+from argrelay.client_spec.ShellContext import (
+    COMP_LINE_env_var,
+    COMP_POINT_env_var,
+    COMP_TYPE_env_var,
+    COMP_KEY_env_var,
+    UNKNOWN_COMP_KEY,
+)
+from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.TermColor import TermColor
+from argrelay.misc_helper import get_argrelay_dir, eprint
+from argrelay.runtime_context.EnvelopeContainer import indent_size
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.test_helper import change_to_known_repo_path
+from argrelay.test_helper import change_to_known_repo_path, parse_line_and_cpos
+
+client_command_env_var_name_ = "ARGRELAY_CLIENT_COMMAND"
 
 
 @skipIf(
@@ -28,6 +42,8 @@ class ThisTestCase(TestCase):
     It tests both client and server started via their generated files in `@/bin/` dir.
 
     The test starts background server process to execute the client.
+
+    It is probably "the fattest" test possible with end-to-end coverage while still using Python.
     """
 
     server_proc = None
@@ -43,22 +59,7 @@ class ThisTestCase(TestCase):
         # shutdown gracefully:
         self.server_proc.send_signal(signal.SIGINT)
         self.server_proc.communicate()
-        self.assertEquals(0, self.server_proc.returncode)
-
-    def test_invoke_via_shell(self):
-        """
-        Invokes client via generated `@/bin/run_argrelay_client`.
-        """
-
-        with change_to_known_repo_path("."):
-            client_command_env_var_name = "ARGRELAY_CLIENT_COMMAND"
-            # Function "desc_host" ("desc host") uses `NoopDelegator`, so the test should always pass:
-            client_proc = subprocess.run(
-                f"{os.environ.get(client_command_env_var_name)} desc host dev upstream amer ro".split(" "),
-            )
-            ret_code = client_proc.returncode
-            if ret_code != 0:
-                raise RuntimeError
+        self.assertEqual(0, self.server_proc.returncode)
 
     @staticmethod
     def wait_for_connection_to_server():
@@ -77,3 +78,89 @@ class ThisTestCase(TestCase):
                     print("waiting for connection to server")
                     time.sleep(1)
                     continue
+
+    def test_DescribeLineArgs(self):
+        """
+        Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.DescribeArgs`.
+        """
+        test_line = f"{os.environ.get(client_command_env_var_name_)} goto h|"
+        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+
+        env_vars = os.environ.copy()
+        env_vars[COMP_LINE_env_var] = command_line
+        env_vars[COMP_POINT_env_var] = str(cursor_cpos)
+        env_vars[COMP_TYPE_env_var] = str(CompType.DescribeArgs.value)
+        env_vars[COMP_KEY_env_var] = UNKNOWN_COMP_KEY
+
+        with change_to_known_repo_path("."):
+            client_proc = subprocess.run(
+                args = [
+                    os.environ.get(client_command_env_var_name_),
+                ],
+                env = env_vars,
+                capture_output = True
+            )
+            ret_code = client_proc.returncode
+            if ret_code != 0:
+                raise RuntimeError
+            described_args = client_proc.stderr.decode("utf-8")
+            eprint(f"described_args: {described_args}")
+            self.maxDiff = None
+            self.assertEqual(
+                f"""
+{TermColor.BRIGHT_BLUE.value}{os.environ.get(client_command_env_var_name_)}{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.DARK_MAGENTA.value}h{TermColor.RESET.value} 
+{ReservedEnvelopeClass.ClassFunction.name}: 2
+{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ObjectSelector: ?{TermColor.RESET.value} host service
+""",
+                described_args
+            )
+
+    def test_ProposeArgValues(self):
+        """
+        Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
+        """
+        test_line = f"{os.environ.get(client_command_env_var_name_)} desc host dev upstream a|"
+        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+
+        env_vars = os.environ.copy()
+        env_vars[COMP_LINE_env_var] = command_line
+        env_vars[COMP_POINT_env_var] = str(cursor_cpos)
+        env_vars[COMP_TYPE_env_var] = str(CompType.PrefixShown.value)
+        env_vars[COMP_KEY_env_var] = UNKNOWN_COMP_KEY
+
+        with change_to_known_repo_path("."):
+            client_proc = subprocess.run(
+                args = [
+                    os.environ.get(client_command_env_var_name_),
+                ],
+                env = env_vars,
+                capture_output = True
+            )
+            ret_code = client_proc.returncode
+            if ret_code != 0:
+                raise RuntimeError
+            proposed_args = client_proc.stdout.decode("utf-8").strip().splitlines()
+            self.maxDiff = None
+            self.assertEqual(
+                [
+                    "apac",
+                    "amer",
+                ],
+                proposed_args
+            )
+
+    def test_RelayLineArgs(self):
+        """
+        Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.RelayLineArgs`.
+        """
+
+        with change_to_known_repo_path("."):
+            # Function "desc_host" ("desc host") uses `NoopDelegator`, so the test should always pass:
+            client_proc = subprocess.run(
+                args = f"{os.environ.get(client_command_env_var_name_)} desc host dev upstream amer".split(" "),
+            )
+            ret_code = client_proc.returncode
+            if ret_code != 0:
+                raise RuntimeError

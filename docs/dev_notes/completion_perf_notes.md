@@ -31,8 +31,8 @@ The numbers are approximate - whatever seem to show up most of the time.
 
 See `ProposeArgValuesRemoteClientCommand`.
 
-*   Iteration 0: non-optimized version (still in use for commands `DESCRIBE_LINE_ARGS_PATH` or `RELAY_LINE_ARGS_PATH`).
-*   Iteration 4: optimized version for `PROPOSE_ARG_VALUES_PATH`.
+*   Iteration 0: non-optimized version (still in use for commands `ServerAction.DescribeLineArgs` or `ServerAction.RelayLineArgs`).
+*   Iteration 4: optimized version for `ServerAction.ProposeArgValues`.
 
 All numbers are deltas between prev and curr except end-to-end `total` (a delta between first and last).
 

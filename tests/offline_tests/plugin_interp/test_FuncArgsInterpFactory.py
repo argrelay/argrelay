@@ -6,7 +6,6 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
 from argrelay.relay_client import __main__
@@ -104,7 +103,6 @@ class ThisTestCase(TestCase):
         # Test 1: should pass
         env_mock_builder = (
             EnvMockBuilder()
-            .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.PrefixShown)
@@ -131,7 +129,6 @@ class ThisTestCase(TestCase):
         with self.assertRaises(AssertionError):
             env_mock_builder = (
                 EnvMockBuilder()
-                .set_run_mode(RunMode.CompletionMode)
                 .set_command_line(command_line)
                 .set_cursor_cpos(cursor_cpos)
                 .set_comp_type(CompType.PrefixShown)

@@ -1,5 +1,4 @@
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.test_helper import line_no
 from argrelay.test_helper.InOutTestCase import InOutTestCase
 
@@ -15,7 +14,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command help |",
-                RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
                 {
@@ -32,7 +30,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command help interc|",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["intercept"],
                 {},
@@ -46,7 +43,6 @@ class ThisTestCase(InOutTestCase):
                 (
                     line_number,
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
@@ -57,7 +53,6 @@ class ThisTestCase(InOutTestCase):
                 self.verify_output(
                     "TD_63_37_05_36",  # demo
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,

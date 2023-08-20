@@ -1,7 +1,7 @@
 
 These are environment variables used by `argrelay`:
 
-*   `ARGRELAY_DEBUG` used to enable debug output - see `RequestContext.is_debug_enabled`.
+*   `ARGRELAY_DEBUG` used to enable debug output - see `ShellContext.is_debug_enabled`.
 
 *   `ARGRELAY_DEV_SHELL` used while running `@/exe/dev_shell.bash`, for example, to run some tests conditionally.
 

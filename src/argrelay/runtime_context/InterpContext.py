@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from dataclasses import field, dataclass
 
-from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.InterpStep import InterpStep
-from argrelay.enum_desc.RunMode import RunMode
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
@@ -84,21 +83,19 @@ class InterpContext:
         self.unconsumed_tokens = self._init_unconsumed_tokens()
 
     def _init_unconsumed_tokens(self):
-        return [
-            token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
-            if (
-                (
-                    self.parsed_ctx.run_mode == RunMode.CompletionMode
-                    and
-                    # Completion mode excludes tangent token because it is supposed to be completed:
-                    token_ipos != self.parsed_ctx.tan_token_ipos
-                )
-                or
-                (
-                    self.parsed_ctx.run_mode == RunMode.InvocationMode
-                )
-            )
-        ]
+        if self.parsed_ctx.server_action == ServerAction.ProposeArgValues:
+            return [
+                token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
+                # `ServerAction.ProposeArgValues` excludes tangent token because it is supposed to be completed:
+                if token_ipos != self.parsed_ctx.tan_token_ipos
+            ]
+        else:
+            return [
+                token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
+                # FS_23_62_89_43:
+                # Process all tokens (including tangent token) in case of `ServerAction.DescribeLineArgs`.
+                # Obviously, same applies for `ServerAction.RelayLineArgs` (as there is no chance to propose more).
+            ]
 
     def alloc_searchable_containers(
         self,
@@ -167,7 +164,7 @@ class InterpContext:
             if self.curr_container:
                 self.curr_container.populate_implicit_arg_values()
 
-            if self.parsed_ctx.comp_type == CompType.DescribeArgs:
+            if self.parsed_ctx.server_action == ServerAction.DescribeLineArgs:
                 # Describing args will need to show options except default - query values before defaults:
                 # TODO:
                 pass
@@ -213,7 +210,7 @@ class InterpContext:
                 raise RuntimeError(interp_step)
 
     def _contribute_to_completion(self):
-        if self.parsed_ctx.run_mode == RunMode.CompletionMode:
+        if self.parsed_ctx.server_action == ServerAction.ProposeArgValues:
             # Each in the chains of interpreters hava a chance to suggest completion values (contribute):
             self.curr_interp.propose_arg_completion()
 

@@ -16,7 +16,6 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_repo_commits_,
     repo_entries_,
 )
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.misc_helper import eprint
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_dict_
@@ -138,7 +137,6 @@ class ThisTestCase(TestCase):
                     .set_enable_demo_git_loader(plugin_config[is_plugin_enabled_])
                     .set_command_line("some_command help")
                     .set_cursor_cpos(0)
-                    .set_run_mode(RunMode.InvocationMode)
                 )
                 with env_mock_builder.build():
                     # Populate static data by plugin via `LocalClient` who starts `LocalServer`:

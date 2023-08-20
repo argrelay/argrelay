@@ -17,7 +17,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import fun
 from argrelay.schema_config_interp.InitControlSchema import init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
-from argrelay.schema_request.RequestContextSchema import request_context_desc
+from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
 from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
@@ -30,7 +30,7 @@ class ThisTestCase(TestCase):
 
     def test_type_desc_example_is_loadable_and_dumpable(self):
         test_cases = [
-            (line_no(), request_context_desc),
+            (line_no(), call_context_desc),
             (line_no(), invocation_input_desc),
             (line_no(), plugin_entry_desc),
             (line_no(), demo_interp_factory_config_desc),

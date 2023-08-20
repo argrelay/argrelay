@@ -1,4 +1,5 @@
 # Keep minimal import on start:
+from argrelay.client_spec.ShellContext import ShellContext
 from argrelay.misc_helper import get_config_path
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 
@@ -8,26 +9,25 @@ ElapsedTime.measure("after_program_entry")
 def main():
     # Initial imports - see `completion_perf_notes.md`.
     import sys
-    from argrelay.runtime_context.InputContext import InputContext
     ElapsedTime.measure("after_initial_imports")
 
     file_path = get_config_path("argrelay.client.json")
     client_config = load_client_config(file_path)
     ElapsedTime.measure("after_loading_client_config")
 
-    input_ctx = InputContext.from_env(sys.argv)
+    shell_ctx = ShellContext.from_env(sys.argv)
 
     if client_config.use_local_requests:
         from argrelay.relay_client.LocalClient import LocalClient
 
-        command_obj = make_request(LocalClient(client_config), input_ctx)
+        command_obj = make_request(LocalClient(client_config), shell_ctx)
     else:
         from argrelay.relay_client.RemoteClient import RemoteClient
 
-        command_obj = make_request(RemoteClient(client_config), input_ctx)
+        command_obj = make_request(RemoteClient(client_config), shell_ctx)
 
     ElapsedTime.measure("on_exit")
-    if input_ctx.is_debug_enabled:
+    if shell_ctx.is_debug_enabled:
         ElapsedTime.print_all()
 
     return command_obj
@@ -55,9 +55,12 @@ def client_config_dict_to_object(client_config_dict):
     return client_config
 
 
-def make_request(abstract_client, input_ctx) -> "AbstractClientCommand":
+def make_request(
+    abstract_client,
+    shell_ctx,
+) -> "AbstractClientCommand":
     ElapsedTime.measure("before_client_invocation")
-    return abstract_client.make_request(input_ctx)
+    return abstract_client.make_request(shell_ctx)
 
 
 if __name__ == "__main__":

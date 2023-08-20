@@ -3,15 +3,16 @@ from argrelay.handler_response.AbstractClientResponseHandler import AbstractClie
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InputContext import InputContext
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig
+from argrelay.server_spec.CallContext import CallContext
 
 
 class AbstractLocalClientCommand(AbstractClientCommand):
 
     def __init__(
         self,
+        call_ctx: CallContext,
         server_config: ServerConfig,
         local_server: LocalServer,
         request_handler: AbstractServerRequestHandler,
@@ -20,14 +21,17 @@ class AbstractLocalClientCommand(AbstractClientCommand):
         super().__init__(
             response_handler,
         )
+        self.call_ctx: CallContext = call_ctx
         self.server_config: ServerConfig = server_config
         self.local_server: LocalServer = local_server
         self.request_handler: AbstractServerRequestHandler = request_handler
         self.response_dict: dict
         self.interp_ctx: InterpContext
 
-    def execute_command(self, input_ctx: InputContext):
-        self.response_dict = self.request_handler.handle_request(input_ctx)
+    def execute_command(
+        self,
+    ):
+        self.response_dict = self.request_handler.handle_request(self.call_ctx)
         ElapsedTime.measure("before_sending_response")
         self.response_handler.handle_response(self.response_dict)
         ElapsedTime.measure("after_handle_response")

@@ -4,7 +4,6 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_helper import line_no
 from argrelay.test_helper.InOutTestCase import InOutTestCase
@@ -21,7 +20,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command intercept |",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["goto", "desc", "list"],
                 None,
@@ -32,7 +30,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command intercept goto service s_b prod |",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["qwer-pd-1", "qwer-pd-2"],
                 None,
@@ -42,7 +39,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command intercept hel|",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 [],
                 {},
@@ -53,7 +49,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command intercept got|",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["goto"],
                 {},
@@ -64,7 +59,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command intercept goto service s_b prod qwer-pd-2 |",
-                RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
                 {
@@ -90,7 +84,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command intercept intercept intercept intercept |",
-                RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
                 {
@@ -121,7 +114,6 @@ class ThisTestCase(InOutTestCase):
                 (
                     line_number,
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
@@ -132,7 +124,6 @@ class ThisTestCase(InOutTestCase):
                 self.verify_output(
                     "TD_63_37_05_36",  # demo
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,

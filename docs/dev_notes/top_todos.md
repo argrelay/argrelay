@@ -66,6 +66,8 @@ GUI bits:
 
 *   Show version on the web page.
 
+*   Be able to enable verbose server logging and disable it.
+
 *   Add info that describe output is accessible in shell via Alt+Shift+Q.
 
 *   Test with lots of data - is there any issues with races between user input and server response?
@@ -233,6 +235,10 @@ Extra:
 
 *   Add `echo` command to test arbitrary tail args.
 
-*   Add `describe` internal command to do exactly the same what Ctrl+Alt+Q does, but via Invocation.
+*   Add `describe` (or `itemize`) internal command to do exactly the same what Ctrl+Alt+Q does, but via Invocation.
 
 *   Split `intercept` into two `intercept_json` and `intercept_str` (Python __str__ output).
+
+*   Add directory for PID and other runtime data (is it `./var/`?).
+*   Collect usage statistic per plugin in runtime dir (`./var/`?).
+

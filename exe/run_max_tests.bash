@@ -29,6 +29,8 @@ set -E
 # Error on undefined variables:
 set -u
 
+# TODO: Run UI tests automatically - see `ui_tests_notes.md`
+
 # Ensure the script was started in `@/exe/dev_shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-}" ]]
 then

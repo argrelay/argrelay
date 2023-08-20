@@ -15,7 +15,6 @@ class InOutTestCase(TestCase):
         self,
         test_data,
         test_line,
-        run_mode,
         comp_type,
         expected_suggestions,
         envelope_ipos_to_expected_assignments,
@@ -30,7 +29,6 @@ class InOutTestCase(TestCase):
 
         env_mock_builder = (
             init_env_mock_builder
-            .set_run_mode(run_mode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)
@@ -58,7 +56,7 @@ class InOutTestCase(TestCase):
                     # Verify `envelope_container` of `envelope_ipos` exists in the list:
                     self.assertTrue(0 <= envelope_ipos < len(interp_ctx.envelope_containers))
 
-            if run_mode == RunMode.CompletionMode:
+            if RunMode.from_comp_type(comp_type) == RunMode.CompletionMode:
                 actual_suggestions = command_obj.response_dict[arg_values_]
                 self.assertEqual(expected_suggestions, actual_suggestions)
                 self.assertFalse(
@@ -69,7 +67,7 @@ class InOutTestCase(TestCase):
                     delegator_class,
                     "no invocation expected in `RunMode.CompletionMode`",
                 )
-            elif run_mode == RunMode.InvocationMode:
+            elif RunMode.from_comp_type(comp_type) == RunMode.InvocationMode:
                 self.assertFalse(
                     expected_suggestions,
                     "no suggestions expected in `RunMode.InvocationMode`",

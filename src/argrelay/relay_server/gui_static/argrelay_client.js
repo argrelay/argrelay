@@ -271,9 +271,10 @@ class suggest_state_class extends prototype_state_class {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    "server_action": "ProposeArgValues",
                     "command_line": this.request_input_line,
-                    "comp_type": "PrefixShown",
                     "cursor_cpos": this.request_cursor_cpos.toString(),
+                    "comp_scope": "ScopeInitial",
                     "is_debug_enabled": false,
                 }),
             }
@@ -348,9 +349,10 @@ class search_state_class extends prototype_state_class {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    "server_action": "DescribeLineArgs",
                     "command_line": this.request_input_line,
-                    "comp_type": "DescribeArgs",
                     "cursor_cpos": this.request_cursor_cpos.toString(),
+                    "comp_scope": "ScopeInitial",
                     "is_debug_enabled": false,
                 }),
             }
@@ -425,9 +427,10 @@ function fetch_invocation_response(
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                "server_action": "RelayLineArgs",
                 "command_line": input_line,
-                "comp_type": "InvokeAction",
                 "cursor_cpos": cursor_cpos.toString(),
+                "comp_scope": "ScopeInitial",
                 "is_debug_enabled": false,
             }),
         }

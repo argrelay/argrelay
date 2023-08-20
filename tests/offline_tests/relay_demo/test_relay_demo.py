@@ -9,7 +9,6 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.RunMode import RunMode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.relay_client import __main__
@@ -32,14 +31,12 @@ class ThisTestCase(InOutTestCase):
         test_data,
         test_line,
         comp_type,
-        run_mode,
         found_envelope_ipos,
         expected_assignments,
     ):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()
-            .set_run_mode(run_mode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)
@@ -78,7 +75,6 @@ class ThisTestCase(InOutTestCase):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()
-            .set_run_mode(RunMode.CompletionMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)
@@ -227,7 +223,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command host dev goto downstream |",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["amer", "emea"],
                 {},
@@ -237,7 +232,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command host dev goto downstream amer |",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["amer", "emea"],
                 {},
@@ -247,7 +241,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command goto host dev downstream amer am|",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 ["amer"],
                 {},
@@ -258,7 +251,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command goto host dev downstream amer amer |",
-                RunMode.CompletionMode,
                 CompType.PrefixShown,
                 [],
                 {},
@@ -268,7 +260,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command host dev goto downstream amer amer |",
-                RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
                 {
@@ -294,7 +285,6 @@ class ThisTestCase(InOutTestCase):
                 (
                     line_number,
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
@@ -305,7 +295,6 @@ class ThisTestCase(InOutTestCase):
                 self.verify_output(
                     "TD_76_09_29_31",  # overlapped
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
@@ -321,7 +310,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command relay_demo list host dev |",
-                RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
                 {},
@@ -344,7 +332,6 @@ class ThisTestCase(InOutTestCase):
             (
                 line_no(),
                 "some_command goto service s_b prod |",
-                RunMode.InvocationMode,
                 CompType.InvokeAction,
                 [],
                 {
@@ -367,7 +354,6 @@ class ThisTestCase(InOutTestCase):
                 (
                     line_number,
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
@@ -378,7 +364,6 @@ class ThisTestCase(InOutTestCase):
                 self.verify_output(
                     "TD_63_37_05_36",  # overlapped
                     test_line,
-                    run_mode,
                     comp_type,
                     expected_suggestions,
                     envelope_ipos_to_expected_assignments,
@@ -392,7 +377,7 @@ class ThisTestCase(InOutTestCase):
 
         test_cases = [
             (
-                line_no(), RunMode.CompletionMode, "some_command host goto |", CompType.PrefixShown,
+                line_no(), "some_command host goto |", CompType.PrefixShown,
                 "apac\nemea",
                 1,
                 {
@@ -401,7 +386,7 @@ class ThisTestCase(InOutTestCase):
                 "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServiceArgType.CodeMaturity`",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command host goto dev |", CompType.PrefixShown,
+                line_no(), "some_command host goto dev |", CompType.PrefixShown,
                 "apac\nemea",
                 1,
                 {
@@ -416,7 +401,6 @@ class ThisTestCase(InOutTestCase):
             with self.subTest(test_case):
                 (
                     line_number,
-                    run_mode,
                     test_line,
                     comp_type,
                     expected_suggestions,
@@ -435,7 +419,6 @@ class ThisTestCase(InOutTestCase):
                     "TD_43_24_76_58",
                     test_line,
                     comp_type,
-                    run_mode,
                     found_envelope_ipos,
                     expected_assignments,
                 )
@@ -528,7 +511,6 @@ class ThisTestCase(InOutTestCase):
 
                 outer_env_mock_builder = (
                     EnvMockBuilder()
-                    .set_run_mode(RunMode.CompletionMode)
                     .set_command_line(command_line)
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
@@ -572,7 +554,7 @@ class ThisTestCase(InOutTestCase):
         # @formatter:off
         test_cases = [
             (
-                line_no(), RunMode.CompletionMode, "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
+                line_no(), "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
                 1,
                 {
                     ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
@@ -583,7 +565,7 @@ class ThisTestCase(InOutTestCase):
                 "Implicit assignment of all cluster categories when cluster name is specified",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto host prod-apac-downstream wert-pd-1 |", CompType.PrefixShown,
+                line_no(), "some_command goto host prod-apac-downstream wert-pd-1 |", CompType.PrefixShown,
                 2,
                 {
                     ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.DefaultValue),
@@ -591,7 +573,7 @@ class ThisTestCase(InOutTestCase):
                 "Default `ro` for `prod`",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto host prod-apac-downstream wert-pd-1 rw |", CompType.PrefixShown,
+                line_no(), "some_command goto host prod-apac-downstream wert-pd-1 rw |", CompType.PrefixShown,
                 2,
                 {
                     ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.ExplicitPosArg),
@@ -599,7 +581,7 @@ class ThisTestCase(InOutTestCase):
                 "Override default `ro` for `prod` to `rw`",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto host dev-apac-upstream zxcv-du |", CompType.PrefixShown,
+                line_no(), "some_command goto host dev-apac-upstream zxcv-du |", CompType.PrefixShown,
                 2,
                 {
                     ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.DefaultValue),
@@ -607,7 +589,7 @@ class ThisTestCase(InOutTestCase):
                 "Default `rw` for non-`prod`",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto|", CompType.PrefixShown,
+                line_no(), "some_command goto|", CompType.PrefixShown,
                 0,
                 {
                     GlobalArgType.ActionType.name: None,
@@ -616,7 +598,7 @@ class ThisTestCase(InOutTestCase):
                 "No assignment for incomplete token (token pointed by the cursor) in completion mode",
             ),
             (
-                line_no(), RunMode.InvocationMode, "some_command desc host zxcv|", CompType.PrefixShown,
+                line_no(), "some_command desc host zxcv|", CompType.PrefixShown,
                 0,
                 {
                     GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
@@ -626,7 +608,7 @@ class ThisTestCase(InOutTestCase):
                 "Incomplete token (pointed by the cursor) is complete in invocation mode",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto |", CompType.PrefixShown,
+                line_no(), "some_command goto |", CompType.PrefixShown,
                 0,
                 {
                     GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
@@ -636,7 +618,7 @@ class ThisTestCase(InOutTestCase):
                 "Explicit assignment for complete token",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto service |", CompType.PrefixShown,
+                line_no(), "some_command goto service |", CompType.PrefixShown,
                 0,
                 {
                     GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
@@ -646,7 +628,7 @@ class ThisTestCase(InOutTestCase):
                 "Explicit assignment for complete token",
             ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto host prod|", CompType.PrefixShown,
+                line_no(), "some_command goto host prod|", CompType.PrefixShown,
                 1,
                 {
                     ServiceArgType.CodeMaturity.name: None,
@@ -656,7 +638,7 @@ class ThisTestCase(InOutTestCase):
             ),
             # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
             # (
-            #     line_no(), RunMode.InvocationMode, "some_command goto host prod|", CompType.PrefixShown,
+            #     line_no(), "some_command goto host prod|", CompType.PrefixShown,
             #     1,
             #     {
             #         ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
@@ -665,7 +647,7 @@ class ThisTestCase(InOutTestCase):
             #     "Implicit assignment even for incomplete token (token pointed by cursor)",
             # ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto host prod |", CompType.PrefixShown,
+                line_no(), "some_command goto host prod |", CompType.PrefixShown,
                 1,
                 {
                     ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
@@ -675,7 +657,7 @@ class ThisTestCase(InOutTestCase):
             ),
             # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
             # (
-            #     line_no(), RunMode.InvocationMode, "some_command goto host prod |", CompType.PrefixShown,
+            #     line_no(), "some_command goto host prod |", CompType.PrefixShown,
             #     1,
             #     {
             #         ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
@@ -684,7 +666,7 @@ class ThisTestCase(InOutTestCase):
             #     "Implicit assignment of access type to \"ro\" when code maturity is \"prod\" in invocation",
             # ),
             (
-                line_no(), RunMode.CompletionMode, "some_command goto host dev |", CompType.PrefixShown,
+                line_no(), "some_command goto host dev |", CompType.PrefixShown,
                 1,
                 {
                     ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
@@ -694,7 +676,7 @@ class ThisTestCase(InOutTestCase):
             ),
             # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
             # (
-            #     line_no(), RunMode.InvocationMode, "some_command goto host dev |", CompType.PrefixShown,
+            #     line_no(), "some_command goto host dev |", CompType.PrefixShown,
             #     1,
             #     {
             #         ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
@@ -709,7 +691,6 @@ class ThisTestCase(InOutTestCase):
             with self.subTest(test_case):
                 (
                     line_number,
-                    run_mode,
                     test_line,
                     comp_type,
                     found_envelope_ipos,
@@ -720,7 +701,6 @@ class ThisTestCase(InOutTestCase):
                     "TD_63_37_05_36",
                     test_line,
                     comp_type,
-                    run_mode,
                     found_envelope_ipos,
                     expected_assignments,
                 )
@@ -732,7 +712,6 @@ class ThisTestCase(InOutTestCase):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()
-            .set_run_mode(RunMode.InvocationMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.InvokeAction)
@@ -769,7 +748,6 @@ class ThisTestCase(InOutTestCase):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
         env_mock_builder = (
             EnvMockBuilder()
-            .set_run_mode(RunMode.InvocationMode)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.InvokeAction)
