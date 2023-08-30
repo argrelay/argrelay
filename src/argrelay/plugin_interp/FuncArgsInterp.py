@@ -72,7 +72,7 @@ class FuncArgsInterp(AbstractInterp):
             if prop_type in self.interp_ctx.curr_container.remaining_types_to_values:
                 del self.interp_ctx.curr_container.remaining_types_to_values[prop_type]
 
-    def _apply_function_search_control(self, ):
+    def _apply_function_search_control(self):
         # Function `search_control` is based on plugin config (rather than data found in `data_envelope`):
         self.interp_ctx.curr_container.search_control = search_control_desc.dict_schema.load(
             self.config_dict[function_search_control_]
@@ -159,17 +159,24 @@ class FuncArgsInterp(AbstractInterp):
         )
 
     def run_fill_control(self):
-        self.get_funct_delegator().run_fill_control(
-            self.interp_ctx,
-        )
+        delegator_plugin = self.get_funct_delegator()
+        if delegator_plugin:
+            delegator_plugin.run_fill_control(
+                self.interp_ctx,
+            )
 
     def get_funct_data_envelope(self):
         return self.interp_ctx.envelope_containers[self.base_envelope_ipos + function_envelope_ipos_].data_envelope
 
     def get_funct_delegator(self):
-        delegator_plugin_instance_id = self.get_funct_data_envelope()[instance_data_][delegator_plugin_instance_id_]
-        delegator_plugin: AbstractDelegator = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
-        return delegator_plugin
+        func_data_envelope = self.get_funct_data_envelope()
+        if func_data_envelope:
+            delegator_plugin_instance_id = func_data_envelope[instance_data_][delegator_plugin_instance_id_]
+            delegator_plugin: AbstractDelegator = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
+            return delegator_plugin
+        else:
+            # func envelope hasn't been found yet:
+            return None
 
     def select_next_container(self):
         self.interp_ctx.curr_container_ipos += 1

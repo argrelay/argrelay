@@ -222,6 +222,16 @@ echo "path_to_pythonX: ${path_to_pythonX}"
 # shellcheck disable=SC2154
 echo "venv_prompt_prefix: ${venv_prompt_prefix:-@}"
 
+# Cut out Python version number chars (from first digit until first space):
+curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
+# Ensure Python version is not old:
+min_required_version="3.7"
+if ( echo "${curr_python_version}"; echo "${min_required_version}"; ) | sort --version-sort --check
+then
+    # versions sorted = curr Python version is older:
+    "${ret_command}" 1
+fi
+
 if [ ! -e "${path_to_venvX}" ]
 then
     pythonX_basename="$(basename "${path_to_pythonX}")"
