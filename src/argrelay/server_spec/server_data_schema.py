@@ -48,10 +48,10 @@ def add_type_desc_to_schema(type_desc: TypeDesc):
 
 def get_schema_definitions(ref_names: list[str]):
     """
-    In order for `flasgger` to generate UI, it needs full list schema definitions
+    In order for `flasgger` to generate GUI, it needs full list schema definitions
     (including those added recursively for nested schemas) for Open API specs
     referenced via `@swag_from` annotations.
-    At the moment, this list of schema names is composed manually (by checking errors on UI).
+    At the moment, this list of schema names is composed manually (by checking errors on GUI).
     Actual schemas are generated via `marshmallow` + `apispec` inside:
     `server_op_data_schemas.components.schemas`
     This function (although providing minimum functionality) is the single point

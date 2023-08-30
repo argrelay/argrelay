@@ -165,8 +165,8 @@ class InterpContext:
                 self.curr_container.populate_implicit_arg_values()
 
             if self.parsed_ctx.server_action == ServerAction.DescribeLineArgs:
+                # TODO: FS_72_53_55_13: options before defaults
                 # Describing args will need to show options except default - query values before defaults:
-                # TODO:
                 pass
 
             # Apply defaults:

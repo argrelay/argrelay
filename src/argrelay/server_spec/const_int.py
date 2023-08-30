@@ -12,7 +12,7 @@ DEFAULT_OPEN_API_VERSION = "2.0"
 # Built-in GUI:
 ARGRELAY_GUI_PATH = "/argrelay_gui/"
 
-# Run API docs UI at the root:
+# Run API docs GUI at the root:
 API_DOCS_PATH = "/argrelay_api/"
 
 # main:

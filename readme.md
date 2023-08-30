@@ -17,7 +17,7 @@ and search for command line interfaces (CLI) in Bash shell.
 <a name="argrelay-original-use-case"></a>
 ### Original use case
 
-Auto-complete based on arbitrary structured data sets (e.g. config or ref data)</br>
+Auto-complete based on arbitrary structured data sets (e.g. config or ref data)<br/>
 **directly from standard shell**.[^1]
 
 This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
@@ -389,7 +389,7 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
     Tab-completion with custom (domain-specific) arg values is<br/>
     constantly on a dev wish list for complex backend.
     *   DEC 2022: Attempts to find an adequate solution for sizeable data yielded no results.
-    *   JAN 2023: The [earlier question][earlier_stack_question] received zero activity for a month</br>
+    *   JAN 2023: The [earlier question][earlier_stack_question] received zero activity for a month<br/>
         (with a single silent downvote, auto-deleted by a bot).<br/>
         Request to restore it was &#127925; Shut Down In Flames.
         <!--

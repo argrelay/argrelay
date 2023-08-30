@@ -1,6 +1,6 @@
 ###############################################################################
 # Note that these dependencies are not necessarily required ones,
-# those required listed in `setup.py` script and can be installed as:
+# those required are listed in `setup.py` script and can be installed as:
 # pip install -e .
 ###############################################################################
 apispec==6.3.0

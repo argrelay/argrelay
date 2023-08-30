@@ -47,12 +47,22 @@ fi
 # Ensure it is venv (`@/exe/dev_shell.bash` activates venv):
 test -n "${VIRTUAL_ENV}"
 
+# Ensure debug is disabled
+# (it causes tests matching output to fail confusingly):
+if [[ -n "${ARGRELAY_DEBUG+x}" ]]
+then
+    echo "ERROR: ARGRELAY_DEBUG is set" 1>&2
+    exit 1
+fi
+
 # Clear venv (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
 # Restore only registered packages
-# (if only dependencies are required, clear `@/conf/dev_env_packages.txt` first):
+# (if fresh dependencies are required, clear `@/conf/dev_env_packages.txt` first):
 pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
-# Re-install itself only (also restores missing dependencies):
+# Re-install only those missing in `@/conf/dev_env_packages.txt`
+# (this includes those with editable install like `argrelay` itself),
+# also, restore missing transitive dependencies:
 "${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
 # Ensure all changes are committed:
@@ -124,13 +134,23 @@ fi
 git_tag="$(git describe --tags)"
 echo "INFO: curr git_tag: ${git_tag}" 1>&2
 
+git_hash="$( git rev-parse HEAD )"
+time_stamp="$( date -u +"%Y-%m-%dT%H:%M:%SZ" )"
+publisher_user="$( whoami )"
+publisher_host="$( hostname )"
+
 # Versions has to be prefixed with `v` in tag:
 if [[ "v${argrelay_version}" != "${git_tag}" ]]
 then
     git_tag="v${argrelay_version}"
+    if [[ "${is_dev_version}" != "true" ]]
+    then
+        # Append `.final` for non-dev (release) version to make a tag:
+        git_tag="${git_tag}.final"
+    fi
     echo "INFO: next git_tag: ${git_tag}" 1>&2
     # No matching tag exists yet:
-    git tag "${git_tag}"
+    git tag -a "${git_tag}" -m "${git_hash} | ${time_stamp} | ${publisher_user} | ${publisher_host}"
 else
     # Matching tag already exists - either already released or something is wrong.
     # It can be fixed by removing the tag, but user has to do it consciously.
@@ -146,6 +166,11 @@ else
     echo "INFO: tag is about to be pushed to remote: ${git_tag}" 1>&2
     git push "${git_main_remote}" "${git_tag}"
 fi
+
+# Create temporary `venv` for twine (do not pollute `venv` used for `argrelay`):
+rm -rf         "${argrelay_dir}/temp/venv.twine"
+python -m venv "${argrelay_dir}/temp/venv.twine"
+source         "${argrelay_dir}/temp/venv.twine/bin/activate"
 
 # Apparently, `tox` already builds `sdist`, for example:
 # @/.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
