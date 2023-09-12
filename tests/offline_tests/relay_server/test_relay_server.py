@@ -56,7 +56,7 @@ class ThisTestCase(TestCase):
         # https://stackoverflow.com/a/15882054/441652
         schema_obj = json.loads(response.text, object_hook = lambda d: SimpleNamespace(**d))
 
-        # Ensure auto-magic schema generation provides example for Swagger UI:
+        # Ensure auto-magic schema generation provides example for Swagger GUI:
         self.assertEqual(
             call_context_desc.dict_example["command_line"],
             schema_obj.definitions.CallContextSchema.properties.command_line.example,

@@ -39,6 +39,6 @@ The only useful practical difference between them are these directories:
     (and it is okay not to run them to avoid the noise during development),
     but they will eventually need to pass before the release.
 
-*   `ui_tests`
+*   `gui_tests`
 
-    Cypress tests for built-in UI - they are started manually and separately at the moment.
+    Cypress tests for built-in GUI - they are started manually and separately at the moment.

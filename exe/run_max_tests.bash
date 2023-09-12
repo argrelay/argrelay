@@ -29,7 +29,12 @@ set -E
 # Error on undefined variables:
 set -u
 
-# TODO: Run UI tests automatically - see `ui_tests_notes.md`
+# TODO: Run GUI tests automatically - see `ui_tests_notes.md`
+
+# The dir of this script:
+script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
+argrelay_dir="$( dirname "${script_dir}" )"
 
 # Ensure the script was started in `@/exe/dev_shell.bash`:
 if [[ -z "${ARGRELAY_DEV_SHELL:-}" ]]
@@ -38,10 +43,13 @@ then
     exit 1
 fi
 
-# The dir of this script:
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
-argrelay_dir="$( dirname "${script_dir}" )"
+# Ensure debug is disabled
+# (it causes tests matching output to fail confusingly):
+if [[ -n "${ARGRELAY_DEBUG+x}" ]]
+then
+    echo "ERROR: ARGRELAY_DEBUG is set" 1>&2
+    exit 1
+fi
 
 default_test_dir="${argrelay_dir}/tests"
 

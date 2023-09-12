@@ -42,9 +42,9 @@ class prototype_state_class {
     // TODO: rename from state_name to something else (or rename io_state):
     state_name = null
 
-    // synced_* = last received from the server and synced with output UI
+    // synced_* = last received from the server and synced with output GUI
     // request_* = last sent to the server (pending response)
-    // curr_* = last received from input UI
+    // curr_* = last received from input GUI
 
     synced_input_line = null
     synced_cursor_cpos = null

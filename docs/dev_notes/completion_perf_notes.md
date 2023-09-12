@@ -3,10 +3,10 @@ These are notes on optimization done for end-to-end request-response specificall
 
 # Results ahead of details
 
-The biggest perf impact is contributed by `import`-s</br>
+The biggest perf impact is contributed by `import`-s<br/>
 (even choice of HTTP-client is driven by time to `import` specific library).
 
-This suggests that server lookup is hardly embeddable (to make `argrelay` serverless),</br>
+This suggests that server lookup is hardly embeddable (to make `argrelay` serverless),<br/>
 unless using custom data-crunching logic with minimum `import`-s (or even not in Python).
 
 # Why bother optimizing?
