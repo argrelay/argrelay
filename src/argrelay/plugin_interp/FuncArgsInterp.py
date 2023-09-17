@@ -198,7 +198,7 @@ class FuncArgsInterp(AbstractInterp):
 
     def propose_auto_comp_list(self) -> list[str]:
 
-        # TODO: POC: Either remove it or implement properly: just testing named args:
+        # TODO: FS_20_88_05_60: POC: Either remove it or implement properly: just testing named args:
         if (
             self.interp_ctx.parsed_ctx.tan_token_l_part.endswith(":")
             or
@@ -210,17 +210,21 @@ class FuncArgsInterp(AbstractInterp):
                 if not type_name.startswith("_")
             ]
 
+        # TODO: FS_23_62_89_43: the logic for both if-s (`if-A` and `if-B`) is identical at the moment - what do we want to improve?
+
+        # TODO: FS_23_62_89_43: if-A:
         if self.interp_ctx.parsed_ctx.comp_scope == CompScope.ScopeInitial:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
                 return self.remaining_from_next_missing_type()
             else:
                 return self.remaining_from_next_missing_type()
 
+        # TODO: FS_23_62_89_43: if-B:
         if self.interp_ctx.parsed_ctx.comp_scope == CompScope.ScopeSubsequent:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
                 return self.remaining_from_next_missing_type()
             else:
-                # TODO: Suggest keys (:) of missing types instead - it is `ScopeSubsequent`, user insist and wants something else:
+                # TODO: FS_20_88_05_60: Suggest keys (:) of missing types instead - it is `ScopeSubsequent`, user insist and wants something else:
                 return self.remaining_from_next_missing_type()
 
         return []
@@ -249,9 +253,10 @@ class FuncArgsInterp(AbstractInterp):
                     if (
                         isinstance(x, str)
                         and
-                        # FS_32_05_46_00: using `startwith`:
+                        # FS_32_05_46_00: using `startswith`:
+                        # FS_23_62_89_43: filter using L part of tangent token:
                         x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)
-                        # TODO: Support list[str] - what if one type can have list of values (and we need to match any as in OR)?
+                        # TODO: FS_06_99_43_60: Support list[str] - what if one type can have list of values (and we need to match any as in OR)?
                     )
                 ]
                 if proposed_values:

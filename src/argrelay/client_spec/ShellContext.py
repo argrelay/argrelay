@@ -3,9 +3,12 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 
+from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
+from argrelay.server_spec.CallContext import CallContext
 
 UNKNOWN_COMP_KEY: str = str(0)
 """
@@ -75,8 +78,30 @@ class ShellContext:
     ) -> None:
         if not self.is_debug_enabled:
             return
-        eprint(TermColor.DEBUG.value, end = "")
+        eprint(TermColor.debug_output.value, end = "")
         eprint(f"\"{self.command_line}\"", end = " ")
         eprint(f"cursor_cpos: {self.cursor_cpos}", end = " ")
         eprint(f"comp_type: {self.comp_type}", end = " ")
-        eprint(TermColor.RESET.value, end = end_str)
+        eprint(TermColor.reset_style.value, end = end_str)
+
+    def create_call_context(
+        self,
+    ) -> CallContext:
+        server_action: ServerAction = self.select_server_action()
+        return CallContext(
+            server_action = server_action,
+            command_line = self.command_line,
+            cursor_cpos = self.cursor_cpos,
+            comp_scope = CompScope.from_comp_type(self.comp_type),
+            is_debug_enabled = self.is_debug_enabled,
+        )
+
+    def select_server_action(
+        self,
+    ) -> ServerAction:
+        if self.comp_type == CompType.DescribeArgs:
+            return ServerAction.DescribeLineArgs
+        if self.comp_type == CompType.InvokeAction:
+            return ServerAction.RelayLineArgs
+
+        return ServerAction.ProposeArgValues

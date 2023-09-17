@@ -3,7 +3,6 @@ from unittest import TestCase
 from argrelay.client_spec.ShellContext import UNKNOWN_COMP_KEY, ShellContext
 from argrelay.enum_desc.CompType import CompType
 from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_helper import line_no, parse_line_and_cpos
 
 
@@ -27,12 +26,12 @@ class ThisTestCase(TestCase):
             with self.subTest(test_case):
                 (line_number, case_comment, test_line, comp_type, expected_json) = test_case
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
-                call_ctx = CallContext.from_shell_context(ShellContext(
+                call_ctx = ShellContext(
                     command_line = command_line,
                     cursor_cpos = cursor_cpos,
                     comp_type = comp_type,
                     is_debug_enabled = False,
                     comp_key = UNKNOWN_COMP_KEY,
-                ))
+                ).create_call_context()
                 actual_json = call_context_desc.dict_schema.dumps(call_ctx)
                 self.assertEqual(expected_json, actual_json)

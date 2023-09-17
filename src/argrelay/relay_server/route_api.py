@@ -34,14 +34,6 @@ def create_blueprint_api(local_server: LocalServer):
             call_ctx = call_context_desc.dict_schema.loads(request.json)
         if isinstance(request.json, dict):
             call_ctx = call_context_desc.dict_schema.load(request.json)
-        # TODO: get rid of CallContext re-creation:
-        call_ctx = CallContext(
-            server_action = call_ctx.server_action,
-            command_line = call_ctx.command_line,
-            cursor_cpos = call_ctx.cursor_cpos,
-            comp_scope = call_ctx.comp_scope,
-            is_debug_enabled = call_ctx.is_debug_enabled,
-        )
         ElapsedTime.measure("after_input_context_creation")
         ElapsedTime.is_debug_enabled = call_ctx.is_debug_enabled
         return call_ctx

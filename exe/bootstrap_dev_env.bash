@@ -277,7 +277,6 @@ then
     echo "It is required to install packages to extract artifacts from them." 1>&2
     echo "Provide \`${argrelay_dir}/exe/deploy_project.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_project_EOF'
 ########################################################################################################################
@@ -337,7 +336,6 @@ then
     echo "It is required to know list of configs to be deployed." 1>&2
     echo "Provide \`${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_config_files_conf_EOF'
 ########################################################################################################################
@@ -385,7 +383,6 @@ then
     echo "It is required to know list of resources to be deployed." 1>&2
     echo "Provide \`${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'deploy_resource_files_conf_EOF'
 ########################################################################################################################
@@ -467,7 +464,6 @@ then
     echo "It is required as custom build step for integration project, but can do nothing." 1>&2
     echo "Provide \`${argrelay_dir}/exe/build_project.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'build_project_EOF'
 ########################################################################################################################

@@ -1,4 +1,5 @@
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
+from argrelay.schema_response.ArgValuesSchema import arg_values_
 
 
 class ProposeArgValuesClientResponseHandler(AbstractClientResponseHandler):
@@ -9,6 +10,5 @@ class ProposeArgValuesClientResponseHandler(AbstractClientResponseHandler):
         super().__init__(
         )
 
-    # TODO: this does not look correct: server sends plain text (new-line-separated suggestions):
     def handle_response(self, response_dict: dict):
-        print(response_dict["arg_values"])
+        print(response_dict[arg_values_])

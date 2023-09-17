@@ -119,7 +119,7 @@ class TreePathInterp(AbstractInterp):
                     and
                     x != default_tree_leaf_
                     and
-                    # FS_32_05_46_00: using `startwith`:
+                    # FS_32_05_46_00: using `startswith`:
                     x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)
                 )
             ]

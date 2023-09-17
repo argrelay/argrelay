@@ -17,8 +17,8 @@ from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.TermColor import TermColor
+from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
 from argrelay.misc_helper import get_argrelay_dir, eprint
-from argrelay.runtime_context.EnvelopeContainer import indent_size
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.test_helper import change_to_known_repo_path, parse_line_and_cpos
@@ -108,11 +108,11 @@ class ThisTestCase(TestCase):
             self.maxDiff = None
             self.assertEqual(
                 f"""
-{TermColor.BRIGHT_BLUE.value}{os.environ.get(client_command_env_var_name_)}{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.DARK_MAGENTA.value}h{TermColor.RESET.value} 
+{TermColor.consumed_token.value}{os.environ.get(client_command_env_var_name_)}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 2
-{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ObjectSelector: ?{TermColor.RESET.value} host service
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*ObjectSelector: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ost{TermColor.reset_style.value} service 
 """,
                 described_args
             )

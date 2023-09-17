@@ -5,12 +5,20 @@ Tags:
 *   FINALIZE: The feature already works but needs coverage, small non-functional improvements, documentation.
 *   CLOSED: The issue is done or being tracked otherwise = no need to keep this todo, but still kept to keep in the view.
 *   REGISTER: The item is not yet registered, requires new feature story (FS) entry.
+*   USER_VISIBLE: Something what is visible to user (rather than just making things better).
+*   DEV_VISIBLE: Something what is visible to dev (may not be visible for users as USER_VISIBLE, but helps dev).
+
+Top:
 
 To demo:
 
 *   Add color for envelope class in desc output - green if found 1, yellow if not yet (still N), gray if 0.
-    See also: FS_80_45_89_81 / get_envelope
+    See also: FS_80_45_89_81 / list_envelope
     FINALIZE
+*   If command accept one envelope, but not yet disambiguated, then it should be possible to provide generic hook to list envelopes based on existing filter.
+    Basically, if 1, invoke target function, if N, invoke list, print error to stderr, exit with non 0.
+    See also: FS_80_45_89_81 / list_envelope
+    REGISTER
 
 *   Clean `#`-comments from command line arguments by parser.
     Tracked via FS_92_75_93_01.clean_command_line.md
@@ -25,18 +33,14 @@ To demo:
     Tracked via FS_72_53_55_13.show_non_default_options.md
     CLOSED
 
-*   If command accept one envelope, but not yet disambiguated, then it should be possible to provide generic hook to list envelopes based on existing filter.
-    Basically, if 1, invoke target function, if N, invoke list, print error to stderr, exit with non 0.
-    See also: FS_80_45_89_81 / get_envelope and set_envelope
-    REGISTER
 
 *   Meta function: list all objects of specified query.
     See also: FS_80_45_89_81 / list_envelope
     REGISTER
 
 *   Meta function: get and set objects (via corresponding API).
-    See also: FS_80_45_89_81 / get_envelope and set_envelope
-    REGISTER
+    Tracked via: FS_74_69_61_79 / get_envelope and set_envelope: https://github.com/argrelay/argrelay/issues/20
+    CLOSED
 
 *   If there are multiple `data_envelope` anywhere in `query_plan` (as last `data_envelope` or not),
     it should be possible to hit enter and provide some meaningful action for the list of
@@ -45,10 +49,17 @@ To demo:
     REGISTER
 
 *   Add named args.
-    REGISTER
+    Tracked via FS_20_88_05_60 and TODO: add issue on GH linked to FS.
+    CLOSED
 
 *   Dilemma: if function expects N envelopes, there is no way to detect no args option because no args option lists all max N envelopes.
     Maybe there should be a way to indicate it for client side (that the last envelope search had no criteria to search)?
+    REGISTER
+
+*   Print best-effort stable command line at invocation to share (strict mode, no room for mis-interpretation).
+    This should ensure any dynamic values are translated into more fully-qualified ones.
+    See: https://github.com/argrelay/argrelay/issues/22
+    CLOSED
 
 Integration:
 
@@ -69,9 +80,9 @@ Integration:
     Tracked via issue: https://github.com/argrelay/argrelay/issues/20Live
     CLOSED
 
-*   Search via different collections: https://github.com/argrelay/argrelay/issues/10
+*   Search via different collections
     Query specific Mongo DB collection.
-    Tracked via issue: https://github.com/argrelay/argrelay/issues/10
+    Tracked via FS_56_43_05_79: https://github.com/argrelay/argrelay/issues/10
     CLOSED
 
 GUI bits:
@@ -126,11 +137,13 @@ GUI bits:
 *   Add `describe` (or `itemize`) internal command to do exactly the same what Ctrl+Alt+Q does, but via Invocation.
     Rename "describe" to "search" (outline) and implement function which does what Alt+Shift+Q does but on enter.
     Or maybe "itemize" or "enum"?
-    See also: FS_80_45_89_81 / list_envelope
+    See also: FS_80_45_89_81 / enumerate_values
     REGISTER
 
 *   Add note that GUI is dev/test/discovery/monitoring tool.
     REGISTER
+
+Conceptual:
 
 *   What is even `args_context`? It is meaningless (or means many things).
     Also describe or merged `assigned_context` vs `args_context`.
@@ -152,6 +165,15 @@ GUI bits:
         4. Implement `fill_control` to provide default values.
         5. S3: Last search is to see if default values singled out envelope (or more values) - these can be colored separately from singled-out (as they singled out by defaults).
     REGISTER
+    *   Try to reduce number of search requests (e.g.) file it as known issue to fix.
+        REGISTER
+
+    *   Explain mental model:
+        *   Interpreter searches specific `data_envelope`-s of specific `envelope_class`.
+        *   The search continues by narrowing down candidate list to one or none.
+        *   If found, the search switches to next `envelope_class`.
+        *   What context (list of type-value-source) is transferred from previous
+            object type search to the next one is up to interpreter.
 
     TODO: document with examples (on how search works) for each step:
     *   TODO: `search_control`
@@ -184,6 +206,7 @@ Ease integration into external project:
 *   Extend EnvMock to assert returned JSON via JSONPath:
     https://www.digitalocean.com/community/tutorials/python-jsonpath-examples
     REGISTER
+    DEV_VISIBLE
 
 *   There is constant need to distinguish:
     *   project_dir - the path to special dir (where venv is configured via relative path, artifacts generated, config files, etc.)
@@ -220,7 +243,7 @@ Ease integration into external project:
     REGISTER
 
 *   Make operation to dump entire server config for support (without going to the server).
-    See also: FS_80_45_89_81 / get_envelope
+    See also: FS_80_45_89_81 / dump_config
     REGISTER
 
 Perf:
@@ -257,9 +280,6 @@ Extra:
 *   Add test coverage reporting and cover most important logic.
     REGISTER
 
-*   Try to reduce number of search requests (e.g.) file it as known issue to fix.
-    REGISTER
-
 *   Consider splitting argrelay:
     argrelay-core
     argrelay-rest-api
@@ -293,6 +313,14 @@ Extra:
     *   Collect usage statistic per plugin in runtime dir (`./var/`?).
     *   Add scripts to manage start/stop/check of the server to the framework.
     REGISTER
+
+*   Config-only plugins: loader and delegator.
+    Target to replace standard Bash completion config.
+    Data should be loaded from yaml directly without defining any enums in code.
+    Launching local commands/scripts should be done via template parameterized by data envelope.
+    If config-only plugin is possible and useful, every other plugin can be developed.
+    REGISTER
+    USER_VISIBLE
 
 *   Why `relay_demo subshell start` ALT+SHIFT+Q fails?
     REGISTER

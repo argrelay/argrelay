@@ -725,13 +725,13 @@ function remove_child_elements(
     }
 }
 
-// Equivalent of `InterpResult.describe_data`:
+// Equivalent of `DescribeLineArgsClientResponseHandler.render_result`:
 function outline_search_plan() {
     console.assert(last_search_response_json != null);
     populate_envelope_containers(last_search_response_json);
 }
 
-// Equivalent of `EnvelopeContainer.describe_data`:
+// Equivalent of `DescribeLineArgsClientResponseHandler.render_envelope_containers`:
 function populate_envelope_containers(
     response_json,
 ) {

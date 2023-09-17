@@ -42,8 +42,7 @@ class TreePathInterpFactoryConfigSchema(Schema):
 
 tree_path_interp_factory_config_example = {
     interp_selector_tree_: {
-        # TODO: This may not be currently configured plugin id:
-        "intercept": f"{DemoInterpFactory.__name__}.intercept_func",
+        "some_command": "some_plugin_name",
         default_leaf_: DemoInterpFactory.__name__,
     },
 }

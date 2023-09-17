@@ -150,7 +150,14 @@ then
     fi
     echo "INFO: next git_tag: ${git_tag}" 1>&2
     # No matching tag exists yet:
-    git tag -a "${git_tag}" -m "${git_hash} | ${time_stamp} | ${publisher_user} | ${publisher_host}"
+    if true
+    then
+        # Note: unsigned unannotated tags appear "Verified" in GitHub:
+        git tag "${git_tag}"
+    else
+        # Note: unsigned annoteded does not appear "Verified" in GitHub:
+        git tag --annotate "${git_tag}" -m "${git_hash} | ${time_stamp} | ${publisher_user} | ${publisher_host}"
+    fi
 else
     # Matching tag already exists - either already released or something is wrong.
     # It can be fixed by removing the tag, but user has to do it consciously.

@@ -526,10 +526,10 @@ def default_test_input_context(
     command_line: str,
     cursor_cpos: int,
 ) -> CallContext:
-    return CallContext.from_shell_context(ShellContext(
+    return ShellContext(
         command_line = command_line,
         cursor_cpos = cursor_cpos,
         comp_type = CompType.PrefixShown,
         comp_key = UNKNOWN_COMP_KEY,
         is_debug_enabled = False,
-    ))
+    ).create_call_context()

@@ -18,7 +18,6 @@ from argrelay.schema_config_interp.SearchControlSchema import search_control_des
 subsequent_function_envelope_ipos_ = function_envelope_ipos_ + 1
 
 
-# TODO: It inherits `InterceptDelegator`, but it makes more sense to have common base class instead.
 class HelpDelegator(InterceptDelegator):
 
     def run_interp_control(
@@ -77,35 +76,35 @@ class HelpDelegator(InterceptDelegator):
                     type_name = keys_to_types[key_name]
                     print(f"{data_envelope[type_name]}", end = " ")
 
-                # TODO: perform color control only if the output is a terminal:
+                # TODO: FS_80_45_89_81 (enumerate_values): perform color control only if the output is a terminal:
 
-                print(TermColor.BRIGHT_BLACK.value, end = "")
+                print(TermColor.known_envelope_id.value, end = "")
                 print("#", end = " ")
-                print(TermColor.RESET.value, end = "")
+                print(TermColor.reset_style.value, end = "")
 
                 if envelope_id_ in data_envelope:
-                    print(TermColor.BRIGHT_BLACK.value, end = "")
+                    print(TermColor.known_envelope_id.value, end = "")
                     print(f"{data_envelope[envelope_id_]}", end = " ")
-                    print(TermColor.RESET.value, end = "")
+                    print(TermColor.reset_style.value, end = "")
                 else:
-                    print(TermColor.DARK_RED.value, end = "")
+                    print(TermColor.unknown_envelope_id.value, end = "")
                     print(f"[no `{envelope_id_}`]", end = " ")
-                    print(TermColor.RESET.value, end = "")
+                    print(TermColor.reset_style.value, end = "")
 
-                print(TermColor.DARK_GREEN.value, end = "")
+                print(TermColor.help_hint.value, end = "")
                 print("#", end = " ")
-                print(TermColor.RESET.value, end = "")
+                print(TermColor.reset_style.value, end = "")
 
                 if ReservedArgType.HelpHint.name in data_envelope:
-                    print(TermColor.DARK_GREEN.value, end = "")
+                    print(TermColor.help_hint.value, end = "")
                     print(
                         f"{data_envelope[ReservedArgType.HelpHint.name]}",
                         end = " ",
                     )
-                    print(TermColor.RESET.value, end = "")
+                    print(TermColor.reset_style.value, end = "")
                 else:
-                    print(TermColor.DARK_RED.value, end = "")
+                    print(TermColor.no_help_hint.value, end = "")
                     print(f"[no `{ReservedArgType.HelpHint.name}`]", end = " ")
-                    print(TermColor.RESET.value, end = "")
+                    print(TermColor.reset_style.value, end = "")
 
                 print()

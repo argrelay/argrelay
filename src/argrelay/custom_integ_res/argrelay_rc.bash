@@ -49,7 +49,6 @@ then
     echo "It is required to know which command names will have \`argrelay\` auto-completion." 1>&2
     echo "Provide \`${argrelay_dir}/conf/argrelay_rc_conf.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: Why not to consolidate all commit-able `*_conf.bash` files into one?
     cat << 'argelay_rc_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
@@ -148,7 +147,7 @@ bind -x '"\eQ":"invoke_completion"'
 PATH="${argrelay_dir}/bin/:${PATH}"
 export PATH
 
-# TODO: Figure out how to save these settings on start and restore on exit.
+# TODO: Figure out how to push these settings on start and pop on exit (instead of override and then override again forgetting what they were initially).
 # Disable exit on errors and any extra debug info for interactive shell
 # (see enabling them for the duration of this script above):
 #set +u
