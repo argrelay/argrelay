@@ -10,9 +10,12 @@ from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.TermColor import TermColor
+from argrelay.handler_response.DescribeLineArgsClientResponseHandler import (
+    indent_size,
+    DescribeLineArgsClientResponseHandler,
+)
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.relay_client import __main__
-from argrelay.runtime_context.EnvelopeContainer import indent_size
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.schema_response.InterpResult import InterpResult
@@ -313,7 +316,7 @@ class ThisTestCase(InOutTestCase):
                 CompType.InvokeAction,
                 [],
                 {},
-                # TODO: Make generic validator be able to verify payload (not only `interp_ctx` passed from local client).
+                # TODO: Make generic validator be able to verify payload (not only `interp_ctx` passed from local client) - JSONPath?
                 # {
                 #     0: {
                 #         GlobalArgType.ActionType.name: AssignedValue("list", ArgSource.ExplicitPosArg),
@@ -435,7 +438,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(), "some_command goto service s_b prod qwer-pd-2 |", CompType.DescribeArgs,
                 "If current command search results in ambiguous results (more than one `data_envelope`), "
                 "it should still work.",
-                # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stderr output.
+                # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stderr output - JSONPath?
                 None,
             ),
             (
@@ -443,11 +446,11 @@ class ThisTestCase(InOutTestCase):
                 # TODO: FS_41_40_39_44: there must be a special line/field which lists `arg_value`-s based on FS_01_89_09_24 (tree path selecting interp):
                 "FS_41_40_39_44: TODO: suggest from tree path.",
                 f"""
-{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} 
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 6
-{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ActionType: ?{TermColor.RESET.value} goto desc list
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ObjectSelector: ?{TermColor.RESET.value} host service
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*ActionType: ?{TermColor.reset_style.value} goto desc list 
+{" " * indent_size}{TermColor.remaining_value.value}ObjectSelector: ?{TermColor.reset_style.value} host service 
 """,
             ),
             (
@@ -455,23 +458,23 @@ class ThisTestCase(InOutTestCase):
                 # TODO: make another test where set of suggestion listed for tangent token is reduced to those matching this token as prefix (currently selected includes all because all match that prefix).
                 "FS_23_62_89_43: tangent token is taken into account in describe.",
                 f"""
-{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}service{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}dev{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}emea{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} {TermColor.DARK_MAGENTA.value}s_{TermColor.RESET.value} 
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}emea{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 1
-{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: 2
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*ServiceName: ?{TermColor.RESET.value} s_a s_b
-{" " * indent_size}{TermColor.DARK_GREEN.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLACK.value}LiveStatus: [none]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.DARK_GREEN.value}IpAddress: ip.172.16.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}CodeMaturity: dev [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*ServiceName: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}a{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}b{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.172.16.2.1 [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceArgType.AccessType.name}: 0
-{" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}AccessType: [none]{TermColor.reset_style.value}
 """,
             ),
             (
@@ -479,20 +482,43 @@ class ThisTestCase(InOutTestCase):
                 "Regular description with some props specified (FlowStage) and many still to be narrowed down.",
                 # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
-{TermColor.BRIGHT_BLUE.value}some_command{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}goto{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}host{TermColor.RESET.value} {TermColor.BRIGHT_BLUE.value}upstream{TermColor.RESET.value} 
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 1
-{" " * indent_size}{TermColor.DARK_GREEN.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ObjectSelector: host [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassHost.name}: 10
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}*CodeMaturity: ?{TermColor.RESET.value} dev qa prod
-{" " * indent_size}{TermColor.BRIGHT_BLUE.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.RESET.value}
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}GeoRegion: ?{TermColor.RESET.value} apac emea amer
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}ClusterName: ?{TermColor.RESET.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}HostName: ?{TermColor.RESET.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-3 qwer-pd-2
-{" " * indent_size}{TermColor.BRIGHT_YELLOW.value}IpAddress: ?{TermColor.RESET.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 ip.172.16.7.2
+{" " * indent_size}{TermColor.remaining_value.value}*CodeMaturity: ?{TermColor.reset_style.value} dev qa prod 
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}GeoRegion: ?{TermColor.reset_style.value} apac emea amer 
+{" " * indent_size}{TermColor.remaining_value.value}ClusterName: ?{TermColor.reset_style.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream 
+{" " * indent_size}{TermColor.remaining_value.value}HostName: ?{TermColor.reset_style.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-3 qwer-pd-2 
+{" " * indent_size}{TermColor.remaining_value.value}IpAddress: ?{TermColor.reset_style.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 ip.172.16.7.2 
 {ServiceArgType.AccessType.name}: 0
-{" " * indent_size}{TermColor.BRIGHT_BLACK.value}AccessType: [none]{TermColor.RESET.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}AccessType: [none]{TermColor.reset_style.value}
+""",
+            ),
+            (
+                line_no(), "some_command goto service qwer-p|d-1 s_", CompType.DescribeArgs,
+                "FS_11_87_76_73: Highlight left part (prefix) of tangent token in description.",
+                f"""
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.unconsumed_token.value}s_{TermColor.reset_style.value} 
+{ReservedEnvelopeClass.ClassFunction.name}: 1
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external [{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ObjectSelector: service [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassService.name}: 2
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}CodeMaturity: prod [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}FlowStage: upstream [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}GeoRegion: apac [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: prod-apac-upstream [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*ServiceName: ?{TermColor.reset_style.value} s_a s_b 
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.07 [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.7.1 [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{ServiceArgType.AccessType.name}: 0
+{" " * indent_size}{TermColor.no_option_to_suggest.value}AccessType: [none]{TermColor.reset_style.value}
 """,
             ),
         ]
@@ -540,9 +566,11 @@ class ThisTestCase(InOutTestCase):
                         interp_result: InterpResult = InterpResult(
                             all_tokens = interp_ctx.parsed_ctx.all_tokens,
                             consumed_tokens = interp_ctx.consumed_tokens,
+                            tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
+                            tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
                             envelope_containers = interp_ctx.envelope_containers,
                         )
-                        interp_result.describe_data()
+                        DescribeLineArgsClientResponseHandler.render_result(interp_result)
 
                         self.maxDiff = None
                         self.assertEqual(

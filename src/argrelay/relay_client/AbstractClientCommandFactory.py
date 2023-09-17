@@ -15,7 +15,5 @@ class AbstractClientCommandFactory:
         self,
         shell_ctx: ShellContext,
     ):
-        call_ctx = CallContext.from_shell_context(
-            shell_ctx,
-        )
+        call_ctx = shell_ctx.create_call_context()
         return self.create_command_by_server_path(call_ctx)

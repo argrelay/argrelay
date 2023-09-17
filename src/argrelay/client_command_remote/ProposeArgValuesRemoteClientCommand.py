@@ -53,7 +53,6 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
             self.connection_config.server_port_number,
         ))
 
-        # TODO: add server_action
         request_body_str = (f"""\
 {{
     "server_action": "{self.call_ctx.server_action.name}",

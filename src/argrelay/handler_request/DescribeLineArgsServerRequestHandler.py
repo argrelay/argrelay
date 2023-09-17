@@ -7,6 +7,8 @@ from argrelay.schema_response.InterpResultSchema import (
     envelope_containers_,
     all_tokens_,
     consumed_tokens_,
+    tan_token_ipos_,
+    tan_token_l_part_,
 )
 from argrelay.server_spec.CallContext import CallContext
 
@@ -34,5 +36,7 @@ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
             all_tokens_: self.interp_ctx.parsed_ctx.all_tokens,
             consumed_tokens_: self.interp_ctx.consumed_tokens,
             envelope_containers_: self.interp_ctx.envelope_containers,
+            tan_token_ipos_: self.interp_ctx.parsed_ctx.tan_token_ipos,
+            tan_token_l_part_: self.interp_ctx.parsed_ctx.tan_token_l_part,
         })
         return response_dict

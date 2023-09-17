@@ -23,12 +23,13 @@ def get_mongo_client(mongo_config: MongoConfig):
 
 
 def store_envelopes(mongo_db: Database, static_data: StaticData):
-    # TODO: Currently, we use single collection,
+    # TODO: FS_56_43_05_79: Currently, we use single collection,
     #       but we never search across all object,
     #       we always search specific `ReservedArgType.EnvelopeClass.name`.
     #       Should we use collection per envelope class?
     #       However, what if we need to list all envelop classes?
     #       Then, single collection is fine (and simple).
+    #       See also: https://github.com/argrelay/argrelay/issues/10
     col_proxy: Collection = mongo_db[data_envelopes_]
     col_proxy.delete_many({})
 

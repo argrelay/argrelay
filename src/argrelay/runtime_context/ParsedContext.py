@@ -144,8 +144,8 @@ class ParsedContext(CallContext):
         if not self.is_debug_enabled:
             return
         super().print_debug("")
-        eprint(TermColor.DEBUG.value, end = "")
-        eprint(f"sel_token_l_part: \"{self.tan_token_l_part}\"", end = " ")
-        eprint(f"sel_token_r_part: \"{self.tan_token_r_part}\"", end = " ")
+        eprint(TermColor.debug_output.value, end = "")
+        eprint(f"tan_token_l_part: \"{self.tan_token_l_part}\"", end = " ")
+        eprint(f"tan_token_r_part: \"{self.tan_token_r_part}\"", end = " ")
         eprint(f"comp_scope: {self.comp_scope.name}", end = " ")
-        eprint(TermColor.RESET.value, end = end_str)
+        eprint(TermColor.reset_style.value, end = end_str)

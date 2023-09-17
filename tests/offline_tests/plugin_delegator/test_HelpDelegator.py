@@ -20,7 +20,7 @@ class ThisTestCase(InOutTestCase):
                     0: {},  # help itself
                     1: {
                         # (goto, desc, list) x (host, service) external functions:
-                        # TODO: Universal verifier: be able to verify arbitrary data on `EnvelopeContainer`, not only assigned types to values.
+                        # TODO: Universal verifier: be able to verify arbitrary data on `EnvelopeContainer` (JSONPath?), not only assigned types to values.
                         # "found_count": 6
                     }
                 },

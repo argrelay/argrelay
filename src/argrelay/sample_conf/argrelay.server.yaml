@@ -277,6 +277,7 @@ plugin_dict:
 # TODO: Currently, loader plugins write their data under `data_envelope`-s section on start.
 #       Data by loader plugins has to be loaded via the same API which should be exposed via REST
 #       (plugin may use direct API calls as they are within the same process with the server).
+#       See: FS_74_69_61_79 / get set data_envelope: https://github.com/argrelay/argrelay/issues/20
 
 # This data is loaded as part of the config on start (and will be available even if all loader plugins removed).
 # Loader plugins are also supposed to add more data (but they also can modify or completely remove data defined below).

@@ -86,6 +86,7 @@ class InterpContext:
         if self.parsed_ctx.server_action == ServerAction.ProposeArgValues:
             return [
                 token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
+                # FS_23_62_89_43:
                 # `ServerAction.ProposeArgValues` excludes tangent token because it is supposed to be completed:
                 if token_ipos != self.parsed_ctx.tan_token_ipos
             ]
@@ -237,6 +238,6 @@ class InterpContext:
         if not self.parsed_ctx.is_debug_enabled:
             return
         self.parsed_ctx.print_debug("")
-        eprint(TermColor.DEBUG.value, end = "")
+        eprint(TermColor.debug_output.value, end = "")
         eprint(f"comp_suggestions: {self.comp_suggestions}", end = " ")
-        eprint(TermColor.RESET.value, end = end_str)
+        eprint(TermColor.reset_style.value, end = end_str)

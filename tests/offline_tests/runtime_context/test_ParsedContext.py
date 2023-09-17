@@ -99,8 +99,8 @@ class ThisTestCase(TestCase):
                     test_line,
                     expected_l_cpos,
                     expected_r_cpos,
-                    expected_sel_token,
-                    expected_sel_token_ipos,
+                    expected_tan_token,
+                    expected_tan_token_ipos,
                     expected_all_tokens,
                     case_comment
                 ) = test_case
@@ -108,6 +108,6 @@ class ThisTestCase(TestCase):
                 parsed_ctx = default_test_parsed_context(command_line, cursor_cpos)
                 self.assertEqual(expected_l_cpos, parsed_ctx.tan_token_l_cpos)
                 self.assertEqual(expected_r_cpos, parsed_ctx.tan_token_r_cpos)
-                self.assertEqual(expected_sel_token, parsed_ctx.tan_token)
-                self.assertEqual(expected_sel_token_ipos, parsed_ctx.tan_token_ipos)
+                self.assertEqual(expected_tan_token, parsed_ctx.tan_token)
+                self.assertEqual(expected_tan_token_ipos, parsed_ctx.tan_token_ipos)
                 self.assertEqual(expected_all_tokens, parsed_ctx.all_tokens)

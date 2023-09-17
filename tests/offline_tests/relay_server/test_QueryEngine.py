@@ -68,13 +68,13 @@ class ThisTestCase(TestCase):
                     actual_suggestions_1st_run = "1st"
                     with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
                         actual_suggestions_1st_run = self.run_completion(
-                            CallContext.from_shell_context(ShellContext(
+                            ShellContext(
                                 command_line = command_line,
                                 cursor_cpos = cursor_cpos,
                                 comp_type = comp_type,
                                 is_debug_enabled = False,
                                 comp_key = UNKNOWN_COMP_KEY,
-                            )),
+                            ).create_call_context(),
                             propose_arg_values_handler,
                             expected_suggestions,
                             method_mock,
@@ -85,13 +85,13 @@ class ThisTestCase(TestCase):
                     actual_suggestions_2nd_run = "2nd"
                     with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
                         actual_suggestions_2nd_run = self.run_completion(
-                            CallContext.from_shell_context(ShellContext(
+                            ShellContext(
                                 command_line = command_line,
                                 cursor_cpos = cursor_cpos,
                                 comp_type = comp_type,
                                 is_debug_enabled = False,
                                 comp_key = UNKNOWN_COMP_KEY,
-                            )),
+                            ).create_call_context(),
                             propose_arg_values_handler,
                             expected_suggestions,
                             method_mock,

@@ -4,7 +4,7 @@ TODO: reformat, sort, populate, link to `feature_story`-ies.
 *   token: substring of command line (split by one or more delimiter chars), see usage of `SpecialChar`.
 *   argument = arg: one or more command line token interpreted as a function argument, see usage of `TokenType`.
 *   curr, prev, next: current, previous, next item during processing.
-*   tangent = tan: token "touched" by the cursor.
+*   tangent = tan: token "touched" by the cursor - see FS_23_62_89_43.
 *   token left part: tangent token substring on the left from the cursor.
 *   token right part: tangent token substring on the right from the cursor.
 *   interpreter = interp: see usage of `AbstractInterp`.
