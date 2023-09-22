@@ -1,33 +1,21 @@
-from pymongo.collection import Collection
-from pymongo.database import Database
-
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
-from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
-from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
-from env_tests.MongoClientTest import MongoClientTest
+from env_tests.MongoClientTest import MongoClientTest, object_name_
 
 
 class ThisTestCase(MongoClientTest):
 
     # noinspection PyMethodMayBeStatic
-    def test_live_envelope_searched_by_multiple_typed_vals(self):
+    def test_live_envelope_searched_by_multiple_typed_key_value_pairs(self):
         """
-        Example with data searched by multiple { type: value } pairs
+        Example with data searched by multiple { type: value } pairs = typical search feature `argrelay` relies on.
         """
 
-        mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
-        mongo_client = get_mongo_client(mongo_config)
-        print("list_database_names: ", mongo_client.list_database_names())
-
-        mongo_db: Database = mongo_client[mongo_config.mongo_server.database_name]
-        print("list_collection_names: ", mongo_db.list_collection_names())
-
-        col_name = "argrelay"
-        col_proxy: Collection = mongo_db[col_name]
+        col_proxy = self.create_collection_proxy("argrelay")
 
         self.remove_all_envelopes(col_proxy)
 
+        # Fields which will be indexed:
         known_arg_types = [
             ServiceArgType.AccessType.name,
             ServiceArgType.LiveStatus.name,
@@ -36,14 +24,14 @@ class ThisTestCase(MongoClientTest):
 
         envelope_001 = {
             envelope_payload_: {
-                "object_name": "envelope_001",
+                object_name_: "envelope_001",
             },
             ServiceArgType.AccessType.name: "ro",
         }
 
         envelope_002 = {
             envelope_payload_: {
-                "object_name": "envelope_002",
+                object_name_: "envelope_002",
             },
             ServiceArgType.AccessType.name: "rw",
             ServiceArgType.LiveStatus.name: "red",
@@ -51,7 +39,7 @@ class ThisTestCase(MongoClientTest):
 
         envelope_003 = {
             envelope_payload_: {
-                "object_name": "envelope_003",
+                object_name_: "envelope_003",
             },
             ServiceArgType.AccessType.name: "rw",
             ServiceArgType.LiveStatus.name: "blue",
@@ -59,7 +47,7 @@ class ThisTestCase(MongoClientTest):
 
         envelope_004 = {
             envelope_payload_: {
-                "object_name": "envelope_004",
+                object_name_: "envelope_004",
             },
             ServiceArgType.AccessType.name: "rw",
             ServiceArgType.LiveStatus.name: "red",
@@ -73,8 +61,7 @@ class ThisTestCase(MongoClientTest):
             envelope_004,
         ])
 
-        for index_field in known_arg_types:
-            col_proxy.create_index(index_field)
+        self.index_fields(col_proxy, known_arg_types)
 
         print("query 1:")
         for data_envelope in col_proxy.find(

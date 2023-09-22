@@ -468,7 +468,8 @@ class ThisTestCase(InOutTestCase):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: emea [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-emea-upstream [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*ServiceName: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}a{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}b{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa sss bbb 
+{" " * indent_size}{TermColor.remaining_value.value}ServiceName: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}a{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}b{TermColor.reset_style.value} 
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}HostName: asdf-du [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.22 [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
@@ -512,7 +513,8 @@ class ThisTestCase(InOutTestCase):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}FlowStage: upstream [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}GeoRegion: apac [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: prod-apac-upstream [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*ServiceName: ?{TermColor.reset_style.value} s_a s_b 
+{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa sss bbb 
+{" " * indent_size}{TermColor.remaining_value.value}ServiceName: ?{TermColor.reset_style.value} s_a s_b 
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} [{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.07 [{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}

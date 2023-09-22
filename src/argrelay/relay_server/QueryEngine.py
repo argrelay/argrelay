@@ -50,15 +50,7 @@ class QueryEngine:
         assigned_types_to_values: dict[str, AssignedValue],
     ) -> QueryResult:
         """
-        Query values per types in `search_control` and populates `remaining_types_to_values`.
-
-        This query is used in completion which makes it latency-sensitive (results are cached).
-
-        It also combines:
-        *   counting total `found_count` of `data_envelope`-s returned and
-        *   storing the last `data_envelope`.
-        The last `data_envelope` is only useful when `found_count` is one (making it unambiguous `data_envelope`).
-        To search all `data_envelope`, use `query_data_envelopes` function.
+        Implements FS_39_58_01_91 query cache (if `enable_query_cache`).
         """
 
         if self.enable_query_cache:
@@ -93,10 +85,10 @@ class QueryEngine:
     ) -> QueryResult:
 
         ElapsedTime.measure("before_mongo_find")
-        query_res = self.mongo_col.find(query_dict)
+        mongo_result = self.mongo_col.find(query_dict)
         ElapsedTime.measure("after_mongo_find")
         query_result = self._process_prop_values(
-            query_res,
+            mongo_result,
             search_control,
             assigned_types_to_values,
         )
@@ -105,11 +97,22 @@ class QueryEngine:
 
     @staticmethod
     def _process_prop_values(
-        query_res,
+        mongo_result,
         search_control: SearchControl,
         assigned_types_to_values: dict[str, AssignedValue],
     ) -> QueryResult:
         """
+        Process `mongo_result` per types in `search_control` and populates `remaining_types_to_values`.
+
+        This `QueryResult` is used in completion
+        which makes this process latency-sensitive (so it is cached - see FS_39_58_01_91).
+
+        Also combine:
+        *   counting total `found_count` of `data_envelope`-s returned and
+        *   storing the last `data_envelope`.
+        The last `data_envelope` is only useful when `found_count` is one (making it unambiguous `data_envelope`).
+        To search all `data_envelope`, use `query_data_envelopes` function.
+
         Populates:
         *   `found_count`
         *   `remaining_types_to_values`
@@ -121,7 +124,7 @@ class QueryEngine:
 
         # TODO: What if search result is huge? Blame data set designer?
         # find all remaining arg vals per arg type:
-        for data_envelope in iter(query_res):
+        for data_envelope in iter(mongo_result):
             found_count += 1
             # `arg_type` must be known:
             for arg_type in search_control.types_to_keys_dict.keys():
@@ -130,21 +133,34 @@ class QueryEngine:
                     # If assigned/consumed, `arg_type` must not appear
                     # as an option in `remaining_types_to_values` again:
                     if arg_type not in assigned_types_to_values.keys():
-                        arg_val = data_envelope[arg_type]
+                        arg_vals = scalar_to_list_values(data_envelope[arg_type])
+
                         if arg_type not in remaining_types_to_values:
                             val_list = []
                             remaining_types_to_values[arg_type] = val_list
                         else:
                             val_list = remaining_types_to_values[arg_type]
+
                         # Deduplicate: ensure unique `arg_value`-s:
-                        if arg_val not in val_list:
-                            val_list.append(arg_val)
+                        for arg_val in arg_vals:
+                            if arg_val not in val_list:
+                                val_list.append(arg_val)
 
         return QueryResult(
             data_envelope,
             found_count,
             remaining_types_to_values,
         )
+
+
+def scalar_to_list_values(arg_type_val: list|str) -> list[str]:
+    """
+    FS_06_99_43_60 providing scalar value for list/array field is also possible (and vice versa).
+    """
+    if not isinstance(arg_type_val, list):
+        return [arg_type_val]
+    else:
+        return arg_type_val
 
 
 def populate_query_dict(envelope_container):

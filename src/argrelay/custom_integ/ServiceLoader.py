@@ -66,6 +66,7 @@ service_search_control = {
         {"region": ServiceArgType.GeoRegion.name},
         {"cluster": ServiceArgType.ClusterName.name},
         # ClassService:
+        {"group": ServiceArgType.GroupLabel.name},
         {"service": ServiceArgType.ServiceName.name},
         # ClassHost:
         {"host": ServiceArgType.HostName.name},
@@ -703,6 +704,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "zxcv-du",
                 ServiceArgType.IpAddress.name: "ip.192.168.1.1",
                 ServiceArgType.ServiceName.name: "s_a",
+                ServiceArgType.GroupLabel.name: [
+                    "aaa",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -717,6 +722,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "zxcv-du",
                 ServiceArgType.IpAddress.name: "ip.192.168.1.1",
                 ServiceArgType.ServiceName.name: "s_b",
+                ServiceArgType.GroupLabel.name: [
+                    "bbb",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -731,6 +740,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "zxcv-du",
                 ServiceArgType.IpAddress.name: "ip.192.168.1.1",
                 ServiceArgType.ServiceName.name: "s_c",
+                ServiceArgType.GroupLabel.name: [
+                    "ccc",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -745,6 +758,8 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "zxcv-dd",
                 ServiceArgType.IpAddress.name: "ip.172.16.1.2",
                 ServiceArgType.ServiceName.name: "tt",
+                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                ServiceArgType.GroupLabel.name: "rrr",
             },
             {
                 envelope_payload_: {
@@ -759,6 +774,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "poiu-dd",
                 ServiceArgType.IpAddress.name: "ip.192.168.1.3",
                 ServiceArgType.ServiceName.name: "xx",
+                ServiceArgType.GroupLabel.name: [
+                    "rrr",
+                    "hhh",
+                ],
             },
             {
                 envelope_payload_: {
@@ -773,6 +792,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "asdf-du",
                 ServiceArgType.IpAddress.name: "ip.172.16.2.1",
                 ServiceArgType.ServiceName.name: "s_a",
+                ServiceArgType.GroupLabel.name: [
+                    "aaa",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -787,6 +810,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "asdf-du",
                 ServiceArgType.IpAddress.name: "ip.172.16.2.1",
                 ServiceArgType.ServiceName.name: "s_b",
+                ServiceArgType.GroupLabel.name: [
+                    "bbb",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -801,6 +828,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "xcvb-dd",
                 ServiceArgType.IpAddress.name: "ip.192.168.2.2",
                 ServiceArgType.ServiceName.name: "xx",
+                ServiceArgType.GroupLabel.name: [
+                    "rrr",
+                    "hhh",
+                ],
             },
             {
                 envelope_payload_: {
@@ -815,6 +846,11 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "xcvb-dd",
                 ServiceArgType.IpAddress.name: "ip.192.168.2.2",
                 ServiceArgType.ServiceName.name: "zz",
+                ServiceArgType.GroupLabel.name: [
+                    "rrr",
+                    "hhh",
+                    "odd",
+                ],
             },
             {
                 envelope_payload_: {
@@ -829,6 +865,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer-du",
                 ServiceArgType.IpAddress.name: "ip.192.168.3.1",
                 ServiceArgType.ServiceName.name: "s_a",
+                ServiceArgType.GroupLabel.name: [
+                    "aaa",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -843,6 +883,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "hjkl-qu",
                 ServiceArgType.IpAddress.name: "ip.192.168.4.1",
                 ServiceArgType.ServiceName.name: "s_a",
+                ServiceArgType.GroupLabel.name: [
+                    "aaa",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -857,6 +901,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "hjkl-qu",
                 ServiceArgType.IpAddress.name: "ip.192.168.4.1",
                 ServiceArgType.ServiceName.name: "s_b",
+                ServiceArgType.GroupLabel.name: [
+                    "bbb",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -871,6 +919,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "poiu-qu",
                 ServiceArgType.IpAddress.name: "ip.172.16.4.2",
                 ServiceArgType.ServiceName.name: "s_c",
+                ServiceArgType.GroupLabel.name: [
+                    "ccc",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -885,6 +937,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "rtyu-qu",
                 ServiceArgType.IpAddress.name: "ip.192.168.6.1",
                 ServiceArgType.ServiceName.name: "s_a",
+                ServiceArgType.GroupLabel.name: [
+                    "aaa",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -899,6 +955,8 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "sdfgh-qd",
                 ServiceArgType.IpAddress.name: "ip.192.168.6.3",
                 ServiceArgType.ServiceName.name: "tt1",
+                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                ServiceArgType.GroupLabel.name: "rrr",
             },
             {
                 envelope_payload_: {
@@ -913,6 +971,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "sdfgb-qd",
                 ServiceArgType.IpAddress.name: "ip.192.168.6.4",
                 ServiceArgType.ServiceName.name: "xx",
+                ServiceArgType.GroupLabel.name: [
+                    "rrr",
+                    "hhh",
+                ],
             },
             {
                 envelope_payload_: {
@@ -927,6 +989,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer-pd-1",
                 ServiceArgType.IpAddress.name: "ip.192.168.7.1",
                 ServiceArgType.ServiceName.name: "s_a",
+                ServiceArgType.GroupLabel.name: [
+                    "aaa",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -941,6 +1007,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer-pd-1",
                 ServiceArgType.IpAddress.name: "ip.192.168.7.1",
                 ServiceArgType.ServiceName.name: "s_b",
+                ServiceArgType.GroupLabel.name: [
+                    "bbb",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -955,6 +1025,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer-pd-3",
                 ServiceArgType.IpAddress.name: "ip.192.168.7.2",
                 ServiceArgType.ServiceName.name: "s_c",
+                ServiceArgType.GroupLabel.name: [
+                    "ccc",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -969,6 +1043,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer-pd-2",
                 ServiceArgType.IpAddress.name: "ip.172.16.7.2",
                 ServiceArgType.ServiceName.name: "s_a",
+                ServiceArgType.GroupLabel.name: [
+                    "aaa",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -983,6 +1061,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer-pd-2",
                 ServiceArgType.IpAddress.name: "ip.172.16.7.2",
                 ServiceArgType.ServiceName.name: "s_b",
+                ServiceArgType.GroupLabel.name: [
+                    "bbb",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -997,6 +1079,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "qwer-pd-2",
                 ServiceArgType.IpAddress.name: "ip.172.16.7.2",
                 ServiceArgType.ServiceName.name: "s_c",
+                ServiceArgType.GroupLabel.name: [
+                    "ccc",
+                    "sss",
+                ],
             },
             {
                 envelope_payload_: {
@@ -1011,6 +1097,8 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "wert-pd-1",
                 ServiceArgType.IpAddress.name: "ip.192.168.7.3",
                 ServiceArgType.ServiceName.name: "tt1",
+                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                ServiceArgType.GroupLabel.name: "rrr",
             },
             {
                 envelope_payload_: {
@@ -1025,6 +1113,8 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "wert-pd-2",
                 ServiceArgType.IpAddress.name: "ip.192.168.7.4",
                 ServiceArgType.ServiceName.name: "tt2",
+                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                ServiceArgType.GroupLabel.name: "rrr",
             },
             {
                 envelope_payload_: {
@@ -1039,6 +1129,10 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "wert-pd-2",
                 ServiceArgType.IpAddress.name: "ip.192.168.7.4",
                 ServiceArgType.ServiceName.name: "xx",
+                ServiceArgType.GroupLabel.name: [
+                    "rrr",
+                    "hhh",
+                ],
             },
         ])
 
