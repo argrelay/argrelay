@@ -1,8 +1,3 @@
-from pymongo.collection import Collection
-from pymongo.database import Database
-
-from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
-from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
 from argrelay.schema_config_interp.DataEnvelopeSchema import mongo_id_
 from env_tests.MongoClientTest import MongoClientTest
 
@@ -15,15 +10,7 @@ class ThisTestCase(MongoClientTest):
         Borrowed from: https://www.mongodb.com/languages/python
         """
 
-        mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
-        mongo_client = get_mongo_client(mongo_config)
-        print("list_database_names: ", mongo_client.list_database_names())
-
-        mongo_db: Database = mongo_client[mongo_config.mongo_server.database_name]
-        print("list_collection_names: ", mongo_db.list_collection_names())
-
-        col_name = "user_1_envelopes"
-        col_proxy: Collection = mongo_db[col_name]
+        col_proxy = self.create_collection_proxy("user_1_envelopes")
 
         self.show_all_envelopes(col_proxy)
 

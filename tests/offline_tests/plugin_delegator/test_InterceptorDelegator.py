@@ -31,7 +31,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(),
                 "some_command intercept goto service s_b prod |",
                 CompType.PrefixShown,
-                ["qwer-pd-1", "qwer-pd-2"],
+                ["bbb", "sss"],
                 None,
                 None,
                 "Completion continues to be driven by function selected via `goto` and `service`.",

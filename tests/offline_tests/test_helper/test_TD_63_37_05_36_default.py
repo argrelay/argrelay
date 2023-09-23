@@ -8,6 +8,7 @@ from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.relay_server.LocalServer import LocalServer
+from argrelay.relay_server.QueryEngine import scalar_to_list_values
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.test_helper import change_to_known_repo_path, test_data_
@@ -96,6 +97,8 @@ class ThisTestCase(TestCase):
                     ip_address = table_row[f"`{ServiceArgType.IpAddress}`"].strip().strip("`")
                     data_center = table_row[f"`{ServiceArgType.DataCenter}`"].strip().strip("`")
 
+                    group_label: str = table_row[f"`{ServiceArgType.GroupLabel}`"].strip().strip("`")
+
                     # Whether `ServiceName` specified:
                     is_cluster = host_name == ""
                     # Whether `ServiceName` specified:
@@ -179,6 +182,15 @@ class ThisTestCase(TestCase):
                             self.assertEquals(
                                 data_center,
                                 service_data_envelope[ServiceArgType.DataCenter.name],
+                            )
+
+                            # GroupLabel is specified in doc as CSV:
+                            group_label_values = group_label.split(",")
+                            actual_values = service_data_envelope[ServiceArgType.GroupLabel.name]
+                            actual_values = scalar_to_list_values(actual_values)
+                            self.assertEquals(
+                                group_label_values,
+                                actual_values,
                             )
 
     def find_single_data_envelope(self, mongo_col, query_dict) -> dict:

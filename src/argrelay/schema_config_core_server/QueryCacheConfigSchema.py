@@ -9,6 +9,10 @@ query_cache_max_size_bytes_ = "query_cache_max_size_bytes"
 
 
 class QueryCacheConfigSchema(Schema):
+    """
+    Config schema for FS_39_58_01_91 query cache.
+    """
+
     class Meta:
         unknown = RAISE
         strict = True

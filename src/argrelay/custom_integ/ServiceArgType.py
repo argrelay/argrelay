@@ -11,19 +11,29 @@ class ServiceArgType(Enum):
     """
 
     # ---
+
     CodeMaturity = auto()
     GeoRegion = auto()
     FlowStage = auto()
+
     # ---
+
     ClusterName = auto()
+
     # ---
+
     DataCenter = auto()
     HostName = auto()
     IpAddress = auto()
+    GroupLabel = auto()
     ServiceName = auto()
+
     # ---
+
     AccessType = auto()
+
     # ---
+
     LiveStatus = auto()
     """
     TODO: Currently `LiveStatus` is not used - it can be thought of as manually or dynamically assigned to the resource.

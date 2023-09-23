@@ -13,6 +13,9 @@ from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(TestCase):
+    """
+    Tests FS_39_58_01_91 query cache.
+    """
 
     def test_enable_query_cache(self):
         """

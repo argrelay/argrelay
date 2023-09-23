@@ -38,6 +38,8 @@ db.createUser(
 Tutorial:
 https://www.mongodb.com/languages/python
 
+See `test_MongoClient_tutorial.py`.
+
 Installing Python client:
 
 ```sh

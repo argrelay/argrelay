@@ -14,6 +14,7 @@ class TermColor(Enum):
     # Direct colors:
     # do not use them directly, use semantic colors instead (below).
 
+    back_dark_blue = "\033[44m"
     back_dark_yellow = "\033[43m"
 
     fore_dark_red = "\033[31m"
@@ -25,11 +26,12 @@ class TermColor(Enum):
     fore_bright_yellow = "\033[93m"
     fore_bright_blue = "\033[94m"
     fore_bright_cyan = "\033[96m"
+    fore_bright_white = "\033[97m"
 
     ###################################################################################################################
     # Semantic colors:
 
-    prefix_highlight = back_dark_yellow
+    prefix_highlight = back_dark_blue
 
     known_envelope_id = fore_dark_gray
     unknown_envelope_id = fore_dark_red
@@ -38,12 +40,12 @@ class TermColor(Enum):
 
     help_hint = fore_dark_green
 
-    tangent_token_l_part = fore_bright_cyan
+    tangent_token_l_part = fore_bright_white
     """
     See `ParsedContext.tan_token_l_part`
     """
 
-    tangent_token_r_part = fore_dark_cyan
+    tangent_token_r_part = fore_bright_cyan
     """
     See `ParsedContext.tangent_token_r_part`
     """
