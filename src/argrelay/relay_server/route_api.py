@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from flasgger import swag_from
 from flask import request, Blueprint, Response, abort
 
@@ -22,18 +24,19 @@ def create_blueprint_api(local_server: LocalServer):
     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
     relay_line_args_handler = RelayLineArgsServerRequestHandler(local_server)
 
-    def create_call_ctx():
+    def create_call_ctx() -> CallContext:
         ElapsedTime.clear_measurements()
         ElapsedTime.measure("before_request_payload_load")
-        # TODO: Figure out why:
-        #       *   requests by `ProposeArgValuesRemoteClientCommand` arrive as dict
-        #           (this is from different client implementation, but why does it cause that difference?)
-        #       *   requests by `AbstractRemoteClientCommand` arrive as str
-        call_ctx: CallContext = None
-        if isinstance(request.json, str):
-            call_ctx = call_context_desc.dict_schema.loads(request.json)
-        if isinstance(request.json, dict):
+
+        call_ctx: CallContext
+        if request.content_type is None:
+            data_json = request.data.decode("utf-8")
+            call_ctx = call_context_desc.dict_schema.loads(data_json)
+        elif request.content_type == "application/json":
             call_ctx = call_context_desc.dict_schema.load(request.json)
+        else:
+            abort(415)
+
         ElapsedTime.measure("after_input_context_creation")
         ElapsedTime.is_debug_enabled = call_ctx.is_debug_enabled
         return call_ctx

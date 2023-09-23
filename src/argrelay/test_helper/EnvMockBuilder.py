@@ -14,6 +14,7 @@ import sys
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from io import StringIO
+from typing import Type
 from unittest import mock
 
 import mongomock
@@ -52,6 +53,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.server_spec.CallContext import CallContext
+from argrelay.test_helper.LocalClientCommandFactory import LocalClientCommandFactory
 from argrelay.test_helper.OpenFileMock import OpenFileMock
 
 
@@ -106,7 +108,7 @@ class EnvMockBuilder:
 
     _mock_client_input: bool = field(default = True)
 
-    file_mock: OpenFileMock = field(default = OpenFileMock({}))
+    file_mock: OpenFileMock = field(default_factory = lambda: OpenFileMock({}))
 
     client_config_dict: dict = field(default_factory = lambda: load_custom_integ_client_config_dict())
     mock_client_config_file_read: bool = field(default = True)
@@ -135,6 +137,21 @@ class EnvMockBuilder:
     invocation_input: InvocationInput = field(default = None)
 
     enable_query_cache: bool = field(default = True)
+
+    reset_local_server: bool = field(default = True)
+    """
+    If true, (after build() context is over) next invocation via `LocalClient` will trigger `LocalServer` restart (re-creation and re-load).
+    Default is true because it is confusing to hold `test_data_ids_to_load` while not re-loading server by default.
+    """
+
+    was_server_started_on_build: bool = field(default = False)
+    """
+    Avoids triggering verification of file access mock usage for server config
+    when `LocalClient` reuses already running server.
+    """
+
+    def __post_init__(self):
+        self.was_server_started_on_build = False
 
     def set_command_line(self, command_line: str):
         """
@@ -219,16 +236,16 @@ class EnvMockBuilder:
         self.test_data_ids_to_load = test_data_ids_to_load
         return self
 
-    def set_capture_delegator_invocation_input(self, abstract_delegator: AbstractDelegator):
+    def set_capture_delegator_invocation_input(self, delegator_class: Type[AbstractDelegator]):
         """
         This func causes `AbstractDelegator.invoke_action` to be mocked to capture `InvocationInput`
-        inside `ErrorDelegator.invocation_input` which test can then assert its data.
+        inside `EnvMockBuilder.invocation_input` which test can then assert its data.
         """
 
         self.delegator_plugin_invoke_action_func_path = (
-            f"{abstract_delegator.__module__}"
+            f"{delegator_class.__module__}"
             "."
-            f"{abstract_delegator.__name__}"
+            f"{delegator_class.__name__}"
             "."
             "invoke_action"
         )
@@ -236,6 +253,10 @@ class EnvMockBuilder:
 
     def set_enable_query_cache(self, given_val: bool):
         self.enable_query_cache = given_val
+        return self
+
+    def set_reset_local_server(self, given_val: bool):
+        self.reset_local_server = given_val
         return self
 
     @contextlib.contextmanager
@@ -255,6 +276,8 @@ class EnvMockBuilder:
             For real resource management (when various exceptions raised), it has to be thoroughly tested.
         """
 
+        self.was_server_started_on_build = LocalClientCommandFactory.local_server is not None
+
         # Ensure there are no false expectations if conflicting setup is done:
         assert not (self._command_line_is_set and self._command_args_are_set), "both cannot be true"
 
@@ -265,8 +288,8 @@ class EnvMockBuilder:
             assert not self._cursor_cpos_is_set, "if args are set (in InvocationMode), cursor pos is not set"
 
         if self.is_client_config_with_local_server:
-            # So far, local server is only used for testing (which implies using mocked client config file access).
-            # If fails here, for consistency, either enable client config file mocking or disable local server.
+            # So far, local client is only used for testing (which implies using mocked client config file access).
+            # If fails here, for consistency, either enable client config file mocking or disable local client.
             assert self.mock_client_config_file_read
 
         if self.is_server_config_with_mongo_start:
@@ -363,6 +386,11 @@ class EnvMockBuilder:
                     _mock_delegator_plugin(self.delegator_plugin_invoke_action_func_path)
                 ))
 
+            if self.reset_local_server:
+                yield_list.append(exit_stack.enter_context(
+                    do_reset_local_server()
+                ))
+
             yield yield_list
 
     @contextlib.contextmanager
@@ -372,7 +400,7 @@ class EnvMockBuilder:
         finally:
             if self.mock_client_config_file_read:
                 self.assert_client_config_read()
-            if self.mock_server_config_file_read:
+            if self.mock_server_config_file_read and not self.was_server_started_on_build:
                 self.assert_server_config_read()
 
     def assert_client_config_read(self):
@@ -393,21 +421,74 @@ class EnvMockBuilder:
 
 
 @dataclass
-class ServerOnlyEnvMockBuilder(EnvMockBuilder):
+class EmptyEnvMockBuilder(EnvMockBuilder):
     """
-    Used in tests where client code is not invoked.
+    Use case:
+    Used to set up extra mocks before or after when nesting `EnvMockBuilder` one into another (or completely alone).
+    Without calling any setters to prime mocks, this `EnvMockBuilder`  is noop.
     """
 
     def __init__(
         self,
     ):
         super().__init__()
-        # TODO: enable validation that client code is not invoked:
-        # For server-only test, client config file read should not happen.
-        # Disable expectations:
+        self.set_reset_local_server(False)
+        # Disable all mocks which set tripwires if not used:
         self.set_mock_client_config_file_read(False)
+        self.set_mock_server_config_file_read(False)
+        self.set_client_config_with_local_server(False)
+        self.set_mock_mongo_client(False)
+
+
+@dataclass
+class LocalClientEnvMockBuilder(EnvMockBuilder):
+    """
+    Use case:
+    Used in tests where both server and client code is verified but without code for data marshalling via HTTP.
+    Runs client and server code in the same test process via `LocalClient` (see for more details).
+    """
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+
+        # TODO: enable validation that client code is actually invoked:
+
+        # Ensure that client and server read their config files by test process:
+        self.set_mock_client_config_file_read(True)
+        self.set_mock_server_config_file_read(True)
+
+        # For local client (with local server) tests,
+        # ensure client uses `LocalClient` without marshalling data via HTTP:
+        self.set_client_config_with_local_server(True)
+
+        # For local client (with local server) tests,
+        # client code will need to access data passed by the shell - mock it:
+        self.set_mock_client_input(True)
+
+
+@dataclass
+class ServerOnlyEnvMockBuilder(EnvMockBuilder):
+    """
+    Use case:
+    Used in tests where client code is not invoked.
+    Current test process runs only server code.
+    """
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+
+        # TODO: enable validation that client code is not invoked:
+
+        # For server-only test, client config file read should not happen by test process:
+        self.set_mock_client_config_file_read(False)
+
         # For server-only test, client code is not used, but if it is, try to fail via REST API:
         self.set_client_config_with_local_server(False)
+
         # For server-only test, client input mocking is not required:
         self.set_mock_client_input(False)
 
@@ -415,20 +496,22 @@ class ServerOnlyEnvMockBuilder(EnvMockBuilder):
 @dataclass
 class LiveServerEnvMockBuilder(EnvMockBuilder):
     """
+    Use case:
     Used in tests where client talks to some live server.
-
-    The purpose of this mock is to test server data (rather than code).
+    Server is started somehow outside the mock, current test process runs only client code.
     """
 
     def __init__(
         self,
     ):
         super().__init__()
+
         # TODO: enable validation that client code is not invoked:
-        # For live server test, server config file read should not happen by in-process server code.
-        # Disable expectations:
+
+        # For live server test, server config file read should not happen by test process code:
         self.set_mock_server_config_file_read(False)
-        # For live server test, running local server contradicts with the purpose:
+
+        # For live server test, running local server contradicts with the purpose - disable:
         self.set_client_config_with_local_server(False)
 
 
@@ -480,6 +563,12 @@ def _mock_delegator_plugin(path_to_invoke_action):
     with mock.patch(path_to_invoke_action, capture_invocation_input) as mock_static:
         yield mock_static
 
+@contextlib.contextmanager
+def do_reset_local_server():
+    try:
+        yield
+    finally:
+        LocalClientCommandFactory.local_server = None
 
 def capture_invocation_input(invocation_input: InvocationInput):
     """

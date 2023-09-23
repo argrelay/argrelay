@@ -46,6 +46,6 @@ class ThisTestCase(TestCase):
             )
             response = self.client.post(
                 ServerAction.RelayLineArgs.value,
-                json = call_context_desc.dict_schema.dumps(data_obj),
+                data = call_context_desc.dict_schema.dumps(data_obj),
             )
             self.assertEqual(200, response.status_code)

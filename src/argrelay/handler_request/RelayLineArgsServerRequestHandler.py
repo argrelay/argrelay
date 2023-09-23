@@ -10,7 +10,7 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
 )
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InterpContext import function_envelope_ipos_
+from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
@@ -42,7 +42,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         if self.interp_ctx.is_funct_found():
-            delegator_plugin_instance_id = self.interp_ctx.envelope_containers[function_envelope_ipos_].data_envelope[
+            delegator_plugin_instance_id = self.interp_ctx.envelope_containers[function_container_ipos_].data_envelope[
                 instance_data_
             ][
                 delegator_plugin_instance_id_

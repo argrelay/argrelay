@@ -64,9 +64,14 @@ fi
 # Ensure it is venv (`@/exe/dev_shell.bash` activates venv):
 test -n "${VIRTUAL_ENV}"
 
+# Note for `discover`:
+# `--top-level-directory` is what imports are relative to.
+# `--start-directory` is the starting root for test scanning.
+# Current directory `.` is what the above path should be relative to.
+
 if [[ -d "${input_path}" ]]
 then
-    python -m unittest discover --verbose "${input_path}"
+    python -m unittest discover --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${input_path}"
     # Unreachable, if test fail:
     exit 0
 fi
@@ -90,7 +95,7 @@ then
         # Assuming all test classes named as `ThisTestCase`:
         python -m unittest "${module_name}.ThisTestCase.${method_name}"
     else
-        python -m unittest discover --verbose --start-directory "${path_dirname}" --pattern "${path_basename}"
+        python -m unittest discover --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${path_dirname}" --pattern "${path_basename}"
     fi
     # Unreachable, if test fail:
     exit 0

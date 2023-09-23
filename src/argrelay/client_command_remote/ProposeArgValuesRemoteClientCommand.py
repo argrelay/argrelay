@@ -1,3 +1,4 @@
+import json
 import socket
 
 from argrelay.enum_desc.ServerAction import ServerAction
@@ -24,7 +25,6 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
     """
 
     # TODO: Provide test coverage for this special implementation.
-    #       Currently, it is only covered by end-to-end `test_run_argrelay_client_server.py`.
     #       Write mocked test to cover internal logic like function `recvall` below.
 
     def __init__(
@@ -56,7 +56,7 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
         request_body_str = (f"""\
 {{
     "server_action": "{self.call_ctx.server_action.name}",
-    "command_line": "{self.call_ctx.command_line}",
+    "command_line": {json.dumps(self.call_ctx.command_line)},
     "cursor_cpos": {self.call_ctx.cursor_cpos},
     "comp_scope": "{self.call_ctx.comp_scope.name}",
     "is_debug_enabled": "{'true' if self.call_ctx.is_debug_enabled else 'false'}"

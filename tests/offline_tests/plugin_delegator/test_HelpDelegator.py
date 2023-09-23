@@ -5,7 +5,7 @@ from argrelay.test_helper.InOutTestCase import InOutTestCase
 
 class ThisTestCase(InOutTestCase):
 
-    def test_FS_71_87_33_52_intercept(self):
+    def test_FS_71_87_33_52_help_hint(self):
         """
         Test FS_71_87_33_52 `help` command/func
         """
@@ -15,15 +15,16 @@ class ThisTestCase(InOutTestCase):
                 line_no(),
                 "some_command help |",
                 CompType.InvokeAction,
-                [],
+                None,
                 {
                     0: {},  # help itself
                     1: {
                         # (goto, desc, list) x (host, service) external functions:
-                        # TODO: Universal verifier: be able to verify arbitrary data on `EnvelopeContainer` (JSONPath?), not only assigned types to values.
+                        # TODO: (JSONPath?) Universal verifier: be able to verify arbitrary data on `EnvelopeContainer` (JSONPath?), not only assigned types to values.
                         # "found_count": 6
                     }
                 },
+                None,
                 None,
                 "Execute help with no args.",
             ),
@@ -33,6 +34,7 @@ class ThisTestCase(InOutTestCase):
                 CompType.PrefixShown,
                 ["intercept"],
                 {},
+                None,
                 None,
                 "For `help` even `internal` functions are allowed.",
             ),
@@ -45,16 +47,19 @@ class ThisTestCase(InOutTestCase):
                     test_line,
                     comp_type,
                     expected_suggestions,
-                    envelope_ipos_to_expected_assignments,
+                    container_ipos_to_expected_assignments,
                     delegator_class,
+                    json_path_query,
                     case_comment,
                 ) = test_case
 
-                self.verify_output(
+                self.verify_output_with_new_server_via_local_client(
                     "TD_63_37_05_36",  # demo
                     test_line,
                     comp_type,
                     expected_suggestions,
-                    envelope_ipos_to_expected_assignments,
+                    container_ipos_to_expected_assignments,
                     delegator_class,
+                    None,
                 )
+

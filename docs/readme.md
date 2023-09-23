@@ -7,7 +7,6 @@ XX_NN_NN_NN_NN
 where:
 *   `XX`: prefix depends on type of the doc:
     *   `FS` for `feature_story`
-    *   `KI` for `known_issue`
     *   `TD` for `test_data`
     *   ...
 *   `NN_NN_NN_NN`: random number

@@ -12,7 +12,7 @@ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InitControl import InitControl
 from argrelay.runtime_context.InterpContext import (
     InterpContext,
-    function_envelope_ipos_,
+    function_container_ipos_,
 )
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -46,7 +46,7 @@ class FuncArgsInterp(AbstractInterp):
         )
 
         # Allocate first container for function `data_envelope`:
-        self.base_envelope_ipos += 1
+        self.base_container_ipos += 1
         self.interp_ctx.envelope_containers.append(EnvelopeContainer(SearchControl()))
 
         self.select_next_container()
@@ -127,7 +127,7 @@ class FuncArgsInterp(AbstractInterp):
             return InterpStep.StopAll
         elif self.interp_ctx.curr_container.found_count == 1:
 
-            if self.interp_ctx.curr_container_ipos == self.base_envelope_ipos:
+            if self.interp_ctx.curr_container_ipos == self.base_container_ipos:
                 # This is a function envelope:
                 search_control_list: list[SearchControl] = self.get_search_control_list()
                 # Create `EnvelopeContainer`-s for every envelope to find:
@@ -166,7 +166,7 @@ class FuncArgsInterp(AbstractInterp):
             )
 
     def get_funct_data_envelope(self):
-        return self.interp_ctx.envelope_containers[self.base_envelope_ipos + function_envelope_ipos_].data_envelope
+        return self.interp_ctx.envelope_containers[self.base_container_ipos + function_container_ipos_].data_envelope
 
     def get_funct_delegator(self):
         func_data_envelope = self.get_funct_data_envelope()

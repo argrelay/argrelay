@@ -28,14 +28,18 @@ class ThisTestCase(TestCase):
                 line_no(),
                 True,
                 "some_command host goto e| dev", CompType.PrefixHidden,
-                "emea",
+                [
+                    "emea",
+                ],
                 "cache is enabled",
             ),
             (
                 line_no(),
                 False,
                 "some_command host goto e| dev", CompType.PrefixHidden,
-                "emea",
+                [
+                    "emea",
+                ],
                 "cache is disabled",
             ),
         ]
@@ -112,7 +116,7 @@ class ThisTestCase(TestCase):
         is_called,
     ):
         response_dict = propose_arg_values_handler.handle_request(call_ctx)
-        actual_suggestions = "\n".join(response_dict[arg_values_])
+        actual_suggestions = response_dict[arg_values_]
         self.assertEqual(expected_suggestions, actual_suggestions)
         self.assertEqual(method_mock.called, is_called)
         return actual_suggestions

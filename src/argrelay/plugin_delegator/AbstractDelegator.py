@@ -5,7 +5,7 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
-from argrelay.runtime_context.InterpContext import function_envelope_ipos_
+from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -28,7 +28,7 @@ def get_func_name_from_container(
     interp_ctx: "InterpContext",
 ):
     func_data_envelope = interp_ctx.envelope_containers[(
-        interp_ctx.curr_interp.base_envelope_ipos + function_envelope_ipos_
+        interp_ctx.curr_interp.base_container_ipos + function_container_ipos_
     )].data_envelope
     func_name = func_data_envelope[envelope_id_]
     return func_name
@@ -38,7 +38,7 @@ def get_func_name_from_envelope(
     data_envelopes: list[dict],
 ):
     func_data_envelope = data_envelopes[(
-        function_envelope_ipos_
+        function_container_ipos_
     )]
     func_name = func_data_envelope[envelope_id_]
     return func_name

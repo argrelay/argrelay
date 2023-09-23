@@ -14,7 +14,7 @@ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_context.SearchControl import SearchControl
 
-function_envelope_ipos_ = 0
+function_container_ipos_ = 0
 
 
 @dataclass
@@ -111,9 +111,9 @@ class InterpContext:
 
     def is_funct_found(self) -> bool:
         return (
-            self.curr_container_ipos >= function_envelope_ipos_
+            self.curr_container_ipos >= function_container_ipos_
             and
-            self.envelope_containers[function_envelope_ipos_].found_count == 1
+            self.envelope_containers[function_container_ipos_].found_count == 1
         )
 
     def query_prop_values(self):
@@ -128,7 +128,6 @@ class InterpContext:
         ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
         query_dict = populate_query_dict(self.curr_container)
 
-        # TODO: FS_06_99_43_60: How to query values contained in arrays? For example, `GitRepoRootRelPath` is array. How to query envelopes which contain given value in elements of the array?
         query_result: QueryResult = self.query_engine.query_prop_values(
             query_dict,
             self.curr_container.search_control,

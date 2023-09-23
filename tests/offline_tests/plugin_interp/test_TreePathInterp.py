@@ -6,7 +6,10 @@ from argrelay.test_helper.InOutTestCase import InOutTestCase
 
 class ThisTestCase(InOutTestCase):
 
-    def test_fetch_tree_node(self):
+    def test_FS_01_89_09_24_fetch_tree_node(self):
+        """
+        Tests part of FS_01_89_09_24
+        """
         empty_tree = {}
         full_tree = {
             "a": {
@@ -37,12 +40,12 @@ class ThisTestCase(InOutTestCase):
                     expected_result,
                 ) = test_case
 
-                self.assertEquals(
+                self.assertEqual(
                     expected_result,
                     fetch_tree_node(tree_dict, node_coord),
                 )
 
-    def test_FS_01_89_09_24_overlapped(self):
+    def test_FS_01_89_09_24_tree(self):
         """
         Test arg values suggestion with FS_01_89_09_24 # tree
         """
@@ -99,16 +102,17 @@ class ThisTestCase(InOutTestCase):
                     test_line,
                     comp_type,
                     expected_suggestions,
-                    envelope_ipos_to_expected_assignments,
+                    container_ipos_to_expected_assignments,
                     delegator_class,
                     case_comment,
                 ) = test_case
 
-                self.verify_output(
+                self.verify_output_with_new_server_via_local_client(
                     "TD_76_09_29_31",  # overlapped
                     test_line,
                     comp_type,
                     expected_suggestions,
-                    envelope_ipos_to_expected_assignments,
+                    container_ipos_to_expected_assignments,
                     delegator_class,
+                    None,
                 )

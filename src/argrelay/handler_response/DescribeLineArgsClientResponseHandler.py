@@ -82,22 +82,36 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
 
                 if arg_type in envelope_container.assigned_types_to_values:
                     eprint(" " * indent_size, end = "")
-                    if envelope_container.assigned_types_to_values[arg_type].arg_source == ArgSource.ExplicitPosArg:
-                        eprint(TermColor.explicit_pos_arg_value.value, end = "")
-                    else:
-                        eprint(TermColor.other_assigned_arg_value.value, end = "")
+
+                    # Set color based on `ArgSource`:
+                    arg_source_color: TermColor
+                    arg_source_color = DescribeLineArgsClientResponseHandler.select_arg_source_color(
+                        envelope_container,
+                        arg_type,
+                    )
+                    eprint(arg_source_color.value, end = "")
+
+                    # Key = `arg_type`:
                     eprint(f"{arg_type}:", end = " ")
+
+                    # Single value = `arg_value` (with prefix highlight):
                     DescribeLineArgsClientResponseHandler.highlight_prefix(
                         [envelope_container.assigned_types_to_values[arg_type].arg_value],
                         value_prefix,
                     )
+
+                    # Restore color to name `ArgSource`:
+                    eprint(arg_source_color.value, end = "")
                     eprint(
                         f"[{envelope_container.assigned_types_to_values[arg_type].arg_source.name}]",
                         end = ""
                     )
                     eprint(TermColor.reset_style.value, end = "")
+
                 elif arg_type in envelope_container.remaining_types_to_values:
                     eprint(" " * indent_size, end = "")
+
+                    # Key = `arg_type`:
                     eprint(TermColor.remaining_value.value, end = "")
                     if not is_first_missing_found:
                         eprint(f"*{arg_type}:", end = "")
@@ -106,10 +120,13 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                         eprint(f"{arg_type}:", end = "")
                     eprint(f" ?", end = "")
                     eprint(TermColor.reset_style.value, end = " ")
+
+                    # Multiple values = `arg_value` (with prefix highlight):
                     DescribeLineArgsClientResponseHandler.highlight_prefix(
                         envelope_container.remaining_types_to_values[arg_type],
                         value_prefix,
                     )
+
                 else:
                     # The arg type is in the remaining but data have no arg values to suggest.
                     # Such arg types are shown because they are part of `search_control`.
@@ -122,6 +139,17 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                     eprint(TermColor.reset_style.value, end = "")
 
                 eprint()
+
+    @staticmethod
+    def select_arg_source_color(
+        envelope_container,
+        arg_type,
+    ):
+        if envelope_container.assigned_types_to_values[arg_type].arg_source == ArgSource.ExplicitPosArg:
+            arg_source_color = TermColor.explicit_pos_arg_value
+        else:
+            arg_source_color = TermColor.other_assigned_arg_value
+        return arg_source_color
 
     @staticmethod
     def highlight_prefix(

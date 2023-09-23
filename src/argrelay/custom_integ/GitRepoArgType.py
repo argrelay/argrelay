@@ -23,15 +23,15 @@ class GitRepoArgType(Enum):
     # Categorize repo content: conf, code, ...
     GitRepoContentType = auto()
 
-    # TODO: FS_06_99_43_60: this is experimental:
+    # FS_06_99_43_60: example of using non-scalar value (array|list):
     # Path component leading to Git repo root path (e.g. ["qwer", "asdf", "zxcv"] of "zxcv/qwer/asdf"):
     GitRepoPathComp = auto()
 
-    # TODO: FS_06_99_43_60: this is experimental:
+    # FS_06_99_43_60: example of using non-scalar value (array|list):
     # Git remote, for example: "git@github.com:uvsmtid/argrelay.git"
     GitRepoRemoteUrl = auto()
 
-    # TODO: FS_06_99_43_60: this is experimental:
+    # FS_06_99_43_60: example of using non-scalar value (array|list):
     # Git local branch name:
     GitRepoLocalBranch = auto()
 
