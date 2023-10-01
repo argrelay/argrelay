@@ -8,12 +8,12 @@ from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
-from argrelay.test_helper import parse_line_and_cpos, line_no
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_infra import parse_line_and_cpos, line_no
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
     """
     Tests FS_39_58_01_91 query cache.
     """

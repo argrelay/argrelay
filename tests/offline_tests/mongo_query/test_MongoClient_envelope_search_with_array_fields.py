@@ -5,10 +5,10 @@ from pymongo.collection import Collection
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
-from offline_tests.mongo_query.MongoClientTest import MongoClientTestCase, object_name_
+from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass, object_name_
 
 
-class ThisTestCase(MongoClientTestCase):
+class ThisTestClass(MongoClientTestClass):
 
     # noinspection PyMethodMayBeStatic
     def test_live_envelope_searched_by_multiple_typed_key_value_pairs(self):

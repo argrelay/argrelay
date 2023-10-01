@@ -16,19 +16,19 @@ from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc, delegator_plugin_entry_
 from argrelay.server_spec.const_int import BASE_URL_FORMAT
-from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import LiveServerEnvMockBuilder
+from argrelay.test_infra import parse_line_and_cpos
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
     """
     Client-only test via mocked `responses` lib (without spanning `argrelay` server).
     """
 
     @classmethod
     def setUpClass(cls):
-        BaseTestCase.setUpClass()
+        BaseTestClass.setUpClass()
         cls.base_URL = BASE_URL_FORMAT.format(**connection_config_desc.dict_example)
 
     def get_mocked_response(
@@ -102,7 +102,7 @@ class ThisTestCase(BaseTestCase):
             self.assertEqual(
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}unrecognized_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}token{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}prod{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: 1
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}TypeA: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}TypeB: [none]{TermColor.reset_style.value}
 """,

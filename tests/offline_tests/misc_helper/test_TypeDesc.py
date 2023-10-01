@@ -11,12 +11,12 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_module_name_,
     plugin_class_name_,
 )
-from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import load_custom_integ_server_config_dict
-from argrelay.test_helper.LocalTestCase import LocalTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.EnvMockBuilder import load_custom_integ_server_config_dict
+from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
-class ThisTestCase(LocalTestCase):
+class ThisTestClass(LocalTestClass):
 
     def test_from_yaml_str(self):
         """

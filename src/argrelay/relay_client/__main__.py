@@ -26,7 +26,7 @@ def main():
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
         # (to inspect internal server data via `LocalClient` and `LocalServer`):
-        from argrelay.test_helper.LocalClient import LocalClient
+        from argrelay.test_infra.LocalClient import LocalClient
 
         command_obj = make_request_via_abstract_client(
             LocalClient(client_config),

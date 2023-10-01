@@ -212,6 +212,9 @@ class FuncTreeInterp(AbstractInterp):
 
     def next_interp(self) -> "AbstractInterp":
         delegator_plugin = self.get_func_delegator()
+        # TODO_10_72_28_05: support special funcs for all commands:
+        #                   Delegator must select next interp_factory_id based on `interp_tree_abs_path` (not based on single `next_interp_plugin_instance_id`).
+        #                   It is a double jump (first jump based on selected and specified func call from delegator to interp, second from interp via jump tree).
         interp_factory_id = delegator_plugin.run_interp_control(self)
         if interp_factory_id:
             self.select_next_interp_tree_abs_path()

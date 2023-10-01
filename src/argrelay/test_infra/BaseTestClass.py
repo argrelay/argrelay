@@ -2,10 +2,10 @@ from os import getcwd
 from unittest import TestCase
 
 from argrelay.misc_helper import set_argrelay_dir
-from argrelay.test_helper import change_to_known_repo_path
+from argrelay.test_infra import change_to_known_repo_path
 
 
-class BaseTestCase(TestCase):
+class BaseTestClass(TestCase):
     """
     Root test class with defaults for all tests.
     """

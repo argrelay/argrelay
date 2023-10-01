@@ -5,7 +5,7 @@
 # Instead, run `@/exe/dev_shell.bash`.
 
 # The steps this script implements FS_58_61_77_69 dev_shell:
-# *   Runs `@/exe/bootstrap_dev_env.bash` to set up Python and artifacts.
+# *   Runs `@/exe/bootstrap_dev_env.bash` to activate Python `venv`.
 # *   Runs `@/exe/argrelay_rc.bash` to configure auto-completion for this shell session.
 
 # Note that enabling exit on error (like `set -e` below) will exit parent
@@ -23,6 +23,14 @@ set -e
 set -E
 # Error on undefined variables:
 set -u
+
+nested_shell_color="\e[44m"
+reset_color="\e[0m"
+
+# Indicate nested shell by color:
+function on_nested_shell {
+    echo -e "${nested_shell_color}NESTED:${reset_color} inited SHLVL=${SHLVL}" 1>&2
+}
 
 # The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -53,3 +61,5 @@ set +e
 set +o pipefail
 set +v
 set +x
+
+on_nested_shell

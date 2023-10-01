@@ -5,15 +5,15 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import DescribeLineArgsClientResponseHandler
 from argrelay.relay_client import __main__
 from argrelay.schema_response.InterpResult import InterpResult
-from argrelay.test_helper import line_no, parse_line_and_cpos
-from argrelay.test_helper.EnvMockBuilder import (
+from argrelay.test_infra import line_no, parse_line_and_cpos
+from argrelay.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
     EmptyEnvMockBuilder,
 )
-from argrelay.test_helper.LocalTestCase import LocalTestCase
+from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
-class ThisTestCase(LocalTestCase):
+class ThisTestClass(LocalTestClass):
     """
     Test several features working together:
     *   FS_01_89_09_24 interp tree
@@ -175,7 +175,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
                     #       and printing it separately (when no other logic with extra output can intervene)
                     #       to assert the output.
-                    #       Alternatively, run this test via `RemoteClient` (see `RemoteTestCase`) where output
+                    #       Alternatively, run this test via `RemoteClient` (see `RemoteTestClass`) where output
                     #       of the server is not captured (as it is a separate process).
                     inner_env_mock_builder = (
                         EmptyEnvMockBuilder()

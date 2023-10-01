@@ -1,9 +1,9 @@
-from argrelay.test_helper import line_no, parse_line_and_cpos
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import default_test_parsed_context
+from argrelay.test_infra import line_no, parse_line_and_cpos
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import default_test_parsed_context
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
 
     def test_parse_input(self):
         # @formatter:off

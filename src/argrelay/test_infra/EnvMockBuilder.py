@@ -56,8 +56,9 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_, plugin_enabled_
 from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.server_spec.CallContext import CallContext
-from argrelay.test_helper.LocalClientCommandFactory import LocalClientCommandFactory
-from argrelay.test_helper.OpenFileMock import OpenFileMock
+from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
+from argrelay.test_infra.OpenFileMock import OpenFileMock
+from argrelay.test_infra.PopenMock import PopenMock
 
 
 @dataclass
@@ -655,6 +656,12 @@ def _mock_stderr(stderr_f):
 def _mock_delegator_plugin(path_to_invoke_action):
     with mock.patch(path_to_invoke_action, capture_invocation_input) as invoke_action_mock:
         yield invoke_action_mock
+
+
+@contextlib.contextmanager
+def mock_subprocess_popen(expected_args_to_output):
+    with mock.patch("subprocess.Popen", PopenMock(expected_args_to_output)) as popen_mock:
+        yield popen_mock
 
 
 @contextlib.contextmanager

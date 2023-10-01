@@ -15,7 +15,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     envelope_id_,
 )
-from argrelay.test_helper import test_data_
+from argrelay.test_infra import test_data_
 
 
 # noinspection PyPep8Naming

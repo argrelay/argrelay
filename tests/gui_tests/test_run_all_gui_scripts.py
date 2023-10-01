@@ -1,7 +1,7 @@
-from gui_tests.CypressTestCase import CypressTestCase
+from gui_tests.CypressTestClass import CypressTestClass
 
 
-class ThisTestCase(CypressTestCase):
+class ThisTestClass(CypressTestClass):
     # same_test_data_per_class = "TD_38_03_48_51"  # large generated data set
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 

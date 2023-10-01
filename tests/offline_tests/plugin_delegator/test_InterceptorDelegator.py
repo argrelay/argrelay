@@ -5,11 +5,11 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_helper import line_no
-from argrelay.test_helper.LocalTestCase import LocalTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
-class ThisTestCase(LocalTestCase):
+class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
     def test_FS_88_66_66_73_intercept(self):

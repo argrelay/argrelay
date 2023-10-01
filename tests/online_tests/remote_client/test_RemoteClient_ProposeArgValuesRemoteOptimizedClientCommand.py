@@ -6,14 +6,14 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.test_helper import line_no, parse_line_and_cpos, change_to_known_repo_path
-from argrelay.test_helper.EnvMockBuilder import (
+from argrelay.test_infra import line_no, parse_line_and_cpos, change_to_known_repo_path
+from argrelay.test_infra.EnvMockBuilder import (
     LiveServerEnvMockBuilder,
 )
-from argrelay.test_helper.RemoteTestCase import RemoteTestCase
+from argrelay.test_infra.RemoteTestClass import RemoteTestClass
 
 
-class ThisTestCase(RemoteTestCase):
+class ThisTestClass(RemoteTestClass):
 
     def test_ProposeArgValuesRemoteOptimizedClientCommand_is_functionally_equivalent_to_non_optimized(self):
         """

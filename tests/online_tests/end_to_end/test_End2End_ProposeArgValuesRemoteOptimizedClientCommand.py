@@ -1,11 +1,11 @@
 from argrelay.enum_desc.CompType import CompType
-from argrelay.test_helper import change_to_known_repo_path, line_no
-from argrelay.test_helper.End2EndTestCase import (
-    End2EndTestCase,
+from argrelay.test_infra import change_to_known_repo_path, line_no
+from argrelay.test_infra.End2EndTestClass import (
+    End2EndTestClass,
 )
 
 
-class ThisTestCase(End2EndTestCase):
+class ThisTestClass(End2EndTestClass):
 
     def test_ProposeArgValuesRemoteOptimizedClientCommand_sends_valid_JSON_for_commands_with_quotes(self):
         """

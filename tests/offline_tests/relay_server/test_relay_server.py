@@ -11,12 +11,12 @@ from argrelay.schema_response.InterpResultSchema import interp_result_desc, all_
 from argrelay.schema_response.InvocationInputSchema import custom_plugin_data_
 from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH
 from argrelay.server_spec.server_data_schema import server_op_data_schemas
-from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
-from argrelay.test_helper.ServerOnlyTestCase import ServerOnlyTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_infra.ServerOnlyTestClass import ServerOnlyTestClass
 
 
-class ThisTestCase(ServerOnlyTestCase):
+class ThisTestClass(ServerOnlyTestClass):
     """
     Server-only test via Flask test client (via API without using `argrelay` client code).
     """

@@ -1,9 +1,9 @@
 from argrelay.enum_desc.TokenType import get_token_type, TokenType
-from argrelay.test_helper import line_no
-from argrelay.test_helper.BaseTestCase import BaseTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.BaseTestClass import BaseTestClass
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
 
     def test_get_token_type(self):
         # @formatter:off

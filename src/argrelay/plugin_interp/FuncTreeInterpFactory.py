@@ -45,6 +45,17 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         # Each func id can be attached to more than one leaf (hence, there is a list of paths to that func id).
         self.func_ids_to_func_rel_paths: dict[str, list[list[str]]] = {}
 
+    def load_config(
+        self,
+        config_dict,
+    ) -> dict:
+        # TODO_74_03_78_60: Call `TypeDesc` API to do load (to populate defaults) -> dump automatically.
+        return func_tree_interp_config_desc.dict_schema.dump(
+            func_tree_interp_config_desc.dict_schema.load(
+                config_dict
+            )
+        )
+
     def validate_config(
         self,
     ):
@@ -93,7 +104,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
                 if func_id not in self.func_ids_to_func_rel_paths:
                     if func_id not in interp_tree_node_config_dict[ignored_func_ids_list_]:
                         raise RuntimeError(
-                            f"`{func_id}` is neither in `{func_selector_tree_}` nor in `{ignored_func_ids_list_}`"
+                            f"plugin_instance_id='{self.plugin_instance_id}': func_id='{func_id}' is neither in `{func_selector_tree_}` nor in `{ignored_func_ids_list_}`"
                         )
                     else:
                         # Func is ignored - skip:

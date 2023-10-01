@@ -1,4 +1,5 @@
 import importlib
+from copy import deepcopy
 from typing import Type
 
 from argrelay.enum_desc.PluginType import PluginType
@@ -14,15 +15,34 @@ class AbstractPlugin:
         config_dict: dict,
     ):
         self.plugin_instance_id: str = plugin_instance_id
-        self.config_dict: dict = config_dict
+        self.config_dict: dict = self.load_config(config_dict)
 
         self.validate_config()
+
+    def load_config(
+        self,
+        config_dict,
+    ) -> dict:
+        """
+        Pre-proces the given config on load (e.g. populate default values).
+
+        The default implementation is to return `config_dict` as is.
+
+        The typical implementation is to do `Schema.load(Schema.dump(config_dict))`
+        so that defaults are populated according to the given `Schema`.
+        """
+        return deepcopy(config_dict)
 
     def validate_config(
         self,
     ):
         """
         Validate schema or data for `config_dict`.
+
+        The typical implementation is to call `TypeDesc.validate_dict(self.config_dict)`.
+
+        If `load_config` is implemented via `Schema.load(Schema.dump(config_dict))`,
+        validating step is only unnecessary if it does anything extra beyond what `Schema` can validate.
         """
         pass
 

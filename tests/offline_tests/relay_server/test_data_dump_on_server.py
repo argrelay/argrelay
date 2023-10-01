@@ -4,11 +4,11 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_server.__main__ import create_app
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
 
     def test_data_dump_on_server_with_non_serializable_id(self):
         """
