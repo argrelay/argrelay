@@ -30,5 +30,13 @@ export ARGRELAY_DEV_SHELL
 
 # The new shell executes `@/exe/init_shell_env.bash` script as its init file:
 # https://serverfault.com/questions/368054
-bash --init-file <(echo "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash")
+if [[ "$#" -eq "0" ]]
+then
+    # Interactive:
+    bash --init-file <(echo "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash")
+else
+    # Non-interactive:
+    # All args passed to `@/exe/dev_shell.bash` are executed as command line:
+    bash --init-file <(echo "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash") -i -c "${*}"
+fi
 

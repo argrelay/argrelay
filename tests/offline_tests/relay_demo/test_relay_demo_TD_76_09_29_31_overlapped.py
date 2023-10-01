@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
@@ -9,11 +8,10 @@ from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import LocalClientEnvMockBuilder
-from argrelay.test_helper.InOutTestCase import InOutTestCase
+from argrelay.test_helper.LocalTestCase import LocalTestCase
 
 
-class ThisTestCase(InOutTestCase):
-
+class ThisTestCase(LocalTestCase):
     same_test_data_per_class = "TD_76_09_29_31"  # overlapped
 
     def test_propose_auto_comp_TD_76_09_29_31_overlapped(self):
@@ -97,7 +95,7 @@ class ThisTestCase(InOutTestCase):
                 ) = test_case
 
                 self.verify_output_with_via_local_client(
-                    ThisTestCase.same_test_data_per_class,
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     expected_suggestions,

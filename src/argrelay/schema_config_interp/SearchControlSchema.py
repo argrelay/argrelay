@@ -39,14 +39,22 @@ class SearchControlSchema(Schema):
     )
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return SearchControl(
             envelope_class = input_dict[envelope_class_],
             keys_to_types_list = input_dict[keys_to_types_list_],
         )
 
     @validates_schema
-    def validate_known(self, input_dict, **kwargs):
+    def validate_known(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         for key_to_type_entry in input_dict[keys_to_types_list_]:
             # ensure there is only one key per dict:
             if len(key_to_type_entry.keys()) != 1:

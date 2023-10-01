@@ -1,5 +1,4 @@
 import copy
-from unittest import TestCase
 
 from marshmallow import ValidationError
 
@@ -7,6 +6,7 @@ from argrelay.custom_integ.DemoInterpFactoryConfigSchema import demo_interp_fact
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
+from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_client_config_desc
@@ -26,12 +26,18 @@ from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
 from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay.server_spec.const_int import DEFAULT_IP_ADDRESS, DEFAULT_PORT_NUMBER
 from argrelay.test_helper import line_no
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
 
     def test_type_desc_example_is_loadable_and_dumpable(self):
+        """
+        Uses each schema definition to load and dump its own example.
+        """
+
         test_cases = [
             (line_no(), call_context_desc),
             (line_no(), invocation_input_desc),
@@ -61,6 +67,7 @@ class ThisTestCase(TestCase):
             with self.subTest(test_case):
                 (line_number, type_desc) = test_case
 
+                # Special cases:
                 if type_desc == data_envelope_desc:
                     self.test_data_envelope_desc()
                     return
@@ -71,8 +78,6 @@ class ThisTestCase(TestCase):
 
                 dumped_loaded_json = type_desc.dict_schema.dumps(loaded_obj, sort_keys = True)
                 dumped_reloaded_json = type_desc.dict_schema.dumps(reloaded_obj, sort_keys = True)
-
-                self.maxDiff = None
 
                 self.assertEqual(
                     loaded_obj,
@@ -114,8 +119,6 @@ class ThisTestCase(TestCase):
             lambda: type_desc.validate_dict(dumped_dict),
         )
 
-        self.maxDiff = None
-
         self.assertEqual(
             orig_dict,
             loaded_dict,
@@ -137,3 +140,35 @@ class ThisTestCase(TestCase):
         valid_dict_with_extra_keys["intentionally_unknown_key"] = "whatever"
         # Expect no problem (still because `DataEnvelopeSchema` does not care about extra keys):
         type_desc.validate_dict(valid_dict_with_extra_keys)
+
+    def test_minimal_client_config_desc(self):
+        """
+        Makes sure the minimal config data for client is loadable.
+        """
+
+        client_config: ClientConfig = client_config_desc.from_yaml_str(
+            """
+            {
+                "connection_config": {
+                    "server_host_name": "localhost",
+                    "server_port_number": 8787,
+                }
+            }
+            """
+        )
+        self.assertEqual(
+            client_config.connection_config.server_host_name,
+            DEFAULT_IP_ADDRESS,
+        )
+        self.assertEqual(
+            client_config.connection_config.server_port_number,
+            DEFAULT_PORT_NUMBER,
+        )
+        self.assertEqual(
+            client_config.use_local_requests,
+            False,
+        )
+        self.assertEqual(
+            client_config.optimize_completion_request,
+            True,
+        )

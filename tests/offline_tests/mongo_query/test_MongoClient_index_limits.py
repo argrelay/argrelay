@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from enum import Enum, auto
 
-from offline_tests.mongo_query.MongoClientTest import MongoClientTest
+from offline_tests.mongo_query.MongoClientTest import MongoClientTestCase
 
 
 class TestSize(Enum):
@@ -21,7 +23,7 @@ class TestSize(Enum):
     """
 
 
-class ThisTestCase(MongoClientTest):
+class ThisTestCase(MongoClientTestCase):
 
     def __init__(
         self,

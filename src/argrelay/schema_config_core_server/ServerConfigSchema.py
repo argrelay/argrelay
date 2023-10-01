@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields, RAISE, post_load, validates_schema, ValidationError
 
-from argrelay.misc_helper import get_config_path
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
@@ -66,7 +65,11 @@ class ServerConfigSchema(Schema):
     # it is generated for ServerConfig internally based on `plugin_instance_id_load_list`.
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         # Populate `plugin_instance_id` from `plugin_dict` into each
         return ServerConfig(
             connection_config = input_dict[connection_config_],
@@ -79,7 +82,11 @@ class ServerConfigSchema(Schema):
         )
 
     @validates_schema
-    def validate_known(self, input_dict, **kwargs):
+    def validate_known(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         for plugin_instance_id in input_dict[plugin_instance_id_load_list_]:
             # Ensure every `plugin_instance_id` is defined in `plugin_dict`:
             if plugin_instance_id not in input_dict[plugin_dict_]:
@@ -102,5 +109,5 @@ server_config_desc = TypeDesc(
         },
         static_data_: static_data_desc.dict_example,
     },
-    default_file_path = get_config_path("argrelay.server.yaml"),
+    default_file_path = "argrelay.server.yaml",
 )

@@ -1,9 +1,10 @@
 from argrelay.enum_desc.CompType import CompType
 from argrelay.test_helper import line_no
-from argrelay.test_helper.InOutTestCase import InOutTestCase
+from argrelay.test_helper.LocalTestCase import LocalTestCase
 
 
-class ThisTestCase(InOutTestCase):
+class ThisTestCase(LocalTestCase):
+    same_test_data_per_class = "TD_63_37_05_36"  # demo
 
     def test_FS_71_87_33_52_help_hint(self):
         """
@@ -54,7 +55,7 @@ class ThisTestCase(InOutTestCase):
                 ) = test_case
 
                 self.verify_output_with_new_server_via_local_client(
-                    "TD_63_37_05_36",  # demo
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     expected_suggestions,
@@ -62,4 +63,3 @@ class ThisTestCase(InOutTestCase):
                     delegator_class,
                     None,
                 )
-

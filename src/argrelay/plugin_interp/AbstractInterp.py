@@ -50,4 +50,4 @@ class AbstractInterp:
         return get_token_type(
             self.interp_ctx.parsed_ctx.all_tokens,
             token_ipos,
-        ) == TokenType.PosArg
+        ) is TokenType.PosArg

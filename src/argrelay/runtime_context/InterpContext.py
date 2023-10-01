@@ -83,7 +83,7 @@ class InterpContext:
         self.unconsumed_tokens = self._init_unconsumed_tokens()
 
     def _init_unconsumed_tokens(self):
-        if self.parsed_ctx.server_action == ServerAction.ProposeArgValues:
+        if self.parsed_ctx.server_action is ServerAction.ProposeArgValues:
             return [
                 token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
                 # FS_23_62_89_43:
@@ -164,7 +164,7 @@ class InterpContext:
             if self.curr_container:
                 self.curr_container.populate_implicit_arg_values()
 
-            if self.parsed_ctx.server_action == ServerAction.DescribeLineArgs:
+            if self.parsed_ctx.server_action is ServerAction.DescribeLineArgs:
                 # TODO: FS_72_53_55_13: options before defaults
                 # Describing args will need to show options except default - query values before defaults:
                 pass
@@ -181,9 +181,9 @@ class InterpContext:
             ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {type(self.curr_interp).__name__}")
             interp_step: InterpStep = self.curr_interp.try_iterate()
             ElapsedTime.measure(f"[i={interp_n}]: after_try_iterate: {type(self.curr_interp).__name__}: {interp_step}")
-            if interp_step == InterpStep.NextEnvelope:
+            if interp_step is InterpStep.NextEnvelope:
                 continue
-            elif interp_step == InterpStep.StopAll:
+            elif interp_step is InterpStep.StopAll:
                 ElapsedTime.measure(
                     f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}"
                 )
@@ -192,7 +192,7 @@ class InterpContext:
                     f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}"
                 )
                 return
-            elif interp_step == InterpStep.NextInterp:
+            elif interp_step is InterpStep.NextInterp:
                 ElapsedTime.measure(
                     f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}"
                 )
@@ -210,7 +210,7 @@ class InterpContext:
                 raise RuntimeError(interp_step)
 
     def _contribute_to_completion(self):
-        if self.parsed_ctx.server_action == ServerAction.ProposeArgValues:
+        if self.parsed_ctx.server_action is ServerAction.ProposeArgValues:
             # Each in the chains of interpreters hava a chance to suggest completion values (contribute):
             self.curr_interp.propose_arg_completion()
 

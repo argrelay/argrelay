@@ -64,6 +64,7 @@ def change_to_known_repo_path(path_from_repo_root = "./tests"):
 
         # Now, when same baseline is set regardless `tox` or IDE, change to repo root:
         os.chdir("..")
+
         # Desired path:
         os.chdir(path_from_repo_root)
         yield

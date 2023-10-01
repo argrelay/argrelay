@@ -22,10 +22,11 @@ from argrelay.test_helper.EnvMockBuilder import (
     load_custom_integ_server_config_dict,
     LocalClientEnvMockBuilder,
 )
-from argrelay.test_helper.InOutTestCase import InOutTestCase
+from argrelay.test_helper.LocalTestCase import LocalTestCase
 
 
-class ThisTestCase(InOutTestCase):
+class ThisTestCase(LocalTestCase):
+    same_test_data_per_class = "TD_63_37_05_36"  # demo
 
     def run_consume_test(self, test_line, expected_consumed_first_token):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -149,7 +150,7 @@ class ThisTestCase(InOutTestCase):
                 ) = test_case
 
                 self.verify_output_with_new_server_via_local_client(
-                    "TD_63_37_05_36",  # demo
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     expected_suggestions,

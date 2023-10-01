@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
-from offline_tests.mongo_query.MongoClientTest import MongoClientTest, object_name_
+from offline_tests.mongo_query.MongoClientTest import MongoClientTestCase, object_name_
 
 
-class ThisTestCase(MongoClientTest):
+class ThisTestCase(MongoClientTestCase):
 
     # noinspection PyMethodMayBeStatic
     def test_live_envelope_searched_by_multiple_typed_key_value_pairs(self):

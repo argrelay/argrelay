@@ -31,7 +31,7 @@ class CallConv(Enum):
         Derive `CallConv` on client side from `CompType`.
         """
 
-        if comp_type == CompType.InvokeAction:
+        if comp_type is CompType.InvokeAction:
             return CallConv.CliArgsConv
         else:
             return CallConv.EnvVarsConv

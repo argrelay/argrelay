@@ -29,7 +29,7 @@ set -E
 # Error on undefined variables:
 set -u
 
-# TODO: Run GUI tests automatically - see `ui_tests_notes.md`
+# TODO: Run GUI tests automatically - see `gui_tests_notes.md`
 
 # The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -71,7 +71,7 @@ test -n "${VIRTUAL_ENV}"
 
 if [[ -d "${input_path}" ]]
 then
-    python -m unittest discover --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${input_path}"
+    python -m unittest discover --failfast --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${input_path}"
     # Unreachable, if test fail:
     exit 0
 fi
@@ -93,9 +93,9 @@ then
         # Neet to switch to the test dir to let test module name lookup work:
         cd "${default_test_dir}"
         # Assuming all test classes named as `ThisTestCase`:
-        python -m unittest "${module_name}.ThisTestCase.${method_name}"
+        python -m unittest --failfast "${module_name}.ThisTestCase.${method_name}"
     else
-        python -m unittest discover --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${path_dirname}" --pattern "${path_basename}"
+        python -m unittest discover --failfast --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${path_dirname}" --pattern "${path_basename}"
     fi
     # Unreachable, if test fail:
     exit 0

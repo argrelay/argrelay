@@ -1,9 +1,9 @@
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, mongo_id_
-from offline_tests.mongo_query.MongoClientTest import MongoClientTest, object_name_
+from offline_tests.mongo_query.MongoClientTest import MongoClientTestCase, object_name_
 
 
-class ThisTestCase(MongoClientTest):
+class ThisTestCase(MongoClientTestCase):
 
     # noinspection PyMethodMayBeStatic
     def test_live_query_distinct_values_for_each_indexed_field(self):

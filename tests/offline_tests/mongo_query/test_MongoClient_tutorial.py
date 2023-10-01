@@ -1,8 +1,8 @@
 from argrelay.schema_config_interp.DataEnvelopeSchema import mongo_id_
-from offline_tests.mongo_query.MongoClientTest import MongoClientTest
+from offline_tests.mongo_query.MongoClientTest import MongoClientTestCase
 
 
-class ThisTestCase(MongoClientTest):
+class ThisTestCase(MongoClientTestCase):
 
     # noinspection PyMethodMayBeStatic
     def test_tutorial(self):

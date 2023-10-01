@@ -4,6 +4,10 @@ TODO: Update/change categories to include:
         *   in_process_tests - tests which do not start other processes to communicate with
         *   local_tests - tests which may start other processes to communicate with (potentially occupying port numbers)
     *   redefine `online_tests` - these must be only those which connect to services outside of those controlled by the test code
+    *   split `online_tests` into:
+        *   `internet_tests` (required services in the world)
+        *   `intranet_tests` (requiring services in the org)
+        *   `local_tests` (see splitting `offline_tests`) running on the same machine.
 
 All tests for `argrelay` are integration at different degree
 (thin ~ single function or thick ~ almost entire client-side and server-side code).
@@ -46,3 +50,5 @@ The only useful practical difference between them are these directories:
 *   `gui_tests`
 
     Cypress tests for built-in GUI - they are started manually and separately at the moment.
+
+See also `FS_66_17_43_42.test_infra.md`.

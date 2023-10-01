@@ -16,7 +16,10 @@ class RelayLineArgsClientResponseHandler(AbstractClientResponseHandler):
         super().__init__(
         )
 
-    def handle_response(self, response_dict: dict):
+    def handle_response(
+        self,
+        response_dict: dict,
+    ):
         invocation_input: InvocationInput = invocation_input_desc.dict_schema.load(response_dict)
         ElapsedTime.measure("after_object_creation")
         plugin_class: Type[AbstractDelegator] = import_plugin_class(invocation_input.delegator_plugin_entry)

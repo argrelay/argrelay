@@ -20,4 +20,3 @@ class ThisTestCase(test_MongoClient_distinc_values_search.ThisTestCase):
         )
 
         self.use_mongomock_only = False
-

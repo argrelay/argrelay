@@ -1,35 +1,24 @@
-import json
-import socket
-
-from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.handler_response.ProposeArgValuesClientResponseHandler import (
-    ProposeArgValuesClientResponseHandler,
-    perf_arg_values_,
-)
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
-from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
+from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractRemoteClientCommand
+from argrelay.handler_response.ProposeArgValuesClientResponseHandler import ProposeArgValuesClientResponseHandler
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
+from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.server_spec.CallContext import CallContext
 
 
-class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
+class ProposeArgValuesRemoteClientCommand(AbstractRemoteClientCommand):
     """
-    This class is supposed to derive from :class:`AbstractRemoteClientCommand`, but it avoids it for perf reasons.
+    This command is unused most of the time in favor of another (optimized):
+    `ProposeArgValuesRemoteOptimizedClientCommand`
 
-    See `completion_perf_notes.md`.
+    See `completion_perf_notes.md` for details.
 
-    Importing everything from `AbstractRemoteClientCommand` slows down startup and responses on `Tab` requests.
+    This non-optimized implementation is still useful to get access to
+    internal server state in tests via `LocalClient` - see FS_66_17_43_42 test_infra / special test mode #1.
 
-    Performance is not critical for other client commands
-    (e.g. `ServerAction.DescribeLineArgs` or `ServerAction.RelayLineArgs`),
-    but not for `Tab` (`ServerAction.ProposeArgValues`).
-
-    Because `Tab`-completion is latency-sensitive, `ServerAction.ProposeArgValues` command uses this specialized client.
-    The drawback is that it also requires special maintenance/testing.
+    To enable use of this command, see:
+    *   ClientConfig.optimize_completion_request
+    *   LocalClientEnvMockBuilder
     """
-
-    # TODO: Provide test coverage for this special implementation.
-    #       Write mocked test to cover internal logic like function `recvall` below.
 
     def __init__(
         self,
@@ -37,85 +26,8 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
         connection_config: ConnectionConfig,
     ):
         super().__init__(
-            ProposeArgValuesClientResponseHandler(),
+            call_ctx = call_ctx,
+            connection_config = connection_config,
+            response_handler = ProposeArgValuesClientResponseHandler(),
+            response_schema = interp_result_desc.dict_schema,
         )
-        self.call_ctx: CallContext = call_ctx
-        self.connection_config: ConnectionConfig = connection_config
-        self.server_path: str = ServerAction.ProposeArgValues.value
-
-    def execute_command(
-        self,
-    ):
-
-        s = socket.socket(
-            socket.AF_INET,
-            socket.SOCK_STREAM,
-        )
-
-        s.connect((
-            self.connection_config.server_host_name,
-            self.connection_config.server_port_number,
-        ))
-
-        request_body_str = (f"""\
-{{
-    "server_action": "{self.call_ctx.server_action.name}",
-    "command_line": {json.dumps(self.call_ctx.command_line)},
-    "cursor_cpos": {self.call_ctx.cursor_cpos},
-    "comp_scope": "{self.call_ctx.comp_scope.name}",
-    "is_debug_enabled": "{'true' if self.call_ctx.is_debug_enabled else 'false'}"
-}}
-""")
-        request_body_len = len(request_body_str.encode())
-
-        request_str = (f"""\
-POST {self.server_path} HTTP/1.1\r
-Content-Type: application/json\r
-Content-Length: {request_body_len}\r
-Connection: close\r
-\r
-{request_body_str}
-""")
-        ElapsedTime.measure("before_request")
-
-        s.sendall(request_str.encode())
-        response_str = self.recvall(s).decode()
-
-        ElapsedTime.measure("after_request")
-
-        # First line, second space-delimited substring:
-        # HTTP/1.1 200 OK\r\n
-        response_status_line = response_str[:response_str.find("\r")]
-        first_space_cpos = response_status_line.find(" ")
-        response_status_code = int(
-            response_status_line[first_space_cpos + 1:first_space_cpos + 1 + 3]
-        )
-        # Content after headers (after empty line):
-        content_cpos = response_str.find("\r\n\r\n") + 4
-        if content_cpos < len(response_str):
-            response_body_str = response_str[content_cpos:]
-        else:
-            response_body_str = ""
-
-        ElapsedTime.measure("after_deserialization")
-
-        try:
-            if response_status_code == 200:
-                self.response_handler.handle_response({
-                    perf_arg_values_: response_body_str,
-                })
-            else:
-                raise RuntimeError
-        finally:
-            ElapsedTime.measure("after_handle_response")
-
-    # noinspection SpellCheckingInspection
-    @staticmethod
-    def recvall(s):
-        bytes_parts = []
-        while True:
-            bytes_part = s.recv(1000)
-            if not bytes_part:
-                break
-            bytes_parts.append(bytes_part)
-        return b"".join(bytes_parts)

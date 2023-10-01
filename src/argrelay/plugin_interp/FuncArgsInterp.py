@@ -147,33 +147,33 @@ class FuncArgsInterp(AbstractInterp):
             return InterpStep.StopAll
 
     def get_search_control_list(self) -> list[SearchControl]:
-        delegator_plugin = self.get_funct_delegator()
+        delegator_plugin = self.get_func_delegator()
         search_control_list: list[SearchControl] = delegator_plugin.run_search_control(
-            self.get_funct_data_envelopes()[0]
+            self.get_func_data_envelopes()[0]
         )
         return search_control_list
 
     def run_init_control(self):
-        delegator_plugin = self.get_funct_delegator()
+        delegator_plugin = self.get_func_delegator()
         delegator_plugin.run_init_control(
             self.interp_ctx.envelope_containers,
             self.interp_ctx.curr_container_ipos,
         )
 
     def run_fill_control(self):
-        delegator_plugin = self.get_funct_delegator()
+        delegator_plugin = self.get_func_delegator()
         if delegator_plugin:
             delegator_plugin.run_fill_control(
                 self.interp_ctx,
             )
 
-    def get_funct_data_envelopes(self) -> list[dict]:
+    def get_func_data_envelopes(self) -> list[dict]:
         return self.interp_ctx.envelope_containers[self.base_container_ipos + function_container_ipos_].data_envelopes
 
-    def get_funct_delegator(self):
-        func_data_envelope = self.get_funct_data_envelopes()[0]
-        if func_data_envelope:
-            delegator_plugin_instance_id = func_data_envelope[instance_data_][delegator_plugin_instance_id_]
+    def get_func_delegator(self):
+        func_data_envelopes = self.get_func_data_envelopes()
+        if func_data_envelopes:
+            delegator_plugin_instance_id = func_data_envelopes[0][instance_data_][delegator_plugin_instance_id_]
             delegator_plugin: AbstractDelegator = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
             return delegator_plugin
         else:
@@ -187,7 +187,7 @@ class FuncArgsInterp(AbstractInterp):
         ]
 
     def next_interp(self) -> "AbstractInterp":
-        delegator_plugin = self.get_funct_delegator()
+        delegator_plugin = self.get_func_delegator()
         interp_factory_id = delegator_plugin.run_interp_control(self)
         if interp_factory_id:
             return self.interp_ctx.create_next_interp(interp_factory_id)
@@ -215,14 +215,14 @@ class FuncArgsInterp(AbstractInterp):
         # TODO: FS_23_62_89_43: the logic for both if-s (`if-A` and `if-B`) is identical at the moment - what do we want to improve?
 
         # TODO: FS_23_62_89_43: if-A:
-        if self.interp_ctx.parsed_ctx.comp_scope == CompScope.ScopeInitial:
+        if self.interp_ctx.parsed_ctx.comp_scope is CompScope.ScopeInitial:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
                 return self.remaining_from_next_missing_type()
             else:
                 return self.remaining_from_next_missing_type()
 
         # TODO: FS_23_62_89_43: if-B:
-        if self.interp_ctx.parsed_ctx.comp_scope == CompScope.ScopeSubsequent:
+        if self.interp_ctx.parsed_ctx.comp_scope is CompScope.ScopeSubsequent:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
                 return self.remaining_from_next_missing_type()
             else:

@@ -50,7 +50,7 @@ class DataEnvelopeSchema(Schema):
 
     class Meta:
         # All other fields of data envelope becomes its metadata available for search queries.
-        # Note that it does not work for `Schema.dump`:
+        # Note that it does not work for `Schema.dump`, only on `Schema.load`:
         unknown = INCLUDE
         strict = True
 
@@ -79,7 +79,11 @@ class DataEnvelopeSchema(Schema):
     )
 
     @validates_schema
-    def validate_known(self, input_dict, **kwargs):
+    def validate_known(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         if input_dict[ReservedArgType.EnvelopeClass.name] == ReservedEnvelopeClass.ClassFunction.name:
             function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 

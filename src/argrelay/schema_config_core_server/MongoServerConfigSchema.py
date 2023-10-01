@@ -20,7 +20,11 @@ class MongoServerConfigSchema(Schema):
     server_start_command = fields.String()
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return MongoServerConfig(
             database_name = input_dict[database_name_],
             start_server = input_dict[start_server_],

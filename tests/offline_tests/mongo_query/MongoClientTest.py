@@ -1,16 +1,18 @@
-from unittest import TestCase
+from __future__ import annotations
 
+from icecream import ic
 from pymongo.collection import Collection
 from pymongo.database import Database
 
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 
 object_name_ = "object_name"
 data_envelope_ = "data_envelope"
 
 
-class MongoClientTest(TestCase):
+class MongoClientTestCase(BaseTestCase):
     """
     No `argrelay`: plain mongo test using either `pymongo` (real MongoDB) or `mongomock` (in-mem).
     """
@@ -21,7 +23,7 @@ class MongoClientTest(TestCase):
         **kwargs,
     ):
         super(
-            MongoClientTest,
+            MongoClientTestCase,
             self,
         ).__init__(
             *args,
@@ -31,19 +33,13 @@ class MongoClientTest(TestCase):
         self.col_name = data_envelope_
         self.use_mongomock_only = True
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        pass
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        pass
-
-    def setUp(self) -> None:
+    def setUp(self):
+        super().setUp()
         self.col_proxy = self.create_collection_proxy(self.col_name)
         self.remove_all_data(self.col_proxy)
 
-    def tearDown(self) -> None:
+    def tearDown(self):
+        super().tearDown()
         self.remove_all_data(self.col_proxy)
 
     def create_collection_proxy(
@@ -59,9 +55,9 @@ class MongoClientTest(TestCase):
         mongo_config.use_mongomock_only = self.use_mongomock_only
 
         mongo_client = get_mongo_client(mongo_config)
-        print("list_database_names: ", mongo_client.list_database_names())
+        ic(mongo_client.list_database_names())
         mongo_db: Database = mongo_client[mongo_config.mongo_server.database_name]
-        print("list_collection_names: ", mongo_db.list_collection_names())
+        ic(mongo_db.list_collection_names())
 
         col_proxy: Collection = mongo_db[col_name]
         return col_proxy

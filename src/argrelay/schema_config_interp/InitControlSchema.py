@@ -25,7 +25,11 @@ class InitControlSchema(Schema):
     )
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return InitControl(
             init_types_to_values = input_dict[init_types_to_values_],
         )

@@ -36,8 +36,11 @@ class QueryEngine:
         query_dict: dict,
     ) -> list[dict]:
         """
-        This query is used for final invocation for vararg-like multiple `data_envelope`-s (FS_18_64_57_18).
+        This query is used for `ServerAction.RelayLineArgs` with
+        final invocation for vararg-like multiple `data_envelope`-s (FS_18_64_57_18).
         Therefore, it is not latency-sensitive (results are not cached).
+
+        See also `QueryResult.data_envelopes`.
         """
 
         query_res = self.mongo_col.find(query_dict)
@@ -51,6 +54,14 @@ class QueryEngine:
     ) -> QueryResult:
         """
         Implements FS_39_58_01_91 query cache (if `enable_query_cache`).
+
+        Returned `QueryResult` is used in for `ServerAction.ProposeArgValues` (Tab-completion)
+        which makes it latency-sensitive (so the result is cached - see FS_39_58_01_91).
+
+        Unlike `QueryEngine.query_data_envelopes` which returns all `data_envelopes` directly,
+        `QueryEngine.query_prop_values` populates 0 to 1 envelope only (for performance reasons).
+
+        See also `QueryResult.query_data_envelopes` and `QueryResult.data_envelopes`
         """
 
         if self.enable_query_cache:
@@ -104,10 +115,7 @@ class QueryEngine:
         """
         Process `mongo_result` per types in `search_control` and populates `remaining_types_to_values`.
 
-        This `QueryResult` is used in completion
-        which makes this process latency-sensitive (so it is cached - see FS_39_58_01_91).
-
-        Also combine:
+        It combines in one loop:
         *   counting total `found_count` of `data_envelope`-s returned and
         *   storing the last `data_envelope`.
         The last `data_envelope` is only useful when `found_count` is one (making it unambiguous `data_envelope`).

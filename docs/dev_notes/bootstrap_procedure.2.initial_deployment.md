@@ -25,7 +25,7 @@ ln -ns ./dst/this_config ./conf
 
 Modify files under `@/conf/` if necessary.
 
-# Running boostrap
+# Running bootstrap
 
 Re-run `@/exe/bootstrap_dev_env.bash` until it succeeds (exit with non-0 code):
 

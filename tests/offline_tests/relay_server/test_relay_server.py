@@ -2,12 +2,9 @@ import dataclasses
 import json
 from types import SimpleNamespace
 from typing import Callable, Any
-from unittest import TestCase
 
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_stub_custom_data_example
-from argrelay.relay_server.__main__ import create_app
-from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.schema_response.InterpResultSchema import interp_result_desc, all_tokens_
@@ -16,42 +13,27 @@ from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH
 from argrelay.server_spec.server_data_schema import server_op_data_schemas
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_helper.ServerOnlyTestCase import ServerOnlyTestCase
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(ServerOnlyTestCase):
     """
-    Server-only test via Flask test client (via API without spanning `argrelay` client).
+    Server-only test via Flask test client (via API without using `argrelay` client code).
     """
 
     def setUp(self):
+        super().setUp()
 
-        env_mock_builder = (
+        self.create_server_in_mocked_env(
             ServerOnlyEnvMockBuilder()
             .set_test_data_ids_to_load([
                 "TD_63_37_05_36",  # demo
             ])
         )
-        with env_mock_builder.build():
-
-            # This block mocks access to configs while starting Flask.
-            # The `env_mock_builder` is ineffective during run of the test cases
-            # because this block will already be over.
-            # However, the Flask server will still be running for all test cases
-            # with the state affected by the mock config data given here.
-
-            self.assertTrue(
-                open(server_config_desc.default_file_path).read() == env_mock_builder.get_server_config_yaml()
-            )
-
-            flask_app = create_app()
-            self.ctx = flask_app.app_context()
-            self.ctx.push()
-            self.test_client = flask_app.test_client()
-
-            env_mock_builder.assert_server_config_read()
+        self.test_client = self.flask_app.test_client()
 
     def tearDown(self):
-        self.ctx.pop()
+        super().tearDown()
 
     def test_api_spec(self):
         response = self.test_client.get(
@@ -130,6 +112,9 @@ class ThisTestCase(TestCase):
         )
 
     def test_propose_arg_values_via_send_json_recv_none(self):
+        """
+        Default response is "text/plain" - required for `ProposeArgValuesRemoteOptimizedClientCommand`.
+        """
         server_response = self.make_post_request(
             server_action = ServerAction.ProposeArgValues,
             api_path = ServerAction.ProposeArgValues.value,
@@ -145,6 +130,9 @@ class ThisTestCase(TestCase):
         )
 
     def test_propose_arg_values_via_send_json_recv_text(self):
+        """
+        Support "text/plain" response - required for `ProposeArgValuesRemoteOptimizedClientCommand`.
+        """
         server_response = self.make_post_request(
             server_action = ServerAction.ProposeArgValues,
             api_path = ServerAction.ProposeArgValues.value,
@@ -264,7 +252,7 @@ class ThisTestCase(TestCase):
 
                     # Special cases:
 
-                    if server_action == ServerAction.ProposeArgValues:
+                    if server_action is ServerAction.ProposeArgValues:
                         func_ref = None
                         if api_headers.get("Accept") is None and api_headers.get("Content-Type") is None:
                             func_ref = self.test_propose_arg_values_via_send_none_recv_none
@@ -333,7 +321,6 @@ class ThisTestCase(TestCase):
         if print_jsons:
             print(f"response_dict: {json.dumps(response_dict, indent = 4)}")
             print(f"schema_dict: {json.dumps(schema_dict, indent = 4)}")
-        self.maxDiff = None
         self.assertEqual(schema_dict, response_dict)
 
     ####################################################################################################################

@@ -23,11 +23,10 @@ from argrelay.test_helper.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
     EmptyEnvMockBuilder,
 )
-from argrelay.test_helper.InOutTestCase import InOutTestCase
+from argrelay.test_helper.LocalTestCase import LocalTestCase
 
 
-class ThisTestCase(InOutTestCase):
-
+class ThisTestCase(LocalTestCase):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
     def test_propose_auto_comp_TD_63_37_05_36_demo(self):
@@ -195,7 +194,7 @@ class ThisTestCase(InOutTestCase):
                 ) = test_case
 
                 self.verify_output_with_via_local_client(
-                    ThisTestCase.same_test_data_per_class,
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     expected_suggestions,
@@ -319,7 +318,7 @@ class ThisTestCase(InOutTestCase):
                 ) = test_case
 
                 self.verify_output_with_via_local_client(
-                    ThisTestCase.same_test_data_per_class,
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     CompType.InvokeAction,
                     None,
@@ -341,7 +340,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(), "some_command goto service s_b prod qwer-pd-2 |", CompType.DescribeArgs,
                 "If current command search results in ambiguous results (more than one `data_envelope`), "
                 "it should still work.",
-                # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stderr output - JSONPath?
+                # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stdout str - JSONPath?
                 None,
             ),
             (
@@ -436,7 +435,7 @@ class ThisTestCase(InOutTestCase):
                     test_line,
                     comp_type,
                     case_comment,
-                    stderr_output,
+                    stdout_str,
                 ) = test_case
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
@@ -447,7 +446,7 @@ class ThisTestCase(InOutTestCase):
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
                     .set_test_data_ids_to_load([
-                        ThisTestCase.same_test_data_per_class,
+                        self.__class__.same_test_data_per_class,
                     ])
                 )
                 with outer_env_mock_builder.build():
@@ -455,16 +454,21 @@ class ThisTestCase(InOutTestCase):
                     assert isinstance(command_obj, AbstractLocalClientCommand)
                     interp_ctx = command_obj.interp_ctx
 
-                    if not stderr_output:
+                    if not stdout_str:
                         # Output is not specified - not to be asserted:
                         continue
 
-                    # TODO: Running print again with capturing `stderr`
-                    #       (executing end-to-end above generates noise output on stdout by local server logic).
-                    #       A proper implementation would be getting `DescribeArgs`'s response_dict
-                    #       and printing it again.
+                    # TODO: Running print again with capturing `stdout`.
+                    #       Executing end-to-end above may generate
+                    #       noise output on `stdout`/`stderr` by local server logic.
+                    #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
+                    #       and printing it separately (when no other logic with extra output can intervene)
+                    #       to assert the output.
+                    #       Alternatively, run this test via `RemoteClient` (see `RemoteTestCase`) where output
+                    #       of the server is not captured (as it is a separate process).
                     inner_env_mock_builder = (
                         EmptyEnvMockBuilder()
+                        .set_capture_stdout(True)
                         .set_capture_stderr(True)
                     )
                     with inner_env_mock_builder.build():
@@ -477,9 +481,13 @@ class ThisTestCase(InOutTestCase):
                         )
                         DescribeLineArgsClientResponseHandler.render_result(interp_result)
 
-                        self.maxDiff = None
                         self.assertEqual(
-                            stderr_output,
+                            stdout_str,
+                            inner_env_mock_builder.actual_stdout.getvalue()
+                        )
+
+                        self.assertEqual(
+                            "",
                             inner_env_mock_builder.actual_stderr.getvalue()
                         )
 
@@ -632,7 +640,7 @@ class ThisTestCase(InOutTestCase):
                     case_comment,
                 ) = test_case
                 self.verify_output_with_via_local_client(
-                    ThisTestCase.same_test_data_per_class,
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     None,
@@ -705,7 +713,7 @@ class ThisTestCase(InOutTestCase):
                     case_comment,
                 ) = test_case
                 self.verify_output_with_via_local_client(
-                    ThisTestCase.same_test_data_per_class,
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     expected_suggestions,
@@ -764,7 +772,7 @@ class ThisTestCase(InOutTestCase):
                     case_comment,
                 ) = test_case
                 self.verify_output_with_via_local_client(
-                    ThisTestCase.same_test_data_per_class,
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     CompType.InvokeAction,
                     None,

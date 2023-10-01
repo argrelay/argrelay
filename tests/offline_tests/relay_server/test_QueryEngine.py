@@ -1,4 +1,4 @@
-from unittest import TestCase, mock
+from unittest import mock
 
 from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
 from argrelay.enum_desc.CompType import CompType
@@ -9,10 +9,11 @@ from argrelay.schema_config_core_server.ServerConfigSchema import server_config_
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_helper import parse_line_and_cpos, line_no
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
     """
     Tests FS_39_58_01_91 query cache.
     """

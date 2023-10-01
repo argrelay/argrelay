@@ -5,5 +5,8 @@ class AbstractClientResponseHandler:
     ):
         pass
 
-    def handle_response(self, response_dict: dict):
+    def handle_response(
+        self,
+        response_dict: dict,
+    ):
         raise NotImplementedError

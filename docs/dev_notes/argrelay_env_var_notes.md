@@ -1,4 +1,6 @@
 
+TODO: move this doc to FS.
+
 These are environment variables used by `argrelay`:
 
 *   `ARGRELAY_DEBUG` used to enable debug output - see `ShellContext.is_debug_enabled`.
@@ -10,3 +12,8 @@ These are environment variables used by `argrelay`:
 *   `ARGRELAY_CONF_BASE_DIR` specifies base dir for all config files (default ~ = user home).
 
     See also `FS_16_07_78_84.conf_dir_priority.md`.
+
+*   `ARGRELAY_CLIENT_COMMAND` provides the first (any) command name configured in `@/conf/argrelay_rc_conf.bash`.
+
+    This is mostly used in testing to programmatically invoke non-hard-coded command.
+

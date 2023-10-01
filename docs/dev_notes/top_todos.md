@@ -10,7 +10,8 @@ Tags:
 
 Top:
 
-To demo:
+*   Rethink bootstrap: it should deploy only what was previously captured in `dev_env_packages.txt`.
+    REGISTER
 
 *   Add color for envelope class in desc output - green if found 1, yellow if not yet (still N), gray if 0.
     See also: FS_80_45_89_81 / list_envelope
@@ -144,9 +145,8 @@ GUI bits:
     See also: https://stackoverflow.com/a/47250621/441652
     FINALIZE
 
-*   Add `describe` (or `itemize`) internal command to do exactly the same what Ctrl+Alt+Q does, but via Invocation.
-    Rename "describe" to "search" (outline) and implement function which does what Alt+Shift+Q does but on enter.
-    Or maybe "itemize" or "enum"?
+*   Add `query` (instead of `describe` or `itemize`) internal command to do exactly the same what Ctrl+Alt+Q does, but via Invocation.
+    Rename "describe" / "itemize" / "enum" / "search" / "outline" to `enum_query` (or "query") and implement function which does what Alt+Shift+Q does but on enter.
     See also: FS_80_45_89_81 / enumerate_values
     REGISTER
 
@@ -154,6 +154,10 @@ GUI bits:
     REGISTER
 
 Conceptual:
+
+*   Instead of providing positional parameter list for test cases (see those with subTests),
+    introduce generic ResultAssertBuilder (or something like that) which can build expectations in any order.
+    REGISTER
 
 *   What is even `args_context`? It is meaningless (or means many things).
     Also describe or merged `assigned_context` vs `args_context`.
@@ -218,10 +222,13 @@ Ease integration into external project:
     REGISTER
     DEV_VISIBLE
 
-*   There is constant need to distinguish:
-    *   project_dir - the path to special dir (where venv is configured via relative path, artifacts generated, config files, etc.)
-    *   package_dir - the path to useful artifacts (where known after venv is sourced)
-    TODO: Is this still a problem? Using `argrelay_dir` seems to solve both - each file knows its relative path from `argrelay_dir`, but does it matter if it is a deployed `argrelay` package or `argrelay` Git repo root?
+*   There is constant need to distinguish (TODO: name it properly):
+    *   argrelay_target_dir - the path to special dir (where venv is configured via relative path, artifacts generated, config files, etc.)
+    *   argrelay_distrib_dir - the path to useful artifacts (where known after venv is sourced)
+    TODO: Is this still a problem?
+          Yes.
+          *   `argrelay_inst_dir` must be the project (where argrelay is used or itself, or where it is deployed).
+          *   Anything else like `argrelay_module_dir_path` obtained by running Python is package_dir
     See also: FS_29_54_67_86.dir_structure.md
     FINALIZE
 

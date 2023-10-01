@@ -10,8 +10,8 @@ from argrelay.custom_integ.value_constants import (
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.plugin_delegator.AbstractDelegator import (
     AbstractDelegator,
-    get_func_name_from_container,
-    get_func_name_from_envelope,
+    get_func_name,
+    get_func_name_from_containers,
 )
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
@@ -99,7 +99,7 @@ class ServiceDelegator(AbstractDelegator):
         self,
         interp_ctx: "InterpContext",
     ):
-        func_name = get_func_name_from_container(interp_ctx)
+        func_name = get_func_name(interp_ctx)
         if func_name in [
             goto_host_funct_,
             goto_service_funct_,
@@ -142,7 +142,7 @@ class ServiceDelegator(AbstractDelegator):
     ) -> InvocationInput:
         assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
 
-        func_name = get_func_name_from_container(interp_ctx)
+        func_name = get_func_name(interp_ctx)
 
         vararg_container_ipos = host_container_ipos_
         assert vararg_container_ipos == host_container_ipos_ == service_container_ipos_
@@ -202,7 +202,7 @@ class ServiceDelegator(AbstractDelegator):
         Print `data_envelope`-s received from server on client side.
         """
 
-        func_name = get_func_name_from_envelope(invocation_input.envelope_containers)
+        func_name = get_func_name_from_containers(invocation_input.envelope_containers)
         if func_name == list_host_func_:
             for data_envelope in invocation_input.envelope_containers[host_container_ipos_].data_envelopes:
                 print(data_envelope)
