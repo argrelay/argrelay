@@ -77,7 +77,7 @@ Integration:
 
 streamline_internals:
 
-*   At least in case of `InOutTestCase`, `RunMode` was used instead of `ServerAction`.
+*   At least in case of `InOutTestClass`, `RunMode` was used instead of `ServerAction`.
     Search all other places with `RunMode` and see if it is misused.
     REGISTER
 

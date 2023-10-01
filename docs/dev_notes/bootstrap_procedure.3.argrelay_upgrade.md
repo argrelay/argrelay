@@ -6,16 +6,12 @@ This procedure describes using [`FS_85_33_46_53.bootstrap_dev_env.md`][FS_85_33_
 
 # Upgrading `argrelay` as project dependency
 
+The steps below are explained as package management in [`FS_85_33_46_53.bootstrap_dev_env.md`][FS_85_33_46_53.bootstrap_dev_env.md].
+
 Run `@/exe/dev_shell.bash` to activate `venv`:
 
 ```sh
 ./exe/dev_shell.bash
-```
-
-Upgrade `argrelay` package to newer version:
-
-```sh
-pip install --upgrade --force-reinstall argrelay
 ```
 
 Remove saved `argrelay` entry from `@/conf/dev_env_packages.txt` (otherwise subsequent bootstrap will restore it):
@@ -24,13 +20,17 @@ Remove saved `argrelay` entry from `@/conf/dev_env_packages.txt` (otherwise subs
 sef -i "/argrelay/d" ./conf/dev_env_packages.txt
 ```
 
+Upgrade `argrelay` package to newer version:
+
+```sh
+pip install --upgrade --force-reinstall argrelay
+```
+
 Re-run `@/exe/bootstrap_dev_env.bash`:
 
 ```sh
 ./exe/bootstrap_dev_env.bash
 ```
-
-To see how it works after upgrade, try [`FS_58_61_77_69.dev_shell.md`][FS_58_61_77_69.dev_shell.md].
 
 # Upgrading project customization
 

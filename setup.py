@@ -8,8 +8,11 @@ tests_require = [
     "mongomock",
     "pandas",
     "icecream",
+    "jsonpath-ng",
 ]
 
+# To install these extra dev dependencies:
+# pip install --editable .[tests]
 extras_require = {
     "tests": tests_require,
 }
@@ -33,7 +36,7 @@ def list_dir(
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.5.0",
+    version = "0.5.1.dev1",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server - total recall",
@@ -82,7 +85,7 @@ See: https://github.com/argrelay/argrelay
     # "argrelay": "src/argrelay",
     # Specify directory of "root" package:
     # "": "src",
-    # Apparently, this makes `argrelay.egg-info` dir appear in `src` on editable install rather than in root `.`.
+    # Apparently, this makes `argrelay.egg-info` dir appear in `src` on editable mode rather than in root `.`.
     package_dir = {
         "": "./src/",
         "argrelay_docs": "./",

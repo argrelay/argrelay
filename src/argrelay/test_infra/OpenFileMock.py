@@ -7,6 +7,9 @@ class OpenFileMock:
     """
     Mock file data for specific paths:
     https://stackoverflow.com/a/69681105/441652
+
+    Access to file paths not configured within `OpenFileMock` instance is passed through
+    to original built-in open func.
     """
     builtin_open = open
 

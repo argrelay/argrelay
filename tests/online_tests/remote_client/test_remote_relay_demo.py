@@ -10,18 +10,18 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import (
+from argrelay.test_infra import line_no
+from argrelay.test_infra.EnvMockBuilder import (
     LiveServerEnvMockBuilder,
 )
-from argrelay.test_helper.RemoteTestCase import RemoteTestCase
+from argrelay.test_infra.RemoteTestClass import RemoteTestClass
 
 
-class ThisTestCase(RemoteTestCase):
+class ThisTestClass(RemoteTestClass):
 
-    def test_RemoteTestCase_with_LiveServerEnvMockBuilder(self):
+    def test_RemoteTestClass_with_LiveServerEnvMockBuilder(self):
         """
-        This test ensures `RemoteTestCase` with `LiveServerEnvMockBuilder` are usable.
+        This test ensures `RemoteTestClass` with `LiveServerEnvMockBuilder` are usable.
         """
 
         test_cases = [

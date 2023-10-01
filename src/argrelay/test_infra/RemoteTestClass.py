@@ -9,17 +9,17 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.relay_client import __main__
 from argrelay.schema_response.ArgValuesSchema import arg_values_
-from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.ClientServerTestCase import ClientServerTestCase
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_infra import parse_line_and_cpos
+from argrelay.test_infra.ClientServerTestClass import ClientServerTestClass
+from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder
 
 
-class RemoteTestCase(ClientServerTestCase):
+class RemoteTestClass(ClientServerTestClass):
     """
     Supports FS_66_17_43_42 test_infra / special test mode #2.
 
-    This class is similar to `LocalTestCase` as it is supposed to use `EnvMockBuilder`
-    to capture server response, but, unlike `LocalTestCase`, requests go to separate OS process with running server.
+    This class is similar to `LocalTestClass` as it is supposed to use `EnvMockBuilder`
+    to capture server response, but, unlike `LocalTestClass`, requests go to separate OS process with running server.
     """
 
     # TODO: Allow intercepting subprocess.* invocation and asserting their input (e.g. whether specific command was invoked).

@@ -6,12 +6,12 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import LocalClientEnvMockBuilder
-from argrelay.test_helper.LocalTestCase import LocalTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
+from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
-class ThisTestCase(LocalTestCase):
+class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_76_09_29_31"  # overlapped
 
     def test_propose_auto_comp_TD_76_09_29_31_overlapped(self):

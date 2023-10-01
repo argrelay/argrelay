@@ -59,6 +59,7 @@ then
 argrelay_bind_command_basenames=(
     relay_demo
     some_command
+    service_relay_demo
 )
 ########################################################################################################################
 argelay_rc_conf_EOF

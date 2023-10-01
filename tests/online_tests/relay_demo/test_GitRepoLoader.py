@@ -18,15 +18,15 @@ from argrelay.misc_helper import eprint
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
-from argrelay.test_helper import line_no
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import (
+from argrelay.test_infra import line_no
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import (
     load_custom_integ_server_config_dict,
     LocalClientEnvMockBuilder,
 )
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
     temp_dir: tempfile.TemporaryDirectory
 
     def clean_temp_dir(self, is_successful: bool):

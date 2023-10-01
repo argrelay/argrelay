@@ -18,8 +18,8 @@ from argrelay.relay_client import (
     __main__,
 )
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.test_helper import change_to_known_repo_path
-from argrelay.test_helper.BaseTestCase import BaseTestCase
+from argrelay.test_infra import change_to_known_repo_path
+from argrelay.test_infra.BaseTestClass import BaseTestClass
 
 
 # TODO: Fix this to run under `tox`:
@@ -28,7 +28,7 @@ from argrelay.test_helper.BaseTestCase import BaseTestCase
     "At the moment, test fails if run under `tox`.",
 )
 # noinspection PyMethodMayBeStatic
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
     # Modules imported from `__main__` specified as they use conditional/dynamic import.
     # The imports listed are according to execution path for `Tab`-completion (`ServerAction.ProposeArgValues`).
     # The rest of modules can be found recursively if they do not also use dynamic import.
@@ -187,7 +187,7 @@ class ThisTestCase(BaseTestCase):
         return grouped_imports
 
     def group_imports(self):
-        grouped_imports = self.group_imports_per_module_per_op(ThisTestCase.entry_module_names)
+        grouped_imports = self.group_imports_per_module_per_op(ThisTestClass.entry_module_names)
         return grouped_imports
 
     def dump_ordered_json(
@@ -291,7 +291,7 @@ class ThisTestCase(BaseTestCase):
         """
         with change_to_known_repo_path("."):
             grouped_imports = self.group_imports()
-            expected_json = self.dump_ordered_json(ThisTestCase.expected_imports)
+            expected_json = self.dump_ordered_json(ThisTestClass.expected_imports)
             actual_json = self.dump_ordered_json(grouped_imports)
             self.assertEqual(
                 expected_json,

@@ -85,6 +85,9 @@ class InterceptDelegator(AbstractDelegator):
         self,
         curr_interp: AbstractInterp,
     ) -> str:
+        # TODO_10_72_28_05: support special funcs for all commands:
+        #                   Delegator must select next interp_factory_id based on `interp_tree_abs_path` (not based on single `next_interp_plugin_instance_id`).
+        #                   It is a double jump (first jump based on selected and specified func call from delegator to interp, second from interp via jump tree).
         return self.config_dict[next_interp_plugin_instance_id_]
 
     def run_invoke_control(

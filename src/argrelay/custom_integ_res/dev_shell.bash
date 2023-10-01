@@ -17,6 +17,21 @@ set -E
 # Error on undefined variables:
 set -u
 
+failure_color="\e[41m"
+reset_color="\e[0m"
+
+# Indicate failure by color:
+function on_exit {
+    exit_code="${?}"
+    if [[ "${exit_code}" != "0" ]]
+    then
+        echo -e "${failure_color}FAILURE:${reset_color} ${BASH_SOURCE[0]}: exit_code: ${exit_code}" 1>&2
+        exit "${exit_code}"
+    fi
+}
+
+trap on_exit EXIT
+
 # The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:

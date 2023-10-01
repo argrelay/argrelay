@@ -63,7 +63,7 @@ pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
 # Packages installed by `@/exe/bootstrap_dev_env.bash` depend on
 # `@/exe/deploy_project.bash`, but normally it:
 # *  installs only those missing in `@/conf/dev_env_packages.txt`
-#    (specifically those with editable install like `argrelay` itself)
+#    (specifically those with editable mode like `argrelay` itself)
 # *  restores missing transitive dependencies
 "${argrelay_dir}/exe/bootstrap_dev_env.bash"
 

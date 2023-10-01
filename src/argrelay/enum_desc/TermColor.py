@@ -14,8 +14,14 @@ class TermColor(Enum):
     # Direct colors:
     # do not use them directly, use semantic colors instead (below).
 
-    back_dark_blue = "\033[44m"
+    back_dark_red = "\033[41m"
+    back_dark_green = "\033[42m"
     back_dark_yellow = "\033[43m"
+    back_dark_blue = "\033[44m"
+
+    back_bright_red = "\033[101m"
+    back_bright_green = "\033[102m"
+    back_bright_yellow = "\033[103m"
 
     fore_dark_red = "\033[31m"
     fore_dark_green = "\033[32m"
@@ -79,6 +85,10 @@ class TermColor(Enum):
     """
 
     no_option_to_suggest = fore_dark_gray
+
+    found_count_0 = back_dark_red
+    found_count_1 = fore_dark_green
+    found_count_n = fore_bright_yellow
 
     debug_output = fore_dark_gray
 

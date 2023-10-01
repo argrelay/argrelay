@@ -85,6 +85,9 @@ server_plugin_control:
                     help:
                         -   some_command
                         -   subtree
+            service_relay_demo:
+                help:
+                    -   service_relay_demo
 
         interp_sub_tree: &interp_sub_tree
             intercept: JumpTreeInterpFactory.intercept_invocation_func
@@ -104,6 +107,7 @@ plugin_instance_entries:
         plugin_class_name: FirstArgInterpFactory
         plugin_dependencies:
             -   InterpTreeInterpFactory
+            -   InterpTreeInterpFactory.service
         plugin_config:
             first_arg_vals_to_next_interp_factory_ids:
                 # This binding uses existing file system name `relay_demo`:
@@ -111,6 +115,7 @@ plugin_instance_entries:
                 # Another equivalent binding
                 # (if `some_command` is configured, it will behave as `relay_demo` above):
                 some_command: InterpTreeInterpFactory
+                service_relay_demo: InterpTreeInterpFactory.service
 
     InterpTreeInterpFactory:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
@@ -124,6 +129,17 @@ plugin_instance_entries:
                 <<: *interp_sub_tree
                 # child subtree matches parent:
                 subtree: *interp_sub_tree
+
+    InterpTreeInterpFactory.service:
+        plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
+        plugin_class_name: InterpTreeInterpFactory
+        plugin_dependencies:
+            -   JumpTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory.service
+        plugin_config:
+            interp_selector_tree:
+                help: JumpTreeInterpFactory.help_hint_func
+                "": FuncTreeInterpFactory.service
 
     JumpTreeInterpFactory.intercept_invocation_func:
         plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
@@ -166,6 +182,23 @@ plugin_instance_entries:
                     host: desc_host_func
                     service: desc_service_func
             delegator_plugin_ids: *all_direct_delegators
+
+    FuncTreeInterpFactory.service:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_dependencies:
+            -   ServiceDelegator
+        plugin_config:
+            func_selector_tree:
+                goto: goto_service_func
+                list: list_service_func
+                desc: desc_service_func
+            ignored_func_ids_list:
+                -   goto_host_func
+                -   list_host_func
+                -   desc_host_func
+            delegator_plugin_ids:
+                -   ServiceDelegator
 
     NoopInterpFactory:
         plugin_module_name: argrelay.plugin_interp.NoopInterpFactory
@@ -222,6 +255,7 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory
         plugin_config:
+            # TODO_10_72_28_05: support special funcs for all commands: it should be tree-aware:
             next_interp_plugin_instance_id: InterpTreeInterpFactory
 
     HelpDelegator:
@@ -230,6 +264,7 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory
         plugin_config:
+            # TODO_10_72_28_05: support special funcs for all commands: it should be tree-aware:
             next_interp_plugin_instance_id: InterpTreeInterpFactory
 
     ServiceDelegator:

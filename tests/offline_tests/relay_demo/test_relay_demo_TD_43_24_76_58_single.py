@@ -4,12 +4,12 @@ from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import LocalClientEnvMockBuilder
-from argrelay.test_helper.LocalTestCase import LocalTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
+from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
-class ThisTestCase(LocalTestCase):
+class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_43_24_76_58"  # single
 
     def test_propose_auto_comp_TD_43_24_76_58_single(self):

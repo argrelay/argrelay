@@ -139,14 +139,14 @@ class GitRepoDelegator(AbstractDelegator):
             repo_root_abs_path = repo_envelope[envelope_payload_][repo_root_abs_path_]
             eprint(f"INFO: starting subshell in: {repo_root_abs_path}")
             # List Git repo dir:
-            subproc = subprocess.run(
+            sub_proc = subprocess.run(
                 [
                     "bash",
                     "-l",
                 ],
                 cwd = repo_root_abs_path
             )
-            ret_code = subproc.returncode
+            ret_code = sub_proc.returncode
             if ret_code != 0:
                 raise RuntimeError
         if get_func_id_from_invocation_input(invocation_input) == desc_commit_func_:

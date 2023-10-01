@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import default_tree_leaf_
 from argrelay.plugin_interp.TreeWalker import TreeWalker
-from argrelay.test_helper import line_no
-from argrelay.test_helper.LocalTestCase import LocalTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
-class ThisTestCase(LocalTestCase):
+class ThisTestClass(LocalTestClass):
     tree_name = "tree_name"
 
     def test_build_str_leaves_paths(self):

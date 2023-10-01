@@ -31,6 +31,11 @@ def line_no() -> int:
     """
     return getframeinfo(currentframe().f_back).lineno
 
+def line_no_from_ctor() -> int:
+    """
+    Same as `line_no` but used inside `TestCase` ctor (behind one more stack frame).
+    """
+    return getframeinfo(currentframe().f_back.f_back).lineno
 
 def parse_line_and_cpos(test_line: str) -> (str, int):
     """

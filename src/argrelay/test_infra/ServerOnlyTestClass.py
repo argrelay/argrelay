@@ -1,10 +1,10 @@
 from argrelay.relay_server.CustomFlaskApp import CustomFlaskApp
 from argrelay.relay_server.__main__ import create_app
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ServerOnlyTestCase(BaseTestCase):
+class ServerOnlyTestClass(BaseTestClass):
     """
     Supports FS_66_17_43_42 test_infra / special test mode #7.
 

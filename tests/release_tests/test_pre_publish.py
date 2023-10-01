@@ -11,12 +11,12 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
-from argrelay.test_helper import change_to_known_repo_path
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_infra import change_to_known_repo_path
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
     """
     Check things which should not be published
 
