@@ -159,27 +159,27 @@ class ThisTestCase(TestCase):
                             service_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             # Both host and service should have same host name:
-                            self.assertEquals(
+                            self.assertEqual(
                                 host_data_envelope[ServiceArgType.HostName.name],
                                 service_data_envelope[ServiceArgType.HostName.name],
                             )
 
                             # IP address should match:
-                            self.assertEquals(
+                            self.assertEqual(
                                 host_data_envelope[ServiceArgType.IpAddress.name],
                                 service_data_envelope[ServiceArgType.IpAddress.name],
                             )
-                            self.assertEquals(
+                            self.assertEqual(
                                 ip_address,
                                 service_data_envelope[ServiceArgType.IpAddress.name],
                             )
 
                             # Data centers should match:
-                            self.assertEquals(
+                            self.assertEqual(
                                 host_data_envelope[ServiceArgType.DataCenter.name],
                                 service_data_envelope[ServiceArgType.DataCenter.name],
                             )
-                            self.assertEquals(
+                            self.assertEqual(
                                 data_center,
                                 service_data_envelope[ServiceArgType.DataCenter.name],
                             )
@@ -188,7 +188,7 @@ class ThisTestCase(TestCase):
                             group_label_values = group_label.split(",")
                             actual_values = service_data_envelope[ServiceArgType.GroupLabel.name]
                             actual_values = scalar_to_list_values(actual_values)
-                            self.assertEquals(
+                            self.assertEqual(
                                 group_label_values,
                                 actual_values,
                             )

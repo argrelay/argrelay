@@ -5,7 +5,7 @@ from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_d
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
+from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
@@ -47,7 +47,7 @@ class InterceptDelegator(AbstractDelegator):
 
         # TODO: Fail (send to ErrorDelegator) if next function is not specified -
         #       showing the payload in this case is misleading.
-        function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
+        function_envelope = interp_ctx.envelope_containers[function_container_ipos_]
         delegator_plugin_instance_id = function_envelope.data_envelope[instance_data_][delegator_plugin_instance_id_]
         invocation_input = InvocationInput(
             all_tokens = interp_ctx.parsed_ctx.all_tokens,
@@ -60,6 +60,6 @@ class InterceptDelegator(AbstractDelegator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == SpecialFunc.intercept_func.name:
+        if invocation_input.data_envelopes[function_container_ipos_][envelope_id_] == SpecialFunc.intercept_func.name:
             # TODO: Print without first function `data_envelope` belonging to `intercept` function:
             print(invocation_input)

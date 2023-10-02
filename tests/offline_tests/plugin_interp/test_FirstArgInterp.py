@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from unittest import TestCase
-
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.PluginType import PluginType
@@ -19,15 +17,15 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_class_name_,
     plugin_type_,
 )
-from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_helper import parse_line_and_cpos, line_no
 from argrelay.test_helper.EnvMockBuilder import (
-    EnvMockBuilder,
     load_custom_integ_server_config_dict,
+    LocalClientEnvMockBuilder,
 )
+from argrelay.test_helper.InOutTestCase import InOutTestCase
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(InOutTestCase):
 
     def run_consume_test(self, test_line, expected_consumed_first_token):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -67,7 +65,7 @@ class ThisTestCase(TestCase):
             server_config_dict[plugin_instance_id_load_list_].append(plugin_instance_id)
 
         env_mock_builder = (
-            EnvMockBuilder()
+            LocalClientEnvMockBuilder()
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.PrefixShown)
@@ -99,31 +97,6 @@ class ThisTestCase(TestCase):
                 "config instructs to name interp instance as the first token it binds to",
             )
 
-    # TODO: use unified `verify_output` everywhere
-    def run_completion_mode_test(
-        self,
-        test_data,
-        test_line,
-        comp_type,
-        expected_suggestions,
-    ):
-        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
-        env_mock_builder = (
-            EnvMockBuilder()
-            .set_command_line(command_line)
-            .set_cursor_cpos(cursor_cpos)
-            .set_comp_type(comp_type)
-            .set_test_data_ids_to_load([
-                test_data,
-            ])
-        )
-        with env_mock_builder.build():
-            command_obj = __main__.main()
-            assert isinstance(command_obj, AbstractLocalClientCommand)
-
-            actual_suggestions = "\n".join(command_obj.response_dict[arg_values_])
-            self.assertEqual(expected_suggestions, actual_suggestions)
-
     def test_consume_pos_args_unknown(self):
         test_line = "unknown_command prod|"
         self.run_consume_test(test_line, None)
@@ -142,19 +115,24 @@ class ThisTestCase(TestCase):
         test_cases = [
             (
                 line_no(), "|", CompType.PrefixHidden,
-                "relay_demo\nsome_command",
+                [
+                    "relay_demo",
+                    "some_command",
+                ],
                 "This will not be called from shell - shell will suggest when command_id is already selected. "
                 "Suggest registered command_id-s.",
             ),
             (
                 line_no(), "r|", CompType.PrefixHidden,
-                "relay_demo",
+                [
+                    "relay_demo",
+                ],
                 "This will not be called from shell - shell will suggest when command_id is already selected. "
                 "Suggest registered command_id-s.",
             ),
             (
                 line_no(), " qwer|", CompType.PrefixHidden,
-                "",
+                [],
                 "This will not be called from shell - shell will suggest when command_id is already selected. "
                 "Suggest registered command_id-s.",
             ),
@@ -170,9 +148,12 @@ class ThisTestCase(TestCase):
                     case_comment,
                 ) = test_case
 
-                self.run_completion_mode_test(
+                self.verify_output_with_new_server_via_local_client(
                     "TD_63_37_05_36",  # demo
                     test_line,
                     comp_type,
                     expected_suggestions,
+                    None,
+                    None,
+                    None,
                 )

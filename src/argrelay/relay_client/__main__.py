@@ -18,7 +18,7 @@ def main():
     shell_ctx = ShellContext.from_env(sys.argv)
 
     if client_config.use_local_requests:
-        from argrelay.relay_client.LocalClient import LocalClient
+        from argrelay.test_helper.LocalClient import LocalClient
 
         command_obj = make_request(LocalClient(client_config), shell_ctx)
     else:

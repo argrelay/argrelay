@@ -8,17 +8,27 @@ from argrelay.schema_config_core_server.ServerConfigSchema import server_config_
 from argrelay.server_spec.CallContext import CallContext
 
 
+
 class LocalClientCommandFactory(AbstractClientCommandFactory):
+
+    local_server: LocalServer = None
+    """
+    This instance of `LocalServer` allows reusing server for multiple `LocalClient` invocation in tests.
+    For example, to avoid re-loading TD_38_03_48_51 large data sets.
+    """
 
     def __init__(self):
         self._start_local_server()
 
     def _start_local_server(self):
-        self.server_config: ServerConfig = server_config_desc.from_default_file()
-        ElapsedTime.measure("after_server_config_load")
-        self.local_server: LocalServer = LocalServer(self.server_config)
-        self.local_server.start_local_server()
-        ElapsedTime.measure("after_local_server_start")
+        if not LocalClientCommandFactory.local_server:
+            self.server_config: ServerConfig = server_config_desc.from_default_file()
+            ElapsedTime.measure("after_server_config_load")
+            LocalClientCommandFactory.local_server = LocalServer(self.server_config)
+            LocalClientCommandFactory.local_server.start_local_server()
+            ElapsedTime.measure("after_local_server_start")
+        else:
+            self.server_config: ServerConfig = LocalClientCommandFactory.local_server.server_config
 
     def create_command_by_server_path(
         self,

@@ -7,11 +7,11 @@ from argrelay.misc_helper import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_data_envelopes
 from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.InterpContext import InterpContext, function_envelope_ipos_
+from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, envelope_id_, instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
 
-repo_envelope_ipos_ = 1
+repo_container_ipos_ = 1
 
 
 class GitRepoDelegator(AbstractDelegator):
@@ -39,8 +39,8 @@ class GitRepoDelegator(AbstractDelegator):
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
-        function_envelope = interp_ctx.envelope_containers[function_envelope_ipos_]
-        delegator_plugin_instance_id = function_envelope.data_envelope[instance_data_][delegator_plugin_instance_id_]
+        function_container = interp_ctx.envelope_containers[function_container_ipos_]
+        delegator_plugin_instance_id = function_container.data_envelope[instance_data_][delegator_plugin_instance_id_]
         invocation_input = InvocationInput(
             all_tokens = interp_ctx.parsed_ctx.all_tokens,
             consumed_tokens = interp_ctx.consumed_tokens,
@@ -52,8 +52,8 @@ class GitRepoDelegator(AbstractDelegator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == goto_repo_func_:
-            repo_envelope = invocation_input.data_envelopes[repo_envelope_ipos_]
+        if invocation_input.data_envelopes[function_container_ipos_][envelope_id_] == goto_repo_func_:
+            repo_envelope = invocation_input.data_envelopes[repo_container_ipos_]
             repo_root_abs_path = repo_envelope[envelope_payload_][repo_root_abs_path_]
             eprint(f"INFO: starting subshell in: {repo_root_abs_path}")
             # List Git repo dir:
@@ -67,7 +67,7 @@ class GitRepoDelegator(AbstractDelegator):
             ret_code = subproc.returncode
             if ret_code != 0:
                 raise RuntimeError
-        if invocation_input.data_envelopes[function_envelope_ipos_][envelope_id_] == desc_commit_func_:
+        if invocation_input.data_envelopes[function_container_ipos_][envelope_id_] == desc_commit_func_:
             raise RuntimeError("not implemented")
 
 

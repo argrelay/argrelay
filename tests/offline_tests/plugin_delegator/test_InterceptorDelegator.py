@@ -60,7 +60,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(),
                 "some_command intercept goto service s_b prod qwer-pd-2 |",
                 CompType.InvokeAction,
-                [],
+                None,
                 {
                     0: {
                         GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
@@ -85,7 +85,7 @@ class ThisTestCase(InOutTestCase):
                 line_no(),
                 "some_command intercept intercept intercept intercept |",
                 CompType.InvokeAction,
-                [],
+                None,
                 {
                     0: {
                         GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
@@ -116,16 +116,17 @@ class ThisTestCase(InOutTestCase):
                     test_line,
                     comp_type,
                     expected_suggestions,
-                    envelope_ipos_to_expected_assignments,
+                    container_ipos_to_expected_assignments,
                     delegator_class,
                     case_comment,
                 ) = test_case
 
-                self.verify_output(
+                self.verify_output_with_new_server_via_local_client(
                     "TD_63_37_05_36",  # demo
                     test_line,
                     comp_type,
                     expected_suggestions,
-                    envelope_ipos_to_expected_assignments,
+                    container_ipos_to_expected_assignments,
                     delegator_class,
+                    None,
                 )

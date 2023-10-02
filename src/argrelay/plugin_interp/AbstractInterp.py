@@ -20,7 +20,7 @@ class AbstractInterp:
         self.interp_factory_id: str = interp_factory_id
         self.config_dict: dict = config_dict
         self.interp_ctx: InterpContext = interp_ctx
-        self.base_envelope_ipos: int = interp_ctx.curr_container_ipos
+        self.base_container_ipos: int = interp_ctx.curr_container_ipos
 
     def __repr__(self) -> str:
         return f"fid: {self.interp_factory_id}, {super().__repr__()}"

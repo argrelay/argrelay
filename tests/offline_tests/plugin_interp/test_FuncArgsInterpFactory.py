@@ -34,9 +34,9 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
 )
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import (
-    EnvMockBuilder,
     load_custom_integ_server_config_dict,
     load_custom_integ_client_config_dict,
+    LocalClientEnvMockBuilder,
 )
 
 
@@ -102,7 +102,7 @@ class ThisTestCase(TestCase):
 
         # Test 1: should pass
         env_mock_builder = (
-            EnvMockBuilder()
+            LocalClientEnvMockBuilder()
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.PrefixShown)
@@ -128,7 +128,7 @@ class ThisTestCase(TestCase):
         # Test 2: should fail
         with self.assertRaises(AssertionError):
             env_mock_builder = (
-                EnvMockBuilder()
+                LocalClientEnvMockBuilder()
                 .set_command_line(command_line)
                 .set_cursor_cpos(cursor_cpos)
                 .set_comp_type(CompType.PrefixShown)

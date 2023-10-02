@@ -43,7 +43,7 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         response_obj = requests.post(
             server_url,
             headers = headers_dict,
-            json = request_json,
+            data = request_json,
         )
         ElapsedTime.measure("after_request")
         try:

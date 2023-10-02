@@ -1,5 +1,3 @@
-from unittest import TestCase
-
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.CompType import CompType
@@ -7,10 +5,14 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.relay_client import __main__
 from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, LiveServerEnvMockBuilder
+from argrelay.test_helper.EnvMockBuilder import (
+    EnvMockBuilder,
+    LiveServerEnvMockBuilder,
+)
+from env_tests.ManualServerTest import ManualServerTest
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(ManualServerTest):
 
     # noinspection PyMethodMayBeStatic
     def test_live_relay_line_args(self):

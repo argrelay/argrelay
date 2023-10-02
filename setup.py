@@ -32,7 +32,7 @@ def list_dir(
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.3.0",
+    version = "0.3.1",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server - total recall",
@@ -46,17 +46,25 @@ See: https://github.com/argrelay/argrelay
         "Bug Tracker": "https://github.com/argrelay/argrelay/issues",
     },
     classifiers = [
+        "Development Status :: 3 - Alpha",
+
         "Environment :: Console",
         "Framework :: Flask",
         "Intended Audience :: Information Technology",
+
+        "Topic :: Terminals",
         "Topic :: System :: Shells",
         "Topic :: Scientific/Engineering :: Human Machine Interfaces",
         "Topic :: Text Processing :: Indexing",
-        "Topic :: Terminals",
+
+        "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+        "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+
         "Programming Language :: Python :: 3",
+
         "License :: OSI Approved :: Apache Software License",
+
         "Operating System :: POSIX :: Linux",
-        "Development Status :: 2 - Pre-Alpha",
     ],
     # See sample layout:
     # https://docs.python.org/3/distutils/setupscript.html#installing-package-data

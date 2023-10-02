@@ -21,7 +21,10 @@ from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_dict_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper import line_no
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, load_custom_integ_server_config_dict
+from argrelay.test_helper.EnvMockBuilder import (
+    load_custom_integ_server_config_dict,
+    LocalClientEnvMockBuilder,
+)
 
 
 class ThisTestCase(TestCase):
@@ -132,7 +135,7 @@ class ThisTestCase(TestCase):
                 server_config_dict[plugin_dict_][GitRepoLoader.__name__][plugin_config_] = plugin_config
 
                 env_mock_builder = (
-                    EnvMockBuilder()
+                    LocalClientEnvMockBuilder()
                     .set_server_config_dict(server_config_dict)
                     .set_enable_demo_git_loader(plugin_config[is_plugin_enabled_])
                     .set_command_line("some_command help")

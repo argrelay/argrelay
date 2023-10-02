@@ -17,6 +17,7 @@ class OpenFileMock:
     def open(self, *args, **kwargs):
         file_path = args[0]
         if file_path in self.path_to_data:
-            self.path_to_mock[file_path] = mock.mock_open(read_data = self.path_to_data[file_path])
-            return self.path_to_mock[file_path](*args, **kwargs)
+            new_mock = mock.mock_open(read_data = self.path_to_data[file_path])
+            self.path_to_mock[file_path] = new_mock
+            return new_mock(*args, **kwargs)
         return self.builtin_open(*args, **kwargs)

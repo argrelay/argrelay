@@ -125,7 +125,10 @@ function invoke_completion {
     # This function can be turned into generic one to invoke any
     # registered completion in Bash, but it is not straightforward, see:
     # https://brbsix.github.io/2015/11/29/accessing-tab-completion-programmatically-in-bash/
-    # Instead, at least, invoke the same completion command starting `@/bin/run_argrelay_client`:
+    # Instead, at least, invoke the same completion command starting `@/bin/run_argrelay_client`.
+    # In other words, it always invokes `argrelay` regardless
+    # whether `COMP_LINE` contains `argrelay`-configured command or completely irrelevant (like `ls`).
+    # Invoke in a sub-shell to avoid setting env vars in the current shell:
     (
         export COMP_LINE="${READLINE_LINE}"
         export COMP_POINT="${READLINE_POINT}"
@@ -136,6 +139,11 @@ function invoke_completion {
 
         run_argrelay_client
     )
+    # Save command into history at least commented out (prefixed with `#`) to indicate it was not executed:
+    # https://superuser.com/a/135654/176657
+    # It is often convenient to recall what command lines used in previous queries - if not stored,
+    # queries are not stored in the history (unless the command was also subsequently invoked).
+    history -s "# ${READLINE_LINE}"
 }
 
 # Bind Alt+Shift+Q to `invoke_completion` function.

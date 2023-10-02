@@ -33,7 +33,6 @@ To demo:
     Tracked via FS_72_53_55_13.show_non_default_options.md
     CLOSED
 
-
 *   Meta function: list all objects of specified query.
     See also: FS_80_45_89_81 / list_envelope
     REGISTER
@@ -84,6 +83,17 @@ Integration:
     Query specific Mongo DB collection.
     Tracked via FS_56_43_05_79: https://github.com/argrelay/argrelay/issues/10
     CLOSED
+
+streamline_internals:
+
+*   Combine `InvocationInput` and `InterpResult` into one.
+    Make all `data_envelope`-s be exchanged as part of `envelope_container`-s.
+    https://github.com/argrelay/argrelay/issues/50
+    CLOSED
+
+*   At least in case of `InOutTestCase`, `RunMode` was used instead of `ServerAction`.
+    Search all other places with `RunMode` and see if it is misused.
+    REGISTER
 
 GUI bits:
 

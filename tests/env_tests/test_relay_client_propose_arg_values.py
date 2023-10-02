@@ -1,12 +1,11 @@
-from unittest import TestCase
-
 from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import __main__
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.EnvMockBuilder import LiveServerEnvMockBuilder
+from env_tests.ManualServerTest import ManualServerTest
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(ManualServerTest):
 
     def test_live_propose_arg_values(self):
         test_line = "some_command pro|d whatever"

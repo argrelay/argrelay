@@ -33,6 +33,10 @@ The only useful practical difference between them are these directories:
     This dir is the only one where `__init__.py` is absent -
     tests there are not discoverable if started from root `tests` dir.
 
+*   `slow_tests`
+
+    Same as `offline_tests`, but run longer and not that important for quick feedback cycles.
+
 *   `release_tests`
 
     Separate category of tests which are okay to fail on branches
