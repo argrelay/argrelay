@@ -3,11 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from argrelay.runtime_data.PluginEntry import PluginEntry
-from argrelay.schema_response.BaseResponse import BaseResponse
+from argrelay.schema_response.InterpResult import InterpResult
 
 
 @dataclass
-class InvocationInput(BaseResponse):
+class InvocationInput(InterpResult):
     """
     See also :class:`InvocationInputSchema`.
 
@@ -29,9 +29,4 @@ class InvocationInput(BaseResponse):
     A placeholder dict for exclusive use by plugin.
 
     Whatever plugin server side needs to tell its plugin peer on the client side.
-    """
-
-    data_envelopes: list[dict] = field()
-    """
-    Envelopes copied from `InterpContext` at the end of command line interpretation on the server side.
     """

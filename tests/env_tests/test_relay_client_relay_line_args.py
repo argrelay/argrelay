@@ -31,18 +31,18 @@ class ThisTestCase(ManualServerTest):
             invocation_input = EnvMockBuilder.invocation_input
             self.assertEqual(
                 ServiceEnvelopeClass.ClassService.name,
-                invocation_input.data_envelopes[1][ReservedArgType.EnvelopeClass.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ReservedArgType.EnvelopeClass.name]
             )
             self.assertEqual(
                 "prod-apac-downstream",
-                invocation_input.data_envelopes[1][ServiceArgType.ClusterName.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.ClusterName.name]
             )
             self.assertEqual(
                 "wert-pd-1",
-                invocation_input.data_envelopes[1][ServiceArgType.HostName.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.HostName.name]
             )
             self.assertEqual(
                 "tt1",
-                invocation_input.data_envelopes[1][ServiceArgType.ServiceName.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.ServiceName.name]
             )
             self.assertTrue(True)

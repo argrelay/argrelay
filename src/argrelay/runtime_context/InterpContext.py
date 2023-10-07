@@ -134,7 +134,7 @@ class InterpContext:
             self.curr_container.assigned_types_to_values,
         )
         self.curr_container.remaining_types_to_values = query_result.remaining_types_to_values
-        self.curr_container.data_envelope = query_result.data_envelope
+        self.curr_container.data_envelopes = query_result.data_envelopes
         self.curr_container.found_count = query_result.found_count
         ElapsedTime.measure(f"end_query_envelopes: {query_dict} {self.curr_container.found_count}")
 

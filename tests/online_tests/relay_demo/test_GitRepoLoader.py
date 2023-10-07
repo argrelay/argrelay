@@ -151,7 +151,7 @@ class ThisTestCase(TestCase):
                     for type_name in [enum_item.name for enum_item in GitRepoArgType]:
                         assert type_name in static_data.known_arg_types
 
-                        # Find list all values in data_envelope per `type_name`:
+                        # Find list of all values in `data_envelope` per `type_name`:
                         typed_values = []
                         for data_envelope in static_data.data_envelopes:
                             if type_name in data_envelope:

@@ -4,7 +4,7 @@ from argrelay.handler_response.AbstractClientResponseHandler import AbstractClie
 from argrelay.misc_helper.AbstractPlugin import import_plugin_class
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
-from argrelay.plugin_delegator.InvocationInput import InvocationInput
+from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
 
 

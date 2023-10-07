@@ -5,9 +5,9 @@ from pymongo.database import Database
 
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
-from argrelay.schema_response.EnvelopeContainerSchema import data_envelope_
 
 object_name_ = "object_name"
+data_envelope_ = "data_envelope"
 
 
 class MongoClientTest(TestCase):

@@ -1,6 +1,7 @@
 from argrelay.relay_client.AbstractClient import AbstractClient
-from argrelay.test_helper.LocalClientCommandFactory import LocalClientCommandFactory
 from argrelay.runtime_data.ClientConfig import ClientConfig
+from argrelay.test_helper.LocalClientCommandFactory import LocalClientCommandFactory
+
 
 class LocalClient(AbstractClient):
     """

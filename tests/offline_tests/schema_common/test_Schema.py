@@ -1,4 +1,7 @@
+import copy
 from unittest import TestCase
+
+from marshmallow import ValidationError
 
 from argrelay.custom_integ.DemoInterpFactoryConfigSchema import demo_interp_factory_config_desc
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
@@ -57,13 +60,80 @@ class ThisTestCase(TestCase):
         for test_case in test_cases:
             with self.subTest(test_case):
                 (line_number, type_desc) = test_case
+
+                if type_desc == data_envelope_desc:
+                    self.test_data_envelope_desc()
+                    return
+
                 loaded_obj = type_desc.dict_schema.load(type_desc.dict_example)
                 dumped_dict = type_desc.dict_schema.dump(loaded_obj)
-                # Compare via JSON strings:
-                orig_json = type_desc.dict_schema.dumps(type_desc.dict_example, sort_keys = True)
-                dumped_json = type_desc.dict_schema.dumps(dumped_dict, sort_keys = True)
+                reloaded_obj = type_desc.dict_schema.load(dumped_dict)
+
+                dumped_loaded_json = type_desc.dict_schema.dumps(loaded_obj, sort_keys = True)
+                dumped_reloaded_json = type_desc.dict_schema.dumps(reloaded_obj, sort_keys = True)
+
                 self.maxDiff = None
+
                 self.assertEqual(
-                    orig_json,
-                    dumped_json,
+                    loaded_obj,
+                    reloaded_obj,
                 )
+                self.assertEqual(
+                    dumped_loaded_json,
+                    dumped_reloaded_json,
+                )
+
+                # Expect no problem:
+                type_desc.validate_dict(dumped_dict)
+                # Expect some problem:
+                dumped_dict["intentionally_unknown_key"] = "whatever"
+                self.assertRaises(
+                    ValidationError,
+                    lambda: type_desc.validate_dict(dumped_dict),
+                )
+
+    def test_data_envelope_desc(self):
+        """
+        Special case for `DataEnvelopeSchema` (as its object is actually an arbitrary dict).
+        `Schema.dump` cannot be used as it does not preserve all extra keys - see `DataEnvelopeSchema` for details.
+        """
+        type_desc = data_envelope_desc
+
+        orig_dict = type_desc.dict_example
+        loaded_dict = type_desc.dict_schema.load(orig_dict)
+        assert type(loaded_dict) is dict
+
+        dumped_orig_json = type_desc.dict_schema.dumps(orig_dict, sort_keys = True)
+        dumped_loaded_json = type_desc.dict_schema.dumps(loaded_dict, sort_keys = True)
+
+        dumped_dict = type_desc.dict_schema.dump(loaded_dict)
+        # Expect problem:
+        # `Schema.dump` does not preserve all keys of original `dict` - only those which mentioned in the schema:
+        self.assertRaises(
+            KeyError,
+            lambda: type_desc.validate_dict(dumped_dict),
+        )
+
+        self.maxDiff = None
+
+        self.assertEqual(
+            orig_dict,
+            loaded_dict,
+        )
+        self.assertNotEqual(
+            orig_dict,
+            dumped_dict,
+        )
+        self.assertEqual(
+            dumped_orig_json,
+            dumped_loaded_json,
+        )
+
+        valid_dict = copy.deepcopy(orig_dict)
+        # Expect no problem:
+        type_desc.validate_dict(valid_dict)
+
+        valid_dict_with_extra_keys = copy.deepcopy(valid_dict)
+        valid_dict_with_extra_keys["intentionally_unknown_key"] = "whatever"
+        # Expect no problem (still because `DataEnvelopeSchema` does not care about extra keys):
+        type_desc.validate_dict(valid_dict_with_extra_keys)

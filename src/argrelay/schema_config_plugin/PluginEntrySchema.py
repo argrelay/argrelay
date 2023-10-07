@@ -44,26 +44,24 @@ class PluginEntrySchema(Schema):
     )
 
     @pre_dump
-    def make_dict(self, input_object: PluginEntry, **kwargs):
-        # TODO: figure out to populate all automatically and reduce duplication - this is error-prone:
-        if isinstance(input_object, PluginEntry):
-            return {
-                plugin_module_name_: input_object.plugin_module_name,
-                plugin_class_name_: input_object.plugin_class_name,
-                plugin_type_: ensure_value_is_enum(input_object.plugin_type, PluginType),
-                plugin_config_: input_object.plugin_config,
-            }
-        else:
-            # Assuming it is as dict:
-            return {
-                plugin_module_name_: input_object[plugin_module_name_],
-                plugin_class_name_: input_object[plugin_class_name_],
-                plugin_type_: ensure_value_is_enum(input_object[plugin_type_], PluginType),
-                plugin_config_: input_object[plugin_config_],
-            }
+    def make_dict(
+        self,
+        input_object: PluginEntry,
+        **kwargs,
+    ):
+        return {
+            plugin_module_name_: input_object.plugin_module_name,
+            plugin_class_name_: input_object.plugin_class_name,
+            plugin_type_: ensure_value_is_enum(input_object.plugin_type, PluginType),
+            plugin_config_: input_object.plugin_config,
+        }
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return PluginEntry(
             plugin_module_name = input_dict[plugin_module_name_],
             plugin_class_name = input_dict[plugin_class_name_],
