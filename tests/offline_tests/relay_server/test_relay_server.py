@@ -10,7 +10,7 @@ from argrelay.relay_server.__main__ import create_app
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
-from argrelay.schema_response.InterpResultSchema import all_tokens_, interp_result_desc
+from argrelay.schema_response.InterpResultSchema import interp_result_desc, all_tokens_
 from argrelay.schema_response.InvocationInputSchema import custom_plugin_data_
 from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH
 from argrelay.server_spec.server_data_schema import server_op_data_schemas

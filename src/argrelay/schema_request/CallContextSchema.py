@@ -68,32 +68,30 @@ class CallContextSchema(Schema):
     )
 
     @pre_dump
-    def make_dict(self, input_object: CallContext, **kwargs):
-        # TODO: figure out to populate all automatically and reduce duplication - this is error-prone:
-        if isinstance(input_object, CallContext):
-            return {
-                server_action_: input_object.server_action,
-                command_line_: input_object.command_line,
-                cursor_cpos_: input_object.cursor_cpos,
-                comp_scope_: ensure_value_is_enum(input_object.comp_scope, CompScope),
-                is_debug_enabled_: input_object.is_debug_enabled,
-            }
-        else:
-            # Assuming it is as dict:
-            return {
-                server_action_: ensure_value_is_enum(input_object[server_action_], ServerAction),
-                command_line_: input_object[command_line_],
-                cursor_cpos_: input_object[cursor_cpos_],
-                comp_scope_: ensure_value_is_enum(input_object[comp_scope_], CompScope),
-                is_debug_enabled_: input_object[is_debug_enabled_],
-            }
+    def make_dict(
+        self,
+        input_object: CallContext,
+        **kwargs,
+    ):
+        return {
+            server_action_: input_object.server_action,
+            command_line_: input_object.command_line,
+            cursor_cpos_: input_object.cursor_cpos,
+            comp_scope_: ensure_value_is_enum(input_object.comp_scope, CompScope),
+            is_debug_enabled_: input_object.is_debug_enabled,
+        }
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return CallContext(
             server_action = ensure_value_is_enum(input_dict[server_action_], ServerAction),
             command_line = input_dict[command_line_],
             cursor_cpos = input_dict[cursor_cpos_],
+            # TODO: Is calling `ensure_value_is_enum` even required?
             comp_scope = ensure_value_is_enum(input_dict[comp_scope_], CompScope),
             is_debug_enabled = input_dict[is_debug_enabled_],
         )

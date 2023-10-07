@@ -148,7 +148,9 @@ class FuncArgsInterp(AbstractInterp):
 
     def get_search_control_list(self) -> list[SearchControl]:
         delegator_plugin = self.get_funct_delegator()
-        search_control_list: list[SearchControl] = delegator_plugin.run_search_control(self.get_funct_data_envelope())
+        search_control_list: list[SearchControl] = delegator_plugin.run_search_control(
+            self.get_funct_data_envelopes()[0]
+        )
         return search_control_list
 
     def run_init_control(self):
@@ -165,11 +167,11 @@ class FuncArgsInterp(AbstractInterp):
                 self.interp_ctx,
             )
 
-    def get_funct_data_envelope(self):
-        return self.interp_ctx.envelope_containers[self.base_container_ipos + function_container_ipos_].data_envelope
+    def get_funct_data_envelopes(self) -> list[dict]:
+        return self.interp_ctx.envelope_containers[self.base_container_ipos + function_container_ipos_].data_envelopes
 
     def get_funct_delegator(self):
-        func_data_envelope = self.get_funct_data_envelope()
+        func_data_envelope = self.get_funct_data_envelopes()[0]
         if func_data_envelope:
             delegator_plugin_instance_id = func_data_envelope[instance_data_][delegator_plugin_instance_id_]
             delegator_plugin: AbstractDelegator = self.interp_ctx.action_delegators[delegator_plugin_instance_id]

@@ -39,7 +39,6 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
-from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
@@ -52,6 +51,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     query_cache_config_,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
+from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_helper.LocalClientCommandFactory import LocalClientCommandFactory
 from argrelay.test_helper.OpenFileMock import OpenFileMock
@@ -563,12 +563,14 @@ def _mock_delegator_plugin(path_to_invoke_action):
     with mock.patch(path_to_invoke_action, capture_invocation_input) as mock_static:
         yield mock_static
 
+
 @contextlib.contextmanager
 def do_reset_local_server():
     try:
         yield
     finally:
         LocalClientCommandFactory.local_server = None
+
 
 def capture_invocation_input(invocation_input: InvocationInput):
     """

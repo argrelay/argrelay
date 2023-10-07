@@ -9,16 +9,23 @@ class QueryResult:
     Results of a query via `QueryEngine.query_prop_values`.
     """
 
-    data_envelope: dict = field()
+    data_envelopes: list[dict] = field()
     """
-    Last `data_envelope` in search results
+    Contains 0 or 1 `data_envelope`-s from search results.
 
-    Normally, it is only useful when `found_count` = 1
+    *   0: Nothing found.
+    *   1: One of the found ones (possibly many).
+        If `found_count` > 1, it is the last `data_envelope`-s among many found.
+        If `found_count` = 1, it is exactly the `data_envelope` uniquely selected.
+
+    Returning 1 while `found_count` > 1 is used for performance reasons with `QueryEngine.query_prop_values`.
+
+    See also `EnvelopeContainer.data_envelopes`.
     """
 
     found_count: int = field()
     """
-    Total number of `data_envelope`-s found.
+    Total number of `data_envelope`-s found - see `data_envelopes`.
     """
 
     remaining_types_to_values: dict[str, list[str]] = field()

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from json import dumps
+
 from flasgger import swag_from
 from flask import request, Blueprint, Response, abort
 
@@ -10,9 +12,7 @@ from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLine
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
-from argrelay.schema_response.InterpResultSchema import interp_result_desc
-from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
 from argrelay.server_spec.CallContext import CallContext
 
@@ -52,7 +52,7 @@ def create_blueprint_api(local_server: LocalServer):
             response_dict = describe_line_args_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
-                response_json = interp_result_desc.dict_schema.dumps(response_dict)
+                response_json = dumps(response_dict)
                 return Response(
                     response_json,
                     mimetype = "application/json",
@@ -74,15 +74,16 @@ def create_blueprint_api(local_server: LocalServer):
             response_dict = propose_arg_values_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["text/plain"] or len(request.accept_mimetypes) == 0:
-                # Sending plain text by default for simplest clients (who may not even specify headers)
+                # Required for `ProposeArgValuesRemoteClientCommand`:
+                # Sending "text/plain" (default) for stripped down clients (who may not even specify headers)
                 # also serving perf reasons on client side (trivial parsing, no lib required, minimal imports):
                 return Response(
                     "\n".join(response_dict[arg_values_]),
                     mimetype = "text/plain",
                 )
             elif request.accept_mimetypes["application/json"]:
-                # JSON - parsing lib required:
-                response_json = arg_values_desc.dict_schema.dumps(response_dict)
+                # JSON - parsing lib is required on the client side:
+                response_json = dumps(response_dict)
                 return Response(
                     response_json,
                     mimetype = "application/json",
@@ -104,7 +105,7 @@ def create_blueprint_api(local_server: LocalServer):
             response_dict = relay_line_args_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
-                response_json = invocation_input_desc.dict_schema.dumps(response_dict)
+                response_json = dumps(response_dict)
                 return Response(
                     response_json,
                     mimetype = "application/json",

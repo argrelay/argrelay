@@ -8,11 +8,11 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_delegator_custom_data_desc,
     error_code_,
 )
-from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
+from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
 from argrelay.server_spec.CallContext import CallContext
 
@@ -42,11 +42,12 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         if self.interp_ctx.is_funct_found():
-            delegator_plugin_instance_id = self.interp_ctx.envelope_containers[function_container_ipos_].data_envelope[
-                instance_data_
-            ][
-                delegator_plugin_instance_id_
-            ]
+            delegator_plugin_instance_id = (
+                self
+                .interp_ctx
+                .envelope_containers[function_container_ipos_]
+                .data_envelopes[0][instance_data_][delegator_plugin_instance_id_]
+            )
         else:
             is_error = True
             error_message = "ERROR: Function is not selected, try help, or press Tab to complete selection."

@@ -121,7 +121,7 @@ class InOutTestCase(TestCase):
 
                 if envelope_ipos_to_field_values is not None:
                     self.verify_data_envelopes(
-                        EnvMockBuilder.invocation_input.data_envelopes,
+                        EnvMockBuilder.invocation_input.get_data_envelopes(),
                         envelope_ipos_to_field_values,
                     )
 
@@ -168,7 +168,7 @@ class InOutTestCase(TestCase):
                                     arg_value,
                                     envelope_containers
                                     [container_ipos].assigned_types_to_values
-                                    [arg_type]
+                                    [arg_type],
                                 )
                         except:
                             eprint(
@@ -208,7 +208,7 @@ class InOutTestCase(TestCase):
                             else:
                                 self.assertEqual(
                                     field_value,
-                                    data_envelopes[envelope_ipos][field_name]
+                                    data_envelopes[envelope_ipos][field_name],
                                 )
                         except:
                             eprint(

@@ -44,7 +44,7 @@ class DataEnvelopeSchema(Schema):
     to allow extra keys in, but `Schema.dump` simply do not serialize them.
     See these fields (which should otherwise use `DataEnvelopeSchema`):
     *   `InvocationInputSchema.data_envelopes`
-    *   `EnvelopeContainerSchema.data_envelope`
+    *   `EnvelopeContainerSchema.data_envelopes`
     *   `StaticDataSchema.data_envelopes`
     """
 

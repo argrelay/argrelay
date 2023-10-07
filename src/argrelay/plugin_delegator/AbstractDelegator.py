@@ -3,7 +3,6 @@ from __future__ import annotations
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
-from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
@@ -16,12 +15,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     search_control_list_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
-
-
-def get_data_envelopes(
-    interp_ctx: "InterpContext",
-):
-    return [envelope_container.data_envelope for envelope_container in interp_ctx.envelope_containers]
+from argrelay.schema_response.InvocationInput import InvocationInput
 
 
 def get_func_name_from_container(
@@ -29,17 +23,17 @@ def get_func_name_from_container(
 ):
     func_data_envelope = interp_ctx.envelope_containers[(
         interp_ctx.curr_interp.base_container_ipos + function_container_ipos_
-    )].data_envelope
+    )].data_envelopes[0]
     func_name = func_data_envelope[envelope_id_]
     return func_name
 
 
 def get_func_name_from_envelope(
-    data_envelopes: list[dict],
+    envelope_containers: list[EnvelopeContainer],
 ):
-    func_data_envelope = data_envelopes[(
+    func_data_envelope = envelope_containers[
         function_container_ipos_
-    )]
+    ].data_envelopes[0]
     func_name = func_data_envelope[envelope_id_]
     return func_name
 

@@ -1,4 +1,4 @@
-from marshmallow import Schema, RAISE, fields, pre_dump, post_load
+from marshmallow import RAISE, fields, pre_dump, post_load, Schema
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
@@ -24,6 +24,8 @@ class InterpResultSchema(Schema):
         unknown = RAISE
         ordered = True
 
+    model_class = InterpResult
+
     all_tokens = fields.List(
         fields.String(),
         required = True,
@@ -44,28 +46,31 @@ class InterpResultSchema(Schema):
     tan_token_l_part = fields.String()
 
     @pre_dump
-    def make_dict(self, input_object: InterpResult, **kwargs):
-        if isinstance(input_object, InterpResult):
-            return {
-                all_tokens_: input_object.all_tokens,
-                consumed_tokens_: input_object.consumed_tokens,
-                envelope_containers_: input_object.envelope_containers,
-                tan_token_ipos_: input_object.tan_token_ipos,
-                tan_token_l_part_: input_object.tan_token_l_part,
-            }
-        else:
-            # Assuming it is as dict:
-            return input_object
-        pass
+    def make_dict(
+        self,
+        input_object: InterpResult,
+        **kwargs,
+    ):
+        return {
+            all_tokens_: input_object.all_tokens,
+            consumed_tokens_: input_object.consumed_tokens,
+            envelope_containers_: input_object.envelope_containers,
+            tan_token_ipos_: input_object.tan_token_ipos,
+            tan_token_l_part_: input_object.tan_token_l_part,
+        }
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
-        return InterpResult(
-            all_tokens = input_dict[all_tokens_],
-            consumed_tokens = input_dict[consumed_tokens_],
-            envelope_containers = input_dict[envelope_containers_],
-            tan_token_ipos = input_dict[tan_token_ipos_],
-            tan_token_l_part = input_dict[tan_token_l_part_],
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
+        """
+        Implements inheritance as described here:
+        https://stackoverflow.com/a/65668854/441652
+        """
+        return type(self).model_class(
+            **input_dict,
         )
 
 

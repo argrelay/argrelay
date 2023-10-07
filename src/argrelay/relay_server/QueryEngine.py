@@ -120,6 +120,7 @@ class QueryEngine:
 
         remaining_types_to_values: dict[str, list[str]] = {}
         data_envelope = None
+        data_envelopes = []
         found_count = 0
 
         # TODO: What if search result is huge? Blame data set designer?
@@ -146,14 +147,18 @@ class QueryEngine:
                             if arg_val not in val_list:
                                 val_list.append(arg_val)
 
+        # Populate max one `data_envelope` on prop query for performance reasons:
+        if data_envelope is not None:
+            data_envelopes.append(data_envelope)
+
         return QueryResult(
-            data_envelope,
+            data_envelopes,
             found_count,
             remaining_types_to_values,
         )
 
 
-def scalar_to_list_values(arg_type_val: list|str) -> list[str]:
+def scalar_to_list_values(arg_type_val: list | str) -> list[str]:
     """
     FS_06_99_43_60 providing scalar value for list/array field is also possible (and vice versa).
     """

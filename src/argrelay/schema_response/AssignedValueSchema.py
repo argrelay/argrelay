@@ -25,22 +25,22 @@ class AssignedValueSchema(Schema):
     )
 
     @pre_dump
-    def make_dict(self, input_object: AssignedValue, **kwargs):
-        # TODO: figure out to populate all automatically and reduce duplication - this is error-prone:
-        if isinstance(input_object, AssignedValue):
-            return {
-                arg_value_: input_object.arg_value,
-                arg_source_: ensure_value_is_enum(input_object.arg_source, ArgSource),
-            }
-        else:
-            # Assuming it is as dict:
-            return {
-                arg_value_: input_object[arg_value_],
-                arg_source_: ensure_value_is_enum(input_object[arg_source_], ArgSource),
-            }
+    def make_dict(
+        self,
+        input_object: AssignedValue,
+        **kwargs,
+    ):
+        return {
+            arg_value_: input_object.arg_value,
+            arg_source_: ensure_value_is_enum(input_object.arg_source, ArgSource),
+        }
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return AssignedValue(
             arg_value = input_dict[arg_value_],
             arg_source = ensure_value_is_enum(input_dict[arg_source_], ArgSource),

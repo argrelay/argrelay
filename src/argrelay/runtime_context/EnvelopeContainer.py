@@ -20,10 +20,17 @@ class EnvelopeContainer:
     A specs how to query `data_envelope` for this `EnvelopeContainer`.
     """
 
-    data_envelope: dict = field(default = None)
+    data_envelopes: list[dict] = field(default_factory = lambda: [])
     """
-    If the last query finds (unique) single result,
-    it contains `data_envelope` based on `search_control` and command line input.
+    These `data_envelope`-s are based on `search_control` for this `EnvelopeContainer` (and command line input).
+
+    It contains only 0 or 1 `data_envelope` for performance reasons in case of:
+    *   `ServerAction.ProposeArgValues` (Tab-completion)
+    *   `ServerAction.DescribeLineArgs` (Alt+Shift+Q)
+    See `QueryEngine.query_prop_values` and `QueryResult.data_envelopes`.
+
+    It contains all N `data_envelope`-s in case of `ServerAction.RelayLineArgs`.
+    See `QueryResult.data_envelopes`.
     """
 
     found_count: int = field(default = 0)

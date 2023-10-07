@@ -10,7 +10,6 @@ from argrelay.custom_integ.value_constants import (
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.plugin_delegator.AbstractDelegator import (
     AbstractDelegator,
-    get_data_envelopes,
     get_func_name_from_container,
     get_func_name_from_envelope,
 )
@@ -21,11 +20,11 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_delegator_custom_data_desc,
     error_delegator_stub_custom_data_example,
 )
-from argrelay.plugin_delegator.InvocationInput import InvocationInput
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.schema_response.InvocationInput import InvocationInput
 
 host_container_ipos_ = 1
 service_container_ipos_ = 1
@@ -56,15 +55,14 @@ def redirect_to_no_func_error(
         server_config,
         "ERROR: objects cannot be searched until function is fully qualified",
         1,
-        get_data_envelopes(interp_ctx),
     )
+
 
 def redirect_to_error(
     interp_ctx,
     server_config,
     error_message,
     error_code,
-    data_envelopes,
 ):
     # Redirect to `ErrorDelegator`:
     delegator_plugin_instance_id = ErrorDelegator.__name__
@@ -76,8 +74,10 @@ def redirect_to_error(
     invocation_input = InvocationInput(
         all_tokens = interp_ctx.parsed_ctx.all_tokens,
         consumed_tokens = interp_ctx.consumed_tokens,
+        envelope_containers = interp_ctx.envelope_containers,
+        tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
+        tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
         delegator_plugin_entry = server_config.plugin_dict[delegator_plugin_instance_id],
-        data_envelopes = data_envelopes,
         custom_plugin_data = custom_plugin_data,
     )
     return invocation_input
@@ -110,9 +110,9 @@ class ServiceDelegator(AbstractDelegator):
             # If need to specify `AccessType` `data_envelope`:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + access_container_ipos_:
                 # Take object found so far:
-                object_envelope = interp_ctx.envelope_containers[(
+                data_envelope = interp_ctx.envelope_containers[(
                     interp_ctx.curr_interp.base_container_ipos + object_container_ipos
-                )].data_envelope
+                )].data_envelopes[0]
 
                 access_container = interp_ctx.envelope_containers[(
                     interp_ctx.curr_interp.base_container_ipos + access_container_ipos_
@@ -120,8 +120,8 @@ class ServiceDelegator(AbstractDelegator):
 
                 # Select default value to search `AccessType` `data_envelope` based on `CodeMaturity`:
                 code_arg_type = ServiceArgType.CodeMaturity.name
-                if code_arg_type in object_envelope:
-                    code_arg_val = object_envelope[code_arg_type]
+                if code_arg_type in data_envelope:
+                    code_arg_val = data_envelope[code_arg_type]
                     if code_arg_val == "prod":
                         set_default_to(ServiceArgType.AccessType.name, "ro", access_container)
                     else:
@@ -152,14 +152,9 @@ class ServiceDelegator(AbstractDelegator):
             goto_service_funct_,
         ]:
             # Even if these functions do not support varargs, when `redirect_to_error`, query all:
-            query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_container_ipos])
-            data_envelopes = (
-                # existing envelopes (until vararg one):
-                get_data_envelopes(interp_ctx)[:vararg_container_ipos]
-                +
-                # all envelopes in vararg set:
-                local_server.get_query_engine().query_data_envelopes(query_dict)
-            )
+            vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
+            query_dict = populate_query_dict(vararg_container)
+            vararg_container.data_envelopes = local_server.get_query_engine().query_data_envelopes(query_dict)
 
             # Actual implementation is not defined for demo:
             return redirect_to_error(
@@ -167,7 +162,6 @@ class ServiceDelegator(AbstractDelegator):
                 local_server.server_config,
                 error_delegator_stub_custom_data_example[error_message_],
                 error_delegator_stub_custom_data_example[error_code_],
-                data_envelopes,
             )
         elif func_name in [
             list_host_func_,
@@ -176,21 +170,20 @@ class ServiceDelegator(AbstractDelegator):
             # Verify that func is selected and all what is left to do is to query 0...N objects:
             if interp_ctx.curr_container_ipos >= vararg_container_ipos:
                 # Search `data_envelope`-s based on existing args on command line:
-                query_dict = populate_query_dict(interp_ctx.envelope_containers[vararg_container_ipos])
+                vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
+                query_dict = populate_query_dict(vararg_container)
+                vararg_container.data_envelopes = local_server.get_query_engine().query_data_envelopes(query_dict)
+
                 # Plugin to invoke on client side:
                 delegator_plugin_instance_id = ServiceDelegator.__name__
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput(
                     all_tokens = interp_ctx.parsed_ctx.all_tokens,
                     consumed_tokens = interp_ctx.consumed_tokens,
+                    envelope_containers = interp_ctx.envelope_containers,
+                    tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
+                    tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
                     delegator_plugin_entry = local_server.server_config.plugin_dict[delegator_plugin_instance_id],
-                    data_envelopes = (
-                        # existing envelopes (until vararg one):
-                        get_data_envelopes(interp_ctx)[:vararg_container_ipos]
-                        +
-                        # all envelopes in vararg set:
-                        local_server.get_query_engine().query_data_envelopes(query_dict)
-                    ),
                     custom_plugin_data = {},
                 )
                 return invocation_input
@@ -209,12 +202,12 @@ class ServiceDelegator(AbstractDelegator):
         Print `data_envelope`-s received from server on client side.
         """
 
-        func_name = get_func_name_from_envelope(invocation_input.data_envelopes)
+        func_name = get_func_name_from_envelope(invocation_input.envelope_containers)
         if func_name == list_host_func_:
-            for data_envelope in invocation_input.data_envelopes[host_container_ipos_:]:
+            for data_envelope in invocation_input.envelope_containers[host_container_ipos_].data_envelopes:
                 print(data_envelope)
         elif func_name == list_service_func_:
-            for data_envelope in invocation_input.data_envelopes[service_container_ipos_:]:
+            for data_envelope in invocation_input.envelope_containers[service_container_ipos_].data_envelopes:
                 print(data_envelope)
         else:
             raise RuntimeError
