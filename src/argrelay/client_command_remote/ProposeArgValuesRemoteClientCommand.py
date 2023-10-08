@@ -2,7 +2,10 @@ import json
 import socket
 
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.handler_response.ProposeArgValuesClientResponseHandler import ProposeArgValuesClientResponseHandler
+from argrelay.handler_response.ProposeArgValuesClientResponseHandler import (
+    ProposeArgValuesClientResponseHandler,
+    perf_arg_values_,
+)
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
@@ -18,10 +21,11 @@ class ProposeArgValuesRemoteClientCommand(AbstractClientCommand):
     Importing everything from `AbstractRemoteClientCommand` slows down startup and responses on `Tab` requests.
 
     Performance is not critical for other client commands
-    (e.g. `ServerAction.DescribeLineArgs` or `ServerAction.RelayLineArgs`).
+    (e.g. `ServerAction.DescribeLineArgs` or `ServerAction.RelayLineArgs`),
+    but not for `Tab` (`ServerAction.ProposeArgValues`).
 
     Because `Tab`-completion is latency-sensitive, `ServerAction.ProposeArgValues` command uses this specialized client.
-    The drawback is that it also requires extra maintenance/testing.
+    The drawback is that it also requires special maintenance/testing.
     """
 
     # TODO: Provide test coverage for this special implementation.
@@ -98,7 +102,7 @@ Connection: close\r
         try:
             if response_status_code == 200:
                 self.response_handler.handle_response({
-                    "arg_values": response_body_str,
+                    perf_arg_values_: response_body_str,
                 })
             else:
                 raise RuntimeError
