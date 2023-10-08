@@ -45,9 +45,9 @@ def parse_line_and_cpos(test_line: str) -> (str, int):
 @contextmanager
 def change_to_known_repo_path(path_from_repo_root = "./tests"):
     """
-    This function changes to known path within repo root.
+    This function changes current dir to known path within repo root.
 
-    This allows any other code relying on the file access within the repo use reliable relative paths.
+    This allows any other code accessing files by relative paths rely on the stable path within the repo.
     """
 
     old_pwd = os.getcwd()

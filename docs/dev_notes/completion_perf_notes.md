@@ -67,6 +67,14 @@ therefore, `*.json` was chosen as a more conventional config format.
 | `*.json`      | 7 millis            | 14 millis       | Fast and still a config format. | Not uniform with server config.    |
 | `*.yaml`      | 19 millis           | 26 millis       | Uniform with server config.     | Why loosing 12 millis to `*.json`? |
 
+# See also
+
+Module imports for `ServerAction.ProposeArgValues` are constrained by this test:
+
+```
+tests/offline_tests/relay_client/test_ProposeArgValuesRemoteClientCommand.py
+```
+
 # Raw data
 
 This is already summarized in one of the tables above:

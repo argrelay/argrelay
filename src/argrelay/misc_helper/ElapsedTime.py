@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
-from typing import ClassVar
 
 from argrelay.misc_helper import eprint
 
 
-@dataclass
 class ElapsedTime:
     """
     *   Instance holds a named timestamp.
@@ -16,18 +13,27 @@ class ElapsedTime:
     At the moment, a static singleton is enough as perf measurements are done with single client.
     """
 
-    name: str = field()
-    ts: int = field()
-
-    all_ts: ClassVar[list[ElapsedTime]] = []
+    all_ts: list[ElapsedTime] = []
 
     is_debug_enabled: bool = False
     """
     This is normally set based on `ShellContext.is_debug_enabled`.
     """
 
+    def __init__(
+        self,
+        entry_name: str,
+        entry_time: int,
+    ):
+        self.entry_name = entry_name
+        self.entry_time = entry_time
+
     def print(self, prev_ts: int):
-        ElapsedTime.print_formatted(self.name, self.ts, self.ts - prev_ts)
+        ElapsedTime.print_formatted(
+            self.entry_name,
+            self.entry_time,
+            self.entry_time - prev_ts,
+        )
 
     @classmethod
     def clear_measurements(cls):
@@ -38,8 +44,8 @@ class ElapsedTime:
         eprint(f"{diff / 1_000_000_000:f}s: {name}")
 
     @classmethod
-    def measure(cls, name: str):
-        cls.all_ts.append(ElapsedTime(name, time.time_ns()))
+    def measure(cls, entry_name: str):
+        cls.all_ts.append(ElapsedTime(entry_name, time.time_ns()))
 
     @classmethod
     def print_all(cls):
@@ -47,7 +53,7 @@ class ElapsedTime:
         if cls.all_ts:
             first_ts = cls.all_ts[0]
             prev_ts = first_ts
-            prev_ts.print(prev_ts.ts)
+            prev_ts.print(prev_ts.entry_time)
             remaining = cls.all_ts[1:]
         else:
             first_ts = None
@@ -55,12 +61,16 @@ class ElapsedTime:
             remaining = []
 
         for ts in remaining:
-            ts.print(prev_ts.ts)
+            ts.print(prev_ts.entry_time)
             prev_ts = ts
 
         # total:
         if cls.all_ts:
-            prev_ts.print_formatted("total", first_ts.ts, prev_ts.ts - first_ts.ts)
+            prev_ts.print_formatted(
+                "total",
+                first_ts.entry_time,
+                prev_ts.entry_time - first_ts.entry_time,
+            )
 
     @classmethod
     def print_all_if_debug(cls):
