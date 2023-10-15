@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 class QueryResult:
     """
     Results of a query via `QueryEngine.query_prop_values`.
+
+    Do not confuse with results of `QueryEngine.query_data_envelopes` (which returns all `data_envelope`-s directly).
     """
 
     data_envelopes: list[dict] = field()

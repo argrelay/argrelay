@@ -23,7 +23,11 @@ class MongoClientConfigSchema(Schema):
     """
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return MongoClientConfig(
             client_connection_string = input_dict[client_connection_string_],
         )

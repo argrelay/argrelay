@@ -34,7 +34,11 @@ class StaticDataSchema(Schema):
     )
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return StaticData(
             first_interp_factory_id = input_dict[first_interp_factory_id_],
             known_arg_types = input_dict[known_arg_types_],

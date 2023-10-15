@@ -40,7 +40,7 @@ class RunMode(Enum):
         Derive `RunMode` on client side from `CompType`.
         """
 
-        if comp_type == CompType.InvokeAction:
+        if comp_type is CompType.InvokeAction:
             return RunMode.InvocationMode
         else:
             return RunMode.CompletionMode

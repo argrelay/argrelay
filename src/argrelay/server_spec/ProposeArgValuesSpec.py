@@ -34,6 +34,7 @@ spec_data = {
         },
     },
     "definitions": get_schema_definitions([
+        # TODO: provide `call_context_desc` with example of expected comp_type for propose_arg_values:
         call_context_desc.ref_name,
         arg_values_desc.ref_name,
     ]),

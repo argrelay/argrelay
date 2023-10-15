@@ -1,6 +1,7 @@
 """
 """
 
+# TODO: rename funct -> func:
 goto_host_funct_ = "goto_host"
 goto_service_funct_ = "goto_service"
 goto_repo_func_ = "goto_repo"

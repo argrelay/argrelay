@@ -24,7 +24,11 @@ class QueryCacheConfigSchema(Schema):
     query_cache_max_size_bytes = fields.Integer()
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return QueryCacheConfig(
             enable_query_cache = input_dict[enable_query_cache_],
             query_cache_ttl_sec = input_dict[query_cache_ttl_sec_],

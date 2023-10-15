@@ -23,7 +23,7 @@ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
         self,
         call_ctx: CallContext,
     ) -> dict:
-        assert call_ctx.server_action == ServerAction.DescribeLineArgs
+        assert call_ctx.server_action is ServerAction.DescribeLineArgs
 
         self.interpret_command(self.local_server, call_ctx)
         ElapsedTime.measure("after_interpret_command")

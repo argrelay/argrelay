@@ -4,7 +4,7 @@ This procedure describes using [`FS_85_33_46_53.bootstrap_dev_env.md`][FS_85_33_
 2.  initial deployment for existing project: [`bootstrap_procedure.2.initial_deployment.md`][bootstrap_procedure.2.initial_deployment.md]
 3.  `argrelay` upgrade as (dependency for existing project): [`bootstrap_procedure.3.argrelay_upgrade.md`][bootstrap_procedure.3.argrelay_upgrade.md]
 
-# Project creation with boostrap script
+# Project creation with bootstrap script
 
 Obtain (copy and paste or download) [`bootstrap_dev_env.bash`][bootstrap_dev_env.bash] into temporary path,<br/>
 for example, `/tmp/bootstrap_dev_env.bash`.

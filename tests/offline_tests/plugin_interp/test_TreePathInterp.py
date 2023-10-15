@@ -1,10 +1,12 @@
 from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_interp.TreePathInterp import fetch_tree_node
 from argrelay.test_helper import line_no
-from argrelay.test_helper.InOutTestCase import InOutTestCase
+
+from argrelay.test_helper.LocalTestCase import LocalTestCase
 
 
-class ThisTestCase(InOutTestCase):
+class ThisTestCase(LocalTestCase):
+    same_test_data_per_class = "TD_76_09_29_31"  # overlapped
 
     def test_FS_01_89_09_24_fetch_tree_node(self):
         """
@@ -108,7 +110,7 @@ class ThisTestCase(InOutTestCase):
                 ) = test_case
 
                 self.verify_output_with_new_server_via_local_client(
-                    "TD_76_09_29_31",  # overlapped
+                    self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     expected_suggestions,

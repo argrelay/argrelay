@@ -44,7 +44,7 @@ class CompScope(IntEnum):
         ]:
             return CompScope.ScopeInitial
 
-        if comp_type == CompType.SubsequentHelp:
+        if comp_type is CompType.SubsequentHelp:
             return CompScope.ScopeSubsequent
 
         return CompScope.ScopeUnknown

@@ -12,6 +12,7 @@ from argrelay.test_helper.EnvMockBuilder import (
 from env_tests.ManualServerTest import ManualServerTest
 
 
+# TODO: Do we really need this test? Why not using `RemoteTestCase` or `End2EndTestCase`?
 class ThisTestCase(ManualServerTest):
 
     # noinspection PyMethodMayBeStatic

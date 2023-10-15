@@ -19,7 +19,11 @@ class ConnectionConfigSchema(Schema):
     )
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return ConnectionConfig(
             server_host_name = input_dict["server_host_name"],
             server_port_number = input_dict["server_port_number"],

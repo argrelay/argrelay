@@ -56,7 +56,11 @@ class EnvelopeContainerSchema(Schema):
     )
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return EnvelopeContainer(
             search_control = input_dict[search_control_],
             data_envelopes = input_dict[data_envelopes_],

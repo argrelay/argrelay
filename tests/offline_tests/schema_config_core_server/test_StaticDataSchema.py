@@ -1,5 +1,3 @@
-from unittest import TestCase
-
 from jsonschema.exceptions import ValidationError
 from marshmallow import ValidationError
 
@@ -11,10 +9,11 @@ from argrelay.schema_config_core_server.StaticDataSchema import (
     data_envelopes_,
 )
 from argrelay.test_helper import line_no
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 from argrelay.test_helper.EnvMockBuilder import load_custom_integ_server_config_dict
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
 
     def test_from_yaml_str(self):
         """

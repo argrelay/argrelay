@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper import ensure_value_is_enum
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.plugin_loader.NoopLoader import NoopLoader
+from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.runtime_data.PluginEntry import PluginEntry
 
 plugin_config_ = "plugin_config"
@@ -12,8 +12,8 @@ plugin_class_name_ = "plugin_class_name"
 plugin_type_ = "plugin_type"
 
 _plugin_entry_example = {
-    plugin_module_name_: NoopLoader.__module__,
-    plugin_class_name_: NoopLoader.__name__,
+    plugin_module_name_: NoopDelegator.__module__,
+    plugin_class_name_: NoopDelegator.__name__,
     plugin_type_: PluginType.LoaderPlugin.name,
     plugin_config_: {
     },

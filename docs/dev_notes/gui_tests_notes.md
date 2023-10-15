@@ -4,7 +4,7 @@
 https://docs.cypress.io/guides/getting-started/installing-cypress
 
 ```sh
-cd argrelay.git/tests/ui_tests
+cd argrelay.git/tests/gui_tests
 npm install cypress --save-dev
 ```
 
@@ -47,6 +47,6 @@ To pass tests successfully:
 *   `TD_38_03_48_51` test data is required (which slows down responses due to its volume)
 
 ```sh
-cd argrelay.git/tests/ui_tests
+cd argrelay.git/tests/gui_tests
 npx cypress run --spec cypress/e2e/argrelay_gui/**/*.cy.js
 ```

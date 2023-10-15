@@ -14,7 +14,7 @@ import sys
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from io import StringIO
-from typing import Type
+from typing import Type, Union
 from unittest import mock
 
 import mongomock
@@ -40,7 +40,11 @@ from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.schema_config_core_client.ClientConfigSchema import use_local_requests_, client_config_desc
+from argrelay.schema_config_core_client.ClientConfigSchema import (
+    use_local_requests_,
+    client_config_desc,
+    optimize_completion_request_,
+)
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
 from argrelay.schema_config_core_server.MongoServerConfigSchema import start_server_
 from argrelay.schema_config_core_server.QueryCacheConfigSchema import enable_query_cache_
@@ -110,12 +114,13 @@ class EnvMockBuilder:
 
     file_mock: OpenFileMock = field(default_factory = lambda: OpenFileMock({}))
 
-    client_config_dict: dict = field(default_factory = lambda: load_custom_integ_client_config_dict())
-    mock_client_config_file_read: bool = field(default = True)
+    client_config_dict: Union[dict, None] = field(default_factory = lambda: None)
+    mock_client_config_file_read: bool = field(default = False)
     is_client_config_with_local_server: bool = field(default = True)
+    is_client_config_to_optimize_completion_request: bool = field(default = None)
 
-    server_config_dict: dict = field(default_factory = lambda: load_custom_integ_server_config_dict())
-    mock_server_config_file_read: bool = field(default = True)
+    server_config_dict: Union[dict, None] = field(default_factory = lambda: None)
+    mock_server_config_file_read: bool = field(default = False)
     is_server_config_with_mongo_start: bool = field(default = False)
     enable_demo_git_loader: bool = field(default = False)
 
@@ -125,7 +130,7 @@ class EnvMockBuilder:
     actual_stderr: StringIO = field(default = None)
     capture_stderr: bool = field(default = False)
 
-    mock_mongo_client: bool = field(default = True)
+    mock_mongo_client: Union[bool, None] = field(default = None)
 
     assert_on_close: bool = field(default = True)
 
@@ -136,7 +141,7 @@ class EnvMockBuilder:
     delegator_plugin_invoke_action_func_path: str = field(default = None)
     invocation_input: InvocationInput = field(default = None)
 
-    enable_query_cache: bool = field(default = True)
+    enable_query_cache: Union[bool, None] = field(default = None)
 
     reset_local_server: bool = field(default = True)
     """
@@ -186,7 +191,12 @@ class EnvMockBuilder:
         self._mock_client_input = given_val
         return self
 
-    def set_client_config_dict(self, client_config: dict):
+    def set_client_config_dict(
+        self,
+        client_config: Union[dict, None] = None,
+    ):
+        if client_config is None:
+            client_config = load_custom_integ_client_config_dict()
         self.client_config_dict = client_config
         return self
 
@@ -201,7 +211,16 @@ class EnvMockBuilder:
         self.is_client_config_with_local_server = given_val
         return self
 
-    def set_server_config_dict(self, server_config: dict):
+    def set_client_config_to_optimize_completion_request(self, given_val: Union[bool, None]):
+        self.is_client_config_to_optimize_completion_request = given_val
+        return self
+
+    def set_server_config_dict(
+        self,
+        server_config: Union[dict, None] = None,
+    ):
+        if server_config is None:
+            server_config = load_custom_integ_server_config_dict()
         self.server_config_dict = server_config
         return self
 
@@ -228,8 +247,11 @@ class EnvMockBuilder:
         self.capture_stderr = given_val
         return self
 
-    def set_mock_mongo_client(self, mock_mongo_client: bool):
-        self.mock_mongo_client = mock_mongo_client
+    def set_mock_mongo_client(
+        self,
+        given_val: Union[bool, None],
+    ):
+        self.mock_mongo_client = given_val
         return self
 
     def set_test_data_ids_to_load(self, test_data_ids_to_load: list[str]):
@@ -239,7 +261,7 @@ class EnvMockBuilder:
     def set_capture_delegator_invocation_input(self, delegator_class: Type[AbstractDelegator]):
         """
         This func causes `AbstractDelegator.invoke_action` to be mocked to capture `InvocationInput`
-        inside `EnvMockBuilder.invocation_input` which test can then assert its data.
+        inside `EnvMockBuilder.invocation_input` allowing tests to assert it.
         """
 
         self.delegator_plugin_invoke_action_func_path = (
@@ -251,7 +273,10 @@ class EnvMockBuilder:
         )
         return self
 
-    def set_enable_query_cache(self, given_val: bool):
+    def set_enable_query_cache(
+        self,
+        given_val: Union[bool, None],
+    ):
         self.enable_query_cache = given_val
         return self
 
@@ -287,28 +312,56 @@ class EnvMockBuilder:
         if self._command_args_are_set:
             assert not self._cursor_cpos_is_set, "if args are set (in InvocationMode), cursor pos is not set"
 
+        ################################################################################################################
+        # client settings
+
+        if self.client_config_dict is not None:
+            assert self.mock_client_config_file_read
+
         if self.is_client_config_with_local_server:
             # So far, local client is only used for testing (which implies using mocked client config file access).
             # If fails here, for consistency, either enable client config file mocking or disable local client.
             assert self.mock_client_config_file_read
 
+        if self.is_client_config_to_optimize_completion_request is not None:
+            assert self.mock_client_config_file_read
+
+        ################################################################################################################
+        # server settings
+
+        if self.server_config_dict is not None:
+            assert self.mock_server_config_file_read
+
         if self.is_server_config_with_mongo_start:
             assert self.mock_server_config_file_read
 
         if self.enable_demo_git_loader:
-            assert self.mock_client_config_file_read
-
-        if self.enable_query_cache != self.server_config_dict[query_cache_config_][enable_query_cache_]:
             assert self.mock_server_config_file_read
 
+        if self.enable_query_cache is not None:
+            assert self.mock_server_config_file_read
+
+        if self.mock_mongo_client is not None:
+            assert self.mock_server_config_file_read
+
+        ################################################################################################################
+
         if self.mock_client_config_file_read:
+            assert self.client_config_dict is not None
             self.client_config_dict[use_local_requests_] = self.is_client_config_with_local_server
-            self.file_mock.path_to_data[client_config_desc.default_file_path] = json.dumps(self.client_config_dict)
+            if self.is_client_config_to_optimize_completion_request is not None:
+                self.client_config_dict[
+                    optimize_completion_request_
+                ] = self.is_client_config_to_optimize_completion_request
+            self.file_mock.path_to_data[client_config_desc.get_adjusted_file_path()] = json.dumps(
+                self.client_config_dict
+            )
 
         if self.mock_server_config_file_read:
             """
             Change server config data, then mock file access to return that data for tests.
             """
+            assert self.server_config_dict is not None
 
             self.server_config_dict[mongo_config_][mongo_server_][
                 start_server_
@@ -319,9 +372,15 @@ class EnvMockBuilder:
             plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
             plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
 
-            self.server_config_dict[query_cache_config_][enable_query_cache_] = self.enable_query_cache
+            if self.enable_query_cache is not None:
+                self.server_config_dict[query_cache_config_][enable_query_cache_] = self.enable_query_cache
 
-            self.file_mock.path_to_data[server_config_desc.default_file_path] = yaml.dump(self.server_config_dict)
+            if self.mock_mongo_client is not None:
+                self.server_config_dict[mongo_config_][use_mongomock_only_] = self.mock_mongo_client
+
+            self.file_mock.path_to_data[server_config_desc.get_adjusted_file_path()] = yaml.dump(
+                self.server_config_dict
+            )
 
         with ExitStack() as exit_stack:
 
@@ -331,16 +390,8 @@ class EnvMockBuilder:
             # Always mock file access - whether file data or mocked data is given depends on the config:
             yield_list.append(exit_stack.enter_context(self.mock_file_open()))
 
-            if (
-                self.mock_mongo_client
-                and
-                # If `mongomock` is already used, no need to mock MongoDB:
-                not self.server_config_dict[mongo_config_][use_mongomock_only_]
-            ):
-                yield_list.append(exit_stack.enter_context(_mongo_client_mock_manager()))
-
             if self._mock_client_input:
-                if CallConv.from_comp_type(self.comp_type) == CallConv.EnvVarsConv:
+                if CallConv.from_comp_type(self.comp_type) is CallConv.EnvVarsConv:
                     # TODO: make explicit function "mock_client_input_in_env_vars" with all three args required.
                     yield_list.append(exit_stack.enter_context(
                         _mock_client_input_in_env_vars(
@@ -349,7 +400,7 @@ class EnvMockBuilder:
                             self.comp_type,
                         )
                     ))
-                elif CallConv.from_comp_type(self.comp_type) == CallConv.CliArgsConv:
+                elif CallConv.from_comp_type(self.comp_type) is CallConv.CliArgsConv:
                     # TODO: make explicit function "mock_client_input_in_cli_args" with just command_args.
                     if self._command_args_are_set:
                         # TODO: do not branch here, branch on mock setup (in client tests) to make it explicit/conscious that InvocationMode is not about command_line, but command_args.
@@ -404,10 +455,10 @@ class EnvMockBuilder:
                 self.assert_server_config_read()
 
     def assert_client_config_read(self):
-        self.assert_file_read(client_config_desc.default_file_path)
+        self.assert_file_read(client_config_desc.get_adjusted_file_path())
 
     def assert_server_config_read(self):
-        self.assert_file_read(server_config_desc.default_file_path)
+        self.assert_file_read(server_config_desc.get_adjusted_file_path())
 
     def assert_file_read(self, file_path: str):
         """
@@ -425,7 +476,7 @@ class EmptyEnvMockBuilder(EnvMockBuilder):
     """
     Use case:
     Used to set up extra mocks before or after when nesting `EnvMockBuilder` one into another (or completely alone).
-    Without calling any setters to prime mocks, this `EnvMockBuilder`  is noop.
+    Without calling any extra setters after creation to prime some mocks, this `EnvMockBuilder`  is noop.
     """
 
     def __init__(
@@ -437,12 +488,13 @@ class EmptyEnvMockBuilder(EnvMockBuilder):
         self.set_mock_client_config_file_read(False)
         self.set_mock_server_config_file_read(False)
         self.set_client_config_with_local_server(False)
-        self.set_mock_mongo_client(False)
 
 
 @dataclass
 class LocalClientEnvMockBuilder(EnvMockBuilder):
     """
+    Supports FS_66_17_43_42 test_infra / special test mode #1.
+
     Use case:
     Used in tests where both server and client code is verified but without code for data marshalling via HTTP.
     Runs client and server code in the same test process via `LocalClient` (see for more details).
@@ -453,15 +505,22 @@ class LocalClientEnvMockBuilder(EnvMockBuilder):
     ):
         super().__init__()
 
-        # TODO: enable validation that client code is actually invoked:
+        # TODO: enable validation that client code is actually invoked (e.g. invocation of make_request in main):
 
         # Ensure that client and server read their config files by test process:
         self.set_mock_client_config_file_read(True)
         self.set_mock_server_config_file_read(True)
 
+        # Load default configs as file access mocks input:
+        self.set_client_config_dict()
+        self.set_server_config_dict()
+
         # For local client (with local server) tests,
         # ensure client uses `LocalClient` without marshalling data via HTTP:
         self.set_client_config_with_local_server(True)
+        # Also, ensure non-optimized completion is used
+        # (optimized directly uses network socket which will not give access to `LocalServer`):
+        self.set_client_config_to_optimize_completion_request(False)
 
         # For local client (with local server) tests,
         # client code will need to access data passed by the shell - mock it:
@@ -471,9 +530,11 @@ class LocalClientEnvMockBuilder(EnvMockBuilder):
 @dataclass
 class ServerOnlyEnvMockBuilder(EnvMockBuilder):
     """
+    Supports FS_66_17_43_42 test_infra / special test mode #7.
+
     Use case:
-    Used in tests where client code is not invoked.
-    Current test process runs only server code.
+    Used in tests where client code is not invoked (or external to the test process like GUI).
+    Current test process runs only server code - use this class to mock server environment (e.g. config).
     """
 
     def __init__(
@@ -481,10 +542,17 @@ class ServerOnlyEnvMockBuilder(EnvMockBuilder):
     ):
         super().__init__()
 
-        # TODO: enable validation that client code is not invoked:
+        # TODO: enable validation that client code is not invoked (e.g. invocation of make_request):
 
-        # For server-only test, client config file read should not happen by test process:
+        # For server-only test, client config file read should not happen by test process
+        # (if this mock is enabled, but not used, it fails):
         self.set_mock_client_config_file_read(False)
+
+        # For server-only test, use mocked server config file access (to control its content in test):
+        self.set_mock_server_config_file_read(True)
+
+        # Load default server config as file access mock input:
+        self.set_server_config_dict()
 
         # For server-only test, client code is not used, but if it is, try to fail via REST API:
         self.set_client_config_with_local_server(False)
@@ -496,6 +564,8 @@ class ServerOnlyEnvMockBuilder(EnvMockBuilder):
 @dataclass
 class LiveServerEnvMockBuilder(EnvMockBuilder):
     """
+    Supports FS_66_17_43_42 test_infra / special test mode #2.
+
     Use case:
     Used in tests where client talks to some live server.
     Server is started somehow outside the mock, current test process runs only client code.
@@ -506,15 +576,27 @@ class LiveServerEnvMockBuilder(EnvMockBuilder):
     ):
         super().__init__()
 
-        # TODO: enable validation that client code is not invoked:
+        # TODO: enable validation that server code is not invoked (e.g. no invocation of create_call_ctx):
 
-        # For live server test, server config file read should not happen by test process code:
+        # For live server test, read client config without mocking
+        # (because it contains correct connection details for that live server):
+        self.set_mock_client_config_file_read(False)
+
+        # For live server test, server config file read should not happen by test process code
+        # (because it happens within server process - un-verify-able from the test process):
         self.set_mock_server_config_file_read(False)
 
-        # For live server test, running local server contradicts with the purpose - disable:
+        # For live server test, running local server contradicts with the live server - disable:
         self.set_client_config_with_local_server(False)
+        # Optimized client prevents accessing internal server state via `LocalClient` and `LocalServer`,
+        # but it is impossible with live server anyway.
+        # Therefore, default is unspecified here = None
+        # (whatever is set in the client config or dictated by its defaults):
+        self.set_client_config_to_optimize_completion_request(None)
 
 
+# Instead, mock server config and set `MongoConfig.use_mongomock_only` to `True`:
+@PendingDeprecationWarning
 @contextlib.contextmanager
 def _mongo_client_mock_manager():
     get_mongo_client_orig = MongoClientWrapper.get_mongo_client
@@ -560,8 +642,8 @@ def _mock_stderr(stderr_f):
 
 @contextlib.contextmanager
 def _mock_delegator_plugin(path_to_invoke_action):
-    with mock.patch(path_to_invoke_action, capture_invocation_input) as mock_static:
-        yield mock_static
+    with mock.patch(path_to_invoke_action, capture_invocation_input) as invoke_action_mock:
+        yield invoke_action_mock
 
 
 @contextlib.contextmanager

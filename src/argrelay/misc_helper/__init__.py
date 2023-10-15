@@ -2,11 +2,10 @@
 """
 import os
 import sys
-from os.path import dirname
 
-# This global variable is overridden by `run_argrelay_client` or `run_argrelay_server`:
-# FS_29_54_67_86 dir_structure: `@/src/argrelay/misc_helper/__init__.py` -> `@/`:
-_argrelay_dir = dirname(dirname(dirname(dirname(os.path.abspath(__file__)))))
+# This global variable is (supposed to be) overridden by `run_argrelay_client` and `run_argrelay_server` or
+# whatever/whoever starts `argrelay` code to set to `@/` (`argrelay_dir`) according to FS_29_54_67_86 dir_structure:
+_argrelay_dir = None
 
 
 def set_argrelay_dir(argrelay_dir):

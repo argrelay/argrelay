@@ -35,6 +35,7 @@ spec_data = {
         },
     },
     "definitions": get_schema_definitions([
+        # TODO: provide `call_context_desc` with example of expected comp_type for describe_line_args:
         call_context_desc.ref_name,
         interp_result_desc.ref_name,
         envelope_container_desc.ref_name,

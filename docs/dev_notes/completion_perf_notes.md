@@ -27,14 +27,23 @@ To keep comparison apple-to-apple, the performance measurements were done on the
 
 The numbers are approximate - whatever seem to show up most of the time.
 
+# Trying optimized and non-optimized command for `ServerAction.ProposeArgValues`
+
+There are two implementations for `ServerAction.ProposeArgValues`:
+*   `ProposeArgValuesRemoteOptimizedClientCommand`
+*   `ProposeArgValuesRemoteClientCommand`
+
+It is possible to select between the two by setting `ClientConfig.optimize_completion_request` to true or false.
+
+Roughly their round-trip is respectively `20 ms` and `120 ms`.
+
 # Optimizing Tab-completion client request-response
 
-See `ProposeArgValuesRemoteClientCommand`.
-
+Table below goes through optimization iterations:
 *   Iteration 0: non-optimized version (still in use for commands `ServerAction.DescribeLineArgs` or `ServerAction.RelayLineArgs`).
 *   Iteration 4: optimized version for `ServerAction.ProposeArgValues`.
 
-All numbers are deltas between prev and curr except end-to-end `total` (a delta between first and last).
+All numbers are deltas between prev and curr marks except end-to-end `total` mark (a delta between first and last).
 
 | `ElapsedTime` mark            | Iteration 0 | Iteration 1 | Iteration 2 | Iteration 3 | Iteration 4 |
 |-------------------------------|-------------|-------------|-------------|-------------|-------------|
@@ -50,6 +59,7 @@ All numbers are deltas between prev and curr except end-to-end `total` (a delta 
 | ----------------------------- | ----------- | ----------- | ----------- | ----------- | ----------- |
 | `total`                       | 0.200850s   | 0.119845s   | 0.063021s   | 0.031822s   | 0.014637s   |
 
+What was done in each iteration:
 *   Iteration 0: Baseline (what is typical for other non-optimized commands).
 *   Iteration 1: Make imports conditional (import only when needed).
 *   Iteration 2: Switch from `requests` to `http.client`.
@@ -69,10 +79,10 @@ therefore, `*.json` was chosen as a more conventional config format.
 
 # See also
 
-Module imports for `ServerAction.ProposeArgValues` are constrained by this test:
+Module imports done by `ProposeArgValuesRemoteOptimizedClientCommand` are constrained by this test:
 
 ```
-tests/offline_tests/relay_client/test_ProposeArgValuesRemoteClientCommand.py
+tests/offline_tests/relay_client/test_ProposeArgValuesRemoteOptimizedClientCommand.py
 ```
 
 # Raw data

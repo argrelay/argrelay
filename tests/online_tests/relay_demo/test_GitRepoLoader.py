@@ -1,7 +1,6 @@
 import os
 import subprocess
 import tempfile
-from unittest import TestCase
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
@@ -21,13 +20,14 @@ from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_dict_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper import line_no
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 from argrelay.test_helper.EnvMockBuilder import (
     load_custom_integ_server_config_dict,
     LocalClientEnvMockBuilder,
 )
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
     temp_dir: tempfile.TemporaryDirectory
 
     def clean_temp_dir(self, is_successful: bool):
@@ -37,6 +37,7 @@ class ThisTestCase(TestCase):
                 pass
 
     def setUp(self):
+        super().setUp()
 
         self.temp_dir = tempfile.TemporaryDirectory()
         is_successful = False
@@ -75,6 +76,7 @@ class ThisTestCase(TestCase):
             self.clean_temp_dir(is_successful)
 
     def tearDown(self):
+        super().tearDown()
         self.clean_temp_dir(False)
 
     def test_loader(self):

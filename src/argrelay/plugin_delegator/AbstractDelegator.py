@@ -18,9 +18,13 @@ from argrelay.schema_config_interp.SearchControlSchema import search_control_des
 from argrelay.schema_response.InvocationInput import InvocationInput
 
 
-def get_func_name_from_container(
+def get_func_name(
     interp_ctx: "InterpContext",
 ):
+    """
+    Used on the server-side of the plugin.
+    """
+
     func_data_envelope = interp_ctx.envelope_containers[(
         interp_ctx.curr_interp.base_container_ipos + function_container_ipos_
     )].data_envelopes[0]
@@ -28,9 +32,13 @@ def get_func_name_from_container(
     return func_name
 
 
-def get_func_name_from_envelope(
+def get_func_name_from_containers(
     envelope_containers: list[EnvelopeContainer],
 ):
+    """
+    Used on the client-side of the plugin.
+    """
+
     func_data_envelope = envelope_containers[
         function_container_ipos_
     ].data_envelopes[0]

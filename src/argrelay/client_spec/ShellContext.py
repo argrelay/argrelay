@@ -99,9 +99,9 @@ class ShellContext:
     def select_server_action(
         self,
     ) -> ServerAction:
-        if self.comp_type == CompType.DescribeArgs:
+        if self.comp_type is CompType.DescribeArgs:
             return ServerAction.DescribeLineArgs
-        if self.comp_type == CompType.InvokeAction:
+        if self.comp_type is CompType.InvokeAction:
             return ServerAction.RelayLineArgs
 
         return ServerAction.ProposeArgValues

@@ -1,8 +1,8 @@
-from argrelay.client_spec.ShellContext import ShellContext
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+import argrelay.relay_client.__main__ as relay_client_main
 from argrelay.relay_client import AbstractClientCommand
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
 from argrelay.runtime_data.ClientConfig import ClientConfig
+from argrelay.server_spec.CallContext import CallContext
 
 
 class AbstractClient:
@@ -21,10 +21,9 @@ class AbstractClient:
     # noinspection PyMethodMayBeStatic
     def make_request(
         self,
-        shell_ctx: ShellContext,
+        call_ctx: CallContext,
     ) -> AbstractClientCommand:
-        shell_ctx.print_debug()
-        command_obj = self.command_factory.create_command(shell_ctx)
-        command_obj.execute_command()
-        ElapsedTime.measure("after_execute_command")
-        return command_obj
+        command_obj = self.command_factory.create_command(call_ctx)
+        return relay_client_main.make_request(
+            command_obj,
+        )

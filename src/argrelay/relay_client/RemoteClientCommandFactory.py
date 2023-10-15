@@ -1,3 +1,4 @@
+from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractRemoteClientCommand
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
 from argrelay.runtime_data.ClientConfig import ClientConfig
@@ -13,11 +14,11 @@ class RemoteClientCommandFactory(AbstractClientCommandFactory):
         self.client_config: ClientConfig = client_config
 
     # noinspection PyMethodMayBeStatic
-    def create_command_by_server_path(
+    def create_command(
         self,
         call_ctx: CallContext,
-    ) -> "AbstractRemoteClientCommand":
-        if call_ctx.server_action == ServerAction.DescribeLineArgs:
+    ) -> AbstractRemoteClientCommand:
+        if call_ctx.server_action is ServerAction.DescribeLineArgs:
             from argrelay.client_command_remote.DescribeLineArgsRemoteClientCommand import (
                 DescribeLineArgsRemoteClientCommand,
             )
@@ -25,7 +26,7 @@ class RemoteClientCommandFactory(AbstractClientCommandFactory):
                 call_ctx,
                 self.client_config.connection_config,
             )
-        if call_ctx.server_action == ServerAction.ProposeArgValues:
+        if call_ctx.server_action is ServerAction.ProposeArgValues:
             from argrelay.client_command_remote.ProposeArgValuesRemoteClientCommand import (
                 ProposeArgValuesRemoteClientCommand,
             )
@@ -33,7 +34,7 @@ class RemoteClientCommandFactory(AbstractClientCommandFactory):
                 call_ctx,
                 self.client_config.connection_config,
             )
-        if call_ctx.server_action == ServerAction.RelayLineArgs:
+        if call_ctx.server_action is ServerAction.RelayLineArgs:
             from argrelay.client_command_remote.RelayLineArgsRemoteClientCommand import (
                 RelayLineArgsRemoteClientCommand,
             )

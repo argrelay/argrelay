@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from unittest import TestCase
-
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
@@ -33,6 +31,7 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_type_,
 )
 from argrelay.test_helper import parse_line_and_cpos
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 from argrelay.test_helper.EnvMockBuilder import (
     load_custom_integ_server_config_dict,
     load_custom_integ_client_config_dict,
@@ -40,7 +39,7 @@ from argrelay.test_helper.EnvMockBuilder import (
 )
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
 
     def test_validate_function_envelopes_unambiguously_qualified(self):
         client_config_dict = load_custom_integ_client_config_dict()

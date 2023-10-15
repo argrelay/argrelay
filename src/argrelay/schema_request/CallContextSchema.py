@@ -19,7 +19,7 @@ _call_context_example = {
     command_line_: _sample_command_line,
     cursor_cpos_: len(_sample_command_line),
     comp_scope_: CompScope.ScopeInitial.name,
-    is_debug_enabled_: True,
+    is_debug_enabled_: False,
 }
 
 

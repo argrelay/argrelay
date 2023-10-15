@@ -33,7 +33,11 @@ class TreePathInterpFactoryConfigSchema(Schema):
     )
 
     @validates_schema
-    def validate_known(self, input_dict, **kwargs):
+    def validate_known(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         interp_selector_tree = input_dict[interp_selector_tree_]
         if not isinstance(interp_selector_tree, dict):
             raise ValidationError(f"not a dict: {interp_selector_tree}")

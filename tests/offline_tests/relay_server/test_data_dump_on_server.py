@@ -1,14 +1,14 @@
 import dataclasses
-from unittest import TestCase
 
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_server.__main__ import create_app
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
 
     def test_data_dump_on_server_with_non_serializable_id(self):
         """
@@ -29,7 +29,7 @@ class ThisTestCase(TestCase):
         )
         with env_mock_builder.build():
             self.assertTrue(
-                open(server_config_desc.default_file_path).read() == env_mock_builder.get_server_config_yaml()
+                open(server_config_desc.get_adjusted_file_path()).read() == env_mock_builder.get_server_config_yaml()
             )
 
             flask_app = create_app()

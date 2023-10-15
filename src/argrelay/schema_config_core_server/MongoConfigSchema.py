@@ -27,7 +27,11 @@ class MongoConfigSchema(Schema):
     mongo_server = fields.Nested(mongo_server_config_desc.dict_schema)
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return MongoConfig(
             use_mongomock_only = input_dict[use_mongomock_only_],
             mongo_client = input_dict[mongo_client_],

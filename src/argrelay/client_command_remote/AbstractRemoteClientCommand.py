@@ -37,6 +37,7 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         server_url = BASE_URL_FORMAT.format(**asdict(self.connection_config)) + f"{self.call_ctx.server_action.value}"
         headers_dict = {
             "Content-Type": "application/json",
+            "Accept": "application/json",
         }
         request_json = self.request_schema.dumps(self.call_ctx)
         ElapsedTime.measure("before_request")

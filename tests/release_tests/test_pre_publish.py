@@ -4,7 +4,7 @@ Check things which should not be published
 For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
 """
 import os
-from unittest import TestCase, skipIf
+from unittest import skipIf
 
 from argrelay.custom_integ import GitRepoLoader as GitRepoLoader_module
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
@@ -14,10 +14,11 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
 from argrelay.test_helper import change_to_known_repo_path
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
 
     def test_git_repo_loader_is_disabled(self):
         """
@@ -85,6 +86,8 @@ class ThisTestCase(TestCase):
     )
     def test_config_files_are_not_deployed(self):
         """
+        TODO: This test is old - search all dirs according to `FS_16_07_78_84.conf_dir_priority.md`.
+
         Ensure server and client config files are not deployed:
 
         *   `~/.argrelay.conf.d/argrelay.server.yaml`

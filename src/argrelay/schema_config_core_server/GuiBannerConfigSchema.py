@@ -16,7 +16,11 @@ class GuiBannerConfigSchema(Schema):
     footer_html = fields.String()
 
     @post_load
-    def make_object(self, input_dict, **kwargs):
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
         return GuiBannerConfig(
             header_html = input_dict[header_html_],
             footer_html = input_dict[footer_html_],

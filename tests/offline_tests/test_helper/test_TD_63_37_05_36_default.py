@@ -1,6 +1,5 @@
 import re
 from io import StringIO
-from unittest import TestCase
 
 import pandas as pd
 
@@ -12,10 +11,11 @@ from argrelay.relay_server.QueryEngine import scalar_to_list_values
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.test_helper import change_to_known_repo_path, test_data_
+from argrelay.test_helper.BaseTestCase import BaseTestCase
 from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(TestCase):
+class ThisTestCase(BaseTestCase):
     """
     Verify TD_63_37_05_36 # demo
     """
@@ -197,6 +197,7 @@ class ThisTestCase(TestCase):
         query_res = mongo_col.find(query_dict)
         found_count = 0
 
+        data_envelope = None
         for data_envelope in iter(query_res):
             found_count += 1
 

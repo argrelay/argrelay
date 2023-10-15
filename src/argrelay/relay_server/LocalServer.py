@@ -62,7 +62,7 @@ class LocalServer:
         for plugin_instance_id in self.server_config.plugin_instance_id_load_list:
             plugin_entry = self.server_config.plugin_dict[plugin_instance_id]
 
-            if plugin_entry.plugin_type == PluginType.LoaderPlugin:
+            if plugin_entry.plugin_type is PluginType.LoaderPlugin:
                 plugin_object: AbstractLoader = instantiate_plugin(
                     plugin_instance_id,
                     plugin_entry,
@@ -74,7 +74,7 @@ class LocalServer:
                 self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
                 continue
 
-            if plugin_entry.plugin_type == PluginType.InterpFactoryPlugin:
+            if plugin_entry.plugin_type is PluginType.InterpFactoryPlugin:
                 plugin_object: AbstractInterpFactory = instantiate_plugin(
                     plugin_instance_id,
                     plugin_entry,
@@ -84,7 +84,7 @@ class LocalServer:
                 self.server_config.interp_factories[plugin_instance_id] = plugin_object
                 continue
 
-            if plugin_entry.plugin_type == PluginType.DelegatorPlugin:
+            if plugin_entry.plugin_type is PluginType.DelegatorPlugin:
                 plugin_object: AbstractDelegator = instantiate_plugin(
                     plugin_instance_id,
                     plugin_entry,

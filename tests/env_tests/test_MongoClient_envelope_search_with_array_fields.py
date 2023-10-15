@@ -20,4 +20,3 @@ class ThisTestCase(test_MongoClient_envelope_search_with_array_fields.ThisTestCa
         )
 
         self.use_mongomock_only = False
-

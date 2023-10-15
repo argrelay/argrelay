@@ -1,97 +1,169 @@
-import os
-import subprocess
-
-from argrelay.client_spec.ShellContext import (
-    COMP_LINE_env_var,
-    COMP_POINT_env_var,
-    COMP_TYPE_env_var,
-    COMP_KEY_env_var,
-    UNKNOWN_COMP_KEY,
-)
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
-from argrelay.misc_helper import eprint
-from argrelay.test_helper import change_to_known_repo_path, parse_line_and_cpos
-from online_tests.end_to_end.End2EndTest import (
-    End2EndTest,
-    run_client_with_env_vars,
+from argrelay.test_helper import change_to_known_repo_path, line_no
+from argrelay.test_helper.End2EndTestCase import (
+    End2EndTestCase,
 )
-
-client_command_env_var_name_ = "ARGRELAY_CLIENT_COMMAND"
 
 
 # noinspection PyMethodMayBeStatic
-class ThisTestCase(End2EndTest):
+class ThisTestCase(End2EndTestCase):
 
     def test_DescribeLineArgs(self):
         """
         Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.DescribeArgs`.
         """
-        test_line = f"{os.environ.get(client_command_env_var_name_)} goto h|"
-        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
-        env_vars = os.environ.copy()
-        env_vars[COMP_LINE_env_var] = command_line
-        env_vars[COMP_POINT_env_var] = str(cursor_cpos)
-        env_vars[COMP_TYPE_env_var] = str(CompType.DescribeArgs.value)
-        env_vars[COMP_KEY_env_var] = UNKNOWN_COMP_KEY
-
-        with change_to_known_repo_path("."):
-
-            client_proc = run_client_with_env_vars(env_vars)
-            described_args = client_proc.stderr.decode("utf-8")
-            eprint(f"described_args: {described_args}")
-
-            self.assertEqual(
+        # @formatter:off
+        test_cases = [
+            (
+                line_no(), f"{self.default_bound_command} goto h|",
                 f"""
-{TermColor.consumed_token.value}{os.environ.get(client_command_env_var_name_)}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
+{TermColor.consumed_token.value}{self.default_bound_command}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 2
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*ObjectSelector: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ost{TermColor.reset_style.value} service 
 """,
-                described_args
-            )
+                "Test sample 1",
+            ),
+            (
+                line_no(), f"{self.default_bound_command} goto s|",
+                f"""
+{TermColor.consumed_token.value}{self.default_bound_command}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
+{ReservedEnvelopeClass.ClassFunction.name}: 2
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*ObjectSelector: ?{TermColor.reset_style.value} host {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ervice{TermColor.reset_style.value} 
+""",
+                "Test sample 2",
+            ),
+        ]
+        # @formatter:on
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    test_line,
+                    expected_stdout_str,
+                    case_comment,
+                ) = test_case
+                with change_to_known_repo_path("."):
+                    self.assert_DescribeLineArgs(
+                        self.default_bound_command,
+                        test_line,
+                        expected_stdout_str,
+                    )
+
+    def test_DescribeLineArgs_fails(self):
+        with self.assertRaises(AssertionError):
+            with change_to_known_repo_path("."):
+                self.assert_ProposeArgValues(
+                    self.default_bound_command,
+                    f"{self.default_bound_command} goto h|",
+                    CompType.PrefixShown,
+                    "whatever",
+                    1,
+                )
 
     def test_ProposeArgValues(self):
         """
         Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
         """
-        test_line = f"{os.environ.get(client_command_env_var_name_)} desc host dev upstream a|"
-        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
-        env_vars = os.environ.copy()
-        env_vars[COMP_LINE_env_var] = command_line
-        env_vars[COMP_POINT_env_var] = str(cursor_cpos)
-        env_vars[COMP_TYPE_env_var] = str(CompType.PrefixShown.value)
-        env_vars[COMP_KEY_env_var] = UNKNOWN_COMP_KEY
+        # @formatter:off
+        test_cases = [
+            (
+                line_no(), f"{self.default_bound_command} desc host dev upstream |",
+                CompType.PrefixShown,
+                f"""apac
+emea
+amer
+""",
+                "Test sample 1",
+            ),
+            (
+                line_no(), f"{self.default_bound_command} desc host dev upstream a|",
+                CompType.SubsequentHelp,
+                f"""apac
+amer
+""",
+                "Test sample 2",
+            ),
+        ]
+        # @formatter:on
 
-        with change_to_known_repo_path("."):
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    test_line,
+                    comp_type,
+                    expected_stdout_str,
+                    case_comment,
+                ) = test_case
+                with change_to_known_repo_path("."):
+                    self.assert_ProposeArgValues(
+                        self.default_bound_command,
+                        test_line,
+                        comp_type,
+                        expected_stdout_str,
+                    )
 
-            client_proc = run_client_with_env_vars(env_vars)
-            proposed_args = client_proc.stdout.decode("utf-8").strip().splitlines()
+    def test_ProposeArgValues_fails(self):
+        with self.assertRaises(AssertionError):
+            with change_to_known_repo_path("."):
+                self.assert_ProposeArgValues(
+                    self.default_bound_command,
+                    f"{self.default_bound_command} desc host dev upstream |",
+                    CompType.PrefixShown,
+                    "whatever",
+                    1,
+                )
 
-            self.assertEqual(
-                [
-                    "apac",
-                    "amer",
-                ],
-                proposed_args
-            )
 
     def test_RelayLineArgs(self):
         """
         Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.RelayLineArgs`.
         """
 
-        with change_to_known_repo_path("."):
-            # Function "desc_host" ("desc host") uses `NoopDelegator`, so the test should always pass:
-            client_proc = subprocess.run(
-                args = f"{os.environ.get(client_command_env_var_name_)} desc host dev upstream amer".split(" "),
-            )
-            ret_code = client_proc.returncode
-            if ret_code != 0:
-                raise RuntimeError
+        # @formatter:off
+        test_cases = [
+            (
+                line_no(), f"{self.default_bound_command} desc host dev upstream amer".split(" "),
+                0,
+                "",
+                "",
+                "`NoopDelegator` executes successfully without any output.",
+            ),
+            (
+                line_no(), f"{self.default_bound_command} goto host dev upstream amer".split(" "),
+                0,
+                "",
+                "INFO: command executed successfully: demo implementation is a stub" + "\n",
+                "`ErrorDelegator` executes successfully with output on STDERR.",
+            ),
+        ]
+        # @formatter:on
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    command_line_args,
+                    expected_exit_code,
+                    expected_stdout_str,
+                    expected_stderr_str,
+                    case_comment,
+                ) = test_case
+                with change_to_known_repo_path("."):
+                    self.assert_RelayLineArgs(
+                        command_line_args,
+                        expected_exit_code,
+                        expected_stdout_str,
+                        expected_stderr_str,
+                    )

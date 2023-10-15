@@ -48,7 +48,7 @@ script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 argrelay_dir="$( dirname "." )"
 
 # There are several cases this script is called:
-# *   (initial boostrap) directly: in that case `script_dir` is inside orig `argrelay` distrib package
+# *   (initial bootstrap) directly: in that case `script_dir` is inside orig `argrelay` distrib package
 # *   (`@/exe/dev_shell.bash`) indirectly: in that case `script_dir` is in `@/exe/` inside integration project dir
 # *   (subsequent upgrade) directly: in that case `script_dir` is in `@/exe/` inside integration project dir
 
@@ -170,13 +170,13 @@ function print_argrelay_conf_dir {
         # Path should be a directory or symlink to directory, otherwise default is `@/conf/`:
         if [[ ! -e "${argrelay_conf_base_dir}" ]]
         then
-            argrelay_conf_dir_path="${argrelay_dir}/conf/"
+            argrelay_conf_base_dir="${argrelay_dir}/conf/"
         fi
     else
         argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
     fi
 
-    echo "${argrelay_conf_dir_path}"
+    echo "${argrelay_conf_base_dir}"
 }
 
 ########################################################################################################################
@@ -255,7 +255,12 @@ then
     "${pythonX_basename}" -m venv --prompt "${venv_prompt_prefix:-@}" "${path_to_venvX}"
 fi
 
+# Activate `venv` with reduced output:
+set +x
+set +v
 source "${path_to_venvX}"/bin/activate
+set -x
+set -v
 
 if [[ -n "${activate_venv_only_flag:-}" ]]
 then
@@ -360,17 +365,17 @@ deploy_config_files_conf_EOF
     exit 1
 fi
 
-argrelay_conf_dir_path="$( print_argrelay_conf_dir )"
-if [[ -e "${argrelay_conf_dir_path}" ]]
+argrelay_conf_base_dir="$( print_argrelay_conf_dir )"
+if [[ -e "${argrelay_conf_base_dir}" ]]
 then
-    if [[ ! -d "${argrelay_conf_dir_path}" ]]
+    if [[ ! -d "${argrelay_conf_base_dir}" ]]
     then
-        echo "ERROR: (see FS_16_07_78_84.conf_dir_priority.md) path must be a dir or a symlink to dir: ${argrelay_conf_dir_path}" 1>&2
+        echo "ERROR: (see FS_16_07_78_84.conf_dir_priority.md) path must be a dir or a symlink to dir: ${argrelay_conf_base_dir}" 1>&2
         exit 1
     fi
 fi
 
-deploy_files_procedure "${deploy_files_conf_path}" "detect" "${argrelay_conf_dir_path}"
+deploy_files_procedure "${deploy_files_conf_path}" "detect" "${argrelay_conf_base_dir}"
 
 ########################################################################################################################
 # Phase 5: prepare artifacts: deploy resources (symlinks)

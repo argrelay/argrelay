@@ -5,8 +5,8 @@ from argrelay.test_helper.EnvMockBuilder import LiveServerEnvMockBuilder
 from env_tests.ManualServerTest import ManualServerTest
 
 
+# TODO: Do we really need this test? Why not using `RemoteTestCase` or `End2EndTestCase`?
 class ThisTestCase(ManualServerTest):
-
 
     def test_live_describe_line_args(self):
         test_line = "some_command goto host pro| whatever"

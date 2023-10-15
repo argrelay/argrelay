@@ -8,9 +8,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import server_config_
 from argrelay.server_spec.CallContext import CallContext
 
 
-
 class LocalClientCommandFactory(AbstractClientCommandFactory):
-
     local_server: LocalServer = None
     """
     This instance of `LocalServer` allows reusing server for multiple `LocalClient` invocation in tests.
@@ -30,11 +28,11 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
         else:
             self.server_config: ServerConfig = LocalClientCommandFactory.local_server.server_config
 
-    def create_command_by_server_path(
+    def create_command(
         self,
         call_ctx: CallContext,
     ) -> AbstractLocalClientCommand:
-        if call_ctx.server_action == ServerAction.DescribeLineArgs:
+        if call_ctx.server_action is ServerAction.DescribeLineArgs:
             from argrelay.client_command_local.DescribeLineArgsLocalClientCommand import (
                 DescribeLineArgsLocalClientCommand
             )
@@ -43,7 +41,7 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
                 self.server_config,
                 self.local_server,
             )
-        if call_ctx.server_action == ServerAction.ProposeArgValues:
+        if call_ctx.server_action is ServerAction.ProposeArgValues:
             from argrelay.client_command_local.ProposeArgValuesLocalClientCommand import (
                 ProposeArgValuesLocalClientCommand
             )
@@ -52,7 +50,7 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
                 self.server_config,
                 self.local_server,
             )
-        if call_ctx.server_action == ServerAction.RelayLineArgs:
+        if call_ctx.server_action is ServerAction.RelayLineArgs:
             from argrelay.client_command_local.RelayLineArgsLocalClientCommand import (
                 RelayLineArgsLocalClientCommand
             )

@@ -1,11 +1,14 @@
+from __future__ import annotations
+
+from icecream import ic
 from pymongo.collection import Collection
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
-from offline_tests.mongo_query.MongoClientTest import MongoClientTest, object_name_
+from offline_tests.mongo_query.MongoClientTest import MongoClientTestCase, object_name_
 
 
-class ThisTestCase(MongoClientTest):
+class ThisTestCase(MongoClientTestCase):
 
     # noinspection PyMethodMayBeStatic
     def test_live_envelope_searched_by_multiple_typed_key_value_pairs(self):
@@ -109,12 +112,11 @@ class ThisTestCase(MongoClientTest):
 
         self.index_fields(self.col_proxy, known_arg_types)
 
-        print("query 1: red")
         self.find_and_assert(
             self.col_proxy,
-            {
+            ic({
                 ServiceArgType.LiveStatus.name: "red",
-            },
+            }),
             [
                 "envelope_002",
                 "envelope_004",
@@ -122,24 +124,22 @@ class ThisTestCase(MongoClientTest):
             ],
         )
 
-        print("query 2: yellow")
         self.find_and_assert(
             self.col_proxy,
-            {
+            ic({
                 ServiceArgType.LiveStatus.name: "yellow",
-            },
+            }),
             [
                 "envelope_004",
                 "envelope_007",
             ],
         )
 
-        print("query 3: blue")
         self.find_and_assert(
             self.col_proxy,
-            {
+            ic({
                 ServiceArgType.LiveStatus.name: "blue",
-            },
+            }),
             [
                 "envelope_002",
                 "envelope_003",
@@ -148,12 +148,11 @@ class ThisTestCase(MongoClientTest):
             ],
         )
 
-        print("query 4: green")
         self.find_and_assert(
             self.col_proxy,
-            {
+            ic({
                 ServiceArgType.LiveStatus.name: "green",
-            },
+            }),
             [
                 "envelope_005",
                 "envelope_006",
@@ -161,29 +160,27 @@ class ThisTestCase(MongoClientTest):
             ],
         )
 
-        print("query 5: green and blue")
         self.find_and_assert(
             self.col_proxy,
-            {
+            ic({
                 ServiceArgType.LiveStatus.name: [
                     "green",
                     "blue",
                 ]
-            },
+            }),
             # NOTE: query with array of values does not work:
             [
             ],
         )
 
-        print("query 6: blue and green")
         self.find_and_assert(
             self.col_proxy,
-            {
+            ic({
                 ServiceArgType.LiveStatus.name: [
                     "green",
                     "blue",
                 ]
-            },
+            }),
             # NOTE: query with array of values does not work:
             [
             ],
@@ -199,7 +196,7 @@ class ThisTestCase(MongoClientTest):
     ):
         data_envelopes = list(col_proxy.find(query_dict))
         for data_envelope in data_envelopes:
-            print("data_envelope: ", data_envelope)
+            ic(data_envelope)
         self.assertTrue(len(data_envelopes) == len(expected_object_names))
         actual_object_names = self.extract_object_names(data_envelopes)
         for expected_object_name in expected_object_names:
