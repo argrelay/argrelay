@@ -1,29 +1,24 @@
 from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 
-from argrelay.enum_desc.PluginType import PluginType
-from argrelay.misc_helper import ensure_value_is_enum
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.runtime_data.PluginEntry import PluginEntry
 
+plugin_enabled_ = "plugin_enabled"
 plugin_config_ = "plugin_config"
 plugin_module_name_ = "plugin_module_name"
 plugin_class_name_ = "plugin_class_name"
-plugin_type_ = "plugin_type"
-
-_plugin_entry_example = {
-    plugin_module_name_: NoopDelegator.__module__,
-    plugin_class_name_: NoopDelegator.__name__,
-    plugin_type_: PluginType.LoaderPlugin.name,
-    plugin_config_: {
-    },
-}
+plugin_dependencies_ = "plugin_dependencies"
 
 
 class PluginEntrySchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    plugin_enabled = fields.Boolean(
+        required = False,
+        load_default = True,
+    )
 
     plugin_module_name = fields.String(
         required = True,
@@ -33,14 +28,16 @@ class PluginEntrySchema(Schema):
         required = True,
     )
 
-    plugin_type = fields.Enum(
-        PluginType,
-        by_value = False,
-        required = True,
+    # List of other plugin instance ids this plugin depends on:
+    plugin_dependencies = fields.List(
+        fields.String(),
+        required = False,
+        load_default = [],
     )
 
     plugin_config = fields.Dict(
-        required = True,
+        required = False,
+        load_default = {},
     )
 
     @pre_dump
@@ -50,9 +47,10 @@ class PluginEntrySchema(Schema):
         **kwargs,
     ):
         return {
+            plugin_enabled_: input_object.plugin_enabled,
             plugin_module_name_: input_object.plugin_module_name,
             plugin_class_name_: input_object.plugin_class_name,
-            plugin_type_: ensure_value_is_enum(input_object.plugin_type, PluginType),
+            plugin_dependencies_: input_object.plugin_dependencies,
             plugin_config_: input_object.plugin_config,
         }
 
@@ -63,12 +61,22 @@ class PluginEntrySchema(Schema):
         **kwargs,
     ):
         return PluginEntry(
+            plugin_enabled = input_dict[plugin_enabled_],
             plugin_module_name = input_dict[plugin_module_name_],
             plugin_class_name = input_dict[plugin_class_name_],
-            plugin_type = ensure_value_is_enum(input_dict[plugin_type_], PluginType),
+            plugin_dependencies = input_dict[plugin_dependencies_],
             plugin_config = input_dict[plugin_config_],
         )
 
+
+_plugin_entry_example = {
+    plugin_enabled_: True,
+    plugin_module_name_: "SomePluginModule",
+    plugin_class_name_: "SomePluginClass",
+    plugin_dependencies_: [],
+    plugin_config_: {
+    },
+}
 
 plugin_entry_desc = TypeDesc(
     dict_schema = PluginEntrySchema(),

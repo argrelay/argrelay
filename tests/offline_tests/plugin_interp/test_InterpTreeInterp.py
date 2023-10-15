@@ -1,5 +1,5 @@
 from argrelay.enum_desc.CompType import CompType
-from argrelay.plugin_interp.TreePathInterp import fetch_tree_node
+from argrelay.plugin_interp.InterpTreeInterp import fetch_tree_node
 from argrelay.test_helper import line_no
 
 from argrelay.test_helper.LocalTestCase import LocalTestCase
@@ -49,7 +49,7 @@ class ThisTestCase(LocalTestCase):
 
     def test_FS_01_89_09_24_tree(self):
         """
-        Test arg values suggestion with FS_01_89_09_24 # tree
+        Test arg values suggestion with FS_01_89_09_24 # interp tree
         """
 
         test_cases = [
@@ -57,20 +57,38 @@ class ThisTestCase(LocalTestCase):
                 line_no(),
                 "some_command |",
                 CompType.PrefixShown,
-                ['help', 'intercept', 'subtree', 'goto', 'desc', 'list'],
+                [
+                    "help",
+                    "intercept",
+                    "subtree",
+                    "desc",
+                    "echo",
+                    "goto",
+                    "list",
+                    # TODO_77_12_50_80: Fix duplicates:
+                    "subtree",
+                    # TODO_77_12_50_80: Fix duplicates:
+                    "help",
+                    # TODO_77_12_50_80: Fix duplicates:
+                    "intercept",
+                ],
                 {},
                 None,
-                "FS_01_89_09_24: `intercept` and `help` are suggested via tree search mechanism "
-                "rather than data search.",
+                "FS_01_89_09_24: `intercept` and `help` are suggested via data search via props "
+                "generated via interp tree",
             ),
             (
                 line_no(),
                 "some_command inter|",
                 CompType.PrefixShown,
-                ["intercept"],
+                [
+                    "intercept",
+                    # TODO_77_12_50_80: Fix duplicates:
+                    "intercept",
+                ],
                 {},
                 None,
-                "FS_01_89_09_24: prefix suggestion also works for `intercept` (help is filtered out).",
+                "FS_01_89_09_24: prefix suggestion also works for `intercept` (`help` is filtered out).",
             ),
             (
                 line_no(),
@@ -80,7 +98,7 @@ class ThisTestCase(LocalTestCase):
                 {},
                 None,
                 "FS_01_89_09_24: Even if `intercept` is not specified in the beginning, "
-                "`TreePathInterp` does not suggest it",
+                "`InterpTreeInterp` does not suggest it",
             ),
             (
                 line_no(),

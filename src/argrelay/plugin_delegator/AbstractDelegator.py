@@ -1,24 +1,25 @@
 from __future__ import annotations
 
 from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.misc_helper.AbstractPlugin import AbstractPlugin
+from argrelay.runtime_context.AbstractPlugin import AbstractPlugin
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
-    envelope_id_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     search_control_list_,
+    func_id_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 from argrelay.schema_response.InvocationInput import InvocationInput
 
 
-def get_func_name(
+def get_func_id_from_interp_ctx(
     interp_ctx: "InterpContext",
 ):
     """
@@ -28,22 +29,20 @@ def get_func_name(
     func_data_envelope = interp_ctx.envelope_containers[(
         interp_ctx.curr_interp.base_container_ipos + function_container_ipos_
     )].data_envelopes[0]
-    func_name = func_data_envelope[envelope_id_]
-    return func_name
+    return func_data_envelope[instance_data_][func_id_]
 
 
-def get_func_name_from_containers(
-    envelope_containers: list[EnvelopeContainer],
+def get_func_id_from_invocation_input(
+    invocation_input: InvocationInput,
 ):
     """
     Used on the client-side of the plugin.
     """
 
-    func_data_envelope = envelope_containers[
+    func_data_envelope = invocation_input.envelope_containers[
         function_container_ipos_
     ].data_envelopes[0]
-    func_name = func_data_envelope[envelope_id_]
-    return func_name
+    return func_data_envelope[instance_data_][func_id_]
 
 
 class AbstractDelegator(AbstractPlugin):
@@ -57,10 +56,26 @@ class AbstractDelegator(AbstractPlugin):
     *   share data only via :class:`InvocationInput`
     """
 
+    def get_plugin_type(
+        self,
+    ) -> PluginType:
+        return PluginType.DelegatorPlugin
+
+    def get_supported_func_envelopes(
+        self,
+    ) -> list[dict]:
+        """
+        Part of FS_26_43_73_72 func tree implementation.
+        """
+        return []
+
     def run_search_control(
         self,
         function_data_envelope: dict,
     ) -> list[SearchControl]:
+        """
+        Implements FS_31_70_49_15 `search_control`.
+        """
         return self.extract_search_control_from_function_data_envelope(function_data_envelope)
 
     def run_init_control(
@@ -68,6 +83,9 @@ class AbstractDelegator(AbstractPlugin):
         envelope_containers: list[EnvelopeContainer],
         curr_container_ipos: int,
     ):
+        """
+        Implements FS_46_96_59_05 `init_control`.
+        """
         self.init_envelope_class(
             envelope_containers,
             curr_container_ipos,
@@ -77,12 +95,20 @@ class AbstractDelegator(AbstractPlugin):
         self,
         interp_ctx: "InterpContext",
     ):
+        """
+        Implements FS_72_40_53_00 `fill_control`.
+        """
         pass
 
     def run_interp_control(
         self,
         curr_interp: "AbstractInterp",
     ):
+        """
+        Implements FS_78_91_27_22 `interp_control`.
+
+        Selects `plugin_id` for the next interp.
+        """
         pass
 
     def run_invoke_control(
@@ -91,18 +117,18 @@ class AbstractDelegator(AbstractPlugin):
         local_server: "LocalServer",
     ) -> InvocationInput:
         """
-        Server-side entry point.
-        The plugin instance is used by server after `AbstractPlugin.activate_plugin`.
+        Implements FS_98_55_40_77 `invoke_control` on server side.
+        The plugin instance is used by server on `ServerAction.RelayLineArgs`.
         """
         pass
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
         """
-        Client-side (static) entry point.
-        The plugin instance is used by client:
-        *   without instantiating
-        *   without providing `AbstractPlugin.config_dict`
+        Implements FS_98_55_40_77 `invoke_control` on client side.
+        There is no plugin instance on client side -
+        instead, the class is used directly (statically) on `ServerAction.RelayLineArgs`:
+        *   without instantiating a plugin (it is a `@staticmethod`)
         *   without calling `AbstractPlugin.activate_plugin`
         """
         pass
@@ -119,6 +145,9 @@ class AbstractDelegator(AbstractPlugin):
         envelope_containers: list[EnvelopeContainer],
         curr_container_ipos: int,
     ):
+        """
+        Sets `ReservedArgType.EnvelopeClass` according to FS_31_70_49_15 search control.
+        """
         curr_container = envelope_containers[curr_container_ipos]
         curr_container.assigned_types_to_values[
             ReservedArgType.EnvelopeClass.name

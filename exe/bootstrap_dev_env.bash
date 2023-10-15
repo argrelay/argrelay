@@ -490,6 +490,7 @@ fi
 # Provide project-specific build script:
 source "${argrelay_dir}/exe/build_project.bash"
 
+# TODO_99_75_81_05: Install from `dev_env_packages.txt`, can overwrite (but it should be no-op) - only pip should update.
 # Update `@/conf/dev_env_packages.txt` to know what was there at the time of bootstrapping:
 cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
 ###############################################################################

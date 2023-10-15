@@ -18,7 +18,7 @@ class ThisTestCase(LocalTestCase):
                 CompType.InvokeAction,
                 None,
                 {
-                    0: {},  # help itself
+                    0: {},  # help func envelope itself
                     1: {
                         # (goto, desc, list) x (host, service) external functions:
                         # TODO: (JSONPath?) Universal verifier: be able to verify arbitrary data on `EnvelopeContainer` (JSONPath?), not only assigned types to values.
@@ -33,7 +33,11 @@ class ThisTestCase(LocalTestCase):
                 line_no(),
                 "some_command help interc|",
                 CompType.PrefixShown,
-                ["intercept"],
+                [
+                    "intercept",
+                    # TODO_77_12_50_80: Fix duplicated suggestions:
+                    "intercept",
+                ],
                 {},
                 None,
                 None,

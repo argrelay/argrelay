@@ -29,8 +29,6 @@ set -E
 # Error on undefined variables:
 set -u
 
-# TODO: Run GUI tests automatically - see `gui_tests_notes.md`
-
 # The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:

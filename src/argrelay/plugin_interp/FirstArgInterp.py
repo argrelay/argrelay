@@ -1,12 +1,12 @@
-from argrelay.plugin_interp.TreePathInterp import TreePathInterp
+from argrelay.plugin_interp.InterpTreeInterp import InterpTreeInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 
 
-class FirstArgInterp(TreePathInterp):
+class FirstArgInterp(InterpTreeInterp):
     """
     Dispatch command line interpretation to the next interpreter based on the command_id.
 
-    `FirstArgInterp` was re-implemented in terms of `TreePathInterp` (FS_01_89_09_24).
+    `FirstArgInterp` was re-implemented in terms of `InterpTreeInterp` (FS_01_89_09_24).
 
     Implements FS_42_76_93_51.
     """

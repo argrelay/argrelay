@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.PluginType import PluginType
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
@@ -10,12 +9,12 @@ from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_v
 from argrelay.plugin_interp.NoopInterp import NoopInterp
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_id_load_list_, plugin_dict_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
     plugin_module_name_,
     plugin_class_name_,
-    plugin_type_,
+    plugin_dependencies_,
 )
 from argrelay.test_helper import parse_line_and_cpos, line_no
 from argrelay.test_helper.EnvMockBuilder import (
@@ -36,14 +35,15 @@ class ThisTestCase(LocalTestCase):
             "known_command2",
         ]
 
-        # Patch server config for FirstArgInterpFactory - bind all `first_command_names` to NoopInterpFactory:
+        # Patch server config for `FirstArgInterpFactory` - bind all `first_command_names` to `NoopInterpFactory`:
         first_arg_vals_to_next_interp_factory_ids = {}
+        dependent_plugin_id = FirstArgInterpFactory.__name__
         for first_command_name in first_command_names:
             # Compose same plugin id (as below):
             plugin_instance_id = NoopInterpFactory.__name__ + "." + first_command_name
             first_arg_vals_to_next_interp_factory_ids[first_command_name] = plugin_instance_id
         server_config_dict = load_custom_integ_server_config_dict()
-        plugin_entry = server_config_dict[plugin_dict_][FirstArgInterpFactory.__name__]
+        plugin_entry = server_config_dict[plugin_instance_entries_][dependent_plugin_id]
         plugin_entry[plugin_config_] = {
             first_arg_vals_to_next_interp_factory_ids_: first_arg_vals_to_next_interp_factory_ids,
         }
@@ -51,19 +51,17 @@ class ThisTestCase(LocalTestCase):
         # Patch server config to add NoopInterpFactory (2 plugin instances):
         for first_command_name in first_command_names:
             # Compose same plugin id (as above):
-            plugin_instance_id = NoopInterpFactory.__name__ + "." + first_command_name
+            plugin_instance_id = f"{NoopInterpFactory.__name__}.{first_command_name}"
             plugin_entry = {
                 plugin_module_name_: NoopInterpFactory.__module__,
                 plugin_class_name_: NoopInterpFactory.__name__,
-                plugin_type_: PluginType.InterpFactoryPlugin.name,
-                plugin_config_: {
-                    "arbitrary_comment": first_command_name,
-                },
             }
-            assert plugin_instance_id not in server_config_dict[plugin_dict_]
-            assert plugin_instance_id not in server_config_dict[plugin_instance_id_load_list_]
-            server_config_dict[plugin_dict_][plugin_instance_id] = plugin_entry
-            server_config_dict[plugin_instance_id_load_list_].append(plugin_instance_id)
+            assert plugin_instance_id not in server_config_dict[plugin_instance_entries_]
+            server_config_dict[plugin_instance_entries_][plugin_instance_id] = plugin_entry
+
+            server_config_dict[
+                plugin_instance_entries_
+            ][dependent_plugin_id][plugin_dependencies_].append(plugin_instance_id)
 
         env_mock_builder = (
             LocalClientEnvMockBuilder()
@@ -90,11 +88,13 @@ class ThisTestCase(LocalTestCase):
             prev_interp: NoopInterp = interp_ctx.prev_interp
 
             self.assertTrue(
-                prev_interp.arbitrary_comment
-                ==
-                interp_factory_instance.config_dict["arbitrary_comment"]
-                ==
-                first_token_value,
+                (
+                    prev_interp.interp_factory_id
+                    ==
+                    interp_factory_instance.plugin_instance_id
+                    ==
+                    f"{NoopInterpFactory.__name__}.{first_token_value}"
+                ),
                 "config instructs to name interp instance as the first token it binds to",
             )
 

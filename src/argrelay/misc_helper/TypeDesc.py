@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass, field
 
 import yaml
@@ -32,7 +33,8 @@ class TypeDesc:
         return self.from_input_dict(yaml.safe_load(yaml_str))
 
     def from_input_dict(self, input_dict: dict):
-        return self.dict_schema.load(input_dict)
+        # Make a deep copy as marshmallow reuses instances specified in `load_default`:
+        return deepcopy(self.dict_schema.load(input_dict))
 
     def validate_dict(self, input_dict: dict):
         validation_errors = self.dict_schema.validate(input_dict)

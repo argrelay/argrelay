@@ -2,10 +2,11 @@ import copy
 
 from marshmallow import ValidationError
 
-from argrelay.custom_integ.DemoInterpFactoryConfigSchema import demo_interp_factory_config_desc
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
+from argrelay.plugin_interp.FuncArgsInterpFactoryConfigSchema import func_args_interp_config_desc
+from argrelay.plugin_interp.JumpTreeInterpFactoryConfigSchema import jump_tree_interp_config_desc
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
@@ -13,9 +14,9 @@ from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_cli
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
 from argrelay.schema_config_core_server.MongoServerConfigSchema import mongo_server_config_desc
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_config_core_server.ServerPluginControlSchema import server_plugin_control_desc
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
-from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import func_args_interp_config_desc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
 from argrelay.schema_config_interp.InitControlSchema import init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
@@ -42,7 +43,6 @@ class ThisTestCase(BaseTestCase):
             (line_no(), call_context_desc),
             (line_no(), invocation_input_desc),
             (line_no(), plugin_entry_desc),
-            (line_no(), demo_interp_factory_config_desc),
             (line_no(), git_repo_loader_config_desc),
             (line_no(), client_config_desc),
             (line_no(), connection_config_desc),
@@ -62,6 +62,8 @@ class ThisTestCase(BaseTestCase):
             (line_no(), assigned_value_desc),
             (line_no(), envelope_container_desc),
             (line_no(), error_delegator_custom_data_desc),
+            (line_no(), jump_tree_interp_config_desc),
+            (line_no(), server_plugin_control_desc),
         ]
         for test_case in test_cases:
             with self.subTest(test_case):

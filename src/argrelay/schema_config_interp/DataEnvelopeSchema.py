@@ -15,8 +15,8 @@ for `argrelay`, if unique id is required, `envelope_id_` must be used (which is 
 
 envelope_id_ = "envelope_id"
 """
-Not required (yet) field within `envelope_metadata` with unique id for `data_envelope`.
-If provided, it is given to MongoDB as `id_` (otherwise, if not provided, MongoDB auto-generates one).
+Not required field with unique id for `data_envelope`.
+If provided, it is given to MongoDB as `mongo_id_` (otherwise, if not provided, MongoDB auto-generates one).
 """
 
 instance_data_ = "instance_data"
@@ -55,7 +55,6 @@ class DataEnvelopeSchema(Schema):
         strict = True
 
     envelope_id = fields.String(
-        # TODO: make it required for predictability - isn't it required?
         required = False,
     )
 
@@ -65,7 +64,6 @@ class DataEnvelopeSchema(Schema):
     For example, `ReservedEnvelopeClass.ClassFunction` defines `FunctionEnvelopeInstanceDataSchema`.
     """
     instance_data = fields.Dict(
-        # TODO: make it required for predictability - isn't it required?
         required = False,
     )
 
@@ -74,7 +72,6 @@ class DataEnvelopeSchema(Schema):
     It is not inspected by `argrelay`.
     """
     envelope_payload = fields.Dict(
-        # TODO: make it required for predictability - isn't it required?
         required = False,
     )
 

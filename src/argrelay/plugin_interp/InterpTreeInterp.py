@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from typing import Union
+
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
+from argrelay.plugin_interp.InterpTreeContext import InterpTreeContext
+from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
-from argrelay.plugin_interp.TreePathInterpFactoryConfigSchema import interp_selector_tree_
+from argrelay.plugin_interp.TreeWalker import default_tree_leaf_
 from argrelay.runtime_context.InterpContext import InterpContext
-
-default_tree_leaf_ = ""
 
 
 def fetch_tree_node(
@@ -26,9 +28,9 @@ def fetch_tree_node(
     return curr_node_value
 
 
-class TreePathInterp(AbstractInterp):
+class InterpTreeInterp(AbstractInterp):
     """
-    Implements FS_01_89_09_24.
+    Implements FS_01_89_09_24 interp tree.
     """
 
     def __init__(
@@ -43,10 +45,11 @@ class TreePathInterp(AbstractInterp):
             interp_ctx,
         )
         self.interp_selector_tree: dict = config_dict[interp_selector_tree_]
-        self.interp_factory_id: str = interp_factory_id
-        self.node_path = []
+        self.next_interp_factory_id: Union[str, None] = None
+        self.node_path: list[str] = []
 
-        # Token with ipos = 0 is the command name eaten by `FirstArgInterp`:
+        # TODO: Why hard-coded? Isn't it possible for this plugin to be plugged into any depth of the tree?
+        # Token with ipos = 0 is the command name eaten by `FirstArgInterp` (FS_42_76_93_51 first interp):
         self.base_token_ipos: int = 1
 
     def consume_pos_args(self) -> None:
@@ -59,7 +62,7 @@ class TreePathInterp(AbstractInterp):
         while True:
             if isinstance(curr_sub_tree, str):
                 # Tree leaf is reached - use it:
-                self.interp_factory_id = curr_sub_tree
+                self.next_interp_factory_id = curr_sub_tree
                 return
 
             if not self.interp_ctx.unconsumed_tokens:
@@ -68,6 +71,7 @@ class TreePathInterp(AbstractInterp):
 
             # Always consume next unconsumed token:
             # TODO: Is this assumption valid/safe that next unconsumed `ipos` is in the order it appears on command line?
+            #       Apparently, it is fine as we keep deleting head of `unconsumed_tokens` below:
             curr_token_ipos = self.interp_ctx.unconsumed_tokens[0]
             curr_token_value = self.interp_ctx.parsed_ctx.all_tokens[curr_token_ipos]
             assert self.is_pos_arg(curr_token_ipos)
@@ -86,18 +90,28 @@ class TreePathInterp(AbstractInterp):
             else:
                 raise LookupError()
 
-    def set_default_factory_id(self, curr_sub_tree):
+    def set_default_factory_id(
+        self,
+        curr_sub_tree,
+    ):
         # Impossible to consume more arg - use default of the current sub-tree:
         if default_tree_leaf_ in curr_sub_tree:
-            self.interp_factory_id = curr_sub_tree[default_tree_leaf_]
+            self.next_interp_factory_id = curr_sub_tree[default_tree_leaf_]
         else:
-            self.interp_factory_id = NoopInterpFactory.__name__
+            self.next_interp_factory_id = NoopInterpFactory.__name__
 
     def try_iterate(self) -> InterpStep:
         return InterpStep.NextInterp
 
     def next_interp(self) -> "AbstractInterp":
-        return self.interp_ctx.create_next_interp(self.interp_factory_id)
+        # TODO: Selected `next_interp_factory_id` cannot identify one of the paths in the tree
+        #       because each `next_interp_factory_id` can be plugged into multiple leaves.
+        #       populate `interp_tree_path` based on `InterpTreeContext` on creation of this interp
+        #       plus based on the path to that `next_interp_factory_id` in the tree.
+        self.interp_ctx.interp_tree_context = InterpTreeContext(
+            self.interp_ctx.interp_tree_context.interp_tree_path + tuple(self.node_path),
+        )
+        return self.interp_ctx.create_next_interp(self.next_interp_factory_id)
 
     def propose_arg_completion(self) -> None:
         """
@@ -140,7 +154,7 @@ class TreePathInterp(AbstractInterp):
         #       Note that there is no ipos cursor position at the moment.
         #       It has to be computed with help of FS_23_62_89_43 tangent token
         #       (which might be a surrogate one if cursor does nto touch non-whitespace chars).
-        remaining_consumed_tokens = self.interp_ctx.consumed_tokens.copy()
+        remaining_consumed_tokens = deepcopy(self.interp_ctx.consumed_tokens)
 
         # Remove everything until `base_token_ipos`:
         for token_ipos in range(0, self.base_token_ipos):

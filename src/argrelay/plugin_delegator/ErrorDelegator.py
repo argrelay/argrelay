@@ -15,7 +15,9 @@ class ErrorDelegator(AbstractDelegator):
         interp_ctx: InterpContext,
         local_server: LocalServer,
     ) -> InvocationInput:
-        delegator_plugin_entry = local_server.server_config.plugin_dict[self.__class__.__name__]
+        delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
+            self.__class__.__name__
+        ]
         invocation_input = InvocationInput(
             all_tokens = interp_ctx.parsed_ctx.all_tokens,
             consumed_tokens = interp_ctx.consumed_tokens,

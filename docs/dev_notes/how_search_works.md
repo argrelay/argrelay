@@ -1,4 +1,9 @@
 
+TODO: Create separate FS with the first two sections of this doc to describe args to props mapping:
+      what we have on input (command line)
+      what we have on output (Mongo query)
+      This should be description in a nutshell, with references to details on arg groups (per each `data_envelope` type), defaults, etc.
+
 # Example
 
 *   Command line:
@@ -51,6 +56,8 @@
 
 # Explanation
 
+TODO: Merge this section of the doc with FS_55_57_45_04 command interp.
+
 *   The ultimate purpose of the command line is to execute some function with some arguments.
 
     Think of function overloading when there is one function name
@@ -67,7 +74,7 @@
     *   Phase 1: search single func impl (function implementation)
     *   Phase 1+N: search multiple func args (function arguments)
 
-*   The same search mechanism is used in all phases - finding `data_envelope`-s:
+*   The same search mechanism is used in all phases of finding `data_envelope`-s:
     *   Phase 1: Each function impl is a `data_envelope` to find.
     *   Phase 1+N: All function args are `data_envelope`-s to find.
 
@@ -105,6 +112,6 @@
     *   Invoke `init_control` (now on func impl) to pre-assign some fields in `search_control` structure.
     *   Enum query: in database, find all unique values for unassigned fields in `search_control` structure of this `data_envelope` class (for example, `ServiceEnvelopeClass`).
     *   Assign command line args to `search_control` structure by matching if arg type belongs to enum class.
-    *   TODO: Invoke `fill_control` now on func impl) to select default values.
+    *   TODO: Invoke `fill_control` now on func impl to select default values.
     *   Perform final search to see if `data_envelope` is uniquely identified (only one fits the criteria).
 

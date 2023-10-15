@@ -1,14 +1,12 @@
-"""
-Check things which should not be published
+from __future__ import annotations
 
-For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
-"""
 import os
+from typing import Union
 from unittest import skipIf
 
 from argrelay.custom_integ import GitRepoLoader as GitRepoLoader_module
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
-from argrelay.custom_integ.GitRepoLoaderConfigSchema import is_plugin_enabled_
+from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
@@ -19,6 +17,11 @@ from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestCase(BaseTestCase):
+    """
+    Check things which should not be published
+
+    For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
+    """
 
     def test_git_repo_loader_is_disabled(self):
         """
@@ -35,22 +38,22 @@ class ThisTestCase(BaseTestCase):
 
             server_config: ServerConfig = server_config_desc.from_default_file()
             found_one = False
-            git_loader_plugin = None
-            for plugin_instance_id in server_config.plugin_instance_id_load_list:
-                plugin_item = server_config.plugin_dict[plugin_instance_id]
+            git_loader_plugin_entry: Union[PluginEntry, None] = None
+            for plugin_instance_id in server_config.plugin_instance_id_activate_list:
+                plugin_entry: PluginEntry = server_config.plugin_instance_entries[plugin_instance_id]
                 if (
-                    plugin_item.plugin_module_name == GitRepoLoader_module.__name__
+                    plugin_entry.plugin_module_name == GitRepoLoader_module.__name__
                     and
-                    plugin_item.plugin_class_name == GitRepoLoader_class.__name__
+                    plugin_entry.plugin_class_name == GitRepoLoader_class.__name__
                 ):
                     if found_one:
                         raise RuntimeError("two " + GitRepoLoader_class.__name__ + " plugins?")
                     found_one = True
-                    git_loader_plugin = plugin_item
+                    git_loader_plugin_entry = plugin_entry
             if not found_one:
                 raise RuntimeError("missing " + GitRepoLoader_class.__name__ + " plugin?")
 
-            self.assertFalse(git_loader_plugin.plugin_config[is_plugin_enabled_])
+            self.assertFalse(git_loader_plugin_entry.plugin_enabled)
 
     def test_env_tests_have_no_init_file(self):
         """

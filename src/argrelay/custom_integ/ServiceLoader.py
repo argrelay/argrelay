@@ -1,88 +1,21 @@
 from __future__ import annotations
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
-from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServiceLoaderConfigSchema import (
     service_loader_config_desc,
     test_data_ids_to_load_,
 )
-from argrelay.custom_integ.value_constants import (
-    goto_host_funct_,
-    goto_service_funct_,
-    list_host_func_,
-    list_service_func_,
-)
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
-from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     envelope_id_,
-    instance_data_,
 )
-from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    delegator_plugin_instance_id_,
-    search_control_list_,
-)
-from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
 from argrelay.test_helper import test_data_
-
-cluster_search_control = {
-    envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-    keys_to_types_list_: [
-        {"code": ServiceArgType.CodeMaturity.name},
-        {"stage": ServiceArgType.FlowStage.name},
-        {"region": ServiceArgType.GeoRegion.name},
-        {"cluster": ServiceArgType.ClusterName.name},
-    ],
-}
-
-host_search_control = {
-    envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-    keys_to_types_list_: [
-        # ClassCluster:
-        {"code": ServiceArgType.CodeMaturity.name},
-        {"stage": ServiceArgType.FlowStage.name},
-        {"region": ServiceArgType.GeoRegion.name},
-        {"cluster": ServiceArgType.ClusterName.name},
-        # ClassHost:
-        {"host": ServiceArgType.HostName.name},
-        # ---
-        {"ip": ServiceArgType.IpAddress.name},
-    ],
-}
-
-service_search_control = {
-    envelope_class_: ServiceEnvelopeClass.ClassService.name,
-    keys_to_types_list_: [
-        # ClassCluster:
-        {"code": ServiceArgType.CodeMaturity.name},
-        {"stage": ServiceArgType.FlowStage.name},
-        {"region": ServiceArgType.GeoRegion.name},
-        {"cluster": ServiceArgType.ClusterName.name},
-        # ClassService:
-        {"group": ServiceArgType.GroupLabel.name},
-        {"service": ServiceArgType.ServiceName.name},
-        # ClassHost:
-        {"host": ServiceArgType.HostName.name},
-        # ---
-        {"status": ServiceArgType.LiveStatus.name},
-        {"dc": ServiceArgType.DataCenter.name},
-        {"ip": ServiceArgType.IpAddress.name},
-    ],
-}
-
-access_search_control = {
-    envelope_class_: ServiceArgType.AccessType.name,
-    keys_to_types_list_: [
-        {"access": ServiceArgType.AccessType.name},
-    ],
-}
 
 
 # noinspection PyPep8Naming
@@ -97,7 +30,11 @@ class ServiceLoader(AbstractLoader):
             plugin_instance_id,
             config_dict,
         )
-        service_loader_config_desc.validate_dict(config_dict)
+
+    def validate_config(
+        self,
+    ):
+        service_loader_config_desc.validate_dict(self.config_dict)
 
     def update_static_data(
         self,
@@ -126,7 +63,6 @@ class ServiceLoader(AbstractLoader):
         #       This is fine for now because `ServiceLoader` is used first in config.
         data_envelopes = []
 
-        self.populate_common_functions(data_envelopes)
         self.populate_common_AccessType(data_envelopes)
         self.populate_TD_63_37_05_36_default(data_envelopes)
         self.populate_TD_76_09_29_31_overlapped(data_envelopes)
@@ -168,7 +104,7 @@ class ServiceLoader(AbstractLoader):
         data_envelopes: list[dict],
     ):
         """
-        Function demos FS_71_87_33_52 help_hint for `ServiceArgType.IpAddress`.
+        This demos FS_71_87_33_52 help_hint for `ServiceArgType.IpAddress`.
 
         It simply generates `data_envelope`-s of `ReservedEnvelopeClass.ClassHelp` for
         values of `ServiceArgType.IpAddress` equal to corresponding `ServiceArgType.HostName`.
@@ -186,106 +122,6 @@ class ServiceLoader(AbstractLoader):
 
         data_envelopes.extend(help_hint_envelopes)
 
-    @staticmethod
-    def populate_common_functions(
-        data_envelopes: list,
-    ):
-        data_envelopes.extend([
-
-            ############################################################################################################
-            # functions
-
-            # TODO: As of now, `ServiceLoader` is configured first (after `GitRepoLoader`), so it works.
-            #       But to be robust against re-ordering, this loader should share function names like
-            #       "desc", "list", "goto" to accept `GitRepoEnvelopeClass` in addition to `ServiceEnvelopeClass`.
-            {
-                envelope_id_: goto_host_funct_,
-                instance_data_: {
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
-                    search_control_list_: [
-                        host_search_control,
-                        access_search_control,
-                    ],
-                },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Go (log in) to remote host",
-                GlobalArgType.FunctionCategory.name: "external",
-                GlobalArgType.ActionType.name: "goto",
-                GlobalArgType.ObjectSelector.name: "host",
-            },
-            {
-                envelope_id_: goto_service_funct_,
-                instance_data_: {
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
-                    search_control_list_: [
-                        service_search_control,
-                        access_search_control,
-                    ],
-                },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Go (log in) to remote host and dir path with specified service",
-                GlobalArgType.FunctionCategory.name: "external",
-                GlobalArgType.ActionType.name: "goto",
-                GlobalArgType.ObjectSelector.name: "service",
-            },
-            {
-                envelope_id_: "desc_host",
-                instance_data_: {
-                    delegator_plugin_instance_id_: NoopDelegator.__name__,
-                    search_control_list_: [
-                        host_search_control,
-                    ],
-                },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Describe remote host",
-                GlobalArgType.FunctionCategory.name: "external",
-                GlobalArgType.ActionType.name: "desc",
-                GlobalArgType.ObjectSelector.name: "host",
-            },
-            {
-                envelope_id_: "desc_service",
-                instance_data_: {
-                    delegator_plugin_instance_id_: NoopDelegator.__name__,
-                    search_control_list_: [
-                        service_search_control,
-                    ],
-                },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Describe service instance",
-                GlobalArgType.FunctionCategory.name: "external",
-                GlobalArgType.ActionType.name: "desc",
-                GlobalArgType.ObjectSelector.name: "service",
-            },
-            {
-                envelope_id_: list_host_func_,
-                instance_data_: {
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
-                    search_control_list_: [
-                        host_search_control,
-                    ],
-                },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "List remote hosts matching search query",
-                GlobalArgType.FunctionCategory.name: "external",
-                GlobalArgType.ActionType.name: "list",
-                GlobalArgType.ObjectSelector.name: "host",
-            },
-            {
-                envelope_id_: list_service_func_,
-                instance_data_: {
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
-                    search_control_list_: [
-                        service_search_control,
-                    ],
-                },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "List service instances matching search query",
-                GlobalArgType.FunctionCategory.name: "external",
-                GlobalArgType.ActionType.name: "list",
-                GlobalArgType.ObjectSelector.name: "service",
-            },
-        ])
-
     def is_test_data_allowed(
         self,
         test_data_id: str,
@@ -294,8 +130,11 @@ class ServiceLoader(AbstractLoader):
             return True
         return False
 
-    @staticmethod
-    def populate_common_AccessType(data_envelopes: list):
+    @classmethod
+    def populate_common_AccessType(
+        cls,
+        data_envelopes: list,
+    ):
 
         data_envelopes.extend([
 

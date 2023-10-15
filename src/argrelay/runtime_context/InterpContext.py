@@ -7,6 +7,7 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.plugin_interp.InterpTreeContext import InterpTreeContext
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
@@ -79,6 +80,8 @@ class InterpContext:
 
     comp_suggestions: list[str] = field(init = False, default_factory = lambda: [])
 
+    interp_tree_context: InterpTreeContext = field(init = False, default = None)
+
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
 
@@ -109,7 +112,7 @@ class InterpContext:
     def is_last_container(self) -> bool:
         return self.curr_container_ipos + 1 == len(self.envelope_containers)
 
-    def is_funct_found(self) -> bool:
+    def is_func_found(self) -> bool:
         return (
             self.curr_container_ipos >= function_container_ipos_
             and
@@ -139,14 +142,26 @@ class InterpContext:
         ElapsedTime.measure(f"end_query_envelopes: {query_dict} {self.curr_container.found_count}")
 
     # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that) together with this loop:
-    def interpret_command(self, first_interp_factory_id: str) -> None:
+    def interpret_command(
+        self,
+        first_interp_factory_id: str,
+    ) -> None:
         """
         Main interpretation loop.
+
+        Implements FS_55_57_45_04 command interp.
 
         Start with initial interpreter and continue until curr interpreter returns no more next interpreter.
         """
 
         interp_n: int = 0
+
+        # FS_01_89_09_24 interp tree: start of tracking interp tree context while processing command
+        # (to pass it to the next interp factory to create interp):
+        self.interp_tree_context = InterpTreeContext(
+            interp_tree_path = tuple([]),
+        )
+
         self.curr_interp = self.create_next_interp(first_interp_factory_id)
         while True:
             interp_n += 1
@@ -155,6 +170,13 @@ class InterpContext:
             ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {type(self.curr_interp).__name__}")
             self.query_prop_values()
 
+            # Because each `prop_value` set (per `prop_type`) is treated independently,
+            # assignment of `prop_value`-s from args may set combinations
+            # which yields no search result in subsequent query.
+            # Logically, it is better to consume args one by one and running query after each consumption,
+            # but this is not done due to query overhead.
+            # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
+            # separate `interpret_command` calls is close to that logically better approach.
             ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {type(self.curr_interp).__name__}")
             self.curr_interp.consume_key_args()
             self.curr_interp.consume_pos_args()
@@ -170,7 +192,7 @@ class InterpContext:
                 pass
 
             # Apply defaults:
-            self.curr_interp.run_fill_control()
+            self.curr_interp.delegate_fill_control()
 
             # Query envelopes after all defaults applied:
             # TODO: We could probably select whether to query only envelopes or their values depending on RunMode.
@@ -226,9 +248,9 @@ class InterpContext:
 
     def create_next_interp(
         self,
-        interp_factory_id: str,
+        next_interp_factory_id: str,
     ) -> "AbstractInterp":
-        interp_factory: "AbstractInterpFactory" = self.interp_factories[interp_factory_id]
+        interp_factory: "AbstractInterpFactory" = self.interp_factories[next_interp_factory_id]
         return interp_factory.create_interp(
             self,
         )

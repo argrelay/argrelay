@@ -3,8 +3,8 @@ from __future__ import annotations
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import LocalClientEnvMockBuilder
@@ -64,9 +64,9 @@ class ThisTestCase(LocalTestCase):
                 None,
                 {
                     0: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("host", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
                         ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),

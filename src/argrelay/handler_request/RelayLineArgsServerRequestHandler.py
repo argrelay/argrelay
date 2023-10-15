@@ -41,7 +41,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
-        if self.interp_ctx.is_funct_found():
+        if self.interp_ctx.is_func_found():
             delegator_plugin_instance_id = (
                 self
                 .interp_ctx

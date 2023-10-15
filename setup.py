@@ -33,7 +33,7 @@ def list_dir(
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.4.0",
+    version = "0.5.0",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server - total recall",

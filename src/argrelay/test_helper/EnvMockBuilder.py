@@ -31,7 +31,6 @@ from argrelay.client_spec.ShellContext import (
     COMP_KEY_env_var,
 )
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
-from argrelay.custom_integ.GitRepoLoaderConfigSchema import is_plugin_enabled_
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.custom_integ.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.enum_desc.CallConv import CallConv
@@ -51,10 +50,10 @@ from argrelay.schema_config_core_server.QueryCacheConfigSchema import enable_que
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     mongo_config_,
     server_config_desc,
-    plugin_dict_,
+    plugin_instance_entries_,
     query_cache_config_,
 )
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_, plugin_enabled_
 from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_helper.LocalClientCommandFactory import LocalClientCommandFactory
@@ -366,10 +365,10 @@ class EnvMockBuilder:
             self.server_config_dict[mongo_config_][mongo_server_][
                 start_server_
             ] = self.is_server_config_with_mongo_start
-            plugin_entry = self.server_config_dict[plugin_dict_][GitRepoLoader.__name__]
-            plugin_entry[plugin_config_][is_plugin_enabled_] = self.enable_demo_git_loader
+            plugin_entry = self.server_config_dict[plugin_instance_entries_][GitRepoLoader.__name__]
+            plugin_entry[plugin_enabled_] = self.enable_demo_git_loader
 
-            plugin_entry = self.server_config_dict[plugin_dict_][ServiceLoader.__name__]
+            plugin_entry = self.server_config_dict[plugin_instance_entries_][ServiceLoader.__name__]
             plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
 
             if self.enable_query_cache is not None:

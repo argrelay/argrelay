@@ -11,13 +11,12 @@ from argrelay.custom_integ.GitRepoEntryConfigSchema import (
 )
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
-    is_plugin_enabled_,
     load_repo_commits_,
     repo_entries_,
 )
 from argrelay.misc_helper import eprint
 from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_dict_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_helper import line_no
 from argrelay.test_helper.BaseTestCase import BaseTestCase
@@ -84,7 +83,6 @@ class ThisTestCase(BaseTestCase):
             (
                 line_no(), f"{GitRepoLoader.__name__} enabled with random temp dir",
                 {
-                    is_plugin_enabled_: True,
                     load_repo_commits_: True,
                     repo_entries_: {
                         self.temp_dir.name: [
@@ -134,12 +132,12 @@ class ThisTestCase(BaseTestCase):
 
                 # Modify config to enable `GitRepoLoader` plugin:
                 server_config_dict = load_custom_integ_server_config_dict()
-                server_config_dict[plugin_dict_][GitRepoLoader.__name__][plugin_config_] = plugin_config
+                server_config_dict[plugin_instance_entries_][GitRepoLoader.__name__][plugin_config_] = plugin_config
 
                 env_mock_builder = (
                     LocalClientEnvMockBuilder()
                     .set_server_config_dict(server_config_dict)
-                    .set_enable_demo_git_loader(plugin_config[is_plugin_enabled_])
+                    .set_enable_demo_git_loader(True)
                     .set_command_line("some_command help")
                     .set_cursor_cpos(0)
                 )

@@ -6,14 +6,15 @@ from argrelay.runtime_context.InterpContext import InterpContext
 
 class AbstractInterp:
     """
-    Interpret command line sharing current state via :class:`InterpContext`.
+    Interpreter processes command line sharing current state via :class:`InterpContext`.
 
-    New instance of interpreter is created by (plugin implementing) `AbstractInterpFactory` for each request.
+    New instance of interpreter is created by (a plugin implementing) `AbstractInterpFactory` for each request.
     """
 
     def __init__(
         self,
         interp_factory_id: str,
+        # TODO: Rename to `tree_node_config_dict` (or somehow differently) to disambiguate from orig `config_dict`:
         config_dict: dict,
         interp_ctx: InterpContext,
     ):
@@ -34,7 +35,7 @@ class AbstractInterp:
     def try_iterate(self) -> InterpStep:
         pass
 
-    def run_fill_control(self) -> None:
+    def delegate_fill_control(self) -> None:
         pass
 
     def propose_arg_completion(self) -> None:
@@ -46,7 +47,10 @@ class AbstractInterp:
         """
         return None
 
-    def is_pos_arg(self, token_ipos: int) -> bool:
+    def is_pos_arg(
+        self,
+        token_ipos: int,
+    ) -> bool:
         return get_token_type(
             self.interp_ctx.parsed_ctx.all_tokens,
             token_ipos,

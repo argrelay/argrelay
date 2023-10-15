@@ -6,15 +6,15 @@ from dataclasses import dataclass, field
 @dataclass(frozen = True)
 class StaticData:
     """
-    All data which normally does not change between requests
+    All data which normally does not change between requests.
+
+    See also `StaticDataSchema.py`.
     """
 
-    first_interp_factory_id: str = field(init = True, default = "")
-
-    known_arg_types: list = field(init = True, default_factory = lambda: [])
+    known_arg_types: list = field()
     """
-    TODO: rename to make it explicit that it is indexed fields.
+    TODO_26_75_13_27:
     Field `known_arg_types` lists fields of `data_envelop` - they are used to create MongoDB index.
     """
 
-    data_envelopes: list = field(init = True, default_factory = lambda: [])
+    data_envelopes: list = field()
