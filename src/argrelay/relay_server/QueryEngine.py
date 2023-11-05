@@ -136,19 +136,15 @@ class QueryEngine:
         for data_envelope in iter(mongo_result):
             found_count += 1
             # `arg_type` must be known:
-            for arg_type in search_control.types_to_keys_dict.keys():
+            for arg_type in search_control.types_to_keys_dict:
                 # `arg_type` must be in one of the `data_envelope`-s found:
                 if arg_type in data_envelope:
                     # If assigned/consumed, `arg_type` must not appear
                     # as an option in `remaining_types_to_values` again:
-                    if arg_type not in assigned_types_to_values.keys():
+                    if arg_type not in assigned_types_to_values:
                         arg_vals = scalar_to_list_values(data_envelope[arg_type])
 
-                        if arg_type not in remaining_types_to_values:
-                            val_list = []
-                            remaining_types_to_values[arg_type] = val_list
-                        else:
-                            val_list = remaining_types_to_values[arg_type]
+                        val_list = remaining_types_to_values.setdefault(arg_type, [])
 
                         # Deduplicate: ensure unique `arg_value`-s:
                         for arg_val in arg_vals:
@@ -181,7 +177,7 @@ def populate_query_dict(envelope_container):
         ReservedArgType.EnvelopeClass.name: envelope_container.search_control.envelope_class,
     }
     # FS_31_70_49_15: populate arg values to search from the context:
-    for arg_type in envelope_container.search_control.types_to_keys_dict.keys():
+    for arg_type in envelope_container.search_control.types_to_keys_dict:
         if arg_type in envelope_container.assigned_types_to_values:
             query_dict[arg_type] = envelope_container.assigned_types_to_values[arg_type].arg_value
     return query_dict

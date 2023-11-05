@@ -166,7 +166,7 @@ For example,<br/>
 to ask for a watermelon (without knowing the exact sign),<br/>
 they used combination of known "drink" + "sweet".
 
-The default `argrelay` CLI-interpretation plugin (see `FuncArgsInterp`)<br/>
+The default `argrelay` CLI-interpretation plugin (see `FuncTreeInterp`)<br/>
 prompts for object properties to disambiguate search results until single one is found.
 
 <details>

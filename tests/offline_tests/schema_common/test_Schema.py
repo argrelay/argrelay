@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
-from argrelay.plugin_interp.FuncArgsInterpFactoryConfigSchema import func_args_interp_config_desc
+from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import func_tree_interp_config_desc
 from argrelay.plugin_interp.JumpTreeInterpFactoryConfigSchema import jump_tree_interp_config_desc
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
@@ -56,7 +56,7 @@ class ThisTestCase(BaseTestCase):
             (line_no(), search_control_desc),
             (line_no(), init_control_desc),
             (line_no(), function_envelope_instance_data_desc),
-            (line_no(), func_args_interp_config_desc),
+            (line_no(), func_tree_interp_config_desc),
             (line_no(), arg_values_desc),
             (line_no(), interp_result_desc),
             (line_no(), assigned_value_desc),

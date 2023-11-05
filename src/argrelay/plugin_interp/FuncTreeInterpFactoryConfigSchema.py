@@ -13,7 +13,7 @@ function `data_envelope`-s to plug those functions into `func_selector_tree`.
 """
 
 
-class FuncArgsInterpFactoryConfigSchema(Schema):
+class FuncTreeInterpFactoryConfigSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
@@ -40,7 +40,7 @@ class FuncArgsInterpFactoryConfigSchema(Schema):
     )
 
 
-func_args_interp_config_example = {
+func_tree_interp_config_example = {
     func_selector_tree_: {
         "list": {
             "repo": "list_repo_func",
@@ -60,9 +60,9 @@ func_args_interp_config_example = {
     ],
 }
 
-func_args_interp_config_desc = TypeDesc(
-    dict_schema = FuncArgsInterpFactoryConfigSchema(),
-    ref_name = FuncArgsInterpFactoryConfigSchema.__name__,
-    dict_example = func_args_interp_config_example,
+func_tree_interp_config_desc = TypeDesc(
+    dict_schema = FuncTreeInterpFactoryConfigSchema(),
+    ref_name = FuncTreeInterpFactoryConfigSchema.__name__,
+    dict_example = func_tree_interp_config_example,
     default_file_path = "",
 )

@@ -6,7 +6,7 @@ from argrelay.misc_helper.TypeDesc import TypeDesc
 from argrelay.runtime_data.ServerPluginControl import ServerPluginControl
 
 first_interp_factory_id_ = "first_interp_factory_id"
-arbitrary_config_data_ = "arbitrary_config_data"
+reusable_config_data_ = "reusable_config_data"
 
 
 class ServerPluginControlSchema(Schema):
@@ -27,7 +27,7 @@ class ServerPluginControlSchema(Schema):
     # the data is used by YAML loader before it even reaches the schema validation.
     # See also values merge:
     # https://stackoverflow.com/a/46644785/441652
-    arbitrary_config_data = fields.Dict(
+    reusable_config_data = fields.Dict(
         required = False,
         load_default = {},
     )
@@ -40,7 +40,7 @@ class ServerPluginControlSchema(Schema):
     ):
         return ServerPluginControl(
             first_interp_factory_id = input_dict[first_interp_factory_id_],
-            # `arbitrary_config_data` is ignored
+            # `reusable_config_data` is ignored
         )
 
 

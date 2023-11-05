@@ -69,6 +69,24 @@ class ThisTestCase(BaseTestCase):
         return env_mock_builder
 
     @responses.activate
+    def test_mocked_ProposeArgValues_response(self):
+        responses.add(self.get_mocked_response(
+            ServerAction.ProposeArgValues,
+            arg_values_desc.dict_example,
+        ))
+        env_mock_builder = self.get_env_mock_builder(CompType.PrefixShown)
+        with env_mock_builder.build():
+            __main__.main()
+            self.assertEqual(
+                "",
+                env_mock_builder.actual_stderr.getvalue(),
+            )
+            self.assertEqual(
+                "\n".join(arg_values_desc.dict_example[arg_values_]) + "\n",
+                ic(env_mock_builder.actual_stdout.getvalue()),
+            )
+
+    @responses.activate
     def test_mocked_DescribeLineArgs_response(self):
         responses.add(self.get_mocked_response(
             ServerAction.DescribeLineArgs,
@@ -89,24 +107,6 @@ class ThisTestCase(BaseTestCase):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}TypeB: [none]{TermColor.reset_style.value}
 """,
 
-                ic(env_mock_builder.actual_stdout.getvalue()),
-            )
-
-    @responses.activate
-    def test_mocked_ProposeArgValues_response(self):
-        responses.add(self.get_mocked_response(
-            ServerAction.ProposeArgValues,
-            arg_values_desc.dict_example,
-        ))
-        env_mock_builder = self.get_env_mock_builder(CompType.PrefixShown)
-        with env_mock_builder.build():
-            __main__.main()
-            self.assertEqual(
-                "",
-                env_mock_builder.actual_stderr.getvalue(),
-            )
-            self.assertEqual(
-                "\n".join(arg_values_desc.dict_example[arg_values_]) + "\n",
                 ic(env_mock_builder.actual_stdout.getvalue()),
             )
 

@@ -3,17 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
+from argrelay.schema_response.ArgValues import ArgValues
 
 
 @dataclass
-class InterpResult:
+class InterpResult(ArgValues):
     """
     See also :class:`InterpResultSchema`.
 
     Unlike `InvocationInput` this class contains at most one `data_envelope` per `envelope_container`
-    because interpretation for Tab-completion is latency-sensitive.
-
-    Both `InterpResult` and `InvocationInput` might be combined in the future.
+    because it executes in the mode which queries values only for latency-sensitive Tab-completion.
     """
 
     all_tokens: list[str] = field()

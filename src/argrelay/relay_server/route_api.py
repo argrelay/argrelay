@@ -42,28 +42,6 @@ def create_blueprint_api(local_server: LocalServer):
         return call_ctx
 
     @blueprint_api.route(
-        ServerAction.DescribeLineArgs.value,
-        methods = ["post"],
-    )
-    @swag_from(DescribeLineArgsSpec.spec_data)
-    def describe_line_args():
-        try:
-            call_ctx = create_call_ctx()
-            response_dict = describe_line_args_handler.handle_request(call_ctx)
-
-            if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
-                response_json = dumps(response_dict)
-                return Response(
-                    response_json,
-                    mimetype = "application/json",
-                )
-            else:
-                # Not acceptable:
-                abort(406)
-        finally:
-            ElapsedTime.measure("before_sending_response")
-
-    @blueprint_api.route(
         ServerAction.ProposeArgValues.value,
         methods = ["post"],
     )
@@ -83,6 +61,28 @@ def create_blueprint_api(local_server: LocalServer):
                 )
             elif request.accept_mimetypes["application/json"]:
                 # JSON - parsing lib is required on the client side:
+                response_json = dumps(response_dict)
+                return Response(
+                    response_json,
+                    mimetype = "application/json",
+                )
+            else:
+                # Not acceptable:
+                abort(406)
+        finally:
+            ElapsedTime.measure("before_sending_response")
+
+    @blueprint_api.route(
+        ServerAction.DescribeLineArgs.value,
+        methods = ["post"],
+    )
+    @swag_from(DescribeLineArgsSpec.spec_data)
+    def describe_line_args():
+        try:
+            call_ctx = create_call_ctx()
+            response_dict = describe_line_args_handler.handle_request(call_ctx)
+
+            if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
                 response_json = dumps(response_dict)
                 return Response(
                     response_json,

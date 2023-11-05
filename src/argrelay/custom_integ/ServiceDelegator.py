@@ -49,8 +49,8 @@ access_container_ipos_ = 2
 
 
 def set_default_to(arg_type, arg_val, envelope_container):
-    if arg_type in envelope_container.search_control.types_to_keys_dict.keys():
-        if arg_type not in envelope_container.assigned_types_to_values.keys():
+    if arg_type in envelope_container.search_control.types_to_keys_dict:
+        if arg_type not in envelope_container.assigned_types_to_values:
             if arg_type in envelope_container.remaining_types_to_values:
                 if arg_val in envelope_container.remaining_types_to_values[arg_type]:
                     del envelope_container.remaining_types_to_values[arg_type]
@@ -89,6 +89,7 @@ def redirect_to_error(
     }
     error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput(
+        arg_values = interp_ctx.comp_suggestions,
         all_tokens = interp_ctx.parsed_ctx.all_tokens,
         consumed_tokens = interp_ctx.consumed_tokens,
         envelope_containers = interp_ctx.envelope_containers,
@@ -329,6 +330,7 @@ class ServiceDelegator(AbstractDelegator):
                 delegator_plugin_instance_id = ServiceDelegator.__name__
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput(
+                    arg_values = interp_ctx.comp_suggestions,
                     all_tokens = interp_ctx.parsed_ctx.all_tokens,
                     consumed_tokens = interp_ctx.consumed_tokens,
                     envelope_containers = interp_ctx.envelope_containers,

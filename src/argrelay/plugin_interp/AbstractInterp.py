@@ -14,12 +14,17 @@ class AbstractInterp:
     def __init__(
         self,
         interp_factory_id: str,
-        # TODO: Rename to `tree_node_config_dict` (or somehow differently) to disambiguate from orig `config_dict`:
-        config_dict: dict,
+        interp_tree_node_config_dict: dict,
         interp_ctx: InterpContext,
     ):
         self.interp_factory_id: str = interp_factory_id
-        self.config_dict: dict = config_dict
+
+        self.interp_tree_node_config_dict: dict = interp_tree_node_config_dict
+        """
+        The configs for individual `AbstractInterp` are called `interp_tree_node_config_dict` and cloned/populated by
+        `load_func_envelopes` based on their position in FS_01_89_09_24 interp tree.
+        """
+
         self.interp_ctx: InterpContext = interp_ctx
         self.base_container_ipos: int = interp_ctx.curr_container_ipos
 

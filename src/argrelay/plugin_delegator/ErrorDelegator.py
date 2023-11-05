@@ -19,6 +19,7 @@ class ErrorDelegator(AbstractDelegator):
             self.__class__.__name__
         ]
         invocation_input = InvocationInput(
+            arg_values = interp_ctx.comp_suggestions,
             all_tokens = interp_ctx.parsed_ctx.all_tokens,
             consumed_tokens = interp_ctx.consumed_tokens,
             envelope_containers = interp_ctx.envelope_containers,

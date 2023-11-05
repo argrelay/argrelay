@@ -37,6 +37,9 @@ def store_envelopes(mongo_db: Database, static_data: StaticData):
     col_proxy: Collection = mongo_db[data_envelopes_]
     col_proxy.delete_many({})
 
+    # TODO: FS_41_40_39_44: When there is no data (including funcs), Tab suggest next step from interp tree (e.g. `subtree`), but Alt+Shift+Q does not show these suggestions.
+    #return
+
     envelope_i: int = 0
     envelope_n = len(static_data.data_envelopes)
     for data_envelope in static_data.data_envelopes:

@@ -32,20 +32,20 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
         self,
         call_ctx: CallContext,
     ) -> AbstractLocalClientCommand:
-        if call_ctx.server_action is ServerAction.DescribeLineArgs:
-            from argrelay.client_command_local.DescribeLineArgsLocalClientCommand import (
-                DescribeLineArgsLocalClientCommand
-            )
-            return DescribeLineArgsLocalClientCommand(
-                call_ctx,
-                self.server_config,
-                self.local_server,
-            )
         if call_ctx.server_action is ServerAction.ProposeArgValues:
             from argrelay.client_command_local.ProposeArgValuesLocalClientCommand import (
                 ProposeArgValuesLocalClientCommand
             )
             return ProposeArgValuesLocalClientCommand(
+                call_ctx,
+                self.server_config,
+                self.local_server,
+            )
+        if call_ctx.server_action is ServerAction.DescribeLineArgs:
+            from argrelay.client_command_local.DescribeLineArgsLocalClientCommand import (
+                DescribeLineArgsLocalClientCommand
+            )
+            return DescribeLineArgsLocalClientCommand(
                 call_ctx,
                 self.server_config,
                 self.local_server,

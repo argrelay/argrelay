@@ -22,7 +22,7 @@ class AbstractPlugin:
         self,
     ):
         """
-        Validate schema or data for `self.config_dict`.
+        Validate schema or data for `config_dict`.
         """
         pass
 

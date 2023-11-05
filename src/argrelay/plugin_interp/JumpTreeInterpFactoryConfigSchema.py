@@ -3,15 +3,15 @@ from copy import deepcopy
 from marshmallow import RAISE, fields
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
-from argrelay.plugin_interp.FuncArgsInterpFactoryConfigSchema import (
-    FuncArgsInterpFactoryConfigSchema,
-    func_args_interp_config_desc,
+from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
+    FuncTreeInterpFactoryConfigSchema,
+    func_tree_interp_config_desc,
 )
 
 jump_tree_ = "jump_tree"
 
 
-class JumpTreeInterpFactoryConfigSchema(FuncArgsInterpFactoryConfigSchema):
+class JumpTreeInterpFactoryConfigSchema(FuncTreeInterpFactoryConfigSchema):
     class Meta:
         unknown = RAISE
         strict = True
@@ -25,7 +25,7 @@ class JumpTreeInterpFactoryConfigSchema(FuncArgsInterpFactoryConfigSchema):
     )
 
 
-_re_tree_interp_config_example = deepcopy(func_args_interp_config_desc.dict_example)
+_re_tree_interp_config_example = deepcopy(func_tree_interp_config_desc.dict_example)
 _re_tree_interp_config_example.update({
     jump_tree_: [
         "relay_demo",

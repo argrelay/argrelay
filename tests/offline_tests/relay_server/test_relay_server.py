@@ -203,17 +203,6 @@ class ThisTestCase(ServerOnlyTestCase):
 
         extra_data_verifiers = {
             200: {
-                ServerAction.DescribeLineArgs: [
-                    lambda response_data:
-                    self.assertEqual(
-                        [
-                            "some_command",
-                            "goto",
-                            "service",
-                        ],
-                        response_data[all_tokens_],
-                    ),
-                ],
                 ServerAction.ProposeArgValues: [
                     lambda response_data:
                     self.assertEqual(
@@ -223,6 +212,17 @@ class ThisTestCase(ServerOnlyTestCase):
                             "prod",
                         ],
                         response_data[arg_values_],
+                    ),
+                ],
+                ServerAction.DescribeLineArgs: [
+                    lambda response_data:
+                    self.assertEqual(
+                        [
+                            "some_command",
+                            "goto",
+                            "service",
+                        ],
+                        response_data[all_tokens_],
                     ),
                 ],
                 ServerAction.RelayLineArgs: [

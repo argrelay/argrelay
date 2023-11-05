@@ -1,6 +1,9 @@
+from copy import deepcopy
+
 from marshmallow import RAISE, fields, pre_dump, post_load, Schema
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.schema_response.ArgValuesSchema import ArgValuesSchema, arg_values_desc
 from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
 from argrelay.schema_response.InterpResult import InterpResult
 
@@ -15,7 +18,7 @@ tan_token_ipos_ = "tan_token_ipos"
 tan_token_l_part_ = "tan_token_l_part"
 
 
-class InterpResultSchema(Schema):
+class InterpResultSchema(ArgValuesSchema):
     """
     See also `InterpResult`.
     """
@@ -51,51 +54,41 @@ class InterpResultSchema(Schema):
         input_object: InterpResult,
         **kwargs,
     ):
-        return {
+        data_dict = super().make_dict(input_object)
+        data_dict.update({
             all_tokens_: input_object.all_tokens,
             consumed_tokens_: input_object.consumed_tokens,
             envelope_containers_: input_object.envelope_containers,
             tan_token_ipos_: input_object.tan_token_ipos,
             tan_token_l_part_: input_object.tan_token_l_part,
-        }
+        })
+        return data_dict
 
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        """
-        Implements inheritance as described here:
-        https://stackoverflow.com/a/65668854/441652
-        """
-        return type(self).model_class(
-            **input_dict,
-        )
-
+_interp_result_example = deepcopy(arg_values_desc.dict_example)
+_interp_result_example.update({
+    all_tokens_: [
+        "some_command",
+        "unrecognized_token",
+        "goto",
+        "host",
+        "prod",
+    ],
+    consumed_tokens_: [
+        0,
+        2,
+        3,
+        4,
+    ],
+    envelope_containers_: [
+        envelope_container_desc.dict_example,
+    ],
+    tan_token_ipos_: 1,
+    tan_token_l_part_: "unrecognized_",
+})
 
 interp_result_desc = TypeDesc(
     dict_schema = InterpResultSchema(),
     ref_name = InterpResultSchema.__name__,
-    dict_example = {
-        all_tokens_: [
-            "some_command",
-            "unrecognized_token",
-            "goto",
-            "host",
-            "prod",
-        ],
-        consumed_tokens_: [
-            0,
-            2,
-            3,
-            4,
-        ],
-        envelope_containers_: [
-            envelope_container_desc.dict_example,
-        ],
-        tan_token_ipos_: 1,
-        tan_token_l_part_: "unrecognized_",
-    },
+    dict_example = _interp_result_example,
     default_file_path = "",
 )

@@ -1,6 +1,7 @@
-from marshmallow import Schema, fields, RAISE
+from marshmallow import Schema, fields, RAISE, pre_dump, post_load
 
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.schema_response.ArgValues import ArgValues
 
 arg_values_ = "arg_values"
 
@@ -13,15 +14,17 @@ _arg_values_example = {
 }
 
 
-# TODO: Make it base for <- `InterpResults` <- `InvocationInput`?
-#       Make it possible to verify proposed arg_values in all `ServerAction`-s.
-#       Append space to the command line (for surrogate token delimiter) in case of `ServerAction.RelayLineArgs`
-#       to populate proposed arg_values to allow unconditionally assert proposed values in all tests
-#       (for all `ServerAction`-s).
+# TODO_11_77_28_50: Make it possible to verify proposed arg_values in all `ServerAction`-s.
+# Append space to the command line (for surrogate token delimiter) in case of `ServerAction.RelayLineArgs`
+# to populate proposed arg_values to allow unconditionally assert proposed values in all tests
+# (for all `ServerAction`-s).
+
 class ArgValuesSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = ArgValues
 
     arg_values = fields.List(
         fields.String(default = ""),
@@ -30,6 +33,30 @@ class ArgValuesSchema(Schema):
             "example": _arg_values_example[arg_values_],
         },
     )
+
+    @pre_dump
+    def make_dict(
+        self,
+        input_object: ArgValues,
+        **kwargs,
+    ):
+        return {
+            arg_values_: input_object.arg_values,
+        }
+
+    @post_load
+    def make_object(
+        self,
+        input_dict,
+        **kwargs,
+    ):
+        """
+        Implements inheritance as described here:
+        https://stackoverflow.com/a/65668854/441652
+        """
+        return type(self).model_class(
+            **input_dict,
+        )
 
 
 arg_values_desc = TypeDesc(

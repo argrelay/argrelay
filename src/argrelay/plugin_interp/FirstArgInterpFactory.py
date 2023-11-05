@@ -3,7 +3,6 @@ from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
     first_arg_interp_factory_config_desc,
     first_arg_vals_to_next_interp_factory_ids_,
 )
-from argrelay.plugin_interp.InterpTreeContext import InterpTreeContext
 from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
 from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import (
     tree_path_interp_factory_config_desc,
@@ -44,11 +43,9 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
 
         Takes part in implementation of FS_01_89_09_24 interp tree.
         """
-        interp_tree_context: InterpTreeContext = InterpTreeContext(
-            interp_tree_path = tuple([]),
-        )
+        interp_tree_abs_path: tuple[str, ...] = tuple([])
         self.load_func_envelopes(
-            interp_tree_context,
+            interp_tree_abs_path,
             server_config,
         )
 
@@ -58,13 +55,13 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
     ) -> FirstArgInterp:
         return FirstArgInterp(
             self.plugin_instance_id,
-            # NOTE: FS_42_76_93_51 first interp special case:
-            #       We use multiple config clones (with customization) for interps at different location on
-            #       the interp tree - these configs get cloned on `load_func_envelopes`.
-            #       But first interp is always at the root of the interp tree.
-            #       More over, first interp is the only one who triggers cascading `load_func_envelopes`,
-            #       but never receives such call itself.
-            #       Instead of using `tree_path_config_dict`, use `config_dict` directly:
+            # FS_42_76_93_51 first interp special case:
+            # We use multiple config clones (with customization) `tree_node_config_dict` for interps at
+            # different location on the FS_01_89_09_24 interp tree - these configs get cloned on `load_func_envelopes`.
+            # But first interp is always at the root of the interp tree.
+            # More over, first interp is the only one who triggers cascading calls to `load_func_envelopes`,
+            # but never receives such call itself.
+            # Instead of using `interp_tree_node_config_dict`, use `config_dict` directly:
             self.config_dict,
             interp_ctx,
         )

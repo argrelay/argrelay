@@ -143,7 +143,7 @@ amer
             (
                 line_no(), f"{self.default_bound_command} echo one two three four five".split(" "),
                 0,
-                f"{self.default_bound_command} echo one two three four five ",
+                f"{self.default_bound_command} echo one two three four five\n",
                 "",
                 "FS_43_50_57_71: `echo_args` func executes successfully printing its args.",
             ),

@@ -174,11 +174,6 @@ Conceptual:
 
 Ease integration into external project:
 
-*   Extend EnvMock to assert returned JSON via JSONPath:
-    https://www.digitalocean.com/community/tutorials/python-jsonpath-examples
-    REGISTER
-    DEV_VISIBLE
-
 *   There is constant need to distinguish (TODO: name it properly):
     *   argrelay_target_dir - the path to special dir (where venv is configured via relative path, artifacts generated, config files, etc.)
     *   argrelay_distrib_dir - the path to useful artifacts (where known after venv is sourced)
@@ -266,10 +261,6 @@ Extra:
     Simply allow to configure command to check for mongo db status
     (it could be different commands based on target system).
     Use return code: 0 = server started, 1 = wait, anything else = failure (stop).
-    REGISTER
-
-*   Add `echo` command to test arbitrary tail args.
-    See also: FS_80_45_89_81 / echo_args
     REGISTER
 
 *   Split `intercept` into: `intercept_json`, `intercept_str` (Python __str__ output), `intercept_table`.

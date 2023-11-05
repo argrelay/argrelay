@@ -19,13 +19,14 @@ class NoopInterpFactory(AbstractInterpFactory):
         self,
         interp_ctx: InterpContext,
     ) -> NoopInterp:
-        # `NoopInterpFactory` is not normally attached to any tree and `self.load_func_envelopes`
-        # is not invoked to populate separate config (using `self.config_dict` directly) -
+        # `NoopInterpFactory` is not normally attached to any tree and
+        # `load_func_envelopes` is not invoked to clone/populate separate configs
+        # (which makes it use `config_dict` directly instead of `interp_tree_node_config_dict`) -
         # use `config_dict` directly if so:
-        if interp_ctx.interp_tree_context.interp_tree_path not in self.tree_path_config_dict:
+        if interp_ctx.interp_tree_abs_path not in self.interp_tree_abs_paths_to_node_configs:
             config_dict = self.config_dict
         else:
-            config_dict = self.tree_path_config_dict[interp_ctx.interp_tree_context.interp_tree_path]
+            config_dict = self.interp_tree_abs_paths_to_node_configs[interp_ctx.interp_tree_abs_path]
         return NoopInterp(
             self.plugin_instance_id,
             config_dict,

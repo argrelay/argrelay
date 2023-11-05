@@ -213,10 +213,6 @@ class prototype_state_class {
         this
             .create_fetch_promise()
             .then(server_response => {
-
-                // TODO: clean up:
-                console.log(`[${this.state_name}] response: ${server_response}`)
-
                 if (server_response.ok) {
                     return this
                         .process_response(server_response)
@@ -326,9 +322,6 @@ class suggest_state_class extends prototype_state_class {
                     .split(/\r?\n/)
                     // Filter empty strings:
                     .filter(suggested_token => suggested_token);
-
-                // TODO: clean up:
-                console.log(`last_suggested_token_list: ${last_suggested_token_list}`);
             })
     }
 }
@@ -372,9 +365,6 @@ class search_state_class extends prototype_state_class {
             .json()
             .then(response_json => {
                 last_search_response_json = response_json;
-
-                // TODO: clean up:
-                console.log(`last_search_response_json: ${last_search_response_json}`);
             })
     }
 }
