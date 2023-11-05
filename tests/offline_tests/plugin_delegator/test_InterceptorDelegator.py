@@ -1,9 +1,9 @@
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_helper import line_no
 from argrelay.test_helper.LocalTestCase import LocalTestCase
@@ -22,17 +22,36 @@ class ThisTestCase(LocalTestCase):
                 line_no(),
                 "some_command intercept |",
                 CompType.PrefixShown,
-                ["goto", "desc", "list"],
+                [
+                    "help",
+                    # TODO_77_12_50_80: fix duplicates:
+                    "intercept",
+                    # TODO_77_12_50_80: fix duplicates:
+                    "subtree",
+                    "desc",
+                    "echo",
+                    "goto",
+                    "list",
+                    # TODO_77_12_50_80: fix duplicates:
+                    "subtree",
+                    # TODO_77_12_50_80: fix duplicates:
+                    "help",
+                    # TODO_77_12_50_80: fix duplicates:
+                    "intercept",
+                ],
                 None,
                 None,
-                "If `intercept` is already selected (which has `FunctionCategory` = `internal`), "
-                "it should not be suggested during selection of `external` function.",
+                "If `intercept` is already selected, it can be recursively suggested during selection of the function "
+                "it tries to intercept, if jump tree is configured accordingly.",
             ),
             (
                 line_no(),
                 "some_command intercept goto service s_b prod |",
                 CompType.PrefixShown,
-                ["bbb", "sss"],
+                [
+                    "bbb",
+                    "sss",
+                ],
                 None,
                 None,
                 "Completion continues to be driven by function selected via `goto` and `service`.",
@@ -41,20 +60,26 @@ class ThisTestCase(LocalTestCase):
                 line_no(),
                 "some_command intercept hel|",
                 CompType.PrefixShown,
-                [],
+                [
+                    "help",
+                    # TODO_77_12_50_80: fix duplicates:
+                    "help",
+                ],
                 {},
                 None,
-                "For `intercept` only `external` functions are allowed - "
-                "`help` is not suggested.",
+                "For `intercept` any function is allowed - "
+                "`help` is also suggested.",
             ),
             (
                 line_no(),
                 "some_command intercept got|",
                 CompType.PrefixShown,
-                ["goto"],
+                [
+                    "goto",
+                ],
                 {},
                 None,
-                "For `intercept` only `external` functions are allowed - "
+                "For `intercept` any function is allowed - "
                 "`goto` is suggested.",
             ),
             (
@@ -64,20 +89,23 @@ class ThisTestCase(LocalTestCase):
                 None,
                 {
                     0: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("func", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
                     },
                     1: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
                     2: {
                         ServiceArgType.ServiceName.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
                         ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
                         ServiceArgType.HostName.name: AssignedValue("qwer-pd-2", ArgSource.ExplicitPosArg),
                     },
+                    3: {
+                        ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.DefaultValue),
+                    },
+                    4: None,
                 },
                 None,
                 "Invocation payload is provided by function selected via `goto` and `service`.",
@@ -89,18 +117,45 @@ class ThisTestCase(LocalTestCase):
                 None,
                 {
                     0: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("internal", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("intercept", ArgSource.InitValue),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("func", ArgSource.InitValue),
-                    },
-                    1: {
-                        # Only `ArgSource.InitValue` as nothing else could be determined:
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
                             ReservedEnvelopeClass.ClassFunction.name,
                             ArgSource.InitValue,
                         ),
-                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
                     },
+                    1: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                    },
+                    2: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                    },
+                    3: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                    },
+                    4: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                    },
+                    5: None,
                 },
                 None,
                 # TODO: This only captures the behavior of such command line.

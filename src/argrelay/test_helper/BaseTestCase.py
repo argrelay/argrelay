@@ -10,6 +10,8 @@ class BaseTestCase(TestCase):
     Root test class with defaults for all tests.
     """
 
+    confusing_result_presence_msg = "remove expected result to avoid confusion"
+
     @classmethod
     def setUpClass(cls):
         with change_to_known_repo_path("."):

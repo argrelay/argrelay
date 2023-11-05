@@ -6,7 +6,6 @@ from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.TermColor import TermColor
@@ -15,6 +14,7 @@ from argrelay.handler_response.DescribeLineArgsClientResponseHandler import (
     DescribeLineArgsClientResponseHandler,
 )
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.InterpResult import InterpResult
@@ -45,9 +45,16 @@ class ThisTestCase(LocalTestCase):
                     "help",
                     "intercept",
                     "subtree",
-                    "goto",
                     "desc",
+                    "echo",
+                    "goto",
                     "list",
+                    # TODO_77_12_50_80: Avoid duplicates:
+                    "subtree",
+                    # TODO_77_12_50_80: Avoid duplicates:
+                    "help",
+                    # TODO_77_12_50_80: Avoid duplicates:
+                    "intercept",
                 ],
                 # TODO: Maybe we should suggest selection for `internal` func like `intercept` as well?
                 "Suggest from the set of values for the first unassigned arg type.",
@@ -215,9 +222,10 @@ class ThisTestCase(LocalTestCase):
                 "some_command list host dev |",
                 {
                     0: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("list", ArgSource.ExplicitPosArg),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("host", ArgSource.ExplicitPosArg),
+                        # TODO: Use `ExplicitPosArg` for the first arg instead of `InitValue`:
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("list", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
@@ -266,9 +274,9 @@ class ThisTestCase(LocalTestCase):
                 "some_command goto service s_b prod |",
                 {
                     0: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
@@ -345,14 +353,14 @@ class ThisTestCase(LocalTestCase):
             ),
             (
                 line_no(), "some_command |", CompType.DescribeArgs,
-                # TODO: FS_41_40_39_44: there must be a special line/field which lists `arg_value`-s based on FS_01_89_09_24 (tree path selecting interp):
-                "FS_41_40_39_44: TODO: suggest from tree path.",
+                # TODO: FS_41_40_39_44: there must be a special line/field which lists `arg_value`-s based on FS_01_89_09_24 (interp tree):
+                "FS_41_40_39_44: TODO: suggest from interp tree.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: 6
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*ActionType: ?{TermColor.reset_style.value} goto desc list 
-{" " * indent_size}{TermColor.remaining_value.value}ObjectSelector: ?{TermColor.reset_style.value} host service 
+{ReservedEnvelopeClass.ClassFunction.name}: 22
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} desc echo goto list subtree help intercept 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit host service repo desc echo goto list help intercept 
 """,
             ),
             (
@@ -362,9 +370,9 @@ class ThisTestCase(LocalTestCase):
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}emea{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 1
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ObjectSelector: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: 2
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}CodeMaturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -387,9 +395,9 @@ class ThisTestCase(LocalTestCase):
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 1
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ObjectSelector: host {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: host {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassHost.name}: 10
 {" " * indent_size}{TermColor.remaining_value.value}*CodeMaturity: ?{TermColor.reset_style.value} dev qa prod 
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -407,9 +415,9 @@ class ThisTestCase(LocalTestCase):
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.unconsumed_token.value}s_{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: 1
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ObjectSelector: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: 2
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}CodeMaturity: prod {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}FlowStage: upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
@@ -533,8 +541,7 @@ class ThisTestCase(LocalTestCase):
                 line_no(), "some_command goto|", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.ActionType.name: None,
-                    GlobalArgType.ObjectSelector.name: None,
+                    # TODO: How to specify that some specific props are not assigned?
                 },
                 "No assignment for incomplete token (token pointed by the cursor) in completion mode",
             ),
@@ -542,19 +549,22 @@ class ThisTestCase(LocalTestCase):
                 line_no(), "some_command desc host zxcv|", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                    GlobalArgType.ActionType.name: AssignedValue("desc", ArgSource.ExplicitPosArg),
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("desc", ArgSource.ExplicitPosArg),
+                    f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     ServiceArgType.AccessType.name: None,
                 },
-                "Incomplete token (pointed by the cursor) is complete in invocation mode",
+                # TODO: Test assertion has nothing to do with incomplete token - it asserts first (func) envelope, but not the `zxcv`-related one.
+                # TODO: Is "complete in invocation mode" but this is Tab-completion mode:
+                "Incomplete token (pointed by the cursor) is complete in invocation mode.",
             ),
             (
                 line_no(), "some_command goto |", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                    GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
-                    GlobalArgType.ObjectSelector.name: None,
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                    f"{func_envelope_path_step_prop_name(2)}": None,
                 },
                 "Explicit assignment for complete token",
             ),
@@ -562,9 +572,9 @@ class ThisTestCase(LocalTestCase):
                 line_no(), "some_command goto service |", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                    GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
-                    GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                    f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                 },
                 "Explicit assignment for complete token",
             ),
@@ -572,9 +582,9 @@ class ThisTestCase(LocalTestCase):
                 line_no(), "some_command goto \"service\" |", CompType.PrefixShown,
                 0,
                 {
-                    GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                    GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
-                    GlobalArgType.ObjectSelector.name: None,
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                    # TODO: How to specify that some specific props are not assigned?
                 },
                 # TODO: Fix this: "service" must be recognized even if in double quotes:
                 "FS_92_75_93_01: Register a bug that \"service\" token is not recognized while in double quotes.",

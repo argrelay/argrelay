@@ -13,6 +13,11 @@ _arg_values_example = {
 }
 
 
+# TODO: Make it base for <- `InterpResults` <- `InvocationInput`?
+#       Make it possible to verify proposed arg_values in all `ServerAction`-s.
+#       Append space to the command line (for surrogate token delimiter) in case of `ServerAction.RelayLineArgs`
+#       to populate proposed arg_values to allow unconditionally assert proposed values in all tests
+#       (for all `ServerAction`-s).
 class ArgValuesSchema(Schema):
     class Meta:
         unknown = RAISE

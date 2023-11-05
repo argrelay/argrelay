@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import responses
 from icecream import ic
 
@@ -6,11 +8,13 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
+from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_module_name_, plugin_class_name_
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
-from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay.schema_response.InvocationInputSchema import invocation_input_desc, delegator_plugin_entry_
 from argrelay.server_spec.const_int import BASE_URL_FORMAT
 from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.BaseTestCase import BaseTestCase
@@ -108,9 +112,14 @@ class ThisTestCase(BaseTestCase):
 
     @responses.activate
     def test_mocked_RelayLineArgs_response(self):
+        server_response = deepcopy(invocation_input_desc.dict_example)
+        server_response[delegator_plugin_entry_].update({
+            plugin_module_name_: NoopDelegator.__module__,
+            plugin_class_name_: NoopDelegator.__name__,
+        })
         responses.add(self.get_mocked_response(
             ServerAction.RelayLineArgs,
-            invocation_input_desc.dict_example,
+            server_response,
         ))
         env_mock_builder = self.get_env_mock_builder(CompType.InvokeAction)
         with env_mock_builder.build():

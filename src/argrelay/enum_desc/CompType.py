@@ -63,14 +63,14 @@ class CompType(IntEnum):
     MenuCompletion = 37  # ASCII '%'
 
     """
-    This `COMP_TYPE` value does not originate in Bash.
+    This `COMP_TYPE` value does not originate in Bash completion.
     Instead, it is set by `argrelay` Bash config script when invoked via special key combination (e.g. `ALT+SHIFT+Q`).
     It is used to describe args in the given command line.
     """
     DescribeArgs = 94  # ASCII '^'
 
     """
-    This `COMP_TYPE` value does not originate in Bash.
-    Instead, it is set by `argrelay` client in `RunMode.InvocationMode`.
+    This `COMP_TYPE` value does not originate in Bash completion.
+    Instead, it is set by `argrelay` client for `CallConv.CliArgsConv` with `RunMode.InvocationMode`.
     """
     InvokeAction = 42  # ASCII '*'

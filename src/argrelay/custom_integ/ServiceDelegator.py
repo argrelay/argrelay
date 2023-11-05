@@ -1,17 +1,24 @@
 from __future__ import annotations
 
+import json
+
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.value_constants import (
-    goto_host_funct_,
-    goto_service_funct_,
-    list_service_func_,
+    goto_host_func_,
+    goto_service_func_,
     list_host_func_,
+    list_service_func_,
+    desc_host_func_,
+    desc_service_func_,
 )
 from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.AbstractDelegator import (
     AbstractDelegator,
-    get_func_name,
-    get_func_name_from_containers,
+    get_func_id_from_interp_ctx,
+    get_func_id_from_invocation_input,
 )
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
@@ -20,10 +27,20 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_delegator_custom_data_desc,
     error_delegator_stub_custom_data_example,
 )
+from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import populate_query_dict
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.schema_config_interp.DataEnvelopeSchema import (
+    instance_data_,
+)
+from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
+    delegator_plugin_instance_id_,
+    search_control_list_,
+    func_id_,
+)
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
 from argrelay.schema_response.InvocationInput import InvocationInput
 
 host_container_ipos_ = 1
@@ -77,7 +94,7 @@ def redirect_to_error(
         envelope_containers = interp_ctx.envelope_containers,
         tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
         tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
-        delegator_plugin_entry = server_config.plugin_dict[delegator_plugin_instance_id],
+        delegator_plugin_entry = server_config.plugin_instance_entries[delegator_plugin_instance_id],
         custom_plugin_data = custom_plugin_data,
     )
     return invocation_input
@@ -95,14 +112,148 @@ class ServiceDelegator(AbstractDelegator):
             config_dict,
         )
 
+    def get_supported_func_envelopes(
+        self,
+    ) -> list[dict]:
+
+        cluster_search_control = {
+            envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
+            keys_to_types_list_: [
+                {"code": ServiceArgType.CodeMaturity.name},
+                {"stage": ServiceArgType.FlowStage.name},
+                {"region": ServiceArgType.GeoRegion.name},
+                {"cluster": ServiceArgType.ClusterName.name},
+            ],
+        }
+
+        host_search_control = {
+            envelope_class_: ServiceEnvelopeClass.ClassHost.name,
+            keys_to_types_list_: [
+                # ClassCluster:
+                {"code": ServiceArgType.CodeMaturity.name},
+                {"stage": ServiceArgType.FlowStage.name},
+                {"region": ServiceArgType.GeoRegion.name},
+                {"cluster": ServiceArgType.ClusterName.name},
+                # ClassHost:
+                {"host": ServiceArgType.HostName.name},
+                # ---
+                {"ip": ServiceArgType.IpAddress.name},
+            ],
+        }
+
+        service_search_control = {
+            envelope_class_: ServiceEnvelopeClass.ClassService.name,
+            keys_to_types_list_: [
+                # ClassCluster:
+                {"code": ServiceArgType.CodeMaturity.name},
+                {"stage": ServiceArgType.FlowStage.name},
+                {"region": ServiceArgType.GeoRegion.name},
+                {"cluster": ServiceArgType.ClusterName.name},
+                # ClassService:
+                {"group": ServiceArgType.GroupLabel.name},
+                {"service": ServiceArgType.ServiceName.name},
+                # ClassHost:
+                {"host": ServiceArgType.HostName.name},
+                # ---
+                {"status": ServiceArgType.LiveStatus.name},
+                {"dc": ServiceArgType.DataCenter.name},
+                {"ip": ServiceArgType.IpAddress.name},
+            ],
+        }
+
+        access_search_control = {
+            envelope_class_: ServiceArgType.AccessType.name,
+            keys_to_types_list_: [
+                {"access": ServiceArgType.AccessType.name},
+            ],
+        }
+
+        func_envelopes = [
+            {
+                instance_data_: {
+                    func_id_: goto_host_func_,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    search_control_list_: [
+                        host_search_control,
+                        access_search_control,
+                    ],
+                },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedArgType.HelpHint.name: "Go (log in) to remote host",
+                ReservedArgType.FuncId.name: goto_host_func_,
+            },
+            {
+                instance_data_: {
+                    func_id_: goto_service_func_,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    search_control_list_: [
+                        service_search_control,
+                        access_search_control,
+                    ],
+                },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedArgType.HelpHint.name: "Go (log in) to remote host and dir path with specified service",
+                ReservedArgType.FuncId.name: goto_service_func_,
+            },
+            {
+                instance_data_: {
+                    func_id_: desc_host_func_,
+                    delegator_plugin_instance_id_: NoopDelegator.__name__,
+                    search_control_list_: [
+                        host_search_control,
+                    ],
+                },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedArgType.HelpHint.name: "Describe remote host",
+                ReservedArgType.FuncId.name: desc_host_func_,
+            },
+            {
+                instance_data_: {
+                    func_id_: desc_service_func_,
+                    delegator_plugin_instance_id_: NoopDelegator.__name__,
+                    search_control_list_: [
+                        service_search_control,
+                    ],
+                },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedArgType.HelpHint.name: "Describe service instance",
+                ReservedArgType.FuncId.name: desc_service_func_,
+            },
+            {
+                instance_data_: {
+                    func_id_: list_host_func_,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    search_control_list_: [
+                        host_search_control,
+                    ],
+                },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedArgType.HelpHint.name: "List remote hosts matching search query",
+                ReservedArgType.FuncId.name: list_host_func_,
+            },
+            {
+                instance_data_: {
+                    func_id_: list_service_func_,
+                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    search_control_list_: [
+                        service_search_control,
+                    ],
+                },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedArgType.HelpHint.name: "List service instances matching search query",
+                ReservedArgType.FuncId.name: list_service_func_,
+            },
+        ]
+        return func_envelopes
+
     def run_fill_control(
         self,
         interp_ctx: "InterpContext",
     ):
-        func_name = get_func_name(interp_ctx)
-        if func_name in [
-            goto_host_funct_,
-            goto_service_funct_,
+        func_id = get_func_id_from_interp_ctx(interp_ctx)
+        if func_id in [
+            goto_host_func_,
+            goto_service_func_,
         ]:
             assert host_container_ipos_ == service_container_ipos_
             object_container_ipos = host_container_ipos_
@@ -127,7 +278,7 @@ class ServiceDelegator(AbstractDelegator):
                     else:
                         set_default_to(ServiceArgType.AccessType.name, "rw", access_container)
 
-        elif func_name in [
+        elif func_id in [
             list_host_func_,
             list_service_func_,
         ]:
@@ -140,16 +291,16 @@ class ServiceDelegator(AbstractDelegator):
         interp_ctx: InterpContext,
         local_server: LocalServer,
     ) -> InvocationInput:
-        assert interp_ctx.is_funct_found(), "the (first) function envelope must be found"
+        assert interp_ctx.is_func_found(), "the (first) function envelope must be found"
 
-        func_name = get_func_name(interp_ctx)
+        func_id = get_func_id_from_interp_ctx(interp_ctx)
 
         vararg_container_ipos = host_container_ipos_
         assert vararg_container_ipos == host_container_ipos_ == service_container_ipos_
 
-        if func_name in [
-            goto_host_funct_,
-            goto_service_funct_,
+        if func_id in [
+            goto_host_func_,
+            goto_service_func_,
         ]:
             # Even if these functions do not support varargs, when `redirect_to_error`, query all:
             vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
@@ -163,7 +314,7 @@ class ServiceDelegator(AbstractDelegator):
                 error_delegator_stub_custom_data_example[error_message_],
                 error_delegator_stub_custom_data_example[error_code_],
             )
-        elif func_name in [
+        elif func_id in [
             list_host_func_,
             list_service_func_,
         ]:
@@ -183,7 +334,9 @@ class ServiceDelegator(AbstractDelegator):
                     envelope_containers = interp_ctx.envelope_containers,
                     tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
                     tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
-                    delegator_plugin_entry = local_server.server_config.plugin_dict[delegator_plugin_instance_id],
+                    delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
+                        delegator_plugin_instance_id
+                    ],
                     custom_plugin_data = {},
                 )
                 return invocation_input
@@ -202,12 +355,12 @@ class ServiceDelegator(AbstractDelegator):
         Print `data_envelope`-s received from server on client side.
         """
 
-        func_name = get_func_name_from_containers(invocation_input.envelope_containers)
-        if func_name == list_host_func_:
+        func_id = get_func_id_from_invocation_input(invocation_input)
+        if func_id == list_host_func_:
             for data_envelope in invocation_input.envelope_containers[host_container_ipos_].data_envelopes:
-                print(data_envelope)
-        elif func_name == list_service_func_:
+                print(json.dumps(data_envelope))
+        elif func_id == list_service_func_:
             for data_envelope in invocation_input.envelope_containers[service_container_ipos_].data_envelopes:
-                print(data_envelope)
+                print(json.dumps(data_envelope))
         else:
             raise RuntimeError

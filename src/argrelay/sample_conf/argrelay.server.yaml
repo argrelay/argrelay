@@ -1,5 +1,4 @@
-# This is an `argrelay` server config.
-# To test, symlink this files as user dot file - see `@/exe/dev_shell.bash` script.
+# `argrelay` server config: https://github.com/argrelay/argrelay
 
 connection_config:
     server_host_name: localhost
@@ -38,11 +37,11 @@ gui_banner_config:
     footer_html: |
         <div style="color: grey; font-size: small;">
 
-        This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config to run CLI).<br/>
-        It is convenient for search, testing and command lookup.<br/>
+        This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config to run CLI client).<br/>
+        It is convenient for data search, testing, diagnostic, but it is not meant to be functional (use CLI client for that).<br/>
         The server data is mocked.<br/>
         <br/>
-        Normally, CLI client is used to receive these responses from the server:
+        Normally, CLI client receives equivalent responses (as this GUI client) from the server:
         <ol>
             <li>auto-completion options (on Tab)</li>
             <li>search responses (on Alt+Shift+Q)</li>
@@ -50,158 +49,135 @@ gui_banner_config:
         </ol>
         However, this GUI client is limited and slightly different from CLI client:
         <ul>
-            <li>(1) Tab is only used to complete common_infix - request to provide suggestions is sent automatically on timeout.</li>
+            <li>(1) Tab is only used to complete `common_infix` - request to provide suggestions is sent automatically on timeout.</li>
             <li>(2) Search request (Alt+Shift+Q) is sent automatically on timeout.</li>
-            <li>(3) Command invocation (Enter) is disabled printing only invocation data from the server (use CLI client to run commands).</li>
+            <li>(3) Command invocation (Enter) is disabled - it only prints invocation data from the server (use CLI client to run commands).</li>
         </ul>
 
         </div>
 
-plugin_instance_id_load_list:
+server_plugin_control:
+    first_interp_factory_id: FirstArgInterpFactory
+    arbitrary_config_data:
 
-    -   FirstArgInterpFactory
-    -   TreePathInterpFactory
-    -   DemoInterpFactory.intercept_func
-    -   DemoInterpFactory.help_func
-    -   DemoInterpFactory.external
-    -   DemoInterpFactory.any
-    -   NoopInterpFactory
+        jump_tree: &jump_tree
+            relay_demo:
+                intercept:
+                    -   relay_demo
+                help:
+                    -   relay_demo
+                subtree:
+                    intercept:
+                        -   relay_demo
+                        -   subtree
+                    help:
+                        -   relay_demo
+                        -   subtree
+            some_command:
+                intercept:
+                    -   some_command
+                help:
+                    -   some_command
+                subtree:
+                    intercept:
+                        -   some_command
+                        -   subtree
+                    help:
+                        -   some_command
+                        -   subtree
 
-    -   NoopLoader
-    -   InterceptLoader
-    -   HelpDelegator
-    -   ServiceLoader
-    -   GitRepoLoader
+        interp_sub_tree: &interp_sub_tree
+            intercept: JumpTreeInterpFactory.intercept_invocation_func
+            help: JumpTreeInterpFactory.help_hint_func
+            "": FuncTreeInterpFactory
 
-    -   NoopDelegator
-    -   InterceptDelegator
-    -   HelpLoader
-    -   ServiceDelegator
-    -   GitRepoDelegator
-    -   ErrorDelegator
+        all_direct_delegators: &all_direct_delegators
+            -   NoopDelegator
+            -   EchoDelegator
+            -   ServiceDelegator
+            -   GitRepoDelegator
 
-plugin_dict:
+plugin_instance_entries:
 
     FirstArgInterpFactory:
         plugin_module_name: argrelay.plugin_interp.FirstArgInterpFactory
         plugin_class_name: FirstArgInterpFactory
-        plugin_type: InterpFactoryPlugin
+        plugin_dependencies:
+            -   InterpTreeInterpFactory
         plugin_config:
             first_arg_vals_to_next_interp_factory_ids:
                 # This binding uses existing file system name `relay_demo`:
-                relay_demo: TreePathInterpFactory
-                # Another equivalent binding (but `some_command` does not exist in this repo):
-                some_command: TreePathInterpFactory
+                relay_demo: InterpTreeInterpFactory
+                # Another equivalent binding
+                # (if `some_command` is configured, it will behave as `relay_demo` above):
+                some_command: InterpTreeInterpFactory
 
-    TreePathInterpFactory:
-        plugin_module_name: argrelay.plugin_interp.TreePathInterpFactory
-        plugin_class_name: TreePathInterpFactory
-        plugin_type: InterpFactoryPlugin
+    InterpTreeInterpFactory:
+        plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
+        plugin_class_name: InterpTreeInterpFactory
+        plugin_dependencies:
+            -   JumpTreeInterpFactory.intercept_invocation_func
+            -   JumpTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory
         plugin_config:
             interp_selector_tree:
-                intercept: DemoInterpFactory.intercept_func
-                help: DemoInterpFactory.help_func
-                subtree:
-                    # child subtree matches parent:
-                    intercept: DemoInterpFactory.intercept_func
-                    help: DemoInterpFactory.help_func
-                    "": DemoInterpFactory.external
-                "": DemoInterpFactory.external
+                <<: *interp_sub_tree
+                # child subtree matches parent:
+                subtree: *interp_sub_tree
 
-    DemoInterpFactory.intercept_func:
-        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
-        plugin_class_name: DemoInterpFactory
-        plugin_type: InterpFactoryPlugin
+    JumpTreeInterpFactory.intercept_invocation_func:
+        plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
+        plugin_class_name: JumpTreeInterpFactory
+        plugin_dependencies:
+            -   InterceptDelegator
         plugin_config:
-            function_search_control:
-                envelope_class: ClassFunction
-                keys_to_types_list:
-                    -   category: FunctionCategory
-                    -   action: ActionType
-                    -   object: ObjectSelector
-            function_init_control:
-                init_types_to_values:
-                    # Note that it already specifies all "coordinates" specifically for `intercept` func.
-                    FunctionCategory: "internal"
-                    ActionType: "intercept"
-                    ObjectSelector: "func"
+            jump_tree: *jump_tree
+            func_selector_tree: intercept_invocation_func
+            delegator_plugin_ids:
+                -   InterceptDelegator
 
-    DemoInterpFactory.help_func:
-        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
-        plugin_class_name: DemoInterpFactory
-        plugin_type: InterpFactoryPlugin
+    JumpTreeInterpFactory.help_hint_func:
+        plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
+        plugin_class_name: JumpTreeInterpFactory
+        plugin_dependencies:
+            -   HelpDelegator
         plugin_config:
-            function_search_control:
-                envelope_class: ClassFunction
-                keys_to_types_list:
-                    -   category: FunctionCategory
-                    -   action: ActionType
-                    -   object: ObjectSelector
-            function_init_control:
-                init_types_to_values:
-                    # Note that it already specifies all "coordinates" specifically for `help` func.
-                    FunctionCategory: "internal"
-                    ActionType: "help"
-                    ObjectSelector: "func"
+            jump_tree: *jump_tree
+            func_selector_tree: help_hint_func
+            delegator_plugin_ids:
+                -   HelpDelegator
 
-    DemoInterpFactory.external:
-        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
-        plugin_class_name: DemoInterpFactory
-        plugin_type: InterpFactoryPlugin
+    FuncTreeInterpFactory:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_dependencies: *all_direct_delegators
         plugin_config:
-            function_search_control:
-                envelope_class: ClassFunction
-                keys_to_types_list:
-                    -   category: FunctionCategory
-                    -   action: ActionType
-                    -   object: ObjectSelector
-            function_init_control:
-                init_types_to_values:
-                    FunctionCategory: "external"
-
-    DemoInterpFactory.any:
-        plugin_module_name: argrelay.custom_integ.DemoInterpFactory
-        plugin_class_name: DemoInterpFactory
-        plugin_type: InterpFactoryPlugin
-        plugin_config:
-            function_search_control:
-                envelope_class: ClassFunction
-                keys_to_types_list:
-                    -   category: FunctionCategory
-                    -   action: ActionType
-                    -   object: ObjectSelector
-            function_init_control:
-                init_types_to_values: { }
+            func_selector_tree:
+                echo: echo_args_func
+                list:
+                    host: list_host_func
+                    service: list_service_func
+                goto:
+                    repo: goto_repo_func
+                    host: goto_host_func
+                    service: goto_service_func
+                desc:
+                    commit: desc_commit_func
+                    host: desc_host_func
+                    service: desc_service_func
+            delegator_plugin_ids: *all_direct_delegators
 
     NoopInterpFactory:
         plugin_module_name: argrelay.plugin_interp.NoopInterpFactory
         plugin_class_name: NoopInterpFactory
-        plugin_type: InterpFactoryPlugin
-        plugin_config:
-            arbitrary_comment: "test plugin"
 
     NoopLoader:
         plugin_module_name: argrelay.plugin_loader.NoopLoader
         plugin_class_name: NoopLoader
-        plugin_type: LoaderPlugin
-        plugin_config: { }
-
-    InterceptLoader:
-        plugin_module_name: argrelay.plugin_loader.InterceptLoader
-        plugin_class_name: InterceptLoader
-        plugin_type: LoaderPlugin
-        plugin_config: { }
-
-    HelpLoader:
-        plugin_module_name: argrelay.plugin_loader.HelpLoader
-        plugin_class_name: HelpLoader
-        plugin_type: LoaderPlugin
-        plugin_config: { }
 
     ServiceLoader:
         plugin_module_name: argrelay.custom_integ.ServiceLoader
         plugin_class_name: ServiceLoader
-        plugin_type: LoaderPlugin
         plugin_config:
             test_data_ids_to_load:
                 #-   TD_70_69_38_46  # no data
@@ -210,11 +186,10 @@ plugin_dict:
                 #-   TD_38_03_48_51  # large generated
 
     GitRepoLoader:
+        plugin_enabled: false
         plugin_module_name: argrelay.custom_integ.GitRepoLoader
         plugin_class_name: GitRepoLoader
-        plugin_type: LoaderPlugin
         plugin_config:
-            is_plugin_enabled: False
             load_repo_commits: False
             repo_entries:
                 "~/repos":
@@ -236,57 +211,36 @@ plugin_dict:
     NoopDelegator:
         plugin_module_name: argrelay.plugin_delegator.NoopDelegator
         plugin_class_name: NoopDelegator
-        plugin_type: DelegatorPlugin
-        plugin_config: { }
+
+    EchoDelegator:
+        plugin_module_name: argrelay.plugin_delegator.EchoDelegator
+        plugin_class_name: EchoDelegator
 
     InterceptDelegator:
         plugin_module_name: argrelay.plugin_delegator.InterceptDelegator
         plugin_class_name: InterceptDelegator
-        plugin_type: DelegatorPlugin
+        plugin_dependencies:
+            -   FuncTreeInterpFactory
         plugin_config:
-            # `intercept` works only with `external` functions:
-            next_interp_plugin_instance_id: DemoInterpFactory.external
+            next_interp_plugin_instance_id: InterpTreeInterpFactory
 
     HelpDelegator:
         plugin_module_name: argrelay.plugin_delegator.HelpDelegator
         plugin_class_name: HelpDelegator
-        plugin_type: DelegatorPlugin
+        plugin_dependencies:
+            -   FuncTreeInterpFactory
         plugin_config:
-            # `help` works with any (`external`, or `internal`, or ...) functions:
-            next_interp_plugin_instance_id: DemoInterpFactory.any
+            next_interp_plugin_instance_id: InterpTreeInterpFactory
 
     ServiceDelegator:
         plugin_module_name: argrelay.custom_integ.ServiceDelegator
         plugin_class_name: ServiceDelegator
-        plugin_type: DelegatorPlugin
-        plugin_config: { }
 
     GitRepoDelegator:
         plugin_module_name: argrelay.custom_integ.GitRepoDelegator
         plugin_class_name: GitRepoDelegator
-        plugin_type: DelegatorPlugin
-        plugin_config: { }
 
+    # TODO: Add FS_80_45_89_81 / `error_message` func:
     ErrorDelegator:
         plugin_module_name: argrelay.plugin_delegator.ErrorDelegator
         plugin_class_name: ErrorDelegator
-        plugin_type: DelegatorPlugin
-        plugin_config: { }
-
-
-# TODO: Currently, loader plugins write their data under `data_envelope`-s section on start.
-#       Data by loader plugins has to be loaded via the same API which should be exposed via REST
-#       (plugin may use direct API calls as they are within the same process with the server).
-#       See: FS_74_69_61_79 / get set data_envelope: https://github.com/argrelay/argrelay/issues/20
-
-# This data is loaded as part of the config on start (and will be available even if all loader plugins removed).
-# Loader plugins are also supposed to add more data (but they also can modify or completely remove data defined below).
-static_data:
-
-    first_interp_factory_id: FirstArgInterpFactory
-
-    # TODO: rename to make it explicit that it is indexed fields.
-    known_arg_types: [ ]
-
-    # TODO: define internal function here instead of trivial `InterceptLoader` and `HelpLoader` plugins:
-    data_envelopes: [ ]

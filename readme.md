@@ -361,7 +361,6 @@ and `mongomock` should be disabled in `argrelay.server.yaml`:
         ServiceLoader:
             plugin_module_name: argrelay.custom_integ.ServiceLoader
             plugin_class_name: ServiceLoader
-            plugin_type: LoaderPlugin
             plugin_config:
                 test_data_ids_to_load:
                     #-   TD_70_69_38_46  # no data

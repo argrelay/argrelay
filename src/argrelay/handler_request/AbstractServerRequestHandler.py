@@ -33,5 +33,5 @@ class AbstractServerRequestHandler:
             query_engine = local_server.get_query_engine(),
             help_hint_cache = local_server.help_hint_cache,
         )
-        self.interp_ctx.interpret_command(local_server.server_config.static_data.first_interp_factory_id)
+        self.interp_ctx.interpret_command(local_server.server_config.server_plugin_control.first_interp_factory_id)
         self.interp_ctx.print_debug()

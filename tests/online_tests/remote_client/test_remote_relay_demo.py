@@ -5,10 +5,10 @@ from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_helper import line_no
 from argrelay.test_helper.EnvMockBuilder import (
@@ -30,9 +30,9 @@ class ThisTestCase(RemoteTestCase):
                 "some_command list host dev |",
                 {
                     0: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("list", ArgSource.ExplicitPosArg),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("host", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("list", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
@@ -82,9 +82,9 @@ class ThisTestCase(RemoteTestCase):
                 "some_command goto service s_b prod |",
                 {
                     0: {
-                        GlobalArgType.FunctionCategory.name: AssignedValue("external", ArgSource.InitValue),
-                        GlobalArgType.ActionType.name: AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        GlobalArgType.ObjectSelector.name: AssignedValue("service", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
@@ -137,8 +137,8 @@ class ThisTestCase(RemoteTestCase):
                     test_line,
                     CompType.InvokeAction,
                     None,
-                    None,
+                    container_ipos_to_expected_assignments,
                     delegator_class,
-                    None,
+                    envelope_ipos_to_field_values,
                     LiveServerEnvMockBuilder(),
                 )

@@ -19,7 +19,6 @@ from argrelay.test_helper import parse_line_and_cpos
 from argrelay.test_helper.ClientServerTestCase import ClientServerTestCase
 
 
-
 class End2EndTestCase(ClientServerTestCase):
     """
     Supports FS_66_17_43_42 test_infra / special test mode #5.

@@ -119,11 +119,11 @@ describe('argrelay GUI', () => {
         cy
             .get('[data-cy=suggestion_output]')
             .children()
-            .should('have.length', 6)
+            .should('have.length', 10)
             .then(suggested_elems => {
                 const suggested_strings = [...suggested_elems]
                     .map(suggested_elem => suggested_elem.textContent)
-                expect(suggested_strings).to.have.length(6)
+                expect(suggested_strings).to.have.length(10)
                 expect(suggested_strings).to.include('intercept')
                 expect(suggested_strings).to.include('help')
                 expect(suggested_strings).to.include('subtree')

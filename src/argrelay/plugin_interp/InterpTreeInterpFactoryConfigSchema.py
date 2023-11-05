@@ -1,11 +1,10 @@
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError
 
-from argrelay.custom_integ.DemoInterpFactory import DemoInterpFactory
 from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
+from argrelay.plugin_interp.TreeWalker import default_tree_leaf_
 
 interp_selector_tree_ = "interp_selector_tree"
-
-default_leaf_ = ""
 
 
 def validate_tree_node(interp_selector_sub_tree: dict):
@@ -18,15 +17,15 @@ def validate_tree_node(interp_selector_sub_tree: dict):
         raise ValidationError(f"neither a str nor a dict: {interp_selector_sub_tree}")
 
 
-class TreePathInterpFactoryConfigSchema(Schema):
+class InterpTreeInterpFactoryConfigSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
 
     interp_selector_tree = fields.Dict(
         keys = fields.String(),
-        # This is a tree (Dict) of arbitrary depth with leaves being of type String.
-        # Ideally, this should be defined either String or nested Dict,
+        # This is a tree (`dict`) of arbitrary depth with `str` leaves.
+        # Ideally, this should be defined as nested `dict`,
         # but it is unknown how to do it in marshmallow.
         values = fields.Raw(),
         required = True,
@@ -47,12 +46,12 @@ class TreePathInterpFactoryConfigSchema(Schema):
 tree_path_interp_factory_config_example = {
     interp_selector_tree_: {
         "some_command": "some_plugin_name",
-        default_leaf_: DemoInterpFactory.__name__,
+        default_tree_leaf_: FuncTreeInterpFactory.__name__,
     },
 }
 tree_path_interp_factory_config_desc = TypeDesc(
-    dict_schema = TreePathInterpFactoryConfigSchema(),
-    ref_name = TreePathInterpFactoryConfigSchema.__name__,
+    dict_schema = InterpTreeInterpFactoryConfigSchema(),
+    ref_name = InterpTreeInterpFactoryConfigSchema.__name__,
     dict_example = tree_path_interp_factory_config_example,
     default_file_path = "",
 )

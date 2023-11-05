@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Union
+
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.InterpStep import InterpStep
@@ -17,27 +19,38 @@ from argrelay.runtime_context.InterpContext import (
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
-from argrelay.schema_config_interp.FuncArgsInterpConfigSchema import function_search_control_, function_init_control_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
 )
 from argrelay.schema_config_interp.InitControlSchema import init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
+func_search_control_ = "func_search_control"
 """
-This module auto-completes command line args when integrated with shell (Bash).
+This field is automatically populated by `FuncTreeInterpFactory` inside context `config_dict`.
+"""
 
-See use case: derived :class:`DemoInterp`.
+func_init_control_ = "func_init_control"
+"""
+This field is automatically populated by `FuncTreeInterpFactory` inside context `config_dict`.
 """
 
 
 class FuncArgsInterp(AbstractInterp):
+    """
+    Finds function `data_envelope` first,
+    then uses its delegator (see `AbstractDelegator`) to find all args-related `data_envelope`-s.
+
+    See use case: derived :class:`DemoInterp`.
+    See FS_55_57_45_04 command interp.
+    """
 
     def __init__(
         self,
         interp_factory_id,
         config_dict: dict,
         interp_ctx: InterpContext,
+        func_paths: dict[str, list[list[str]]],
     ):
         super().__init__(
             interp_factory_id,
@@ -50,21 +63,23 @@ class FuncArgsInterp(AbstractInterp):
         self.interp_ctx.envelope_containers.append(EnvelopeContainer(SearchControl()))
 
         self.select_next_container()
-        self._apply_function_init_control()
-        self._apply_function_search_control()
+        self._apply_func_init_control()
+        self._apply_func_search_control()
 
-    def _apply_function_init_control(self):
-        # Function `init_control` is based on plugin config (rather than logic):
+        # Takes part in implementation of FS_01_89_09_24 interp tree:
+        self.func_paths: dict[str, list[list[str]]] = func_paths
+
+    def _apply_func_init_control(self):
         self.interp_ctx.curr_container.assigned_types_to_values[
             ReservedArgType.EnvelopeClass.name
         ] = AssignedValue(
             ReservedEnvelopeClass.ClassFunction.name,
             ArgSource.InitValue,
         )
-        function_init_control: InitControl = init_control_desc.dict_schema.load(
-            self.config_dict[function_init_control_]
+        func_init_control: InitControl = init_control_desc.dict_schema.load(
+            self.config_dict[func_init_control_],
         )
-        for prop_type, prop_value in function_init_control.init_types_to_values.items():
+        for prop_type, prop_value in func_init_control.init_types_to_values.items():
             self.interp_ctx.curr_container.assigned_types_to_values[prop_type] = AssignedValue(
                 prop_value,
                 ArgSource.InitValue,
@@ -72,10 +87,12 @@ class FuncArgsInterp(AbstractInterp):
             if prop_type in self.interp_ctx.curr_container.remaining_types_to_values:
                 del self.interp_ctx.curr_container.remaining_types_to_values[prop_type]
 
-    def _apply_function_search_control(self):
-        # Function `search_control` is based on plugin config (rather than data found in `data_envelope`):
+    def _apply_func_search_control(self):
+        # Function `search_control` is populated based on
+        # tree context (FS_01_89_09_24 interp tree + FS_26_43_73_72 func tree)
+        # and plugin config (rather than data found in `data_envelope`):
         self.interp_ctx.curr_container.search_control = search_control_desc.dict_schema.load(
-            self.config_dict[function_search_control_]
+            self.config_dict[func_search_control_]
         )
 
     def consume_key_args(self) -> None:
@@ -130,7 +147,7 @@ class FuncArgsInterp(AbstractInterp):
             if self.interp_ctx.curr_container_ipos == self.base_container_ipos:
                 # This is a function envelope:
                 search_control_list: list[SearchControl] = self.get_search_control_list()
-                # Create `EnvelopeContainer`-s for every envelope to find:
+                # Create `EnvelopeContainer`-s for every `data_envelope` to find:
                 self.interp_ctx.alloc_searchable_containers(search_control_list)
 
             if self.interp_ctx.is_last_container():
@@ -138,7 +155,7 @@ class FuncArgsInterp(AbstractInterp):
                 return InterpStep.NextInterp
             else:
                 self.select_next_container()
-                self.run_init_control()
+                self.delegate_init_control()
                 # Need more args to consume for the next envelope to find:
                 return InterpStep.NextEnvelope
 
@@ -148,32 +165,38 @@ class FuncArgsInterp(AbstractInterp):
 
     def get_search_control_list(self) -> list[SearchControl]:
         delegator_plugin = self.get_func_delegator()
+
         search_control_list: list[SearchControl] = delegator_plugin.run_search_control(
-            self.get_func_data_envelopes()[0]
+            self.get_found_func_data_envelope()
         )
         return search_control_list
 
-    def run_init_control(self):
+    def delegate_init_control(self):
         delegator_plugin = self.get_func_delegator()
         delegator_plugin.run_init_control(
             self.interp_ctx.envelope_containers,
             self.interp_ctx.curr_container_ipos,
         )
 
-    def run_fill_control(self):
+    def delegate_fill_control(self):
         delegator_plugin = self.get_func_delegator()
         if delegator_plugin:
             delegator_plugin.run_fill_control(
                 self.interp_ctx,
             )
 
-    def get_func_data_envelopes(self) -> list[dict]:
-        return self.interp_ctx.envelope_containers[self.base_container_ipos + function_container_ipos_].data_envelopes
+    def get_found_func_data_envelope(self) -> Union[dict, None]:
+        func_envelope = self.interp_ctx.envelope_containers[(
+            self.base_container_ipos + function_container_ipos_
+        )]
+        if func_envelope.found_count == 1:
+            return func_envelope.data_envelopes[0]
+        return None
 
     def get_func_delegator(self):
-        func_data_envelopes = self.get_func_data_envelopes()
-        if func_data_envelopes:
-            delegator_plugin_instance_id = func_data_envelopes[0][instance_data_][delegator_plugin_instance_id_]
+        func_data_envelope = self.get_found_func_data_envelope()
+        if func_data_envelope:
+            delegator_plugin_instance_id = func_data_envelope[instance_data_][delegator_plugin_instance_id_]
             delegator_plugin: AbstractDelegator = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
             return delegator_plugin
         else:
@@ -190,9 +213,13 @@ class FuncArgsInterp(AbstractInterp):
         delegator_plugin = self.get_func_delegator()
         interp_factory_id = delegator_plugin.run_interp_control(self)
         if interp_factory_id:
+            self.select_next_interp_tree_context()
             return self.interp_ctx.create_next_interp(interp_factory_id)
         else:
             return None
+
+    def select_next_interp_tree_context(self):
+        raise NotImplemented
 
     def propose_arg_completion(self) -> None:
         comp_list = self.propose_auto_comp_list()

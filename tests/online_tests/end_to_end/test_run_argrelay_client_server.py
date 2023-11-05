@@ -3,6 +3,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
+from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.test_helper import change_to_known_repo_path, line_no
 from argrelay.test_helper.End2EndTestCase import (
     End2EndTestCase,
@@ -23,10 +24,10 @@ class ThisTestCase(End2EndTestCase):
                 line_no(), f"{self.default_bound_command} goto h|",
                 f"""
 {TermColor.consumed_token.value}{self.default_bound_command}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: 2
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*ObjectSelector: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ost{TermColor.reset_style.value} service 
+{ReservedEnvelopeClass.ClassFunction.name}: 3
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} repo {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ost{TermColor.reset_style.value} service 
 """,
                 "Test sample 1",
             ),
@@ -34,10 +35,10 @@ class ThisTestCase(End2EndTestCase):
                 line_no(), f"{self.default_bound_command} goto s|",
                 f"""
 {TermColor.consumed_token.value}{self.default_bound_command}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: 2
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}FunctionCategory: external {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}ActionType: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*ObjectSelector: ?{TermColor.reset_style.value} host {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ervice{TermColor.reset_style.value} 
+{ReservedEnvelopeClass.ClassFunction.name}: 3
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} repo host {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ervice{TermColor.reset_style.value} 
 """,
                 "Test sample 2",
             ),
@@ -125,7 +126,6 @@ amer
                     1,
                 )
 
-
     def test_RelayLineArgs(self):
         """
         Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.RelayLineArgs`.
@@ -139,6 +139,13 @@ amer
                 "",
                 "",
                 "`NoopDelegator` executes successfully without any output.",
+            ),
+            (
+                line_no(), f"{self.default_bound_command} echo one two three four five".split(" "),
+                0,
+                f"{self.default_bound_command} echo one two three four five ",
+                "",
+                "FS_43_50_57_71: `echo_args` func executes successfully printing its args.",
             ),
             (
                 line_no(), f"{self.default_bound_command} goto host dev upstream amer".split(" "),

@@ -1,11 +1,11 @@
 import time
+import uuid
 
 from pymongo import MongoClient
 
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper import eprint
-from argrelay.misc_helper.AbstractPlugin import instantiate_plugin
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -13,6 +13,8 @@ from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine
+from argrelay.runtime_context.AbstractPlugin import instantiate_plugin, AbstractPlugin
+from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 
@@ -28,6 +30,7 @@ class LocalServer:
         self,
         server_config: ServerConfig,
     ):
+        self.server_instance_id = uuid.uuid4()
         self.server_config: ServerConfig = server_config
         self.mongo_server: MongoServerWrapper = MongoServerWrapper()
         self.mongo_client: MongoClient = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
@@ -59,39 +62,45 @@ class LocalServer:
         Calls each plugin to update :class:`StaticData`.
         """
 
-        for plugin_instance_id in self.server_config.plugin_instance_id_load_list:
-            plugin_entry = self.server_config.plugin_dict[plugin_instance_id]
+        for plugin_instance_id in self.server_config.plugin_instance_id_activate_list:
+            plugin_entry: PluginEntry = self.server_config.plugin_instance_entries[plugin_instance_id]
 
-            if plugin_entry.plugin_type is PluginType.LoaderPlugin:
-                plugin_object: AbstractLoader = instantiate_plugin(
-                    plugin_instance_id,
-                    plugin_entry,
+            if not plugin_entry.plugin_enabled:
+                continue
+
+            plugin_instance: AbstractPlugin = instantiate_plugin(
+                plugin_instance_id,
+                plugin_entry,
+            )
+            plugin_type = plugin_instance.get_plugin_type()
+
+            if plugin_type is PluginType.LoaderPlugin:
+                plugin_instance: AbstractLoader
+                plugin_instance.activate_plugin(
+                    self.server_config,
                 )
-                plugin_object.activate_plugin()
                 # Store instance of `AbstractLoader` under specified id for future use:
-                self.server_config.data_loaders[plugin_instance_id] = plugin_object
+                self.server_config.data_loaders[plugin_instance_id] = plugin_instance
                 # Use loader to update data:
-                self.server_config.static_data = plugin_object.update_static_data(self.server_config.static_data)
+                self.server_config.static_data = plugin_instance.update_static_data(self.server_config.static_data)
                 continue
 
-            if plugin_entry.plugin_type is PluginType.InterpFactoryPlugin:
-                plugin_object: AbstractInterpFactory = instantiate_plugin(
-                    plugin_instance_id,
-                    plugin_entry,
+            if plugin_type is PluginType.InterpFactoryPlugin:
+                plugin_instance: AbstractInterpFactory
+                plugin_instance.activate_plugin(
+                    self.server_config,
                 )
-                plugin_object.activate_plugin()
                 # Store instance of `AbstractInterpFactory` under specified id for future use:
-                self.server_config.interp_factories[plugin_instance_id] = plugin_object
+                self.server_config.interp_factories[plugin_instance_id] = plugin_instance
                 continue
 
-            if plugin_entry.plugin_type is PluginType.DelegatorPlugin:
-                plugin_object: AbstractDelegator = instantiate_plugin(
-                    plugin_instance_id,
-                    plugin_entry,
+            if plugin_type is PluginType.DelegatorPlugin:
+                plugin_instance: AbstractDelegator
+                plugin_instance.activate_plugin(
+                    self.server_config,
                 )
-                plugin_object.activate_plugin()
                 # Store instance of `AbstractDelegator` under specified id for future use:
-                self.server_config.action_delegators[plugin_instance_id] = plugin_object
+                self.server_config.action_delegators[plugin_instance_id] = plugin_instance
                 continue
 
         eprint("validating data...")

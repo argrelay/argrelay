@@ -7,7 +7,7 @@ import subprocess
 from git import Repo
 
 from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
-from argrelay.custom_integ.GitRepoDelegator import GitRepoDelegator, repo_root_abs_path_
+from argrelay.custom_integ.GitRepoDelegator import repo_root_abs_path_
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
     envelope_properties_,
@@ -16,27 +16,17 @@ from argrelay.custom_integ.GitRepoEntryConfigSchema import (
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     git_repo_loader_config_desc,
-    is_plugin_enabled_,
     load_repo_commits_,
     repo_entries_,
 )
-from argrelay.custom_integ.value_constants import goto_repo_func_, desc_commit_func_
-from argrelay.enum_desc.GlobalArgType import GlobalArgType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     envelope_payload_,
-    instance_data_,
 )
-from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
-    delegator_plugin_instance_id_,
-    search_control_list_,
-)
-from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
 
 
 class GitRepoLoader(AbstractLoader):
@@ -53,25 +43,32 @@ class GitRepoLoader(AbstractLoader):
             plugin_instance_id,
             config_dict,
         )
-        git_repo_loader_config_desc.validate_dict(config_dict)
-        self.config_dict = git_repo_loader_config_desc.from_input_dict(config_dict)
+        self.config_dict = git_repo_loader_config_desc.from_input_dict(self.config_dict)
 
-    def update_static_data(self, static_data: StaticData) -> StaticData:
+    def validate_config(
+        self,
+    ):
+        git_repo_loader_config_desc.validate_dict(self.config_dict)
+
+    def update_static_data(
+        self,
+        static_data: StaticData,
+    ) -> StaticData:
         """
         Scan `base_path` recursively and load metadata about all Git repos found.
         """
 
         if not self.config_dict:
             return static_data
-        if not self.config_dict[is_plugin_enabled_]:
-            return static_data
 
         static_data = self.load_git_objects(static_data)
-        static_data = self.load_git_funcs(static_data)
 
         return static_data
 
-    def load_git_objects(self, static_data: StaticData) -> StaticData:
+    def load_git_objects(
+        self,
+        static_data: StaticData,
+    ) -> StaticData:
 
         data_envelopes = static_data.data_envelopes
 
@@ -147,7 +144,6 @@ class GitRepoLoader(AbstractLoader):
                         repo_root_abs_path_: repo_root_abs_path,
                     },
                     ReservedArgType.EnvelopeClass.name: GitRepoEnvelopeClass.ClassGitRepo.name,
-                    GlobalArgType.ObjectSelector.name: "repo",
                     GitRepoArgType.GitRepoRootRelPath.name: repo_root_rel_path,
                     GitRepoArgType.GitRepoRootAbsPath.name: repo_root_abs_path,
                     GitRepoArgType.GitRepoRootBaseName.name: repo_root_base_name,
@@ -171,7 +167,6 @@ class GitRepoLoader(AbstractLoader):
                         envelope_payload_: {
                         },
                         ReservedArgType.EnvelopeClass.name: GitRepoEnvelopeClass.ClassGitCommit.name,
-                        GlobalArgType.ObjectSelector.name: "commit",
                         GitRepoArgType.GitRepoRootRelPath.name: repo_root_rel_path,
                         GitRepoArgType.GitRepoRootAbsPath.name: repo_root_abs_path,
                         GitRepoArgType.GitRepoRootBaseName.name: repo_root_base_name,
@@ -182,70 +177,5 @@ class GitRepoLoader(AbstractLoader):
                         GitRepoArgType.GitRepoCommitMessage.name: git_commit.message,
                     })
                     data_envelopes.append(commit_envelope)
-
-        return static_data
-
-    # noinspection PyMethodMayBeStatic
-    def load_git_funcs(self, static_data: StaticData) -> StaticData:
-
-        data_envelopes = static_data.data_envelopes
-
-        ###############################################################################################################
-        # functions
-
-        repo_search_control = {
-            envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
-            keys_to_types_list_: [
-                {"alias": GitRepoArgType.GitRepoAlias.name},
-                {"content": GitRepoArgType.GitRepoContentType.name},
-                {"name": GitRepoArgType.GitRepoRootBaseName.name},
-                {"path": GitRepoArgType.GitRepoRootRelPath.name},
-                {"base": GitRepoArgType.GitRepoRootAbsPath.name},
-                {"part": GitRepoArgType.GitRepoPathComp.name},
-            ],
-        }
-
-        commit_search_control = {
-            envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
-            keys_to_types_list_: [
-                {"name": GitRepoArgType.GitRepoRootBaseName.name},
-                {"path": GitRepoArgType.GitRepoRootRelPath.name},
-                {"base": GitRepoArgType.GitRepoRootAbsPath.name},
-                {"email": GitRepoArgType.GitRepoCommitAuthorEmail.name},
-                {"hex": GitRepoArgType.GitRepoCommitId.name},
-            ],
-        }
-
-        given_function_envelope = {
-            envelope_id_: goto_repo_func_,
-            instance_data_: {
-                delegator_plugin_instance_id_: GitRepoDelegator.__name__,
-                search_control_list_: [
-                    repo_search_control,
-                ],
-            },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "Describe Git repository",
-            GlobalArgType.FunctionCategory.name: "external",
-            GlobalArgType.ActionType.name: "goto",
-            GlobalArgType.ObjectSelector.name: "repo",
-        }
-        data_envelopes.append(given_function_envelope)
-
-        given_function_envelope = {
-            envelope_id_: desc_commit_func_,
-            instance_data_: {
-                delegator_plugin_instance_id_: GitRepoDelegator.__name__,
-                search_control_list_: [
-                    commit_search_control,
-                ],
-            },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "Describe Git commit",
-            GlobalArgType.FunctionCategory.name: "external",
-            GlobalArgType.ActionType.name: "desc",
-            GlobalArgType.ObjectSelector.name: "commit",
-        }
-        data_envelopes.append(given_function_envelope)
 
         return static_data

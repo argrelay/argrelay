@@ -12,7 +12,11 @@ from argrelay.mongo_data.MongoConfig import MongoConfig
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_id_, data_envelope_desc, mongo_id_
+from argrelay.schema_config_interp.DataEnvelopeSchema import (
+    envelope_id_,
+    data_envelope_desc,
+    mongo_id_,
+)
 
 
 def get_mongo_client(mongo_config: MongoConfig):

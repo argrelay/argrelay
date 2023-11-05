@@ -10,8 +10,6 @@ Tags:
 
 Top:
 
-*   Rethink bootstrap: it should deploy only what was previously captured in `dev_env_packages.txt`.
-    REGISTER
 
 *   Add color for envelope class in desc output - green if found 1, yellow if not yet (still N), gray if 0.
     See also: FS_80_45_89_81 / list_envelope
@@ -38,19 +36,11 @@ Top:
     See also: FS_80_45_89_81 / list_envelope
     REGISTER
 
-*   Meta function: get and set objects (via corresponding API).
-    Tracked via: FS_74_69_61_79 / get_envelope and set_envelope: https://github.com/argrelay/argrelay/issues/20
-    CLOSED
-
 *   If there are multiple `data_envelope` anywhere in `query_plan` (as last `data_envelope` or not),
     it should be possible to hit enter and provide some meaningful action for the list of
     these currently found `data_envelope`-s of the same single class
     (even if function needs envelopes of subsequent classes).
     REGISTER
-
-*   Add named args.
-    Tracked via FS_20_88_05_60 and TODO: add issue on GH linked to FS.
-    CLOSED
 
 *   Dilemma: if function expects N envelopes, there is no way to detect no args option because no args option lists all max N envelopes.
     Maybe there should be a way to indicate it for client side (that the last envelope search had no criteria to search)?
@@ -87,25 +77,11 @@ Integration:
 
 streamline_internals:
 
-*   Combine `InvocationInput` and `InterpResult` into one.
-    Make all `data_envelope`-s be exchanged as part of `envelope_container`-s.
-    https://github.com/argrelay/argrelay/issues/50
-    CLOSED
-
 *   At least in case of `InOutTestCase`, `RunMode` was used instead of `ServerAction`.
     Search all other places with `RunMode` and see if it is misused.
     REGISTER
 
 GUI bits:
-
-*   Make input element classes as states:
-    *   client_server_synced
-    *   pending_request
-    *   pending_response
-    Test transition:
-    *   pending_response -> on_eq -> client_server_synced
-    *   pending_response -> on_response -> client_server_synced
-    REGISTER
 
 *   Add info descriptions (tooltip or question mark with description).
     REGISTER
@@ -117,41 +93,22 @@ GUI bits:
     REGISTER
 
 *   Be able to enable verbose server logging and disable it via GUI.
+    Basically, this is debug flag, but set on GUI client (via GUI), not CLI client (via env var).
     REGISTER
 
-*   Add info in GUI that describe output is accessible in shell via Alt+Shift+Q.
-    REGISTER
-
-*   Test with lots of data - is there any issues with races between user input and server response?
+*   Test with lots of data - run same tests against server with lots of data.
+    Are there any issues with races between user input and server response?
     FINALIZE
 
 *   Handle `help` response differently in GUI - print help.
     REGISTER
 
-*   When request is running suggestion should be empty or indicate they are invalid.
-    Tab should only work when no request is running.
-    FINALIZE
-
-*   Request should start when no request running and there is a change in input.
-    FINALIZE
-
 *   Make command history a list (not drop down). Make it scrollable beyond 20 commands.
     REGISTER
-
-*   Do not render query results if the command line is changed again on the result arrival.
-    FINALIZE
 
 *   Can we cancel request if new request has to be made and old one is invalid (e.g. caret has moved)?
     See also: https://stackoverflow.com/a/47250621/441652
     FINALIZE
-
-*   Add `query` (instead of `describe` or `itemize`) internal command to do exactly the same what Ctrl+Alt+Q does, but via Invocation.
-    Rename "describe" / "itemize" / "enum" / "search" / "outline" to `enum_query` (or "query") and implement function which does what Alt+Shift+Q does but on enter.
-    See also: FS_80_45_89_81 / enumerate_values
-    REGISTER
-
-*   Add note that GUI is dev/test/discovery/monitoring tool.
-    REGISTER
 
 Conceptual:
 
@@ -232,20 +189,13 @@ Ease integration into external project:
     See also: FS_29_54_67_86.dir_structure.md
     FINALIZE
 
-*   Split `argrelay.server.yaml` into: `argrelay.plugins.yaml` and `argrelay.server.yaml`.
-    Or at least make it less confusing
-    (because client-side still uses `argrelay.server.yaml` to use plugin configuration on server response).
-    It should be called `argrelay.plugins.yaml` which is exactly the part seen and
-    reused by both server and client, right?
-    REGISTER
-
-*   Make yaml config composable (to reduce chances of merging):
-    allow loading external config which should plug itself into existing config.
-    Maybe it should be possible to provide just configured plugins and they
-    REGISTER
-
-*   Extend EnvMock to help testing on external project side.
-    Basically, the main one is a mock to ensure some function is called (although, that's easily done without EnvMock - right?).
+*   Make yaml config composable:
+    *   reduce size and chances of merging unrelated parts
+    *   avoid config modification by loading other parts from known (by convention) places
+    *   allow loading external config which should plug itself into existing config
+    Maybe it should be possible to provide just the list of configured plugins (their loading order)
+    and they will load automatically from expected location?
+    Also split core server config (open ports, mongo, cache) and plugin management.
     REGISTER
 
 *   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).
@@ -280,24 +230,27 @@ Docs:
 Extra:
 
 *   Add version arg type to the test data.
+    See `TD_63_37_05_36.demo_services_data.md` - it does not have source version or source tag.
     REGISTER
 
 *   Make describe output take into account current prefix (incomplete and not yet consumed) arg
     which matches several options (which are suggested on Tab, but describe should reduce output from all to just
     data which pertain to options matching that prefix).
-    As the first step, instead of reducing, add different background to matching prefix of all options.
+    Already tracked under `FS_80_82_13_35.option_list_on_describe_with_prefix.md`.
     REGISTER
 
-*   Consider adding options to be able to limit possible values for some selected tree leaf (FS_01_89_09_24 tree).
+*   Consider adding options to be able to limit possible values for some selected tree leaf (FS_01_89_09_24 interp tree).
     Currently, we can specify `ArgSource.InitValue` to one value which will reduce search results (and limit values).
-    But that requires introduction of special field on `data_envlope`-s.
-    Maybe it should be possible to exclude certain values from suggestions for specific arg type?
+    But that requires introduction of special field on `data_envlope`-s
+    (which gets assigned a value with `ArgSource.InitValue`) which looks very surrogate.
+    Maybe it should be possible to exclude certain values from suggestions for specific arg type at selected tree leaves?
     REGISTER
 
-*   Add test coverage reporting and cover most important logic.
+*   Add test coverage reporting.
+    It could be a result of `@/exe/run_max_tests.bash` or `tox`.
     REGISTER
 
-*   Consider splitting argrelay:
+*   Consider splitting argrelay into separate packages (install-able independently but interdependent):
     argrelay-core
     argrelay-rest-api
     argrelay-client
@@ -308,24 +261,22 @@ Extra:
     REGISTER
 
 *   Check start of mongo db server by client connection (instead of delay).
-    REGISTER
-
-*   Describe selected service (extra meta or show payload?).
-    Print `help_doc` (FS_94_30_49_28)?
-    REGISTER
-
-*   Run mongodb with reloader in debugger (need to fix reload handling).
+    Based on answers to this SO, there are many ways and all non-standard:
+    https://stackoverflow.com/q/5091624/441652
+    Simply allow to configure command to check for mongo db status
+    (it could be different commands based on target system).
+    Use return code: 0 = server started, 1 = wait, anything else = failure (stop).
     REGISTER
 
 *   Add `echo` command to test arbitrary tail args.
     See also: FS_80_45_89_81 / echo_args
     REGISTER
 
-*   Split `intercept` into two `intercept_json` and `intercept_str` (Python __str__ output).
-    See also: FS_88_66_66_73.intercept_func.md, FS_80_45_89_81 / intercept_func
+*   Split `intercept` into: `intercept_json`, `intercept_str` (Python __str__ output), `intercept_table`.
+    See also: FS_88_66_66_73.intercept_invocation_func.md, FS_80_45_89_81 / intercept_invocation_func
     REGISTER
 
-*   Runtime stats and control:
+*   Runtime stats and control in `./var/`:
     *   Add directory for PID and other runtime data (is it `./var/`?).
     *   Collect usage statistic per plugin in runtime dir (`./var/`?).
     *   Add scripts to manage start/stop/check of the server to the framework.
@@ -333,11 +284,10 @@ Extra:
 
 *   Config-only plugins: loader and delegator.
     Target to replace standard Bash completion config.
-    Data should be loaded from yaml directly without defining any enums in code.
-    Launching local commands/scripts should be done via template parameterized by data envelope.
+    Data should be loaded from yaml directly without defining any enums in code or changing logic.
+    Launching local commands/scripts should be done via template parameterized by data envelope -
+    this should be doable as data load is controlled by the same config-only loader and delegator.
     If config-only plugin is possible and useful, every other plugin can be developed.
     REGISTER
     USER_VISIBLE
 
-*   Why `relay_demo subshell start` ALT+SHIFT+Q fails?
-    REGISTER

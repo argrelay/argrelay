@@ -1,6 +1,10 @@
 import importlib
 from typing import Type
 
+from argrelay.enum_desc.PluginType import PluginType
+from argrelay.runtime_data.PluginEntry import PluginEntry
+from argrelay.runtime_data.ServerConfig import ServerConfig
+
 
 class AbstractPlugin:
 
@@ -12,7 +16,28 @@ class AbstractPlugin:
         self.plugin_instance_id: str = plugin_instance_id
         self.config_dict: dict = config_dict
 
-    def activate_plugin(self):
+        self.validate_config()
+
+    def validate_config(
+        self,
+    ):
+        """
+        Validate schema or data for `self.config_dict`.
+        """
+        pass
+
+    def get_plugin_type(
+        self,
+    ) -> PluginType:
+        """
+        Return one of the `PluginType`-s.
+        """
+        raise NotImplementedError
+
+    def activate_plugin(
+        self,
+        server_config: ServerConfig,
+    ):
         """
         One-time plugin activation callback during server startup.
 
@@ -20,7 +45,10 @@ class AbstractPlugin:
         """
         pass
 
-    def validate_loaded_data(self, static_data: "StaticData"):
+    def validate_loaded_data(
+        self,
+        static_data: "StaticData"
+    ):
         """
         Callback to validate data after all :class:`AbstractLoader`-s completed loading data.
 
@@ -29,7 +57,9 @@ class AbstractPlugin:
         pass
 
 
-def import_plugin_class(plugin_entry):
+def import_plugin_class(
+    plugin_entry: PluginEntry,
+):
     plugin_module = importlib.import_module(plugin_entry.plugin_module_name)
     plugin_class: Type[AbstractPlugin] = getattr(
         plugin_module,

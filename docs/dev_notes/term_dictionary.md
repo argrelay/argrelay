@@ -23,13 +23,13 @@ TODO: reformat, sort, populate, link to `feature_story`-ies.
 
 ### `cpos`
 
-A char index within a string.
+= a char index within a string.
 
 See also `ipos`.
 
 ### `command_id`
 
-The very first arg on the command line (`PosArg` with 0 ipos = index 0).
+= the very first arg on the command line (`PosArg` with 0 ipos = index 0).
 
 For example, `some_command` is `command_id` in this command line:
 
@@ -37,33 +37,80 @@ For example, `some_command` is `command_id` in this command line:
 some_command goto host dev amer upstream qwer
 ```
 
+See also:
+*   FS_01_89_09_24 (interp tree) and FS_42_76_93_51 (zero arg interp).
+*   `ipos`
+
 # D
 
 ### `data_envelope`
 
-A `dict` storable as is in data backend.
+= a `dict` storable as is in data backend.
 
 This `dict` has properties for searching.
 
-See also FS_37_57_36_29 (envelopes and payloads).
+See also FS_37_57_36_29 (containers, envelopes, payloads).
 
 # E
 
 ### `envelope_container`
 
-A runtime object which wraps `data_envelope` with associated runtime processing info.
+= a runtime object which wraps `data_envelope` with associated runtime processing info.
+
+See also FS_37_57_36_29 (containers, envelopes, payloads).
+
+### `envelope_payload`
+
+= a custom (plugin-specific) nested data within `data_envelope` opaque to `argrelay`
+(only specific plugins understand it).
+
+See also FS_37_57_36_29 (containers, envelopes, payloads).
 
 # I
 
+### `interp`
+
+= synonym to `interperter` (`interp` is just easier to pronounce and shorter type).
+
 ### `ipos`
 
-A short form from "index position".
+= a short form from "index position".
 
 An item index within a list.
 
 The term emphasizes 0-base indexing.
 
 It is also explicitly different from `cpos` (which points to individual character)<br/>
-to avoid confusion in parsing where both command line arg list and command line string is dealt with.
+to avoid confusion in parsing where both command line arg list and command line string is dealt with:
+
+```
+some_command goto host dev amer upstream qwer
+             0123
+0            1 ^  2    3   4    5        6
+               |           ^
+               |           |
+               |           |
+               |           ipos = 4
+               cpos = 2
+```
+
+*   `ipos` is an index of arg within list of command line args
+*   `cpos` is an index of char within string (e.g. individual arg or entire command line)
 
 See also `cpos`.
+
+# P
+
+### `plugin_config`
+
+= "plugin instance config"
+
+This may mean either specifically `plugin_config` (part of `plugin_entry`) or `plubin_entry`.
+
+See also FS_00_13_77_97 plugin framework.
+
+### `plugin_entry`
+
+= "plugin instance entry" which describes a plugin instance to `argrelay` via `PluginEntrySchema.py`.
+
+See also FS_00_13_77_97 plugin framework.
