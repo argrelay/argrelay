@@ -58,7 +58,7 @@ gui_banner_config:
 
 server_plugin_control:
     first_interp_factory_id: FirstArgInterpFactory
-    arbitrary_config_data:
+    reusable_config_data:
 
         jump_tree: &jump_tree
             relay_demo:

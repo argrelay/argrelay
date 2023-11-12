@@ -8,6 +8,6 @@ class ServerAction(Enum):
     *   `ServerAction` in server request payload (via enum item name)
     """
 
-    DescribeLineArgs = "/describe_line_args/"
     ProposeArgValues = "/propose_arg_values/"
+    DescribeLineArgs = "/describe_line_args/"
     RelayLineArgs = "/relay_line_args/"

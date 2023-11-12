@@ -11,10 +11,8 @@ class InvocationInput(InterpResult):
     """
     See also :class:`InvocationInputSchema`.
 
-    Unlike `InterpResult` this class provides full list of `data_envelopes`
-    because invocation is not latency-sensitive.
-
-    Both `InterpResult` and `InvocationInput` might be combined in the future.
+    Unlike `InterpResult` this class provides full list of `data_envelope`-s per `envelope_container`
+    because invocation is not latency-sensitive and funcs expect all `data_envelope`-s.
     """
 
     delegator_plugin_entry: PluginEntry = field()

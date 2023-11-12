@@ -79,35 +79,6 @@ class End2EndTestCase(ClientServerTestCase):
             f"{server_action} should have nothing on STDERR."
         )
 
-    def assert_DescribeLineArgs(
-        self,
-        command_name,
-        test_line,
-        expected_stdout_str: Union[str, None],
-        expected_exit_code = 0,
-    ):
-        env_vars = self.env_vars(
-            test_line,
-            CompType.DescribeArgs,
-        )
-        client_proc = self.run_client_with_env_vars(
-            command_name,
-            env_vars,
-            expected_exit_code,
-        )
-        stdout_str = client_proc.stdout.decode("utf-8")
-        if expected_stdout_str is not None:
-            self.assertEqual(
-                expected_stdout_str,
-                stdout_str,
-            )
-        stderr_str = client_proc.stderr.decode("utf-8")
-        self.assert_no_stderr(
-            stderr_str,
-            ServerAction.ProposeArgValues,
-        )
-        return ic(stdout_str)
-
     def assert_ProposeArgValues(
         self,
         command_name,
@@ -143,6 +114,35 @@ class End2EndTestCase(ClientServerTestCase):
             ServerAction.ProposeArgValues,
         )
         return stdout_str
+
+    def assert_DescribeLineArgs(
+        self,
+        command_name,
+        test_line,
+        expected_stdout_str: Union[str, None],
+        expected_exit_code = 0,
+    ):
+        env_vars = self.env_vars(
+            test_line,
+            CompType.DescribeArgs,
+        )
+        client_proc = self.run_client_with_env_vars(
+            command_name,
+            env_vars,
+            expected_exit_code,
+        )
+        stdout_str = client_proc.stdout.decode("utf-8")
+        if expected_stdout_str is not None:
+            self.assertEqual(
+                expected_stdout_str,
+                stdout_str,
+            )
+        stderr_str = client_proc.stderr.decode("utf-8")
+        self.assert_no_stderr(
+            stderr_str,
+            ServerAction.ProposeArgValues,
+        )
+        return ic(stdout_str)
 
     def assert_RelayLineArgs(
         self,

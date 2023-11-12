@@ -348,7 +348,7 @@ class ThisTestCase(LocalTestCase):
                 line_no(), "some_command goto service s_b prod qwer-pd-2 |", CompType.DescribeArgs,
                 "If current command search results in ambiguous results (more than one `data_envelope`), "
                 "it should still work.",
-                # TODO: Use generalized validator asserting payload (for this case it is fine) instead of entire stdout str - JSONPath?
+                # TODO_32_99_70_35: Use generalized validator asserting payload (for this case it is fine) instead of entire stdout str - JSONPath?
                 None,
             ),
             (
@@ -481,6 +481,7 @@ class ThisTestCase(LocalTestCase):
                     )
                     with inner_env_mock_builder.build():
                         interp_result: InterpResult = InterpResult(
+                            arg_values = interp_ctx.comp_suggestions,
                             all_tokens = interp_ctx.parsed_ctx.all_tokens,
                             consumed_tokens = interp_ctx.consumed_tokens,
                             tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
@@ -541,7 +542,7 @@ class ThisTestCase(LocalTestCase):
                 line_no(), "some_command goto|", CompType.PrefixShown,
                 0,
                 {
-                    # TODO: How to specify that some specific props are not assigned?
+                    # TODO_32_99_70_35: How to specify that some specific props are not assigned?
                 },
                 "No assignment for incomplete token (token pointed by the cursor) in completion mode",
             ),
@@ -584,7 +585,7 @@ class ThisTestCase(LocalTestCase):
                 {
                     f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
                     f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
-                    # TODO: How to specify that some specific props are not assigned?
+                    # TODO_32_99_70_35: How to specify that some specific props are not assigned?
                 },
                 # TODO: Fix this: "service" must be recognized even if in double quotes:
                 "FS_92_75_93_01: Register a bug that \"service\" token is not recognized while in double quotes.",
@@ -693,7 +694,7 @@ class ThisTestCase(LocalTestCase):
                     3: None,
                 },
                 None,
-                # TODO: Fix this - see FS_80_82_13_35:
+                # TODO: Fix this - see FS_80_82_13_35 highlight tangent prefix:
                 "FS_80_82_13_35: Current behavior is to make tangent token `ExplicitPosArg` "
                 "because it matches `tt` value exactly. However, ideally we want to see exactly the same options "
                 "on Alt+Shift+Q as on Tab (see next test).",

@@ -91,7 +91,7 @@ envelope_container_desc = TypeDesc(
                 "C_value_3",
                 "C_value_9",
             ],
-        }
+        },
     },
     default_file_path = "",
 )

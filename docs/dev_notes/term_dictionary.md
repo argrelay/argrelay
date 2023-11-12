@@ -72,6 +72,13 @@ See also FS_37_57_36_29 (containers, envelopes, payloads).
 
 = synonym to `interperter` (`interp` is just easier to pronounce and shorter type).
 
+### `interrogation`
+
+= process when user types a selected command line arg (normally, based on previous Tab-completion).
+
+This is "interrogation" in a sense that suggested arg values via Tab-completion appear to user
+as a question with answer options choose from.
+
 ### `ipos`
 
 = a short form from "index position".

@@ -91,7 +91,11 @@ class EnvMockBuilder:
 
     *   Simple selection of test data - see usage of: `set_test_data_ids_to_load`
 
-    *   Verifying plugin `InvocationInput` - see usage of: `delegator_plugin_invoke_action_func_path`
+    *   TODO_42_81_01_90: Verify `ArgValues` on `ServerAction.DescribeLineArgs` (without verifying printed output) by intercepting call to `ProposeArgValuesClientResponseHandler.render_values`.
+    *   TODO_42_81_01_90: Verify `InterpResult` on `ServerAction.ProposeArgValues` (without verifying printed output) by intercepting call to `DescribeLineArgsClientResponseHandler.render_result`.
+    *   Verifying `InvocationInput` on `ServerAction.RelayLineArgs` - see usage of:
+
+        *   `invoke_action_func_full_name`
 
     *   ...
 
@@ -137,8 +141,15 @@ class EnvMockBuilder:
         "TD_70_69_38_46",  # no data
     ])
 
-    delegator_plugin_invoke_action_func_path: str = field(default = None)
+    invoke_action_func_full_name: str = field(default = None)
+    """
+    Set by giving `delegator_class` to `set_capture_delegator_invocation_input`.
+    """
     invocation_input: InvocationInput = field(default = None)
+    """
+    Captured `InvocationInput` by using `capture_invocation_input` func on `ServerAction.RelayLineArgs`
+    instead of calling client-side delegator.
+    """
 
     enable_query_cache: Union[bool, None] = field(default = None)
 
@@ -260,10 +271,11 @@ class EnvMockBuilder:
     def set_capture_delegator_invocation_input(self, delegator_class: Type[AbstractDelegator]):
         """
         This func causes `AbstractDelegator.invoke_action` to be mocked to capture `InvocationInput`
-        inside `EnvMockBuilder.invocation_input` allowing tests to assert it.
+        inside `EnvMockBuilder.invocation_input` allowing tests to assert
+        the data received from server on `ServerAction.RelayLineArgs`.
         """
 
-        self.delegator_plugin_invoke_action_func_path = (
+        self.invoke_action_func_full_name = (
             f"{delegator_class.__module__}"
             "."
             f"{delegator_class.__name__}"
@@ -431,9 +443,9 @@ class EnvMockBuilder:
             if self.assert_on_close:
                 yield_list.append(exit_stack.enter_context(self.assert_all_cm()))
 
-            if self.delegator_plugin_invoke_action_func_path:
+            if self.invoke_action_func_full_name:
                 yield_list.append(exit_stack.enter_context(
-                    _mock_delegator_plugin(self.delegator_plugin_invoke_action_func_path)
+                    _mock_delegator_plugin(self.invoke_action_func_full_name)
                 ))
 
             if self.reset_local_server:
@@ -657,7 +669,7 @@ def capture_invocation_input(invocation_input: InvocationInput):
     """
     This body substitutes (mocks) `invoke_action` func in `DelegatorPlugin`-s.
 
-    Instead of executing func logic, it only captures its input for verifications in tests.
+    Instead of executing func logic, it only captures its `InvocationInput` for verifications in tests.
     """
     EnvMockBuilder.invocation_input = dataclasses.replace(invocation_input)
 

@@ -15,7 +15,7 @@ class ThisTestCase(MongoClientTestCase):
         """
         Example with data searched by multiple { type: value } pairs
         where some fields contain array of values.
-        See: FS_06_99_43_60.list_arg_value.md
+        See: FS_06_99_43_60 list arg value
         """
 
         # Fields which will be indexed:

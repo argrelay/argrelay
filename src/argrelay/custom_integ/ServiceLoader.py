@@ -902,7 +902,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.ServiceName.name: "s_b",
                 ServiceArgType.GroupLabel.name: [
                     "bbb",
-                    "sss",
+                    "xxx",
                 ],
             },
             {

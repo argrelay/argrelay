@@ -46,15 +46,45 @@ class ThisTestCase(LocalTestCase):
             ),
             (
                 line_no(),
+                    "some_command intercept goto service s_b |",
+                CompType.PrefixShown,
+                [
+                    "dev",
+                    "qa",
+                    "prod",
+                ],
+                None,
+                None,
+                "Completion continues to be driven by function selected via `goto` and `service`.",
+            ),
+            # (
+            #     line_no(),
+            #     "some_command intercept goto service s_b prod dc.77 |",
+            #     CompType.PrefixShown,
+            #     [
+            #         "bbb",
+            #         "xxx",
+            #     ],
+            #     None,
+            #     None,
+            #     # TODO: FS_13_51_07_97 list arg value: the `data_envelope` is singled out, but list arg values should still be suggested:
+            #     "FS_13_51_07_97 list arg value: singled out `data_envelope` with list arg value "
+            #     "will still show all options of the list "
+            #     "because explicit selection of one of these values from singled out `data_envelop` "
+            #     "may be used to affect behavior of the function.",
+            # ),
+            (
+                line_no(),
                 "some_command intercept goto service s_b prod |",
                 CompType.PrefixShown,
                 [
                     "bbb",
                     "sss",
+                    "xxx",
                 ],
                 None,
                 None,
-                "Completion continues to be driven by function selected via `goto` and `service`.",
+                "FS_13_51_07_97 list arg value from different `data_envelope`-s combine."
             ),
             (
                 line_no(),

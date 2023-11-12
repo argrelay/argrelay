@@ -122,7 +122,7 @@ def serialize_dag_to_list(
     output_list: list[str] = list_sub_dag(
         [],
         entire_dag,
-        [node_id for node_id in entire_dag.keys()],
+        [node_id for node_id in entire_dag],
     )
     return output_list
 

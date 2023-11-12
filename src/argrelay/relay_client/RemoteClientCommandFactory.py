@@ -18,19 +18,19 @@ class RemoteClientCommandFactory(AbstractClientCommandFactory):
         self,
         call_ctx: CallContext,
     ) -> AbstractRemoteClientCommand:
-        if call_ctx.server_action is ServerAction.DescribeLineArgs:
-            from argrelay.client_command_remote.DescribeLineArgsRemoteClientCommand import (
-                DescribeLineArgsRemoteClientCommand,
-            )
-            return DescribeLineArgsRemoteClientCommand(
-                call_ctx,
-                self.client_config.connection_config,
-            )
         if call_ctx.server_action is ServerAction.ProposeArgValues:
             from argrelay.client_command_remote.ProposeArgValuesRemoteClientCommand import (
                 ProposeArgValuesRemoteClientCommand,
             )
             return ProposeArgValuesRemoteClientCommand(
+                call_ctx,
+                self.client_config.connection_config,
+            )
+        if call_ctx.server_action is ServerAction.DescribeLineArgs:
+            from argrelay.client_command_remote.DescribeLineArgsRemoteClientCommand import (
+                DescribeLineArgsRemoteClientCommand,
+            )
+            return DescribeLineArgsRemoteClientCommand(
                 call_ctx,
                 self.client_config.connection_config,
             )

@@ -29,6 +29,10 @@ class JumpTreeInterpFactory(FuncTreeInterpFactory):
             self.config_dict[jump_tree_],
         )
         self.paths_to_jump: dict[tuple[str, ...], tuple[str, ...]] = tree_walker.build_paths_to_paths()
+        """
+        Implements FS_91_88_07_23 jump tree:
+        for given `interp_tree_abs_path` (FS_01_89_09_24) selects next `interp_tree_abs_path`.
+        """
 
     def validate_config(
         self,
@@ -41,8 +45,8 @@ class JumpTreeInterpFactory(FuncTreeInterpFactory):
     ) -> AbstractInterp:
         return JumpTreeInterp(
             self.plugin_instance_id,
-            self.tree_path_config_dict[interp_ctx.interp_tree_context.interp_tree_path],
+            self.interp_tree_abs_paths_to_node_configs[interp_ctx.interp_tree_abs_path],
             interp_ctx,
-            self.func_paths,
+            self.func_ids_to_func_rel_paths,
             self.paths_to_jump,
         )

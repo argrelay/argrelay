@@ -7,15 +7,14 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.plugin_interp.FuncArgsInterp import func_init_control_, func_search_control_
-from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
-from argrelay.plugin_interp.FuncArgsInterpFactoryConfigSchema import (
+from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
+from argrelay.plugin_interp.FuncTreeInterp import FuncTreeInterp, func_init_control_, func_search_control_
+from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     delegator_plugin_ids_,
     func_selector_tree_,
     ignored_func_ids_list_,
+    func_tree_interp_config_desc,
 )
-from argrelay.plugin_interp.FuncTreeInterp import FuncTreeInterp
-from argrelay.plugin_interp.InterpTreeContext import InterpTreeContext
 from argrelay.plugin_interp.TreeWalker import TreeWalker
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig, assert_plugin_instance_id
@@ -26,17 +25,34 @@ tree_path_selector_prefix_ = "tree_path_selector_"
 tree_path_selector_key_prefix_ = "s"
 
 
-# TODO: At the moment `FuncTreeInterpFactory` derives from `FuncArgsInterpFactory`,
-#       but it is conceptually confusing because `FuncTree` interp never interprets `FuncArgs`.
-#       Introduce common base class?
-class FuncTreeInterpFactory(FuncArgsInterpFactory):
+class FuncTreeInterpFactory(AbstractInterpFactory):
     """
     Implements FS_26_43_73_72 func tree.
     """
 
+    def __init__(
+        self,
+        plugin_instance_id: str,
+        config_dict: dict,
+    ):
+        super().__init__(
+            plugin_instance_id,
+            config_dict,
+        )
+        # FS_26_43_73_72 func tree: func id to list of its relative paths populated by `load_func_envelopes`.
+        # These func tree paths are relative to the interp node within FS_01_89_09_24 interp tree
+        # (as fully qualified func path is composed of interp tree path where this plugin instance is attached to).
+        # Each func id can be attached to more than one leaf (hence, there is a list of paths to that func id).
+        self.func_ids_to_func_rel_paths: dict[str, list[list[str]]] = {}
+
+    def validate_config(
+        self,
+    ):
+        func_tree_interp_config_desc.validate_dict(self.config_dict)
+
     def load_func_envelopes(
         self,
-        interp_tree_context: InterpTreeContext,
+        interp_tree_abs_path: tuple[str, ...],
         server_config: ServerConfig,
     ):
         """
@@ -51,21 +67,20 @@ class FuncTreeInterpFactory(FuncArgsInterpFactory):
 
         """
         super().load_func_envelopes(
-            interp_tree_context,
+            interp_tree_abs_path,
             server_config,
         )
-        interp_tree_path = interp_tree_context.interp_tree_path
-        context_config = self.tree_path_config_dict[interp_tree_path]
+        interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
 
         func_tree_walker = TreeWalker(
             "func",
-            context_config[func_selector_tree_],
+            interp_tree_node_config_dict[func_selector_tree_],
         )
-        self.func_paths: dict[str, list[list[str]]] = func_tree_walker.build_str_leaves_paths()
+        self.func_ids_to_func_rel_paths: dict[str, list[list[str]]] = func_tree_walker.build_str_leaves_paths()
 
         # Retrieve func `data_envelope`-s from all delegators:
         func_envelopes_index: dict[str, dict[tuple[str, ...], dict]] = {}
-        for delegator_plugin_id in context_config[delegator_plugin_ids_]:
+        for delegator_plugin_id in interp_tree_node_config_dict[delegator_plugin_ids_]:
             assert_plugin_instance_id(
                 server_config,
                 delegator_plugin_id,
@@ -75,8 +90,8 @@ class FuncTreeInterpFactory(FuncArgsInterpFactory):
             func_envelopes = action_delegator.get_supported_func_envelopes()
             for func_envelope in func_envelopes:
                 func_id = func_envelope[ReservedArgType.FuncId.name]
-                if func_id not in self.func_paths:
-                    if func_id not in context_config[ignored_func_ids_list_]:
+                if func_id not in self.func_ids_to_func_rel_paths:
+                    if func_id not in interp_tree_node_config_dict[ignored_func_ids_list_]:
                         raise RuntimeError(
                             f"`{func_id}` is neither in `{func_selector_tree_}` nor in `{ignored_func_ids_list_}`"
                         )
@@ -85,70 +100,70 @@ class FuncTreeInterpFactory(FuncArgsInterpFactory):
                         continue
                 if func_id not in func_envelopes_index:
                     func_envelopes_index[func_id] = {}
-                for func_path in self.func_paths[func_id]:
-                    assert tuple(func_path) not in func_envelopes_index[func_id]
-                    func_envelopes_index[func_id][tuple(func_path)] = deepcopy(func_envelope)
+                for func_rel_path in self.func_ids_to_func_rel_paths[func_id]:
+                    assert tuple(func_rel_path) not in func_envelopes_index[func_id]
+                    func_envelopes_index[func_id][tuple(func_rel_path)] = deepcopy(func_envelope)
 
         self.populate_init_control(
-            interp_tree_path,
-            context_config,
+            interp_tree_abs_path,
+            interp_tree_node_config_dict,
         )
 
         self.populate_search_control(
-            interp_tree_path,
-            context_config,
+            interp_tree_abs_path,
+            interp_tree_node_config_dict,
         )
 
-        interp_tree_path_func_envelopes: list[dict] = self.populate_func_tree_props(
-            interp_tree_path,
-            context_config,
+        interp_tree_abs_path_func_envelopes: list[dict] = self.populate_func_tree_props(
+            interp_tree_abs_path,
+            interp_tree_node_config_dict,
             func_envelopes_index,
         )
 
         # Write func envelopes into `StaticData` (as if it is a loader plugin):
-        server_config.static_data.data_envelopes.extend(interp_tree_path_func_envelopes)
+        server_config.static_data.data_envelopes.extend(interp_tree_abs_path_func_envelopes)
 
     # noinspection PyMethodMayBeStatic
     def populate_init_control(
         self,
-        interp_tree_path: tuple[str, ...],
-        context_config: dict,
+        interp_tree_abs_path: tuple[str, ...],
+        interp_tree_node_config_dict: dict,
     ):
-        context_config[func_init_control_] = {
+        interp_tree_node_config_dict[func_init_control_] = {
             init_types_to_values_: {},
         }
 
-        init_types_to_values = context_config[func_init_control_][init_types_to_values_]
-        for sel_ipos, path_step in enumerate(interp_tree_path):
+        init_types_to_values = interp_tree_node_config_dict[func_init_control_][init_types_to_values_]
+        for sel_ipos, path_step in enumerate(interp_tree_abs_path):
             init_types_to_values[f"{func_envelope_path_step_prop_name(sel_ipos)}"] = path_step
 
     def populate_search_control(
         self,
-        interp_tree_path: tuple[str, ...],
-        context_config,
+        interp_tree_abs_path: tuple[str, ...],
+        interp_tree_node_config_dict,
     ):
         """
-        Provide search control based on `func_paths`.
+        Provide search control based on `func_ids_to_func_rel_paths`.
         """
-        context_config[func_search_control_] = {
+        interp_tree_node_config_dict[func_search_control_] = {
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             keys_to_types_list_: [],
         }
 
-        # `func_search_control` should include keys from the context provided by interp tree:
-        keys_to_types_list = context_config[func_search_control_][keys_to_types_list_]
+        # `func_search_control` should include keys from the interp tree abs path:
+        keys_to_types_list = interp_tree_node_config_dict[func_search_control_][keys_to_types_list_]
 
         # Include interp tree path:
         base_sel_ipos = 0
-        for offset_sel_ipos in range(len(interp_tree_path)):
+        for offset_sel_ipos in range(len(interp_tree_abs_path)):
             sel_ipos = base_sel_ipos + offset_sel_ipos
             keys_to_types_list.append({
                 f"{path_step_key_arg_name(sel_ipos)}": f"{func_envelope_path_step_prop_name(sel_ipos)}"
             })
 
         # Include func tree path:
-        base_sel_ipos = len(interp_tree_path)
-        max_len = max_path_len(self.func_paths)
+        base_sel_ipos = len(interp_tree_abs_path)
+        max_len = max_path_len(self.func_ids_to_func_rel_paths)
         for offset_sel_ipos in range(max_len):
             sel_ipos = base_sel_ipos + offset_sel_ipos
             keys_to_types_list.append({
@@ -157,8 +172,8 @@ class FuncTreeInterpFactory(FuncArgsInterpFactory):
 
     def populate_func_tree_props(
         self,
-        interp_tree_path: tuple[str, ...],
-        context_config,
+        interp_tree_abs_path: tuple[str, ...],
+        interp_tree_node_config_dict,
         func_envelopes_index: dict[str, dict[tuple[str, ...], dict]],
     ) -> list[dict]:
         """
@@ -168,31 +183,31 @@ class FuncTreeInterpFactory(FuncArgsInterpFactory):
         *   Select its place on the func tree (provided by plugin config).
         *   Populate the path as envelope props with `tree_path_selector_prefix_`.
         """
-        interp_tree_path_func_envelopes = []
-        for func_id in self.func_paths:
-            func_paths_list: list[list[str]] = self.func_paths[func_id]
+        interp_tree_abs_path_func_envelopes = []
+        for func_id in self.func_ids_to_func_rel_paths:
+            func_rel_paths: list[list[str]] = self.func_ids_to_func_rel_paths[func_id]
 
-            for func_path in func_paths_list:
+            for func_rel_path in func_rel_paths:
 
-                func_envelope = func_envelopes_index[func_id][tuple(func_path)]
+                func_envelope = func_envelopes_index[func_id][tuple(func_rel_path)]
 
                 # Include interp tree path:
                 base_sel_ipos = 0
-                for offset_sel_ipos, path_step_id in enumerate(interp_tree_path):
+                for offset_sel_ipos, path_step_id in enumerate(interp_tree_abs_path):
                     sel_ipos = base_sel_ipos + offset_sel_ipos
                     prop_name = func_envelope_path_step_prop_name(sel_ipos)
                     func_envelope[prop_name] = path_step_id
 
                 # Include func tree path:
-                base_sel_ipos = len(interp_tree_path)
-                for offset_sel_ipos, path_step_id in enumerate(func_path):
+                base_sel_ipos = len(interp_tree_abs_path)
+                for offset_sel_ipos, path_step_id in enumerate(func_rel_path):
                     sel_ipos = base_sel_ipos + offset_sel_ipos
                     prop_name = func_envelope_path_step_prop_name(sel_ipos)
                     func_envelope[prop_name] = path_step_id
 
-                interp_tree_path_func_envelopes.append(func_envelope)
+                interp_tree_abs_path_func_envelopes.append(func_envelope)
 
-        return interp_tree_path_func_envelopes
+        return interp_tree_abs_path_func_envelopes
 
     def create_interp(
         self,
@@ -200,9 +215,9 @@ class FuncTreeInterpFactory(FuncArgsInterpFactory):
     ) -> AbstractInterp:
         return FuncTreeInterp(
             self.plugin_instance_id,
-            self.tree_path_config_dict[interp_ctx.interp_tree_context.interp_tree_path],
+            self.interp_tree_abs_paths_to_node_configs[interp_ctx.interp_tree_abs_path],
             interp_ctx,
-            self.func_paths,
+            self.func_ids_to_func_rel_paths,
         )
 
 
@@ -219,13 +234,13 @@ def path_step_key_arg_name(
 
 
 def max_path_len(
-    func_paths: dict[str, list[list[str]]],
+    func_ids_to_func_rel_paths: dict[str, list[list[str]]],
 ):
     """
     Find maximum path length.
     """
     max_len: int = 0
-    for func_paths_list in func_paths.values():
-        for func_path in func_paths_list:
-            max_len = max(max_len, len(func_path))
+    for func_rel_paths in func_ids_to_func_rel_paths.values():
+        for func_rel_path in func_rel_paths:
+            max_len = max(max_len, len(func_rel_path))
     return max_len

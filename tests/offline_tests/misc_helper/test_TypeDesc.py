@@ -83,7 +83,7 @@ class ThisTestCase(LocalTestCase):
                     static_data = plugin_entry_desc.from_input_dict(input_dict)
 
                     # Assert those files which were specified in the `expected_dict_part`:
-                    for key_to_verify in expected_dict_part.keys():
+                    for key_to_verify in expected_dict_part:
                         self.assertEqual(expected_dict_part[key_to_verify], getattr(static_data, key_to_verify))
 
                 else:

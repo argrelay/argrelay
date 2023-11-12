@@ -25,12 +25,14 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
     ):
         interp_result: InterpResult = interp_result_desc.dict_schema.load(response_dict)
         ElapsedTime.measure("after_object_creation")
-        DescribeLineArgsClientResponseHandler.render_result(interp_result)
+        self.render_result(interp_result)
 
     @staticmethod
     def render_result(
         interp_result: InterpResult,
     ):
+
+        # TODO_11_77_28_50: print suggestions in `InterpResult.arg_values`
 
         print()
 

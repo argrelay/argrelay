@@ -287,20 +287,17 @@ then
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# This is a custom build script *sourced* by `@/exe/bootstrap_dev_env.bash`.
+# This is a custom deployment script *sourced* by `@/exe/bootstrap_dev_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
 # Normally, for integration project, the deploy scripts like this should pip-install itself (in the editable mode).
 
+# Saved dev dependencies (if clean deployment is required, make `@/conf/dev_env_packages.txt` file empty):
+python -m pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
+
 # Use editable install:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
 python -m pip install -e .[tests]
-
-if false
-then
-    # This is NOT necessary (extra dev dependencies):
-    python -m pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
-fi
 ########################################################################################################################
 deploy_project_EOF
     exit 1
@@ -477,7 +474,7 @@ then
 # This is a custom build script *sourced* by `@/exe/bootstrap_dev_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
-# Normally, the build scripts like this for integration project should build it and test it.
+# Normally, for integration project, the build scripts like this should build and test itself.
 
 # It is fine to run tox on every start of FS_58_61_77_69 `dev_shell` because it is only used by `argrelay` devs:
 # Build and test:
@@ -490,7 +487,6 @@ fi
 # Provide project-specific build script:
 source "${argrelay_dir}/exe/build_project.bash"
 
-# TODO_99_75_81_05: Install from `dev_env_packages.txt`, can overwrite (but it should be no-op) - only pip should update.
 # Update `@/conf/dev_env_packages.txt` to know what was there at the time of bootstrapping:
 cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
 ###############################################################################

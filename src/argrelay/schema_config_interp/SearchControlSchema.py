@@ -57,7 +57,7 @@ class SearchControlSchema(Schema):
     ):
         for key_to_type_entry in input_dict[keys_to_types_list_]:
             # ensure there is only one key per dict:
-            if len(key_to_type_entry.keys()) != 1:
+            if len(key_to_type_entry) != 1:
                 raise ValidationError("only one key per dict is allowed")
 
 

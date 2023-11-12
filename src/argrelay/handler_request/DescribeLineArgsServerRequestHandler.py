@@ -29,6 +29,7 @@ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
         ElapsedTime.measure("after_interpret_command")
 
         input_object = InterpResult(
+            arg_values = self.interp_ctx.comp_suggestions,
             all_tokens = self.interp_ctx.parsed_ctx.all_tokens,
             consumed_tokens = self.interp_ctx.consumed_tokens,
             envelope_containers = self.interp_ctx.envelope_containers,

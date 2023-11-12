@@ -91,49 +91,49 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
             (
                 line_no(), "relay_demo |", CompType.DescribeArgs,
                 "Ensure it provides `relay_demo` as first `InitValue` prop.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command |", CompType.DescribeArgs,
                 "Ensure it provides `some_command` as first `InitValue` prop.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "relay_demo intercept |", CompType.DescribeArgs,
                 "Ensure `intercept` works for `CompType.DescribeArgs`.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "relay_demo intercept help |", CompType.DescribeArgs,
                 "Ensure `intercept` of `help` works for `CompType.DescribeArgs`.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "relay_demo intercept help |", CompType.DescribeArgs,
                 "Ensure `help` of `intercept` works for `CompType.DescribeArgs`.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "# relay_demo intercept help |", CompType.DescribeArgs,
                 "Commented line: selecting `NoopInterpFactory` by default should not fail.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "relay_demo intercept intercept help |", CompType.DescribeArgs,
                 "Doubling of `intercept` should work.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "relay_demo subtree help |", CompType.DescribeArgs,
                 "Help for `subtree` should work.",
-                # TODO: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
         ]
@@ -184,6 +184,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     )
                     with inner_env_mock_builder.build():
                         interp_result: InterpResult = InterpResult(
+                            arg_values = interp_ctx.comp_suggestions,
                             all_tokens = interp_ctx.parsed_ctx.all_tokens,
                             consumed_tokens = interp_ctx.consumed_tokens,
                             tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,

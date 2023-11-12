@@ -8,17 +8,17 @@ class FirstArgInterp(InterpTreeInterp):
 
     `FirstArgInterp` was re-implemented in terms of `InterpTreeInterp` (FS_01_89_09_24).
 
-    Implements FS_42_76_93_51.
+    Implements FS_42_76_93_51 first interp.
     """
 
     def __init__(
         self,
         interp_factory_id: str,
-        config_dict: dict,
+        interp_tree_node_config_dict: dict,
         interp_ctx: InterpContext,
     ):
         super().__init__(
             interp_factory_id,
-            config_dict,
+            interp_tree_node_config_dict,
             interp_ctx,
         )

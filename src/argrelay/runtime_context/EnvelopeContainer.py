@@ -55,18 +55,27 @@ class EnvelopeContainer:
 
     def populate_implicit_arg_values(self):
         """
-        When `data_envelope` is singled out, all remaining `arg_type`-s become `ArgSource.ImplicitValue`.
+        When `data_envelope` is singled out, all remaining single-value `arg_type`-s become `ArgSource.ImplicitValue`.
 
-        # Implements: FS_13_51_07_97
+        Implements FS_13_51_07_97 singled out implicit values.
         """
-        # Filter as in: FS_31_70_49_15:
+
+        # Filter as in: FS_31_70_49_15 search control:
         for arg_type in self.search_control.keys_to_types_dict.values():
             if arg_type not in self.assigned_types_to_values:
                 if arg_type in self.remaining_types_to_values:
                     arg_values = self.remaining_types_to_values[arg_type]
+
+                    # FS_06_99_43_60 list arg value:
+                    # When a `data_envelope` is singled out, its array arg value will not be set as
+                    # singled out via `ArgSource.ImplicitValue` (user can still select them explicitly).
+                    # This is deliberate for now as the selection of specific value out of the array can be used
+                    # by delegators to implement difference in behavior.
+
                     if len(arg_values) == 1:
                         del self.remaining_types_to_values[arg_type]
                         self.assigned_types_to_values[arg_type] = AssignedValue(
+                            # single value:
                             arg_values[0],
                             ArgSource.ImplicitValue,
                         )

@@ -7,7 +7,6 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
-from argrelay.plugin_interp.InterpTreeContext import InterpTreeContext
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
@@ -79,8 +78,15 @@ class InterpContext:
     """
 
     comp_suggestions: list[str] = field(init = False, default_factory = lambda: [])
+    """
+    List of completion suggestions.
+    """
 
-    interp_tree_context: InterpTreeContext = field(init = False, default = None)
+    interp_tree_abs_path: tuple[str, ...] = field(init = False, default = tuple([]))
+    """
+    Provides curr path within FS_01_89_09_24 interp tree.
+    Takes part in implementation of FS_01_89_09_24 interp tree.
+    """
 
     def __post_init__(self):
         self.unconsumed_tokens = self._init_unconsumed_tokens()
@@ -156,11 +162,10 @@ class InterpContext:
 
         interp_n: int = 0
 
-        # FS_01_89_09_24 interp tree: start of tracking interp tree context while processing command
-        # (to pass it to the next interp factory to create interp):
-        self.interp_tree_context = InterpTreeContext(
-            interp_tree_path = tuple([]),
-        )
+        # FS_01_89_09_24 interp tree:
+        # start of tracking interp tree abs path while processing command
+        # (to pass it to the next interp factory to create next interp):
+        self.interp_tree_abs_path = tuple([])
 
         self.curr_interp = self.create_next_interp(first_interp_factory_id)
         while True:

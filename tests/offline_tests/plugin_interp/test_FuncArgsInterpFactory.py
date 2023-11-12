@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import unittest
 
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
-from argrelay.plugin_interp.FuncArgsInterp import func_search_control_
-from argrelay.plugin_interp.FuncArgsInterpFactory import FuncArgsInterpFactory
-from argrelay.plugin_interp.FuncArgsInterpFactoryConfigSchema import (
+from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     func_selector_tree_,
     delegator_plugin_ids_,
     ignored_func_ids_list_,
 )
+
+from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
+from argrelay.plugin_interp.FuncTreeInterp import func_search_control_
+from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     static_data_,
@@ -57,12 +58,11 @@ class ThisTestCase(BaseTestCase):
         type_1 = "whatever_type_1"
         type_2 = "whatever_type_2"
 
-        # Configure new `FuncArgsInterpFactory`:
-        plugin_instance_id = FuncArgsInterpFactory.__name__ + ".test"
+        plugin_instance_id = FuncTreeInterpFactory.__name__ + ".test"
         assert plugin_instance_id not in server_config_dict[plugin_instance_entries_]
         server_config_dict[plugin_instance_entries_][plugin_instance_id] = {
-            plugin_module_name_: FuncArgsInterpFactory.__module__,
-            plugin_class_name_: FuncArgsInterpFactory.__name__,
+            plugin_module_name_: FuncTreeInterpFactory.__module__,
+            plugin_class_name_: FuncTreeInterpFactory.__name__,
             plugin_dependencies_: [],
             plugin_config_: {
                 func_selector_tree_: {

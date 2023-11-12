@@ -18,6 +18,12 @@ Upgrade `argrelay` package to newer version:
 pip install --upgrade --force-reinstall argrelay
 ```
 
+Remove saved `argrelay` entry from `@/conf/dev_env_packages.txt` (otherwise subsequent bootstrap will restore it):
+
+```sh
+sef -i "/argrelay/d" ./conf/dev_env_packages.txt
+```
+
 Re-run `@/exe/bootstrap_dev_env.bash`:
 
 ```sh

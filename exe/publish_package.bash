@@ -57,12 +57,14 @@ fi
 
 # Clear venv (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
-# Restore only registered packages
+# Restore only saved dev packages
 # (if fresh dependencies are required, clear `@/conf/dev_env_packages.txt` first):
 pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
-# Re-install only those missing in `@/conf/dev_env_packages.txt`
-# (this includes those with editable install like `argrelay` itself),
-# also, restore missing transitive dependencies:
+# Packages installed by `@/exe/bootstrap_dev_env.bash` depend on
+# `@/exe/deploy_project.bash`, but normally it:
+# *  installs only those missing in `@/conf/dev_env_packages.txt`
+#    (specifically those with editable install like `argrelay` itself)
+# *  restores missing transitive dependencies
 "${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
 # Ensure all changes are committed:
