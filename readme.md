@@ -71,7 +71,8 @@ Run `@/exe/bootstrap_dev_env.bash`:
 
 If `@/exe/bootstrap_dev_env.bash` is run for the first time,<br/>
 it will ask to provide `@/conf/python_conf.bash` file and others.<br/>
-Errors are designed to guide (with full debug output) - follow instruction.
+Errors are designed to guide - please follow the instructions<br/>
+(via full debug output) or [raise an issue][repo_issues].
 
 To start both the server and the client,<br/>
 two terminal windows are required.
