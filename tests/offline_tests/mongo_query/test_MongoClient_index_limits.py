@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import Enum, auto
 
-from offline_tests.mongo_query.MongoClientTest import MongoClientTestCase
+from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass
 
 
 class TestSize(Enum):
@@ -23,7 +23,7 @@ class TestSize(Enum):
     """
 
 
-class ThisTestCase(MongoClientTestCase):
+class ThisTestClass(MongoClientTestClass):
 
     def __init__(
         self,
@@ -31,7 +31,7 @@ class ThisTestCase(MongoClientTestCase):
         **kwargs,
     ):
         super(
-            ThisTestCase,
+            ThisTestClass,
             self,
         ).__init__(
             *args,
@@ -81,7 +81,7 @@ class ThisTestCase(MongoClientTestCase):
 
         self.assertTrue(
             self.field_count * self.envelope_count * self.max_array_size < 1_000_000_000,
-            "estimated (roughly) mem size should not exceed 1 G"
+            "estimated (roughly) mem size should not exceed 1 G",
         )
 
         self.curr_value_ordinal = 1

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import subprocess
 
-from argrelay.test_helper import change_to_known_repo_path
-from argrelay.test_helper.ClientServerTestCase import ClientServerTestCase
+from argrelay.test_infra import change_to_known_repo_path
+from argrelay.test_infra.ClientServerTestClass import ClientServerTestClass
 
 
-class CypressTestCase(ClientServerTestCase):
+class CypressTestClass(ClientServerTestClass):
     """
     Base class to run GUI tests via Cypress.
 

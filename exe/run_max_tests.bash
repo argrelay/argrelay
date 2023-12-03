@@ -90,8 +90,8 @@ then
         module_name="$( echo "${module_path}" | rev | cut -f 2- -d '.' | rev | sed "s/\//./g" )"
         # Neet to switch to the test dir to let test module name lookup work:
         cd "${default_test_dir}"
-        # Assuming all test classes named as `ThisTestCase`:
-        python -m unittest --failfast "${module_name}.ThisTestCase.${method_name}"
+        # Assuming all test classes named as `ThisTestClass`:
+        python -m unittest --failfast "${module_name}.ThisTestClass.${method_name}"
     else
         python -m unittest discover --failfast --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${path_dirname}" --pattern "${path_basename}"
     fi

@@ -34,6 +34,17 @@ class JumpTreeInterpFactory(FuncTreeInterpFactory):
         for given `interp_tree_abs_path` (FS_01_89_09_24) selects next `interp_tree_abs_path`.
         """
 
+    def load_config(
+        self,
+        config_dict,
+    ) -> dict:
+        # TODO_74_03_78_60: Call `TypeDesc` API to do load (to populate defaults) -> dump automatically.
+        return jump_tree_interp_config_desc.dict_schema.dump(
+            jump_tree_interp_config_desc.dict_schema.load(
+                config_dict
+            )
+        )
+
     def validate_config(
         self,
     ):

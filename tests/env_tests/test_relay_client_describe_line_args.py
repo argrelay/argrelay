@@ -1,12 +1,12 @@
 from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import __main__
-from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.EnvMockBuilder import LiveServerEnvMockBuilder
-from env_tests.ManualServerTest import ManualServerTest
+from argrelay.test_infra import parse_line_and_cpos
+from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
+from env_tests.ManualServerTestClass import ManualServerTestClass
 
 
-# TODO: Do we really need this test? Why not using `RemoteTestCase` or `End2EndTestCase`?
-class ThisTestCase(ManualServerTest):
+# TODO: Do we really need this test? Why not using `RemoteTestClass` or `End2EndTestClass`?
+class ThisTestClass(ManualServerTestClass):
 
     def test_live_describe_line_args(self):
         test_line = "some_command goto host pro| whatever"

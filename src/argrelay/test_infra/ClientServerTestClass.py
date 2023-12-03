@@ -8,13 +8,13 @@ from datetime import datetime, timedelta
 from argrelay.misc_helper import get_argrelay_dir
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.test_helper import change_to_known_repo_path
-from argrelay.test_helper.InOutTestCase import InOutTestCase
+from argrelay.test_infra import change_to_known_repo_path
+from argrelay.test_infra.InOutTestClass import InOutTestClass
 
 
-class ClientServerTestCase(InOutTestCase):
+class ClientServerTestClass(InOutTestClass):
     """
-    Unlike tests derived from `ManualServerTest` (which rely on the server to be started manually),
+    Unlike tests derived from `ManualServerTestClass` (which rely on the server to be started manually),
     the test controls startup of the server.
 
     This test starts server (only) via their generated files in `@/bin/` dir.
@@ -22,14 +22,14 @@ class ClientServerTestCase(InOutTestCase):
     Avoiding generated file in `@/bin/` dir for client
     allows executing client code within the OS process responsible for running this test.
     In turn, this allows using `EnvMockBuilder` for client-side mocking to
-    intercept server responses (see `RemoteTestCase`).
+    intercept server responses (see `RemoteTestClass`).
     """
 
     server_proc = None
 
     @classmethod
     def setUpClass(cls):
-        InOutTestCase.setUpClass()
+        InOutTestClass.setUpClass()
         with change_to_known_repo_path("."):
             cls.server_proc = subprocess.Popen([
                 f"{get_argrelay_dir()}/bin/run_argrelay_server",
@@ -38,7 +38,7 @@ class ClientServerTestCase(InOutTestCase):
 
     @classmethod
     def tearDownClass(cls):
-        InOutTestCase.setUpClass()
+        InOutTestClass.setUpClass()
         # shutdown gracefully:
         cls.server_proc.send_signal(signal.SIGINT)
         cls.server_proc.communicate()

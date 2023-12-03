@@ -1,3 +1,11 @@
 
 # DO NOT IGNORE: see FS_85_33_46_53 bootstrap_dev_env for explanation:
 !/bootstrap_dev_env.bash
+
+# These files (see `@exe/deploy_resource_files_conf.bash`)
+# are deployed as resources using `symlink_method`
+# (see `deploy_files_procedure` in `bootstrap_dev_env.bash`).
+# They should simply point to the latest in configured `venv` (no version control is required):
+/dev_shell.bash
+/init_shell_env.bash
+/argrelay_rc.bash

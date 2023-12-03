@@ -7,11 +7,11 @@ from argrelay.misc_helper import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.server_spec.CallContext import CallContext
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder
 
 
-class InOutTestCase(BaseTestCase):
+class InOutTestClass(BaseTestClass):
     # TODO_32_99_70_35: Make generic validator be able to verify payload (not only `interp_ctx` passed from local client) - JSONPath?
 
     # TODO: Wrap input into Dataclass which in turn can be created via builder (to have ability pre-build defaults for a set of tests).
@@ -61,10 +61,14 @@ class InOutTestCase(BaseTestCase):
                 self.assertIsNone(delegator_class)
                 self.assertIsNone(envelope_ipos_to_field_values)
             elif call_ctx.server_action is ServerAction.DescribeLineArgs:
+                # TODO: TODO_11_77_28_50 suggestions are already in all responses:
                 self.assertIsNone(expected_suggestions)
+                # TODO: TODO_42_81_01_90: assert data instead of print out: there will be no delegator_class, but a mock to intercept response for enum query:
                 self.assertIsNone(delegator_class)
+                # TODO: TODO_42_81_01_90: assert data instead of print out: the data should be available:
                 self.assertIsNone(envelope_ipos_to_field_values)
             elif call_ctx.server_action is ServerAction.RelayLineArgs:
+                # TODO: TODO_11_77_28_50 suggestions are already in all responses:
                 self.assertIsNone(expected_suggestions)
             else:
                 raise RuntimeError

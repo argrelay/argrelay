@@ -19,6 +19,28 @@ set -E
 # Error on undefined variables:
 set -u
 
+success_color="\e[42m"
+failure_color="\e[41m"
+reset_color="\e[0m"
+
+# Indicate success|failure by color:
+function on_exit {
+    exit_code="${?}"
+    if [[ "${exit_code}" == "0" ]]
+    then
+        # Only if this script is not sourced by another:
+        if [[ "${0}" == "${BASH_SOURCE[0]}" ]]
+        then
+            echo -e "${success_color}SUCCESS:${reset_color} ${BASH_SOURCE[0]}" 1>&2
+        fi
+    else
+        echo -e "${failure_color}FAILURE:${reset_color} ${BASH_SOURCE[0]}: exit_code: ${exit_code}" 1>&2
+        exit "${exit_code}"
+    fi
+}
+
+trap on_exit EXIT
+
 # Parse command line args:
 for arg_i in "${@}"
 do
@@ -57,6 +79,7 @@ test -d "${argrelay_dir}/exe/"
 
 # Bash does not allow `return` if the script is not sourced (`exit` must be used):
 # https://stackoverflow.com/a/49857550/441652
+# But using `exit` would exit the script which sources this bootstrap - pick the command conditionally instead:
 if [[ "${0}" != "${BASH_SOURCE[0]}" ]]
 then
     ret_command="return"
@@ -65,6 +88,13 @@ else
 fi
 
 function detect_file_deployment_command {
+    # This func is used for the editable install mode cases.
+    # When config files (not resource files) need to be deployed from a distribution package,
+    # that package might be installed in editable mode.
+    # *   If in editable mode, use symlinks.
+    # *   If not in editable mode, use copy.
+    # The detection of editable mode is done by looking at the `venv` path in the orig file.
+    #
     # Detect file deployment method based on path of the source (if copy) or the target (if symlink):
     # *   If the path contains path to `venv` (file is from orig package), copy.
     # *   If the path does not contain path to `venv` (file is from sources), symlink.
@@ -92,6 +122,10 @@ function deploy_files_procedure {
     deploy_files_conf_path="${1}"
     deployment_mode="${2}"
     target_dir="${3}"
+    # Whether override should be used or not depends on whether the file is a config or it is a resource:
+    # *   config files are specific to target environment and are kept untouched (manually updated if needed)
+    # *   resource files are common for all deployments - they represent the latest update and should be overriden
+    override_target_file="${4}"
 
     # Load user config for env vars:
     # *   module_path_file_tuples
@@ -99,20 +133,20 @@ function deploy_files_procedure {
     source "${deploy_files_conf_path}"
 
     case "${deployment_mode}" in
-        "symlink")
+        "symlink_method")
             # Use symlinks (e.g. to modify files when they are part of Git repo):
             file_deployment_command="ln -sn"
         ;;
-        "copy")
+        "copy_method")
             # Use copies (e.g. to avoid modifying orig package content):
             file_deployment_command="cp -p"
         ;;
-        "detect")
+        "detect_method")
             file_deployment_command="detect_file_deployment_command"
         ;;
         *)
             echo "ERROR: unknown deployment_mode: \"${deployment_mode}\"" 1>&2
-            exit 1
+            "${ret_command}" 1
         ;;
     esac
 
@@ -121,7 +155,7 @@ function deploy_files_procedure {
     if [[ "$((${#module_path_file_tuples[@]}%3))" != "0" ]]
     then
         echo "ERROR: Number of items in \`module_path_file_tuples\` is not divisible by 3" 1>&2
-        exit 1
+        "${ret_command}" 1
     fi
 
     for i in "${!module_path_file_tuples[@]}"
@@ -146,14 +180,20 @@ python_module_path_EOF
                 return 1
             fi
 
-            # Test file:
+            # Test existence of the source file:
             config_file_path="${module_path}/${relative_dir_path}/${file_name}"
             test -f "${config_file_path}"
 
-            # Deploy sample config server and client files as user dot files:
+            # Deploy file to the target:
             if [[ ! -e "${target_dir}/${file_name}" ]]
             then
                 eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
+            else
+                if [[ "${override_target_file}" == "override_target_file" ]]
+                then
+                    rm "${target_dir}/${file_name}"
+                    eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
+                fi
             fi
         fi
     done
@@ -208,7 +248,7 @@ path_to_pythonX="/usr/local/bin/python3.7"
 venv_prompt_prefix="@"
 ########################################################################################################################
 deploy_project_EOF
-    exit 1
+    "${ret_command}" 1
 fi
 
 # Load user config for env vars:
@@ -248,7 +288,7 @@ then
     then
         echo "ERROR: \`${pythonX_basename}\` from \`${pythonX_dirname}\` does not work" 1>&2
         echo "Update \`${argrelay_dir}/conf/python_conf.bash\` to continue." 1>&2
-        exit 1
+        "${ret_command}" 1
     fi
 
     # Start with Python of specific version to prepare `"${path_to_venvX}"`:
@@ -262,6 +302,33 @@ source "${path_to_venvX}"/bin/activate
 set -x
 set -v
 
+# Convert `path_to_venvX` to `abs_path_to_venvX`:
+if [[ "${path_to_venvX:0:1}" == "/" ]]
+then
+    abs_path_to_venvX="${path_to_venvX}"
+else
+    abs_path_to_venvX="$(pwd)/${path_to_venvX}"
+fi
+# Verify that `/path/to/python` after activation is the same file pointed to by `path_to_pythonX`.
+# If not, it is likely that chain of `python` symlinks within the new `venv` is broken
+# (leads to non-existing `python` binary) which should fail fast (otherwise, partially working state is confusing):
+full_path_to_python="$( command which python )"
+if [[ ! "${full_path_to_python}" -ef "${path_to_pythonX}" ]]
+then
+    echo "ERROR: path to \`python\` binary = \`${full_path_to_python}\` after activation of \`venv\` = \`${abs_path_to_venvX}\` is not linked to \`python\` binary = \`${path_to_pythonX}\` used to create this \`venv\`" 1>&2
+    "${ret_command}" 1
+fi
+# Verify shebang using `/path/to/python` does not exceed the limit
+# (otherwise, shebang for client and server scripts will not work):
+# https://stackoverflow.com/a/10813634/441652
+# Applying conservative limit for the first line including both the first two chars `#!` and `${full_path_to_python}`
+# (which may be higher or lower but can always be fixed for bootstrap script copy temporarily if blocking):
+if [[ "${#full_path_to_python}" -gt "125" ]]
+then
+    echo "ERROR: path to \`python\` binary = \`${full_path_to_python}\` after activation of \`venv\` = \`${abs_path_to_venvX}\` exceeds 127 chars" 1>&2
+    "${ret_command}" 1
+fi
+
 if [[ -n "${activate_venv_only_flag:-}" ]]
 then
     # Ths script is being run by `@/exe/dev_shell.bash` (sourced by `@/exe/init_shell_env.bash`).
@@ -272,6 +339,9 @@ fi
 
 # Continue with Python from `"${path_to_pythonX}"`:
 python -m pip install --upgrade pip
+
+# Ensure `@/conf/dev_env_packages.txt` exists:
+touch "${argrelay_dir}/conf/dev_env_packages.txt"
 
 ########################################################################################################################
 # Phase 2: deploy project
@@ -295,12 +365,12 @@ then
 # Saved dev dependencies (if clean deployment is required, make `@/conf/dev_env_packages.txt` file empty):
 python -m pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
 
-# Use editable install:
+# Use editable mode:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
 python -m pip install -e .[tests]
 ########################################################################################################################
 deploy_project_EOF
-    exit 1
+    "${ret_command}" 1
 fi
 
 source "${argrelay_dir}/exe/deploy_project.bash"
@@ -324,7 +394,7 @@ then
     # Recursively call itself again (now with `recursion_flag`:
     "${argrelay_dir}/exe/bootstrap_dev_env.bash" "recursion_flag"
     # Recursive call should have executed the rest of file:
-    exit 0
+    "${ret_command}" 0
 fi
 
 ########################################################################################################################
@@ -359,7 +429,7 @@ module_path_file_tuples=(
 )
 ########################################################################################################################
 deploy_config_files_conf_EOF
-    exit 1
+    "${ret_command}" 1
 fi
 
 argrelay_conf_base_dir="$( print_argrelay_conf_dir )"
@@ -368,11 +438,11 @@ then
     if [[ ! -d "${argrelay_conf_base_dir}" ]]
     then
         echo "ERROR: (see FS_16_07_78_84.conf_dir_priority.md) path must be a dir or a symlink to dir: ${argrelay_conf_base_dir}" 1>&2
-        exit 1
+        "${ret_command}" 1
     fi
 fi
 
-deploy_files_procedure "${deploy_files_conf_path}" "detect" "${argrelay_conf_base_dir}"
+deploy_files_procedure "${deploy_files_conf_path}" "detect_method" "${argrelay_conf_base_dir}" "do_not_override"
 
 ########################################################################################################################
 # Phase 5: prepare artifacts: deploy resources (symlinks)
@@ -401,10 +471,10 @@ module_path_file_tuples=(
 )
 ########################################################################################################################
 deploy_resource_files_conf_EOF
-    exit 1
+    "${ret_command}" 1
 fi
 
-deploy_files_procedure "${deploy_files_conf_path}" "symlink" "${argrelay_dir}/exe/"
+deploy_files_procedure "${deploy_files_conf_path}" "symlink_method" "${argrelay_dir}/exe/" "override_target_file"
 
 ########################################################################################################################
 # Phase 6: prepare artifacts: generate resources
@@ -481,7 +551,7 @@ then
 python -m tox
 ########################################################################################################################
 build_project_EOF
-    exit 1
+    "${ret_command}" 1
 fi
 
 # Provide project-specific build script:
@@ -495,6 +565,7 @@ cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
 # pip install -e .
 ###############################################################################
 REQUIREMENTS_EOF
+# FS_85_33_46_53 bootstrap package management:
 # Ignore `argrelay` itself (or anything installed in editable mode):
 pip freeze --exclude-editable >> "${argrelay_dir}/conf/dev_env_packages.txt"
 

@@ -9,13 +9,13 @@ from argrelay.relay_client import __main__
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
-from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.EnvMockBuilder import EnvMockBuilder, LocalClientEnvMockBuilder
-from argrelay.test_helper.InOutTestCase import InOutTestCase
-from argrelay.test_helper.LocalClientCommandFactory import LocalClientCommandFactory
+from argrelay.test_infra import parse_line_and_cpos
+from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder, LocalClientEnvMockBuilder
+from argrelay.test_infra.InOutTestClass import InOutTestClass
+from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
 
 
-class LocalTestCase(InOutTestCase):
+class LocalTestClass(InOutTestClass):
     """
     Supports FS_66_17_43_42 test_infra / special test mode #1.
 
@@ -24,13 +24,13 @@ class LocalTestCase(InOutTestCase):
 
     @classmethod
     def setUpClass(cls):
-        InOutTestCase.setUpClass()
+        InOutTestClass.setUpClass()
         # Force restart of the server for `LocalClient` before tests:
         LocalClientCommandFactory.local_server = None
 
     @classmethod
     def tearDownClass(cls):
-        InOutTestCase.tearDownClass()
+        InOutTestClass.tearDownClass()
         # Force restart of the server for `LocalClient` after tests:
         LocalClientCommandFactory.local_server = None
 
@@ -93,7 +93,7 @@ class LocalTestCase(InOutTestCase):
             call_ctx: CallContext = command_obj.call_ctx
 
             # TODO_32_99_70_35: (JSONPath?) Currently, this verifier ensures what things exists.
-            #       Add a way to ensure what things do not exists.
+            #       Add a way to ensure what things do not exist.
             #       For example,
             #       * no `data_envelope` number N.
             #       * `data_envelope` does not have field A.

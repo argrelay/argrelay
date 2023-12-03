@@ -15,15 +15,15 @@ from argrelay.client_spec.ShellContext import (
 )
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.ClientServerTestCase import ClientServerTestCase
+from argrelay.test_infra import parse_line_and_cpos
+from argrelay.test_infra.ClientServerTestClass import ClientServerTestClass
 
 
-class End2EndTestCase(ClientServerTestCase):
+class End2EndTestClass(ClientServerTestClass):
     """
     Supports FS_66_17_43_42 test_infra / special test mode #5.
 
-    In addition to starting server via its generated file in `@/bin/` dir (what `ClientServerTestCase` does),
+    In addition to starting server via its generated file in `@/bin/` dir (what `ClientServerTestClass` does),
     this tests also runs client via the generated file.
 
     Effectively, this runs both client and server outside the OS process responsible for running this test

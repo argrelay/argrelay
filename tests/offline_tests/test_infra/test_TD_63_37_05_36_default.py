@@ -10,12 +10,12 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import scalar_to_list_values
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
-from argrelay.test_helper import change_to_known_repo_path, test_data_
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_infra import change_to_known_repo_path, test_data_
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
     """
     Verify TD_63_37_05_36 # demo
     """

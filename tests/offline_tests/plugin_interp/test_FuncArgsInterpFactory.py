@@ -33,16 +33,16 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_class_name_,
     plugin_dependencies_,
 )
-from argrelay.test_helper import parse_line_and_cpos
-from argrelay.test_helper.BaseTestCase import BaseTestCase
-from argrelay.test_helper.EnvMockBuilder import (
+from argrelay.test_infra import parse_line_and_cpos
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay.test_infra.EnvMockBuilder import (
     load_custom_integ_server_config_dict,
     load_custom_integ_client_config_dict,
     LocalClientEnvMockBuilder,
 )
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
 
     # TODO: This test is not adequate anymore:
     #       *   Instead of manually adding search control and func envelope properties, they are automatic based on func tree.

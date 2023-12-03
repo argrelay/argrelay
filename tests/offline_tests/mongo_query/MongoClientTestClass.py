@@ -6,13 +6,13 @@ from pymongo.database import Database
 
 from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
-from argrelay.test_helper.BaseTestCase import BaseTestCase
+from argrelay.test_infra.BaseTestClass import BaseTestClass
 
 object_name_ = "object_name"
 data_envelope_ = "data_envelope"
 
 
-class MongoClientTestCase(BaseTestCase):
+class MongoClientTestClass(BaseTestClass):
     """
     No `argrelay`: plain mongo test using either `pymongo` (real MongoDB) or `mongomock` (in-mem).
     """
@@ -23,7 +23,7 @@ class MongoClientTestCase(BaseTestCase):
         **kwargs,
     ):
         super(
-            MongoClientTestCase,
+            MongoClientTestClass,
             self,
         ).__init__(
             *args,

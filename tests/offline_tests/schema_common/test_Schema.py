@@ -28,11 +28,11 @@ from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_
 from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
 from argrelay.server_spec.const_int import DEFAULT_IP_ADDRESS, DEFAULT_PORT_NUMBER
-from argrelay.test_helper import line_no
-from argrelay.test_helper.BaseTestCase import BaseTestCase
+from argrelay.test_infra import line_no
+from argrelay.test_infra.BaseTestClass import BaseTestClass
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
 
     def test_type_desc_example_is_loadable_and_dumpable(self):
         """

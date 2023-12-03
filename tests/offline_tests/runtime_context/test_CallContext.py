@@ -1,11 +1,11 @@
 from argrelay.client_spec.ShellContext import UNKNOWN_COMP_KEY, ShellContext
 from argrelay.enum_desc.CompType import CompType
 from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.test_helper import line_no, parse_line_and_cpos
-from argrelay.test_helper.BaseTestCase import BaseTestCase
+from argrelay.test_infra import line_no, parse_line_and_cpos
+from argrelay.test_infra.BaseTestClass import BaseTestClass
 
 
-class ThisTestCase(BaseTestCase):
+class ThisTestClass(BaseTestClass):
 
     def test_to_json(self):
         """

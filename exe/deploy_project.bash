@@ -9,7 +9,7 @@
 # Saved dev dependencies (if clean deployment is required, make `@/conf/dev_env_packages.txt` file empty):
 python -m pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
 
-# Use editable install:
+# Use editable mode:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
 python -m pip install --editable .[tests]
 ########################################################################################################################

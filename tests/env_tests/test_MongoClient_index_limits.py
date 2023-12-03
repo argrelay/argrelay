@@ -1,7 +1,7 @@
 from offline_tests.mongo_query import test_MongoClient_index_limits
 
 
-class ThisTestCase(test_MongoClient_index_limits.ThisTestCase):
+class ThisTestClass(test_MongoClient_index_limits.ThisTestClass):
     """
     Reconfigures existing tests to run against real MongoDB.
     """
@@ -12,7 +12,7 @@ class ThisTestCase(test_MongoClient_index_limits.ThisTestCase):
         **kwargs,
     ):
         super(
-            ThisTestCase,
+            ThisTestClass,
             self,
         ).__init__(
             *args,
