@@ -336,7 +336,11 @@ then
 fi
 
 # Continue with Python from `"${path_to_pythonX}"`:
+# - Use latest `pip`:
 python -m pip install --upgrade pip
+# - This avoids error on `import pkg_resources`:
+#   ModuleNotFoundError: No module named 'pkg_resources'
+python -m pip install --upgrade setuptools
 
 # Ensure `@/conf/dev_env_packages.txt` exists:
 touch "${argrelay_dir}/conf/dev_env_packages.txt"
