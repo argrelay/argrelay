@@ -13,15 +13,14 @@
 # for `tox` conditionally.
 # Instead, run some selected tests which do not need extra dependencies
 # (e.g. do not run `gui_tests`):
+# TODO: Re-group tests to exculde trully online (going to Interne, but do not exclude end to end, for example):
 for test_group in \
-env_tests \
 offline_tests \
-online_tests \
 release_tests \
 slow_tests \
 
 do
-./exe/dev_shell.bash ./exe/run_max_tests.bash ./tests/"${test_group}"
+    ./exe/dev_shell.bash ./exe/run_max_tests.bash ./tests/"${test_group}"
 done
 
 ########################################################################################################################
