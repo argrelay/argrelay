@@ -36,3 +36,5 @@ ln -sn "dst/.github" "conf"
 ./exe/bootstrap_dev_env.bash
 
 ./exe/dev_shell.bash ./exe/run_max_tests.bash
+
+# TODO: verify there is no local changes

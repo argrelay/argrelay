@@ -527,7 +527,16 @@ chmod u+x "${argrelay_dir}/bin/run_argrelay_client"
 chmod u+x "${argrelay_dir}/bin/run_argrelay_server"
 
 ########################################################################################################################
-# Phase 7: build project
+# Phase 7: run `@/exe/dev_shell.bash`
+#
+# Some of the artifacts are created only on the first shell instance creation
+# (by running `@/exe/argrelay_rc.bash`), specifically, command symlinks to be used with `argrelay`.
+# Make sure it is configured and works:
+
+"${argrelay_dir}/exe/dev_shell.bash" "exit"
+
+########################################################################################################################
+# Phase 8: build and test project
 
 if [[ ! -f "${argrelay_dir}/exe/build_project.bash" ]]
 then
