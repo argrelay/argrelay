@@ -1,18 +1,25 @@
 name: argrelay.bootstrap.yaml
 run-name: "${{ github.actor }}: ${{ github.event_name }}: ${{ github.ref }}: argrelay.bootstrap.yaml"
 on:
-  -   push
+    -   push
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    steps:
-      -   run: "echo runner.os: ${{ runner.os }}"
-      -   run: "echo github.repository: ${{ github.repository }}"
-      -   run: "echo github.ref: ${{ github.ref }}"
+    Explore-GitHub-Actions:
+        runs-on: ubuntu-latest
 
-      -   name: Check out repository code
-          uses: actions/checkout@v4
+        strategy:
+            matrix:
+                python-version:
+                    -   3.7
+        steps:
+            -   run: "echo runner.os: ${{ runner.os }}"
+            -   run: "echo github.repository: ${{ github.repository }}"
+            -   run: "echo github.ref: ${{ github.ref }}"
 
-      -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash"
+            -   run: "python -c \"import sys; print(sys.version);\""
 
-      -   run: "echo job.status: ${{ job.status }}"
+            -   name: Check out repository code
+                uses: actions/checkout@v4
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash"
+
+            -   run: "echo job.status: ${{ job.status }}"
