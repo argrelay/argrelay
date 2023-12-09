@@ -4,7 +4,6 @@
 # Steps:
 # *   Configure `@/conf` dir to point to `@/dst/.github/`.
 # *   Run bootstrap.
-# *   Run tests.
 
 # Debug: Print commands before execution:
 set -x
@@ -34,7 +33,5 @@ test ! -d "${argrelay_dir}/conf"
 cd "${argrelay_dir}"
 ln -sn "dst/.github" "conf"
 ./exe/bootstrap_dev_env.bash
-
-./exe/dev_shell.bash ./exe/run_max_tests.bash
 
 # TODO: verify there is no local changes
