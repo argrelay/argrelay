@@ -1,7 +1,6 @@
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
-# This config file is supposed to be provided by target environment (containing project integrated with `argrelay`).
-# It can be version-controlled per environment.
+# This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
 
 # Path to `venv` to create or reuse:
 # shellcheck disable=SC2034
