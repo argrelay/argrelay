@@ -12,8 +12,7 @@ jobs:
 
       -   name: Check out repository code
           uses: actions/checkout@v4
-      -   name: "`@/exe/bootstrap_dev_env.bash`"
-          run: |
-              cd "${{ github.workspace }}"
-              ls ./exe/bootstrap_dev_env.bash
+
+      -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash"
+
       -   run: "echo job.status: ${{ job.status }}"
