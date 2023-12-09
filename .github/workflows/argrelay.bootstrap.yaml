@@ -6,9 +6,9 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      -   run: "runner.os: ${{ runner.os }}"
-      -   run: "github.repository: ${{ github.repository }}"
-      -   run: "github.ref: ${{ github.ref }}"
+      -   run: "echo runner.os: ${{ runner.os }}"
+      -   run: "echo github.repository: ${{ github.repository }}"
+      -   run: "echo github.ref: ${{ github.ref }}"
 
       -   name: Check out repository code
           uses: actions/checkout@v4
@@ -16,4 +16,4 @@ jobs:
           run: |
               cd "${{ github.workspace }}"
               ls ./exe/bootstrap_dev_env.bash
-      -   run: "job.status: ${{ job.status }}"
+      -   run: "echo job.status: ${{ job.status }}"
