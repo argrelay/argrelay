@@ -17,8 +17,7 @@
 for test_group in \
 offline_tests \
 release_tests \
-slow_tests \
-
+slow_tests
 do
     ./exe/dev_shell.bash ./exe/run_max_tests.bash ./tests/"${test_group}"
 done
