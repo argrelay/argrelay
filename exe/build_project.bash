@@ -13,7 +13,7 @@
 # for `tox` conditionally.
 # Instead, run some selected tests which do not need extra dependencies
 # (e.g. do not run `gui_tests`):
-# TODO: Re-group tests to exculde trully online (going to Interne, but do not exclude end to end, for example):
+# TODO_04_84_79_11: Re-group tests to exclude truly online (going to Internet, but do not exclude end to end, for example):
 for test_group in \
 offline_tests \
 release_tests \
