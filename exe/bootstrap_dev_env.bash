@@ -74,7 +74,8 @@ argrelay_dir="$( dirname "." )"
 # *   (`@/exe/dev_shell.bash`) indirectly: in that case `script_dir` is in `@/exe/` inside integration project dir
 # *   (subsequent upgrade) directly: in that case `script_dir` is in `@/exe/` inside integration project dir
 
-# Ensure it is called from project root which should contain `@/exe/` dir:
+# Ensure it is called from project root (which should contain `@/conf/` and `@/exe/` dirs):
+test -d "${argrelay_dir}/conf/"
 test -d "${argrelay_dir}/exe/"
 
 # Bash does not allow `return` if the script is not sourced (`exit` must be used):
