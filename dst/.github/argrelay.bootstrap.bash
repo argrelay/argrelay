@@ -43,7 +43,12 @@ git diff
 # Exclude files expected to be changed:
 # https://stackoverflow.com/a/39943727
 git add .
-if ! git diff --exit-code HEAD -- ":(exclude)dst/.github/dev_env_packages.txt"
+if ! git diff --exit-code HEAD -- \
+    ":(exclude)conf" \
+    ":(exclude)dst/.github/dev_env_packages.txt" \
+    ":(exclude)dst/.github/argrelay.client.json" \
+    ":(exclude)dst/.github/argrelay.server.yaml" \
+
 then
     echo "ERROR: uncommitted changes" 1>&2
     exit 1
