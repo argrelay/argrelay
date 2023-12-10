@@ -34,4 +34,15 @@ cd "${argrelay_dir}"
 ln -sn "dst/.github" "conf"
 ./exe/bootstrap_dev_env.bash
 
-# TODO: verify there is no local changes
+# Show any dirty repo state for investigation (before potential failure):
+git status
+git diff
+
+# Ensure no uncommitted changes:
+# https://stackoverflow.com/a/3879077/441652
+git update-index --refresh
+if ! git diff-index --quiet HEAD --
+then
+    echo "ERROR: uncommitted changes" 1>&2
+    exit 1
+fi
