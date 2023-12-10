@@ -14,6 +14,19 @@ See: docs/dev_notes/screencast_notes.md
 An integration framework to provide contextual Tab-auto-completion<br/>
 via structural search for command line interfaces (CLI) in Bash shell.
 
+<a name="argrelay-general-idea"></a>
+### General idea
+
+GUI:
+*   **`-`** is often prohibitively time-consuming for an ad-hoc functionality (compared to **`+`** CLI)
+*   **`-`** hardly integrates with anything else (unlike **`+`** CLI script-ability)
+
+CLI:
+*   **`+`** ultimately provides control on everything within a system
+*   **`-`** does not provide data-driven lookup easily or intuitively (as GUI visualization)
+
+    While staying a **`+`** CLI tool to retain other advantages, `argrelay` attempts to close this gap.
+
 <a name="argrelay-original-use-case"></a>
 ### Original use case
 
