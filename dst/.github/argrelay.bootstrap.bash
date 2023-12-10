@@ -40,8 +40,10 @@ git diff
 
 # Ensure no uncommitted changes:
 # https://stackoverflow.com/a/3879077/441652
-git update-index --refresh
-if ! git diff-index --quiet HEAD --
+# Exclude files expected to be changed:
+# https://stackoverflow.com/a/39943727
+git update-index --refresh -- ":(exclude)dst/.github/dev_env_packages.txt"
+if ! git diff-index --quiet HEAD -- ":(exclude)dst/.github/dev_env_packages.txt"
 then
     echo "ERROR: uncommitted changes" 1>&2
     exit 1
