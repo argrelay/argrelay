@@ -61,6 +61,9 @@ done
 ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
 export ARGRELAY_BOOTSTRAP_DEV_ENV
 
+# shellcheck disable=SC2034
+script_name="${BASH_SOURCE[0]}"
+
 # The dir of this script:
 # shellcheck disable=SC2034
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -198,26 +201,6 @@ python_module_path_EOF
             fi
         fi
     done
-}
-
-# See `FS_16_07_78_84.conf_dir_priority.md`:
-function print_argrelay_conf_dir {
-
-    if [[ -n "${ARGRELAY_CONF_BASE_DIR:-whatever}" ]]
-    then
-        # If ARGRELAY_CONF_BASE_DIR env var is not defined, use path to user home:
-        argrelay_conf_base_dir=~"/.argrelay.conf.d/"
-
-        # Path should be a directory or symlink to directory, otherwise default is `@/conf/`:
-        if [[ ! -e "${argrelay_conf_base_dir}" ]]
-        then
-            argrelay_conf_base_dir="${argrelay_dir}/conf/"
-        fi
-    else
-        argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
-    fi
-
-    echo "${argrelay_conf_base_dir}"
 }
 
 ########################################################################################################################
@@ -435,7 +418,21 @@ deploy_config_files_conf_EOF
     "${ret_command}" 1
 fi
 
-argrelay_conf_base_dir="$( print_argrelay_conf_dir )"
+# See `FS_16_07_78_84.conf_dir_priority.md`:
+if [[ -n "${ARGRELAY_CONF_BASE_DIR:-whatever}" ]]
+then
+    # If `ARGRELAY_CONF_BASE_DIR` env var is not defined, use path to user home:
+    argrelay_conf_base_dir=~"/.argrelay.conf.d/"
+
+    # Path should be a directory or symlink to directory, otherwise default is `@/conf/`:
+    if [[ ! -e "${argrelay_conf_base_dir}" ]]
+    then
+        argrelay_conf_base_dir="${argrelay_dir}/conf/"
+    fi
+else
+    argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
+fi
+
 if [[ -e "${argrelay_conf_base_dir}" ]]
 then
     if [[ ! -d "${argrelay_conf_base_dir}" ]]
