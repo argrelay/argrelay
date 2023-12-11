@@ -2,8 +2,6 @@
 [![PyPI package](https://badge.fury.io/py/argrelay.svg)](https://badge.fury.io/py/argrelay)
 [![GitHub build](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml/badge.svg?branch=main)](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml)
 
-Project status: dogfooding a working prototype
-
 <a name="argrelay-secreencast"></a>
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
 
@@ -14,11 +12,11 @@ See: docs/dev_notes/screencast_notes.md
 <a name="argrelay-about"></a>
 # What's this?
 
-An integration framework to provide contextual Tab-auto-completion<br/>
-via structural search for command line interfaces (CLI) in Bash shell.
+A integration framework to provide contextual Tab-auto-completion<br/>
+and structured search filter for command line interface (CLI) to any command in Bash shell.
 
 <a name="argrelay-general-idea"></a>
-### General idea
+# General idea
 
 | GUI                                                                            | CLI                                        |
 |--------------------------------------------------------------------------------|--------------------------------------------|
@@ -30,21 +28,24 @@ via structural search for command line interfaces (CLI) in Bash shell.
 While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
 
 <a name="argrelay-original-use-case"></a>
-### Original use case
+# Original use case
 
-Auto-complete based on arbitrary structured data sets (e.g. config or ref data)<br/>
-**directly from standard shell**.
+Auto-complete based on arbitrary data sets (e.g. config or ref data)<br/>
+**directly from standard shell** to run infra commands.
 
-This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
-(the client has to start and find relevant data on each Tab-request).
+Flexible and [responsive lookup][completion_perf_notes.md] requires data indexing<br/>
+(e.g. the client has to start and query relevant data on each Tab-request).
 
-The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
-to run a standby data server filled with data (instead of filling this data into each client).
+<a name="argrelay-client-server"></a>
+# Straightforward split: client & server
+
+The performance is achieved by running a standby server pre-loaded with data<br/>
+(instead of loading this data into each client).
 > For example, with several thousands of data entries,<br/>
 > even if someone could generate Bash completion config,<br/>
 > it would take considerable time to load it for every shell instance.
 
-Unlike static|generated|offline index, standby server also naturally supports dynamic data updates.
+Unlike static|generated|offline index per client, standby server also naturally supports dynamic data updates.
 
 <!--
 <a name="argrelay-accidental-use-case"></a>
@@ -59,16 +60,19 @@ Familiar terminal with:
 <a name="argrelay-name"></a>
 # What's in a name?
 
-Eventually, `argrelay` will "relay" command line arguments (hence, the name)<br/>
-with associated data to user domain-specific program.
+Eventually, `argrelay` will "relay" command line arguments around (hence, the name) with associated data:
+*  first, client :arrow_right: server
+*  then, server :arrow_right: client
+*  last, client :arrow_right: user program (via delegator plugin)
 
-For example, in all these cases entire command line is "relayed" to the server first as part of the request:
+<a name="argrelay-request-hotkeys"></a>
+# Request hotkeys
 
-| On keys           | Server maps CLI args, queries data, and:       | Client receives server response and:      |
-|-------------------|:-----------------------------------------------|:------------------------------------------|
-| **`Alt+Shift+Q`** | explains missing input in response             | displays command completion status        |
-| **`Tab`**         | provides options for missing input in response | lists options to Bash for auto-completion |
-| **`Enter`**       | responds with the data to invoke a command     | executes the command                      |
+|                   | Server maps CLI args, queries data, and: | Client receives server response and:        |
+|-------------------|:-----------------------------------------|:--------------------------------------------|
+| **`Alt+Shift+Q`** | explains given and missing input         | displays command completion status          |
+| **`Tab`**         | suggests options for missing input       | lists options to Bash for auto-completion   |
+| **`Enter`**       | provides data to invoke a command        | executes the command (via delegator plugin) |
 
 <a name="argrelay-demo"></a>
 # Interactive demo
@@ -149,10 +153,9 @@ two terminal windows are required.
     exit
     ```
 
-<a name="argrelay-excludes"></a>
-# What's in the package?
+<a name="argrelay-includes"></a>
+# What is in the package?
 
-`argrelay` includes:
 *   **Client** to be invoked by Bash hook on every Tab to<br/>
     send command line arguments to the server.
 *   **Server** to parse command line and propose values from<br/>
@@ -182,7 +185,7 @@ For example, in GUI-s, typing a query into a search bar may easily be accompanie
 (3) full-text-search results<br/>
 (4) populated **async-ly** with typing.<br/>
 
-In CLI-s, `grep` does (3) full-text-search, but what about the rest (1), (2), (4)?
+In CLI-s, `grep` does (3) full-text-search, but slow and what about the rest (1), (2), (4)?
 
 To facilitate selection of results,<br/>
 catalogue-like navigation via structured search (rather than full-text-search) with auto-completion<br/>
