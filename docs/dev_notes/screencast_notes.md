@@ -1,7 +1,7 @@
 
 This doc notes down steps to record screencast.
 
-See [`@/exe/run_demo.bash`][run_demo.bash] for automatic demo.
+See [`@/exe/play_x_server_demo.bash`][play_x_server_demo.bash] for automatic demo.
 
 Install [`asciinema`][asciinema]:
 
@@ -34,4 +34,4 @@ asciinema rec --stdin
 
 [asciinema]: https://github.com/asciinema/asciinema
 [generate_GIF]: https://dstein64.github.io/gifcast/
-[run_demo.bash]: ../../exe/run_demo.bash
+[play_x_server_demo.bash]: ../../exe/play_x_server_demo.bash
