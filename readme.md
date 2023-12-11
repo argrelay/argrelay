@@ -20,12 +20,12 @@ via structural search for command line interfaces (CLI) in Bash shell.
 <a name="argrelay-general-idea"></a>
 ### General idea
 
-| GUI                                                                   | CLI                                |
-|-----------------------------------------------------------------------|------------------------------------|
-| :thumbsdown: prohibitively time-consuming for an ad-hoc functionality | :thumbsup: quick & dirty options   |
-| :thumbsdown: hardly exposes any integration points                    | :thumbsup: ultimate script-ability |
-| :thumbsdown: limits access                                            | :thumbsup: ultimate control        |
-| :thumbsup: intuitive data lookup                                      | :thumbsdown:                       |
+| GUI                                                                         | CLI                                       |
+|-----------------------------------------------------------------------------|-------------------------------------------|
+| :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality | :heavy_plus_sign: quick & dirty options   |
+| :heavy_minus_sign: hardly exposes any integration points                    | :heavy_plus_sign: ultimate script-ability |
+| :heavy_minus_sign: limits access                                            | :heavy_plus_sign: ultimate control        |
+| :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                        |
 
 While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
 
