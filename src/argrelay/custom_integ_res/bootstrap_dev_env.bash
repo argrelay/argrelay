@@ -61,6 +61,9 @@ done
 ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
 export ARGRELAY_BOOTSTRAP_DEV_ENV
 
+# shellcheck disable=SC2034
+script_name="$( basename -- "${BASH_SOURCE[0]}" )"
+
 # The dir of this script:
 # shellcheck disable=SC2034
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -87,138 +90,6 @@ then
 else
     ret_command="exit"
 fi
-
-function detect_file_deployment_command {
-    # This func is used for the editable install mode cases.
-    # When config files (not resource files) need to be deployed from a distribution package,
-    # that package might be installed in editable mode.
-    # *   If in editable mode, use symlinks.
-    # *   If not in editable mode, use copy.
-    # The detection of editable mode is done by looking at the `venv` path in the orig file.
-    #
-    # Detect file deployment method based on path of the source (if copy) or the target (if symlink):
-    # *   If the path contains path to `venv` (file is from orig package), copy.
-    # *   If the path does not contain path to `venv` (file is from sources), symlink.
-
-    # This is the source (if copy) or the target (if symlink):
-    primary_path="$( realpath "${1}" )"
-    # This is the target (if copy) or the link (if symlink):
-    secondary_path="$( realpath "${2}" )"
-    # `venv` path from `@/conf/python_conf.bash`:
-    # shellcheck disable=SC2154
-    abs_path_to_venvX="$( realpath "${path_to_venvX}")"
-
-    if [[ "${primary_path}" == "${abs_path_to_venvX}"* ]]
-    then
-        file_deployment_command="cp -p"
-    else
-        file_deployment_command="ln -sn"
-    fi
-
-    eval "${file_deployment_command}" "${primary_path}" "${secondary_path}"
-}
-
-function deploy_files_procedure {
-
-    deploy_files_conf_path="${1}"
-    deployment_mode="${2}"
-    target_dir="${3}"
-    # Whether override should be used or not depends on whether the file is a config or it is a resource:
-    # *   config files are specific to target environment and are kept untouched (manually updated if needed)
-    # *   resource files are common for all deployments - they represent the latest update and should be overriden
-    override_target_file="${4}"
-
-    # Load user config for env vars:
-    # *   module_path_file_tuples
-    # shellcheck disable=SC1090
-    source "${deploy_files_conf_path}"
-
-    case "${deployment_mode}" in
-        "symlink_method")
-            # Use symlinks (e.g. to modify files when they are part of Git repo):
-            file_deployment_command="ln -sn"
-        ;;
-        "copy_method")
-            # Use copies (e.g. to avoid modifying orig package content):
-            file_deployment_command="cp -p"
-        ;;
-        "detect_method")
-            file_deployment_command="detect_file_deployment_command"
-        ;;
-        *)
-            echo "ERROR: unknown deployment_mode: \"${deployment_mode}\"" 1>&2
-            "${ret_command}" 1
-        ;;
-    esac
-
-    # Verify number of items in `module_path_file_tuples` is divisible by 3:
-    # shellcheck disable=SC2154
-    if [[ "$((${#module_path_file_tuples[@]}%3))" != "0" ]]
-    then
-        echo "ERROR: Number of items in \`module_path_file_tuples\` is not divisible by 3" 1>&2
-        "${ret_command}" 1
-    fi
-
-    for i in "${!module_path_file_tuples[@]}"
-    do
-        if [[ "$((i%3))" == "0" ]]
-        then
-            module_name="${module_path_file_tuples[i+0]}"
-            relative_dir_path="${module_path_file_tuples[i+1]}"
-            file_name="${module_path_file_tuples[i+2]}"
-
-            # Python `venv` has to be activated.
-            # Get path of `argrelay` module:
-            module_path="$( dirname "$(
-python << python_module_path_EOF
-import ${module_name}
-print(${module_name}.__file__)
-python_module_path_EOF
-                )" )"
-
-            if [[ -z "${module_path}" ]]
-            then
-                return 1
-            fi
-
-            # Test existence of the source file:
-            config_file_path="${module_path}/${relative_dir_path}/${file_name}"
-            test -f "${config_file_path}"
-
-            # Deploy file to the target:
-            if [[ ! -e "${target_dir}/${file_name}" ]]
-            then
-                eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
-            else
-                if [[ "${override_target_file}" == "override_target_file" ]]
-                then
-                    rm "${target_dir}/${file_name}"
-                    eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
-                fi
-            fi
-        fi
-    done
-}
-
-# See `FS_16_07_78_84.conf_dir_priority.md`:
-function print_argrelay_conf_dir {
-
-    if [[ -n "${ARGRELAY_CONF_BASE_DIR:-whatever}" ]]
-    then
-        # If ARGRELAY_CONF_BASE_DIR env var is not defined, use path to user home:
-        argrelay_conf_base_dir=~"/.argrelay.conf.d/"
-
-        # Path should be a directory or symlink to directory, otherwise default is `@/conf/`:
-        if [[ ! -e "${argrelay_conf_base_dir}" ]]
-        then
-            argrelay_conf_base_dir="${argrelay_dir}/conf/"
-        fi
-    else
-        argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
-    fi
-
-    echo "${argrelay_conf_base_dir}"
-}
 
 ########################################################################################################################
 # Phase 1: init Python
@@ -401,6 +272,121 @@ then
 fi
 
 ########################################################################################################################
+# Common deployment functions
+
+function detect_file_deployment_command {
+    # This func is used for the editable install mode cases.
+    # When config files (not resource files) need to be deployed from a distribution package,
+    # that package might be installed in editable mode.
+    # *   If in editable mode, use symlinks.
+    # *   If not in editable mode, use copy.
+    # The detection of editable mode is done by looking at the `venv` path in the orig file.
+    #
+    # Detect file deployment method based on path of the source (if copy) or the target (if symlink):
+    # *   If the path contains path to `venv` (file is from orig package), copy.
+    # *   If the path does not contain path to `venv` (file is from sources), symlink.
+
+    # This is the source (if copy) or the target (if symlink):
+    primary_path="$( realpath "${1}" )"
+    # This is the target (if copy) or the link (if symlink):
+    secondary_path="$( realpath "${2}" )"
+    # `venv` path from `@/conf/python_conf.bash`:
+    # shellcheck disable=SC2154
+    abs_path_to_venvX="$( realpath "${path_to_venvX}")"
+
+    if [[ "${primary_path}" == "${abs_path_to_venvX}"* ]]
+    then
+        file_deployment_command="cp -p"
+    else
+        file_deployment_command="ln -sn"
+    fi
+
+    eval "${file_deployment_command}" "${primary_path}" "${secondary_path}"
+}
+
+function deploy_files_procedure {
+
+    deploy_files_conf_path="${1}"
+    deployment_mode="${2}"
+    target_dir="${3}"
+    # Whether override should be used or not depends on whether the file is a config or it is a resource:
+    # *   config files are specific to target environment and are kept untouched (manually updated if needed)
+    # *   resource files are common for all deployments - they represent the latest update and should be overriden
+    override_target_file="${4}"
+
+    # Load user config for env vars:
+    # *   module_path_file_tuples
+    # shellcheck disable=SC1090
+    source "${deploy_files_conf_path}"
+
+    case "${deployment_mode}" in
+        "symlink_method")
+            # Use symlinks (e.g. to modify files when they are part of Git repo):
+            file_deployment_command="ln -sn"
+        ;;
+        "copy_method")
+            # Use copies (e.g. to avoid modifying orig package content):
+            file_deployment_command="cp -p"
+        ;;
+        "detect_method")
+            file_deployment_command="detect_file_deployment_command"
+        ;;
+        *)
+            echo "ERROR: unknown deployment_mode: \"${deployment_mode}\"" 1>&2
+            "${ret_command}" 1
+        ;;
+    esac
+
+    # Verify number of items in `module_path_file_tuples` is divisible by 3:
+    # shellcheck disable=SC2154
+    if [[ "$((${#module_path_file_tuples[@]}%3))" != "0" ]]
+    then
+        echo "ERROR: Number of items in \`module_path_file_tuples\` is not divisible by 3" 1>&2
+        "${ret_command}" 1
+    fi
+
+    for i in "${!module_path_file_tuples[@]}"
+    do
+        if [[ "$((i%3))" == "0" ]]
+        then
+            module_name="${module_path_file_tuples[i+0]}"
+            relative_dir_path="${module_path_file_tuples[i+1]}"
+            file_name="${module_path_file_tuples[i+2]}"
+
+            # Python `venv` has to be activated.
+            # Get path of `argrelay` module:
+            module_path="$( dirname "$(
+python << python_module_path_EOF
+import ${module_name}
+print(${module_name}.__file__)
+python_module_path_EOF
+                )" )"
+
+            if [[ -z "${module_path}" ]]
+            then
+                return 1
+            fi
+
+            # Test existence of the source file:
+            config_file_path="${module_path}/${relative_dir_path}/${file_name}"
+            test -f "${config_file_path}"
+
+            # Deploy file to the target:
+            if [[ ! -e "${target_dir}/${file_name}" ]]
+            then
+                eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
+            else
+                if [[ "${override_target_file}" == "override_target_file" ]]
+                then
+                    rm "${target_dir}/${file_name}"
+                    eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
+                fi
+            fi
+        fi
+    done
+}
+
+########################################################################################################################
 # Phase 4: prepare artifacts: deploy configs (conditionally copies or symlinks)
 
 deploy_files_conf_path="${argrelay_dir}/exe/deploy_config_files_conf.bash"
@@ -435,7 +421,21 @@ deploy_config_files_conf_EOF
     "${ret_command}" 1
 fi
 
-argrelay_conf_base_dir="$( print_argrelay_conf_dir )"
+# See `FS_16_07_78_84.conf_dir_priority.md`:
+if [[ -n "${ARGRELAY_CONF_BASE_DIR:-whatever}" ]]
+then
+    # If `ARGRELAY_CONF_BASE_DIR` env var is not defined, use path to user home:
+    argrelay_conf_base_dir=~"/.argrelay.conf.d/"
+
+    # Path should be a directory or symlink to directory, otherwise default is `@/conf/`:
+    if [[ ! -e "${argrelay_conf_base_dir}" ]]
+    then
+        argrelay_conf_base_dir="${argrelay_dir}/conf/"
+    fi
+else
+    argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
+fi
+
 if [[ -e "${argrelay_conf_base_dir}" ]]
 then
     if [[ ! -d "${argrelay_conf_base_dir}" ]]
@@ -568,6 +568,9 @@ fi
 
 # Provide project-specific build script:
 source "${argrelay_dir}/exe/build_project.bash"
+
+########################################################################################################################
+# Phase 9: capture dependencies
 
 # Update `@/conf/dev_env_packages.txt` to know what was there at the time of bootstrapping:
 cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"

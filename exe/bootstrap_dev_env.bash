@@ -62,7 +62,7 @@ ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
 export ARGRELAY_BOOTSTRAP_DEV_ENV
 
 # shellcheck disable=SC2034
-script_name="${BASH_SOURCE[0]}"
+script_name="$( basename -- "${BASH_SOURCE[0]}" )"
 
 # The dir of this script:
 # shellcheck disable=SC2034
