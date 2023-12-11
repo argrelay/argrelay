@@ -20,15 +20,14 @@ via structural search for command line interfaces (CLI) in Bash shell.
 <a name="argrelay-general-idea"></a>
 ### General idea
 
-GUI:
-*   **`-`** is often prohibitively time-consuming for an ad-hoc functionality (compared to **`+`** CLI)
-*   **`-`** hardly integrates with anything else (unlike **`+`** CLI script-ability)
+| GUI                                                                   | CLI                                |
+|-----------------------------------------------------------------------|------------------------------------|
+| :thumbsdown: prohibitively time-consuming for an ad-hoc functionality | :thumbsup: quick & dirty options   |
+| :thumbsdown: hardly exposes any integration points                    | :thumbsup: ultimate script-ability |
+| :thumbsdown: limits access                                            | :thumbsup: ultimate control        |
+| :thumbsup: intuitive data lookup                                      | :thumbsdown:                       |
 
-CLI:
-*   **`+`** ultimately provides control on everything within a system
-*   **`-`** does not provide data-driven lookup easily or intuitively (as GUI visualization)
-
-    While staying a **`+`** CLI tool to retain other advantages, `argrelay` attempts to close this gap.
+While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
 
 <a name="argrelay-original-use-case"></a>
 ### Original use case
