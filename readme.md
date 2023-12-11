@@ -60,10 +60,23 @@ Familiar terminal with:
 <a name="argrelay-name"></a>
 # What's in a name?
 
-Eventually, `argrelay` will "relay" command line arguments around (hence, the name) with associated data:
-*  first, client :arrow_right: server
-*  then, server :arrow_right: client
-*  last, client :arrow_right: user program (via delegator plugin)
+CLI for any program is wrapped by `argrelay` interaction.
+
+Eventually, `argrelay` will "relay" command line args around (hence, the name) with associated data:
+
+```mermaid
+sequenceDiagram
+    participant C as client
+    participant S as server
+    participant P as external user program
+    C ->> S: relay args
+    activate C
+    activate S
+    S ->> C: relay enriched details
+    deactivate S
+    C ->> P: relay everything
+    deactivate C
+```
 
 <a name="argrelay-request-hotkeys"></a>
 # Request hotkeys
