@@ -189,7 +189,9 @@ seems the answer.
 
 Nevertheless, GUI can also benefit from minimalist single line structured search queries.
 
+<!-- TODO: update the doc first before publishing its link
 Learn more about [how search works][how_search_works.md].
+-->
 
 <a name="argrelay-backend"></a>
 # Data backend
