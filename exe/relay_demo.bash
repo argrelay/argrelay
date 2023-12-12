@@ -59,6 +59,7 @@ then
     if [[ -d "/proc/${pid_value}" ]]
     then
         echo "INFO: pid [${pid_value}] has running process, leaving pid file [${pid_file}]" 1>&2
+        # Continue to the open port check.
     else
         echo "INFO: pid [${pid_value}] does not have running process, removing pid file [${pid_file}]" 1>&2
         rm "${pid_file}"
@@ -73,7 +74,43 @@ nc -z "${server_host_name}" "${server_port_number}"
 exit_code="${?}"
 set -e
 
-# TODO: set new trap to shutdown background processes:
+# TODO: set new trap to shutdown background processes
 
+if [[ "${exit_code}" != "0" ]]
+then
+    echo "INFO: port [${server_port_number}] is open, starting nothing" 1>&2
+    exit 0
+else
+    echo "INFO: port [${server_port_number}] is closed, starting server" 1>&2
+fi
+
+"${argrelay_dir}/bin/run_argrelay_server" 1>> "${log_file}" 2>&1 &
+echo $! > "${pid_file}"
+
+# 30 sec from now:
+end_time_sec="$(( $( date "+%s" ) + 30 ))"
+
+# Wait until server has opened its port:
+while ! nc -z "${server_nost_name}" "${server_port_number}"
+do
+    # Make sure process did not die:
+    pid_value="$( cat "${pid_file}" )"
+    if [[ ! -d "/proc/${pid_value}" ]]
+    then
+        echo "ERROR: pid [${pid_value}] from pid file [${pid_file}] does not exists anymore" 1>&2
+        exit 1
+    fi
+
+    if [[ "${end_time_sec}" -lt "$( date "+%s" )" ]]
+    then
+        echo "ERROR: timeout while waiting for open port [${server_host_name}:${server_port_number}]" 1>&2
+        exit 1
+    fi
+
+    echo "INFO: waiting for open port [${server_host_name}:${server_port_number}]"
+    sleep 5
+done
+
+echo "INFO:port [${server_host_name}:${server_port_number}] is open now" 1>&2
 
 "${argrelay_dir}/exe/dev_shell.bash" "${@}"
