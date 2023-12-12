@@ -1,3 +1,5 @@
 
-# Intentionally empty: this file keeps the dir part of the repo.
+# Used by `@/exe/relay_demo.bash`:
+/relay_demo.bash.pid
+/relay_demo.bash.log
 
