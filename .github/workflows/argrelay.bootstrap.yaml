@@ -1,5 +1,5 @@
 name: argrelay.bootstrap.yaml
-run-name: "${{ github.actor }}: ${{ github.event_name }}: ${{ github.ref }}: argrelay.bootstrap.yaml"
+run-name: "${{ github.name }}: ${{ github.actor }}: ${{ github.event_name }}: ${{ github.ref }}"
 on:
     -   push
 jobs:
