@@ -76,8 +76,8 @@ set -e
 
 if [[ "${exit_code}" != "0" ]]
 then
-    echo "INFO: port [${server_port_number}] is open, starting nothing" 1>&2
-    exit 0
+    echo "INFO: port [${server_port_number}] is open, shut down related server manually" 1>&2
+    exit 1
 else
     echo "INFO: port [${server_port_number}] is closed, starting server" 1>&2
 fi
