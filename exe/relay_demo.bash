@@ -74,8 +74,6 @@ nc -z "${server_host_name}" "${server_port_number}"
 exit_code="${?}"
 set -e
 
-# TODO: set new trap to shutdown background processes
-
 if [[ "${exit_code}" != "0" ]]
 then
     echo "INFO: port [${server_port_number}] is open, starting nothing" 1>&2
@@ -83,6 +81,17 @@ then
 else
     echo "INFO: port [${server_port_number}] is closed, starting server" 1>&2
 fi
+
+function shutdown_jobs {
+    kill "$( jobs -p )" || true
+}
+
+function combined_on_exit_trap {
+    shutdown_jobs
+    color_failure_only
+}
+
+trap combined_on_exit_trap EXIT
 
 "${argrelay_dir}/bin/run_argrelay_server" 1>> "${log_file}" 2>&1 &
 echo $! > "${pid_file}"
