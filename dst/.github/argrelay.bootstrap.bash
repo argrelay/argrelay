@@ -86,8 +86,6 @@ do
                 ":(exclude)dst/.github/dev_env_packages.txt" \
                 ":(exclude)dst/.github/argrelay.client.json" \
                 ":(exclude)dst/.github/argrelay.server.yaml" \
-                ":(exclude)dst/relay_demo/argrelay.client.json" \
-                ":(exclude)dst/relay_demo/argrelay.server.yaml" \
 
         ;;
         "succeed_on_conf_match")
@@ -97,8 +95,6 @@ do
                 ":(exclude)dst/.github/dev_env_packages.txt" \
                 ":(exclude)dst/.github/argrelay.client.json" \
                 ":(exclude)dst/.github/argrelay.server.yaml" \
-                ":(exclude)dst/relay_demo/argrelay.client.json" \
-                ":(exclude)dst/relay_demo/argrelay.server.yaml" \
 
         ;;
         *)
