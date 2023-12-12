@@ -29,7 +29,7 @@ failure_color="\e[41m"
 reset_color="\e[0m"
 
 # Indicate failure by color:
-function on_exit {
+function color_failure_only {
     exit_code="${?}"
     if [[ "${exit_code}" != "0" ]]
     then
@@ -38,7 +38,7 @@ function on_exit {
     fi
 }
 
-trap on_exit EXIT
+trap color_failure_only EXIT
 
 script_name="$( basename -- "${BASH_SOURCE[0]}" )"
 # The dir of this script:
