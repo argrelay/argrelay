@@ -13,7 +13,7 @@ __pycache__/
 /dist/
 
 # Target environment config:
-/conf/
+/conf
 
 # Do not track files under drafts - they are shared across branch switching:
 /drafts/
