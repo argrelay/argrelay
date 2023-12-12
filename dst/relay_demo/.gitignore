@@ -1,0 +1,3 @@
+
+# Ignore changes to dependencies in this dir as it is used for demo:
+/dev_env_packages.txt

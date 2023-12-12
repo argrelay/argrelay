@@ -12,6 +12,6 @@ path_to_pythonX="$( which python )"
 # https://docs.python.org/3/library/venv.html
 # --prompt PROMPT Provides an alternative prompt prefix for this environment.
 # shellcheck disable=SC2034
-venv_prompt_prefix="@~github"
+venv_prompt_prefix="@~demo"
 ########################################################################################################################
 
