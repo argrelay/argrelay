@@ -40,13 +40,40 @@ function on_exit {
 
 trap on_exit EXIT
 
+script_name="$( basename -- "${BASH_SOURCE[0]}" )"
 # The dir of this script:
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
+pid_file="${argrelay_dir}/var/${script_name}.pid"
+log_file="${argrelay_dir}/var/${script_name}.log"
 
 # Use bootstrap to set `@/conf/` to `@/dst/relay_demo`:
 cd "${argrelay_dir}" || exit 1
 "${argrelay_dir}/exe/bootstrap_dev_env.bash" "dst/relay_demo"
+
+# Remove pid file which does not represent running process.
+if [[ -f "${pid_file}" ]]
+then
+    pid_value="$( cat "${pid_file}" )"
+    if [[ -d "/proc/${pid_value}" ]]
+    then
+        echo "INFO: pid [${pid_value}] has running process, leaving pid file [${pid_file}]" 1>&2
+    else
+        echo "INFO: pid [${pid_value}] does not have running process, removing pid file [${pid_file}]" 1>&2
+        rm "${pid_file}"
+    fi
+fi
+
+server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay.client.json" )"
+server_port_number="$( jq --raw-output ".connection_config.server_port_number" "${argrelay_dir}/conf/argrelay.client.json" )"
+
+set +e
+nc -z "${server_host_name}" "${server_port_number}"
+exit_code="${?}"
+set -e
+
+# TODO: set new trap to shutdown background processes:
+
 
 "${argrelay_dir}/exe/dev_shell.bash" "${@}"
