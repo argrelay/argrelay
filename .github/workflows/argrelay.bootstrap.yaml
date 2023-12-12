@@ -27,6 +27,12 @@ jobs:
 
             -   uses: actions/checkout@v4
 
-            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash"
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash existing_conf_and_no_args"
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash fail_on_conf_mismatch"
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash reset_conf"
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash succeed_on_conf_match"
 
             -   run: "echo job.status: ${{ job.status }}"

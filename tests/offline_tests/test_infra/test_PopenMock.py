@@ -71,6 +71,7 @@ dev_shell.bash
 init_shell_env.bash
 play_x_server_demo.bash
 publish_package.bash
+relay_demo.bash
 run_max_tests.bash
 """,
                     b"",
