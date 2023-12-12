@@ -65,7 +65,11 @@ do
         ;;
         "fail_on_conf_mismatch")
             # Ensure bootstrap fails with `path/to/config` mismatch if `@/conf/` is not removed:
-            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help || exit 1
+            set +e
+            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
+            exit_code="${?}"
+            set -e
+            test "${exit_code}" != "0"
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
