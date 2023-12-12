@@ -39,6 +39,9 @@ function ensure_no_uncommitted_changes_except {
     fi
 }
 
+# Bootstrap should be run from the target dir:
+cd "${argrelay_dir}" || exit 1
+
 # Run each `stage_name` provided in args
 # (see `argrelay.bootstrap.yaml` how each stage is run):
 for stage_name in "${@}"
@@ -49,13 +52,10 @@ do
             # (it is supposed to be configured locally e.g. to point somewhere under `@/dst/`):
             test ! -d "${argrelay_dir}/conf"
 
-            # Bootstrap should be run from the target dir:
-            cd "${argrelay_dir}" || exit 1
-
             # Configure `@/conf/` before running bootstrap with no args:
             ln -sn "dst/.github" "conf"
 
-            ./exe/bootstrap_dev_env.bash
+            "${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
@@ -65,7 +65,7 @@ do
         ;;
         "fail_on_conf_mismatch")
             # Ensure bootstrap fails with `path/to/config` mismatch if `@/conf/` is not removed:
-            ./exe/relay_demo.bash relay_demo help || exit 1
+            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help || exit 1
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
@@ -76,7 +76,7 @@ do
         "reset_conf")
             # Remove `@/conf/` and re-start `@/exe/relay_demo.bash` in non-interactive mode:
             rm conf
-            ./exe/relay_demo.bash relay_demo help
+            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
@@ -87,7 +87,7 @@ do
 
         ;;
         "succeed_on_conf_match")
-            ./exe/relay_demo.bash relay_demo help
+            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
