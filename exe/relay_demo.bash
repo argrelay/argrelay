@@ -74,7 +74,7 @@ nc -z "${server_host_name}" "${server_port_number}"
 exit_code="${?}"
 set -e
 
-if [[ "${exit_code}" != "0" ]]
+if [[ "${exit_code}" == "0" ]]
 then
     echo "INFO: port [${server_port_number}] is open, shut down related server manually" 1>&2
     exit 1
@@ -100,7 +100,7 @@ echo $! > "${pid_file}"
 end_time_sec="$(( $( date "+%s" ) + 30 ))"
 
 # Wait until server has opened its port:
-while ! nc -z "${server_nost_name}" "${server_port_number}"
+while ! nc -z "${server_host_name}" "${server_port_number}"
 do
     # Make sure process did not die:
     pid_value="$( cat "${pid_file}" )"
