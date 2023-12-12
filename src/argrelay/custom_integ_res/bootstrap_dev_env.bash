@@ -41,22 +41,6 @@ function on_exit {
 
 trap on_exit EXIT
 
-# Parse command line args:
-for arg_i in "${@}"
-do
-    if [[ "${arg_i}" == "recursion_flag" ]]
-    then
-        # If not set, default is empty (no recursion):
-        recursion_flag="recursion_flag"
-    fi
-    if [[ "${arg_i}" == "activate_venv_only_flag" ]]
-    then
-        # Used by `@/exe/dev_shell.bash` (by `@/exe/init_shell_env.bash`)
-        # to activate Python venv only:
-        activate_venv_only_flag="activate_venv_only_flag"
-    fi
-done
-
 # Let some code know that it runs under `@/exe/bootstrap_dev_env.bash` (e.g to run some tests conditionally):
 ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
 export ARGRELAY_BOOTSTRAP_DEV_ENV
@@ -69,7 +53,7 @@ script_name="$( basename -- "${BASH_SOURCE[0]}" )"
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # Note: In case of `bootstrap_dev_env.bash`, `argrelay_dir` is not `script_dir`, but always the current directory
 # (it is supposed to be started from the dir where project is being set up).
-# FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
+# FS_29_54_67_86 dir_structure: current dir = `@/`:
 argrelay_dir="$( dirname "." )"
 
 # There are several cases this script is called:
@@ -77,8 +61,7 @@ argrelay_dir="$( dirname "." )"
 # *   (`@/exe/dev_shell.bash`) indirectly: in that case `script_dir` is in `@/exe/` inside integration project dir
 # *   (subsequent upgrade) directly: in that case `script_dir` is in `@/exe/` inside integration project dir
 
-# Ensure it is called from project root (which should contain `@/conf/` and `@/exe/` dirs):
-test -d "${argrelay_dir}/conf/"
+# Ensure it is called from project root (which should contain `@/exe/` dir):
 test -d "${argrelay_dir}/exe/"
 
 # Bash does not allow `return` if the script is not sourced (`exit` must be used):
@@ -91,8 +74,86 @@ else
     ret_command="exit"
 fi
 
+# Collect flags from command line args:
+unused_input_args=()
+for arg_i in "${@}"
+do
+
+    if [[ "${arg_i}" == "recursion_flag" ]]
+    then
+        # If not set, default is empty (no recursion):
+        recursion_flag="recursion_flag"
+        continue
+    fi
+
+    if [[ "${arg_i}" == "activate_venv_only_flag" ]]
+    then
+        # Used by `@/exe/dev_shell.bash` (by `@/exe/init_shell_env.bash`)
+        # to activate Python venv only:
+        activate_venv_only_flag="activate_venv_only_flag"
+        continue
+    fi
+
+    unused_input_args+=( "${arg_i}" )
+done
+
 ########################################################################################################################
-# Phase 1: init Python
+# Bootstrap with `path/to/config` arg (if any) triggers this special logic:
+# *   if `@/conf/` is missing:
+#     *   set `@/conf/` symlink to the specified config dir (e.g. one of `@/dst/*`)
+#     *   continue running bootstrap
+# *   if `@/conf/` already exists:
+#     *   assume bootstrap is already completed
+#     *   ensures the target matches the one specified and does nothing (fails if not)
+#     *   skip running bootstrap
+if [[ "${#unused_input_args[@]}" -gt "0" ]]
+then
+
+    # Ensure dir exists:
+    config_path="${unused_input_args[0]}"
+    test -d "${config_path}"
+
+    if [[ -d "${argrelay_dir}/conf" ]]
+    then
+        # Ensure `@/conf/` points to the specified `config_path`
+        # (if `@/conf/` points to something else - remove it to reset manually):
+        test "${argrelay_dir}/conf" -ef "${config_path}"
+
+        # The `@/conf/` has already been init-ed before:
+        echo "INFO: \"${argrelay_dir}/conf\" with the same path exists - skip running bootstrap" 1>&2
+
+        "${ret_command}" 0
+    elif [[ ! -e "${argrelay_dir}/conf" ]]
+    then
+        # Setting symlink `@/conf/` to the selected config
+        # (convert to relative path first):
+        config_path="$( realpath --relative-to="${argrelay_dir}" "${config_path}" )"
+        ln -snf "${config_path}" "${argrelay_dir}/conf"
+
+        # Load Python config to reset its `venv`:
+        source "${argrelay_dir}/conf/python_conf.bash"
+
+        # Careful: instead of `rm -rf` (in case of misconfig), move `venv` to `/tmp/`:
+        run_timestamp="$( date -u "+%Y-%m-%dT%H-%M-%SZ" )"
+        # shellcheck disable=SC2154
+        if [[ -e "${path_to_venvX}" ]]
+        then
+            backup_dst_path="/tmp/$( basename "${path_to_venvX}" ).backup.${run_timestamp}"
+            mv "${path_to_venvX}" "${backup_dst_path}"
+        fi
+
+        # Next: continue with bootstrap...
+    else
+        echo "ERROR: \"${argrelay_dir}/conf\" exists but it does not point to dir: (re-)move it manually" 1>&2
+        "${ret_command}" 1
+    fi
+fi
+
+# Ensure `@/conf/` exists:
+test -d "${argrelay_dir}/conf/"
+
+########################################################################################################################
+# Init Python
 
 if [[ ! -f "${argrelay_dir}/conf/python_conf.bash" ]]
 then
@@ -218,7 +279,7 @@ python -m pip install --upgrade setuptools
 touch "${argrelay_dir}/conf/dev_env_packages.txt"
 
 ########################################################################################################################
-# Phase 2: deploy project
+# Deploy project dependencies
 
 if [[ ! -f "${argrelay_dir}/exe/deploy_project.bash" ]]
 then
@@ -259,7 +320,7 @@ python_module_path_EOF
 argrelay_module_dir_path="$( dirname "${argrelay_module_file_path}" )"
 
 ########################################################################################################################
-# Phase 3: recurse into fresh copy of itself
+# Recurse into fresh copy of bootstrap
 
 if [[ -z "${recursion_flag:-}" ]]
 then
@@ -387,7 +448,7 @@ python_module_path_EOF
 }
 
 ########################################################################################################################
-# Phase 4: prepare artifacts: deploy configs (conditionally copies or symlinks)
+# Prepare artifacts: deploy configs (conditionally copies or symlinks)
 
 deploy_files_conf_path="${argrelay_dir}/exe/deploy_config_files_conf.bash"
 
@@ -448,7 +509,7 @@ fi
 deploy_files_procedure "${deploy_files_conf_path}" "detect_method" "${argrelay_conf_base_dir}" "do_not_override"
 
 ########################################################################################################################
-# Phase 5: prepare artifacts: deploy resources (symlinks)
+# Prepare artifacts: deploy resources (symlinks)
 
 deploy_files_conf_path="${argrelay_dir}/exe/deploy_resource_files_conf.bash"
 
@@ -468,9 +529,9 @@ then
 # Tuples specifying resource files, format:
 # module_name relative_dir_path resource_file_name
 module_path_file_tuples=(
+    argrelay custom_integ_res argrelay_rc.bash
     argrelay custom_integ_res dev_shell.bash
     argrelay custom_integ_res init_shell_env.bash
-    argrelay custom_integ_res argrelay_rc.bash
 )
 ########################################################################################################################
 deploy_resource_files_conf_EOF
@@ -480,7 +541,7 @@ fi
 deploy_files_procedure "${deploy_files_conf_path}" "symlink_method" "${argrelay_dir}/exe/" "override_target_file"
 
 ########################################################################################################################
-# Phase 6: prepare artifacts: generate resources
+# Prepare artifacts: generate resources
 
 # Generate `@/bin/run_argrelay_server`:
 cat << PYTHON_SERVER_EOF > "${argrelay_dir}/bin/run_argrelay_server"
@@ -531,7 +592,7 @@ chmod u+x "${argrelay_dir}/bin/run_argrelay_client"
 chmod u+x "${argrelay_dir}/bin/run_argrelay_server"
 
 ########################################################################################################################
-# Phase 7: run `@/exe/dev_shell.bash`
+# Run `@/exe/dev_shell.bash`
 #
 # Some of the artifacts are created only on the first shell instance creation
 # (by running `@/exe/argrelay_rc.bash`), specifically, command symlinks to be used with `argrelay`.
@@ -540,7 +601,7 @@ chmod u+x "${argrelay_dir}/bin/run_argrelay_server"
 "${argrelay_dir}/exe/dev_shell.bash" "exit"
 
 ########################################################################################################################
-# Phase 8: build and test project
+# Build and test project
 
 if [[ ! -f "${argrelay_dir}/exe/build_project.bash" ]]
 then
@@ -570,7 +631,7 @@ fi
 source "${argrelay_dir}/exe/build_project.bash"
 
 ########################################################################################################################
-# Phase 9: capture dependencies
+# Capture dependencies
 
 # Update `@/conf/dev_env_packages.txt` to know what was there at the time of bootstrapping:
 cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
