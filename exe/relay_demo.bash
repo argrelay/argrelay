@@ -73,7 +73,10 @@ else
 fi
 
 function shutdown_jobs {
+    exit_code="${?}"
     kill "$( jobs -p )" || echo "WARN: \`kill\` failed" 1>&2 && true
+    # Restore `exit_code`:
+    ( exit "${exit_code}" )
 }
 
 function combined_on_exit_trap {
