@@ -2,16 +2,6 @@
 
 # This script configures demo client and starts demo server.
 
-# TODO:
-# *    Configure to stop background process on hup.
-# *    When inside non-interactive `dev_shell.bash`, run Python `server_control` scripts (redirect output to demo_server.log):
-#      *    Standard check: if port is open, fail.
-#      *    Standard check: if PID file is locked, fail.
-#      *    Start server.
-#      *    Standard check: ensure PID file is locked, otherwise, fail.
-#      *    Wait for open port.
-# *    When server is started, run another `dev_shell.bash` interactively.
-
 # Debug: Print commands before execution:
 set -x
 # Debug: Print commands after reading from a script:
