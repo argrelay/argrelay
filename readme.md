@@ -18,12 +18,12 @@ and structured search filter for command line interface (CLI) to any command in 
 <a name="argrelay-general-idea"></a>
 # General idea
 
-| GUI                                                                            | CLI                                        |
-|--------------------------------------------------------------------------------|--------------------------------------------|
-| :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality    | :heavy_plus_sign: quick dev option         |
-| :heavy_minus_sign: consumes APIs but hardly integrates by exposing APIs itself | :heavy_plus_sign: essential script-ability |
-| :heavy_minus_sign: limits system access (itself behind narrow API)             | :heavy_plus_sign: ultimate control         |
-| :heavy_plus_sign: intuitive data lookup                                        | :heavy_minus_sign:                         |
+| GUI                                                                         | CLI                                        |
+|-----------------------------------------------------------------------------|--------------------------------------------|
+| :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality | :heavy_plus_sign: quick dev option         |
+| :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself     | :heavy_plus_sign: essential script-ability |
+| :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control         |
+| :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                         |
 
 While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
 
