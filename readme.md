@@ -22,7 +22,7 @@ and structured search filter for command line interface (CLI) to any command in 
 |--------------------------------------------------------------------------------|--------------------------------------------|
 | :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality    | :heavy_plus_sign: quick dev option         |
 | :heavy_minus_sign: consumes APIs but hardly integrates by exposing APIs itself | :heavy_plus_sign: essential script-ability |
-| :heavy_minus_sign: limits system access                                        | :heavy_plus_sign: ultimate control         |
+| :heavy_minus_sign: limits system access (itself behind narrow API)             | :heavy_plus_sign: ultimate control         |
 | :heavy_plus_sign: intuitive data lookup                                        | :heavy_minus_sign:                         |
 
 While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
@@ -90,81 +90,56 @@ sequenceDiagram
 <a name="argrelay-demo"></a>
 # Interactive demo
 
-This is a non-intrusive demo<br/>
-(without permanent changes to user env, e.g. no `~/.bashrc` changes).
+This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
 
 Clone this repo somewhere (`@/` is [the project root][FS_29_54_67_86.dir_structure.md]).
 
-Run `@/exe/bootstrap_dev_env.bash`:
+Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the first time):
 
 ```sh
-./exe/bootstrap_dev_env.bash
+./exe/relay_demo.bash
 ```
 
-If `@/exe/bootstrap_dev_env.bash` is run for the first time,<br/>
-it will ask to provide `@/conf/python_conf.bash` file and others.<br/>
-Errors are designed to guide - please follow the instructions<br/>
-(via full debug output) or [raise an issue][repo_issues].
-
-To start both the server and the client,<br/>
-two terminal windows are required.
-
-*   Server:
-
-    Start the first sub-shell:
-
-    ```sh
-    ./exe/dev_shell.bash
-    ```
-
-    In this sub-shell, start the server:
-
-    ```sh
-    # in server `@/exe/dev_shell.bash`:
-    ./bin/run_argrelay_server
-    ```
-
-*   Client:
-
-    Start the second sub-shell:
-
-    ```sh
-    ./exe/dev_shell.bash
-    ```
-
-    While it is running (temporarily),<br/>
-    this sub-shell is configured for Bash Tab-completion for `relay_demo` command.
+This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. for Tab-auto-completion):
 
 *   Try to `Tab`-complete command `relay_demo` using [demo test data][TD_63_37_05_36.demo_services_data.md]:
 
     ```sh
-    # in client `@/exe/dev_shell.bash`:
-    relay_demo goto host            # press Tab one or multiple times
+    relay_demo goto                 # press `Alt+Shift+Q` to describe current command line args and available options
     ```
 
     ```sh
-    # in client `@/exe/dev_shell.bash`:
-    relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
+    relay_demo goto host            # press `Tab` one or multiple times
     ```
 
-*   Inspect how auto-completion binds to `relay_demo` command:
+    ```sh
+    relay_demo goto host dev        # press Alt+Shift+Q to observe changes in the output
+    ```
+
+*   To clean up, exit the sub-shells:
 
     ```sh
-    # in client `@/exe/dev_shell.bash`:
+    exit
+    ```
+
+# Behind the demo
+
+*   Inspect how `relay_demo` command binds to `argrelay` (from `@/exe/relay_demo.bash`):
+
+    ```sh
     complete -p relay_demo
+    ```
+
+*   See `@/logs/relay_demo.bash.log` of the background server:
+
+    ```sh
+    less ./logs/relay_demo.bash.log
     ```
 
 *   Inspect client and server config:
 
     *   server config: `@/conf/argrelay.server.yaml`
     *   client config: `@/conf/argrelay.client.json`
-
-*   To clean up, exit the sub-shells:
-
-    ```sh
-    # in client or server `@/exe/dev_shell.bash`:
-    exit
-    ```
 
 <a name="argrelay-includes"></a>
 # What is in the package?
