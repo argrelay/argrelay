@@ -117,7 +117,7 @@ then
     then
         # Ensure `@/conf/` points to the specified `config_path`
         # (if `@/conf/` points to something else - remove it to reset manually):
-        readlink "${argrelay_dir}/conf" || true
+        readlink "${argrelay_dir}/conf" || echo "WARN: \`readlink\` failed" 1>&2 && true
         test "${argrelay_dir}/conf" -ef "${config_path}"
 
         # The `@/conf/` has already been init-ed before:

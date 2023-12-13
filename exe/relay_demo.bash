@@ -73,7 +73,7 @@ else
 fi
 
 function shutdown_jobs {
-    kill "$( jobs -p )" || true
+    kill "$( jobs -p )" || echo "WARN: \`kill\` failed" 1>&2 && true
 }
 
 function combined_on_exit_trap {
