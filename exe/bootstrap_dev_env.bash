@@ -154,7 +154,7 @@ fi
 test -d "${argrelay_dir}/conf/"
 
 ########################################################################################################################
-# Init Python
+# Init Python.
 
 if [[ ! -f "${argrelay_dir}/conf/python_conf.bash" ]]
 then
@@ -280,7 +280,7 @@ python -m pip install --upgrade setuptools
 touch "${argrelay_dir}/conf/dev_env_packages.txt"
 
 ########################################################################################################################
-# Deploy project dependencies
+# Deploy project dependencies.
 
 if [[ ! -f "${argrelay_dir}/exe/deploy_project.bash" ]]
 then
@@ -321,7 +321,7 @@ python_module_path_EOF
 argrelay_module_dir_path="$( dirname "${argrelay_module_file_path}" )"
 
 ########################################################################################################################
-# Recurse into fresh copy of bootstrap
+# Recurse into fresh copy of bootstrap.
 
 if [[ -z "${recursion_flag:-}" ]]
 then
@@ -334,7 +334,7 @@ then
 fi
 
 ########################################################################################################################
-# Common deployment functions
+# Define common deployment functions.
 
 function detect_file_deployment_command {
     # This func is used for the editable install mode cases.
@@ -449,7 +449,7 @@ python_module_path_EOF
 }
 
 ########################################################################################################################
-# Prepare artifacts: deploy configs (conditionally copies or symlinks)
+# Prepare artifacts: deploy configs (conditionally copies or symlinks).
 
 deploy_files_conf_path="${argrelay_dir}/exe/deploy_config_files_conf.bash"
 
@@ -510,7 +510,7 @@ fi
 deploy_files_procedure "${deploy_files_conf_path}" "detect_method" "${argrelay_conf_base_dir}" "do_not_override"
 
 ########################################################################################################################
-# Prepare artifacts: deploy resources (symlinks)
+# Prepare artifacts: deploy resources (symlinks).
 
 deploy_files_conf_path="${argrelay_dir}/exe/deploy_resource_files_conf.bash"
 
@@ -542,7 +542,7 @@ fi
 deploy_files_procedure "${deploy_files_conf_path}" "symlink_method" "${argrelay_dir}/exe/" "override_target_file"
 
 ########################################################################################################################
-# Prepare artifacts: generate resources
+# Prepare artifacts: generate resources.
 
 # Generate `@/bin/run_argrelay_server`:
 cat << PYTHON_SERVER_EOF > "${argrelay_dir}/bin/run_argrelay_server"
@@ -593,16 +593,74 @@ chmod u+x "${argrelay_dir}/bin/run_argrelay_client"
 chmod u+x "${argrelay_dir}/bin/run_argrelay_server"
 
 ########################################################################################################################
-# Run `@/exe/dev_shell.bash`
-#
-# Some of the artifacts are created only on the first shell instance creation
-# (by running `@/exe/argrelay_rc.bash`), specifically, command symlinks to be used with `argrelay`.
-# Make sure it is configured and works:
+# Generate source-able Bash config file and generate symlinks for command to be used with `argrelay`.
+
+if [[ ! -f "${argrelay_dir}/conf/argrelay_rc_conf.bash" ]]
+then
+    echo "ERROR: \`${argrelay_dir}/conf/argrelay_rc_conf.bash\` does not exists" 1>&2
+    echo "It is required to know which command names will have \`argrelay\` auto-completion." 1>&2
+    echo "Provide \`${argrelay_dir}/conf/argrelay_rc_conf.bash\`, for example (copy and paste and modify):" 1>&2
+    echo "" 1>&2
+    cat << 'argelay_rc_conf_EOF'
+########################################################################################################################
+# `argrelay` integration file: https://github.com/argrelay/argrelay
+# This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
+
+# Bash array of command names (names of symlinks to `@/bin/run_argrelay_client`):
+# shellcheck disable=SC2034
+argrelay_bind_command_basenames=(
+    relay_demo
+    some_command
+    service_relay_demo
+)
+########################################################################################################################
+argelay_rc_conf_EOF
+    return 1
+fi
+
+# Load user config for env vars:
+# *   argrelay_bind_command_basenames
+source "${argrelay_dir}/conf/argrelay_rc_conf.bash"
+
+# shellcheck disable=SC2154
+if [[ "${#argrelay_bind_command_basenames[@]}" -lt 1 ]]
+then
+    # At least one command should be listed in `argrelay_bind_command_basenames`:
+    return 1
+fi
+
+for argrelay_command_basename in "${argrelay_bind_command_basenames[@]}"
+do
+    # When symlinked `${argrelay_command_basename}` is executed,
+    # its name is sent as the first arg (args[0])
+    # which `argrelay` framework can use to look up and run any custom command line interpreter.
+
+    symlink_path="${argrelay_dir}/bin/${argrelay_command_basename}"
+
+    # Symlink `@/bin/${argrelay_command_basename}` command to `@/bin/run_argrelay_client`:
+    if [[ -L "${symlink_path}" ]]
+    then
+        if [[ "$( readlink "${symlink_path}" )" != "run_argrelay_client" ]]
+        then
+            echo "WARN: symlink does not point to \`run_argrelay_client\`: ${symlink_path}"
+        fi
+    else
+        if [[ -e "${symlink_path}" ]]
+        then
+            echo "WARN: symlink creation is obstructed by the existing path: ${symlink_path}"
+        else
+            ln -sn run_argrelay_client "${symlink_path}"
+        fi
+    fi
+done
+
+########################################################################################################################
+# Ensure (non-interactive) `@/exe/dev_shell.bash` starts and exits.
 
 "${argrelay_dir}/exe/dev_shell.bash" "exit"
 
 ########################################################################################################################
-# Build and test project
+# Build and test project.
 
 if [[ ! -f "${argrelay_dir}/exe/build_project.bash" ]]
 then
@@ -632,7 +690,7 @@ fi
 source "${argrelay_dir}/exe/build_project.bash"
 
 ########################################################################################################################
-# Capture dependencies
+# Capture dependencies.
 
 # Update `@/conf/dev_env_packages.txt` to know what was there at the time of bootstrapping:
 cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
