@@ -1,0 +1,44 @@
+name: argrelay.bootstrap.yaml
+run-name: "${{ github.workflow }}: ${{ github.actor }}: ${{ github.event_name }}: ${{ github.ref_name }}: ${{ github.ref_type }}"
+on:
+    push:
+        branches:
+        -   "*"
+    schedule:
+        # Keep running periodically to detect issues with newly released dependencies:
+        # Every day at 18:00 SGT:
+        -   cron: "0 10 * * *"
+jobs:
+    bootstrap_scenarios:
+        runs-on: ubuntu-latest
+
+        strategy:
+            # When one of the job fails, this prevents canceling another job (for another Python version):
+            fail-fast: false
+            matrix:
+                python-version:
+                    -   3.7
+                    -   3.12
+        steps:
+            -   run: "echo runner.os: ${{ runner.os }}"
+            -   run: "echo github.repository: ${{ github.repository }}"
+            -   run: "echo github.ref: ${{ github.ref }}"
+
+            -   name: "matrix.python-version: ${{ matrix.python-version }}"
+                uses: actions/setup-python@v4
+                with:
+                    python-version: ${{ matrix.python-version }}
+
+            -   run: "python -c \"import sys; print(sys.version);\""
+
+            -   uses: actions/checkout@v4
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash existing_conf_and_no_args"
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash fail_on_conf_mismatch"
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash reset_conf"
+
+            -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash succeed_on_conf_match"
+
+            -   run: "echo job.status: ${{ job.status }}"

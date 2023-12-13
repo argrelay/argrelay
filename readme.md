@@ -1,5 +1,6 @@
 
-Project status: dogfooding a working prototype
+[![PyPI package](https://badge.fury.io/py/argrelay.svg)](https://badge.fury.io/py/argrelay)
+[![GitHub build](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml/badge.svg?branch=main)](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml)
 
 <a name="argrelay-secreencast"></a>
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
@@ -11,25 +12,40 @@ See: docs/dev_notes/screencast_notes.md
 <a name="argrelay-about"></a>
 # What's this?
 
-An integration framework to provide contextual Tab-auto-completion<br/>
-via structural search for command line interfaces (CLI) in Bash shell.
+A integration framework to provide contextual Tab-auto-completion<br/>
+and structured search filter for command line interface (CLI) to any command in Bash shell.
+
+<a name="argrelay-general-idea"></a>
+# General idea
+
+| GUI                                                                         | CLI                                        |
+|-----------------------------------------------------------------------------|--------------------------------------------|
+| :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality | :heavy_plus_sign: quick dev option         |
+| :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself     | :heavy_plus_sign: essential script-ability |
+| :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control         |
+| :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                         |
+
+While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
 
 <a name="argrelay-original-use-case"></a>
-### Original use case
+# Original use case
 
-Auto-complete based on arbitrary structured data sets (e.g. config or ref data)<br/>
-**directly from standard shell**.
+Auto-complete based on arbitrary data sets (e.g. config or ref data)<br/>
+**directly from standard shell** to run infra commands.
 
-This requires data indexing for [responsive lookup][completion_perf_notes.md]<br/>
-(the client has to start and find relevant data on each Tab-request).
+Flexible and [responsive lookup][completion_perf_notes.md] requires data indexing<br/>
+(e.g. the client has to start and query relevant data on each Tab-request).
 
-The straightforward approach to meet performance requirements taken by `argrelay` is<br/>
-to run a standby data server filled with data (instead of filling this data into each client).
+<a name="argrelay-client-server"></a>
+# Straightforward split: client & server
+
+The performance is achieved by running a standby server pre-loaded with data<br/>
+(instead of loading this data into each client).
 > For example, with several thousands of data entries,<br/>
 > even if someone could generate Bash completion config,<br/>
 > it would take considerable time to load it for every shell instance.
 
-Unlike static|generated|offline index, standby server also naturally supports dynamic data updates.
+Unlike static|generated|offline index per client, standby server also naturally supports dynamic data updates.
 
 <!--
 <a name="argrelay-accidental-use-case"></a>
@@ -44,82 +60,80 @@ Familiar terminal with:
 <a name="argrelay-name"></a>
 # What's in a name?
 
-Eventually, `argrelay` will "relay" command line arguments (hence, the name)<br/>
-with associated data to user domain-specific program.
+CLI for any program is wrapped by `argrelay` interaction.
 
-For example, in all these cases entire command line is "relayed" to the server first as part of the request:
+Eventually, `argrelay` will "relay" command line args around (hence, the name) with associated data:
 
-| On keys           | Server maps CLI args, queries data, and:       | Client receives server response and:      |
-|-------------------|:-----------------------------------------------|:------------------------------------------|
-| **`Alt+Shift+Q`** | explains missing input in response             | displays command completion status        |
-| **`Tab`**         | provides options for missing input in response | lists options to Bash for auto-completion |
-| **`Enter`**       | responds with the data to invoke a command     | executes the command                      |
+```mermaid
+sequenceDiagram
+    participant C as client
+    participant S as server
+    participant P as external user program
+    C ->> S: relay args
+    activate C
+    activate S
+    S ->> C: relay enriched details
+    deactivate S
+    C ->> P: relay everything
+    deactivate C
+```
+
+<a name="argrelay-request-hotkeys"></a>
+# Request hotkeys
+
+|                   | Server maps CLI args, queries data, and: | Client receives server response and:        |
+|-------------------|:-----------------------------------------|:--------------------------------------------|
+| **`Alt+Shift+Q`** | explains given and missing input         | displays command completion status          |
+| **`Tab`**         | suggests options for missing input       | lists options to Bash for auto-completion   |
+| **`Enter`**       | provides data to invoke a command        | executes the command (via delegator plugin) |
 
 <a name="argrelay-demo"></a>
 # Interactive demo
 
-This is a non-intrusive demo<br/>
-(without permanent changes to user env, e.g. no `~/.bashrc` changes).
+This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
 
 Clone this repo somewhere (`@/` is [the project root][FS_29_54_67_86.dir_structure.md]).
 
-Run `@/exe/bootstrap_dev_env.bash`:
+Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the first time):
 
 ```sh
-./exe/bootstrap_dev_env.bash
+./exe/relay_demo.bash
 ```
 
-If `@/exe/bootstrap_dev_env.bash` is run for the first time,<br/>
-it will ask to provide `@/conf/python_conf.bash` file and others.<br/>
-Errors are designed to guide - please follow the instructions<br/>
-(via full debug output) or [raise an issue][repo_issues].
-
-To start both the server and the client,<br/>
-two terminal windows are required.
-
-*   Server:
-
-    Start the first sub-shell:
-
-    ```sh
-    ./exe/dev_shell.bash
-    ```
-
-    In this sub-shell, start the server:
-
-    ```sh
-    # in server `@/exe/dev_shell.bash`:
-    ./bin/run_argrelay_server
-    ```
-
-*   Client:
-
-    Start the second sub-shell:
-
-    ```sh
-    ./exe/dev_shell.bash
-    ```
-
-    While it is running (temporarily),<br/>
-    this sub-shell is configured for Bash Tab-completion for `relay_demo` command.
+This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. for Tab-auto-completion):
 
 *   Try to `Tab`-complete command `relay_demo` using [demo test data][TD_63_37_05_36.demo_services_data.md]:
 
     ```sh
-    # in client `@/exe/dev_shell.bash`:
-    relay_demo goto host            # press Tab one or multiple times
+    relay_demo goto                 # press `Alt+Shift+Q` to describe current command line args and available options
     ```
 
     ```sh
-    # in client `@/exe/dev_shell.bash`:
-    relay_demo goto host dev        # press Alt+Shift+Q shortcut to describe command line args
+    relay_demo goto host            # press `Tab` one or multiple times
     ```
 
-*   Inspect how auto-completion binds to `relay_demo` command:
+    ```sh
+    relay_demo goto host dev        # press Alt+Shift+Q to observe changes in the output
+    ```
+
+*   To clean up, exit the sub-shells:
 
     ```sh
-    # in client `@/exe/dev_shell.bash`:
+    exit
+    ```
+
+# Behind the demo
+
+*   Inspect how `relay_demo` command binds to `argrelay` (from `@/exe/relay_demo.bash`):
+
+    ```sh
     complete -p relay_demo
+    ```
+
+*   See `@/logs/relay_demo.bash.log` of the background server:
+
+    ```sh
+    less ./logs/relay_demo.bash.log
     ```
 
 *   Inspect client and server config:
@@ -127,17 +141,25 @@ two terminal windows are required.
     *   server config: `@/conf/argrelay.server.yaml`
     *   client config: `@/conf/argrelay.client.json`
 
-*   To clean up, exit the sub-shells:
+*   To reset the demo:
 
     ```sh
-    # in client or server `@/exe/dev_shell.bash`:
-    exit
+    rm conf
     ```
 
-<a name="argrelay-excludes"></a>
-# What's in the package?
+    Script `@/exe/relay_demo.bash` relies on `@/conf/` being a symlink specifically to `@/dst/relay_demo`:
 
-`argrelay` includes:
+    *   If `@/conf/` is absent, it creates the symlink with that destination.
+
+        This is where it re-inits everything (e.g. create new Python `venv`, installs dependencies, etc.).
+
+    *   If `@/conf/` is present and destination matches, it quickly starts the shell.
+
+    *   If `@/conf/` is present and destination mismatches, it quickly fails.
+
+<a name="argrelay-includes"></a>
+# What is in the package?
+
 *   **Client** to be invoked by Bash hook on every Tab to<br/>
     send command line arguments to the server.
 *   **Server** to parse command line and propose values from<br/>
@@ -167,7 +189,7 @@ For example, in GUI-s, typing a query into a search bar may easily be accompanie
 (3) full-text-search results<br/>
 (4) populated **async-ly** with typing.<br/>
 
-In CLI-s, `grep` does (3) full-text-search, but what about the rest (1), (2), (4)?
+In CLI-s, `grep` does (3) full-text-search, but slow and what about the rest (1), (2), (4)?
 
 To facilitate selection of results,<br/>
 catalogue-like navigation via structured search (rather than full-text-search) with auto-completion<br/>
@@ -176,7 +198,9 @@ seems the answer.
 
 Nevertheless, GUI can also benefit from minimalist single line structured search queries.
 
+<!-- TODO: update the doc first before publishing its link
 Learn more about [how search works][how_search_works.md].
+-->
 
 <a name="argrelay-backend"></a>
 # Data backend

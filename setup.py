@@ -117,10 +117,17 @@ See: https://github.com/argrelay/argrelay
     include_package_data = True,
     python_requires = ">=3.7",
     install_requires = [
+
         # Use Flask 2.2.3 to avoid this error:
         # ImportError: cannot import name 'JSONEncoder' from 'flask.json'
         # https://stackoverflow.com/a/76116905/441652
         "Flask==2.2.3",
+
+        # Use Werkzeug < 3.0.0 to avoid this error:
+        # ImportError: cannot import name 'url_quote' from 'werkzeug.urls'
+        # https://stackoverflow.com/a/77214086
+        "Werkzeug<3.0",
+
         "PyYaml",
         "jsonschema",
         "flasgger",

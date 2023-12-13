@@ -12,11 +12,13 @@ __pycache__/
 /build/
 /dist/
 
-# Target environment config:
-/conf/
+# Target environment config
+# (no trailing slash `/` because it can be a symlink):
+/conf
 
 # Do not track files under drafts - they are shared across branch switching:
 /drafts/
 
 # Temporary files - generated or (not super-costly) recoverable.
 /temp/
+

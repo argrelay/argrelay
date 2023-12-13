@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# TODO: draft:
+# FS_36_17_84_44: check script: TODO: draft: common library
 exit 0
 
 # This script is supposed to be sourced by others, not run directly:

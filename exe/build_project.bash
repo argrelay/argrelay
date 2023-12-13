@@ -6,7 +6,20 @@
 
 # Normally, the build scripts like this for integration project should build it and test it.
 
-# It is fine to run tox on every start of FS_58_61_77_69 `dev_shell` because it is only used by `argrelay` devs:
-# Build and test:
-python -m tox
+# Not running `tox` as it expects all Python versions present
+# within the environment while CI environments may have only one of
+# the Python versions per runner (each runner runs with its own
+# Python version, not all) and we are not selecting them
+# for `tox` conditionally.
+# Instead, run some selected tests which do not need extra dependencies
+# (e.g. do not run `gui_tests`):
+# TODO_04_84_79_11: Re-group tests to exclude truly online (going to Internet, but do not exclude end to end, for example):
+for test_group in \
+offline_tests \
+release_tests \
+slow_tests
+do
+    ./exe/dev_shell.bash ./exe/run_max_tests.bash ./tests/"${test_group}"
+done
+
 ########################################################################################################################

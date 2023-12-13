@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# TODO: draft:
+# FS_36_17_84_44: check script: TODO: draft:
 exit 0
 
 # This script shows details about online servers
