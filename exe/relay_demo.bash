@@ -56,6 +56,7 @@ then
     fi
 fi
 
+# NOTE: `server_host_name` is supposed to be local for this script to make sense:
 server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay.client.json" )"
 server_port_number="$( jq --raw-output ".connection_config.server_port_number" "${argrelay_dir}/conf/argrelay.client.json" )"
 
@@ -66,10 +67,10 @@ set -e
 
 if [[ "${exit_code}" == "0" ]]
 then
-    echo "INFO: port [${server_port_number}] is open, shut down related server manually" 1>&2
+    echo "INFO: port [${server_host_name}:${server_port_number}] is open, shut down related server manually" 1>&2
     exit 1
 else
-    echo "INFO: port [${server_port_number}] is closed, starting server" 1>&2
+    echo "INFO: port [${server_host_name}:${server_port_number}] is closed, starting server" 1>&2
 fi
 
 function shutdown_jobs {
@@ -110,7 +111,7 @@ do
     fi
 
     echo "INFO: waiting for open port [${server_host_name}:${server_port_number}]"
-    sleep 5
+    sleep 1
 done
 
 echo "INFO:port [${server_host_name}:${server_port_number}] is open now" 1>&2
