@@ -52,7 +52,7 @@ do
             # (it is supposed to be configured locally e.g. to point somewhere under `@/dst/`):
             test ! -d "${argrelay_dir}/conf"
 
-            # Configure `@/conf/` before running bootstrap with no args:
+            # Configure `@/conf/` (make it existing) before running bootstrap with no args:
             ln -sn "dst/.github" "conf"
 
             "${argrelay_dir}/exe/bootstrap_dev_env.bash"
@@ -64,7 +64,7 @@ do
 
         ;;
         "fail_on_conf_mismatch")
-            # Ensure bootstrap fails with `path/to/config` mismatch if `@/conf/` is not removed:
+            # Ensure bootstrap fails with `path/to/config` mismatch when `@/conf/` already exits:
             set +e
             "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
             exit_code="${?}"
@@ -89,7 +89,8 @@ do
 
         ;;
         "succeed_on_conf_match")
-            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
+            # Run with the same `@/conf/` left by `reset_conf`:
+            "${argrelay_dir}/exe/relay_demo.bash" relay_demo list service aaa
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
