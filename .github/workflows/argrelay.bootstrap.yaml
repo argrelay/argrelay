@@ -1,14 +1,15 @@
 name: argrelay.bootstrap.yaml
-run-name: "${{ github.workflow }}: ${{ github.actor }}: ${{ github.event_name }}: ${{ github.ref_name }}: ${{ github.ref_type }}: ${{ github.sha }}"
+run-name: "${{ github.workflow }}: ${{ github.actor }}: ${{ github.event_name }}: ${{ github.ref_name }}: ${{ github.ref_type }}"
 on:
     push:
         branches:
         -   "*"
     schedule:
         # Keep running periodically to detect issues with newly released dependencies:
-        -   cron: "0 * * * *"
+        # Every day at 18:00 SGT:
+        -   cron: "0 10 * * *"
 jobs:
-    Explore-GitHub-Actions:
+    bootstrap_scenarios:
         runs-on: ubuntu-latest
 
         strategy:
