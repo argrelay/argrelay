@@ -141,6 +141,22 @@ This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. 
     *   server config: `@/conf/argrelay.server.yaml`
     *   client config: `@/conf/argrelay.client.json`
 
+*   To reset the demo:
+
+    ```sh
+    rm conf
+    ```
+
+    Script `@/exe/relay_demo.bash` relies on `@/conf/` being a symlink specifically to `@/dst/relay_demo`:
+
+    *   If `@/conf/` is absent, it creates the symlink with that destination.
+
+        This is where it re-inits everything (e.g. create new Python `venv`, installs dependencies, etc.).
+
+    *   If `@/conf/` is present and destination matches, it quickly starts the shell.
+
+    *   If `@/conf/` is present and destination mismatches, it quickly fails.
+
 <a name="argrelay-includes"></a>
 # What is in the package?
 
