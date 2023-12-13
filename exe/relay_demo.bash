@@ -36,7 +36,7 @@ script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
 pid_file="${argrelay_dir}/var/${script_name}.pid"
-log_file="${argrelay_dir}/var/${script_name}.log"
+log_file="${argrelay_dir}/logs/${script_name}.log"
 
 # Use bootstrap to set `@/conf/` to `@/dst/relay_demo`:
 cd "${argrelay_dir}" || exit 1
