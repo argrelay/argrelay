@@ -58,6 +58,7 @@ class ThisTestClass(LocalTestClass):
                 "some_command |",
                 CompType.PrefixShown,
                 [
+                    "enum",
                     "help",
                     "intercept",
                     "subtree",
@@ -68,6 +69,7 @@ class ThisTestClass(LocalTestClass):
                     # TODO_77_12_50_80: Fix duplicates:
                     "subtree",
                     # TODO_77_12_50_80: Fix duplicates:
+                    "enum",
                     "help",
                     # TODO_77_12_50_80: Fix duplicates:
                     "intercept",

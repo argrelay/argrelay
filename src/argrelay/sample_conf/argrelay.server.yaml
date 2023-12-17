@@ -66,11 +66,16 @@ server_plugin_control:
                     -   relay_demo
                 help:
                     -   relay_demo
+                enum:
+                    -   relay_demo
                 subtree:
                     intercept:
                         -   relay_demo
                         -   subtree
                     help:
+                        -   relay_demo
+                        -   subtree
+                    enum:
                         -   relay_demo
                         -   subtree
             some_command:
@@ -78,11 +83,16 @@ server_plugin_control:
                     -   some_command
                 help:
                     -   some_command
+                enum:
+                    -   some_command
                 subtree:
                     intercept:
                         -   some_command
                         -   subtree
                     help:
+                        -   some_command
+                        -   subtree
+                    enum:
                         -   some_command
                         -   subtree
             service_relay_demo:
@@ -92,6 +102,7 @@ server_plugin_control:
         interp_sub_tree: &interp_sub_tree
             intercept: JumpTreeInterpFactory.intercept_invocation_func
             help: JumpTreeInterpFactory.help_hint_func
+            enum: JumpTreeInterpFactory.query_enum_items_func
             "": FuncTreeInterpFactory
 
         all_direct_delegators: &all_direct_delegators
@@ -123,6 +134,7 @@ plugin_instance_entries:
         plugin_dependencies:
             -   JumpTreeInterpFactory.intercept_invocation_func
             -   JumpTreeInterpFactory.help_hint_func
+            -   JumpTreeInterpFactory.query_enum_items_func
             -   FuncTreeInterpFactory
         plugin_config:
             interp_selector_tree:
@@ -162,6 +174,17 @@ plugin_instance_entries:
             func_selector_tree: help_hint_func
             delegator_plugin_ids:
                 -   HelpDelegator
+
+    JumpTreeInterpFactory.query_enum_items_func:
+        plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
+        plugin_class_name: JumpTreeInterpFactory
+        plugin_dependencies:
+            -   QueryEnumDelegator
+        plugin_config:
+            jump_tree: *jump_tree
+            func_selector_tree: query_enum_items_func
+            delegator_plugin_ids:
+                -   QueryEnumDelegator
 
     FuncTreeInterpFactory:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
@@ -261,6 +284,15 @@ plugin_instance_entries:
     HelpDelegator:
         plugin_module_name: argrelay.plugin_delegator.HelpDelegator
         plugin_class_name: HelpDelegator
+        plugin_dependencies:
+            -   FuncTreeInterpFactory
+        plugin_config:
+            # TODO_10_72_28_05: support special funcs for all commands: it should be tree-aware:
+            next_interp_plugin_instance_id: InterpTreeInterpFactory
+
+    QueryEnumDelegator:
+        plugin_module_name: argrelay.plugin_delegator.QueryEnumDelegator
+        plugin_class_name: QueryEnumDelegator
         plugin_dependencies:
             -   FuncTreeInterpFactory
         plugin_config:
