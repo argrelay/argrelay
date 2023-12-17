@@ -113,7 +113,7 @@ class HelpDelegator(InterceptDelegator):
                         continue
                     print(f"{data_envelope[prop_name]}", end = " ")
 
-                # TODO: FS_80_45_89_81 (query_enum_items): perform color control only if the output is a terminal:
+                # TODO: FS_02_25_41_81 (query_enum_items_func): perform color control only if the output is a terminal:
 
                 print(TermColor.known_envelope_id.value, end = "")
                 print("#", end = " ")

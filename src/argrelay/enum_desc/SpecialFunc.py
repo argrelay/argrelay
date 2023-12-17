@@ -20,3 +20,8 @@ class SpecialFunc(Enum):
     """
     Implements FS_43_50_57_71 `echo_args` func.
     """
+
+    query_enum_items_func = auto()
+    """
+    Implements FS_02_25_41_81 `query_enum_items_func`.
+    """

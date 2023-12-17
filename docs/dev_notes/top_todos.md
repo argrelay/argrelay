@@ -28,10 +28,6 @@ Top:
     *   Verify them in tests.
     FINALIZE
 
-*   In describe, show other arg value options when default value is applied.
-    Tracked via FS_72_53_55_13.show_non_default_options.md
-    CLOSED
-
 *   Meta function: list all objects of specified query.
     See also: FS_80_45_89_81 / list_envelope
     REGISTER

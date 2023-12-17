@@ -42,6 +42,7 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(), "some_command |", CompType.PrefixHidden,
                 [
+                    "enum",
                     "help",
                     "intercept",
                     "subtree",
@@ -52,6 +53,7 @@ class ThisTestClass(LocalTestClass):
                     # TODO_77_12_50_80: Avoid duplicates:
                     "subtree",
                     # TODO_77_12_50_80: Avoid duplicates:
+                    "enum",
                     "help",
                     # TODO_77_12_50_80: Avoid duplicates:
                     "intercept",
@@ -357,10 +359,10 @@ class ThisTestClass(LocalTestClass):
                 "FS_41_40_39_44: TODO: suggest from interp tree.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}22{TermColor.reset_style.value}
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}24{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} desc echo goto list subtree help intercept 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit host service repo desc echo goto list help intercept 
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} desc echo goto list subtree enum help intercept 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit host service repo desc echo goto list enum help intercept 
 """,
             ),
             (
