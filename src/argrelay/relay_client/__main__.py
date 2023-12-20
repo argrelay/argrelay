@@ -1,5 +1,6 @@
 # Keep minimal import on start:
 import os
+import sys
 import time
 from random import randrange
 
@@ -16,8 +17,6 @@ ElapsedTime.measure("after_program_entry")
 
 
 def main():
-    # Initial imports - see `completion_perf_notes.md`.
-    import sys
     ElapsedTime.measure("after_initial_imports")
 
     file_path = get_config_path("argrelay.client.json")
@@ -28,39 +27,11 @@ def main():
     shell_ctx.print_debug()
     call_ctx = shell_ctx.create_call_context()
 
-    if (
-        client_config.show_pending_spinner
-        and
-        shell_ctx.comp_type is not CompType.InvokeAction
+    if not is_requestor(
+        client_config,
+        shell_ctx,
     ):
-        if shell_ctx.comp_type is CompType.DescribeArgs:
-            # TODO: reference FS for indicator:
-            # Create pipe for future child stdout:
-            r_child_out, w_child_out = os.pipe()
-        else:
-            # TODO: reference FS for indicator:
-            # Only `CompType.DescribeArgs` requires special pipe to hold child stdout:
-            r_child_out, w_child_out = (None, None)
-
-        child_pid: int = os.fork()
-        if child_pid == 0:
-            if shell_ctx.comp_type is CompType.DescribeArgs:
-                os.close(r_child_out)
-                # TODO: reference FS for indicator:
-                # In case of `CompType.DescribeArgs` child writes to the pipe:
-                sys.stdout = os.fdopen(w_child_out, "w")
-            # Child performs request:
-            pass
-        else:
-            if shell_ctx.comp_type is CompType.DescribeArgs:
-                # In case of `CompType.DescribeArgs` parent reads from the pipe:
-                os.close(w_child_out)
-                child_stdout = os.fdopen(r_child_out)
-            else:
-                child_stdout = None
-            # Parent spins:
-            spin_while_waiting(child_pid, child_stdout)
-            return
+        return
 
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
@@ -99,6 +70,48 @@ def main():
         ElapsedTime.print_all()
 
     return command_obj
+
+
+def is_requestor(
+    client_config: ClientConfig,
+    shell_ctx: ShellContext,
+) -> bool:
+    """
+    Implements FS_14_59_14_06 pending requests.
+
+    It returns true if the process is a requestor (the one who sends requests to the server).
+    """
+
+    if (
+        client_config.show_pending_spinner
+        and
+        shell_ctx.comp_type is not CompType.InvokeAction
+    ):
+        if shell_ctx.comp_type is CompType.DescribeArgs:
+            # FS_14_59_14_06 pending requests: create pipe for child to write results to its stdout:
+            r_child_out, w_child_out = os.pipe()
+        else:
+            # FS_14_59_14_06 pending requests: Only `CompType.DescribeArgs` requires special pipe to hold child stdout:
+            r_child_out, w_child_out = (None, None)
+
+        child_pid: int = os.fork()
+        if child_pid == 0:
+            if shell_ctx.comp_type is CompType.DescribeArgs:
+                os.close(r_child_out)
+                # FS_14_59_14_06 pending requests: in case of `CompType.DescribeArgs` child writes to the pipe:
+                sys.stdout = os.fdopen(w_child_out, "w")
+            # Child performs request:
+            return True
+        else:
+            if shell_ctx.comp_type is CompType.DescribeArgs:
+                # FS_14_59_14_06 pending requests: in case of `CompType.DescribeArgs` parent reads from the pipe:
+                os.close(w_child_out)
+                child_stdout = os.fdopen(r_child_out)
+            else:
+                child_stdout = None
+            # Parent spins:
+            spin_while_waiting(child_pid, child_stdout)
+            return False
 
 
 def generate_pending_cursor():
