@@ -43,6 +43,7 @@ from argrelay.schema_config_core_client.ClientConfigSchema import (
     use_local_requests_,
     client_config_desc,
     optimize_completion_request_,
+    show_pending_spinner_,
 )
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
 from argrelay.schema_config_core_server.MongoServerConfigSchema import start_server_
@@ -122,6 +123,7 @@ class EnvMockBuilder:
     mock_client_config_file_read: bool = field(default = False)
     is_client_config_with_local_server: bool = field(default = True)
     is_client_config_to_optimize_completion_request: bool = field(default = None)
+    show_pending_spinner: Union[bool, None] = field(default = False)
 
     server_config_dict: Union[dict, None] = field(default_factory = lambda: None)
     mock_server_config_file_read: bool = field(default = False)
@@ -169,6 +171,9 @@ class EnvMockBuilder:
     def __post_init__(self):
         self.was_server_started_on_build = False
 
+    ####################################################################################################################
+    # client input
+
     def set_command_line(self, command_line: str):
         """
         Used as input for `RunMode.CompletionMode` because `COMP_LINE` is env var what Bash sets
@@ -202,6 +207,9 @@ class EnvMockBuilder:
         self._mock_client_input = given_val
         return self
 
+    ####################################################################################################################
+    # client config
+
     def set_client_config_dict(
         self,
         client_config: Union[dict, None] = None,
@@ -225,6 +233,16 @@ class EnvMockBuilder:
     def set_client_config_to_optimize_completion_request(self, given_val: Union[bool, None]):
         self.is_client_config_to_optimize_completion_request = given_val
         return self
+
+    def set_show_pending_spinner(
+        self,
+        given_val: Union[bool, None],
+    ):
+        self.show_pending_spinner = given_val
+        return self
+
+    ####################################################################################################################
+    # server config
 
     def set_server_config_dict(
         self,
@@ -292,6 +310,9 @@ class EnvMockBuilder:
         self.enable_query_cache = given_val
         return self
 
+    ####################################################################################################################
+    # misc
+
     def set_reset_local_server(self, given_val: bool):
         self.reset_local_server = given_val
         return self
@@ -300,6 +321,8 @@ class EnvMockBuilder:
     def mock_file_open(self):
         with mock.patch("builtins.open", self.file_mock.open) as file_mock:
             yield file_mock
+
+    ####################################################################################################################
 
     @contextlib.contextmanager
     def build(self):
@@ -338,6 +361,9 @@ class EnvMockBuilder:
         if self.is_client_config_to_optimize_completion_request is not None:
             assert self.mock_client_config_file_read
 
+        if self.show_pending_spinner is not None:
+            assert self.mock_client_config_file_read
+
         ################################################################################################################
         # server settings
 
@@ -359,12 +385,22 @@ class EnvMockBuilder:
         ################################################################################################################
 
         if self.mock_client_config_file_read:
+
             assert self.client_config_dict is not None
+
             self.client_config_dict[use_local_requests_] = self.is_client_config_with_local_server
+
             if self.is_client_config_to_optimize_completion_request is not None:
                 self.client_config_dict[
                     optimize_completion_request_
                 ] = self.is_client_config_to_optimize_completion_request
+
+            if self.show_pending_spinner is not None:
+                self.client_config_dict[
+                    show_pending_spinner_
+                ] = self.show_pending_spinner
+
+            # set mocked file content:
             self.file_mock.path_to_data[client_config_desc.get_adjusted_file_path()] = json.dumps(
                 self.client_config_dict
             )
@@ -390,6 +426,7 @@ class EnvMockBuilder:
             if self.mock_mongo_client is not None:
                 self.server_config_dict[mongo_config_][use_mongomock_only_] = self.mock_mongo_client
 
+            # set mocked file content:
             self.file_mock.path_to_data[server_config_desc.get_adjusted_file_path()] = yaml.dump(
                 self.server_config_dict
             )
