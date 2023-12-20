@@ -4,6 +4,7 @@ import time
 from random import randrange
 
 from argrelay.client_spec.ShellContext import ShellContext
+from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import get_config_path, eprint
@@ -23,7 +24,15 @@ def main():
     client_config = load_client_config(file_path)
     ElapsedTime.measure("after_loading_client_config")
 
-    if client_config.show_pending_spinner:
+    shell_ctx = ShellContext.from_env(sys.argv)
+    shell_ctx.print_debug()
+    call_ctx = shell_ctx.create_call_context()
+
+    if (
+        client_config.show_pending_spinner
+        and
+        shell_ctx.comp_type is not CompType.InvokeAction
+    ):
         child_pid: int = os.fork()
         if child_pid == 0:
             # Child performs request:
@@ -32,10 +41,6 @@ def main():
             # Parent spins:
             spin_while_waiting(child_pid)
             return
-
-    shell_ctx = ShellContext.from_env(sys.argv)
-    shell_ctx.print_debug()
-    call_ctx = shell_ctx.create_call_context()
 
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
