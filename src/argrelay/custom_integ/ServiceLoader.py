@@ -21,7 +21,7 @@ from argrelay.test_infra import test_data_
 # noinspection PyPep8Naming
 class ServiceLoader(AbstractLoader):
 
-    object_multiplier: int = 7
+    object_multiplier: int = 10
     """
     Used by TD_38_03_48_51 to generate large data set.
     """
