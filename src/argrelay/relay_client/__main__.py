@@ -102,6 +102,8 @@ def is_requestor(
             from argrelay.relay_client.waiting_parent import spin_while_waiting
             spin_while_waiting(child_pid, child_stdout)
             return False
+    else:
+        return True
 
 
 def load_client_config(file_path):
