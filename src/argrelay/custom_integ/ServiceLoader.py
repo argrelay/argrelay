@@ -21,6 +21,11 @@ from argrelay.test_infra import test_data_
 # noinspection PyPep8Naming
 class ServiceLoader(AbstractLoader):
 
+    object_multiplier: int = 7
+    """
+    Used by TD_38_03_48_51 to generate large data set.
+    """
+
     def __init__(
         self,
         plugin_instance_id: str,
@@ -1077,9 +1082,9 @@ class ServiceLoader(AbstractLoader):
         if not self.is_test_data_allowed("TD_38_03_48_51"):
             return
 
-        for code_maturity in ["cm" + str(cmn) for cmn in range(0, 10)]:
-            for geo_region in ["gr" + str(grn) for grn in range(0, 10)]:
-                for flow_stage in ["fs" + str(fsn) for fsn in range(0, 10)]:
+        for code_maturity in ["cm" + str(cmn) for cmn in range(0, self.object_multiplier)]:
+            for geo_region in ["gr" + str(grn) for grn in range(0, self.object_multiplier)]:
+                for flow_stage in ["fs" + str(fsn) for fsn in range(0, self.object_multiplier)]:
 
                     cluster_name = f"{code_maturity}-{geo_region}-{flow_stage}"
 
@@ -1101,7 +1106,7 @@ class ServiceLoader(AbstractLoader):
 
                     data_envelopes.append(generated_cluster)
 
-                    for host_name in ["hs" + str(hsn) for hsn in range(0, 10)]:
+                    for host_name in ["hs" + str(hsn) for hsn in range(0, self.object_multiplier)]:
 
                         ################################################################################################
                         # hosts
@@ -1120,7 +1125,7 @@ class ServiceLoader(AbstractLoader):
 
                         data_envelopes.append(generated_host)
 
-                        for service_name in ["sn{:02d}".format(snn) for snn in range(0, 10)]:
+                        for service_name in ["sn{:02d}".format(snn) for snn in range(0, self.object_multiplier)]:
                             ############################################################################################################
                             # services
 
