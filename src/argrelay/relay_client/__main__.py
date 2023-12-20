@@ -161,10 +161,21 @@ def generate_pending_cursor():
         # f"{TermColor.spinner_state_0.value}]{TermColor.reset_style.value}",
         # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
 
-        f"{TermColor.spinner_state_0.value}\\{TermColor.reset_style.value}",
-        f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
-        f"{TermColor.spinner_state_0.value}/{TermColor.reset_style.value}",
-        f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}\\{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value} {TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value} {TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}/{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value} {TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value} {TermColor.reset_style.value}",
+
+        f"{TermColor.spinner_state_0.value}<{TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_0.value} {TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_0.value}={TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_0.value} {TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_0.value}>{TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_0.value} {TermColor.reset_style.value}",
     ]
     # Use random start state:
     random_shift = randrange(len(cursor_states))
