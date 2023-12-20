@@ -8,6 +8,7 @@ __comment___ = "__comment__"
 connection_config_ = "connection_config"
 use_local_requests_ = "use_local_requests"
 optimize_completion_request_ = "optimize_completion_request"
+show_pending_spinner_ = "show_pending_spinner"
 
 
 class ClientConfigSchema(Schema):
@@ -35,6 +36,11 @@ class ClientConfigSchema(Schema):
 
     connection_config = fields.Nested(connection_config_desc.dict_schema)
 
+    # Enables spinner for FS_14_59_14_06: pending requests.
+    show_pending_spinner = fields.Boolean(
+        required = False,
+    )
+
     @post_load
     def make_object(
         self,
@@ -45,6 +51,7 @@ class ClientConfigSchema(Schema):
             use_local_requests = input_dict.get(use_local_requests_, False),
             optimize_completion_request = input_dict.get(optimize_completion_request_, True),
             connection_config = input_dict[connection_config_],
+            show_pending_spinner = input_dict.get(show_pending_spinner_, False),
         )
 
 
