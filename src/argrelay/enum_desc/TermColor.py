@@ -94,7 +94,7 @@ class TermColor(Enum):
     found_count_1 = fore_dark_green
     found_count_n = fore_bright_yellow
 
-    spinner_state_0 = fore_bold_bright_red
+    spinner_color = fore_bold_bright_red
 
     debug_output = fore_dark_gray
 
