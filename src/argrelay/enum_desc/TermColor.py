@@ -29,6 +29,8 @@ class TermColor(Enum):
     fore_dark_magenta = "\033[35m"
     fore_dark_gray = "\033[90m"
 
+    fore_bright_red = "\033[91m"
+    fore_bright_green = "\033[92m"
     fore_bright_yellow = "\033[93m"
     fore_bright_blue = "\033[94m"
     fore_bright_cyan = "\033[96m"
@@ -89,6 +91,11 @@ class TermColor(Enum):
     found_count_0 = back_dark_red
     found_count_1 = fore_dark_green
     found_count_n = fore_bright_yellow
+
+    spinner_state_0 = fore_bright_red
+    spinner_state_1 = fore_bright_green
+    spinner_state_2 = fore_bright_yellow
+    spinner_state_3 = fore_bright_blue
 
     debug_output = fore_dark_gray
 

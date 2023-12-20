@@ -5,6 +5,7 @@ from random import randrange
 
 from argrelay.client_spec.ShellContext import ShellContext
 from argrelay.enum_desc.ServerAction import ServerAction
+from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import get_config_path, eprint
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ClientConfig import ClientConfig
@@ -76,7 +77,12 @@ def main():
 
 
 def generate_pending_cursor():
-    cursor_states="|/-\\"
+    cursor_states = [
+        f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_1.value}/{TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_2.value}-{TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_3.value}\\{TermColor.reset_style.value}",
+    ]
     # Use random start state:
     random_shift = randrange(len(cursor_states))
     shifted_states = cursor_states[random_shift:] + cursor_states[:random_shift]
@@ -119,15 +125,6 @@ def is_running(pid: int):
         return True
     else:
         return False
-
-
-def is_alive(pid: int):
-    try:
-        os.kill(pid, 0)
-    except OSError:
-        return False
-    else:
-        return True
 
 
 def load_client_config(file_path):
