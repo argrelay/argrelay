@@ -537,7 +537,8 @@ class EmptyEnvMockBuilder(EnvMockBuilder):
         self.set_mock_client_config_file_read(False)
         self.set_mock_server_config_file_read(False)
         self.set_client_config_with_local_server(False)
-
+        # Client config read is not mocked but otherwise default `show_pending_spinner = True` requires it - disable:
+        self.set_show_pending_spinner(None)
 
 @dataclass
 class LocalClientEnvMockBuilder(EnvMockBuilder):
@@ -609,6 +610,8 @@ class ServerOnlyEnvMockBuilder(EnvMockBuilder):
         # For server-only test, client input mocking is not required:
         self.set_mock_client_input(False)
 
+        # Client config read is not mocked but otherwise default `show_pending_spinner = True` requires it - disable:
+        self.set_show_pending_spinner(None)
 
 @dataclass
 class LiveServerEnvMockBuilder(EnvMockBuilder):
