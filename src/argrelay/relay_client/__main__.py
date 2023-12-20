@@ -130,6 +130,13 @@ def generate_pending_cursor():
         # f"{TermColor.spinner_state_0.value}▆{TermColor.reset_style.value}",
         # f"{TermColor.spinner_state_0.value}▇{TermColor.reset_style.value}",
         # f"{TermColor.spinner_state_0.value}█{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▇{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▆{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▅{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▄{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▃{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▂{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▁{TermColor.reset_style.value}",
 
         # f"{TermColor.spinner_state_0.value}0{TermColor.reset_style.value}",
         # f"{TermColor.spinner_state_0.value}1{TermColor.reset_style.value}",
@@ -155,6 +162,11 @@ def generate_pending_cursor():
         # f"{TermColor.spinner_state_0.value}{{{TermColor.reset_style.value}",
         # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
         # f"{TermColor.spinner_state_0.value}}}{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+
+        # f"{TermColor.spinner_state_0.value}[{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}]{TermColor.reset_style.value}",
         # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
 
         f"{TermColor.spinner_state_0.value}\\{TermColor.reset_style.value}",
