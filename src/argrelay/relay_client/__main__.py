@@ -33,13 +33,33 @@ def main():
         and
         shell_ctx.comp_type is not CompType.InvokeAction
     ):
+        if shell_ctx.comp_type is CompType.DescribeArgs:
+            # TODO: reference FS for indicator:
+            # Create pipe for future child stdout:
+            r_child_out, w_child_out = os.pipe()
+        else:
+            # TODO: reference FS for indicator:
+            # Only `CompType.DescribeArgs` requires special pipe to hold child stdout:
+            r_child_out, w_child_out = (None, None)
+
         child_pid: int = os.fork()
         if child_pid == 0:
+            if shell_ctx.comp_type is CompType.DescribeArgs:
+                os.close(r_child_out)
+                # TODO: reference FS for indicator:
+                # In case of `CompType.DescribeArgs` child writes to the pipe:
+                sys.stdout = os.fdopen(w_child_out, "w")
             # Child performs request:
             pass
         else:
+            if shell_ctx.comp_type is CompType.DescribeArgs:
+                # In case of `CompType.DescribeArgs` parent reads from the pipe:
+                os.close(w_child_out)
+                child_stdout = os.fdopen(r_child_out)
+            else:
+                child_stdout = None
             # Parent spins:
-            spin_while_waiting(child_pid)
+            spin_while_waiting(child_pid, child_stdout)
             return
 
     if client_config.use_local_requests:
@@ -137,7 +157,10 @@ def generate_pending_cursor():
             yield cursor_state
 
 
-def spin_while_waiting(child_pid: int):
+def spin_while_waiting(
+    child_pid: int,
+    child_stdout,
+):
     """
     Display spinner while child request is running.
 
@@ -160,6 +183,10 @@ def spin_while_waiting(child_pid: int):
     # Clean up last spinner state char:
     # https://stackoverflow.com/a/2856365/441652
     eprint(" \b", end = "", flush = True)
+
+    if child_stdout is not None:
+        # Print everything what child has written:
+        print(child_stdout.read())
 
 
 def is_running(pid: int):
