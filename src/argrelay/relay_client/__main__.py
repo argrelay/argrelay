@@ -77,11 +77,52 @@ def main():
 
 
 def generate_pending_cursor():
+    # TODO: Use one and clean up the rest:
     cursor_states = [
+        # f"{TermColor.spinner_state_0.value}┛{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}┗{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}┏{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}┓{TermColor.reset_style.value}",
+
+        # f"{TermColor.spinner_state_0.value}▁{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▂{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▃{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▄{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▅{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▆{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▇{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}█{TermColor.reset_style.value}",
+
+        # f"{TermColor.spinner_state_0.value}0{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}1{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}2{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}3{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}4{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}5{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}6{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}7{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}8{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}9{TermColor.reset_style.value}",
+
+        # f"{TermColor.spinner_state_0.value}▖{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▘{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▝{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}▗{TermColor.reset_style.value}",
+
+        # f"{TermColor.spinner_state_0.value}<{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}={TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}>{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}={TermColor.reset_style.value}",
+
+        # f"{TermColor.spinner_state_0.value}{{{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}}}{TermColor.reset_style.value}",
+        # f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
+
+        f"{TermColor.spinner_state_0.value}\\{TermColor.reset_style.value}",
         f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
-        f"{TermColor.spinner_state_1.value}/{TermColor.reset_style.value}",
-        f"{TermColor.spinner_state_2.value}-{TermColor.reset_style.value}",
-        f"{TermColor.spinner_state_3.value}\\{TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_0.value}/{TermColor.reset_style.value}",
+        f"{TermColor.spinner_state_0.value}|{TermColor.reset_style.value}",
     ]
     # Use random start state:
     random_shift = randrange(len(cursor_states))
