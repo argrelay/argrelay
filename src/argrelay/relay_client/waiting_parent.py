@@ -39,76 +39,7 @@ def is_running(pid: int):
 
 
 def generate_pending_cursor():
-    # TODO: Use one and clean up the rest:
     cursor_states = [
-        # f"{TermColor.spinner_color.value}┛{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}┗{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}┏{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}┓{TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}▁{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▂{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▃{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▄{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▅{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▆{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▇{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}█{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▇{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▆{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▅{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▄{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▃{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▂{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▁{TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}0{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}1{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}2{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}3{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}4{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}5{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}6{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}7{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}8{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}9{TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}▖{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▘{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▝{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}▗{TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}<{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}={TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}>{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}={TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}{{{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}|{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}}}{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}|{TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}[{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}|{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}]{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}|{TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}\\{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value} {TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}|{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value} {TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}/{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value} {TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}|{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value} {TermColor.reset_style.value}",
-
-        # f"{TermColor.spinner_color.value}<{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value} {TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}={TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value} {TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value}>{TermColor.reset_style.value}",
-        # f"{TermColor.spinner_color.value} {TermColor.reset_style.value}",
-
         f"{TermColor.spinner_color.value}|   {TermColor.reset_style.value}",
         f"{TermColor.spinner_color.value} |  {TermColor.reset_style.value}",
         f"{TermColor.spinner_color.value}  | {TermColor.reset_style.value}",
