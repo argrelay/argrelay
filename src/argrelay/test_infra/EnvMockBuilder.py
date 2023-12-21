@@ -633,6 +633,8 @@ class LiveServerEnvMockBuilder(EnvMockBuilder):
         # For live server test, read client config without mocking
         # (because it contains correct connection details for that live server):
         self.set_mock_client_config_file_read(False)
+        # Client config read is not mocked but otherwise default `show_pending_spinner = True` requires it - disable:
+        self.set_show_pending_spinner(None)
 
         # For live server test, server config file read should not happen by test process code
         # (because it happens within server process - un-verify-able from the test process):
