@@ -40,10 +40,10 @@ def is_child_running(
 
 def generate_pending_cursor():
     cursor_states = [
-        f"{TermColor.spinner_color.value}_|||{TermColor.reset_style.value}",
-        f"{TermColor.spinner_color.value}|_||{TermColor.reset_style.value}",
-        f"{TermColor.spinner_color.value}||_|{TermColor.reset_style.value}",
-        f"{TermColor.spinner_color.value}|||_{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}/|\|{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}|/|\\{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}\|/|{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}|\|/{TermColor.reset_style.value}",
     ]
     # Use random start state:
     random_shift = randrange(len(cursor_states))
