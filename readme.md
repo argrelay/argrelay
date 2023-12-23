@@ -78,12 +78,13 @@ Eventually, `argrelay` will "relay" command line args around (hence, the name) w
 ```mermaid
 sequenceDiagram
     autonumber
+    actor U as <br/>User
     participant P as Any program:<br/>user-required<br/>client-side-local
     box rgb(255, 255, 255) <br/>argrelay
     participant C as Client
     participant S as Server
     end
-    C ->> C: invoked by shell<br/>on hotkeys
+    U ->> C: invoked via shell<br/>on hotkeys
     activate C
     C ->> S: "relay" all args
     activate S
@@ -92,7 +93,7 @@ sequenceDiagram
     C ->> P: "relay" details to invoke
     deactivate C
     activate P
-    P ->> P: show results
+    P ->> U: show results
     deactivate P
 ```
 
@@ -236,7 +237,7 @@ There are two options at the moment - both using [MongoDB][MongoDB] API:
 ```mermaid
 sequenceDiagram
     autonumber
-    Actor U as <br/>User
+    actor U as <br/>User
     participant B as Bash
     participant P as Any program:<br/>user-required<br/>client-side-local
     box rgb(255, 255, 255) <br/>argrelay
