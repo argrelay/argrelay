@@ -77,23 +77,29 @@ Eventually, `argrelay` will "relay" command line args around (hence, the name) w
 
 ```mermaid
 sequenceDiagram
-    participant U as User
+    autonumber
+    Actor U as User
     participant B as Bash
-    participant P as Program
-    box Purple
+    participant P as [any program]
+    box rgb(228, 10, 247) argrelay
     participant C as Client
     participant S as Server
     end
     U ->> B: enter command and use hotkeys
-    B ->> C: invokes
+    B ->> C: invoke
     activate C
-    C ->> S: relay args
+    C ->> S: "relay" args
     activate S
-    S ->> C: relay enriched lookup details
+    S ->> C: "relay" enriched lookup details
     deactivate S
-    C ->> P: relay everything
+    Note over C: next steps depend on hotkeys
+    C ->> U: show results
+    C ->> P: "relay" everything to invoke
     deactivate C
-    Note over P: any user-specific program<br/>client-side-local<br/>external to argrelay<br/>(via delegator plugin)
+    activate P
+    P ->> U: show results
+    deactivate P
+    Note over P: any user-required program<br/>client-side-local<br/>external to argrelay<br/>(via delegator plugin)
 ```
 
 <a name="argrelay-demo"></a>
