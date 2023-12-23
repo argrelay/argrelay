@@ -57,6 +57,16 @@ Familiar terminal with:
 *   catalogues of selectable functions with unified/redefined CLI
 -->
 
+<a name="argrelay-request-hotkeys"></a>
+# Request hotkeys
+
+|                   | Server                             | Client                                    |
+|-------------------|:-----------------------------------|:------------------------------------------|
+| **`Alt+Shift+Q`** | reports existing and missing input | displays command completion status        |
+| **`Tab`**         | suggests options for missing input | lists options to Bash for auto-completion |
+| **`Enter`**       | provides data to invoke a command  | executes the command                      |
+|                   |                                    |                                           |
+
 <a name="argrelay-name"></a>
 # What's in a name?
 
@@ -68,24 +78,15 @@ Eventually, `argrelay` will "relay" command line args around (hence, the name) w
 sequenceDiagram
     participant C as client
     participant S as server
-    participant P as external user program
+    participant P as client-side user program (local external)
     C ->> S: relay args
     activate C
     activate S
-    S ->> C: relay enriched details
+    S ->> C: relay enriched lookup details
     deactivate S
-    C ->> P: relay everything
+    C ->> P: relay everything (via delegator plugin)
     deactivate C
 ```
-
-<a name="argrelay-request-hotkeys"></a>
-# Request hotkeys
-
-|                   | Server maps CLI args, queries data, and: | Client receives server response and:        |
-|-------------------|:-----------------------------------------|:--------------------------------------------|
-| **`Alt+Shift+Q`** | explains given and missing input         | displays command completion status          |
-| **`Tab`**         | suggests options for missing input       | lists options to Bash for auto-completion   |
-| **`Enter`**       | provides data to invoke a command        | executes the command (via delegator plugin) |
 
 <a name="argrelay-demo"></a>
 # Interactive demo
