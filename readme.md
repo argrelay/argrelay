@@ -80,7 +80,7 @@ sequenceDiagram
     autonumber
     Actor U as <br/>User
     participant B as Bash
-    participant P as [any program]
+    participant P as [any user-required program<br/>client-side-local]
     box rgb(255, 255, 255) <br/>argrelay
     participant C as Client
     participant S as Server
@@ -88,18 +88,17 @@ sequenceDiagram
     U ->> B: enter command and use hotkeys
     B ->> C: invoke
     activate C
-    C ->> S: "relay" args
+    C ->> S: "relay" all args
     activate S
     S ->> C: "relay" enriched lookup details
     deactivate S
     Note over C: next steps depend on hotkeys
     C ->> U: show results
-    C ->> P: "relay" everything to invoke
+    C ->> P: "relay" details to invoke
     deactivate C
     activate P
     P ->> U: show results
     deactivate P
-    Note over P: any user-required program<br/>client-side-local<br/>external to argrelay<br/>(via delegator plugin)
 ```
 
 <a name="argrelay-demo"></a>
