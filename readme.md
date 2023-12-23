@@ -85,6 +85,7 @@ sequenceDiagram
     participant C as Client
     participant S as Server
     end
+    S ->> S: load data
     U ->> B: enter command and use hotkeys
     B ->> C: invoke
     activate C
