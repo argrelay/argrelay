@@ -14,7 +14,7 @@ def spin_wait_for_child(
     Display spinner while child request is running.
     """
     pending_cursor = generate_pending_cursor()
-    while is_running(child_pid):
+    while is_child_running(child_pid):
         eprint(next(pending_cursor), end = "", flush = True)
         time.sleep(0.1)
         eprint("\b" * spinner_length, end = "")
@@ -24,7 +24,7 @@ def spin_wait_for_child(
     eprint("\b" * spinner_length, end = "", flush = True)
 
 
-def is_running(
+def is_child_running(
     child_pid: int,
 ):
     (

@@ -31,12 +31,12 @@ def main():
     ):
         from argrelay.relay_client.proc_split import split_process
         (
-            is_child,
+            is_parent,
             child_pid,
             child_stdout,
         ) = split_process()
 
-        if not is_child:
+        if is_parent:
             from argrelay.relay_client.proc_parent import spin_wait_for_child
             spin_wait_for_child(child_pid)
 

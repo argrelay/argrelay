@@ -13,7 +13,7 @@ def split_process() -> (
     Part of FS_14_59_14_06 pending requests implementation.
 
     Returns tuple:
-    *   bool: whether it is a child (True) or a parent (False)
+    *   bool: whether it is a parent (True) or a child (False)
     *   int: child PID for parent, None for child
     *   int: open file for the parent-side end of the read-only pipe with stdout of the child process, 0 for child
 
@@ -36,23 +36,24 @@ def split_process() -> (
     # Create pipe for the child to write results as its stdout:
     r_child_stdout_fd, w_child_stdout_fd = os.pipe()
     child_pid: int = os.fork()
-    if child_pid == 0:
-        os.close(r_child_stdout_fd)
-        # Child writes to the pipe (instead of the terminal):
-        sys.stdout = os.fdopen(w_child_stdout_fd, "w")
-        return (
-            True,
-            0,
-            None,
-        )
-    elif child_pid > 0:
+
+    if child_pid > 0:
         os.close(w_child_stdout_fd)
         # Parent reads from the pipe to the child (later, when child has completed):
         child_stdout = os.fdopen(r_child_stdout_fd)
         return (
-            False,
+            True,
             child_pid,
             child_stdout,
+        )
+    elif child_pid == 0:
+        os.close(r_child_stdout_fd)
+        # Child writes to the pipe (instead of the terminal):
+        sys.stdout = os.fdopen(w_child_stdout_fd, "w")
+        return (
+            False,
+            0,
+            None,
         )
     else:
         raise RuntimeError("could not fork child process")
