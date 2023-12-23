@@ -71,9 +71,10 @@ Familiar terminal with:
 <a name="argrelay-name"></a>
 # What's in a name?
 
-CLI for any program is wrapped by `argrelay` interaction.
+CLI for any program is wrapped by `argrelay` interaction and invoked by the user indirectly.
 
-Eventually, `argrelay` will "relay" command line args around (hence, the name) with associated data:
+Eventually, `argrelay` "relays" command line args (hence, the name)<br/>
+with associated data around to invoke the program selected by the user:
 
 ```mermaid
 sequenceDiagram
@@ -84,7 +85,7 @@ sequenceDiagram
     participant C as Client
     participant S as Server
     end
-    U ->> C: invoked via shell<br/>on hotkeys
+    U ->> C: invoke via shell<br/>on hotkeys
     activate C
     C ->> S: "relay" all args
     activate S
