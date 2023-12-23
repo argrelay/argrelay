@@ -25,7 +25,7 @@ gui_banner_config:
     header_html: |
         <div style="color: grey; font-size: small;">
 
-        This is a demo GUI client for a server with some mocked data.<br/>
+        This is a demo GUI client for a server with mocked data.<br/>
         A GUI client cannot execute commands.<br/>
         To execute commands, use a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> instead.<br/>
         <br/>
@@ -41,10 +41,9 @@ gui_banner_config:
     footer_html: |
         <div style="color: grey; font-size: small;">
 
-        <h3>DETAILS</h3>
-        The server data is mocked.<br/>
+        <h3>Details on GUI client deliberate limitations</h3>
         <br/>
-        This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config to run a CLI client).<br/>
+        This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config required for a CLI client).<br/>
         It is convenient for data search, testing, diagnostic, but it is not meant to be functional (use a CLI client for that).<br/>
         <br/>
         Normally, a CLI client receives equivalent responses (as this GUI client does) from the server <a href="https://github.com/argrelay/argrelay#request-hotkeys">on request hotkeys<a>:
