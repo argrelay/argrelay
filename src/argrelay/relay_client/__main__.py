@@ -82,6 +82,7 @@ def main():
 
     return command_obj
 
+
 def load_client_config(file_path):
     import json
     with open(file_path) as config_file:

@@ -8,6 +8,7 @@ from argrelay.misc_helper import eprint
 # Use regular Tab indent size:
 spinner_length: int = 4
 
+
 def spin_wait_for_child(
     child_pid: int,
 ):

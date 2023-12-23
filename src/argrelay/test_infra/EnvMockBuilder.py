@@ -540,6 +540,7 @@ class EmptyEnvMockBuilder(EnvMockBuilder):
         # Client config read is not mocked but otherwise default `show_pending_spinner = True` requires it - disable:
         self.set_show_pending_spinner(None)
 
+
 @dataclass
 class LocalClientEnvMockBuilder(EnvMockBuilder):
     """
@@ -612,6 +613,7 @@ class ServerOnlyEnvMockBuilder(EnvMockBuilder):
 
         # Client config read is not mocked but otherwise default `show_pending_spinner = True` requires it - disable:
         self.set_show_pending_spinner(None)
+
 
 @dataclass
 class LiveServerEnvMockBuilder(EnvMockBuilder):
