@@ -17,10 +17,11 @@ def spin_wait_for_child(
     while is_running(child_pid):
         eprint(next(pending_cursor), end = "", flush = True)
         time.sleep(0.1)
-        eprint("\b" * spinner_length, end = "", flush = True)
+        eprint("\b" * spinner_length, end = "")
 
     # Clear spinner state chars:
-    eprint(" " * spinner_length + "\b" * spinner_length, end = "", flush = True)
+    eprint(" " * spinner_length, end = "")
+    eprint("\b" * spinner_length, end = "", flush = True)
 
 
 def is_running(

@@ -10,17 +10,28 @@ def split_process() -> (
     Union[None, typing.TextIO],
 ):
     """
-    Part of FS_14_59_14_06 pending requests implementation:
-
-    The func splits parent and child processes setting up a communication pipe between the two.
-    The pipe works in the single direction from child to parent:
-    *   child uses the pipe to write its stdout
-    *   parent uses the pipe to read results from the child when it completes
+    Part of FS_14_59_14_06 pending requests implementation.
 
     Returns tuple:
     *   bool: whether it is a child (True) or a parent (False)
     *   int: child PID for parent, None for child
     *   int: open file for the parent-side end of the read-only pipe with stdout of the child process, 0 for child
+
+    The func splits parent and child processes setting up a communication pipe between the two.
+
+    The pipe works in the single direction from child to parent:
+    *   child connects its stdout to the pipe (instead of a terminal)
+    *   parent uses the pipe to read results from the child, but does it only after child completes
+
+    This way, while waiting for the child to complete, the parent can print anything to the terminal
+    without interleaving with the child stdout.
+
+    Both child and parent still keep their stderr connected to the terminal (this output may interleave).
+
+    NOTE: Technically, using the extra pipe between parent and child is not required
+          for `ServerAction.ProposeArgValues` = Tab because Bash already captures
+          stdout in that case until client completes.
+          But implementation is uniform here for simplicity.
     """
     # Create pipe for the child to write results as its stdout:
     r_child_stdout_fd, w_child_stdout_fd = os.pipe()

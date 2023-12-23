@@ -29,7 +29,7 @@ def main():
         and
         shell_ctx.comp_type is not CompType.InvokeAction
     ):
-        from argrelay.relay_client.splitting_processes import split_process
+        from argrelay.relay_client.proc_split import split_process
         (
             is_child,
             child_pid,
@@ -37,7 +37,7 @@ def main():
         ) = split_process()
 
         if not is_child:
-            from argrelay.relay_client.waiting_parent import spin_wait_for_child
+            from argrelay.relay_client.proc_parent import spin_wait_for_child
             spin_wait_for_child(child_pid)
 
             # Print everything what child has written:
