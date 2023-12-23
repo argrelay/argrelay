@@ -25,6 +25,10 @@ gui_banner_config:
     header_html: |
         <div style="color: grey; font-size: small;">
 
+        This is a demo GUI client for a server with some mocked data.<br/>
+        A GUI client cannot execute commands.<br/>
+        To execute commands, use a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> instead.<br/>
+        <br/>
         For example, type either|or:
         <ul>
             <li>relay_demo goto host</li>
@@ -37,23 +41,26 @@ gui_banner_config:
     footer_html: |
         <div style="color: grey; font-size: small;">
 
-        This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config to run CLI client).<br/>
-        It is convenient for data search, testing, diagnostic, but it is not meant to be functional (use CLI client for that).<br/>
+        <h3>DETAILS</h3>
         The server data is mocked.<br/>
         <br/>
-        Normally, CLI client receives equivalent responses (as this GUI client) from the server:
+        This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config to run a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a>).<br/>
+        It is convenient for data search, testing, diagnostic, but it is not meant to be functional (use a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> for that).<br/>
+        <br/>
+        Normally, a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> receives equivalent responses (as this GUI client does) from the server <a href="https://github.com/argrelay/argrelay#request-hotkeys">on request hotkeys<a>:
         <ol>
             <li>auto-completion options (on Tab)</li>
             <li>search responses (on Alt+Shift+Q)</li>
             <li>command invocation data (on Enter)</li>
         </ol>
-        However, this GUI client is limited and slightly different from CLI client:
+        However, this GUI client is limited and slightly different from a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a>:
         <ul>
-            <li>(1) Tab is only used to complete `common_infix` - request to provide suggestions is sent automatically on timeout.</li>
-            <li>(2) Search request (Alt+Shift+Q) is sent automatically on timeout.</li>
-            <li>(3) Command invocation (Enter) is disabled - it only prints invocation data from the server (use CLI client to run commands).</li>
+            <li>(1) Tab is only used to complete `common_infix` - request to provide suggestions is sent automatically on idle timeout.</li>
+            <li>(2) Search request (Alt+Shift+Q) is sent automatically on idle timeout.</li>
+            <li>(3) Command invocation (Enter) is disabled - it only prints invocation data from the server (use a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> to run commands).</li>
         </ul>
-
+        <br/>
+        Try <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> for full functionality.
         </div>
 
 server_plugin_control:
