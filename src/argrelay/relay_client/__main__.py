@@ -23,11 +23,26 @@ def main():
     shell_ctx.print_debug()
     call_ctx = shell_ctx.create_call_context()
 
-    if not is_requestor(
-        client_config,
-        shell_ctx,
+    if (
+        # FS_14_59_14_06 pending requests: at the moment the process is split only to provide spinner:
+        client_config.show_pending_spinner
+        and
+        shell_ctx.comp_type is not CompType.InvokeAction
     ):
-        return
+        from argrelay.relay_client.splitting_processes import split_process
+        (
+            is_child,
+            child_pid,
+            child_stdout,
+        ) = split_process()
+
+        if not is_child:
+            from argrelay.relay_client.waiting_parent import spin_wait_for_child
+            spin_wait_for_child(child_pid)
+
+            # Print everything what child has written:
+            print(child_stdout.read())
+            return
 
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
@@ -66,28 +81,6 @@ def main():
         ElapsedTime.print_all()
 
     return command_obj
-
-
-def is_requestor(
-    client_config: ClientConfig,
-    shell_ctx: ShellContext,
-) -> bool:
-    """
-    Implements FS_14_59_14_06 pending requests and forks a child proces for some requests.
-
-    It returns true if the process is a requestor (the one who sends requests to the server).
-    """
-
-    if (
-        client_config.show_pending_spinner
-        and
-        shell_ctx.comp_type is not CompType.InvokeAction
-    ):
-        from argrelay.relay_client.splitting_processes import split_process
-        return split_process()
-    else:
-        return True
-
 
 def load_client_config(file_path):
     import json

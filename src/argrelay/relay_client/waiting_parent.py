@@ -7,9 +7,8 @@ from argrelay.misc_helper import eprint
 
 spinner_length: int = 4
 
-def spin_while_waiting(
+def spin_wait_for_child(
     child_pid: int,
-    child_stdout,
 ):
     """
     Display spinner while child request is running.
@@ -23,16 +22,15 @@ def spin_while_waiting(
     # Clear spinner state chars:
     eprint(" " * spinner_length + "\b" * spinner_length, end = "", flush = True)
 
-    # Print everything what child has written:
-    print(child_stdout.read())
 
-
-def is_running(pid: int):
+def is_running(
+    child_pid: int,
+):
     (
-        pid,
-        status,
-    ) = os.waitpid(pid, os.WNOHANG)
-    if pid == 0 and status == 0:
+        child_pid,
+        child_status,
+    ) = os.waitpid(child_pid, os.WNOHANG)
+    if child_pid == 0 and child_status == 0:
         return True
     else:
         return False
