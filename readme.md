@@ -80,7 +80,7 @@ sequenceDiagram
     autonumber
     Actor U as <br/>User
     participant B as Bash
-    participant P as [any user-required program<br/>client-side-local]
+    participant P as any program<br/>user-required<br/>client-side-local
     box rgb(255, 255, 255) <br/>argrelay
     participant C as Client
     participant S as Server
