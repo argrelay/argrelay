@@ -4,6 +4,5 @@
     "connection_config": {
         "server_host_name": "localhost",
         "server_port_number": 8787
-    },
-    "show_pending_spinner": true
+    }
 }
