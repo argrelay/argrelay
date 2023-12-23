@@ -63,7 +63,7 @@ def assert_plugin_instance_id(
     plugin_instance_id: str,
     plugin_type: PluginType,
 ):
-    error_msg = f"plugin instance `{plugin_instance_id}` must (A) be `{PluginType.DelegatorPlugin.name}`, (B) be `{plugin_enabled_}`, (C) be activated the order of DAG via `{plugin_dependencies_}`"
+    error_msg = f"plugin instance `{plugin_instance_id}` must: (A) be `{PluginType.DelegatorPlugin.name}`, (B) be `{plugin_enabled_}`, (C) be activated in the order of DAG via `{plugin_dependencies_}`"
     if plugin_type is PluginType.InterpFactoryPlugin:
         assert plugin_instance_id in server_config.interp_factories, error_msg
     if plugin_type is PluginType.DelegatorPlugin:
