@@ -27,6 +27,8 @@ and structured search filter for command line interface (CLI) to any command in 
 
 While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
 
+If intended operation is in CLI, selecting all args via CLI avoids multiple of coping-and-pasting with window switching.
+
 <a name="argrelay-original-use-case"></a>
 # Original use case
 
@@ -57,35 +59,44 @@ Familiar terminal with:
 *   catalogues of selectable functions with unified/redefined CLI
 -->
 
-<a name="argrelay-name"></a>
-# What's in a name?
-
-CLI for any program is wrapped by `argrelay` interaction.
-
-Eventually, `argrelay` will "relay" command line args around (hence, the name) with associated data:
-
-```mermaid
-sequenceDiagram
-    participant C as client
-    participant S as server
-    participant P as external user program
-    C ->> S: relay args
-    activate C
-    activate S
-    S ->> C: relay enriched details
-    deactivate S
-    C ->> P: relay everything
-    deactivate C
-```
-
 <a name="argrelay-request-hotkeys"></a>
 # Request hotkeys
 
-|                   | Server maps CLI args, queries data, and: | Client receives server response and:        |
-|-------------------|:-----------------------------------------|:--------------------------------------------|
-| **`Alt+Shift+Q`** | explains given and missing input         | displays command completion status          |
-| **`Tab`**         | suggests options for missing input       | lists options to Bash for auto-completion   |
-| **`Enter`**       | provides data to invoke a command        | executes the command (via delegator plugin) |
+| Bash:             | Server:                            | Client:                                   |
+|-------------------|:-----------------------------------|:------------------------------------------|
+| **`Alt+Shift+Q`** | reports existing and missing input | displays command completion status        |
+| **`Tab`**         | suggests options for missing input | lists options to Bash for auto-completion |
+| **`Enter`**       | provides data to invoke a command  | executes the command                      |
+
+<a name="argrelay-name"></a>
+# What's in a name?
+
+CLI for any program is wrapped by `argrelay` interaction and invoked by the user indirectly.
+
+Eventually, `argrelay` "relays" command line args (hence, the name)<br/>
+with associated data around to invoke the program selected by the user:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant P as Any program:<br/>user-required<br/>client-side-local
+    actor U as <br/>User
+    box rgb(255, 255, 255) <br/>argrelay
+    participant C as Client
+    participant S as Server
+    end
+    U ->> C: invoke via shell<br/>on hotkeys
+    activate C
+    C ->> S: "relay" all args
+    activate S
+    S ->> C: "relay" enriched lookup details
+    deactivate S
+    C ->> P: "relay" details to invoke
+    deactivate C
+    activate P
+    P ->> U: show results
+    deactivate P
+```
 
 <a name="argrelay-demo"></a>
 # Interactive demo
@@ -102,10 +113,10 @@ Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the 
 
 This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. for Tab-auto-completion):
 
-*   Try to `Tab`-complete command `relay_demo` using [demo test data][TD_63_37_05_36.demo_services_data.md]:
+*   Interact with `relay_demo` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
 
     ```sh
-    relay_demo goto                 # press `Alt+Shift+Q` to describe current command line args and available options
+    relay_demo goto                 # press `Alt+Shift+Q` to describe available options
     ```
 
     ```sh
@@ -116,7 +127,7 @@ This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. 
     relay_demo goto host dev        # press Alt+Shift+Q to observe changes in the output
     ```
 
-*   To clean up, exit the sub-shells:
+*   To clean up, exit the sub-shell:
 
     ```sh
     exit
@@ -136,29 +147,29 @@ This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. 
     less ./logs/relay_demo.bash.log
     ```
 
-*   Inspect client and server config:
+*   Inspect configs:
 
-    *   server config: `@/conf/argrelay.server.yaml`
-    *   client config: `@/conf/argrelay.client.json`
+    *   `@/conf/argrelay.server.yaml`
+    *   `@/conf/argrelay.client.json`
 
-*   To reset the demo:
+*   To reset the demo, remove `@/conf`:
 
     ```sh
     rm conf
     ```
 
-    Script `@/exe/relay_demo.bash` relies on `@/conf/` being a symlink specifically to `@/dst/relay_demo`:
+    Script `@/exe/relay_demo.bash` relies on `@/conf` being a symlink specifically to `@/dst/relay_demo`:
 
-    *   If `@/conf/` is absent, it creates the symlink with that destination.
+    *   If `@/conf` is absent, it creates the symlink with that destination.
 
         This is where it re-inits everything (e.g. create new Python `venv`, installs dependencies, etc.).
 
-    *   If `@/conf/` is present and destination matches, it quickly starts the shell.
+    *   If `@/conf` is present and destination matches, it quickly starts the shell.
 
-    *   If `@/conf/` is present and destination mismatches, it quickly fails.
+    *   If `@/conf` is present and destination mismatches, it quickly fails.
 
 <a name="argrelay-includes"></a>
-# What is in the package?
+# What's in the package?
 
 *   **Client** to be invoked by Bash hook on every Tab to<br/>
     send command line arguments to the server.
@@ -213,12 +224,52 @@ There are two options at the moment - both using [MongoDB][MongoDB] API:
 | Pro:           | nothing else to install                                                                 | no practical data set size limit found (yet)<br/> for `argrelay` intended use cases              |
 | Con:           | understandably, does not meet<br/> non-functional requirements<br/> for large data sets | require some knowledge of MongoDB,<br/> additional setup,<br/> additional running processes<br/> |
 
-`PyMongo` connects to running MongoDB instance which has to be configured in `mongo_config`<br/>
-and `mongomock` should be disabled in `argrelay.server.yaml`:
+`PyMongo` connects to a running MongoDB instance which has to be configured in<br/>
+`argrelay.server.yaml` under `mongo_config` and `mongomock` should be disabled:
 
 ```diff
 -    use_mongomock_only: True
 +    use_mongomock_only: False
+```
+
+<a name="argrelay-full-picture"></a>
+# Full picture
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as <br/>User
+    participant B as Bash
+    participant P as Any program:<br/>user-required<br/>client-side-local
+    box rgb(255, 255, 255) <br/>argrelay
+    participant C as Client
+    participant S as Server
+    participant DB as Data backend<br/>(internal or external)
+    end
+    participant DS as Data sources
+    DS ->> S: load data
+    activate S
+    S ->> DB: load data
+    deactivate S
+    Note over S: <br/>stand-by<br/>
+    U ->> B: enter command and use hotkeys
+    B ->> C: invoke
+    activate C
+    C ->> S: "relay" all args
+    activate S
+    S ->> DB: query request
+    activate DB
+    DB ->> S: query result
+    deactivate DB
+    S ->> C: "relay" enriched lookup details
+    deactivate S
+    Note over C: next steps depend on hotkeys
+    C ->> U: show results
+    C ->> P: "relay" details to invoke
+    deactivate C
+    activate P
+    P ->> U: show results
+    deactivate P
 ```
 
 <a name="argrelay-feedback"></a>

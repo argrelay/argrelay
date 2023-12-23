@@ -10,7 +10,7 @@ from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerPluginControl import ServerPluginControl
 from argrelay.runtime_data.StaticData import StaticData
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_enabled_
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_enabled_, plugin_dependencies_
 
 
 @dataclass
@@ -63,7 +63,7 @@ def assert_plugin_instance_id(
     plugin_instance_id: str,
     plugin_type: PluginType,
 ):
-    error_msg = f"plugin instance `{plugin_instance_id}` must be `{PluginType.DelegatorPlugin.name}` and be `{plugin_enabled_}`"
+    error_msg = f"plugin instance `{plugin_instance_id}` must: (A) be `{PluginType.DelegatorPlugin.name}`, (B) be `{plugin_enabled_}`, (C) be activated in the order of DAG via `{plugin_dependencies_}`"
     if plugin_type is PluginType.InterpFactoryPlugin:
         assert plugin_instance_id in server_config.interp_factories, error_msg
     if plugin_type is PluginType.DelegatorPlugin:

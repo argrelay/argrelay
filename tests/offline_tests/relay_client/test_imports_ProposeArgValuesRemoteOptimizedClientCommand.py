@@ -85,11 +85,13 @@ class ThisTestClass(BaseTestClass):
         ],
         "argrelay.relay_client.__main__": [
             "argrelay.client_spec.ShellContext",
+            "argrelay.enum_desc.CompType",
             "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper",
             "argrelay.misc_helper.ElapsedTime",
             "argrelay.runtime_data.ClientConfig",
-            "argrelay.runtime_data.ConnectionConfig"
+            "argrelay.runtime_data.ConnectionConfig",
+            "sys"
         ],
         "argrelay.runtime_data.ClientConfig": [
             "argrelay.runtime_data.ConnectionConfig",

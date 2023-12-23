@@ -1,6 +1,8 @@
 # Keep minimal import on start:
+import sys
 
 from argrelay.client_spec.ShellContext import ShellContext
+from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper import get_config_path
 from argrelay.misc_helper.ElapsedTime import ElapsedTime
@@ -11,8 +13,6 @@ ElapsedTime.measure("after_program_entry")
 
 
 def main():
-    # Initial imports - see `completion_perf_notes.md`.
-    import sys
     ElapsedTime.measure("after_initial_imports")
 
     file_path = get_config_path("argrelay.client.json")
@@ -22,6 +22,27 @@ def main():
     shell_ctx = ShellContext.from_env(sys.argv)
     shell_ctx.print_debug()
     call_ctx = shell_ctx.create_call_context()
+
+    if (
+        # FS_14_59_14_06 pending requests: at the moment the process is split only to provide spinner:
+        client_config.show_pending_spinner
+        and
+        shell_ctx.comp_type is not CompType.InvokeAction
+    ):
+        from argrelay.relay_client.proc_split import split_process
+        (
+            is_parent,
+            child_pid,
+            child_stdout,
+        ) = split_process()
+
+        if is_parent:
+            from argrelay.relay_client.proc_parent import spin_wait_for_child
+            spin_wait_for_child(child_pid)
+
+            # Print everything what child has written:
+            print(child_stdout.read())
+            return
 
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
@@ -81,6 +102,9 @@ def client_config_dict_to_object(client_config_dict):
             server_host_name = client_config_dict["connection_config"]["server_host_name"],
             server_port_number = client_config_dict["connection_config"]["server_port_number"],
         ),
+        # TODO_25_46_48_20: Provide non-mock-able test config and change to enabled by default:
+        #                   Keep disabled by default while in preview (while effect on tests cannot be avoided):
+        show_pending_spinner = client_config_dict.get("show_pending_spinner", False)
     )
     return client_config
 
