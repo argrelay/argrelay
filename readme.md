@@ -77,9 +77,11 @@ Eventually, `argrelay` will "relay" command line args around (hence, the name) w
 
 ```mermaid
 sequenceDiagram
+    actor U as User
+    participant P as client-side user program (local external)
     participant C as client
     participant S as server
-    participant P as client-side user program (local external)
+    U ->> C: enter command and use hotkeys
     C ->> S: relay args
     activate C
     activate S
