@@ -78,28 +78,21 @@ Eventually, `argrelay` will "relay" command line args around (hence, the name) w
 ```mermaid
 sequenceDiagram
     autonumber
-    Actor U as <br/>User
-    participant B as Bash
-    participant P as any program:<br/>user-required<br/>client-side-local
+    participant P as Any program:<br/>user-required<br/>client-side-local
     box rgb(255, 255, 255) <br/>argrelay
     participant C as Client
     participant S as Server
     end
-    participant D as Datasources
-    D ->> S: load data
-    U ->> B: enter command and use hotkeys
-    B ->> C: invoke
+    C ->> C: invoked by shell<br/>on hotkeys
     activate C
     C ->> S: "relay" all args
     activate S
     S ->> C: "relay" enriched lookup details
     deactivate S
-    Note over C: next steps depend on hotkeys
-    C ->> U: show results
     C ->> P: "relay" details to invoke
     deactivate C
     activate P
-    P ->> U: show results
+    P ->> P: show results
     deactivate P
 ```
 
@@ -245,7 +238,7 @@ sequenceDiagram
     autonumber
     Actor U as <br/>User
     participant B as Bash
-    participant P as any program:<br/>user-required<br/>client-side-local
+    participant P as Any program:<br/>user-required<br/>client-side-local
     box rgb(255, 255, 255) <br/>argrelay
     participant C as Client
     participant S as Server
