@@ -5,6 +5,7 @@ from random import randrange
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper import eprint
 
+# Use regular Tab indent size:
 spinner_length: int = 4
 
 def spin_wait_for_child(
@@ -39,10 +40,10 @@ def is_child_running(
 
 def generate_pending_cursor():
     cursor_states = [
-        f"{TermColor.spinner_color.value}|   {TermColor.reset_style.value}",
-        f"{TermColor.spinner_color.value} |  {TermColor.reset_style.value}",
-        f"{TermColor.spinner_color.value}  | {TermColor.reset_style.value}",
-        f"{TermColor.spinner_color.value}   |{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}_|||{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}|_||{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}||_|{TermColor.reset_style.value}",
+        f"{TermColor.spinner_color.value}|||_{TermColor.reset_style.value}",
     ]
     # Use random start state:
     random_shift = randrange(len(cursor_states))

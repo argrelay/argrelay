@@ -36,7 +36,7 @@ class TermColor(Enum):
     fore_bright_cyan = "\033[96m"
     fore_bright_white = "\033[97m"
 
-    fore_bold_bright_red = "\033[1;91m"
+    fore_bold_dark_red = "\033[1;31m"
 
     ###################################################################################################################
     # Semantic colors:
@@ -94,7 +94,7 @@ class TermColor(Enum):
     found_count_1 = fore_dark_green
     found_count_n = fore_bright_yellow
 
-    spinner_color = fore_bold_bright_red
+    spinner_color = fore_bold_dark_red
 
     debug_output = fore_dark_gray
 
