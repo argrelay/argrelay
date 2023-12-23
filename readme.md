@@ -78,8 +78,8 @@ Eventually, `argrelay` will "relay" command line args around (hence, the name) w
 ```mermaid
 sequenceDiagram
     autonumber
-    actor U as <br/>User
     participant P as Any program:<br/>user-required<br/>client-side-local
+    actor U as <br/>User
     box rgb(255, 255, 255) <br/>argrelay
     participant C as Client
     participant S as Server
