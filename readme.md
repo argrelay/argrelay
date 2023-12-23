@@ -81,7 +81,7 @@ sequenceDiagram
     Actor U as User
     participant B as Bash
     participant P as [any program]
-    box rgb(228, 10, 247) argrelay
+    box rgb(255, 255, 255) argrelay
     participant C as Client
     participant S as Server
     end
