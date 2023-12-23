@@ -237,6 +237,46 @@ There are two options at the moment - both using [MongoDB][MongoDB] API:
 +    use_mongomock_only: False
 ```
 
+<a name="argrelay-full-picture"></a>
+# Full picture
+
+```mermaid
+sequenceDiagram
+    autonumber
+    Actor U as <br/>User
+    participant B as Bash
+    participant P as any program:<br/>user-required<br/>client-side-local
+    box rgb(255, 255, 255) <br/>argrelay
+    participant C as Client
+    participant S as Server
+    participant DB as Data backend<br/>(internal or external)
+    end
+    participant DS as Data sources
+    DS ->> S: load data
+    activate S
+    S ->> DB: load data
+    deactivate S
+    Note over S: <br/>stand-by<br/>
+    U ->> B: enter command and use hotkeys
+    B ->> C: invoke
+    activate C
+    C ->> S: "relay" all args
+    activate S
+    S ->> DB: query request
+    activate DB
+    DB ->> S: query result
+    deactivate DB
+    S ->> C: "relay" enriched lookup details
+    deactivate S
+    Note over C: next steps depend on hotkeys
+    C ->> U: show results
+    C ->> P: "relay" details to invoke
+    deactivate C
+    activate P
+    P ->> U: show results
+    deactivate P
+```
+
 <a name="argrelay-feedback"></a>
 # Feedback
 
