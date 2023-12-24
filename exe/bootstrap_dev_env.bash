@@ -555,10 +555,10 @@ cat << PYTHON_SERVER_EOF > "${argrelay_dir}/bin/run_argrelay_server"
 
 import os
 
-from argrelay import misc_helper
+from argrelay import misc_helper_common
 
 # FS_29_54_67_86 dir_structure: \`@/bin/run_argrelay_server\` -> \`@/\`:
-misc_helper.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+misc_helper_common.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_server.__main__ import main
 
@@ -577,10 +577,10 @@ cat << PYTHON_CLIENT_EOF > "${argrelay_dir}/bin/run_argrelay_client"
 
 import os
 
-from argrelay import misc_helper
+from argrelay import misc_helper_common
 
 # FS_29_54_67_86 dir_structure: \`@/bin/run_argrelay_client\` -> \`@/\`:
-misc_helper.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+misc_helper_common.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_client.__main__ import main
 

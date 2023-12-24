@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Union, Type
 
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.server_spec.CallContext import CallContext

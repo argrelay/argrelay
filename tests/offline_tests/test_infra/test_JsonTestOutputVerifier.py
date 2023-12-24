@@ -79,4 +79,3 @@ class ThisTestClass(BaseTestClass):
                 data_obj = invocation_input_desc.dict_schema.load(json_dict)
                 json_str = invocation_input_desc.dict_schema.dumps(data_obj)
                 json_verifier.verify_all(json_str)
-

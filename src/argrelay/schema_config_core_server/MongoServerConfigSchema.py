@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, RAISE, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.mongo_data.MongoServerConfig import MongoServerConfig
 
 database_name_ = "database_name"

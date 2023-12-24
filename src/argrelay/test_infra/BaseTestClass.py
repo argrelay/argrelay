@@ -1,7 +1,7 @@
 from os import getcwd
 from unittest import TestCase
 
-from argrelay.misc_helper import set_argrelay_dir
+from argrelay.misc_helper_common import set_argrelay_dir
 from argrelay.test_infra import change_to_known_repo_path
 
 

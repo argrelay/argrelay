@@ -1,6 +1,6 @@
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext

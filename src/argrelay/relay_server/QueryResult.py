@@ -15,22 +15,24 @@ class QueryResult:
     """
     Contains 0 or 1 `data_envelope`-s from search results.
 
-    *   0: Nothing found.
-    *   1: One of the found ones (possibly many).
-        If `found_count` > 1, it is the last `data_envelope`-s among many found.
-        If `found_count` = 1, it is exactly the `data_envelope` uniquely selected.
+    The contents of the `data_envelopes` is only reliable (the `data_envelope` found) when `found_count == 1`.
 
-    Returning 1 while `found_count` > 1 is used for performance reasons with `QueryEngine.query_prop_values`.
+    Returning maximum single `data_envelope` (when `found_count` != 0) is used for
+    performance reasons with `QueryEngine.query_prop_values`.
 
-    See also `EnvelopeContainer.data_envelopes`.
+    See also `EnvelopeContainer.data_envelopes` to get the entire list of the `data_envelopes`.
     """
 
     found_count: int = field()
     """
     Total number of `data_envelope`-s found - see `data_envelopes`.
+
+    When `found_count == 1`, `data_envelopes` contains exactly the one `data_envelope` found.
     """
 
     remaining_types_to_values: dict[str, list[str]] = field()
     """
     See `EnvelopeContainer.remaining_types_to_values`.
+
+    Each list is sorted.
     """

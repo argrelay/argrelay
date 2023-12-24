@@ -47,19 +47,14 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
             (
                 line_no(), "relay_demo |", CompType.PrefixHidden,
                 [
-                    "enum",
-                    "help",
-                    "intercept",
-                    "subtree",
                     "desc",
                     "echo",
-                    "goto",
-                    "list",
-                    # TODO: Why there is extra `help` and `intercept` suggestions?
-                    "subtree",
                     "enum",
+                    "goto",
                     "help",
                     "intercept",
+                    "list",
+                    "subtree",
                 ],
                 "Basic test.",
             ),

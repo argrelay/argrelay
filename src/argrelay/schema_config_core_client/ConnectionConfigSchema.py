@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, RAISE, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.server_spec.const_int import DEFAULT_IP_ADDRESS, DEFAULT_PORT_NUMBER
 

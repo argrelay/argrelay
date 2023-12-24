@@ -4,8 +4,8 @@ import sys
 from argrelay.client_spec.ShellContext import ShellContext
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.misc_helper import get_config_path
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common import get_config_path
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 

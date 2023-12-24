@@ -14,7 +14,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_repo_commits_,
     repo_entries_,
 )
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_

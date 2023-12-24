@@ -7,7 +7,7 @@ from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.value_constants import goto_repo_func_, desc_commit_func_
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_invocation_input
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
@@ -146,8 +146,8 @@ class GitRepoDelegator(AbstractDelegator):
                 ],
                 cwd = repo_root_abs_path
             )
-            ret_code = sub_proc.returncode
-            if ret_code != 0:
+            exit_code = sub_proc.returncode
+            if exit_code != 0:
                 raise RuntimeError
         if get_func_id_from_invocation_input(invocation_input) == desc_commit_func_:
             raise RuntimeError("not implemented")

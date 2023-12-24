@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 import yaml
 from marshmallow import Schema, ValidationError
 
-from argrelay.misc_helper import get_config_path
+from argrelay.misc_helper_common import get_config_path
 
 
 @dataclass(frozen = True)

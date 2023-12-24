@@ -53,8 +53,6 @@ class ThisTestClass(LocalTestClass):
             .set_expected_suggestions(
                 [
                     "intercept",
-                    # TODO_77_12_50_80: Fix duplicated suggestions:
-                    "intercept",
                 ]
             ),
         ]

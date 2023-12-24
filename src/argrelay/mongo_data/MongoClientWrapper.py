@@ -7,7 +7,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data.MongoConfig import MongoConfig
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.runtime_data.StaticData import StaticData

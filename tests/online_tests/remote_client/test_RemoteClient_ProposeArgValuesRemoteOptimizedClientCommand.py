@@ -27,15 +27,15 @@ class ThisTestClass(RemoteTestClass):
             (
                 line_no(), "some_command upstream goto host |", CompType.PrefixHidden,
                 """dev
-qa
 prod
+qa
 """,
                 "Sample 1",
             ),
             (
                 line_no(), "some_command host goto upstream a|", CompType.SubsequentHelp,
-                """apac
-amer
+                """amer
+apac
 """,
                 "Sample 2",
             ),

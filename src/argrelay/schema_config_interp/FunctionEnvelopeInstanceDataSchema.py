@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 
 func_id_ = "func_id"

@@ -1,6 +1,6 @@
 import sys
 
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_message_, error_code_
 from argrelay.relay_server.LocalServer import LocalServer

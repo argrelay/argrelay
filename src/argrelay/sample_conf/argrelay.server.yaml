@@ -6,6 +6,7 @@ connection_config:
 
 mongo_config:
     use_mongomock_only: True
+    distinct_values_query: original_find_and_loop
     mongo_client:
         # See `MongoClientConfigSchema` for detailed connection string format:
         client_connection_string: mongodb://localhost

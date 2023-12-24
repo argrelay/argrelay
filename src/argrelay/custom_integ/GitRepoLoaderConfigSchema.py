@@ -3,7 +3,7 @@ from __future__ import annotations
 from marshmallow import Schema, RAISE, fields
 
 from argrelay.custom_integ.GitRepoEntryConfigSchema import git_repo_entry_config_desc
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
 load_repo_commits_ = "load_repo_commits"
 repo_entries_ = "repo_entries"

@@ -8,6 +8,7 @@ from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialChar import SpecialChar
+from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
@@ -43,7 +44,7 @@ class FuncTreeInterp(AbstractInterp):
     Finds function `data_envelope` within func tree first,
     then uses its delegator (see `AbstractDelegator`) to find all args-related `data_envelope`-s.
 
-    See FS_55_57_45_04 command interp.
+    See FS_55_57_45_04 enum selector.
     """
 
     def __init__(
@@ -226,8 +227,8 @@ class FuncTreeInterp(AbstractInterp):
         raise NotImplemented
 
     def propose_arg_completion(self) -> None:
-        comp_list = self.propose_auto_comp_list()
-        self.interp_ctx.comp_suggestions.extend(comp_list)
+        for comp_value in self.propose_auto_comp_list():
+            insert_unique_to_sorted_list(self.interp_ctx.comp_suggestions, comp_value)
 
     def propose_auto_comp_list(self) -> list[str]:
 

@@ -2,8 +2,8 @@ from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.misc_helper import ensure_value_is_enum
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common import ensure_value_is_enum
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.server_spec.CallContext import CallContext
 
 server_action_ = "server_action"

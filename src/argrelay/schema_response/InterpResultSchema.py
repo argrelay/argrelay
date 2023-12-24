@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from marshmallow import RAISE, fields, pre_dump, post_load, Schema
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_response.ArgValuesSchema import ArgValuesSchema, arg_values_desc
 from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
 from argrelay.schema_response.InterpResult import InterpResult

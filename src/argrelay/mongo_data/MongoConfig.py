@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
 from argrelay.mongo_data.MongoClientConfig import MongoClientConfig
 from argrelay.mongo_data.MongoServerConfig import MongoServerConfig
 
@@ -11,6 +12,11 @@ class MongoConfig:
     use_mongomock_only: bool = field()
     """
     See :class:`MongoConfigSchema.use_mongomock_only`.
+    """
+
+    distinct_values_query: DistinctValuesQuery = field()
+    """
+    See `DistinctValuesQuery`.
     """
 
     mongo_client: MongoClientConfig = field()

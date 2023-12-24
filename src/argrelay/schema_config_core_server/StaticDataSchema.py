@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from marshmallow import Schema, RAISE, fields, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
 from argrelay.schema_response.FilteredDict import FilteredDict

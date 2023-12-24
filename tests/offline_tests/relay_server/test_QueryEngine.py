@@ -1,16 +1,17 @@
-from unittest import mock
+import itertools
 
 from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder, wrap_instance_method
+from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
 
 
 class ThisTestClass(BaseTestClass):
@@ -27,54 +28,71 @@ class ThisTestClass(BaseTestClass):
         test_cases = [
             (
                 line_no(),
-                True,
                 "some_command host goto e| dev", CompType.PrefixHidden,
                 [
                     "emea",
                 ],
-                "cache is enabled",
             ),
             (
                 line_no(),
-                False,
-                "some_command host goto e| dev", CompType.PrefixHidden,
+                "some_command service goto prod a|", CompType.PrefixHidden,
                 [
-                    "emea",
+                    "aaa",
                 ],
-                "cache is disabled",
             ),
         ]
         # @formatter:on
 
+        # Extend test cases with generated data
+        # (Cartesian product with all `DistinctValuesQuery` and enabled|disabled cache):
+        extended_test_cases: list[tuple[int, str, CompType, list[str], DistinctValuesQuery, bool]] = []
         for test_case in test_cases:
-            with self.subTest(test_case):
+            for extended_params in itertools.product(
+                # distinct_values_query:
+                # Run for different implementations
+                # (even though it may not matter as they are called via the same instance method = same wrap mock to test):
+                DistinctValuesQuery,
+                # enable_query_cache:
+                [
+                    True,
+                    False,
+                ],
+            ):
+                extended_test_cases.append(test_case + extended_params)
+
+        for extended_test_case in extended_test_cases:
+            with self.subTest(extended_test_case):
                 (
                     line_number,
-                    enable_query_cache,
                     test_line,
                     comp_type,
                     expected_suggestions,
-                    case_comment,
-                ) = test_case
+                    distinct_values_query,
+                    enable_query_cache,
+                ) = extended_test_case
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 env_mock_builder = (
                     ServerOnlyEnvMockBuilder()
                     .set_enable_query_cache(enable_query_cache)
+                    .set_distinct_values_query(distinct_values_query)
                     .set_test_data_ids_to_load(["TD_63_37_05_36"])  # demo
                 )
                 with env_mock_builder.build():
+                    # Force restart of the server for `LocalClient` before tests:
+                    LocalClientCommandFactory.local_server = None
                     # Start `LocalServer` with data:
                     server_config = server_config_desc.from_default_file()
                     local_server = LocalServer(server_config)
                     local_server.start_local_server()
                     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
 
-                    fq_method_name = f"{QueryEngine.__module__}.{QueryEngine._process_prop_values.__qualname__}"
-
                     # 1st run:
                     actual_suggestions_1st_run = "1st"
-                    with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
+                    with wrap_instance_method(
+                        local_server.query_engine,
+                        local_server.query_engine._query_prop_values,
+                    ) as method_wrap_mock:
                         actual_suggestions_1st_run = self.run_completion(
                             ShellContext(
                                 command_line = command_line,
@@ -85,13 +103,16 @@ class ThisTestClass(BaseTestClass):
                             ).create_call_context(),
                             propose_arg_values_handler,
                             expected_suggestions,
-                            method_mock,
+                            method_wrap_mock,
                             # 1st time: processing is always called:
                             True,
                         )
                     # 2nd run:
                     actual_suggestions_2nd_run = "2nd"
-                    with mock.patch(fq_method_name, wraps = QueryEngine._process_prop_values) as method_mock:
+                    with wrap_instance_method(
+                        local_server.query_engine,
+                        local_server.query_engine._query_prop_values,
+                    ) as method_wrap_mock:
                         actual_suggestions_2nd_run = self.run_completion(
                             ShellContext(
                                 command_line = command_line,
@@ -102,7 +123,7 @@ class ThisTestClass(BaseTestClass):
                             ).create_call_context(),
                             propose_arg_values_handler,
                             expected_suggestions,
-                            method_mock,
+                            method_wrap_mock,
                             # 2nd time: not called when cache is enabled, called when cache is disabled:
                             not enable_query_cache,
                         )
@@ -113,11 +134,11 @@ class ThisTestClass(BaseTestClass):
         call_ctx: CallContext,
         propose_arg_values_handler,
         expected_suggestions,
-        method_mock,
+        method_wrap_mock,
         is_called,
     ):
         response_dict = propose_arg_values_handler.handle_request(call_ctx)
         actual_suggestions = response_dict[arg_values_]
         self.assertEqual(expected_suggestions, actual_suggestions)
-        self.assertEqual(method_mock.called, is_called)
+        self.assertEqual(method_wrap_mock.called, is_called)
         return actual_suggestions

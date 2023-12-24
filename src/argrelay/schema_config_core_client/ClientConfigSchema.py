@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 

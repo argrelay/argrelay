@@ -43,7 +43,7 @@ class ThisTestClass(BaseTestClass):
         "__future__": [],
         "argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand": [
             "argrelay.enum_desc.ServerAction",
-            "argrelay.misc_helper.ElapsedTime",
+            "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ConnectionConfig",
             "argrelay.server_spec.CallContext",
             "json",
@@ -55,7 +55,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.enum_desc.CompType",
             "argrelay.enum_desc.ServerAction",
             "argrelay.enum_desc.TermColor",
-            "argrelay.misc_helper",
+            "argrelay.misc_helper_common",
             "argrelay.server_spec.CallContext",
             "dataclasses",
             "os"
@@ -74,21 +74,21 @@ class ThisTestClass(BaseTestClass):
         "argrelay.enum_desc.TermColor": [
             "enum"
         ],
-        "argrelay.misc_helper": [
+        "argrelay.misc_helper_common": [
             "os",
             "sys"
         ],
-        "argrelay.misc_helper.ElapsedTime": [
+        "argrelay.misc_helper_common.ElapsedTime": [
             "__future__",
-            "argrelay.misc_helper",
+            "argrelay.misc_helper_common",
             "time"
         ],
         "argrelay.relay_client.__main__": [
             "argrelay.client_spec.ShellContext",
             "argrelay.enum_desc.CompType",
             "argrelay.enum_desc.ServerAction",
-            "argrelay.misc_helper",
-            "argrelay.misc_helper.ElapsedTime",
+            "argrelay.misc_helper_common",
+            "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ClientConfig",
             "argrelay.runtime_data.ConnectionConfig",
             "sys"
@@ -105,7 +105,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.enum_desc.CompScope",
             "argrelay.enum_desc.ServerAction",
             "argrelay.enum_desc.TermColor",
-            "argrelay.misc_helper",
+            "argrelay.misc_helper_common",
             "dataclasses"
         ],
         "dataclasses": [],

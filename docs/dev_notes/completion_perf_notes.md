@@ -1,6 +1,16 @@
 
 These are notes on optimization done for end-to-end request-response specifically for Tab-completion.
 
+# Scope
+
+The server-side query execution is factored out from this doc - here:
+*    the focus is on data round-trip
+*    all tests use the same (small) data set
+
+For server-side query optimization with different data set sizes see instead:
+*   `DistinctValuesQuery`
+*   `test_QueryEngine_perf.py`
+
 # Results ahead of details
 
 The biggest perf impact is contributed by `import`-s<br/>

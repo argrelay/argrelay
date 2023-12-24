@@ -9,7 +9,7 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.DescribeLineArgsServerRequestHandler import DescribeLineArgsServerRequestHandler
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLineArgsServerRequestHandler
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_

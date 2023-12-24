@@ -1,7 +1,7 @@
 from typing import Type
 
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.runtime_context.AbstractPlugin import import_plugin_class
 from argrelay.schema_response.InvocationInput import InvocationInput

@@ -7,13 +7,17 @@ from cachetools import TTLCache
 from pymongo.collection import Collection
 from pymongo.database import Database
 
+from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 from argrelay.relay_server.QueryResult import QueryResult
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
+from argrelay.schema_config_interp.DataEnvelopeSchema import mongo_id_
+from argrelay.schema_response.EnvelopeContainerSchema import found_count_
 
 
 class QueryEngine:
@@ -22,6 +26,7 @@ class QueryEngine:
         self,
         query_cache_config: QueryCacheConfig,
         mongo_db: Database,
+        distinct_values_query: DistinctValuesQuery,
     ):
         self.mongo_db: Database = mongo_db
         self.mongo_col: Collection = self.mongo_db[data_envelopes_]
@@ -30,6 +35,7 @@ class QueryEngine:
             ttl = query_cache_config.query_cache_ttl_sec,
         )
         self.enable_query_cache: bool = query_cache_config.enable_query_cache
+        self.distinct_values_query: DistinctValuesQuery = distinct_values_query
 
     def query_data_envelopes(
         self,
@@ -94,6 +100,39 @@ class QueryEngine:
         query_dict,
         search_control,
     ) -> QueryResult:
+        """
+        Implements query for FS_02_25_41_81 `query_enum_items_func`.
+        """
+        if self.distinct_values_query is DistinctValuesQuery.original_find_and_loop:
+            return self._query_prop_values_original_find_and_loop(
+                assigned_types_to_values,
+                query_dict,
+                search_control,
+            )
+        elif self.distinct_values_query is DistinctValuesQuery.native_distinct:
+            return self._query_prop_values_native_distinct(
+                assigned_types_to_values,
+                query_dict,
+                search_control,
+            )
+        elif self.distinct_values_query is DistinctValuesQuery.native_aggregate:
+            return self._query_prop_values_native_aggregate(
+                assigned_types_to_values,
+                query_dict,
+                search_control,
+            )
+        else:
+            raise RuntimeError(self.distinct_values_query)
+
+    def _query_prop_values_original_find_and_loop(
+        self,
+        assigned_types_to_values,
+        query_dict,
+        search_control,
+    ) -> QueryResult:
+        """
+        See `DistinctValuesQuery.original_find_and_loop`.
+        """
 
         ElapsedTime.measure("before_mongo_find")
         mongo_result = self.mongo_col.find(query_dict)
@@ -104,6 +143,118 @@ class QueryEngine:
             assigned_types_to_values,
         )
         ElapsedTime.measure("after_process_results")
+        return query_result
+
+    def _query_prop_values_native_distinct(
+        self,
+        assigned_types_to_values,
+        query_dict,
+        search_control,
+    ) -> QueryResult:
+        """
+        See `DistinctValuesQuery.native_distinct`.
+        """
+
+        remaining_types_to_values: dict[str, list[str]] = {}
+        data_envelopes = []
+
+        # Construct grouping instruction:
+        for prop_name in search_control.types_to_keys_dict:
+            # If assigned/consumed, `arg_type` must not appear as an option again:
+            if prop_name not in assigned_types_to_values:
+
+                ElapsedTime.measure(f"before_mongo_distinct.{prop_name}")
+                distinct_vals: list = self.mongo_col.distinct(prop_name, query_dict)
+                ElapsedTime.measure(f"after_mongo_distinct.{prop_name}")
+
+                if len(distinct_vals) > 0:
+                    remaining_types_to_values[prop_name] = sorted(distinct_vals)
+
+                ElapsedTime.measure(f"after_process_results.{prop_name}")
+
+        found_count = self.mongo_col.count_documents(query_dict)
+        ElapsedTime.measure("after_count_documents")
+        if found_count == 1:
+            data_envelopes.append(self.mongo_col.find_one(query_dict))
+            ElapsedTime.measure("after_find_one")
+
+        query_result = QueryResult(
+            data_envelopes,
+            found_count,
+            remaining_types_to_values,
+        )
+        return query_result
+
+    def _query_prop_values_native_aggregate(
+        self,
+        assigned_types_to_values,
+        query_dict,
+        search_control,
+    ) -> QueryResult:
+        """
+        See `DistinctValuesQuery.native_aggregate`.
+        """
+
+        remaining_types_to_values: dict[str, list[str]] = {}
+        data_envelopes = []
+
+        group_dict: dict = {
+            "$group": {
+                mongo_id_: None,
+            },
+        }
+
+        # Construct grouping instruction:
+        inner_group_dict: dict = group_dict["$group"]
+        for prop_name in search_control.types_to_keys_dict:
+            # If assigned/consumed, `arg_type` must not appear as an option again:
+            if prop_name not in assigned_types_to_values:
+                inner_group_dict[prop_name] = {
+                    "$addToSet": f"${prop_name}",
+                }
+
+        # Count number of objects:
+        # Direct use of `$count` did not work:
+        # https://www.mongodb.com/docs/manual/reference/operator/aggregation/count/#behavior
+        inner_group_dict[found_count_] = {
+            "$sum": 1,
+        }
+
+        # Overall MongoDB:
+        aggregate_pipeline = [
+            {
+                "$match": query_dict,
+            },
+            group_dict,
+        ]
+
+        ElapsedTime.measure("before_mongo_aggregate")
+        mongo_result = self.mongo_col.aggregate(aggregate_pipeline)
+        ElapsedTime.measure("after_mongo_aggregate")
+
+        # Get the first (and the only) object from the result:
+        result_object: dict = next(iter(mongo_result))
+
+        found_count: int = result_object[found_count_]
+        result_object.pop(mongo_id_)
+        result_object.pop(found_count_)
+
+        for arg_type in result_object:
+            # Flatten and deduplicate:
+            arg_vals = list(dict.fromkeys(flatten_list(result_object[arg_type])))
+            if len(arg_vals) > 0:
+                remaining_types_to_values[arg_type] = sorted(arg_vals)
+
+        if found_count == 1:
+            data_envelopes.append(self.mongo_col.find_one(query_dict))
+
+        ElapsedTime.measure("after_process_results")
+
+        query_result = QueryResult(
+            data_envelopes,
+            found_count,
+            remaining_types_to_values,
+        )
         return query_result
 
     @staticmethod
@@ -148,11 +299,11 @@ class QueryEngine:
 
                         # Deduplicate: ensure unique `arg_value`-s:
                         for arg_val in arg_vals:
-                            if arg_val not in val_list:
-                                val_list.append(arg_val)
+                            insert_unique_to_sorted_list(val_list, arg_val)
 
-        # Populate max one `data_envelope` on prop query for performance reasons:
-        if data_envelope is not None:
+        # Populate max one (last) `data_envelope` on prop query for performance reasons:
+        if found_count == 1:
+            assert data_envelope is not None
             data_envelopes.append(data_envelope)
 
         return QueryResult(
@@ -160,6 +311,26 @@ class QueryEngine:
             found_count,
             remaining_types_to_values,
         )
+
+
+def flatten_list(arg_vals: list | str) -> list[str]:
+    """
+    FS_06_99_43_60 providing scalar value for list/array field is also possible (and vice versa).
+    """
+    if not isinstance(arg_vals, list):
+        # Scalar value -> list:
+        return [arg_vals]
+    else:
+        flat_list: list[str] = []
+        for arg_val in arg_vals:
+            # FS_06_99_43_60 (list arg value): avoid list of lists per value:
+            # In case of using `aggregate` from MongoDB API, lists can contain lists - flatten:
+            if isinstance(arg_val, list):
+                # List of lists -> list:
+                flat_list.extend(flatten_list(arg_val))
+            else:
+                flat_list.append(arg_val)
+        return flat_list
 
 
 def scalar_to_list_values(arg_type_val: list | str) -> list[str]:
