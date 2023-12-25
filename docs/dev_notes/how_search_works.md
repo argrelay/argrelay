@@ -56,7 +56,7 @@ TODO: Create separate FS with the first two sections of this doc to describe arg
 
 # Explanation
 
-TODO: Merge this section of the doc with FS_55_57_45_04 command interp.
+TODO: Merge this section of the doc with FS_55_57_45_04 enum selector.
 
 *   The ultimate purpose of the command line is to execute some function with some arguments.
 

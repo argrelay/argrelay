@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Union
 
 from argrelay.enum_desc.InterpStep import InterpStep
+from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
@@ -124,7 +125,7 @@ class InterpTreeInterp(AbstractInterp):
             self.interp_tree_rel_path,
         )
         if isinstance(curr_sub_tree, dict):
-            proposed_values = [
+            for proposed_value in [
                 x for x in curr_sub_tree
                 if (
                     isinstance(x, str)
@@ -134,8 +135,8 @@ class InterpTreeInterp(AbstractInterp):
                     # FS_32_05_46_00: using `startswith`:
                     x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)
                 )
-            ]
-            self.interp_ctx.comp_suggestions.extend(proposed_values)
+            ]:
+                insert_unique_to_sorted_list(self.interp_ctx.comp_suggestions, proposed_value)
 
     def is_eligible_for_suggestion(self):
         """

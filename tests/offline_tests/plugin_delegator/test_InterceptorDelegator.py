@@ -23,23 +23,14 @@ class ThisTestClass(LocalTestClass):
                 "some_command intercept |",
                 CompType.PrefixShown,
                 [
-                    "enum",
-                    "help",
-                    # TODO_77_12_50_80: fix duplicates:
-                    "intercept",
-                    # TODO_77_12_50_80: fix duplicates:
-                    "subtree",
                     "desc",
                     "echo",
-                    "goto",
-                    "list",
-                    # TODO_77_12_50_80: fix duplicates:
-                    "subtree",
-                    # TODO_77_12_50_80: fix duplicates:
                     "enum",
+                    "goto",
                     "help",
-                    # TODO_77_12_50_80: fix duplicates:
                     "intercept",
+                    "list",
+                    "subtree",
                 ],
                 None,
                 None,
@@ -48,12 +39,12 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
-                    "some_command intercept goto service s_b |",
+                "some_command intercept goto service s_b |",
                 CompType.PrefixShown,
                 [
                     "dev",
-                    "qa",
                     "prod",
+                    "qa",
                 ],
                 None,
                 None,
@@ -93,8 +84,6 @@ class ThisTestClass(LocalTestClass):
                 "some_command intercept hel|",
                 CompType.PrefixShown,
                 [
-                    "help",
-                    # TODO_77_12_50_80: fix duplicates:
                     "help",
                 ],
                 {},

@@ -3,7 +3,7 @@ import time
 from random import randrange
 
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 
 # Use regular Tab indent size:
 spinner_length: int = 4

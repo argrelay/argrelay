@@ -12,8 +12,9 @@ See: docs/dev_notes/screencast_notes.md
 <a name="argrelay-about"></a>
 # What's this?
 
-A integration framework to provide contextual Tab-auto-completion<br/>
-and structured search filter for command line interface (CLI) to any command in Bash shell.
+A tool to provide object selector (structured data search filter) for command line interface (CLI).
+
+This naturally enables contextual Tab-auto-completion in Bash shell by wrapping any command.
 
 <a name="argrelay-general-idea"></a>
 # General idea
@@ -25,9 +26,9 @@ and structured search filter for command line interface (CLI) to any command in 
 | :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control         |
 | :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                         |
 
-While staying a CLI tool to retain other advantages, `argrelay` attempts to provide intuitive data lookup.
+While retaining advantages of a CLI tool, `argrelay` tries to provide intuitive data lookup.
 
-If intended operation is in CLI, selecting all args via CLI avoids multiple of coping-and-pasting with window switching.
+Selecting args directly in shell avoids error-prone coping-and-pasting and clumsy window switching.
 
 <a name="argrelay-original-use-case"></a>
 # Original use case
@@ -81,7 +82,7 @@ sequenceDiagram
     autonumber
     participant P as Any program:<br/>user-required<br/>client-side-local
     actor U as <br/>User
-    box rgb(255, 255, 255) <br/>argrelay
+    box transparent <br/>argrelay
     participant C as Client
     participant S as Server
     end
@@ -218,13 +219,15 @@ Learn more about [how search works][how_search_works.md].
 
 There are two options at the moment - both using [MongoDB][MongoDB] API:
 
-| Category       | `mongomock` (default)                                                                   | `PyMongo`                                                                                        |
-|:---------------|:----------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
-| Data set size: | practical limit ~ 10K                                                                   | tested at 1M                                                                                     |
-| Pro:           | nothing else to install                                                                 | no practical data set size limit found (yet)<br/> for `argrelay` intended use cases              |
-| Con:           | understandably, does not meet<br/> non-functional requirements<br/> for large data sets | require some knowledge of MongoDB,<br/> additional setup,<br/> additional running processes<br/> |
+| Category       | `mongomock` (default)                                                                | `pymongo`                                                                                        |
+|:---------------|:-------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
+| Data set size: | practical convenience limit ~ 10K objects                                            | tested with ~ 1M objects                                                                         |
+| Pro:           | nothing else to install                                                              | no practical data set size limit found (yet)<br/> for `argrelay` intended use cases              |
+| Con:           | understandably, does not meet<br/> performance requirements<br/> for large data sets | require some knowledge of MongoDB,<br/> additional setup,<br/> additional running processes<br/> |
 
-`PyMongo` connects to a running MongoDB instance which has to be configured in<br/>
+Quantitative comparison tables between the two can be seen in docstring for `DistinctValuesQuery` enum.
+
+`pymongo` connects to a running MongoDB instance which has to be configured in<br/>
 `argrelay.server.yaml` under `mongo_config` and `mongomock` should be disabled:
 
 ```diff
@@ -241,7 +244,7 @@ sequenceDiagram
     actor U as <br/>User
     participant B as Bash
     participant P as Any program:<br/>user-required<br/>client-side-local
-    box rgb(255, 255, 255) <br/>argrelay
+    box transparent <br/>argrelay
     participant C as Client
     participant S as Server
     participant DB as Data backend<br/>(internal or external)

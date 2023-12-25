@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 
 
 @dataclass(frozen = True)

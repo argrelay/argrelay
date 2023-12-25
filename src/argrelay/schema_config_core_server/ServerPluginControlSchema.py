@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from marshmallow import Schema, RAISE, fields, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.ServerPluginControl import ServerPluginControl
 
 first_interp_factory_id_ = "first_interp_factory_id"

@@ -7,7 +7,7 @@ from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.server_spec.CallContext import CallContext
 
 UNKNOWN_COMP_KEY: str = str(0)

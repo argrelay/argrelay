@@ -1,8 +1,8 @@
 from marshmallow import Schema, fields, RAISE, post_load, pre_dump
 
 from argrelay.enum_desc.ArgSource import ArgSource
-from argrelay.misc_helper import ensure_value_is_enum
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common import ensure_value_is_enum
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
 arg_value_ = "arg_value"

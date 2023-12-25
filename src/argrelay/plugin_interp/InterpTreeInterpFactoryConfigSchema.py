@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
 from argrelay.plugin_interp.TreeWalker import default_tree_leaf_
 

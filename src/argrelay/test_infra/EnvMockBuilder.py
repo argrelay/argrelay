@@ -14,7 +14,7 @@ import sys
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from io import StringIO
-from typing import Type, Union
+from typing import Type, Union, Callable
 from unittest import mock
 
 import mongomock
@@ -35,6 +35,7 @@ from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.custom_integ.ServiceLoaderConfigSchema import test_data_ids_to_load_
 from argrelay.enum_desc.CallConv import CallConv
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -45,8 +46,10 @@ from argrelay.schema_config_core_client.ClientConfigSchema import (
     optimize_completion_request_,
     show_pending_spinner_,
 )
-from argrelay.schema_config_core_server.MongoConfigSchema import mongo_server_, use_mongomock_only_
-from argrelay.schema_config_core_server.MongoServerConfigSchema import start_server_
+from argrelay.schema_config_core_server.MongoConfigSchema import (
+    use_mongomock_only_,
+    distinct_values_query_,
+)
 from argrelay.schema_config_core_server.QueryCacheConfigSchema import enable_query_cache_
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     mongo_config_,
@@ -89,7 +92,7 @@ class EnvMockBuilder:
 
         *   `set_client_config_with_local_server`
 
-    *   Mock MongoDB client - see usage of: `mock_mongo_client`
+    *   Mock MongoDB client - see usage of: `use_mongomock_only`
 
     *   Simple selection of test data - see usage of: `set_test_data_ids_to_load`
 
@@ -127,7 +130,6 @@ class EnvMockBuilder:
 
     server_config_dict: Union[dict, None] = field(default_factory = lambda: None)
     mock_server_config_file_read: bool = field(default = False)
-    is_server_config_with_mongo_start: bool = field(default = False)
     enable_demo_git_loader: bool = field(default = False)
 
     actual_stdout: StringIO = field(default = None)
@@ -136,7 +138,7 @@ class EnvMockBuilder:
     actual_stderr: StringIO = field(default = None)
     capture_stderr: bool = field(default = False)
 
-    mock_mongo_client: Union[bool, None] = field(default = None)
+    use_mongomock_only: Union[bool, None] = field(default = None)
 
     assert_on_close: bool = field(default = True)
 
@@ -155,6 +157,14 @@ class EnvMockBuilder:
     """
 
     enable_query_cache: Union[bool, None] = field(default = None)
+    """
+    See `QueryCacheConfig.enable_query_cache`.
+    """
+
+    distinct_values_query: Union[DistinctValuesQuery, None] = field(default = None)
+    """
+    See `DistinctValuesQuery`.
+    """
 
     reset_local_server: bool = field(default = True)
     """
@@ -260,10 +270,6 @@ class EnvMockBuilder:
         self.mock_server_config_file_read = given_val
         return self
 
-    def set_server_config_with_mongo_start(self, given_val: bool):
-        self.is_server_config_with_mongo_start = given_val
-        return self
-
     def set_enable_demo_git_loader(self, given_val: bool):
         self.enable_demo_git_loader = given_val
         return self
@@ -276,11 +282,11 @@ class EnvMockBuilder:
         self.capture_stderr = given_val
         return self
 
-    def set_mock_mongo_client(
+    def set_use_mongomock_only(
         self,
         given_val: Union[bool, None],
     ):
-        self.mock_mongo_client = given_val
+        self.use_mongomock_only = given_val
         return self
 
     def set_test_data_ids_to_load(self, test_data_ids_to_load: list[str]):
@@ -308,6 +314,13 @@ class EnvMockBuilder:
         given_val: Union[bool, None],
     ):
         self.enable_query_cache = given_val
+        return self
+
+    def set_distinct_values_query(
+        self,
+        distinct_values_query: Union[distinct_values_query, None]
+    ):
+        self.distinct_values_query = distinct_values_query
         return self
 
     ####################################################################################################################
@@ -370,16 +383,16 @@ class EnvMockBuilder:
         if self.server_config_dict is not None:
             assert self.mock_server_config_file_read
 
-        if self.is_server_config_with_mongo_start:
-            assert self.mock_server_config_file_read
-
         if self.enable_demo_git_loader:
             assert self.mock_server_config_file_read
 
         if self.enable_query_cache is not None:
             assert self.mock_server_config_file_read
 
-        if self.mock_mongo_client is not None:
+        if self.distinct_values_query is not None:
+            assert self.mock_server_config_file_read
+
+        if self.use_mongomock_only is not None:
             assert self.mock_server_config_file_read
 
         ################################################################################################################
@@ -411,9 +424,6 @@ class EnvMockBuilder:
             """
             assert self.server_config_dict is not None
 
-            self.server_config_dict[mongo_config_][mongo_server_][
-                start_server_
-            ] = self.is_server_config_with_mongo_start
             plugin_entry = self.server_config_dict[plugin_instance_entries_][GitRepoLoader.__name__]
             plugin_entry[plugin_enabled_] = self.enable_demo_git_loader
 
@@ -423,8 +433,11 @@ class EnvMockBuilder:
             if self.enable_query_cache is not None:
                 self.server_config_dict[query_cache_config_][enable_query_cache_] = self.enable_query_cache
 
-            if self.mock_mongo_client is not None:
-                self.server_config_dict[mongo_config_][use_mongomock_only_] = self.mock_mongo_client
+            if self.distinct_values_query is not None:
+                self.server_config_dict[mongo_config_][distinct_values_query_] = self.distinct_values_query.name
+
+            if self.use_mongomock_only is not None:
+                self.server_config_dict[mongo_config_][use_mongomock_only_] = self.use_mongomock_only
 
             # set mocked file content:
             self.file_mock.path_to_data[server_config_desc.get_adjusted_file_path()] = yaml.dump(
@@ -706,6 +719,22 @@ def _mock_delegator_plugin(path_to_invoke_action):
 def mock_subprocess_popen(expected_args_to_output):
     with mock.patch("subprocess.Popen", PopenMock(expected_args_to_output)) as popen_mock:
         yield popen_mock
+
+
+@contextlib.contextmanager
+def wrap_instance_method(
+    any_instance,
+    callable_on_instance: Callable,
+):
+    """
+    Wraps `callable_on_instance` by a mock which still triggers original method (to test whether original is called).
+    """
+    with mock.patch.object(
+        any_instance,
+        callable_on_instance.__name__,
+        wraps = callable_on_instance,
+    ) as method_wrap_mock:
+        yield method_wrap_mock
 
 
 @contextlib.contextmanager

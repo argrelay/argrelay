@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from marshmallow import Schema, RAISE, fields
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
 test_data_ids_to_load_ = "test_data_ids_to_load"
 

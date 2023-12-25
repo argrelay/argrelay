@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.server_spec.CallContext import CallContext
 
 

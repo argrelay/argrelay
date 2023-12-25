@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, RAISE, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 
 enable_query_cache_ = "enable_query_cache"

@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_context.InitControl import InitControl
 
 init_types_to_values_ = "init_types_to_values"

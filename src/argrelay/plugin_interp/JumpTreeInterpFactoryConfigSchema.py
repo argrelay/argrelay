@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from marshmallow import RAISE, fields
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     FuncTreeInterpFactoryConfigSchema,
     func_tree_interp_config_desc,

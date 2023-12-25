@@ -42,21 +42,14 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(), "some_command |", CompType.PrefixHidden,
                 [
-                    "enum",
-                    "help",
-                    "intercept",
-                    "subtree",
                     "desc",
                     "echo",
-                    "goto",
-                    "list",
-                    # TODO_77_12_50_80: Avoid duplicates:
-                    "subtree",
-                    # TODO_77_12_50_80: Avoid duplicates:
                     "enum",
+                    "goto",
                     "help",
-                    # TODO_77_12_50_80: Avoid duplicates:
                     "intercept",
+                    "list",
+                    "subtree",
                 ],
                 # TODO: Maybe we should suggest selection for `internal` func like `intercept` as well?
                 "Suggest from the set of values for the first unassigned arg type.",
@@ -91,8 +84,8 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command upstream goto host |", CompType.PrefixHidden,
                 [
                     "dev",
-                    "qa",
                     "prod",
+                    "qa",
                 ],
                 "`PrefixHidden`: arg values for `ClusterName` search is specified ahead function query "
                 "but order is \"ignored\"",
@@ -101,16 +94,16 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command upstream goto host |", CompType.SubsequentHelp,
                 [
                     "dev",
-                    "qa",
                     "prod",
+                    "qa",
                 ],
                 "`SubsequentHelp` behaves the same way as `PrefixHidden`",
             ),
             (
                 line_no(), "some_command host goto upstream a|", CompType.SubsequentHelp,
                 [
-                    "apac",
                     "amer",
+                    "apac",
                 ],
                 "Suggestions for subsequent Tab are limited by prefix",
             ),
@@ -176,8 +169,8 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(), "some_command host goto upstream \"x\" a|", CompType.PrefixShown,
                 [
-                    "apac",
                     "amer",
+                    "apac",
                 ],
                 "FS_92_75_93_01: Ensure double quotes (which are used as special char in JSON format) "
                 "are at least not causing problem in (A) unconsumed (B) non-tangent arg for (C) local server test.",
@@ -361,8 +354,8 @@ class ThisTestClass(LocalTestClass):
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}24{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} desc echo goto list subtree enum help intercept 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit host service repo desc echo goto list enum help intercept 
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} desc echo enum goto help intercept list subtree 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit desc echo enum goto help host intercept list repo service 
 """,
             ),
             (
@@ -380,7 +373,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: emea {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-emea-upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa sss bbb 
+{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa bbb sss 
 {" " * indent_size}{TermColor.remaining_value.value}ServiceName: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}a{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}b{TermColor.reset_style.value} 
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}HostName: asdf-du {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
@@ -401,12 +394,12 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: host {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassHost.name}: {TermColor.found_count_n.value}10{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*CodeMaturity: ?{TermColor.reset_style.value} dev qa prod 
+{" " * indent_size}{TermColor.remaining_value.value}*CodeMaturity: ?{TermColor.reset_style.value} dev prod qa 
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}GeoRegion: ?{TermColor.reset_style.value} apac emea amer 
-{" " * indent_size}{TermColor.remaining_value.value}ClusterName: ?{TermColor.reset_style.value} dev-apac-upstream dev-emea-upstream dev-amer-upstream qa-apac-upstream qa-amer-upstream prod-apac-upstream 
-{" " * indent_size}{TermColor.remaining_value.value}HostName: ?{TermColor.reset_style.value} zxcv-du asdf-du qwer-du hjkl-qu poiu-qu rtyu-qu rt-qu qwer-pd-1 qwer-pd-3 qwer-pd-2 
-{" " * indent_size}{TermColor.remaining_value.value}IpAddress: ?{TermColor.reset_style.value} ip.192.168.1.1 ip.172.16.2.1 ip.192.168.3.1 ip.192.168.4.1 ip.172.16.4.2 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 ip.172.16.7.2 
+{" " * indent_size}{TermColor.remaining_value.value}GeoRegion: ?{TermColor.reset_style.value} amer apac emea 
+{" " * indent_size}{TermColor.remaining_value.value}ClusterName: ?{TermColor.reset_style.value} dev-amer-upstream dev-apac-upstream dev-emea-upstream prod-apac-upstream qa-amer-upstream qa-apac-upstream 
+{" " * indent_size}{TermColor.remaining_value.value}HostName: ?{TermColor.reset_style.value} asdf-du hjkl-qu poiu-qu qwer-du qwer-pd-1 qwer-pd-2 qwer-pd-3 rt-qu rtyu-qu zxcv-du 
+{" " * indent_size}{TermColor.remaining_value.value}IpAddress: ?{TermColor.reset_style.value} ip.172.16.2.1 ip.172.16.4.2 ip.172.16.7.2 ip.192.168.1.1 ip.192.168.3.1 ip.192.168.4.1 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 
 {ServiceArgType.AccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}AccessType: [none]{TermColor.reset_style.value}
 """,
@@ -425,7 +418,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}FlowStage: upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}GeoRegion: apac {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: prod-apac-upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa sss bbb 
+{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa bbb sss 
 {" " * indent_size}{TermColor.remaining_value.value}ServiceName: ?{TermColor.reset_style.value} s_a s_b 
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}

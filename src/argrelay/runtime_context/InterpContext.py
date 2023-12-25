@@ -5,8 +5,8 @@ from dataclasses import field, dataclass
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper import eprint
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common import eprint
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
@@ -79,7 +79,7 @@ class InterpContext:
 
     comp_suggestions: list[str] = field(init = False, default_factory = lambda: [])
     """
-    List of completion suggestions.
+    Sorted list of completion suggestions.
     """
 
     interp_tree_abs_path: tuple[str, ...] = field(init = False, default = tuple([]))
@@ -153,9 +153,7 @@ class InterpContext:
         first_interp_factory_id: str,
     ) -> None:
         """
-        Main interpretation loop.
-
-        Implements FS_55_57_45_04 command interp.
+        Implements FS_55_57_45_04 enum selector version of FS_15_79_76_85 line processor.
 
         Start with initial interpreter and continue until curr interpreter returns no more next interpreter.
         """

@@ -3,7 +3,7 @@ from __future__ import annotations
 from marshmallow import Schema, RAISE, fields
 
 from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
 repo_base_path_ = "repo_base_path"
 repo_rel_path_ = "repo_rel_path"

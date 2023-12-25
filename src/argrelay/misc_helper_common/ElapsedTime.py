@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 
 
 class ElapsedTime:

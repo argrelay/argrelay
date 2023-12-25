@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
 error_message_ = "error_message"
 

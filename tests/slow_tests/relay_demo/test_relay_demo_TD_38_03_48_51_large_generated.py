@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -17,10 +18,12 @@ class ThisTestClass(LocalTestClass):
         Test that TD_38_03_48_51 large generated data set is functional.
         """
 
+        ServiceLoader.object_multiplier = 10
+
         test_cases = [
             (
                 line_no(), "relay_demo goto host cm1 fs2 gr3 hs|", CompType.PrefixShown,
-                [f"hs{host_number}" for host_number in range(0, 10)],
+                [f"hs{host_number}" for host_number in range(0, ServiceLoader.object_multiplier)],
                 {
                     1: {
                         ServiceArgType.CodeMaturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),

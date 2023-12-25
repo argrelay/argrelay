@@ -5,7 +5,7 @@ import time
 from contextlib import closing
 from datetime import datetime, timedelta
 
-from argrelay.misc_helper import get_argrelay_dir
+from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.test_infra import change_to_known_repo_path
@@ -30,6 +30,15 @@ class ClientServerTestClass(InOutTestClass):
     @classmethod
     def setUpClass(cls):
         InOutTestClass.setUpClass()
+        cls.start_server()
+
+    @classmethod
+    def tearDownClass(cls):
+        InOutTestClass.setUpClass()
+        cls.stop_server()
+
+    @classmethod
+    def start_server(cls):
         with change_to_known_repo_path("."):
             cls.server_proc = subprocess.Popen([
                 f"{get_argrelay_dir()}/bin/run_argrelay_server",
@@ -37,8 +46,7 @@ class ClientServerTestClass(InOutTestClass):
         cls.wait_for_connection_to_server()
 
     @classmethod
-    def tearDownClass(cls):
-        InOutTestClass.setUpClass()
+    def stop_server(cls):
         # shutdown gracefully:
         cls.server_proc.send_signal(signal.SIGINT)
         cls.server_proc.communicate()

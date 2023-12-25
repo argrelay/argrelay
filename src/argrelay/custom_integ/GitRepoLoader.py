@@ -20,7 +20,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     repo_entries_,
 )
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -113,9 +113,9 @@ class GitRepoLoader(AbstractLoader):
                     ],
                     capture_output = True,
                 )
-                ret_code = subproc.returncode
+                exit_code = subproc.returncode
 
-                if ret_code == 0:
+                if exit_code == 0:
                     pass
                 else:
                     eprint(f"ERROR: not a Git repo: {repo_root_abs_path}")

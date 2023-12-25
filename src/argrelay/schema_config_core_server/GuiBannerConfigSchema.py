@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, RAISE, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.relay_server.GuiBannerConfig import GuiBannerConfig
 
 header_html_ = "header_html"

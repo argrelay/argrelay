@@ -1,5 +1,5 @@
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.schema_response.ArgValues import ArgValues
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 

@@ -58,21 +58,14 @@ class ThisTestClass(LocalTestClass):
                 "some_command |",
                 CompType.PrefixShown,
                 [
-                    "enum",
-                    "help",
-                    "intercept",
-                    "subtree",
                     "desc",
                     "echo",
-                    "goto",
-                    "list",
-                    # TODO_77_12_50_80: Fix duplicates:
-                    "subtree",
-                    # TODO_77_12_50_80: Fix duplicates:
                     "enum",
+                    "goto",
                     "help",
-                    # TODO_77_12_50_80: Fix duplicates:
                     "intercept",
+                    "list",
+                    "subtree",
                 ],
                 {},
                 None,
@@ -84,8 +77,6 @@ class ThisTestClass(LocalTestClass):
                 "some_command inter|",
                 CompType.PrefixShown,
                 [
-                    "intercept",
-                    # TODO_77_12_50_80: Fix duplicates:
                     "intercept",
                 ],
                 {},

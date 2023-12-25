@@ -107,7 +107,7 @@ class ThisTestClass(ServerOnlyTestClass):
         )
         self.assertEqual(200, server_response.status_code)
         self.assertEqual(
-            "dev\nqa\nprod",
+            "dev\nprod\nqa",
             server_response.get_data(as_text = True),
         )
 
@@ -125,7 +125,7 @@ class ThisTestClass(ServerOnlyTestClass):
         )
         self.assertEqual(200, server_response.status_code)
         self.assertEqual(
-            "dev\nqa\nprod",
+            "dev\nprod\nqa",
             server_response.get_data(as_text = True),
         )
 
@@ -143,7 +143,7 @@ class ThisTestClass(ServerOnlyTestClass):
         )
         self.assertEqual(200, server_response.status_code)
         self.assertEqual(
-            "dev\nqa\nprod",
+            "dev\nprod\nqa",
             server_response.get_data(as_text = True),
         )
 
@@ -208,8 +208,8 @@ class ThisTestClass(ServerOnlyTestClass):
                     self.assertEqual(
                         [
                             "dev",
-                            "qa",
                             "prod",
+                            "qa",
                         ],
                         response_data[arg_values_],
                     ),

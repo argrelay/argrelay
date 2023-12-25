@@ -1,6 +1,6 @@
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_response.InterpResult import InterpResult
 from argrelay.schema_response.InterpResultSchema import (

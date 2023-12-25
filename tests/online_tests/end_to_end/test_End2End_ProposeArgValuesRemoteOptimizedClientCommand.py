@@ -17,16 +17,16 @@ class ThisTestClass(End2EndTestClass):
             (
                 line_no(), f"{self.default_bound_command} desc host dev \"some_unrecognized_token upstream |",
                 CompType.PrefixShown,
-                f"""apac
+                f"""amer
+apac
 emea
-amer
 """,
             ),
             (
                 line_no(), f"{self.default_bound_command} desc host dev \"some_unrecognized_token\" upstream a|",
                 CompType.SubsequentHelp,
-                f"""apac
-amer
+                f"""amer
+apac
 """,
             ),
         ]

@@ -1,7 +1,7 @@
 from typing import Union
 
 from argrelay.enum_desc.CompType import CompType
-from argrelay.test_infra import parse_line_and_cpos, line_no_from_ctor
+from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.TestCase import TestCase
 
 

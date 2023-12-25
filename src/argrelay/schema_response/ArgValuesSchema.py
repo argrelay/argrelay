@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, RAISE, pre_dump, post_load
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_response.ArgValues import ArgValues
 
 arg_values_ = "arg_values"

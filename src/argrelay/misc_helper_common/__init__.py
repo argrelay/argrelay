@@ -1,4 +1,7 @@
 """
+A helper module which is import-latency-sensitive because it is used by a client (as well as a server).
+
+For server-only helper, see `misc_helper_server`.
 """
 import os
 import sys

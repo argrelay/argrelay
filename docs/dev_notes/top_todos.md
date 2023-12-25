@@ -204,12 +204,6 @@ Ease integration into external project:
     See also: FS_80_45_89_81 / dump_config
     REGISTER
 
-Perf:
-
-*   Try querying values only - many queries may only need values (to provide suggestion) not entire `data_envelope`-s:
-    https://stackoverflow.com/a/11991854/441652
-    REGISTER
-
 Docs:
 
 *   Split "arg" group of concepts (`arg_value`, `arg_type`) and "prop" group of concepts (`prop_value`, `prop_type`):

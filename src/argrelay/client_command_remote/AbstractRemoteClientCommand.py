@@ -5,7 +5,7 @@ import requests
 from marshmallow import Schema
 
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
-from argrelay.misc_helper.ElapsedTime import ElapsedTime
+from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.schema_request.CallContextSchema import call_context_desc

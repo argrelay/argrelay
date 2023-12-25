@@ -1,7 +1,7 @@
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError, post_load
 
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_context.SearchControl import SearchControl
 
 envelope_class_ = "envelope_class"

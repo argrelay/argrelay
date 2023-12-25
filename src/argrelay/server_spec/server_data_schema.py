@@ -9,7 +9,7 @@ from __future__ import annotations
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 from argrelay.schema_response.InterpResultSchema import interp_result_desc

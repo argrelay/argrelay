@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
-from argrelay.misc_helper import eprint
+from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -37,6 +37,7 @@ class LocalServer:
         self.query_engine: QueryEngine = QueryEngine(
             self.server_config.query_cache_config,
             self.get_mongo_database(),
+            self.server_config.mongo_config.distinct_values_query,
         )
         self.help_hint_cache: HelpHintCache = HelpHintCache(
             self.query_engine,
@@ -50,6 +51,9 @@ class LocalServer:
         self._load_mongo_data()
         self._create_mongo_index()
         self._populate_help_hint_cache()
+
+    def stop_local_server(self):
+        self._stop_mongo_server()
 
     def get_mongo_database(self):
         return self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
@@ -126,6 +130,9 @@ class LocalServer:
 
     def _start_mongo_server(self):
         self.mongo_server.start_mongo_server(self.server_config.mongo_config)
+
+    def _stop_mongo_server(self):
+        self.mongo_server.stop_mongo_server()
 
     def _load_mongo_data(self):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]

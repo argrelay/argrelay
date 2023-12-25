@@ -9,7 +9,7 @@ class ThisTestClass(MongoClientTestClass):
     def test_live_query_distinct_values_for_each_indexed_field(self):
         """
         Example to search distinct values for each field individually in single query:
-        https://stackoverflow.com/q/63592489/441652
+        https://stackoverflow.com/a/63595331/441652
         """
 
         known_arg_types = [

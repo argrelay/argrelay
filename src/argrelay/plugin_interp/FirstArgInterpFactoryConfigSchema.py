@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields
 
-from argrelay.misc_helper.TypeDesc import TypeDesc
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
 
 first_arg_vals_to_next_interp_factory_ids_ = "first_arg_vals_to_next_interp_factory_ids"
