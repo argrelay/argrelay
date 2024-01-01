@@ -11,6 +11,7 @@ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
@@ -27,12 +28,14 @@ class InterceptDelegator(AbstractDelegator):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
 
     def get_supported_func_envelopes(
@@ -88,7 +91,7 @@ class InterceptDelegator(AbstractDelegator):
         # TODO_10_72_28_05: support special funcs for all commands:
         #                   Delegator must select next interp_factory_id based on `interp_tree_abs_path` (not based on single `next_interp_plugin_instance_id`).
         #                   It is a double jump (first jump based on selected and specified func call from delegator to interp, second from interp via jump tree).
-        return self.config_dict[next_interp_plugin_instance_id_]
+        return self.plugin_config_dict[next_interp_plugin_instance_id_]
 
     def run_invoke_control(
         self,

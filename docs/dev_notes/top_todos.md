@@ -66,17 +66,6 @@ Integration:
     Tracked via issue: https://github.com/argrelay/argrelay/issues/20Live
     CLOSED
 
-*   Search via different collections
-    Query specific Mongo DB collection.
-    Tracked via FS_56_43_05_79: https://github.com/argrelay/argrelay/issues/10
-    CLOSED
-
-streamline_internals:
-
-*   At least in case of `InOutTestClass`, `RunMode` was used instead of `ServerAction`.
-    Search all other places with `RunMode` and see if it is misused.
-    REGISTER
-
 GUI bits:
 
 *   Add info descriptions (tooltip or question mark with description).
@@ -204,14 +193,6 @@ Ease integration into external project:
     See also: FS_80_45_89_81 / dump_config
     REGISTER
 
-Docs:
-
-*   Split "arg" group of concepts (`arg_value`, `arg_type`) and "prop" group of concepts (`prop_value`, `prop_type`):
-    *   `command_line` args are mapped to `data_envelope` props and almost identical
-    *   BUT: they are not naturally/intuitively inter-change-able as `data_envelope` properties are hardly `command_line` arguments.
-    *   Maybe write doc on bounded contexts? Add dictionaries (ubiquitous language) per bash, client, server, data backend?
-    REGISTER
-
 Extra:
 
 *   Add version arg type to the test data.
@@ -256,19 +237,4 @@ Extra:
 *   Split `intercept` into: `intercept_json`, `intercept_str` (Python __str__ output), `intercept_table`.
     See also: FS_88_66_66_73.intercept_invocation_func.md, FS_80_45_89_81 / intercept_invocation_func
     REGISTER
-
-*   Runtime stats and control in `./var/`:
-    *   Add directory for PID and other runtime data (is it `./var/`?).
-    *   Collect usage statistic per plugin in runtime dir (`./var/`?).
-    *   Add scripts to manage start/stop/check of the server to the framework.
-    REGISTER
-
-*   Config-only plugins: loader and delegator.
-    Target to replace standard Bash completion config.
-    Data should be loaded from yaml directly without defining any enums in code or changing logic.
-    Launching local commands/scripts should be done via template parameterized by data envelope -
-    this should be doable as data load is controlled by the same config-only loader and delegator.
-    If config-only plugin is possible and useful, every other plugin can be developed.
-    REGISTER
-    USER_VISIBLE
 

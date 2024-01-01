@@ -4,7 +4,6 @@ import copy
 import json
 
 from cachetools import TTLCache
-from pymongo.collection import Collection
 from pymongo.database import Database
 
 from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
@@ -13,9 +12,9 @@ from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 from argrelay.relay_server.QueryResult import QueryResult
+from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.schema_config_interp.DataEnvelopeSchema import mongo_id_
 from argrelay.schema_response.EnvelopeContainerSchema import found_count_
 
@@ -29,7 +28,6 @@ class QueryEngine:
         distinct_values_query: DistinctValuesQuery,
     ):
         self.mongo_db: Database = mongo_db
-        self.mongo_col: Collection = self.mongo_db[data_envelopes_]
         self.query_cache: TTLCache = TTLCache(
             maxsize = query_cache_config.query_cache_max_size_bytes,
             ttl = query_cache_config.query_cache_ttl_sec,
@@ -39,6 +37,7 @@ class QueryEngine:
 
     def query_data_envelopes(
         self,
+        collection_name: str,
         query_dict: dict,
     ) -> list[dict]:
         """
@@ -49,7 +48,7 @@ class QueryEngine:
         See also `QueryResult.data_envelopes`.
         """
 
-        query_res = self.mongo_col.find(query_dict)
+        query_res = self.mongo_db[collection_name].find(query_dict)
         return list(iter(query_res))
 
     def query_prop_values(
@@ -135,7 +134,7 @@ class QueryEngine:
         """
 
         ElapsedTime.measure("before_mongo_find")
-        mongo_result = self.mongo_col.find(query_dict)
+        mongo_result = self.mongo_db[search_control.collection_name].find(query_dict)
         ElapsedTime.measure("after_mongo_find")
         query_result = self._process_prop_values(
             mongo_result,
@@ -164,7 +163,7 @@ class QueryEngine:
             if prop_name not in assigned_types_to_values:
 
                 ElapsedTime.measure(f"before_mongo_distinct.{prop_name}")
-                distinct_vals: list = self.mongo_col.distinct(prop_name, query_dict)
+                distinct_vals: list = self.mongo_db[search_control.collection_name].distinct(prop_name, query_dict)
                 ElapsedTime.measure(f"after_mongo_distinct.{prop_name}")
 
                 if len(distinct_vals) > 0:
@@ -172,10 +171,10 @@ class QueryEngine:
 
                 ElapsedTime.measure(f"after_process_results.{prop_name}")
 
-        found_count = self.mongo_col.count_documents(query_dict)
+        found_count = self.mongo_db[search_control.collection_name].count_documents(query_dict)
         ElapsedTime.measure("after_count_documents")
         if found_count == 1:
-            data_envelopes.append(self.mongo_col.find_one(query_dict))
+            data_envelopes.append(self.mongo_db[search_control.collection_name].find_one(query_dict))
             ElapsedTime.measure("after_find_one")
 
         query_result = QueryResult(
@@ -229,7 +228,7 @@ class QueryEngine:
         ]
 
         ElapsedTime.measure("before_mongo_aggregate")
-        mongo_result = self.mongo_col.aggregate(aggregate_pipeline)
+        mongo_result = self.mongo_db[search_control.collection_name].aggregate(aggregate_pipeline)
         ElapsedTime.measure("after_mongo_aggregate")
 
         # Get the first (and the only) object from the result:
@@ -246,7 +245,7 @@ class QueryEngine:
                 remaining_types_to_values[arg_type] = sorted(arg_vals)
 
         if found_count == 1:
-            data_envelopes.append(self.mongo_col.find_one(query_dict))
+            data_envelopes.append(self.mongo_db[search_control.collection_name].find_one(query_dict))
 
         ElapsedTime.measure("after_process_results")
 
@@ -343,7 +342,9 @@ def scalar_to_list_values(arg_type_val: list | str) -> list[str]:
         return arg_type_val
 
 
-def populate_query_dict(envelope_container):
+def populate_query_dict(
+    envelope_container: EnvelopeContainer,
+) -> tuple[str, dict]:
     query_dict = {
         ReservedArgType.EnvelopeClass.name: envelope_container.search_control.envelope_class,
     }
@@ -351,4 +352,7 @@ def populate_query_dict(envelope_container):
     for arg_type in envelope_container.search_control.types_to_keys_dict:
         if arg_type in envelope_container.assigned_types_to_values:
             query_dict[arg_type] = envelope_container.assigned_types_to_values[arg_type].arg_value
-    return query_dict
+    return (
+        envelope_container.search_control.collection_name,
+        query_dict,
+    )

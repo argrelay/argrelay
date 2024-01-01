@@ -7,6 +7,7 @@ from argrelay.plugin_interp.JumpTreeInterpFactoryConfigSchema import (
 )
 from argrelay.plugin_interp.TreeWalker import TreeWalker
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
 class JumpTreeInterpFactory(FuncTreeInterpFactory):
@@ -16,17 +17,19 @@ class JumpTreeInterpFactory(FuncTreeInterpFactory):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
         # FS_91_88_07_23 jump tree
         tree_walker: TreeWalker = TreeWalker(
             "jump",
-            self.config_dict[jump_tree_],
+            self.plugin_config_dict[jump_tree_],
         )
         self.paths_to_jump: dict[tuple[str, ...], tuple[str, ...]] = tree_walker.build_paths_to_paths()
         """
@@ -36,19 +39,19 @@ class JumpTreeInterpFactory(FuncTreeInterpFactory):
 
     def load_config(
         self,
-        config_dict,
+        plugin_config_dict,
     ) -> dict:
         # TODO_74_03_78_60: Call `TypeDesc` API to do load (to populate defaults) -> dump automatically.
         return jump_tree_interp_config_desc.dict_schema.dump(
             jump_tree_interp_config_desc.dict_schema.load(
-                config_dict
+                plugin_config_dict
             )
         )
 
     def validate_config(
         self,
     ):
-        jump_tree_interp_config_desc.validate_dict(self.config_dict)
+        jump_tree_interp_config_desc.validate_dict(self.plugin_config_dict)
 
     def create_interp(
         self,

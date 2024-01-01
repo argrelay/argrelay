@@ -11,37 +11,39 @@ class AbstractPlugin:
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
+        self.server_config: ServerConfig = server_config
         self.plugin_instance_id: str = plugin_instance_id
-        self.config_dict: dict = self.load_config(config_dict)
+        self.plugin_config_dict: dict = self.load_config(plugin_config_dict)
 
         self.validate_config()
 
     def load_config(
         self,
-        config_dict,
+        plugin_config_dict,
     ) -> dict:
         """
         Pre-proces the given config on load (e.g. populate default values).
 
-        The default implementation is to return `config_dict` as is.
+        The default implementation is to return `plugin_config_dict` as is.
 
-        The typical implementation is to do `Schema.load(Schema.dump(config_dict))`
+        The typical implementation is to do `Schema.load(Schema.dump(plugin_config_dict))`
         so that defaults are populated according to the given `Schema`.
         """
-        return deepcopy(config_dict)
+        return deepcopy(plugin_config_dict)
 
     def validate_config(
         self,
     ):
         """
-        Validate schema or data for `config_dict`.
+        Validate schema or data for `plugin_config_dict`.
 
-        The typical implementation is to call `TypeDesc.validate_dict(self.config_dict)`.
+        The typical implementation is to call `TypeDesc.validate_dict(self.plugin_config_dict)`.
 
-        If `load_config` is implemented via `Schema.load(Schema.dump(config_dict))`,
+        If `load_config` is implemented via `Schema.load(Schema.dump(plugin_config_dict))`,
         validating step is only unnecessary if it does anything extra beyond what `Schema` can validate.
         """
         pass
@@ -56,7 +58,6 @@ class AbstractPlugin:
 
     def activate_plugin(
         self,
-        server_config: ServerConfig,
     ):
         """
         One-time plugin activation callback during server startup.
@@ -89,11 +90,13 @@ def import_plugin_class(
 
 
 def instantiate_plugin(
+    server_config: ServerConfig,
     plugin_instance_id: str,
     plugin_entry,
 ):
     plugin_class = import_plugin_class(plugin_entry)
     plugin_object: AbstractPlugin = plugin_class(
+        server_config,
         plugin_instance_id,
         plugin_entry.plugin_config,
     )

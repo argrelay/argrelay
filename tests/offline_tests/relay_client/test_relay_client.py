@@ -60,6 +60,7 @@ class ThisTestClass(BaseTestClass):
             .set_mock_client_config_file_read(True)
             .set_client_config_dict()
             .set_client_config_to_optimize_completion_request(False)
+            .set_show_pending_spinner(False)
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)

@@ -10,5 +10,5 @@ class MongoServerConfig:
     start_server: bool = field()
 
     # Example:
-    # "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data"
+    # "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data"
     server_start_command: str = field()

@@ -4,6 +4,8 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_context.SearchControl import SearchControl
 
+collection_name_ = "collection_name"
+
 envelope_class_ = "envelope_class"
 """
 Specifies `ReservedArgType.EnvelopeClass` to search.
@@ -27,7 +29,13 @@ class SearchControlSchema(Schema):
         unknown = RAISE
         strict = True
 
-    envelope_class = fields.String()
+    collection_name = fields.String(
+        required = True,
+    )
+
+    envelope_class = fields.String(
+        required = True,
+    )
 
     keys_to_types_list = fields.List(
         fields.Dict(
@@ -45,6 +53,7 @@ class SearchControlSchema(Schema):
         **kwargs,
     ):
         return SearchControl(
+            collection_name = input_dict[collection_name_],
             envelope_class = input_dict[envelope_class_],
             keys_to_types_list = input_dict[keys_to_types_list_],
         )
@@ -65,6 +74,7 @@ search_control_desc = TypeDesc(
     dict_schema = SearchControlSchema(),
     ref_name = SearchControlSchema.__name__,
     dict_example = {
+        collection_name_: ReservedEnvelopeClass.ClassFunction.name,
         envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
         keys_to_types_list_: [
             {

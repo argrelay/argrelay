@@ -60,17 +60,6 @@ class ThisTestClass(End2EndTestClass):
                         expected_stdout_str,
                     )
 
-    def test_DescribeLineArgs_fails(self):
-        with self.assertRaises(AssertionError):
-            with change_to_known_repo_path("."):
-                self.assert_ProposeArgValues(
-                    self.default_bound_command,
-                    f"{self.default_bound_command} goto h|",
-                    CompType.PrefixShown,
-                    "whatever",
-                    1,
-                )
-
     def test_ProposeArgValues(self):
         """
         Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
@@ -114,17 +103,6 @@ apac
                         comp_type,
                         expected_stdout_str,
                     )
-
-    def test_ProposeArgValues_fails(self):
-        with self.assertRaises(AssertionError):
-            with change_to_known_repo_path("."):
-                self.assert_ProposeArgValues(
-                    self.default_bound_command,
-                    f"{self.default_bound_command} desc host dev upstream |",
-                    CompType.PrefixShown,
-                    "whatever",
-                    1,
-                )
 
     def test_RelayLineArgs(self):
         """
@@ -170,7 +148,41 @@ apac
                 with change_to_known_repo_path("."):
                     self.assert_RelayLineArgs(
                         command_line_args,
-                        expected_exit_code,
                         expected_stdout_str,
                         expected_stderr_str,
+                        expected_exit_code,
                     )
+
+    def test_ProposeArgValues_fails(self):
+        wrong_expected_stdout = "whatever"
+        with self.assertRaises(AssertionError):
+            with change_to_known_repo_path("."):
+                self.assert_ProposeArgValues(
+                    self.default_bound_command,
+                    f"{self.default_bound_command} desc host dev upstream |",
+                    CompType.PrefixShown,
+                    wrong_expected_stdout,
+                    0,
+                )
+
+    def test_DescribeLineArgs_fails(self):
+        wrong_expected_stdout = "whatever"
+        with self.assertRaises(AssertionError):
+            with change_to_known_repo_path("."):
+                self.assert_DescribeLineArgs(
+                    self.default_bound_command,
+                    f"{self.default_bound_command} goto h|",
+                    wrong_expected_stdout,
+                    0,
+                )
+
+    def test_RelayLineArgs_fails(self):
+        wrong_expected_exit_code = 1
+        with self.assertRaises(AssertionError):
+            with change_to_known_repo_path("."):
+                self.assert_RelayLineArgs(
+                    f"{self.default_bound_command} desc host dev upstream am".split(" "),
+                    None,
+                    None,
+                    wrong_expected_exit_code,
+                )

@@ -36,6 +36,9 @@ def ensure_value_is_enum(enum_value, enum_cls):
 
 
 def get_config_path(conf_rel_path: str) -> str:
+    """
+    Implements FS_16_07_78_84 conf dir priority.
+    """
     if "ARGRELAY_CONF_BASE_DIR" in os.environ:
         base_conf_dir = os.environ.get("ARGRELAY_CONF_BASE_DIR")
     else:

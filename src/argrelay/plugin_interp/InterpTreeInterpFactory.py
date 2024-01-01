@@ -21,31 +21,31 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
         self.is_recursive_func_load = False
 
     def validate_config(
         self,
     ):
-        tree_path_interp_factory_config_desc.validate_dict(self.config_dict)
+        tree_path_interp_factory_config_desc.validate_dict(self.plugin_config_dict)
 
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-        server_config: ServerConfig,
     ):
         with self._is_recursive_load() as is_recursive_load:
             if is_recursive_load:
                 return
             self._load_func_envelopes(
                 interp_tree_abs_path,
-                server_config,
             )
 
     @contextlib.contextmanager
@@ -66,31 +66,28 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
     def _load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-        server_config: ServerConfig,
     ):
         super().load_func_envelopes(
             interp_tree_abs_path,
-            server_config,
         )
         tree_walker: TreeWalker = TreeWalker(
             "interp",
-            self.config_dict[interp_selector_tree_],
+            self.plugin_config_dict[interp_selector_tree_],
         )
         # Walk configured interp tree and call `load_func_envelopes` with `interp_tree_abs_path` for each interp.
         interp_rel_paths: dict[str, list[list[str]]] = tree_walker.build_str_leaves_paths()
         for interp_plugin_id in interp_rel_paths:
             for interp_rel_path in interp_rel_paths[interp_plugin_id]:
                 assert_plugin_instance_id(
-                    server_config,
+                    self.server_config,
                     interp_plugin_id,
                     PluginType.InterpFactoryPlugin,
                 )
-                interp_factory: AbstractInterpFactory = server_config.interp_factories[interp_plugin_id]
+                interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_plugin_id]
                 sub_interp_tree_abs_path = interp_tree_abs_path + tuple(interp_rel_path)
 
                 interp_factory.load_func_envelopes(
                     sub_interp_tree_abs_path,
-                    server_config,
                 )
 
     def create_interp(

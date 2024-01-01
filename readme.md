@@ -231,8 +231,8 @@ Quantitative comparison tables between the two can be seen in docstring for `Dis
 `argrelay.server.yaml` under `mongo_config` and `mongomock` should be disabled:
 
 ```diff
--    use_mongomock_only: True
-+    use_mongomock_only: False
+-    use_mongomock: True
++    use_mongomock: False
 ```
 
 <a name="argrelay-full-picture"></a>

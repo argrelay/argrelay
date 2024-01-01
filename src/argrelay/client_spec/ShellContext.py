@@ -12,9 +12,9 @@ from argrelay.server_spec.CallContext import CallContext
 
 UNKNOWN_COMP_KEY: str = str(0)
 """
-Constant used when client is called via `CallConv.EnvVarsConv`
+Constant used when client is called via `CallConv.CliArgsConv`
 and there is no `COMP_KEY` env var to obtain the value
-(rather than during `CallConv.CliArgsConv`).
+(unlike during `CallConv.EnvVarsConv`).
 """
 
 COMP_LINE_env_var: str = "COMP_LINE"
@@ -48,6 +48,7 @@ class ShellContext:
         https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
         """
         if COMP_LINE_env_var in os.environ:
+            # See `CallConv.EnvVarsConv`:
             command_line = os.environ[COMP_LINE_env_var]
             cursor_cpos = int(os.environ[COMP_POINT_env_var])
             # If `COMP_LINE_env_var` exists, the call is definitely NOT for `CompType.InvokeAction`:
@@ -55,6 +56,7 @@ class ShellContext:
             assert comp_type != CompType.InvokeAction
             comp_key = os.environ[COMP_KEY_env_var]
         else:
+            # See `CallConv.CliArgsConv`:
             argv = [os.path.basename(argv[0])] + argv[1:]
             command_line = " ".join(argv)
             cursor_cpos = len(command_line)

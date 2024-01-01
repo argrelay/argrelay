@@ -17,6 +17,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.ClientServerTestClass import ClientServerTestClass
+from argrelay.test_infra.EnvMockBuilder import EmptyEnvMockBuilder
 
 
 class End2EndTestClass(ClientServerTestClass):
@@ -48,12 +49,34 @@ class End2EndTestClass(ClientServerTestClass):
         env_vars[COMP_KEY_env_var] = UNKNOWN_COMP_KEY
         return env_vars
 
+    def run_client_with_cli_args(
+        self,
+        command_line_args,
+        expected_exit_code,
+    ):
+        """
+        See `CallConv.CliArgsConv`.
+        """
+        client_proc = subprocess.run(
+            args = command_line_args,
+            capture_output = True,
+        )
+        if expected_exit_code is not None:
+            self.assertEqual(
+                expected_exit_code,
+                client_proc.returncode,
+            )
+        return client_proc
+
     def run_client_with_env_vars(
         self,
         command_name,
         env_vars,
         expected_exit_code,
     ):
+        """
+        See `CallConv.EnvVarsConv`.
+        """
         client_proc = subprocess.run(
             args = [
                 command_name,
@@ -61,10 +84,11 @@ class End2EndTestClass(ClientServerTestClass):
             env = env_vars,
             capture_output = True,
         )
-        self.assertEqual(
-            expected_exit_code,
-            client_proc.returncode
-        )
+        if expected_exit_code is not None:
+            self.assertEqual(
+                expected_exit_code,
+                client_proc.returncode,
+            )
         return client_proc
 
     # TODO: allow have something on STDERR (even if it is wrong, we want this option to register known bugs to be fixed)
@@ -87,88 +111,105 @@ class End2EndTestClass(ClientServerTestClass):
         expected_stdout_str: Union[str, None],
         expected_exit_code = 0,
     ):
-        assert comp_type in [
-            CompType.PrefixShown,
-            CompType.PrefixHidden,
-            CompType.SubsequentHelp,
-            CompType.MenuCompletion,
-        ]
-        env_vars = self.env_vars(
-            test_line,
-            comp_type,
+        inner_env_mock_builder = (
+            EmptyEnvMockBuilder()
+            .set_client_config_dict()
+            .set_generate_client_config_file(True)
+            .set_show_pending_spinner(False)
         )
-        client_proc = self.run_client_with_env_vars(
-            command_name,
-            env_vars,
-            expected_exit_code,
-        )
-        stdout_str = client_proc.stdout.decode("utf-8")
-        if expected_stdout_str is not None:
-            self.assertEqual(
-                expected_stdout_str,
-                stdout_str,
+        with inner_env_mock_builder.build():
+            assert comp_type in [
+                CompType.PrefixShown,
+                CompType.PrefixHidden,
+                CompType.SubsequentHelp,
+                CompType.MenuCompletion,
+            ]
+            env_vars = self.env_vars(
+                test_line,
+                comp_type,
             )
-        stderr_str = client_proc.stderr.decode("utf-8")
-        self.assert_no_stderr(
-            stderr_str,
-            ServerAction.ProposeArgValues,
-        )
-        return stdout_str
+            client_proc = self.run_client_with_env_vars(
+                command_name,
+                env_vars,
+                expected_exit_code,
+            )
+            stdout_str = client_proc.stdout.decode("utf-8")
+            if expected_stdout_str is not None:
+                self.assertEqual(
+                    expected_stdout_str,
+                    stdout_str,
+                )
+            stderr_str = client_proc.stderr.decode("utf-8")
+            self.assert_no_stderr(
+                stderr_str,
+                ServerAction.ProposeArgValues,
+            )
+            return stdout_str
 
     def assert_DescribeLineArgs(
         self,
         command_name,
         test_line,
         expected_stdout_str: Union[str, None],
-        expected_exit_code = 0,
+        expected_exit_code: Union[int, None] = 0,
     ):
-        env_vars = self.env_vars(
-            test_line,
-            CompType.DescribeArgs,
+        inner_env_mock_builder = (
+            EmptyEnvMockBuilder()
+            .set_client_config_dict()
+            .set_generate_client_config_file(True)
+            .set_show_pending_spinner(False)
         )
-        client_proc = self.run_client_with_env_vars(
-            command_name,
-            env_vars,
-            expected_exit_code,
-        )
-        stdout_str = client_proc.stdout.decode("utf-8")
-        if expected_stdout_str is not None:
-            self.assertEqual(
-                expected_stdout_str,
-                stdout_str,
+        with inner_env_mock_builder.build():
+            env_vars = self.env_vars(
+                test_line,
+                CompType.DescribeArgs,
             )
-        stderr_str = client_proc.stderr.decode("utf-8")
-        self.assert_no_stderr(
-            stderr_str,
-            ServerAction.ProposeArgValues,
-        )
-        return ic(stdout_str)
+            client_proc = self.run_client_with_env_vars(
+                command_name,
+                env_vars,
+                expected_exit_code,
+            )
+            stdout_str = client_proc.stdout.decode("utf-8")
+            if expected_stdout_str is not None:
+                self.assertEqual(
+                    expected_stdout_str,
+                    stdout_str,
+                )
+            stderr_str = client_proc.stderr.decode("utf-8")
+            self.assert_no_stderr(
+                stderr_str,
+                ServerAction.ProposeArgValues,
+            )
+            return ic(stdout_str)
 
     def assert_RelayLineArgs(
         self,
         command_line_args: list[str],
-        expected_exit_code: Union[int, None],
         expected_stdout_str: Union[str, None],
         expected_stderr_str: Union[str, None],
+        expected_exit_code: Union[int, None] = 0,
     ):
-        client_proc = subprocess.run(
-            args = command_line_args,
-            capture_output = True,
+        inner_env_mock_builder = (
+            EmptyEnvMockBuilder()
+            .set_client_config_dict()
+            .set_generate_client_config_file(True)
+            .set_show_pending_spinner(False)
         )
-        if expected_exit_code is not None:
-            self.assertEqual(
+        with inner_env_mock_builder.build():
+
+            client_proc = self.run_client_with_cli_args(
+                command_line_args,
                 expected_exit_code,
-                client_proc.returncode
             )
-        stdout_str = client_proc.stdout.decode("utf-8")
-        if expected_stdout_str is not None:
-            self.assertEqual(
-                expected_stdout_str,
-                stdout_str,
-            )
-        stderr_str = client_proc.stderr.decode("utf-8")
-        if expected_stderr_str is not None:
-            self.assertEqual(
-                expected_stderr_str,
-                stderr_str,
-            )
+            stdout_str = client_proc.stdout.decode("utf-8")
+            if expected_stdout_str is not None:
+                self.assertEqual(
+                    expected_stdout_str,
+                    stdout_str,
+                )
+            stderr_str = client_proc.stderr.decode("utf-8")
+            if expected_stderr_str is not None:
+                self.assertEqual(
+                    expected_stderr_str,
+                    stderr_str,
+                )

@@ -4,18 +4,18 @@
 Download Mongo DB and Mongo Shell from: https://www.mongodb.com/try/download/community
 *   `mongodb-linux-x86_64-rhel80-6.0.3.tgz`
 *   `mongosh-1.6.1-linux-x64.tgz`
-For example, place them under `@/temp/mongo` sub-dir (everything under `@/temp` is ignored by `argrelay` repo).
+For example, place them under `@/tmp/mongo` sub-dir (everything under `@/tmp` is ignored by `argrelay` repo).
 
 Start server:
 
 ```sh
-~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/Works/argrelay.git/temp/mongo/data
+~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/Works/argrelay.git/tmp/mongo/data
 ```
 
 Start client:
 
 ```sh
-~/argrelay.git/temp/mongo/mongosh-1.6.1-linux-x64/bin/mongosh
+~/argrelay.git/tmp/mongo/mongosh-1.6.1-linux-x64/bin/mongosh
 ```
 
 Client: configure username and password:

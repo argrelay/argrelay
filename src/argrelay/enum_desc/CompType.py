@@ -71,6 +71,6 @@ class CompType(IntEnum):
 
     """
     This `COMP_TYPE` value does not originate in Bash completion.
-    Instead, it is set by `argrelay` client for `CallConv.CliArgsConv` with `RunMode.InvocationMode`.
+    Instead, it is set by `argrelay` client for `CallConv.CliArgsConv`.
     """
     InvokeAction = 42  # ASCII '*'

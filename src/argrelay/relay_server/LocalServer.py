@@ -1,5 +1,6 @@
 import time
 import uuid
+from copy import deepcopy
 
 from pymongo import MongoClient
 
@@ -14,6 +15,7 @@ from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_context.AbstractPlugin import instantiate_plugin, AbstractPlugin
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
@@ -73,6 +75,7 @@ class LocalServer:
                 continue
 
             plugin_instance: AbstractPlugin = instantiate_plugin(
+                self.server_config,
                 plugin_instance_id,
                 plugin_entry,
             )
@@ -80,9 +83,7 @@ class LocalServer:
 
             if plugin_type is PluginType.LoaderPlugin:
                 plugin_instance: AbstractLoader
-                plugin_instance.activate_plugin(
-                    self.server_config,
-                )
+                plugin_instance.activate_plugin()
                 # Store instance of `AbstractLoader` under specified id for future use:
                 self.server_config.data_loaders[plugin_instance_id] = plugin_instance
                 # Use loader to update data:
@@ -91,18 +92,14 @@ class LocalServer:
 
             if plugin_type is PluginType.InterpFactoryPlugin:
                 plugin_instance: AbstractInterpFactory
-                plugin_instance.activate_plugin(
-                    self.server_config,
-                )
+                plugin_instance.activate_plugin()
                 # Store instance of `AbstractInterpFactory` under specified id for future use:
                 self.server_config.interp_factories[plugin_instance_id] = plugin_instance
                 continue
 
             if plugin_type is PluginType.DelegatorPlugin:
                 plugin_instance: AbstractDelegator
-                plugin_instance.activate_plugin(
-                    self.server_config,
-                )
+                plugin_instance.activate_plugin()
                 # Store instance of `AbstractDelegator` under specified id for future use:
                 self.server_config.action_delegators[plugin_instance_id] = plugin_instance
                 continue
@@ -138,17 +135,25 @@ class LocalServer:
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
         MongoClientWrapper.store_envelopes(
             mongo_db,
+            # TODO_00_79_72_55: Remove `static_data` from `server_config`:
             self.server_config.static_data,
         )
 
     def _create_mongo_index(self):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
-        # Include `envelope_class` field into index by default:
-        self.server_config.static_data.known_arg_types.append(ReservedArgType.EnvelopeClass.name)
-        MongoClientWrapper.create_index(
-            mongo_db,
-            self.server_config.static_data,
-        )
+
+        for collection_name in self.server_config.static_data.envelope_collections:
+            envelope_collection: EnvelopeCollection = self.server_config.static_data.envelope_collections[
+                collection_name
+            ]
+            # Include `envelope_class` field into index by default:
+            index_fields: list[str] = deepcopy(envelope_collection.index_fields)
+            index_fields.append(ReservedArgType.EnvelopeClass.name)
+            MongoClientWrapper.create_index(
+                mongo_db,
+                collection_name,
+                envelope_collection.index_fields,
+            )
 
     def _populate_help_hint_cache(self):
         self.help_hint_cache.populate_cache()

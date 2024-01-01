@@ -13,12 +13,14 @@ class AbstractInterpFactory(AbstractPlugin):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
         # Takes part in implementation of FS_01_89_09_24 interp tree:
         self.interp_tree_abs_paths_to_node_configs: dict[tuple[str, ...], dict] = {}
@@ -38,7 +40,6 @@ class AbstractInterpFactory(AbstractPlugin):
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-        server_config: ServerConfig,
     ):
         """
         Load func `data_envelope`-s taking into account `interp_tree_abs_path`.
@@ -48,7 +49,7 @@ class AbstractInterpFactory(AbstractPlugin):
         if interp_tree_abs_path in self.interp_tree_abs_paths_to_node_configs:
             raise RuntimeError(f"`{interp_tree_abs_path}` has already been loaded")
         else:
-            self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path] = deepcopy(self.config_dict)
+            self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path] = deepcopy(self.plugin_config_dict)
 
     def create_interp(
         self,

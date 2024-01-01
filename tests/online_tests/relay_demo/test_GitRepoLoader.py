@@ -9,13 +9,16 @@ from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     is_repo_enabled_,
     envelope_properties_,
 )
+from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_repo_commits_,
     repo_entries_,
 )
-from argrelay.misc_helper_common import eprint
+from argrelay.enum_desc.CompType import CompType
+from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.relay_client import __main__
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
@@ -32,13 +35,20 @@ class ThisTestClass(BaseTestClass):
     def clean_temp_dir(self, is_successful: bool):
         if not is_successful:
             with self.temp_dir:
-                eprint(f"cleaning: {self.temp_dir.name}")
-                pass
+                eprint(f"cleaning up: {self.temp_dir.name}")
 
     def setUp(self):
         super().setUp()
 
-        self.temp_dir = tempfile.TemporaryDirectory()
+        base_tmp_dir = f"{get_argrelay_dir()}/tmp"
+        assert os.path.isdir(base_tmp_dir)
+
+        test_configs_dir = f"{base_tmp_dir}/test_data"
+        if not os.path.exists(test_configs_dir):
+            os.makedirs(test_configs_dir)
+
+        self.temp_dir = tempfile.TemporaryDirectory(dir = f"{test_configs_dir}/")
+
         is_successful = False
         try:
             # checkout repos under temp_dir:
@@ -140,20 +150,39 @@ class ThisTestClass(BaseTestClass):
                     .set_enable_demo_git_loader(True)
                     .set_command_line("some_command help")
                     .set_cursor_cpos(0)
+                    .set_comp_type(CompType.PrefixShown)
                 )
                 with env_mock_builder.build():
+                    # The test simply triggers server data load and verifies its content.
+
                     # Populate static data by plugin via `LocalClient` who starts `LocalServer`:
                     command_obj: AbstractLocalClientCommand = __main__.main()
                     assert isinstance(command_obj, AbstractLocalClientCommand)
                     static_data = command_obj.local_server.server_config.static_data
 
-                    # Verify:
-                    for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-                        assert type_name in static_data.known_arg_types
+                    repo_envelope_collection = static_data.envelope_collections.setdefault(
+                        GitRepoEnvelopeClass.ClassGitRepo.name,
+                        EnvelopeCollection(
+                            index_fields = [],
+                            data_envelopes = [],
+                        ),
+                    )
 
-                        # Find list of all values in `data_envelope` per `type_name`:
+                    # Verify:
+                    are_all_empty = True
+                    for type_name in [enum_item.name for enum_item in GitRepoArgType]:
+                        assert type_name in static_data.envelope_collections[
+                            GitRepoEnvelopeClass.ClassGitRepo.name
+                        ].index_fields
+
+                        # Find list of all values in `data_envelope`-s per `type_name`:
                         typed_values = []
-                        for data_envelope in static_data.data_envelopes:
+                        for data_envelope in repo_envelope_collection.data_envelopes:
                             if type_name in data_envelope:
-                                typed_values.append(data_envelope[type_name])
+                                typed_value = data_envelope[type_name]
+                                if typed_value not in typed_values:
+                                    typed_values.append(typed_value)
+                        if len(typed_values) != 0:
+                            are_all_empty = False
                         print(f"type_to_values: {type_name}: {typed_values}")
+                    assert not are_all_empty

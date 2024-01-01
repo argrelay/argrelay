@@ -9,6 +9,8 @@ exit 0
 
 # Path for the script which sources this: using [1] instead of [0]:
 script_path="${BASH_SOURCE[1]}"
+# Absolute script dirname:
+# https://stackoverflow.com/a/246128/441652
 # shellcheck disable=SC2034
 script_dir="$( cd -- "$( dirname -- "${script_path}" )" &> /dev/null && pwd )"
 # shellcheck disable=SC2034

@@ -21,19 +21,20 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
-        first_arg_interp_factory_config_desc.validate_dict(config_dict)
-        converted_config = convert_FirstArgInterpConfig_to_InterpTreeInterpFactoryConfig(config_dict)
+        first_arg_interp_factory_config_desc.validate_dict(plugin_config_dict)
+        converted_config = convert_FirstArgInterpConfig_to_InterpTreeInterpFactoryConfig(plugin_config_dict)
         super().__init__(
+            server_config,
             plugin_instance_id,
             converted_config,
         )
 
     def activate_plugin(
         self,
-        server_config: ServerConfig,
     ):
         """
         # NOTE: FS_42_76_93_51 first interp special case:
@@ -46,7 +47,6 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
         interp_tree_abs_path: tuple[str, ...] = tuple([])
         self.load_func_envelopes(
             interp_tree_abs_path,
-            server_config,
         )
 
     def create_interp(
@@ -61,18 +61,20 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
             # But first interp is always at the root of the interp tree.
             # More over, first interp is the only one who triggers cascading calls to `load_func_envelopes`,
             # but never receives such call itself.
-            # Instead of using `interp_tree_node_config_dict`, use `config_dict` directly:
-            self.config_dict,
+            # Instead of using `interp_tree_node_config_dict`, use `plugin_config_dict` directly:
+            self.plugin_config_dict,
             interp_ctx,
         )
 
 
-def convert_FirstArgInterpConfig_to_InterpTreeInterpFactoryConfig(config_dict: dict) -> dict:
+def convert_FirstArgInterpConfig_to_InterpTreeInterpFactoryConfig(
+    plugin_config_dict: dict,
+) -> dict:
     """
     `FirstArgInterp` was re-implemented in terms of `InterpTreeInterp` (FS_01_89_09_24).
     """
     interp_selector_tree = {}
-    for command_id, plugin_instance_id in config_dict[first_arg_vals_to_next_interp_factory_ids_].items():
+    for command_id, plugin_instance_id in plugin_config_dict[first_arg_vals_to_next_interp_factory_ids_].items():
         interp_selector_tree[command_id] = plugin_instance_id
 
     output_dict = {

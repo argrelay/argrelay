@@ -22,6 +22,8 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
@@ -36,19 +38,21 @@ class GitRepoLoader(AbstractLoader):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
-        self.config_dict = git_repo_loader_config_desc.from_input_dict(self.config_dict)
+        self.plugin_config_dict = git_repo_loader_config_desc.from_input_dict(self.plugin_config_dict)
 
     def validate_config(
         self,
     ):
-        git_repo_loader_config_desc.validate_dict(self.config_dict)
+        git_repo_loader_config_desc.validate_dict(self.plugin_config_dict)
 
     def update_static_data(
         self,
@@ -58,7 +62,7 @@ class GitRepoLoader(AbstractLoader):
         Scan `base_path` recursively and load metadata about all Git repos found.
         """
 
-        if not self.config_dict:
+        if not self.plugin_config_dict:
             return static_data
 
         static_data = self.load_git_objects(static_data)
@@ -70,25 +74,41 @@ class GitRepoLoader(AbstractLoader):
         static_data: StaticData,
     ) -> StaticData:
 
-        data_envelopes = static_data.data_envelopes
+        for collection_name in [
+            GitRepoEnvelopeClass.ClassGitRepo.name,
+            GitRepoEnvelopeClass.ClassGitCommit.name,
+        ]:
+            envelope_collection = static_data.envelope_collections.setdefault(
+                collection_name,
+                EnvelopeCollection(
+                    index_fields = [],
+                    data_envelopes = [],
+                ),
+            )
+            index_fields = envelope_collection.index_fields
 
-        # Init type keys (if they do not exist):
-        for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-            if type_name not in static_data.known_arg_types:
-                static_data.known_arg_types.append(type_name)
+            # Indexing all fields in `GitRepoArgType` for both data envelope types indiscriminately
+            # (can be applied selectively later if hitting any limits).
+            # Init index fields (if they do not exist):
+            for index_field in [enum_item.name for enum_item in GitRepoArgType]:
+                if index_field not in index_fields:
+                    index_fields.append(index_field)
+
+        repo_envelopes = static_data.envelope_collections[GitRepoEnvelopeClass.ClassGitRepo.name].data_envelopes
+        commit_envelopes = static_data.envelope_collections[GitRepoEnvelopeClass.ClassGitCommit.name].data_envelopes
 
         # List of registered Git abs paths:
         repo_root_abs_paths = []
-        for repo_base_abs_path in self.config_dict[repo_entries_]:
+        for repo_base_abs_path in self.plugin_config_dict[repo_entries_]:
 
-            repo_entries = self.config_dict[repo_entries_][repo_base_abs_path]
+            repo_entries = self.plugin_config_dict[repo_entries_][repo_base_abs_path]
             repo_base_abs_path = os.path.expanduser(repo_base_abs_path)
 
             # Process repo entries collecting `repo_root_rel_path` and `repo_root_abs_path`:
             for repo_entry in repo_entries:
 
-                repo_root_rel_path = repo_entry[repo_rel_path_]
-                repo_root_abs_path = os.path.join(repo_base_abs_path, repo_root_rel_path)
+                repo_root_rel_path: str = repo_entry[repo_rel_path_]
+                repo_root_abs_path: str = os.path.join(repo_base_abs_path, repo_root_rel_path)
 
                 if not repo_entry[is_repo_enabled_]:
                     eprint(f"INFO: disabled repo: {repo_root_abs_path}")
@@ -150,9 +170,9 @@ class GitRepoLoader(AbstractLoader):
                     GitRepoArgType.GitRepoPathComp.name: path_comp_list,
                 })
                 print(repo_envelope)
-                data_envelopes.append(repo_envelope)
+                repo_envelopes.append(repo_envelope)
 
-                if not self.config_dict[load_repo_commits_]:
+                if not self.plugin_config_dict[load_repo_commits_]:
                     continue
 
                 git_repo = Repo(repo_root_abs_path)
@@ -176,6 +196,6 @@ class GitRepoLoader(AbstractLoader):
                         GitRepoArgType.GitRepoCommitAuthorEmail.name: git_commit.author.email,
                         GitRepoArgType.GitRepoCommitMessage.name: git_commit.message,
                     })
-                    data_envelopes.append(commit_envelope)
+                    commit_envelopes.append(commit_envelope)
 
         return static_data

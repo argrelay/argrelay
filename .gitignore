@@ -2,8 +2,10 @@
 
 # Python
 __pycache__/
-/venv/
 /.tox/
+
+# Typical Python `venv` location:
+/venv/
 
 # PyCharm
 /.idea/
@@ -20,5 +22,5 @@ __pycache__/
 /drafts/
 
 # Temporary files - generated or (not super-costly) recoverable.
-/temp/
+/tmp/
 

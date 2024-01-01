@@ -66,11 +66,17 @@ class HelpDelegator(InterceptDelegator):
             subsequent_function_container = interp_ctx.envelope_containers[(
                 subsequent_function_container_ipos_
             )]
-            query_dict = populate_query_dict(subsequent_function_container)
+            (
+                collection_name,
+                query_dict,
+            ) = populate_query_dict(subsequent_function_container)
             subsequent_function_container.data_envelopes = (
                 local_server
                 .get_query_engine()
-                .query_data_envelopes(query_dict)
+                .query_data_envelopes(
+                    collection_name,
+                    query_dict,
+                )
             )
 
             delegator_plugin_instance_id = HelpDelegator.__name__

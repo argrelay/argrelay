@@ -1,12 +1,19 @@
 
 TODO: reformat, sort, populate, link to `feature_story`-ies.
 
-*   token: substring of command line (split by one or more delimiter chars), see usage of `SpecialChar`.
 *   argument = arg: one or more command line token interpreted as a function argument, see usage of `TokenType`.
 *   curr, prev, next: current, previous, next item during processing.
+
+*   token: substring of command line (split by one or more delimiter chars), see usage of `SpecialChar`.
+*   incomplete token: matching some enum items as prefix but not matching any exactly
+    TODO: clarify: what about matching one enum item exactly, but matching other enum items as prefix?
+*   unrecognized token: token matching none of the enum items (under given context)
+    TODO: clarify: can it be incomplete (matching some enum items as prefix)?
 *   tangent = tan: token "touched" by the cursor - see FS_23_62_89_43.
+    TODO: clarify: should it be touched on the side as in `apac|` or it is still tangent for `ap|ac`?
 *   token left part: tangent token substring on the left from the cursor.
 *   token right part: tangent token substring on the right from the cursor.
+
 *   interpreter = interp: see usage of `AbstractInterp`.
 
 *   type: unique (across all interpreters) name for a set of values.
@@ -21,12 +28,6 @@ TODO: reformat, sort, populate, link to `feature_story`-ies.
 
 # C
 
-### `cpos`
-
-= a char index within a string.
-
-See also `ipos`.
-
 ### `command_id`
 
 = the very first arg on the command line (`PosArg` with 0 ipos = index 0).
@@ -40,6 +41,12 @@ some_command goto host dev amer upstream qwer
 See also:
 *   FS_01_89_09_24 (interp tree) and FS_42_76_93_51 (zero arg interp).
 *   `ipos`
+
+### `cpos`
+
+= a char index within a string.
+
+See also `ipos`.
 
 # D
 
@@ -59,6 +66,16 @@ See also FS_37_57_36_29 (containers, envelopes, payloads).
 
 See also FS_37_57_36_29 (containers, envelopes, payloads).
 
+### `envelope_collection`
+
+A wrapper providing data for a MongoDB collection:
+*   list of `index_field`-s
+*   set of `data_envelope`-s
+
+See also:
+*    FS_56_43_05_79 search in different collections
+*   `EnvelopeCollection`
+
 ### `envelope_payload`
 
 = a custom (plugin-specific) nested data within `data_envelope` opaque to `argrelay`
@@ -67,6 +84,13 @@ See also FS_37_57_36_29 (containers, envelopes, payloads).
 See also FS_37_57_36_29 (containers, envelopes, payloads).
 
 # I
+
+### `index_field`
+
+MongoDB allows declaring `index_field`-s per collection to make `data_envelope` search faster.
+There are some limits - see FS_56_43_05_79 search in different collection.
+
+List of `index_field`-s per collection is defined in `EnvelopeCollection`.
 
 ### `interp`
 

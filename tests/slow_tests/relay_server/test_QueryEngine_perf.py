@@ -1,16 +1,29 @@
+from __future__ import annotations
+
 import itertools
 import time
 
 from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
+from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_config_core_server.ServerConfigSchema import (
+    server_config_desc,
+    class_to_collection_map_,
+)
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_infra import parse_line_and_cpos, line_no
-from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder, wrap_instance_method
+from argrelay.test_infra.EnvMockBuilder import (
+    ServerOnlyEnvMockBuilder,
+    wrap_instance_method_on_instance,
+    load_custom_integ_server_config_dict,
+)
 from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 
@@ -24,19 +37,36 @@ class ThisTestClass(LocalTestClass):
     It runs single sample query (which actually results in multiple queries internally).
 
     Test can be done for both:
-    *   use_mongomock_only = True: `mongomock`
-    *   use_mongomock_only = False: `pymongo`
+    *   use_mongomock = True: `mongomock`
+    *   use_mongomock = False: `pymongo`
     """
 
     def test_perf_query_cache(self):
 
-        use_mongomock_only: bool = True
+        # Switch between `mongomock` (True) and `pymongo` (False)
+        use_mongomock_values: list[bool] = [
+            True,
+            # Uncomment to run with real MongoDB (requires setup):
+            # False,
+        ]
 
-        # Report:
-        # *   Rows (1st index) = DistinctValuesQuery
-        # *   Cols (2nd index) = object_multiplier
+        # Related to FS_56_43_05_79 search diff collection:
+        # Uses separate collections for each class (False) or single collection for all (True).
+        # These are the `ServiceEnvelopeClass`-es handled only by `ServiceLoader` or `ServiceDelegator`
+        # (e.g. they exclude argrelay-managed `ReservedEnvelopeClass`-es).
+        use_single_collection_values: list[bool] = [
+            True,
+            # Uncomment to use multiple collections (less clean measurement but more realistic config):
+            # False,
+        ]
+
+        # Report (multiple tables):
+        # *   table selector A (1st index) = use_mongomock
+        # *   table selector B (2nd index) = use_single_collection
+        # *   Rows (3rd index) = DistinctValuesQuery
+        # *   Cols (4th index) = object_multiplier
         # *   Cell = query time in ms
-        report_table: dict[DistinctValuesQuery, dict[int, float]] = {}
+        report_tables: dict[bool, dict[bool, dict[DistinctValuesQuery, dict[int, float]]]] = {}
 
         object_multiplier_values = [
             3,
@@ -54,41 +84,89 @@ class ThisTestClass(LocalTestClass):
         test_cases = [
             (
                 line_no(),
-                "some_command goto service cm0 gr0 fs0 hs0 sn00 |", CompType.PrefixHidden,
-                [],
+                "some_command goto service cm0 gr0 fs0 hs0 sn0|", CompType.PrefixHidden,
             ),
         ]
 
         # Extend test cases with generated data
-        # (Cartesian product with all `DistinctValuesQuery` and enabled|disabled cache):
-        extended_test_cases: list[tuple[int, str, CompType, list[str], int, DistinctValuesQuery]] = []
+        # (Cartesian product with all `DistinctValuesQuery`, use_mongomock_values, use_single_collection_values, ...):
+        extended_test_cases: list[tuple[
+            int,
+            str,
+            CompType,
+            int,
+            bool,
+            bool,
+            DistinctValuesQuery,
+        ]] = []
         for test_case in test_cases:
             for extended_params in itertools.product(
                 object_multiplier_values,
-                # Run for different implementations
-                # (even though it may not matter as they are called via the same instance method = same wrap mock to test):
+                use_mongomock_values,
+                use_single_collection_values,
                 distinct_value_queries,
             ):
                 extended_test_cases.append(test_case + extended_params)
 
         for extended_test_case in extended_test_cases:
             with self.subTest(extended_test_case):
+
                 (
                     line_number,
                     test_line,
                     comp_type,
-                    expected_suggestions,
                     object_multiplier,
+                    use_mongomock,
+                    use_single_collection,
                     distinct_values_query,
                 ) = extended_test_case
+
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+
+                expected_suggestions = [f"sn0{index_value}" for index_value in range(object_multiplier)]
 
                 ServiceLoader.object_multiplier = object_multiplier
 
+                # Overwrite server config to use single or multiple collections:
+                server_config_dict: dict = load_custom_integ_server_config_dict()
+                if use_single_collection:
+                    server_config_dict[class_to_collection_map_] = {
+                        # ---
+                        ReservedEnvelopeClass.ClassFunction.name: ThisTestClass.__name__,
+                        # ---
+                        ServiceEnvelopeClass.ClassCluster.name: ThisTestClass.__name__,
+                        ServiceEnvelopeClass.ClassHost.name: ThisTestClass.__name__,
+                        ServiceEnvelopeClass.ClassService.name: ThisTestClass.__name__,
+                        ServiceArgType.AccessType.name: ThisTestClass.__name__,
+                        # ---
+                        GitRepoEnvelopeClass.ClassGitRepo.name: ThisTestClass.__name__,
+                        GitRepoEnvelopeClass.ClassGitCommit.name: ThisTestClass.__name__,
+                        # ---
+                        ReservedEnvelopeClass.ClassHelp.name: ThisTestClass.__name__,
+                        # ---
+                    }
+                else:
+                    server_config_dict[class_to_collection_map_] = {
+                        # ---
+                        ReservedEnvelopeClass.ClassFunction.name: ReservedEnvelopeClass.ClassFunction.name,
+                        # ---
+                        ServiceEnvelopeClass.ClassCluster.name: ServiceEnvelopeClass.ClassCluster.name,
+                        ServiceEnvelopeClass.ClassHost.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServiceEnvelopeClass.ClassService.name: ServiceEnvelopeClass.ClassService.name,
+                        ServiceArgType.AccessType.name: ServiceArgType.AccessType.name,
+                        # ---
+                        GitRepoEnvelopeClass.ClassGitRepo.name: GitRepoEnvelopeClass.ClassGitRepo.name,
+                        GitRepoEnvelopeClass.ClassGitCommit.name: GitRepoEnvelopeClass.ClassGitCommit.name,
+                        # ---
+                        ReservedEnvelopeClass.ClassHelp.name: ReservedEnvelopeClass.ClassHelp.name,
+                        # ---
+                    }
+
                 env_mock_builder = (
                     ServerOnlyEnvMockBuilder()
+                    .set_server_config_dict(server_config_dict)
                     .set_enable_query_cache(False)
-                    .set_use_mongomock_only(use_mongomock_only)
+                    .set_use_mongomock(use_mongomock)
                     .set_distinct_values_query(distinct_values_query)
                     .set_test_data_ids_to_load(["TD_38_03_48_51"])  # large generated
                 )
@@ -101,7 +179,7 @@ class ThisTestClass(LocalTestClass):
                     local_server.start_local_server()
                     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
 
-                    with wrap_instance_method(
+                    with wrap_instance_method_on_instance(
                         local_server.query_engine,
                         local_server.query_engine._query_prop_values,
                     ) as method_wrap_mock:
@@ -113,16 +191,32 @@ class ThisTestClass(LocalTestClass):
                             comp_key = UNKNOWN_COMP_KEY,
                         ).create_call_context()
 
+                        print("---")
+                        print(f"distinct_values_query: {distinct_values_query}")
+                        print(f"use_mongomock: {use_mongomock}")
+                        print(f"use_single_collection: {use_single_collection}")
+                        print(f"object_multiplier: {object_multiplier}")
+
                         start_ns: int = time.time_ns()
                         response_dict = propose_arg_values_handler.handle_request(call_ctx)
                         stop_ns: int = time.time_ns()
 
+                        # Assert it actually works:
+                        actual_suggestions = response_dict[arg_values_]
+                        self.assertEqual(expected_suggestions, actual_suggestions)
+
                         diff_ns: int = stop_ns - start_ns
 
-                        report_row = report_table.setdefault(distinct_values_query, {})
+                        report_tables.setdefault(use_mongomock, {})
+                        report_tables[use_mongomock].setdefault(use_single_collection, {})
+                        report_tables[use_mongomock][use_single_collection].setdefault(distinct_values_query, {})
+
+                        report_row = report_tables[use_mongomock][use_single_collection][distinct_values_query]
                         cell_value = diff_ns / 1_000_000_000
-                        print(f"{distinct_values_query}:{object_multiplier}:{cell_value}")
                         report_row[object_multiplier] = cell_value
+
+                        print(f"cell_value: {cell_value}")
+                        print("---")
 
                         actual_suggestions = response_dict[arg_values_]
                         self.assertEqual(expected_suggestions, actual_suggestions)
@@ -131,38 +225,54 @@ class ThisTestClass(LocalTestClass):
                         local_server.stop_local_server()
 
         self.print_report(
+            use_mongomock_values,
+            use_single_collection_values,
             object_multiplier_values,
             distinct_value_queries,
-            report_table,
+            report_tables,
         )
 
     def print_report(
         self,
-        object_multiplier_values,
-        distinct_value_queries,
-        report_table,
+        use_mongomock_values: list[bool],
+        use_single_collection_values: list[bool],
+        object_multiplier_values: list[int],
+        distinct_value_queries: list[DistinctValuesQuery],
+        report_tables,
     ):
         number_cell_width = 10
 
-        # Header row:
-        print(f"{'object_multiplier':>32}", end = "")
-        for object_multiplier in object_multiplier_values:
-            print(f"{object_multiplier:>{number_cell_width}}", end = "")
-        print()
+        for use_mongomock in use_mongomock_values:
+            for use_single_collection in use_single_collection_values:
 
-        print(f"{'object_count':>32}", end = "")
-        for object_multiplier in object_multiplier_values:
-            # There are 5 loops, each with `object_multiplier` items:
-            print(f"{object_multiplier ** 5:>{number_cell_width}}", end = "")
-        print()
+                # Delimiter:
+                print("=" * 32)
+                print(f"use_mongomock: {use_mongomock}")
+                print(f"use_single_collection: {use_single_collection}")
+                print()
 
-        # delimiter:
-        print(f"{'-' * 32:>32}", end = "")
+                # Header row:
+                print(f"{'object_multiplier':>32}", end = "")
+                for object_multiplier in object_multiplier_values:
+                    print(f"{object_multiplier:>{number_cell_width}}", end = "")
+                print()
 
-        print()
-        for distinct_values_query in distinct_value_queries:
-            # Header column:
-            print(f"{distinct_values_query.name:>32}", end = "")
-            for object_multiplier in object_multiplier_values:
-                print(f"{report_table[distinct_values_query][object_multiplier]:>{number_cell_width}.3f}", end = "")
-            print()
+                print(f"{'object_count':>32}", end = "")
+                for object_multiplier in object_multiplier_values:
+                    # There are 5 loops, each with `object_multiplier` items:
+                    print(f"{object_multiplier ** 5:>{number_cell_width}}", end = "")
+                print()
+
+                # delimiter:
+                print(f"{'-' * 32:>32}", end = "")
+
+                print()
+                for distinct_values_query in distinct_value_queries:
+                    # Header column:
+                    print(f"{distinct_values_query.name:>32}", end = "")
+                    for object_multiplier in object_multiplier_values:
+                        print(
+                            f"{report_tables[use_mongomock][use_single_collection][distinct_values_query][object_multiplier]:>{number_cell_width}.3f}",
+                            end = "",
+                        )
+                    print()

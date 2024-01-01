@@ -5,7 +5,7 @@ connection_config:
     server_port_number: 8787
 
 mongo_config:
-    use_mongomock_only: True
+    use_mongomock: True
     distinct_values_query: original_find_and_loop
     mongo_client:
         # See `MongoClientConfigSchema` for detailed connection string format:
@@ -14,7 +14,7 @@ mongo_config:
         database_name: argrelay
         start_server: True
         # See `mongo_notes.md`:
-        server_start_command: ~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data
+        server_start_command: ~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data
 
 query_cache_config:
     enable_query_cache: True
@@ -62,6 +62,12 @@ gui_banner_config:
         <br/>
         Try a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> for full functionality.
         </div>
+
+class_to_collection_map:
+    ClassCluster: ClassCluster
+    ClassHost: ClassHost
+    ClassService: ClassService
+    AccessType: AccessType
 
 server_plugin_control:
     first_interp_factory_id: FirstArgInterpFactory

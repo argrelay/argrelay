@@ -7,7 +7,7 @@ from argrelay.mongo_data.MongoConfig import MongoConfig
 from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_client_config_desc
 from argrelay.schema_config_core_server.MongoServerConfigSchema import mongo_server_config_desc
 
-use_mongomock_only_ = "use_mongomock_only"
+use_mongomock_ = "use_mongomock"
 distinct_values_query_ = "distinct_values_query"
 mongo_client_ = "mongo_client"
 mongo_server_ = "mongo_server"
@@ -18,10 +18,10 @@ class MongoConfigSchema(Schema):
         unknown = RAISE
         strict = True
 
-    use_mongomock_only = fields.Boolean()
+    use_mongomock = fields.Boolean()
     """
     It might be the case that (test) `mongomock` lib actually provides necessary functionality and meet
-    non-function requirements for many (prod) workloads without need to deploy and administer MongoDB.
+    non-function requirements for many (prod) workloads without a need to deploy and administer MongoDB.
     https://github.com/mongomock/mongomock
     """
 
@@ -44,7 +44,7 @@ class MongoConfigSchema(Schema):
         **kwargs,
     ):
         return MongoConfig(
-            use_mongomock_only = input_dict[use_mongomock_only_],
+            use_mongomock = input_dict[use_mongomock_],
             # TODO: Is calling `ensure_value_is_enum` even required?
             distinct_values_query = ensure_value_is_enum(input_dict[distinct_values_query_], DistinctValuesQuery),
             mongo_client = input_dict[mongo_client_],
@@ -56,7 +56,7 @@ mongo_config_desc = TypeDesc(
     dict_schema = MongoConfigSchema(),
     ref_name = MongoConfigSchema.__name__,
     dict_example = {
-        use_mongomock_only_: True,
+        use_mongomock_: True,
         distinct_values_query_: DistinctValuesQuery.original_find_and_loop.name,
         mongo_client_: mongo_client_config_desc.dict_example,
         mongo_server_: mongo_server_config_desc.dict_example,
