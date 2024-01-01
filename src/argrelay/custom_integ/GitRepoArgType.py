@@ -27,10 +27,12 @@ class GitRepoArgType(Enum):
     # Path component leading to Git repo root path (e.g. ["qwer", "asdf", "zxcv"] of "zxcv/qwer/asdf"):
     GitRepoPathComp = auto()
 
+    # TODO: clean up or make use of:
     # FS_06_99_43_60: example of using non-scalar value (array|list):
     # Git remote, for example: "git@github.com:uvsmtid/argrelay.git"
     GitRepoRemoteUrl = auto()
 
+    # TODO: clean up or make use of:
     # FS_06_99_43_60: example of using non-scalar value (array|list):
     # Git local branch name:
     GitRepoLocalBranch = auto()

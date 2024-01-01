@@ -19,4 +19,4 @@ class ThisTestClass(test_MongoClient_envelope_search_with_array_fields.ThisTestC
             **kwargs,
         )
 
-        self.use_mongomock_only = False
+        self.use_mongomock = False

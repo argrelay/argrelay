@@ -19,6 +19,7 @@ class ServerConfig:
     mongo_config: MongoConfig = field()
     query_cache_config: QueryCacheConfig = field()
     gui_banner_config: GuiBannerConfig = field()
+    class_to_collection_map: dict = field()
     server_plugin_control: ServerPluginControl = field()
 
     plugin_instance_id_activate_list: list[str] = field()

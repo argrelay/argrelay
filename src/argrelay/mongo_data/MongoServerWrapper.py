@@ -8,18 +8,18 @@ from argrelay.mongo_data.MongoConfig import MongoConfig
 class MongoServerWrapper:
 
     def __init__(self):
-        self.use_mongomock_only: bool = True
+        self.use_mongomock: bool = True
         self.is_started: bool = False
         self.mongo_proc: Popen
 
     def start_mongo_server(self, mongo_config: MongoConfig):
 
-        eprint(f"use_mongomock_only: {mongo_config.use_mongomock_only}")
-        if mongo_config.use_mongomock_only:
-            self.use_mongomock_only = True
+        eprint(f"use_mongomock: {mongo_config.use_mongomock}")
+        if mongo_config.use_mongomock:
+            self.use_mongomock = True
             return
         else:
-            self.use_mongomock_only = False
+            self.use_mongomock = False
 
         eprint(f"start_server: {mongo_config.mongo_server.start_server}")
         eprint(f"is_started: {self.is_started}")
@@ -42,7 +42,7 @@ class MongoServerWrapper:
 
     def stop_mongo_server(self):
 
-        if self.use_mongomock_only:
+        if self.use_mongomock:
             return
 
         if self.is_started:

@@ -6,10 +6,10 @@ preferring (not immediately obvious) practical properties.
 
 *   Use at least two words for identifiers.
 
-    For example, `run_mode` (or `RunMode`) instead of just `mode` (or `Mode).
+    For example, `server_action` (or `ServerAction`) instead of just `action` (or `Action`).
 
-    This helps in refactoring and searching. Two words will significantly
-    narrow down the scope excluding unwanted search hits to review.
+    This helps in refactoring and searching. Two words are less likely to have the same meaning
+    across the same repo and will significantly narrow down the scope excluding unwanted search hits to review.
 
 *   Prefer single file per class.
 
@@ -61,19 +61,22 @@ preferring (not immediately obvious) practical properties.
     ```python
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
+        self.server_config = server_config
         self.plugin_instance_id = plugin_instance_id
-        self.config_dict = config_dict
+        self.plugin_config_dict = plugin_config_dict
     ```
 
     instead of this:
 
     ```python
-    def __init__(self, plugin_instance_id: str, config_dict: dict):
+    def __init__(self, server_config: ServerConfig, plugin_instance_id: str, plugin_config_dict: dict):
+        self.server_config = server_config
         self.plugin_instance_id = plugin_instance_id
-        self.config_dict = config_dict
+        self.plugin_config_dict = plugin_config_dict
     ```
 
     In case of constructor args changes, the first style:

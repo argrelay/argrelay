@@ -102,9 +102,7 @@ def client_config_dict_to_object(client_config_dict):
             server_host_name = client_config_dict["connection_config"]["server_host_name"],
             server_port_number = client_config_dict["connection_config"]["server_port_number"],
         ),
-        # TODO_25_46_48_20: Provide non-mock-able test config and change to enabled by default:
-        #                   Keep disabled by default while in preview (while effect on tests cannot be avoided):
-        show_pending_spinner = client_config_dict.get("show_pending_spinner", False)
+        show_pending_spinner = client_config_dict.get("show_pending_spinner", True)
     )
     return client_config
 

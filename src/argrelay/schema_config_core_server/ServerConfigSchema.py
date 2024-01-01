@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from marshmallow import Schema, fields, RAISE, post_load
 
+from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
@@ -18,6 +21,7 @@ connection_config_ = "connection_config"
 mongo_config_ = "mongo_config"
 query_cache_config_ = "query_cache_config"
 gui_banner_config_ = "gui_banner_config"
+class_to_collection_map_ = "class_to_collection_map"
 server_plugin_control_ = "server_plugin_control"
 plugin_instance_entries_ = "plugin_instance_entries"
 static_data_ = "static_data"
@@ -48,6 +52,19 @@ class ServerConfigSchema(Schema):
         required = True,
     )
 
+    # Related to FS_56_43_05_79 search diff collection:
+    # Maps names of envelope classes to names of `EnvelopeCollection`.
+    # Specifically, it allows to:
+    # *   map classes to put all into single collection
+    # *   map classes to put each into separate collection
+    # Normally, if map entry is missing for one of the envelope class,
+    # it uses envelope class name as collection name by default.
+    class_to_collection_map = fields.Dict(
+        keys = fields.String(),
+        values = fields.String(),
+        required = True,
+    )
+
     server_plugin_control = fields.Nested(
         server_plugin_control_desc.dict_schema,
         required = True,
@@ -65,8 +82,7 @@ class ServerConfigSchema(Schema):
         static_data_desc.dict_schema,
         required = False,
         load_default = StaticData(
-            known_arg_types = [],
-            data_envelopes = [],
+            envelope_collections = {},
         ),
     )
 
@@ -87,6 +103,7 @@ class ServerConfigSchema(Schema):
             mongo_config = input_dict[mongo_config_],
             query_cache_config = input_dict[query_cache_config_],
             gui_banner_config = input_dict[gui_banner_config_],
+            class_to_collection_map = input_dict[class_to_collection_map_],
             server_plugin_control = input_dict[server_plugin_control_],
             plugin_instance_id_activate_list = serialize_dag_to_list(
                 plugin_instance_id_activate_order_dag,
@@ -104,6 +121,12 @@ server_config_desc = TypeDesc(
         mongo_config_: mongo_config_desc.dict_example,
         query_cache_config_: query_cache_config_desc.dict_example,
         gui_banner_config_: gui_banner_config_desc.dict_example,
+        class_to_collection_map_: {
+            ServiceEnvelopeClass.ClassCluster.name: ServiceEnvelopeClass.ClassCluster.name,
+            ServiceEnvelopeClass.ClassHost.name: ServiceEnvelopeClass.ClassHost.name,
+            ServiceEnvelopeClass.ClassService.name: ServiceEnvelopeClass.ClassService.name,
+            ServiceArgType.AccessType.name: ServiceArgType.AccessType.name,
+        },
         server_plugin_control_: server_plugin_control_desc.dict_example,
         plugin_instance_entries_: {
             "some_plugin_instance_id": plugin_entry_desc.dict_example,

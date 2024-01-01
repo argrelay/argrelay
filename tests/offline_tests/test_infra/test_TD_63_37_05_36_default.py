@@ -5,11 +5,11 @@ import pandas as pd
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import scalar_to_list_values
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.schema_config_core_server.StaticDataSchema import data_envelopes_
 from argrelay.test_infra import change_to_known_repo_path, test_data_
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
@@ -75,7 +75,6 @@ class ThisTestClass(BaseTestClass):
             server_config = server_config_desc.from_default_file()
             local_server = LocalServer(server_config)
             local_server.start_local_server()
-            mongo_col = local_server.get_mongo_database()[data_envelopes_]
 
             # For each populated row, verify that such `HostName`/`ServiceName` exists.
             for table_index, table_row in test_data.iterrows():
@@ -115,6 +114,7 @@ class ThisTestClass(BaseTestClass):
                         query_dict.update({
                             ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
                         })
+                        mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassCluster.name]
                         self.find_single_data_envelope(mongo_col, query_dict)
                     else:
 
@@ -137,6 +137,7 @@ class ThisTestClass(BaseTestClass):
                             query_dict.update({
                                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                             })
+                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassHost.name]
                             # Ensure `HostName` contains abbreviation of (`CodeMaturity`, `FlowStage`) as its suffix:
                             host_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
                             self.assertTrue(
@@ -150,12 +151,14 @@ class ThisTestClass(BaseTestClass):
                             query_dict.update({
                                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
                             })
+                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassHost.name]
                             host_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             query_dict.update({
                                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                                 ServiceArgType.ServiceName.name: service_name,
                             })
+                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassService.name]
                             service_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             # Both host and service should have same host name:
@@ -193,7 +196,11 @@ class ThisTestClass(BaseTestClass):
                                 actual_values,
                             )
 
-    def find_single_data_envelope(self, mongo_col, query_dict) -> dict:
+    def find_single_data_envelope(
+        self,
+        mongo_col,
+        query_dict,
+    ) -> dict:
         query_res = mongo_col.find(query_dict)
         found_count = 0
 

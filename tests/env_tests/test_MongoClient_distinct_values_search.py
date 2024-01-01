@@ -19,4 +19,4 @@ class ThisTestClass(test_MongoClient_distinc_values_search.ThisTestClass):
             **kwargs,
         )
 
-        self.use_mongomock_only = False
+        self.use_mongomock = False

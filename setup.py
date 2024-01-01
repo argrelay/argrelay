@@ -39,7 +39,7 @@ setuptools.setup(
     version = "0.6.0",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
-    description = "Tab-completion & data search server = total recall in Bash",
+    description = "Tab-completion & data search server = total recall for Bash shell",
     long_description = """
 See: https://github.com/argrelay/argrelay
     """,

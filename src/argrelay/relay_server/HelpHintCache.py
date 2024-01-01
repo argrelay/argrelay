@@ -17,9 +17,12 @@ class HelpHintCache:
 
     def populate_cache(self):
 
-        help_hint_envelopes = self.query_engine.query_data_envelopes({
-            f"{ReservedArgType.EnvelopeClass.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
-        })
+        help_hint_envelopes = self.query_engine.query_data_envelopes(
+            ReservedEnvelopeClass.ClassHelp.name,
+            {
+                f"{ReservedArgType.EnvelopeClass.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
+            },
+        )
 
         for help_hint_envelope in help_hint_envelopes:
             arg_type = help_hint_envelope[ReservedArgType.ArgType.name]

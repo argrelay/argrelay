@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-import dataclasses
-
+from argrelay.client_command_remote.ProposeArgValuesRemoteClientCommand import ProposeArgValuesRemoteClientCommand
+from argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand import (
+    ProposeArgValuesRemoteOptimizedClientCommand,
+)
 from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import __main__
-from argrelay.runtime_data.ClientConfig import ClientConfig
-from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.test_infra import line_no, parse_line_and_cpos, change_to_known_repo_path
+from argrelay.test_infra import line_no, parse_line_and_cpos
 from argrelay.test_infra.EnvMockBuilder import (
     LiveServerEnvMockBuilder,
+    wrap_instance_method_on_class,
 )
 from argrelay.test_infra.RemoteTestClass import RemoteTestClass
 
@@ -58,37 +59,46 @@ apac
 
                     (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
-                    with change_to_known_repo_path("."):
-                        client_config_obj: ClientConfig = dataclasses.replace(
-                            # Use real config from client with connection details for live server:
-                            client_config_desc.from_default_file(),
-                            # Adjust client config to test optimized and non-optimized implementation:
-                            optimize_completion_request = optimize_completion_request,
-                        )
-                    client_config_dict = client_config_desc.dict_schema.dump(client_config_obj)
-
                     env_mock_builder = (
                         LiveServerEnvMockBuilder()
                         .set_command_line(command_line)
                         .set_cursor_cpos(cursor_cpos)
                         .set_comp_type(comp_type)
+                        .set_client_config_dict()
+                        .set_show_pending_spinner(False)
                         .set_mock_client_config_file_read(True)
-                        .set_client_config_dict(client_config_dict)
+                        .set_client_config_to_optimize_completion_request(optimize_completion_request)
                         .set_capture_stdout(True)
                         .set_capture_stderr(True)
                     )
                     with env_mock_builder.build():
-                        # when:
+                        with wrap_instance_method_on_class(
+                            ProposeArgValuesRemoteOptimizedClientCommand,
+                            ProposeArgValuesRemoteOptimizedClientCommand.execute_command,
+                        ) as optimized_method_wrap_mock:
+                            with wrap_instance_method_on_class(
+                                ProposeArgValuesRemoteClientCommand,
+                                ProposeArgValuesRemoteClientCommand.execute_command,
+                            ) as non_optimized_method_wrap_mock:
 
-                        __main__.main()
+                                # when:
 
-                        # then:
+                                __main__.main()
 
-                        self.assertEqual(
-                            expected_stdout_str,
-                            env_mock_builder.actual_stdout.getvalue(),
-                        )
-                        self.assertEqual(
-                            "",
-                            env_mock_builder.actual_stderr.getvalue(),
-                        )
+                                # then:
+
+                                if optimize_completion_request:
+                                    assert optimized_method_wrap_mock.called
+                                    assert not non_optimized_method_wrap_mock.called
+                                else:
+                                    assert not optimized_method_wrap_mock.called
+                                    assert non_optimized_method_wrap_mock.called
+
+                                self.assertEqual(
+                                    expected_stdout_str,
+                                    env_mock_builder.actual_stdout.getvalue(),
+                                )
+                                self.assertEqual(
+                                    "",
+                                    env_mock_builder.actual_stderr.getvalue(),
+                                )

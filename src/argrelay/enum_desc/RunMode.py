@@ -7,7 +7,7 @@ from argrelay.enum_desc.CompType import CompType
 
 class RunMode(Enum):
     """
-    Note: `RunMode` became completely implied and not necessary information for logic (derived from other values).
+    Note: `RunMode` became completely implied by `ServerAction` and it is not used for logic anymore.
 
     See also `CallConv`.
 

@@ -10,6 +10,8 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
@@ -27,18 +29,20 @@ class ServiceLoader(AbstractLoader):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
 
     def validate_config(
         self,
     ):
-        service_loader_config_desc.validate_dict(self.config_dict)
+        service_loader_config_desc.validate_dict(self.plugin_config_dict)
 
     def update_static_data(
         self,
@@ -55,29 +59,81 @@ class ServiceLoader(AbstractLoader):
         static_data: StaticData,
     ) -> StaticData:
         """
-        The loader writes samples into `static_data[data_envelopes_]` simply from code (without any data source).
+        The loader writes samples into `static_data` simply from code (without any data source).
         """
 
-        # Init type keys (if they do not exist):
-        for type_name in [enum_item.name for enum_item in ServiceArgType]:
-            if type_name not in static_data.known_arg_types:
-                static_data.known_arg_types.append(type_name)
+        class_to_collection_map: dict = self.server_config.class_to_collection_map
 
-        # TODO: This loader overwrites existing object list (it has to patch it instead).
-        #       This is fine for now because `ServiceLoader` is used first in config.
-        data_envelopes = []
+        # Ensure all expected `ServiceEnvelopeClass`-es are mapped.
+        for envelope_class in [
+            ServiceEnvelopeClass.ClassCluster.name,
+            ServiceEnvelopeClass.ClassHost.name,
+            ServiceEnvelopeClass.ClassService.name,
+            ServiceArgType.AccessType.name,
+        ]:
+            assert envelope_class in class_to_collection_map
 
-        self.populate_common_AccessType(data_envelopes)
-        self.populate_TD_63_37_05_36_default(data_envelopes)
-        self.populate_TD_76_09_29_31_overlapped(data_envelopes)
-        self.populate_TD_38_03_48_51_large_generated(data_envelopes)
-        self.populate_TD_43_24_76_58_single(data_envelopes)
+        # Create `EnvelopeCollection`-s for all collections names in `class_to_collection_map`:
+        collection_names = set(class_to_collection_map.values())
+        for collection_name in collection_names:
+            envelope_collection = static_data.envelope_collections.setdefault(
+                collection_name,
+                EnvelopeCollection(
+                    index_fields = [],
+                    data_envelopes = [],
+                ),
+            )
+            index_fields = envelope_collection.index_fields
 
-        self.generate_envelope_id(data_envelopes)
+            # Indexing all fields in `ServiceArgType` for all data envelopes indiscriminately
+            # (can be applied selectively later if hitting any limits).
+            # Init index fields (if they do not exist):
+            for index_field in [enum_item.name for enum_item in ServiceArgType]:
+                if index_field not in index_fields:
+                    index_fields.append(index_field)
 
-        self.generate_help_hints(data_envelopes)
+        # Select `data_envelope` lists used by each collection name
+        cluster_envelopes = static_data.envelope_collections[
+            class_to_collection_map[ServiceEnvelopeClass.ClassCluster.name]
+        ].data_envelopes
+        host_envelopes = static_data.envelope_collections[
+            class_to_collection_map[ServiceEnvelopeClass.ClassHost.name]
+        ].data_envelopes
+        service_envelopes = static_data.envelope_collections[
+            class_to_collection_map[ServiceEnvelopeClass.ClassService.name]
+        ].data_envelopes
+        access_envelopes = static_data.envelope_collections[
+            class_to_collection_map[ServiceArgType.AccessType.name]
+        ].data_envelopes
 
-        static_data.data_envelopes.extend(data_envelopes)
+        self.populate_common_AccessType(access_envelopes)
+        self.populate_TD_63_37_05_36_default(
+            cluster_envelopes,
+            host_envelopes,
+            service_envelopes,
+        )
+        self.populate_TD_76_09_29_31_overlapped(
+            cluster_envelopes,
+            host_envelopes,
+            service_envelopes,
+        )
+        self.populate_TD_38_03_48_51_large_generated(
+            cluster_envelopes,
+            host_envelopes,
+            service_envelopes,
+        )
+        self.populate_TD_43_24_76_58_single(
+            cluster_envelopes,
+            host_envelopes,
+            service_envelopes,
+        )
+
+        self.generate_envelope_id(cluster_envelopes + host_envelopes + service_envelopes)
+
+        self.generate_help_hints(
+            class_to_collection_map,
+            static_data,
+        )
 
         return static_data
 
@@ -105,7 +161,8 @@ class ServiceLoader(AbstractLoader):
 
     @staticmethod
     def generate_help_hints(
-        data_envelopes: list[dict],
+        class_to_collection_map: dict,
+        static_data: StaticData,
     ):
         """
         This demos FS_71_87_33_52 help_hint for `ServiceArgType.IpAddress`.
@@ -113,24 +170,53 @@ class ServiceLoader(AbstractLoader):
         It simply generates `data_envelope`-s of `ReservedEnvelopeClass.ClassHelp` for
         values of `ServiceArgType.IpAddress` equal to corresponding `ServiceArgType.HostName`.
         """
-        help_hint_envelopes = []
-        for data_envelope in data_envelopes:
-            if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
-                if ServiceArgType.IpAddress.name in data_envelope:
+
+        class_to_collection_map.setdefault(
+            ReservedEnvelopeClass.ClassHelp.name,
+            ReservedEnvelopeClass.ClassHelp.name,
+        )
+        help_hint_envelope_collection = static_data.envelope_collections.setdefault(
+            class_to_collection_map[ReservedEnvelopeClass.ClassHelp.name],
+            EnvelopeCollection(
+                index_fields = [],
+                data_envelopes = [],
+            ),
+        )
+        help_hint_index_fields = help_hint_envelope_collection.index_fields
+        help_hint_envelopes = help_hint_envelope_collection.data_envelopes
+
+        # Init index fields (if they do not exist):
+        for help_hint_index_field in [
+            ReservedArgType.EnvelopeClass.name,
+            ReservedArgType.ArgType.name,
+            ReservedArgType.ArgValue.name,
+            ReservedArgType.HelpHint.name,
+        ]:
+            if help_hint_index_field not in help_hint_index_fields:
+                help_hint_index_fields.append(help_hint_index_field)
+
+        # Generating
+        host_envelopes = static_data.envelope_collections[
+            class_to_collection_map[ServiceEnvelopeClass.ClassHost.name]
+        ].data_envelopes
+
+        for host_envelope in host_envelopes:
+            # This `if`-filter is not necessary until non-host-class-envelopes
+            # get stored into the same collection:
+            if host_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
+                if ServiceArgType.IpAddress.name in host_envelope:
                     help_hint_envelopes.append({
                         f"{ReservedArgType.EnvelopeClass.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
                         f"{ReservedArgType.ArgType.name}": f"{ServiceArgType.IpAddress.name}",
-                        f"{ReservedArgType.ArgValue.name}": f"{data_envelope[ServiceArgType.IpAddress.name]}",
-                        f"{ReservedArgType.HelpHint.name}": f"{data_envelope[ServiceArgType.HostName.name]}",
+                        f"{ReservedArgType.ArgValue.name}": f"{host_envelope[ServiceArgType.IpAddress.name]}",
+                        f"{ReservedArgType.HelpHint.name}": f"{host_envelope[ServiceArgType.HostName.name]}",
                     })
-
-        data_envelopes.extend(help_hint_envelopes)
 
     def is_test_data_allowed(
         self,
         test_data_id: str,
     ) -> bool:
-        if test_data_id in self.config_dict[test_data_ids_to_load_]:
+        if test_data_id in self.plugin_config_dict[test_data_ids_to_load_]:
             return True
         return False
 
@@ -161,7 +247,9 @@ class ServiceLoader(AbstractLoader):
 
     def populate_TD_63_37_05_36_default(
         self,
-        data_envelopes: list,
+        cluster_envelopes: list[dict],
+        host_envelopes: list[dict],
+        service_envelopes: list[dict],
     ):
         """
         Populates TD_63_37_05_36 # demo
@@ -169,7 +257,7 @@ class ServiceLoader(AbstractLoader):
         if not self.is_test_data_allowed("TD_63_37_05_36"):
             return
 
-        data_envelopes.extend([
+        cluster_envelopes.extend([
 
             ############################################################################################################
             # TD_63_37_05_36 # demo: clusters
@@ -284,7 +372,9 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.FlowStage.name: "downstream",
                 ServiceArgType.ClusterName.name: "prod-apac-downstream",
             },
+        ])
 
+        host_envelopes.extend([
             ############################################################################################################
             # TD_63_37_05_36 # demo: hosts
 
@@ -530,7 +620,9 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.HostName.name: "wert-pd-2",
                 ServiceArgType.IpAddress.name: "ip.192.168.7.4",
             },
+        ])
 
+        service_envelopes.extend([
             ############################################################################################################
             # TD_63_37_05_36 # demo: services
 
@@ -981,12 +1073,14 @@ class ServiceLoader(AbstractLoader):
 
     def populate_TD_76_09_29_31_overlapped(
         self,
-        data_envelopes: list,
+        cluster_envelopes: list[dict],
+        host_envelopes: list[dict],
+        service_envelopes: list[dict],
     ):
         if not self.is_test_data_allowed("TD_76_09_29_31"):
             return
 
-        data_envelopes.extend([
+        cluster_envelopes.extend([
 
             ############################################################################################################
             # TD_76_09_29_31 # overlapped: clusters
@@ -1012,6 +1106,9 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.FlowStage.name: "downstream",
                 ServiceArgType.ClusterName.name: "dev-emea-downstream",
             },
+        ])
+
+        host_envelopes.extend([
 
             ############################################################################################################
             # TD_76_09_29_31 # overlapped: hosts
@@ -1073,7 +1170,9 @@ class ServiceLoader(AbstractLoader):
 
     def populate_TD_38_03_48_51_large_generated(
         self,
-        data_envelopes: list,
+        cluster_envelopes: list[dict],
+        host_envelopes: list[dict],
+        service_envelopes: list[dict],
     ):
         """
         TD_38_03_48_51: generate large data set
@@ -1103,7 +1202,7 @@ class ServiceLoader(AbstractLoader):
                         ServiceArgType.ClusterName.name: cluster_name,
                     }
 
-                    data_envelopes.append(generated_cluster)
+                    cluster_envelopes.append(generated_cluster)
 
                     for host_name in ["hs" + str(hsn) for hsn in range(0, self.object_multiplier)]:
 
@@ -1122,7 +1221,7 @@ class ServiceLoader(AbstractLoader):
                             ServiceArgType.HostName.name: host_name,
                         }
 
-                        data_envelopes.append(generated_host)
+                        host_envelopes.append(generated_host)
 
                         for service_name in ["sn{:02d}".format(snn) for snn in range(0, self.object_multiplier)]:
                             ############################################################################################################
@@ -1141,16 +1240,18 @@ class ServiceLoader(AbstractLoader):
                                 ServiceArgType.ServiceName.name: service_name,
                             }
 
-                            data_envelopes.append(generated_service)
+                            service_envelopes.append(generated_service)
 
     def populate_TD_43_24_76_58_single(
         self,
-        data_envelopes: list,
+        cluster_envelopes: list[dict],
+        host_envelopes: list[dict],
+        service_envelopes: list[dict],
     ):
         if not self.is_test_data_allowed("TD_43_24_76_58"):
             return
 
-        data_envelopes.extend([
+        cluster_envelopes.extend([
 
             ############################################################################################################
             # TD_43_24_76_58 # single: clusters
@@ -1176,6 +1277,9 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.FlowStage.name: "downstream",
                 ServiceArgType.ClusterName.name: "dev-emea-downstream",
             },
+        ])
+
+        host_envelopes.extend([
 
             ############################################################################################################
             # TD_43_24_76_58 # single: hosts

@@ -10,7 +10,7 @@ from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder, wrap_instance_method
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder, wrap_instance_method_on_instance
 from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
 
 
@@ -89,7 +89,7 @@ class ThisTestClass(BaseTestClass):
 
                     # 1st run:
                     actual_suggestions_1st_run = "1st"
-                    with wrap_instance_method(
+                    with wrap_instance_method_on_instance(
                         local_server.query_engine,
                         local_server.query_engine._query_prop_values,
                     ) as method_wrap_mock:
@@ -109,7 +109,7 @@ class ThisTestClass(BaseTestClass):
                         )
                     # 2nd run:
                     actual_suggestions_2nd_run = "2nd"
-                    with wrap_instance_method(
+                    with wrap_instance_method_on_instance(
                         local_server.query_engine,
                         local_server.query_engine._query_prop_values,
                     ) as method_wrap_mock:

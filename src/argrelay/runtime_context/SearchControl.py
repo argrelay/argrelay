@@ -6,8 +6,13 @@ from dataclasses import dataclass, field
 @dataclass
 class SearchControl:
     """
-    FS_31_70_49_15:
+    Implements FS_31_70_49_15: search control:
     Object to specify what arg types will be used in search (and how they are mapped to named arg keys).
+    """
+
+    collection_name: str = field(default_factory = lambda: None)
+    """
+    MongoDB collection to search `data_envelope`-s in.
     """
 
     envelope_class: str = field(default_factory = lambda: None)

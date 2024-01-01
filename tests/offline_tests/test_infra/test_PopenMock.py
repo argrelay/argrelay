@@ -73,6 +73,7 @@ play_x_server_demo.bash
 publish_package.bash
 relay_demo.bash
 run_max_tests.bash
+squash_branch.bash
 """,
                     b"",
                 ),
@@ -155,18 +156,18 @@ run_max_tests.bash
             (
                 line_no(),
                 {
-                    "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data": (
+                    "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data": (
                         0,
                         "MongoDB start stdout",
                         "MongoDB start stdout",
                     ),
                 },
                 lambda: subprocess.Popen(
-                "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data",
+                "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data",
                     shell = True,
                 ),
                 (
-                    "~/argrelay.git/temp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/temp/mongo/data",
+                    "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data",
                     0,
                     "MongoDB start stdout",
                     "MongoDB start stdout",

@@ -10,6 +10,7 @@ from argrelay.plugin_interp.JumpTreeInterpFactoryConfigSchema import jump_tree_i
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
+from argrelay.schema_config_core_server.EnvelopeCollectionSchema import envelope_collection_desc
 from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_client_config_desc
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
 from argrelay.schema_config_core_server.MongoServerConfigSchema import mongo_server_config_desc
@@ -64,6 +65,7 @@ class ThisTestClass(BaseTestClass):
             (line_no(), error_delegator_custom_data_desc),
             (line_no(), jump_tree_interp_config_desc),
             (line_no(), server_plugin_control_desc),
+            (line_no(), envelope_collection_desc),
         ]
         for test_case in test_cases:
             with self.subTest(test_case):

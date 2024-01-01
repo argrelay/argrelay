@@ -135,7 +135,10 @@ class InterpContext:
             return
 
         ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
-        query_dict = populate_query_dict(self.curr_container)
+        (
+            collection_name,
+            query_dict,
+        ) = populate_query_dict(self.curr_container)
 
         query_result: QueryResult = self.query_engine.query_prop_values(
             query_dict,
@@ -198,7 +201,8 @@ class InterpContext:
             self.curr_interp.delegate_fill_control()
 
             # Query envelopes after all defaults applied:
-            # TODO: We could probably select whether to query only envelopes or their values depending on RunMode.
+            # TODO: We could probably select whether to query only envelopes or
+            #       query their values depending on `ServerAction`.
             #       But init of next envelope depends on prev envelope found.
             ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {type(self.curr_interp).__name__}")
             self.query_prop_values()

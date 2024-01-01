@@ -7,15 +7,33 @@ class DistinctValuesQuery(Enum):
 
     See `test_QueryEngine_perf.py` for perf test used to produce these tables:
 
+    Numbers for "use_single_collection: True" are more evident as `object_count` directly affects the query.
+
+    Numbers for "use_single_collection: False" are less evident as `object_count` is distributed across collections.
+
     *   `mongomock`:
 
         ```
+        ================================
+        use_mongomock: True
+        use_single_collection: True
+
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049
         --------------------------------
-                  original_find_and_loop     0.015     0.050     0.179     0.712     2.563     8.348    34.640
-                         native_distinct     0.070     0.204     0.597     1.568     3.006     5.927    10.550
-                        native_aggregate     0.096     0.380     1.527     7.102    24.525    93.765   419.467
+                  original_find_and_loop     0.009     0.030     0.115     0.440     1.632     6.137    33.669
+                         native_distinct     0.038     0.122     0.363     0.969     2.183     4.740     7.102
+                        native_aggregate     0.044     0.151     0.679     2.899    13.257    49.728   292.153
+        ================================
+        use_mongomock: True
+        use_single_collection: False
+
+                       object_multiplier         3         4         5         6         7         8         9
+                            object_count       243      1024      3125      7776     16807     32768     59049
+        --------------------------------
+                  original_find_and_loop     0.006     0.018     0.113     0.414     1.662     5.831    29.375
+                         native_distinct     0.027     0.096     0.327     0.812     1.830     3.578     6.403
+                        native_aggregate     0.020     0.066     0.258     1.108     4.923    17.561    95.461
         ```
 
         *   The fastest on small collections is `original_find_and_loop`.
@@ -24,16 +42,29 @@ class DistinctValuesQuery(Enum):
     *   `pymongo`:
 
         ```
+        ================================
+        use_mongomock: False
+        use_single_collection: True
+
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049
         --------------------------------
-                  original_find_and_loop     0.031     0.023     0.059     0.196     0.387     0.788     1.419
-                         native_distinct     0.077     0.122     0.193     0.406     0.723     1.357     2.137
-                        native_aggregate     0.027     0.035     0.080     0.144     0.278     0.450     0.715
+                  original_find_and_loop     0.013     0.023     0.043     0.090     0.182     0.428     0.746
+                         native_distinct     0.041     0.065     0.117     0.241     0.462     0.796     1.458
+                        native_aggregate     0.022     0.027     0.050     0.081     0.125     0.210     0.368
+        ================================
+        use_mongomock: False
+        use_single_collection: False
+
+                       object_multiplier         3         4         5         6         7         8         9
+                            object_count       243      1024      3125      7776     16807     32768     59049
+        --------------------------------
+                  original_find_and_loop     0.015     0.020     0.039     0.087     0.148     0.345     0.633
+                         native_distinct     0.044     0.048     0.087     0.173     0.299     0.512     0.903
+                        native_aggregate     0.016     0.021     0.033     0.054     0.086     0.159     0.231
         ```
 
         The fastest is `native_aggregate`.
-
     """
 
     original_find_and_loop = auto()

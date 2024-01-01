@@ -11,6 +11,7 @@ from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_invocation_input
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     instance_data_,
@@ -23,6 +24,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
 from argrelay.schema_config_interp.SearchControlSchema import (
     keys_to_types_list_,
     envelope_class_,
+    collection_name_,
 )
 from argrelay.schema_response.InvocationInput import InvocationInput
 
@@ -36,19 +38,28 @@ class GitRepoDelegator(AbstractDelegator):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
 
     def get_supported_func_envelopes(
         self,
     ) -> list[dict]:
 
+        class_to_collection_map: dict = self.server_config.class_to_collection_map
+
+        class_to_collection_map.setdefault(
+            GitRepoEnvelopeClass.ClassGitRepo.name,
+            GitRepoEnvelopeClass.ClassGitRepo.name,
+        )
         repo_search_control = {
+            collection_name_: class_to_collection_map[GitRepoEnvelopeClass.ClassGitRepo.name],
             envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
             keys_to_types_list_: [
                 {"alias": GitRepoArgType.GitRepoAlias.name},
@@ -60,7 +71,12 @@ class GitRepoDelegator(AbstractDelegator):
             ],
         }
 
+        class_to_collection_map.setdefault(
+            GitRepoEnvelopeClass.ClassGitCommit.name,
+            GitRepoEnvelopeClass.ClassGitCommit.name,
+        )
         commit_search_control = {
+            collection_name_: class_to_collection_map[GitRepoEnvelopeClass.ClassGitCommit.name],
             envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
             keys_to_types_list_: [
                 {"name": GitRepoArgType.GitRepoRootBaseName.name},

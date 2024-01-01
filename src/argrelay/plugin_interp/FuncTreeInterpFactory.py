@@ -17,9 +17,14 @@ from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
 )
 from argrelay.plugin_interp.TreeWalker import TreeWalker
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig, assert_plugin_instance_id
 from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_
-from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_, envelope_class_
+from argrelay.schema_config_interp.SearchControlSchema import (
+    keys_to_types_list_,
+    envelope_class_,
+    collection_name_,
+)
 
 tree_path_selector_prefix_ = "tree_path_selector_"
 tree_path_selector_key_prefix_ = "s"
@@ -32,12 +37,14 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
     def __init__(
         self,
+        server_config: ServerConfig,
         plugin_instance_id: str,
-        config_dict: dict,
+        plugin_config_dict: dict,
     ):
         super().__init__(
+            server_config,
             plugin_instance_id,
-            config_dict,
+            plugin_config_dict,
         )
         # FS_26_43_73_72 func tree: func id to list of its relative paths populated by `load_func_envelopes`.
         # These func tree paths are relative to the interp node within FS_01_89_09_24 interp tree
@@ -47,24 +54,23 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
     def load_config(
         self,
-        config_dict,
+        plugin_config_dict,
     ) -> dict:
         # TODO_74_03_78_60: Call `TypeDesc` API to do load (to populate defaults) -> dump automatically.
         return func_tree_interp_config_desc.dict_schema.dump(
             func_tree_interp_config_desc.dict_schema.load(
-                config_dict
+                plugin_config_dict
             )
         )
 
     def validate_config(
         self,
     ):
-        func_tree_interp_config_desc.validate_dict(self.config_dict)
+        func_tree_interp_config_desc.validate_dict(self.plugin_config_dict)
 
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-        server_config: ServerConfig,
     ):
         """
         To implement FS_26_43_73_72 func tree, this plugin loads func `data_envelope`-s automatically.
@@ -79,7 +85,6 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         """
         super().load_func_envelopes(
             interp_tree_abs_path,
-            server_config,
         )
         interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
 
@@ -93,11 +98,11 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         func_envelopes_index: dict[str, dict[tuple[str, ...], dict]] = {}
         for delegator_plugin_id in interp_tree_node_config_dict[delegator_plugin_ids_]:
             assert_plugin_instance_id(
-                server_config,
+                self.server_config,
                 delegator_plugin_id,
                 PluginType.DelegatorPlugin,
             )
-            action_delegator: AbstractDelegator = server_config.action_delegators[delegator_plugin_id]
+            action_delegator: AbstractDelegator = self.server_config.action_delegators[delegator_plugin_id]
             func_envelopes = action_delegator.get_supported_func_envelopes()
             for func_envelope in func_envelopes:
                 func_id = func_envelope[ReservedArgType.FuncId.name]
@@ -125,14 +130,36 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             interp_tree_node_config_dict,
         )
 
-        interp_tree_abs_path_func_envelopes: list[dict] = self.populate_func_tree_props(
+        (
+            interp_tree_abs_path_func_envelopes,
+            prop_names,
+        ) = self.populate_func_tree_props(
             interp_tree_abs_path,
             interp_tree_node_config_dict,
             func_envelopes_index,
         )
 
+        self.server_config.class_to_collection_map.setdefault(
+            ReservedEnvelopeClass.ClassFunction.name,
+            ReservedEnvelopeClass.ClassFunction.name,
+        )
+        envelope_collection = self.server_config.static_data.envelope_collections.setdefault(
+            self.server_config.class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name],
+            EnvelopeCollection(
+                index_fields = [],
+                data_envelopes = [],
+            ),
+        )
+        index_fields = envelope_collection.index_fields
+        # Init index fields (if they do not exist):
+        for index_field in [
+            ReservedArgType.EnvelopeClass.name,
+        ] + prop_names:
+            if index_field not in index_fields:
+                index_fields.append(index_field)
+
         # Write func envelopes into `StaticData` (as if it is a loader plugin):
-        server_config.static_data.data_envelopes.extend(interp_tree_abs_path_func_envelopes)
+        envelope_collection.data_envelopes.extend(interp_tree_abs_path_func_envelopes)
 
     # noinspection PyMethodMayBeStatic
     def populate_init_control(
@@ -156,7 +183,15 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         """
         Provide search control based on `func_ids_to_func_rel_paths`.
         """
+
+        class_to_collection_map: dict = self.server_config.class_to_collection_map
+
+        class_to_collection_map.setdefault(
+            ReservedEnvelopeClass.ClassFunction.name,
+            ReservedEnvelopeClass.ClassFunction.name,
+        )
         interp_tree_node_config_dict[func_search_control_] = {
+            collection_name_: class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name],
             envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
             keys_to_types_list_: [],
         }
@@ -186,7 +221,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         interp_tree_abs_path: tuple[str, ...],
         interp_tree_node_config_dict,
         func_envelopes_index: dict[str, dict[tuple[str, ...], dict]],
-    ) -> list[dict]:
+    ) -> tuple[list[dict], list[str]]:
         """
         Populates func tree properties for each func `data_envelope` based on its path in func tree.
 
@@ -194,7 +229,8 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         *   Select its place on the func tree (provided by plugin config).
         *   Populate the path as envelope props with `tree_path_selector_prefix_`.
         """
-        interp_tree_abs_path_func_envelopes = []
+        interp_tree_abs_path_func_envelopes: list[dict] = []
+        prop_names: list[str] = []
         for func_id in self.func_ids_to_func_rel_paths:
             func_rel_paths: list[list[str]] = self.func_ids_to_func_rel_paths[func_id]
 
@@ -208,6 +244,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
                     sel_ipos = base_sel_ipos + offset_sel_ipos
                     prop_name = func_envelope_path_step_prop_name(sel_ipos)
                     func_envelope[prop_name] = path_step_id
+                    prop_names.append(prop_name)
 
                 # Include func tree path:
                 base_sel_ipos = len(interp_tree_abs_path)
@@ -215,10 +252,14 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
                     sel_ipos = base_sel_ipos + offset_sel_ipos
                     prop_name = func_envelope_path_step_prop_name(sel_ipos)
                     func_envelope[prop_name] = path_step_id
+                    prop_names.append(prop_name)
 
                 interp_tree_abs_path_func_envelopes.append(func_envelope)
 
-        return interp_tree_abs_path_func_envelopes
+        return (
+            interp_tree_abs_path_func_envelopes,
+            prop_names,
+        )
 
     def create_interp(
         self,

@@ -9,9 +9,9 @@ from argrelay.mongo_data.MongoServerConfig import MongoServerConfig
 
 @dataclass
 class MongoConfig:
-    use_mongomock_only: bool = field()
+    use_mongomock: bool = field()
     """
-    See :class:`MongoConfigSchema.use_mongomock_only`.
+    See :class:`MongoConfigSchema.use_mongomock`.
     """
 
     distinct_values_query: DistinctValuesQuery = field()
