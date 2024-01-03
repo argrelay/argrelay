@@ -1,10 +1,12 @@
 import logging
+from typing import Union
 
 import pkg_resources
 from flasgger import Swagger
 from flask import Flask, request, redirect
 
 from argrelay import relay_server
+from argrelay.plugin_config.AbstractConfigurator import AbstractConfigurator
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.route_api import create_blueprint_api
 from argrelay.relay_server.route_gui import create_blueprint_gui
@@ -130,7 +132,25 @@ def create_app() -> CustomFlaskApp:
     flask_app.register_blueprint(create_blueprint_gui(
         server_version,
         flask_app.local_server.server_config.gui_banner_config,
+        configure_project_git_commit_id(flask_app.local_server.server_config.server_configurators),
         flask_app.local_server.server_start_time,
     ))
 
     return flask_app
+
+
+def configure_project_git_commit_id(
+    server_configurators,
+):
+    project_git_commit_id: Union[str, None] = None
+    server_configurator: AbstractConfigurator
+    for server_configurator in server_configurators.values():
+        if project_git_commit_id is None:
+            project_git_commit_id = server_configurator.provide_project_git_commit_id()
+        else:
+            # Only one `PluginType.ConfiguratorPlugin` providing
+            # `project_git_commit_id` is supported to avoid confusion:
+            raise RuntimeError
+    if project_git_commit_id is None:
+        project_git_commit_id = "[unspecified]"
+    return project_git_commit_id

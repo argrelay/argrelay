@@ -324,3 +324,7 @@ plugin_instance_entries:
     ErrorDelegator:
         plugin_module_name: argrelay.plugin_delegator.ErrorDelegator
         plugin_class_name: ErrorDelegator
+
+    DefaultConfigurator:
+        plugin_module_name: argrelay.plugin_config.DefaultConfigurator
+        plugin_class_name: DefaultConfigurator

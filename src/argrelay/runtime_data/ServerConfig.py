@@ -58,6 +58,8 @@ class ServerConfig:
     These are plugin instances created during plugin activation.
     """
 
+    server_configurators: dict[str, "AbstractConfigurator"] = field(default_factory = lambda: {})
+
 
 def assert_plugin_instance_id(
     server_config: ServerConfig,

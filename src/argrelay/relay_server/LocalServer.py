@@ -104,6 +104,13 @@ class LocalServer:
                 self.server_config.action_delegators[plugin_instance_id] = plugin_instance
                 continue
 
+            if plugin_type is PluginType.ConfiguratorPlugin:
+                plugin_instance: AbstractDelegator
+                plugin_instance.activate_plugin()
+                # Store instance of `AbstractConfigurator` under specified id for future use:
+                self.server_config.server_configurators[plugin_instance_id] = plugin_instance
+                continue
+
         eprint("validating data...")
         self._validate_static_data()
 
