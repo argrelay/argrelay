@@ -23,6 +23,16 @@ const describe_line_args_url = document.currentScript.getAttribute("describe_lin
 const relay_line_args_url = document.currentScript.getAttribute("relay_line_args_url");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Params from `PluginType.ConfiguratorPlugin`
+
+project_git_commit_id = document.currentScript.getAttribute("project_git_commit_id");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc script params
+
+const server_start_time = new Date(document.currentScript.getAttribute("server_start_time"));
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global state
 
 const command_history_key = "command_history";
@@ -787,8 +797,27 @@ function populate_envelope_containers(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Convert `server_start_time` in UTC to local time and display:
+// https://stackoverflow.com/a/17415677/441652
+
+function display_server_start_time() {
+    const offset_mins = - server_start_time.getTimezoneOffset();
+    const local_date_time = new Date(server_start_time.getTime() + offset_mins * 60 * 1000);
+    const offset_sign = offset_mins >= 0 ? "+" : "-";
+    pad = function(num) {
+        return (num < 10 ? "0" : "") + num;
+    };
+    document.getElementById("server_start_time").innerHTML = local_date_time
+        // ISO without sub-seconds and trailing chars:
+        .toISOString().split(".")[0]
+        // formatted offset:
+        + offset_sign + pad(Math.floor(Math.abs(offset_mins) / 60)) + pad(Math.abs(offset_mins) % 60);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main
 
+display_server_start_time();
 load_command_history();
 on_command_line_change();
 command_line_input_elem.focus();

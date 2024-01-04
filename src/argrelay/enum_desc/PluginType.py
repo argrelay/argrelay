@@ -18,5 +18,10 @@ class PluginType(Enum):
     See classes derived from `AbstractLoader`.
     """
 
+    ConfiguratorPlugin = auto()
+    """
+    See `AbstractConfigurator`.
+    """
+
     def __str__(self):
         return self.name

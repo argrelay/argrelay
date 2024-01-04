@@ -10,6 +10,8 @@
         propose_arg_values_url="{{ url_for("blueprint_api.propose_arg_values") }}"
         describe_line_args_url="{{ url_for("blueprint_api.describe_line_args") }}"
         relay_line_args_url="{{ url_for("blueprint_api.relay_line_args") }}"
+        project_git_commit_id="{{ project_git_commit_id }}"
+        server_start_time="{{ server_start_time }}"
         defer
     ></script>
     <title>argrelay</title>
@@ -29,7 +31,10 @@
         <div id="argrelay_api_spec">
         <a class="argrelay_link" href="{{ argrelay_api_spec_path }}" target="_blank">API spec <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
-        <div id="server_start_time" title="server start time (UTC)">
+        <div id="project_git_commit_id" title="Git commit id for `@/` = `argrelay_dir`">
+            {{ project_git_commit_id }}
+        </div>
+        <div id="server_start_time" title="server start time (local to browser)">
             {{ server_start_time }}
         </div>
 

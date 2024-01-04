@@ -43,6 +43,11 @@
     text-align: right;
 }
 
+#project_git_commit_id {
+    color: black;
+    text-align: right;
+}
+
 #server_start_time {
     color: black;
     text-align: right;

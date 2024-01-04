@@ -19,6 +19,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_repo_commits_,
     repo_entries_,
 )
+from argrelay.custom_integ.git_utils import is_git_repo
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
@@ -123,19 +124,9 @@ class GitRepoLoader(AbstractLoader):
                     raise RuntimeError
 
                 # Query Git root path of curr dir:
-                subproc = subprocess.run(
-                    [
-                        "git",
-                        "-C",
-                        repo_root_abs_path,
-                        "rev-parse",
-                        "--show-toplevel",
-                    ],
-                    capture_output = True,
-                )
-                exit_code = subproc.returncode
-
-                if exit_code == 0:
+                if is_git_repo(
+                   repo_root_abs_path,
+                ):
                     pass
                 else:
                     eprint(f"ERROR: not a Git repo: {repo_root_abs_path}")
