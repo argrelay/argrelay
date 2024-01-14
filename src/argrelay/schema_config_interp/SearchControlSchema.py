@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError, post_load
 
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -87,3 +89,23 @@ search_control_desc = TypeDesc(
     },
     default_file_path = "",
 )
+
+
+def populate_search_control(
+    class_to_collection_map: dict,
+    class_name: str,
+    keys_to_types_list: list[dict],
+) -> dict:
+    # If not overridden, each class name uses collection by its own name:
+    class_to_collection_map.setdefault(
+        class_name,
+        class_name,
+    )
+
+    search_control: dict = {
+        collection_name_: class_to_collection_map[class_name],
+        envelope_class_: class_name,
+        keys_to_types_list_: keys_to_types_list,
+    }
+
+    return search_control

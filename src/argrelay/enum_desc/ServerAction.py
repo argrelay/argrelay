@@ -11,8 +11,9 @@ class ServerAction(Enum):
     ProposeArgValues = "/propose_arg_values/"
 
     DescribeLineArgs = "/describe_line_args/"
-
-    RelayLineArgs = "/relay_line_args/"
     """
     This action is closely related to FS_02_25_41_81 `query_enum_items_func`.
     """
+
+    RelayLineArgs = "/relay_line_args/"
+

@@ -53,6 +53,7 @@ class LocalServer:
         self._load_mongo_data()
         self._create_mongo_index()
         self._populate_help_hint_cache()
+        self._log_connection_url()
 
     def stop_local_server(self):
         self._stop_mongo_server()
@@ -164,3 +165,9 @@ class LocalServer:
 
     def _populate_help_hint_cache(self):
         self.help_hint_cache.populate_cache()
+
+    def _log_connection_url(self):
+        host_name = self.server_config.connection_config.server_host_name
+        port_number = self.server_config.connection_config.server_port_number
+        eprint(f"http://{host_name}:{port_number}")
+

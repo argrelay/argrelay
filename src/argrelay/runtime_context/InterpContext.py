@@ -135,11 +135,7 @@ class InterpContext:
             return
 
         ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
-        (
-            collection_name,
-            query_dict,
-        ) = populate_query_dict(self.curr_container)
-
+        query_dict = populate_query_dict(self.curr_container)
         query_result: QueryResult = self.query_engine.query_prop_values(
             query_dict,
             self.curr_container.search_control,

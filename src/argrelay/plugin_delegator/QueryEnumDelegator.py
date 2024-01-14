@@ -42,11 +42,6 @@ class QueryEnumDelegator(InterceptDelegator):
         self,
         curr_interp: AbstractInterp,
     ) -> str:
-        # TODO_10_72_28_05: support special funcs for all commands:
-        #                   Delegator must select next interp_factory_id based on `interp_tree_abs_path` (not based on single `next_interp_plugin_instance_id`).
-        #                   It is a double jump (first jump based on selected and specified func call from delegator to interp, second from interp via jump tree).
-        # TODO: This must be special interpreter which is configured only to search functions (without their args).
-        #       NEXT TODO: Why not support function args for special interp (e.g. `intercept` or `help` with format params)?
         return super().run_interp_control(curr_interp)
 
     @staticmethod

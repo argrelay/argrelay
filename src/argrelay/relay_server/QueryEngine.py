@@ -35,6 +35,16 @@ class QueryEngine:
         self.enable_query_cache: bool = query_cache_config.enable_query_cache
         self.distinct_values_query: DistinctValuesQuery = distinct_values_query
 
+    def query_data_envelopes_for(
+        self,
+        envelope_container: EnvelopeContainer,
+    ) -> list[dict]:
+        query_dict = populate_query_dict(envelope_container)
+        return self.query_data_envelopes(
+            envelope_container.search_control.collection_name,
+            query_dict,
+        )
+
     def query_data_envelopes(
         self,
         collection_name: str,
@@ -344,7 +354,7 @@ def scalar_to_list_values(arg_type_val: list | str) -> list[str]:
 
 def populate_query_dict(
     envelope_container: EnvelopeContainer,
-) -> tuple[str, dict]:
+) -> dict:
     query_dict = {
         ReservedArgType.EnvelopeClass.name: envelope_container.search_control.envelope_class,
     }
@@ -352,7 +362,4 @@ def populate_query_dict(
     for arg_type in envelope_container.search_control.types_to_keys_dict:
         if arg_type in envelope_container.assigned_types_to_values:
             query_dict[arg_type] = envelope_container.assigned_types_to_values[arg_type].arg_value
-    return (
-        envelope_container.search_control.collection_name,
-        query_dict,
-    )
+    return query_dict

@@ -12,12 +12,19 @@ See: docs/dev_notes/screencast_notes.md
 <a name="argrelay-about"></a>
 # What's this?
 
-A tool to provide object selector (structured data search filter) for command line interface (CLI).
+A tool to provide object selector (structured data search filter) for command line interface (CLI):
+*   User select objects via "enum language" using tags|labels|keywords which belong to one of the `enum` sets.
+*   The `enum` sets are dynamically composed of all the objects property values within user data.
+*   Fuzzy-search (yet easily predictable) is achieved by:
+    *   relying on rare intersection between `enum` sets
+    *   allowing unordered args (using priorities to resolve arg type in case `enum` sets intersect)
 
-This naturally enables contextual Tab-auto-completion in Bash shell by wrapping any command.
+Wrapping any command by `argrelay`:
+*   naturally enables contextual auto-completion in Bash shell (see `Tab` hotkey below)
+*   provides generic help and navigation (see `Alt+Shift+Q` hotkey below)
 
-<a name="argrelay-general-idea"></a>
-# General idea
+<a name="argrelay-general-problem"></a>
+# General problem
 
 | GUI                                                                         | CLI                                        |
 |-----------------------------------------------------------------------------|--------------------------------------------|
@@ -26,7 +33,7 @@ This naturally enables contextual Tab-auto-completion in Bash shell by wrapping 
 | :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control         |
 | :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                         |
 
-While retaining advantages of a CLI tool, `argrelay` tries to provide intuitive data lookup.
+While retaining advantages of a CLI tool, `argrelay` tries to provide solution for intuitive data lookup.
 
 Selecting args directly in shell avoids error-prone coping-and-pasting and clumsy window switching.
 

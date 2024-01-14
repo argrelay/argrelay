@@ -17,7 +17,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.ClientServerTestClass import ClientServerTestClass
-from argrelay.test_infra.EnvMockBuilder import EmptyEnvMockBuilder
+from argrelay.test_infra.EnvMockBuilder import EmptyEnvMockBuilder, EnvMockBuilder
 
 
 class End2EndTestClass(ClientServerTestClass):
@@ -110,14 +110,16 @@ class End2EndTestClass(ClientServerTestClass):
         comp_type: CompType,
         expected_stdout_str: Union[str, None],
         expected_exit_code = 0,
+        env_mock_builder: EnvMockBuilder = None,
     ):
-        inner_env_mock_builder = (
-            EmptyEnvMockBuilder()
-            .set_client_config_dict()
-            .set_generate_client_config_file(True)
-            .set_show_pending_spinner(False)
-        )
-        with inner_env_mock_builder.build():
+        if env_mock_builder is None:
+            env_mock_builder = (
+                EmptyEnvMockBuilder()
+                .set_client_config_dict()
+                .set_generate_client_config_file(True)
+                .set_show_pending_spinner(False)
+            )
+        with env_mock_builder.build():
             assert comp_type in [
                 CompType.PrefixShown,
                 CompType.PrefixHidden,
@@ -152,14 +154,16 @@ class End2EndTestClass(ClientServerTestClass):
         test_line,
         expected_stdout_str: Union[str, None],
         expected_exit_code: Union[int, None] = 0,
+        env_mock_builder: EnvMockBuilder = None,
     ):
-        inner_env_mock_builder = (
-            EmptyEnvMockBuilder()
-            .set_client_config_dict()
-            .set_generate_client_config_file(True)
-            .set_show_pending_spinner(False)
-        )
-        with inner_env_mock_builder.build():
+        if env_mock_builder is None:
+            env_mock_builder = (
+                EmptyEnvMockBuilder()
+                .set_client_config_dict()
+                .set_generate_client_config_file(True)
+                .set_show_pending_spinner(False)
+            )
+        with env_mock_builder.build():
             env_vars = self.env_vars(
                 test_line,
                 CompType.DescribeArgs,
@@ -188,14 +192,16 @@ class End2EndTestClass(ClientServerTestClass):
         expected_stdout_str: Union[str, None],
         expected_stderr_str: Union[str, None],
         expected_exit_code: Union[int, None] = 0,
+        env_mock_builder: EnvMockBuilder = None,
     ):
-        inner_env_mock_builder = (
-            EmptyEnvMockBuilder()
-            .set_client_config_dict()
-            .set_generate_client_config_file(True)
-            .set_show_pending_spinner(False)
-        )
-        with inner_env_mock_builder.build():
+        if env_mock_builder is None:
+            env_mock_builder = (
+                EmptyEnvMockBuilder()
+                .set_client_config_dict()
+                .set_generate_client_config_file(True)
+                .set_show_pending_spinner(False)
+            )
+        with env_mock_builder.build():
 
             client_proc = self.run_client_with_cli_args(
                 command_line_args,

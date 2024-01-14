@@ -21,11 +21,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     search_control_list_,
     func_id_,
 )
-from argrelay.schema_config_interp.SearchControlSchema import (
-    keys_to_types_list_,
-    envelope_class_,
-    collection_name_,
-)
+from argrelay.schema_config_interp.SearchControlSchema import populate_search_control
 from argrelay.schema_response.InvocationInput import InvocationInput
 
 repo_container_ipos_ = 1
@@ -54,14 +50,10 @@ class GitRepoDelegator(AbstractDelegator):
 
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
-        class_to_collection_map.setdefault(
+        repo_search_control = populate_search_control(
+            class_to_collection_map,
             GitRepoEnvelopeClass.ClassGitRepo.name,
-            GitRepoEnvelopeClass.ClassGitRepo.name,
-        )
-        repo_search_control = {
-            collection_name_: class_to_collection_map[GitRepoEnvelopeClass.ClassGitRepo.name],
-            envelope_class_: GitRepoEnvelopeClass.ClassGitRepo.name,
-            keys_to_types_list_: [
+            [
                 {"alias": GitRepoArgType.GitRepoAlias.name},
                 {"content": GitRepoArgType.GitRepoContentType.name},
                 {"name": GitRepoArgType.GitRepoRootBaseName.name},
@@ -69,23 +61,19 @@ class GitRepoDelegator(AbstractDelegator):
                 {"base": GitRepoArgType.GitRepoRootAbsPath.name},
                 {"part": GitRepoArgType.GitRepoPathComp.name},
             ],
-        }
-
-        class_to_collection_map.setdefault(
-            GitRepoEnvelopeClass.ClassGitCommit.name,
-            GitRepoEnvelopeClass.ClassGitCommit.name,
         )
-        commit_search_control = {
-            collection_name_: class_to_collection_map[GitRepoEnvelopeClass.ClassGitCommit.name],
-            envelope_class_: GitRepoEnvelopeClass.ClassGitCommit.name,
-            keys_to_types_list_: [
+
+        commit_search_control = populate_search_control(
+            class_to_collection_map,
+            GitRepoEnvelopeClass.ClassGitCommit.name,
+            [
                 {"name": GitRepoArgType.GitRepoRootBaseName.name},
                 {"path": GitRepoArgType.GitRepoRootRelPath.name},
                 {"base": GitRepoArgType.GitRepoRootAbsPath.name},
                 {"email": GitRepoArgType.GitRepoCommitAuthorEmail.name},
                 {"hex": GitRepoArgType.GitRepoCommitId.name},
             ],
-        }
+        )
 
         func_envelopes = []
 

@@ -19,7 +19,7 @@ mongo_config:
 query_cache_config:
     enable_query_cache: True
     query_cache_ttl_sec: 60
-    query_cache_max_size_bytes: 1048576 # 1 MiB
+    query_cache_max_size_bytes: 10485760 # 10 MiB
 
 gui_banner_config:
 
@@ -28,7 +28,7 @@ gui_banner_config:
 
         This is a demo GUI client for a server with mocked data.<br/>
         A GUI client cannot execute commands.<br/>
-        To execute commands, use a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> instead.<br/>
+        To execute commands, use a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> instead.<br/>
         <br/>
         To try auto-completion, type either|or:
         <ul>
@@ -42,12 +42,15 @@ gui_banner_config:
     footer_html: |
         <div style="color: grey; font-size: small;">
 
-        <h3>Details on GUI client deliberate limitations</h3>
+        <details>
+        <summary>Try a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> for full functionality.</summary>
         <br/>
+        <h3>Details on GUI client deliberate limitations</h3>
+
         This test/demo GUI client allows simple browser-only access by anyone with URL (without shell access and shell config required for a CLI client).<br/>
         It is convenient for data search, testing, diagnostic, but it is not meant to be functional (use a CLI client for that).<br/>
         <br/>
-        Normally, a CLI client receives equivalent responses (as this GUI client does) from the server <a href="https://github.com/argrelay/argrelay#request-hotkeys">on request hotkeys<a>:
+        Normally, a CLI client receives equivalent responses (as this GUI client does) from the server <a href="https://github.com/argrelay/argrelay#argrelay-request-hotkeys" target="_blank">on request hotkeys<a>:
         <ol>
             <li>auto-completion options (on Tab)</li>
             <li>search responses (on Alt+Shift+Q)</li>
@@ -59,8 +62,8 @@ gui_banner_config:
             <li>(2) Search request (Alt+Shift+Q) is sent automatically on idle timeout.</li>
             <li>(3) Command invocation (Enter) is disabled - it only prints invocation data from the server (use a CLI client to run commands).</li>
         </ul>
-        <br/>
-        Try a <a href="https://github.com/argrelay/argrelay#interactive-demo">CLI client</a> for full functionality.
+        </details>
+
         </div>
 
 class_to_collection_map:
@@ -166,6 +169,8 @@ plugin_instance_entries:
                 help: JumpTreeInterpFactory.help_hint_func
                 "": FuncTreeInterpFactory.service
 
+    # TODO: FS_33_76_82_84 `global_tree`: maintaining separate instance of `JumpTreeInterpFactory` plugin should be avoided.
+    #       See extended comment for `JumpTreeInterpFactory.help_hint_func`.
     JumpTreeInterpFactory.intercept_invocation_func:
         plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
         plugin_class_name: JumpTreeInterpFactory
@@ -177,6 +182,15 @@ plugin_instance_entries:
             delegator_plugin_ids:
                 -   InterceptDelegator
 
+    # TODO: FS_33_76_82_84 `global_tree`: maintaining separate instance of `JumpTreeInterpFactory` plugin should be avoided.
+    # `jump_tree` is already "global" which navigates back to another interpreter when function is selected.
+    # `JumpTreeInterpFactory` extends `FuncTreeInterpFactory` to `select_next_interp_tree_abs_path`
+    # (what base `FuncTreeInterpFactory` does not do because its `run_interp_control` returns None).
+    # Func `select_next_interp_tree_abs_path` is where jump is performed based on current `interp_ctx.interp_tree_abs_path`.
+    # What `run_interp_control` for `JumpTreeInterpFactory` does is to ask `HelpDelegator` what is the next
+    # `plugin_id` (interp) to use, but it can be seen from the `global_tree` if specific tree path to `func_id`
+    # leads to `global_tree_node` configuring that new path.
+    # It means, regardless of the places to jump, there would be no need to configure new `JumpTreeInterpFactory`.
     JumpTreeInterpFactory.help_hint_func:
         plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
         plugin_class_name: JumpTreeInterpFactory
@@ -188,6 +202,8 @@ plugin_instance_entries:
             delegator_plugin_ids:
                 -   HelpDelegator
 
+    # TODO: FS_33_76_82_84 `global_tree`: maintaining separate instance of `JumpTreeInterpFactory` plugin should be avoided.
+    #       See extended comment for `JumpTreeInterpFactory.help_hint_func`.
     JumpTreeInterpFactory.query_enum_items_func:
         plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
         plugin_class_name: JumpTreeInterpFactory
@@ -291,8 +307,15 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory
         plugin_config:
-            # TODO_10_72_28_05: support special funcs for all commands: it should be tree-aware:
-            next_interp_plugin_instance_id: InterpTreeInterpFactory
+            tree_abs_path_to_interp_id:
+                relay_demo:
+                    intercept: InterpTreeInterpFactory
+                    subtree:
+                        intercept: InterpTreeInterpFactory
+                some_command:
+                    intercept: InterpTreeInterpFactory
+                    subtree:
+                        intercept: InterpTreeInterpFactory
 
     HelpDelegator:
         plugin_module_name: argrelay.plugin_delegator.HelpDelegator
@@ -300,8 +323,17 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory
         plugin_config:
-            # TODO_10_72_28_05: support special funcs for all commands: it should be tree-aware:
-            next_interp_plugin_instance_id: InterpTreeInterpFactory
+            tree_abs_path_to_interp_id:
+                relay_demo:
+                    help: InterpTreeInterpFactory
+                    subtree:
+                        help: InterpTreeInterpFactory
+                some_command:
+                    help: InterpTreeInterpFactory
+                    subtree:
+                        help: InterpTreeInterpFactory
+                service_relay_demo:
+                    help: InterpTreeInterpFactory.service
 
     QueryEnumDelegator:
         plugin_module_name: argrelay.plugin_delegator.QueryEnumDelegator
@@ -309,8 +341,15 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory
         plugin_config:
-            # TODO_10_72_28_05: support special funcs for all commands: it should be tree-aware:
-            next_interp_plugin_instance_id: InterpTreeInterpFactory
+            tree_abs_path_to_interp_id:
+                relay_demo:
+                    enum: InterpTreeInterpFactory
+                    subtree:
+                        enum: InterpTreeInterpFactory
+                some_command:
+                    enum: InterpTreeInterpFactory
+                    subtree:
+                        enum: InterpTreeInterpFactory
 
     ServiceDelegator:
         plugin_module_name: argrelay.custom_integ.ServiceDelegator
@@ -328,3 +367,5 @@ plugin_instance_entries:
     DefaultConfigurator:
         plugin_module_name: argrelay.plugin_config.DefaultConfigurator
         plugin_class_name: DefaultConfigurator
+        plugin_config:
+            commit_id_url_prefix: "https://github.com/argrelay/argrelay/commit/"

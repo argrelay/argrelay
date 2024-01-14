@@ -9,7 +9,11 @@ default_tree_leaf_ = ""
 
 class TreeWalker:
     """
-    Helper with logic to traverse tree - used to implement FS_01_89_09_24 interp tree and FS_26_43_73_72 func tree.
+    Helper with logic to traverse tree - used to implement:
+    *   FS_01_89_09_24 interp tree
+    *   FS_26_43_73_72 func tree
+    *   FS_91_88_07_23 jump tree
+    *   FS_33_76_82_84 global tree
 
     The tree is specified as `dict` (normally, in config).
     """
@@ -30,6 +34,9 @@ class TreeWalker:
         For each named leaf (becomes key) provide its paths in the tree.
 
         Each named leaf can have several paths in the tree (leaves with the same name).
+
+        Use case:
+        *   We know `func_id`, we need to know which FS_26_43_73_72 func tree paths it is registered under.
         """
         tree_paths: dict[str, list[list[str]]] = {}
         self.leaf_type = str
@@ -41,16 +48,21 @@ class TreeWalker:
         )
         return tree_paths
 
+    # TODO: Unused (and, apparently, it wasn't used in the past).
     def build_tuple_leaves_paths(
         self,
     ) -> dict[tuple[str, ...], list[list[str]]]:
         """
-        For each leaf (`list` in tree becomes `tuple` in map) provide its paths in the tree.
+        For each leaf value (`list` in tree leaf becomes `tuple` key in the map) provide its paths in the tree.
 
         Each leaf (its `tuple` converted from `list`) can have several paths in the tree (leaves with the same value).
 
         In tree, leaf is a `list`.
         In map, leaf becomes `tuple` (as a key for `dict`).
+
+        Use case:
+        *   We know tree path (tuple) defined in the nodes, we need to know all tree paths where same path is defined.
+            (not a real use case as it is unused TODO: clean up)
         """
         tree_paths: dict[tuple[str, ...], list[list[str]]] = {}
         self.leaf_type = list
@@ -66,10 +78,13 @@ class TreeWalker:
         self
     ) -> dict[tuple[str, ...], tuple[str, ...]]:
         """
-        Map each path in the tree into path from the leaf (`list` in tree becomes `tuple` in map).
+        Map each path in the tree into path specified in the leaf (`list` in tree leaf becomes `tuple` key in the map).
 
         In tree, leaf is a `list`.
         In map, leaf becomes `tuple` (as a key for `dict`).
+
+        Use case:
+        *   We know curr tree path (tuple), we need to know next tree path where to jump (FS_91_88_07_23 jump tree).
         """
 
         paths_to_paths: dict[tuple[str, ...], tuple[str, ...]] = {}
