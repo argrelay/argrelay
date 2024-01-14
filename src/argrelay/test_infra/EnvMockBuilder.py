@@ -641,21 +641,24 @@ class EnvMockBuilder:
         try:
             with self.temp_test_config_dir:
                 os.environ["ARGRELAY_CONF_BASE_DIR"] = self.temp_test_config_dir.name
-                client_config_path = os.path.join(
-                    self.temp_test_config_dir.name,
-                    client_config_desc.default_file_path,
-                )
-                server_config_path = os.path.join(
-                    self.temp_test_config_dir.name,
-                    server_config_desc.default_file_path,
-                )
-                if self.generate_client_config_file:
-                    self.generate_client_config(str(client_config_path))
-                if self.generate_server_config_file:
-                    self.generate_server_config(str(server_config_path))
+                self.inner_generate_configs()
                 yield
         finally:
             os.environ.pop("ARGRELAY_CONF_BASE_DIR")
+
+    def inner_generate_configs(self):
+        client_config_path = os.path.join(
+            self.temp_test_config_dir.name,
+            client_config_desc.default_file_path,
+        )
+        server_config_path = os.path.join(
+            self.temp_test_config_dir.name,
+            server_config_desc.default_file_path,
+        )
+        if self.generate_client_config_file:
+            self.generate_client_config(str(client_config_path))
+        if self.generate_server_config_file:
+            self.generate_server_config(str(server_config_path))
 
     def generate_client_config(
         self,
@@ -934,14 +937,14 @@ def do_reset_local_server():
 # Config loaders
 
 def load_custom_integ_server_config_dict() -> dict:
-    test_server_config_path = _get_resource_path(f"sample_conf/{server_config_desc.default_file_path}")
+    test_server_config_path = server_config_desc.get_adjusted_file_path()
     with open(test_server_config_path) as f:
         server_config_dict = yaml.safe_load(f)
     return server_config_dict
 
 
 def load_custom_integ_client_config_dict() -> dict:
-    test_client_config_path = _get_resource_path(f"sample_conf/{client_config_desc.default_file_path}")
+    test_client_config_path = client_config_desc.get_adjusted_file_path()
     with open(test_client_config_path) as f:
         client_config_dict = json.load(f)
     return client_config_dict

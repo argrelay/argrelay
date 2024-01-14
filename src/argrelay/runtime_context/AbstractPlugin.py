@@ -30,7 +30,7 @@ class AbstractPlugin:
 
         The default implementation is to return `plugin_config_dict` as is.
 
-        The typical implementation is to do `Schema.load(Schema.dump(plugin_config_dict))`
+        The typical implementation is to do `Schema.dump(Schema.load(plugin_config_dict))`
         so that defaults are populated according to the given `Schema`.
         """
         return deepcopy(plugin_config_dict)

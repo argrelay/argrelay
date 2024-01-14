@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import copy
 import os
-import subprocess
 
 from git import Repo
 
@@ -23,9 +22,9 @@ from argrelay.custom_integ.git_utils import is_git_repo
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
-from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
+from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     envelope_payload_,
@@ -75,28 +74,26 @@ class GitRepoLoader(AbstractLoader):
         static_data: StaticData,
     ) -> StaticData:
 
-        for collection_name in [
+        class_to_collection_map: dict = self.server_config.class_to_collection_map
+
+        class_names = [
             GitRepoEnvelopeClass.ClassGitRepo.name,
             GitRepoEnvelopeClass.ClassGitCommit.name,
-        ]:
-            envelope_collection = static_data.envelope_collections.setdefault(
-                collection_name,
-                EnvelopeCollection(
-                    index_fields = [],
-                    data_envelopes = [],
-                ),
-            )
-            index_fields = envelope_collection.index_fields
+        ]
 
-            # Indexing all fields in `GitRepoArgType` for both data envelope types indiscriminately
-            # (can be applied selectively later if hitting any limits).
-            # Init index fields (if they do not exist):
-            for index_field in [enum_item.name for enum_item in GitRepoArgType]:
-                if index_field not in index_fields:
-                    index_fields.append(index_field)
+        init_envelop_collections(
+            self.server_config,
+            class_names,
+            # Same index fields for all collections (can be fine-tuned later)
+            lambda collection_name, class_name: [enum_item.name for enum_item in GitRepoArgType]
+        )
 
-        repo_envelopes = static_data.envelope_collections[GitRepoEnvelopeClass.ClassGitRepo.name].data_envelopes
-        commit_envelopes = static_data.envelope_collections[GitRepoEnvelopeClass.ClassGitCommit.name].data_envelopes
+        repo_envelopes = static_data.envelope_collections[
+            class_to_collection_map[GitRepoEnvelopeClass.ClassGitRepo.name]
+        ].data_envelopes
+        commit_envelopes = static_data.envelope_collections[
+            class_to_collection_map[GitRepoEnvelopeClass.ClassGitCommit.name]
+        ].data_envelopes
 
         # List of registered Git abs paths:
         repo_root_abs_paths = []

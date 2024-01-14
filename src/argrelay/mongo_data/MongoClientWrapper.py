@@ -29,48 +29,50 @@ def store_envelopes(
     mongo_db: Database,
     static_data: StaticData,
 ):
-
     # Calculate total:
-    envelope_n: int = 0
+    total_envelope_n: int = 0
     for mongo_collection in static_data.envelope_collections:
         envelope_collection: EnvelopeCollection = static_data.envelope_collections[
             mongo_collection
         ]
-        envelope_n += len(envelope_collection.data_envelopes)
+        total_envelope_n += len(envelope_collection.data_envelopes)
 
     # Index all:
-    envelope_i: int = 0
+    curr_envelope_i: int = 0
     for mongo_collection in static_data.envelope_collections:
         envelope_collection: EnvelopeCollection = static_data.envelope_collections[
             mongo_collection
         ]
-        envelope_i += store_envelope_collection(
+        curr_envelope_i += store_envelope_collection(
             mongo_db,
             mongo_collection,
             envelope_collection,
-            envelope_i,
-            envelope_n,
+            curr_envelope_i,
+            total_envelope_n,
         )
+
+    assert curr_envelope_i == total_envelope_n
 
 
 def store_envelope_collection(
     mongo_db: Database,
     mongo_collection: str,
     envelope_collection: EnvelopeCollection,
-    envelope_i: int,
-    envelope_n: int,
+    curr_envelope_i: int,
+    total_envelope_n: int,
 ) -> int:
     col_proxy: Collection = mongo_db[mongo_collection]
     col_proxy.delete_many({})
     col_proxy.drop_indexes()
 
-    col_i: int = 0
-    log_index_progress(mongo_collection, col_i, envelope_i, envelope_n)
+    base_curr_envelope_i: int = curr_envelope_i
+    envelope_per_col_i: int = 0
+    log_index_progress(mongo_collection, envelope_per_col_i, curr_envelope_i, total_envelope_n)
     for data_envelope in envelope_collection.data_envelopes:
-        if envelope_i % 1_000 == 0:
-            log_index_progress(mongo_collection, col_i, envelope_i, envelope_n)
-        envelope_i += 1
-        col_i += 1
+        if curr_envelope_i % 1_000 == 0:
+            log_index_progress(mongo_collection, envelope_per_col_i, curr_envelope_i, total_envelope_n)
+        curr_envelope_i += 1
+        envelope_per_col_i += 1
         envelope_to_store = deepcopy(data_envelope)
 
         try:
@@ -82,17 +84,23 @@ def store_envelope_collection(
             envelope_to_store[mongo_id_] = data_envelope[envelope_id_]
 
         col_proxy.insert_one(envelope_to_store)
-    log_index_progress(mongo_collection, col_i, envelope_i, envelope_n)
-    return envelope_i
+
+    log_index_progress(mongo_collection, envelope_per_col_i, curr_envelope_i, total_envelope_n)
+
+    assert envelope_per_col_i == curr_envelope_i - base_curr_envelope_i
+    return envelope_per_col_i
 
 
 def log_index_progress(
     mongo_collection: str,
-    col_i: int,
-    envelope_i: int,
-    envelope_n: int,
+    envelope_per_col_i: int,
+    curr_envelope_i: int,
+    total_envelope_n: int,
 ):
-    eprint(f"collection: {mongo_collection}: indexed envelopes: {col_i}/{envelope_i}/{envelope_n}...")
+    try:
+        assert envelope_per_col_i <= curr_envelope_i <= total_envelope_n
+    finally:
+        eprint(f"collection: {mongo_collection}: indexed envelopes: {envelope_per_col_i}/{curr_envelope_i}/{total_envelope_n}...")
 
 
 def create_index(

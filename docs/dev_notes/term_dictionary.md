@@ -145,3 +145,48 @@ See also FS_00_13_77_97 plugin framework.
 = "plugin instance entry" which describes a plugin instance to `argrelay` via `PluginEntrySchema.py`.
 
 See also FS_00_13_77_97 plugin framework.
+
+# T
+
+### `tree_path`
+
+Tree (direct acyclic graphs with one parent per child) are often used in config - see:
+*   FS_33_76_82_84 global tree
+*   FS_01_89_09_24 interp tree
+*   FS_26_43_73_72 func tree
+*   FS_91_88_07_23 jump tree
+
+For example, a tree can be expressed in YAML as:
+
+```yaml
+    l1_1: some_id_1
+    l1_2:
+        l2_1:
+            l3_1:
+                l4_1: some_id_2
+                l4_2: some_id_3
+    l1_3:
+        l2_2: some_id_4
+        l2_3: some_id_5
+        l2_4:
+            l3_2: some_id_6
+```
+
+Nodes like `some_id_n` are leaves (having no other children).
+
+In this case, tree path is just any path leading to any node, for example, expressed in Python tuple as:
+
+```python
+# tree path leading to leaf node `some_id_4`:
+("l1_4", "l2_2", )
+# tree path leading to node with children `l4_1` and `l4_2`:
+("l1_2", "l2_1", "l3_1", )
+```
+
+They could be expressed in file system (FS) notation as `l1_4/l2_2` and `l1_2/l2_1/l3_1`,
+but runtime deals with Python tuples.
+
+Tree paths can also be:
+*   `tree_abs_path` = absolute tree path (e.g. equivalent to FS notation `/l1_4/l2_2` starting from the root)
+*   `tree_rel_path` = relative tree path (e.g. equivalent to FS notation `l2_1/l3_1` starting anywhere within the tree).
+

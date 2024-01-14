@@ -1,5 +1,5 @@
 import logging
-from typing import Union
+from typing import Union, Callable, Any
 
 import pkg_resources
 from flasgger import Swagger
@@ -132,25 +132,74 @@ def create_app() -> CustomFlaskApp:
     flask_app.register_blueprint(create_blueprint_gui(
         server_version,
         flask_app.local_server.server_config.gui_banner_config,
-        configure_project_git_commit_id(flask_app.local_server.server_config.server_configurators),
         flask_app.local_server.server_start_time,
+        configure_project_git_commit_time(flask_app.local_server.server_config.server_configurators),
+        configure_project_git_commit_url(flask_app.local_server.server_config.server_configurators),
+        configure_project_git_commit_display_string(flask_app.local_server.server_config.server_configurators),
     ))
 
     return flask_app
 
 
-def configure_project_git_commit_id(
+def configure_project_git_commit_time(
     server_configurators,
-):
-    project_git_commit_id: Union[str, None] = None
+) -> int:
+    return get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_git_commit_time(),
+        0,
+    )
+
+
+def configure_project_git_commit_url(
+    server_configurators,
+) -> str:
+    project_commit_id_url_prefix: str = get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_commit_id_url_prefix(),
+        None,
+    )
+    project_git_commit_id: str = get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_git_commit_id(),
+        None,
+    )
+    if (
+        project_commit_id_url_prefix is not None
+        and
+        project_git_commit_id is not None
+    ):
+        return f"{project_commit_id_url_prefix}{project_git_commit_id}"
+    else:
+        return ""
+
+
+def configure_project_git_commit_display_string(
+    server_configurators,
+) -> str:
+    return get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_git_commit_display_string(),
+        "[unspecified]",
+    )
+
+
+def get_config_value_once(
+    server_configurators,
+    value_getter: Callable[[AbstractConfigurator], Any],
+    default_value: Any,
+) -> Any:
+    config_value: Union[Any, None] = None
     server_configurator: AbstractConfigurator
     for server_configurator in server_configurators.values():
-        if project_git_commit_id is None:
-            project_git_commit_id = server_configurator.provide_project_git_commit_id()
+        if config_value is None:
+            config_value = value_getter(server_configurator)
         else:
-            # Only one `PluginType.ConfiguratorPlugin` providing
-            # `project_git_commit_id` is supported to avoid confusion:
-            raise RuntimeError
-    if project_git_commit_id is None:
-        project_git_commit_id = "[unspecified]"
-    return project_git_commit_id
+            if value_getter(server_configurator) is not None:
+                # Only one `PluginType.ConfiguratorPlugin` providing
+                # same type of value is supported to avoid confusion:
+                raise RuntimeError
+
+    if config_value is None:
+        config_value = default_value
+    return config_value

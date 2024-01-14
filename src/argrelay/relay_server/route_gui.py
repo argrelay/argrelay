@@ -14,8 +14,10 @@ from argrelay.server_spec.const_int import (
 def create_blueprint_gui(
     argrelay_version: str,
     gui_banner_config: GuiBannerConfig,
-    project_git_commit_id: str,
     server_start_time: int,
+    project_git_commit_time: int,
+    project_git_commit_url: str,
+    project_git_commit_display_string: str,
 ):
     blueprint_gui = Blueprint(
         name = "blueprint_gui",
@@ -30,10 +32,18 @@ def create_blueprint_gui(
             argrelay_version = argrelay_version,
             argrelay_api_docs_path = API_DOCS_PATH,
             argrelay_api_spec_path = API_SPEC_PATH,
-            project_git_commit_id = project_git_commit_id,
-            server_start_time = f"{datetime.utcfromtimestamp(server_start_time).isoformat()}Z",
+            server_start_time = unix_time_to_iso_utc(server_start_time),
+            project_git_commit_time = unix_time_to_iso_utc(project_git_commit_time),
+            project_git_commit_url = project_git_commit_url,
+            project_git_commit_display_string = project_git_commit_display_string,
             header_html = gui_banner_config.header_html,
             footer_html = gui_banner_config.footer_html,
         )
 
     return blueprint_gui
+
+def unix_time_to_iso_utc(
+    unix_time: int,
+) -> str:
+    return f"{datetime.utcfromtimestamp(unix_time).isoformat()}Z"
+

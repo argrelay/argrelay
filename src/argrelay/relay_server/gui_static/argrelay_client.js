@@ -23,14 +23,15 @@ const describe_line_args_url = document.currentScript.getAttribute("describe_lin
 const relay_line_args_url = document.currentScript.getAttribute("relay_line_args_url");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Params from `PluginType.ConfiguratorPlugin`
-
-project_git_commit_id = document.currentScript.getAttribute("project_git_commit_id");
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc script params
 
 const server_start_time = new Date(document.currentScript.getAttribute("server_start_time"));
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Params from `PluginType.ConfiguratorPlugin`
+
+// Converts Unix time to Date object with local time zone:
+const project_git_commit_time = new Date(document.currentScript.getAttribute("project_git_commit_time"));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global state
@@ -797,27 +798,75 @@ function populate_envelope_containers(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Convert `server_start_time` in UTC to local time and display:
+// Format time to zoned:
 // https://stackoverflow.com/a/17415677/441652
 
-function display_server_start_time() {
-    const offset_mins = - server_start_time.getTimezoneOffset();
-    const local_date_time = new Date(server_start_time.getTime() + offset_mins * 60 * 1000);
+function format_time_to_zoned(
+    zoned_time,
+) {
+    // Time offset part of `zoned_time`:
+    const offset_mins = - zoned_time.getTimezoneOffset();
+    // Date-time part of `zoned_time`:
+    const date_time = new Date(zoned_time.getTime() + offset_mins * 60 * 1000);
     const offset_sign = offset_mins >= 0 ? "+" : "-";
     pad = function(num) {
         return (num < 10 ? "0" : "") + num;
     };
-    document.getElementById("server_start_time").innerHTML = local_date_time
+    const formatted_zoned_date_time = date_time
         // ISO without sub-seconds and trailing chars:
         .toISOString().split(".")[0]
         // formatted offset:
-        + offset_sign + pad(Math.floor(Math.abs(offset_mins) / 60)) + pad(Math.abs(offset_mins) % 60);
+        + offset_sign
+        + pad(Math.floor(Math.abs(offset_mins) / 60))
+        + pad(Math.abs(offset_mins) % 60)
+    return formatted_zoned_date_time
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Format time to relative:
+// https://stackoverflow.com/a/6109105/441652
+
+function format_time_to_relative(
+    curr_time,
+    prev_time,
+) {
+    const ms_per_second = 1000;
+    const ms_per_minute = ms_per_second * 60;
+    const ms_per_hour = ms_per_minute * 60;
+    const ms_per_day = ms_per_hour * 24;
+
+    const elapsed_time = curr_time - prev_time;
+
+    if (elapsed_time < ms_per_minute) {
+        return Math.round(elapsed_time / ms_per_second) + " seconds ago";
+    } else if (elapsed_time < ms_per_hour) {
+        return Math.round(elapsed_time / ms_per_minute) + " minutes ago";
+    } else if (elapsed_time < ms_per_day) {
+        return Math.round(elapsed_time / ms_per_hour) + " hours ago";
+    } else {
+        return Math.round(elapsed_time / ms_per_day) + " days ago";
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function display_server_start_time() {
+    const server_start_time_elem = document.getElementById("server_start_time")
+    server_start_time_elem.innerHTML = `started: ${format_time_to_relative(new Date(), server_start_time)}`
+    server_start_time_elem.setAttribute("title", `server start time: ${format_time_to_zoned(server_start_time)}`);
+}
+
+function display_project_git_commit_time() {
+    const project_git_commit_time_elem = document.getElementById("project_git_commit_time");
+    project_git_commit_time_elem.innerHTML = `updated: ${format_time_to_relative(new Date(), project_git_commit_time)}`;
+    project_git_commit_time_elem.setAttribute("title", `commit update time: ${format_time_to_zoned(project_git_commit_time)}`);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main
 
 display_server_start_time();
+display_project_git_commit_time();
 load_command_history();
 on_command_line_change();
 command_line_input_elem.focus();

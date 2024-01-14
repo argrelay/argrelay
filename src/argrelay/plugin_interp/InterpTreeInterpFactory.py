@@ -71,7 +71,7 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             interp_tree_abs_path,
         )
         tree_walker: TreeWalker = TreeWalker(
-            "interp",
+            "interp_tree",
             self.plugin_config_dict[interp_selector_tree_],
         )
         # Walk configured interp tree and call `load_func_envelopes` with `interp_tree_abs_path` for each interp.
@@ -100,6 +100,21 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         (interp tree abs paths where it was invoked on `load_func_envelopes`).
         If next interp with its plugin id is created, but the specified path is within its subtree,
         chop off the last step in the path until it matches path to its subtree to select one.
+        For example:
+        ```
+        # Current path within interp tree:
+        interp_ctx.interp_tree_abs_path = ('l1', 'l2', 'l3', 'l4', )
+        # Plug point of this factory within the interp tree:
+        self.interp_tree_abs_paths_to_node_configs = {
+            ('l1', 'l2', ): {},
+            ('x1', 'x2', 'x3', ): {},
+        }
+        # Keep trying to cut of the last step in the path until it matches one of the key:
+        ('l1', 'l2', 'l3', 'l4', )
+        ('l1', 'l2', 'l3', )
+        ('l1', 'l2', )
+        # Done.
+        ```
         """
         orig_subtree_abs_path = interp_ctx.interp_tree_abs_path
         curr_subtree_abs_path = orig_subtree_abs_path

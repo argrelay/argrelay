@@ -17,13 +17,12 @@ from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
 )
 from argrelay.plugin_interp.TreeWalker import TreeWalker
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig, assert_plugin_instance_id
+from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_
 from argrelay.schema_config_interp.SearchControlSchema import (
     keys_to_types_list_,
-    envelope_class_,
-    collection_name_,
+    populate_search_control,
 )
 
 tree_path_selector_prefix_ = "tree_path_selector_"
@@ -89,7 +88,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
 
         func_tree_walker = TreeWalker(
-            "func",
+            "func_tree",
             interp_tree_node_config_dict[func_selector_tree_],
         )
         self.func_ids_to_func_rel_paths: dict[str, list[list[str]]] = func_tree_walker.build_str_leaves_paths()
@@ -139,25 +138,21 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             func_envelopes_index,
         )
 
-        self.server_config.class_to_collection_map.setdefault(
-            ReservedEnvelopeClass.ClassFunction.name,
-            ReservedEnvelopeClass.ClassFunction.name,
-        )
-        envelope_collection = self.server_config.static_data.envelope_collections.setdefault(
-            self.server_config.class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name],
-            EnvelopeCollection(
-                index_fields = [],
-                data_envelopes = [],
-            ),
-        )
-        index_fields = envelope_collection.index_fields
-        # Init index fields (if they do not exist):
-        for index_field in [
-            ReservedArgType.EnvelopeClass.name,
-        ] + prop_names:
-            if index_field not in index_fields:
-                index_fields.append(index_field)
+        class_to_collection_map: dict = self.server_config.class_to_collection_map
 
+        class_names = [
+            ReservedEnvelopeClass.ClassFunction.name,
+        ]
+        init_envelop_collections(
+            self.server_config,
+            class_names,
+            lambda collection_name, class_name: [
+                ReservedArgType.EnvelopeClass.name,
+            ] + prop_names
+        )
+        envelope_collection = self.server_config.static_data.envelope_collections[
+            class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name]
+        ]
         # Write func envelopes into `StaticData` (as if it is a loader plugin):
         envelope_collection.data_envelopes.extend(interp_tree_abs_path_func_envelopes)
 
@@ -186,15 +181,11 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
-        class_to_collection_map.setdefault(
+        interp_tree_node_config_dict[func_search_control_] = populate_search_control(
+            class_to_collection_map,
             ReservedEnvelopeClass.ClassFunction.name,
-            ReservedEnvelopeClass.ClassFunction.name,
+            [],
         )
-        interp_tree_node_config_dict[func_search_control_] = {
-            collection_name_: class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name],
-            envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
-            keys_to_types_list_: [],
-        }
 
         # `func_search_control` should include keys from the interp tree abs path:
         keys_to_types_list = interp_tree_node_config_dict[func_search_control_][keys_to_types_list_]

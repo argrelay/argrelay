@@ -13,6 +13,7 @@ from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
+from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     envelope_id_,
@@ -64,33 +65,19 @@ class ServiceLoader(AbstractLoader):
 
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
-        # Ensure all expected `ServiceEnvelopeClass`-es are mapped.
-        for envelope_class in [
+        class_names = [
             ServiceEnvelopeClass.ClassCluster.name,
             ServiceEnvelopeClass.ClassHost.name,
             ServiceEnvelopeClass.ClassService.name,
             ServiceArgType.AccessType.name,
-        ]:
-            assert envelope_class in class_to_collection_map
+        ]
 
-        # Create `EnvelopeCollection`-s for all collections names in `class_to_collection_map`:
-        collection_names = set(class_to_collection_map.values())
-        for collection_name in collection_names:
-            envelope_collection = static_data.envelope_collections.setdefault(
-                collection_name,
-                EnvelopeCollection(
-                    index_fields = [],
-                    data_envelopes = [],
-                ),
-            )
-            index_fields = envelope_collection.index_fields
-
-            # Indexing all fields in `ServiceArgType` for all data envelopes indiscriminately
-            # (can be applied selectively later if hitting any limits).
-            # Init index fields (if they do not exist):
-            for index_field in [enum_item.name for enum_item in ServiceArgType]:
-                if index_field not in index_fields:
-                    index_fields.append(index_field)
+        init_envelop_collections(
+            self.server_config,
+            class_names,
+            # Same index fields for all collections (can be fine-tuned later)
+            lambda collection_name, class_name: [enum_item.name for enum_item in ServiceArgType]
+        )
 
         # Select `data_envelope` lists used by each collection name
         cluster_envelopes = static_data.envelope_collections[

@@ -29,7 +29,6 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
 )
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.relay_server.QueryEngine import populate_query_dict
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -42,9 +41,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     func_id_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import (
-    keys_to_types_list_,
-    envelope_class_,
-    collection_name_,
+    populate_search_control,
 )
 from argrelay.schema_response.InvocationInput import InvocationInput
 
@@ -126,29 +123,21 @@ class ServiceDelegator(AbstractDelegator):
 
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
-        class_to_collection_map.setdefault(
+        cluster_search_control = populate_search_control(
+            class_to_collection_map,
             ServiceEnvelopeClass.ClassCluster.name,
-            ServiceEnvelopeClass.ClassCluster.name,
-        )
-        cluster_search_control = {
-            collection_name_: class_to_collection_map[ServiceEnvelopeClass.ClassCluster.name],
-            envelope_class_: ServiceEnvelopeClass.ClassCluster.name,
-            keys_to_types_list_: [
+            [
                 {"code": ServiceArgType.CodeMaturity.name},
                 {"stage": ServiceArgType.FlowStage.name},
                 {"region": ServiceArgType.GeoRegion.name},
                 {"cluster": ServiceArgType.ClusterName.name},
             ],
-        }
-
-        class_to_collection_map.setdefault(
-            ServiceEnvelopeClass.ClassHost.name,
-            ServiceEnvelopeClass.ClassHost.name,
         )
-        host_search_control = {
-            collection_name_: class_to_collection_map[ServiceEnvelopeClass.ClassHost.name],
-            envelope_class_: ServiceEnvelopeClass.ClassHost.name,
-            keys_to_types_list_: [
+
+        host_search_control = populate_search_control(
+            class_to_collection_map,
+            ServiceEnvelopeClass.ClassHost.name,
+            [
                 # ClassCluster:
                 {"code": ServiceArgType.CodeMaturity.name},
                 {"stage": ServiceArgType.FlowStage.name},
@@ -159,16 +148,12 @@ class ServiceDelegator(AbstractDelegator):
                 # ---
                 {"ip": ServiceArgType.IpAddress.name},
             ],
-        }
-
-        class_to_collection_map.setdefault(
-            ServiceEnvelopeClass.ClassService.name,
-            ServiceEnvelopeClass.ClassService.name,
         )
-        service_search_control = {
-            collection_name_: class_to_collection_map[ServiceEnvelopeClass.ClassService.name],
-            envelope_class_: ServiceEnvelopeClass.ClassService.name,
-            keys_to_types_list_: [
+
+        service_search_control = populate_search_control(
+            class_to_collection_map,
+            ServiceEnvelopeClass.ClassService.name,
+            [
                 # ClassCluster:
                 {"code": ServiceArgType.CodeMaturity.name},
                 {"stage": ServiceArgType.FlowStage.name},
@@ -184,19 +169,15 @@ class ServiceDelegator(AbstractDelegator):
                 {"dc": ServiceArgType.DataCenter.name},
                 {"ip": ServiceArgType.IpAddress.name},
             ],
-        }
-
-        class_to_collection_map.setdefault(
-            ServiceArgType.AccessType.name,
-            ServiceArgType.AccessType.name,
         )
-        access_search_control = {
-            collection_name_: class_to_collection_map[ServiceArgType.AccessType.name],
-            envelope_class_: ServiceArgType.AccessType.name,
-            keys_to_types_list_: [
+
+        access_search_control = populate_search_control(
+            class_to_collection_map,
+            ServiceArgType.AccessType.name,
+            [
                 {"access": ServiceArgType.AccessType.name},
             ],
-        }
+        )
 
         func_envelopes = [
             {
@@ -334,13 +315,10 @@ class ServiceDelegator(AbstractDelegator):
         ]:
             # Even if these functions do not support varargs, when `redirect_to_error`, query all:
             vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
-            (
-                collection_name,
-                query_dict,
-            ) = populate_query_dict(vararg_container)
-            vararg_container.data_envelopes = local_server.get_query_engine().query_data_envelopes(
-                collection_name,
-                query_dict,
+            vararg_container.data_envelopes = (
+                local_server
+                .get_query_engine()
+                .query_data_envelopes_for(vararg_container)
             )
 
             # Actual implementation is not defined for demo:
@@ -358,13 +336,10 @@ class ServiceDelegator(AbstractDelegator):
             if interp_ctx.curr_container_ipos >= vararg_container_ipos:
                 # Search `data_envelope`-s based on existing args on command line:
                 vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
-                (
-                    collection_name,
-                    query_dict,
-                ) = populate_query_dict(vararg_container)
-                vararg_container.data_envelopes = local_server.get_query_engine().query_data_envelopes(
-                    collection_name,
-                    query_dict,
+                vararg_container.data_envelopes = (
+                    local_server
+                    .get_query_engine()
+                    .query_data_envelopes_for(vararg_container)
                 )
 
                 # Plugin to invoke on client side:

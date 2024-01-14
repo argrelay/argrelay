@@ -3,6 +3,7 @@ import copy
 from marshmallow import ValidationError
 
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
+from argrelay.plugin_config.DefaultConfiguratorConfigSchema import default_configurator_config_desc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import func_tree_interp_config_desc
@@ -66,6 +67,7 @@ class ThisTestClass(BaseTestClass):
             (line_no(), jump_tree_interp_config_desc),
             (line_no(), server_plugin_control_desc),
             (line_no(), envelope_collection_desc),
+            (line_no(), default_configurator_config_desc),
         ]
         for test_case in test_cases:
             with self.subTest(test_case):

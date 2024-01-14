@@ -35,14 +35,13 @@ class ThisTestClass(LocalTestClass):
                 },
                 RelayLineArgsVerifier(self),
             ),
-            # TODO_10_72_28_05: support special funcs for all commands:
-            # ThisTestCase(
-            #     "Execute `help` without args for `service_relay_demo` command.",
-            #     "service_relay_demo help |",
-            #     CompType.PrefixShown,
-            #     {},
-            #     ProposeArgValuesVerifier(self),
-            # ),
+            ThisTestCase(
+                "Execute `help` without args for `service_relay_demo` command.",
+                "service_relay_demo help |",
+                CompType.PrefixShown,
+                {},
+                ProposeArgValuesVerifier(self),
+            ),
             ThisTestCase(
                 "For `help` even `internal` functions are allowed.",
                 "some_command help interc|",

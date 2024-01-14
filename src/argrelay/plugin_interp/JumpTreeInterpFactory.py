@@ -28,7 +28,7 @@ class JumpTreeInterpFactory(FuncTreeInterpFactory):
         )
         # FS_91_88_07_23 jump tree
         tree_walker: TreeWalker = TreeWalker(
-            "jump",
+            "jump_tree",
             self.plugin_config_dict[jump_tree_],
         )
         self.paths_to_jump: dict[tuple[str, ...], tuple[str, ...]] = tree_walker.build_paths_to_paths()
