@@ -121,7 +121,7 @@ See: https://github.com/argrelay/argrelay
         # Use Flask 2.2.3 to avoid this error:
         # ImportError: cannot import name 'JSONEncoder' from 'flask.json'
         # https://stackoverflow.com/a/76116905/441652
-        "Flask==2.2.3",
+        "Flask==3.0.0",
 
         # Use Werkzeug < 3.0.0 to avoid this error:
         # ImportError: cannot import name 'url_quote' from 'werkzeug.urls'
