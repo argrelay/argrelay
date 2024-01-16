@@ -126,7 +126,7 @@ See: https://github.com/argrelay/argrelay
         # Use Werkzeug < 3.0.0 to avoid this error:
         # ImportError: cannot import name 'url_quote' from 'werkzeug.urls'
         # https://stackoverflow.com/a/77214086
-        "Werkzeug<3.0",
+        "Werkzeug<4.0",
 
         "PyYaml",
         "jsonschema",
