@@ -38,7 +38,10 @@ def main():
 
         if is_parent:
             from argrelay.relay_client.proc_parent import spin_wait_for_child
-            spin_wait_for_child(child_pid)
+            spin_wait_for_child(
+                child_pid,
+                shell_ctx,
+            )
 
             # Print everything what child has written:
             print(child_stdout.read())
