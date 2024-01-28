@@ -15,8 +15,9 @@ set -E
 # Error on undefined variables:
 set -u
 
+script_source="${BASH_SOURCE[0]}"
 # The dir of this script:
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # Note that this script expects no `@/conf/` config,
 # so the location it knows is not through `@/conf/` but the direct one via `@/dst/`:
 # FS_29_54_67_86 dir_structure: `@/dst/.github/` -> `@/`:

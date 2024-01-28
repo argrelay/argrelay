@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
+# Define with `s` in value to debug:
+if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
+then
+    set -x
+    set -v
+fi
+
 # FS_36_17_84_44: check script: TODO: draft:
 exit 0
 
@@ -21,8 +28,9 @@ set -E
 # Error on undefined variables:
 set -u
 
+script_source="${BASH_SOURCE[0]}"
 # The dir of this script:
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
 source "${argrelay_dir}/exe/argrelay_common_defs.bash"

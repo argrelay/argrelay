@@ -64,7 +64,11 @@ class ShellContext:
             comp_type = CompType.InvokeAction
             comp_key = UNKNOWN_COMP_KEY
 
-        is_debug_enabled = "ARGRELAY_DEBUG" in os.environ
+        is_debug_enabled = (
+            "ARGRELAY_DEBUG" in os.environ
+            and
+            "p" in os.environ["ARGRELAY_DEBUG"]
+        )
 
         return cls(
             command_line = command_line,

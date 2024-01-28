@@ -37,14 +37,22 @@ def main():
         ) = split_process()
 
         if is_parent:
-            from argrelay.relay_client.proc_parent import spin_wait_for_child
+            from argrelay.relay_client.proc_parent import (
+                print_child_stdout_chunks,
+                read_next_child_stdout_chunk,
+                spin_wait_for_child,
+            )
             spin_wait_for_child(
                 child_pid,
+                child_stdout,
                 shell_ctx,
+                client_config.spinless_sleep_sec,
             )
 
-            # Print everything what child has written:
-            print(child_stdout.read())
+            while read_next_child_stdout_chunk(child_stdout):
+                pass
+
+            print_child_stdout_chunks()
             return
 
     if client_config.use_local_requests:
@@ -105,7 +113,8 @@ def client_config_dict_to_object(client_config_dict):
             server_host_name = client_config_dict["connection_config"]["server_host_name"],
             server_port_number = client_config_dict["connection_config"]["server_port_number"],
         ),
-        show_pending_spinner = client_config_dict.get("show_pending_spinner", True)
+        show_pending_spinner = client_config_dict.get("show_pending_spinner", True),
+        spinless_sleep_sec = client_config_dict.get("spinless_sleep_sec", 0.0),
     )
     return client_config
 

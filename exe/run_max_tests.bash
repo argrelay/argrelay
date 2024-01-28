@@ -16,6 +16,13 @@
 # *   in specific test method only
 #         run_max_tests.bash path/to/file method
 
+# Define with `s` in value to debug:
+if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
+then
+    set -x
+    set -v
+fi
+
 # Debug: Print commands before execution:
 set -x
 # Debug: Print commands after reading from a script:
@@ -29,17 +36,15 @@ set -E
 # Error on undefined variables:
 set -u
 
+script_source="${BASH_SOURCE[0]}"
 # The dir of this script:
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
 
-# Ensure the script was started in `@/exe/dev_shell.bash`:
-if [[ -z "${ARGRELAY_DEV_SHELL:-}" ]]
-then
-    echo "ERROR: Run this script under \`@/exe/dev_shell.bash\`." 1>&2
-    exit 1
-fi
+# Run `@/exe/bootstrap_dev_env.bash` if this file does not exits:
+source "${argrelay_dir}/exe/argrelay_common_lib.bash"
+ensure_inside_dev_shell
 
 # Ensure debug is disabled
 # (it causes tests matching output to fail confusingly):
@@ -58,9 +63,6 @@ if [[ "${input_path:0:1}" != "/" ]]
 then
     input_path="$(pwd)/${input_path}"
 fi
-
-# Ensure it is venv (`@/exe/dev_shell.bash` activates venv):
-test -n "${VIRTUAL_ENV}"
 
 # Note for `discover`:
 # `--top-level-directory` is what imports are relative to.

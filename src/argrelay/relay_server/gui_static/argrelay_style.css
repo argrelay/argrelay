@@ -7,14 +7,23 @@
     margin-top: 1em;
 }
 
+.info_label {
+    color: grey;
+}
+
 .box_label {
     width: 100%;
     color: grey;
     text-align: right;
 }
 
-#argrelay_title {
+#project_title {
     font-size: x-large;
+    color: black;
+    text-align: right;
+}
+
+#argrelay_page {
     color: black;
     text-align: right;
 }
@@ -54,6 +63,11 @@
 }
 
 #project_git_commit_time {
+    color: black;
+    text-align: right;
+}
+
+#project_git_conf_dir_url {
     color: black;
     text-align: right;
 }

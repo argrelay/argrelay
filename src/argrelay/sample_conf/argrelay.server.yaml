@@ -368,4 +368,7 @@ plugin_instance_entries:
         plugin_module_name: argrelay.plugin_config.DefaultConfigurator
         plugin_class_name: DefaultConfigurator
         plugin_config:
+            project_title: relay_demo
+            project_page_url: "https://argrelay.org"
+            git_files_by_commit_id_url_prefix: "https://github.com/argrelay/argrelay/tree/"
             commit_id_url_prefix: "https://github.com/argrelay/argrelay/commit/"

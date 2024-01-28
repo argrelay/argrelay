@@ -6,6 +6,13 @@
 #
 # The idea is to have a single script with no args to squash everything.
 
+# Define with `s` in value to debug:
+if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
+then
+    set -x
+    set -v
+fi
+
 # Debug: Print commands before execution:
 set -x
 # Debug: Print commands after reading from a script:
@@ -19,10 +26,11 @@ set -E
 # Error on undefined variables:
 set -u
 
-script_name="$( basename -- "${BASH_SOURCE[0]}" )"
+script_source="${BASH_SOURCE[0]}"
+script_name="$( basename -- "${script_source}" )"
 # Absolute script dirname:
 # https://stackoverflow.com/a/246128/441652
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
 

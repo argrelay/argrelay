@@ -852,13 +852,13 @@ function format_time_to_relative(
 
 function display_server_start_time() {
     const server_start_time_elem = document.getElementById("server_start_time")
-    server_start_time_elem.innerHTML = `started: ${format_time_to_relative(new Date(), server_start_time)}`
+    server_start_time_elem.innerHTML = `<span class="info_label">started:</span> ${format_time_to_relative(new Date(), server_start_time)}`
     server_start_time_elem.setAttribute("title", `server start time: ${format_time_to_zoned(server_start_time)}`);
 }
 
 function display_project_git_commit_time() {
     const project_git_commit_time_elem = document.getElementById("project_git_commit_time");
-    project_git_commit_time_elem.innerHTML = `updated: ${format_time_to_relative(new Date(), project_git_commit_time)}`;
+    project_git_commit_time_elem.innerHTML = `<span class="info_label">updated:</span> ${format_time_to_relative(new Date(), project_git_commit_time)}`;
     project_git_commit_time_elem.setAttribute("title", `commit update time: ${format_time_to_zoned(project_git_commit_time)}`);
 }
 

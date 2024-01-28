@@ -36,7 +36,7 @@ def list_dir(
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.6.0",
+    version = "0.6.1",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server = total recall for Bash shell",
@@ -99,15 +99,18 @@ See: https://github.com/argrelay/argrelay
 
             # GUI client:
             "relay_server/gui_static/argrelay_client.js",
+            "relay_server/gui_static/argrelay_favicon.ico",
             "relay_server/gui_static/argrelay_style.css",
             "relay_server/gui_static/external_link.svg",
             "relay_server/gui_templates/argrelay_main.html",
 
             # other resource files:
+            "custom_integ_res/argrelay_common_lib.bash",
             "custom_integ_res/argrelay_rc.bash",
             "custom_integ_res/bootstrap_dev_env.bash",
             "custom_integ_res/dev_shell.bash",
             "custom_integ_res/init_shell_env.bash",
+            "custom_integ_res/upgrade_all_packages.bash",
 
         ],
         "argrelay_docs": list_dir("./docs/") + [

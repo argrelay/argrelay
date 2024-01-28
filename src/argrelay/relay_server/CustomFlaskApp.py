@@ -1,4 +1,5 @@
 import logging
+import os.path
 from typing import Union, Callable, Any
 
 import pkg_resources
@@ -6,6 +7,8 @@ from flasgger import Swagger
 from flask import Flask, request, redirect
 
 from argrelay import relay_server
+from argrelay.custom_integ.git_utils import get_git_repo_root_path
+from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.plugin_config.AbstractConfigurator import AbstractConfigurator
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.route_api import create_blueprint_api
@@ -130,16 +133,39 @@ def create_app() -> CustomFlaskApp:
 
     flask_app.register_blueprint(create_blueprint_api(flask_app.local_server))
     flask_app.register_blueprint(create_blueprint_gui(
+        configure_project_title(flask_app.local_server.server_config.server_configurators),
+        configure_project_page_url(flask_app.local_server.server_config.server_configurators),
         server_version,
         flask_app.local_server.server_config.gui_banner_config,
         flask_app.local_server.server_start_time,
+        # TODO: make AbstractConfiguration expose only these final methods (and any concatenation of strings, validation, should be hidden inside DefaultConfigurator):
         configure_project_git_commit_time(flask_app.local_server.server_config.server_configurators),
         configure_project_git_commit_url(flask_app.local_server.server_config.server_configurators),
         configure_project_git_commit_display_string(flask_app.local_server.server_config.server_configurators),
+        configure_project_git_conf_dir_url(flask_app.local_server.server_config.server_configurators),
+        configure_project_git_conf_dir_display_string(flask_app.local_server.server_config.server_configurators),
     ))
 
     return flask_app
 
+
+def configure_project_title(
+    server_configurators,
+) -> str:
+    return get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_title(),
+        "[unknown]",
+    )
+
+def configure_project_page_url(
+    server_configurators,
+) -> str:
+    return get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_page_url(),
+        "",
+    )
 
 def configure_project_git_commit_time(
     server_configurators,
@@ -180,8 +206,75 @@ def configure_project_git_commit_display_string(
     return get_config_value_once(
         server_configurators,
         lambda server_configurator: server_configurator.provide_project_git_commit_display_string(),
-        "[unspecified]",
+        "[unknown]",
     )
+
+
+def configure_project_git_conf_dir_url(
+    server_configurators,
+) -> Union[str, None]:
+    """
+    Full URL is going to be formed only if
+    *   `project_current_config_path` points to the same Get repo root as `argrelay_dir`
+    *   `project_current_config_path` points under `argrelay_dir`
+    """
+    project_git_files_by_commit_id_url_prefix = get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_git_files_by_commit_id_url_prefix(),
+        None,
+    )
+    project_git_commit_id: str = get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_git_commit_id(),
+        None,
+    )
+    project_git_repo_relative_argrelay_dir: str = get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_git_repo_relative_argrelay_dir(),
+        None,
+    )
+    project_current_config_path = get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_current_config_path(),
+        None,
+    )
+
+    # Validation:
+
+    if (
+        project_git_files_by_commit_id_url_prefix is None
+        or
+        project_git_commit_id is None
+        or
+        project_git_repo_relative_argrelay_dir is None
+        or
+        project_current_config_path is None
+    ):
+        return ""
+    argrelay_dir_abs_path = os.path.abspath(get_argrelay_dir())
+    project_current_config_abs_path = os.path.abspath(os.path.join(argrelay_dir_abs_path, project_current_config_path))
+    if not project_current_config_abs_path.startswith(argrelay_dir_abs_path):
+        return ""
+    if get_git_repo_root_path(argrelay_dir_abs_path) != get_git_repo_root_path(project_current_config_abs_path):
+        return ""
+
+    # Compose URL:
+    project_current_config_path = os.path.relpath(project_current_config_abs_path, argrelay_dir_abs_path)
+    return f"{project_git_files_by_commit_id_url_prefix}{project_git_commit_id}{project_git_repo_relative_argrelay_dir}{project_current_config_path}"
+
+
+def configure_project_git_conf_dir_display_string(
+    server_configurators,
+) -> str:
+    project_current_config_path = get_config_value_once(
+        server_configurators,
+        lambda server_configurator: server_configurator.provide_project_current_config_path(),
+        None,
+    )
+    if project_current_config_path is not None:
+        return project_current_config_path
+    else:
+        return "[unknown]"
 
 
 def get_config_value_once(
