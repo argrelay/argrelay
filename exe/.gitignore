@@ -6,6 +6,9 @@
 # are deployed as resources using `symlink_method`
 # (see `deploy_files_procedure` in `bootstrap_dev_env.bash`).
 # They should simply point to the latest in configured `venv` (no version control is required):
+/argrelay_common_lib.bash
+/argrelay_rc.bash
 /dev_shell.bash
 /init_shell_env.bash
-/argrelay_rc.bash
+/upgrade_all_packages.bash
+

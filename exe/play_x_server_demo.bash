@@ -10,6 +10,13 @@
 #     grep -r WaylandEnable /etc/gdm/
 #     /etc/gdm/custom.conf:WaylandEnable=false
 
+# Define with `s` in value to debug:
+if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
+then
+    set -x
+    set -v
+fi
+
 # Debug: Print commands before execution:
 set -x
 # Debug: Print commands after reading from a script:

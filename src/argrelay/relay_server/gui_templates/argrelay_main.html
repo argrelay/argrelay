@@ -4,34 +4,50 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="{{ url_for("static", filename = "argrelay_style.css") }}"/>
+
+    <!--
+        Create: https://www.favicon.cc/
+        Resize: https://redketchup.io/icon-converter
+        Convert: https://cloudconvert.com/
+    -->
+    <link rel="icon" sizes="16x16" href="{{ url_for("static", filename = "argrelay_favicon.ico") }}"/>
+
     <script
         type="text/javascript"
         src="{{ url_for("static", filename = "argrelay_client.js") }}"
         propose_arg_values_url="{{ url_for("blueprint_api.propose_arg_values") }}"
         describe_line_args_url="{{ url_for("blueprint_api.describe_line_args") }}"
         relay_line_args_url="{{ url_for("blueprint_api.relay_line_args") }}"
+
+        project_title="{{ project_title }}"
+        project_page_url="{{ project_page_url }}"
         server_start_time="{{ server_start_time }}"
         project_git_commit_time="{{ project_git_commit_time }}"
         project_git_commit_url="{{ project_git_commit_url }}"
         project_git_commit_display_string="{{ project_git_commit_display_string }}"
+        project_git_conf_dir_url="{{ project_git_conf_dir_url }}"
+        project_git_conf_dir_display_string="{{ project_git_conf_dir_display_string }}"
         defer
     ></script>
-    <title>argrelay</title>
+    <title>{{ project_title }}</title>
 </head>
 <body>
 
     <div class="top_container">
-        <div id="argrelay_title">
-        <a class="argrelay_link" href="https://github.com/argrelay/argrelay" target="_blank">argrelay <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+        <div id="project_title">
+            <a class="argrelay_link" href="{{ project_page_url }}" target="_blank">{{ project_title }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+        </div>
+        <div id="argrelay_page">
+            <span class="info_label">built on:</span> <a class="argrelay_link" href="https://github.com/argrelay/argrelay" target="_blank">argrelay <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         <div id="argrelay_version">
-        <a class="argrelay_link" href="https://pypi.org/project/argrelay/{{ argrelay_version }}/" target="_blank">{{ argrelay_version }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+            <a class="argrelay_link" href="https://pypi.org/project/argrelay/{{ argrelay_version }}/" target="_blank">{{ argrelay_version }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         <div id="argrelay_api_docs">
-        <a class="argrelay_link" href="{{ argrelay_api_docs_path }}" target="_blank">API docs <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+            <a class="argrelay_link" href="{{ argrelay_api_docs_path }}" target="_blank">API docs <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         <div id="argrelay_api_spec">
-        <a class="argrelay_link" href="{{ argrelay_api_spec_path }}" target="_blank">API spec <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+            <a class="argrelay_link" href="{{ argrelay_api_spec_path }}" target="_blank">API spec <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         <div id="server_start_time" title="server start time (local to browser)">
             {{ server_start_time }}
@@ -40,7 +56,10 @@
             {{ project_git_commit_time }}
         </div>
         <div id="project_git_commit_url" title="Git commit id for `@/` = `argrelay_dir`">
-        <a class="argrelay_link" href="{{ project_git_commit_url }}" target="_blank">{{ project_git_commit_display_string }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+            <span class="info_label">commit:</span> <a class="argrelay_link" href="{{ project_git_commit_url }}" target="_blank">{{ project_git_commit_display_string }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+        </div>
+        <div id="project_git_conf_dir_url" title="Git URL for `@/conf/`">
+            <span class="info_label">config:</span> <a class="argrelay_link" href="{{ project_git_conf_dir_url }}" target="_blank">{{ project_git_conf_dir_display_string }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
         </div>
         {{ header_html | safe }}
     </div>

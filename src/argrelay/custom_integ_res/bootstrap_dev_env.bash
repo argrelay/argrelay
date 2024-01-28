@@ -1,15 +1,51 @@
 #!/usr/bin/env bash
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
+# This script should ALWAYS be called with current dir = project dir `@/` (see `argrelay_dir` below).
+
 # This script sets up dev env (re-installs packages in Python `venv`, sets up symlinks, and so on).
 # It is also sourced by `@/exe/init_shell_env.bash` to activate Python `venv`.
 
-# This script should ALWAYS be called with project dir = current dir (see `argrelay_dir` below).
+# These are the flags recognized by this script (in command line args):
+# *   `recursion_flag`
+#     called as sub-shell
+# *   `activate_venv_only_flag`
+#     called by sourcing
+# The first unrecognized arg is treated as `config_path` (see usage).
+
+# Define with `s` in value to debug:
+if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
+then
+    set -x
+    set -v
+fi
+
+if [[ -n "${bootstrap_dev_env_old_opts+x}" ]] ; then exit 1 ; fi
+
+# Save `set`-able options to restore them at the end of this source-able script:
+# https://unix.stackexchange.com/a/383581/23886
+# Not saving history because:
+# *   it is not modified within `argrelay` scripts
+# *   it should not be restored in non-interactive files (disabled by default)
+bootstrap_dev_env_old_opts="$( set +o | grep -v "[[:space:]]history$" )"
+case "${-}" in
+    *e*) bootstrap_dev_env_old_opts="${bootstrap_dev_env_old_opts}; set -e" ;;
+      *) bootstrap_dev_env_old_opts="${bootstrap_dev_env_old_opts}; set +e" ;;
+esac
+
+########################################################################################################################
+
+# Keep output-related `set`-able options same when this script is sourced
+# (otherwise, full debug output for bootstrap is adequate as it runs in hardly predictable target environment):
+if [[ "${0}" == "${BASH_SOURCE[0]}" ]] ; then
 
 # Debug: Print commands before execution:
 set -x
 # Debug: Print commands after reading from a script:
 set -v
+
+fi
+
 # Return non-zero exit code from commands within a pipeline:
 set -o pipefail
 # Exit on non-zero exit code from a command:
@@ -18,6 +54,8 @@ set -e
 set -E
 # Error on undefined variables:
 set -u
+
+########################################################################################################################
 
 success_color="\e[42m"
 failure_color="\e[41m"
@@ -28,7 +66,7 @@ function color_failure_and_success {
     exit_code="${?}"
     if [[ "${exit_code}" == "0" ]]
     then
-        # Only if this script is not sourced by another:
+        # Only if this script is NOT sourced by another:
         if [[ "${0}" == "${BASH_SOURCE[0]}" ]]
         then
             echo -e "${success_color}SUCCESS:${reset_color} ${BASH_SOURCE[0]}" 1>&2
@@ -45,12 +83,12 @@ trap color_failure_and_success EXIT
 ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
 export ARGRELAY_BOOTSTRAP_DEV_ENV
 
+script_source="${BASH_SOURCE[0]}"
 # shellcheck disable=SC2034
-script_name="$( basename -- "${BASH_SOURCE[0]}" )"
-
+script_name="$( basename -- "${script_source}" )"
 # The dir of this script:
 # shellcheck disable=SC2034
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # Note: In case of `bootstrap_dev_env.bash`, `argrelay_dir` is not `script_dir`, but always the current directory
 # (it is supposed to be started from the dir where project is being set up).
 # FS_29_54_67_86 dir_structure: current dir = `@/`:
@@ -187,18 +225,13 @@ fi
 # *   path_to_pythonX
 # *   path_to_venvX
 source "${argrelay_dir}/conf/python_conf.bash"
-# shellcheck disable=SC2154
-echo "path_to_venvX: ${path_to_venvX}"
-# shellcheck disable=SC2154
-echo "path_to_pythonX: ${path_to_pythonX}"
-# shellcheck disable=SC2154
-echo "venv_prompt_prefix: ${venv_prompt_prefix:-@}"
 
 # Cut out Python version number chars (from first digit until first space):
+# shellcheck disable=SC2154
 curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
 # Ensure Python version is not old:
 min_required_version="3.7"
-if ( echo "${curr_python_version}"; echo "${min_required_version}"; ) | sort --version-sort --check
+if ( echo "${curr_python_version}"; echo "${min_required_version}"; ) | sort --version-sort --check 2> /dev/null
 then
     # versions sorted = curr Python version is older:
     "${ret_command}" 1
@@ -228,11 +261,17 @@ then
 fi
 
 # Activate `venv` with reduced output:
-set +x
-set +v
+# Save `set`-able options to restore them at the end of this source-able script:
+# https://unix.stackexchange.com/a/383581/23886
+# See above regarding `history`:
+venv_activation_old_opts="$( set +o | grep -v "[[:space:]]history$" )"
+case "${-}" in
+    *e*) venv_activation_old_opts="${venv_activation_old_opts}; set -e" ;;
+      *) venv_activation_old_opts="${venv_activation_old_opts}; set +e" ;;
+esac
 source "${path_to_venvX}"/bin/activate
-set -x
-set -v
+eval "${venv_activation_old_opts}"
+unset venv_activation_old_opts
 
 # Convert `path_to_venvX` to `abs_path_to_venvX`:
 if [[ "${path_to_venvX:0:1}" == "/" ]]
@@ -241,15 +280,28 @@ then
 else
     abs_path_to_venvX="$(pwd)/${path_to_venvX}"
 fi
+
+# Verify that Python versions for `path_to_pythonX` and `abs_path_to_venvX/bin/python` match:
+python_version_a="$( "${path_to_pythonX}" --version )"
+python_version_b="$( "${abs_path_to_venvX}/bin/python" --version )"
+if [[ "${python_version_a}" != "${python_version_b}" ]]
+then
+    # One way to attempt to resolve this is to remove `venv` and re-run `@/exe/bootstrap_dev_env.bash`:
+    echo "ERROR: version mismatch for Python to init \`venv\` and Python in existing \`venv\`: ${python_version_a} ${python_version_b}" 1>&2
+    "${ret_command}" 1
+fi
+
 # Verify that `/path/to/python` after activation is the same file pointed to by `path_to_pythonX`.
 # If not, it is likely that chain of `python` symlinks within the new `venv` is broken
 # (leads to non-existing `python` binary) which should fail fast (otherwise, partially working state is confusing):
 full_path_to_python="$( command which python )"
 if [[ ! "${full_path_to_python}" -ef "${path_to_pythonX}" ]]
 then
+    # One way to attempt to resolve this is to remove `venv` and re-run `@/exe/bootstrap_dev_env.bash`:
     echo "ERROR: path to \`python\` binary = \`${full_path_to_python}\` after activation of \`venv\` = \`${abs_path_to_venvX}\` is not linked to \`python\` binary = \`${path_to_pythonX}\` used to create this \`venv\`" 1>&2
     "${ret_command}" 1
 fi
+
 # Verify shebang using `/path/to/python` does not exceed the limit
 # (otherwise, shebang for client and server scripts will not work):
 # https://stackoverflow.com/a/10813634/441652
@@ -327,7 +379,7 @@ if [[ -z "${recursion_flag:-}" ]]
 then
     # Overwrite itself:
     cp -p "${argrelay_module_dir_path}/custom_integ_res/bootstrap_dev_env.bash" "${argrelay_dir}/exe/"
-    # Recursively call itself again (now with `recursion_flag`:
+    # Recursively call itself again (now with `recursion_flag`):
     "${argrelay_dir}/exe/bootstrap_dev_env.bash" "recursion_flag"
     # Recursive call should have executed the rest of file:
     "${ret_command}" 0
@@ -434,7 +486,7 @@ python_module_path_EOF
             test -f "${config_file_path}"
 
             # Deploy file to the target:
-            if [[ ! -e "${target_dir}/${file_name}" ]]
+            if [[ ! -e "${target_dir}/${file_name}" ]] && [[ ! -L "${target_dir}/${file_name}" ]]
             then
                 eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
             else
@@ -476,7 +528,6 @@ module_path_file_tuples=(
     # For example:
     # project_module sample_conf argrelay.server.yaml
     # project_module sample_conf argrelay.client.json
-    # project_module sample_conf dev_env_packages.txt
 )
 ########################################################################################################################
 deploy_config_files_conf_EOF
@@ -484,8 +535,10 @@ deploy_config_files_conf_EOF
 fi
 
 # See `FS_16_07_78_84.conf_dir_priority.md`:
-if [[ -n "${ARGRELAY_CONF_BASE_DIR:-whatever}" ]]
+if [[ -n "${ARGRELAY_CONF_BASE_DIR+x}" ]]
 then
+    argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
+else
     # If `ARGRELAY_CONF_BASE_DIR` env var is not defined, use path to user home:
     argrelay_conf_base_dir=~"/.argrelay.conf.d/"
 
@@ -494,8 +547,6 @@ then
     then
         argrelay_conf_base_dir="${argrelay_dir}/conf/"
     fi
-else
-    argrelay_conf_base_dir="${ARGRELAY_CONF_BASE_DIR}"
 fi
 
 if [[ -e "${argrelay_conf_base_dir}" ]]
@@ -530,9 +581,11 @@ then
 # Tuples specifying resource files, format:
 # module_name relative_dir_path resource_file_name
 module_path_file_tuples=(
+    argrelay custom_integ_res argrelay_common_lib.bash
     argrelay custom_integ_res argrelay_rc.bash
     argrelay custom_integ_res dev_shell.bash
     argrelay custom_integ_res init_shell_env.bash
+    argrelay custom_integ_res upgrade_all_packages.bash
 )
 ########################################################################################################################
 deploy_resource_files_conf_EOF
@@ -615,7 +668,7 @@ argrelay_bind_command_basenames=(
 )
 ########################################################################################################################
 argelay_rc_conf_EOF
-    return 1
+    "${ret_command}" 1
 fi
 
 # Load user config for env vars:
@@ -626,7 +679,7 @@ source "${argrelay_dir}/conf/argrelay_rc_conf.bash"
 if [[ "${#argrelay_bind_command_basenames[@]}" -lt 1 ]]
 then
     # At least one command should be listed in `argrelay_bind_command_basenames`:
-    return 1
+    "${ret_command}" 1
 fi
 
 for argrelay_command_basename in "${argrelay_bind_command_basenames[@]}"
@@ -703,6 +756,11 @@ REQUIREMENTS_EOF
 # FS_85_33_46_53 bootstrap package management:
 # Ignore `argrelay` itself (or anything installed in editable mode):
 pip freeze --exclude-editable >> "${argrelay_dir}/conf/dev_env_packages.txt"
+
+########################################################################################################################
+
+eval "${bootstrap_dev_env_old_opts}"
+unset bootstrap_dev_env_old_opts
 
 ########################################################################################################################
 # EOF

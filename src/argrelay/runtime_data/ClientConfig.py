@@ -9,3 +9,4 @@ class ClientConfig:
     optimize_completion_request: bool = field()
     connection_config: ConnectionConfig = field()
     show_pending_spinner: bool = field()
+    spinless_sleep_sec: float = field()

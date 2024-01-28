@@ -61,7 +61,8 @@ class ThisTestClass(BaseTestClass):
                 (
                     ["ls", "-1", "../exe"],
                     0,
-                    b"""argrelay_rc.bash
+                    b"""argrelay_common_lib.bash
+argrelay_rc.bash
 bootstrap_dev_env.bash
 build_project.bash
 deploy_config_files_conf.bash
@@ -74,6 +75,7 @@ publish_package.bash
 relay_demo.bash
 run_max_tests.bash
 squash_branch.bash
+upgrade_all_packages.bash
 """,
                     b"",
                 ),

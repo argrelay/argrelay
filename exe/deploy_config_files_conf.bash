@@ -14,7 +14,6 @@ module_path_file_tuples=(
     # For example:
     argrelay sample_conf argrelay.server.yaml
     argrelay sample_conf argrelay.client.json
-    argrelay sample_conf dev_env_packages.txt
 )
 ########################################################################################################################
 

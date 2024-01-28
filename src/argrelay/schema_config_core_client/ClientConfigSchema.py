@@ -9,7 +9,7 @@ connection_config_ = "connection_config"
 use_local_requests_ = "use_local_requests"
 optimize_completion_request_ = "optimize_completion_request"
 show_pending_spinner_ = "show_pending_spinner"
-
+spinless_sleep_sec_ = "spinless_sleep_sec"
 
 class ClientConfigSchema(Schema):
     class Meta:
@@ -41,6 +41,12 @@ class ClientConfigSchema(Schema):
         required = False,
     )
 
+    spinless_sleep_sec = fields.Number(
+        required = False,
+        # Noticeable threshold is around 200 ms, but default to spin immediately:
+        default = 0.0,
+    )
+
     @post_load
     def make_object(
         self,
@@ -52,6 +58,10 @@ class ClientConfigSchema(Schema):
             optimize_completion_request = input_dict.get(optimize_completion_request_, True),
             connection_config = input_dict[connection_config_],
             show_pending_spinner = input_dict.get(show_pending_spinner_, False),
+            # TODO_74_03_78_60: Load all dict via `Schema.load(Schema.dump(input_dict))`.
+            #                   This should avoid duplicating defaults (and allow using simple `dict[key]` access).
+            #                   Does `Schema` populate them automatically if loaded so?
+            spinless_sleep_sec = input_dict.get(spinless_sleep_sec_, 0.0),
         )
 
 

@@ -40,11 +40,12 @@ Selecting args directly in shell avoids error-prone coping-and-pasting and clums
 <a name="argrelay-original-use-case"></a>
 # Original use case
 
-Auto-complete based on arbitrary data sets (e.g. config or ref data)<br/>
+Auto-complete [based on arbitrary data sets][later_stack_question] (e.g. config or ref data)<br/>
 **directly from standard shell** to run infra commands.
 
 Flexible and [responsive lookup][completion_perf_notes.md] requires data indexing<br/>
-(e.g. the client has to start and query relevant data on each Tab-request).
+(e.g. the client has to start and query relevant data on each Tab-request)<br/>
+suggesting...
 
 <a name="argrelay-client-server"></a>
 # Straightforward split: client & server
@@ -119,7 +120,7 @@ Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the 
 ./exe/relay_demo.bash
 ```
 
-This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. for Tab-auto-completion):
+This sub-shell configures request hot keys to bind `relay_demo` command with `@/bin/run_argrelay_client`:
 
 *   Interact with `relay_demo` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
 
@@ -143,7 +144,7 @@ This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. 
 
 # Behind the demo
 
-*   Inspect how `relay_demo` command binds to `argrelay` (from `@/exe/relay_demo.bash`):
+*   While inside the sub-shell, inspect how auto-completion is configured for `relay_demo`:
 
     ```sh
     complete -p relay_demo
@@ -168,13 +169,14 @@ This sub-shell is configured to bind `relay_demo` command with `argrelay` (e.g. 
 
     Script `@/exe/relay_demo.bash` relies on `@/conf` being a symlink specifically to `@/dst/relay_demo`:
 
-    *   If `@/conf` is absent, it creates the symlink with that destination.
+    If `@/conf` is absent, it re-creates the symlink with that destination and re-installs everything.
 
-        This is where it re-inits everything (e.g. create new Python `venv`, installs dependencies, etc.).
+*   To debug shell scripts, export `ARGRELAY_DEBUG` with value containing `s`:
 
-    *   If `@/conf` is present and destination matches, it quickly starts the shell.
-
-    *   If `@/conf` is present and destination mismatches, it quickly fails.
+    ```sh
+    export ARGRELAY_DEBUG="s"
+    ./exe/relay_demo.bash
+    ```
 
 <a name="argrelay-includes"></a>
 # What's in the package?
@@ -298,3 +300,4 @@ Feel free to [raise issues][repo_issues] for:
 [how_search_works.md]: docs/dev_notes/how_search_works.md
 [repo_issues]: https://github.com/argrelay/argrelay/issues
 [FS_29_54_67_86.dir_structure.md]: docs/feature_stories/FS_29_54_67_86.dir_structure.md
+[later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/

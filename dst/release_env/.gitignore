@@ -1,0 +1,6 @@
+
+# For `@/dst/release_env`, both client and server config
+# should be symlinks to the examples
+/argrelay.client.json
+/argrelay.server.yaml
+

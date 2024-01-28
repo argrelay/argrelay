@@ -16,6 +16,13 @@
 # - create tag
 # - publish package
 
+# Define with `s` in value to debug:
+if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
+then
+    set -x
+    set -v
+fi
+
 # Debug: Print commands before execution:
 #set -x
 # Debug: Print commands after reading from a script:
@@ -29,23 +36,18 @@ set -E
 # Error on undefined variables:
 set -u
 
+script_source="${BASH_SOURCE[0]}"
 # The dir of this script:
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
 
 # Switch to `@/` to avoid creating temporary dirs somewhere else:
 cd "${argrelay_dir}" || exit 1
 
-# Ensure the script was started in `@/exe/dev_shell.bash`:
-if [[ -z "${ARGRELAY_DEV_SHELL:-}" ]]
-then
-    echo "ERROR: Run this script under \`@/exe/dev_shell.bash\`." 1>&2
-    exit 1
-fi
-
-# Ensure it is a `venv` (`@/exe/dev_shell.bash` activates `venv` configured in `@/conf/python_conf.bash`):
-test -n "${VIRTUAL_ENV}"
+# Run `@/exe/bootstrap_dev_env.bash` if this file does not exits:
+source "${argrelay_dir}/exe/argrelay_common_lib.bash"
+ensure_inside_dev_shell
 
 # Ensure debug is disabled
 # (it causes tests matching output to fail confusingly):
@@ -54,6 +56,9 @@ then
     echo "ERROR: ARGRELAY_DEBUG is set" 1>&2
     exit 1
 fi
+
+# TODO_64_79_28_85: switch to `dst/release_env`
+# TODO_64_79_28_85: use upgrade_all_packages.bash
 
 # Clear venv (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
@@ -157,7 +162,7 @@ then
         # Note: unsigned unannotated tags appear "Verified" in GitHub:
         git tag "${git_tag}"
     else
-        # Note: unsigned annoteded does not appear "Verified" in GitHub:
+        # Note: unsigned annotated does not appear "Verified" in GitHub:
         git tag --annotate "${git_tag}" -m "${git_hash} | ${time_stamp} | ${publisher_user} | ${publisher_host}"
     fi
 else
