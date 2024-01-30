@@ -251,11 +251,24 @@ def configure_project_git_conf_dir_url(
         project_current_config_path is None
     ):
         return ""
-    argrelay_dir_abs_path = os.path.abspath(get_argrelay_dir())
-    project_current_config_abs_path = os.path.abspath(os.path.join(argrelay_dir_abs_path, project_current_config_path))
+
+    argrelay_dir_abs_path = os.path.realpath(os.path.abspath(get_argrelay_dir()))
+    project_current_config_abs_path = os.path.realpath(os.path.abspath(os.path.join(
+        argrelay_dir_abs_path,
+        project_current_config_path
+    )))
+
+    # This may happen even if paths were joined
+    # if `project_current_config_path` is a symlink pointing outside `argrelay_dir_abs_path`:
     if not project_current_config_abs_path.startswith(argrelay_dir_abs_path):
         return ""
-    if get_git_repo_root_path(argrelay_dir_abs_path) != get_git_repo_root_path(project_current_config_abs_path):
+
+    # This may happen if `@/conf` is a sub-dir, and it is another git repo:
+    if (
+        os.path.realpath(get_git_repo_root_path(argrelay_dir_abs_path))
+        !=
+        os.path.realpath(get_git_repo_root_path(project_current_config_abs_path))
+    ):
         return ""
 
     # Compose URL:
