@@ -78,12 +78,15 @@ class DataEnvelopeSchema(Schema):
     @validates_schema
     def validate_known(
         self,
-        input_dict,
+        input_dict: dict,
         **kwargs,
     ):
-        if input_dict[ReservedArgType.EnvelopeClass.name] == ReservedEnvelopeClass.ClassFunction.name:
+        if input_dict.get(ReservedArgType.EnvelopeClass.name, None) == ReservedEnvelopeClass.ClassFunction.name:
             function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
+sample_field_type_A_ = "SomeTypeA"
+sample_field_type_B_ = "SomeTypeB"
+sample_field_type_C_ = "SomeTypeC"
 
 data_envelope_desc = TypeDesc(
     dict_schema = DataEnvelopeSchema(),
@@ -93,9 +96,9 @@ data_envelope_desc = TypeDesc(
         instance_data_: function_envelope_instance_data_desc.dict_example,
         envelope_payload_: {},
         ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-        "SomeTypeA": "A_value_1",
-        "SomeTypeB": "B_value_1",
-        "SomeTypeC": "C_value_1",
+        sample_field_type_A_: "A_value_1",
+        sample_field_type_B_: "B_value_1",
+        sample_field_type_C_: "C_value_1",
     },
     default_file_path = "",
 )

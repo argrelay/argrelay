@@ -58,9 +58,6 @@ class GitRepoLoader(AbstractLoader):
         self,
         static_data: StaticData,
     ) -> StaticData:
-        """
-        Scan `base_path` recursively and load metadata about all Git repos found.
-        """
 
         if not self.plugin_config_dict:
             return static_data
@@ -73,6 +70,9 @@ class GitRepoLoader(AbstractLoader):
         self,
         static_data: StaticData,
     ) -> StaticData:
+        """
+        Scan `base_path` recursively and load metadata about all Git repos found.
+        """
 
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
@@ -84,7 +84,7 @@ class GitRepoLoader(AbstractLoader):
         init_envelop_collections(
             self.server_config,
             class_names,
-            # Same index fields for all collections (can be fine-tuned later)
+            # Same index fields for all collections (can be fine-tuned later):
             lambda collection_name, class_name: [enum_item.name for enum_item in GitRepoArgType]
         )
 

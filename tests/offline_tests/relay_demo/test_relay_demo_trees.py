@@ -47,6 +47,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
             (
                 line_no(), "relay_demo |", CompType.PrefixHidden,
                 [
+                    "config",
                     "desc",
                     "echo",
                     "enum",

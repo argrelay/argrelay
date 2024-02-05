@@ -126,6 +126,7 @@ server_plugin_control:
             -   EchoDelegator
             -   ServiceDelegator
             -   GitRepoDelegator
+            -   ConfigOnlyDelegator
 
 plugin_instance_entries:
 
@@ -233,6 +234,9 @@ plugin_instance_entries:
                     commit: desc_commit_func
                     host: desc_host_func
                     service: desc_service_func
+                config:
+                    print_with_level: funct_id_print_with_severity_level
+                    print_with_exit: funct_id_print_with_exit_code
             delegator_plugin_ids: *all_direct_delegators
 
     FuncTreeInterpFactory.service:
@@ -278,20 +282,59 @@ plugin_instance_entries:
             load_repo_commits: False
             repo_entries:
                 "~/repos":
-                    -   repo_rel_path: argrelay.git
+                    -
+                        repo_rel_path: argrelay.git
                         envelope_properties:
                             GitRepoAlias: ar
                             GitRepoContentType: code
-                    -   repo_rel_path: argcomplete.git
+                    -
+                        repo_rel_path: argcomplete.git
                         is_repo_enabled: True
                         envelope_properties:
                             GitRepoAlias: ac
                             GitRepoContentType: ref
-                    -   repo_rel_path: marshmallow.git
+                    -
+                        repo_rel_path: marshmallow.git
                         is_repo_enabled: False
                         envelope_properties:
                             GitRepoAlias: mm
                             GitRepoContentType: code
+
+    ConfigOnlyLoader:
+        plugin_enabled: true
+        plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
+        plugin_class_name: ConfigOnlyLoader
+        plugin_config:
+            class_names:
+                -   ConfigOnlyClass
+            index_fields:
+                -   severity_level
+                -   exit_code
+            data_envelopes:
+                -
+                    EnvelopeClass: ConfigOnlyClass
+                    severity_level: INFO
+                    exit_code: 0
+                    envelope_payload:
+                        text_message: text message A
+                -
+                    EnvelopeClass: ConfigOnlyClass
+                    severity_level: WARN
+                    exit_code: 0
+                    envelope_payload:
+                        text_message: text message B
+                -
+                    EnvelopeClass: ConfigOnlyClass
+                    severity_level: ERROR
+                    exit_code: 1
+                    envelope_payload:
+                        text_message: text message C
+                -
+                    EnvelopeClass: ConfigOnlyClass
+                    severity_level: ERROR
+                    exit_code: 2
+                    envelope_payload:
+                        text_message: text message D
 
     NoopDelegator:
         plugin_module_name: argrelay.plugin_delegator.NoopDelegator
@@ -358,6 +401,35 @@ plugin_instance_entries:
     GitRepoDelegator:
         plugin_module_name: argrelay.custom_integ.GitRepoDelegator
         plugin_class_name: GitRepoDelegator
+
+    ConfigOnlyDelegator:
+        plugin_module_name: argrelay.custom_integ.ConfigOnlyDelegator
+        plugin_class_name: ConfigOnlyDelegator
+        plugin_config:
+            func_configs:
+                funct_id_print_with_severity_level:
+                    command_template: "echo \"{object_envelope['severity_level']}: {object_envelope['envelope_payload']['text_message']}\""
+                    func_envelope:
+                        HelpHint: "Instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
+                        instance_data:
+                            search_control_list:
+                                -   collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                funct_id_print_with_exit_code:
+                    command_template: "echo \"{object_envelope['envelope_payload']['text_message']}\" && exit {object_envelope['exit_code']}"
+                    func_envelope:
+                        HelpHint: "Instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
+                        instance_data:
+                            search_control_list:
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
 
     # TODO: Add FS_80_45_89_81 / `error_message` func:
     ErrorDelegator:

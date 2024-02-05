@@ -23,6 +23,7 @@ class ThisTestClass(LocalTestClass):
                 "some_command intercept |",
                 CompType.PrefixShown,
                 [
+                    "config",
                     "desc",
                     "echo",
                     "enum",
