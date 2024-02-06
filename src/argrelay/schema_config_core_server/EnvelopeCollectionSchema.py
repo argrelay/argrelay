@@ -67,9 +67,20 @@ def init_envelop_collections(
     class_names: list[str],
     get_index_fields: Callable[[str, str], list[str]],
 ):
+    """
+    FS_56_43_05_79: Part of "search diff collection" implementation.
+
+    Init:
+    *   mapping from `class_name` to `collection_name`
+    *   association of `collection_name` with its data as `EnvelopeCollection` (default = new and empty)
+    *   list of `index_field`-s for each `EnvelopeCollection` via `get_index_fields`
+
+    By default, class_name is mapped into collection_name which matches as string that class_name.
+    """
     class_to_collection_map: dict = server_config.class_to_collection_map
 
     for class_name in class_names:
+        # Default collection_name == class_name (unless overriden = specified in config explicitly):
         class_to_collection_map.setdefault(
             class_name,
             class_name,

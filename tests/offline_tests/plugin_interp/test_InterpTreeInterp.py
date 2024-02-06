@@ -58,6 +58,7 @@ class ThisTestClass(LocalTestClass):
                 "some_command |",
                 CompType.PrefixShown,
                 [
+                    "config",
                     "desc",
                     "echo",
                     "enum",

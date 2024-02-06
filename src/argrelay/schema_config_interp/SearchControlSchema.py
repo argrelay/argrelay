@@ -63,7 +63,7 @@ class SearchControlSchema(Schema):
     @validates_schema
     def validate_known(
         self,
-        input_dict,
+        input_dict: dict,
         **kwargs,
     ):
         for key_to_type_entry in input_dict[keys_to_types_list_]:

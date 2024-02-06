@@ -75,7 +75,7 @@ class ServiceLoader(AbstractLoader):
         init_envelop_collections(
             self.server_config,
             class_names,
-            # Same index fields for all collections (can be fine-tuned later)
+            # Same index fields for all collections (can be fine-tuned later):
             lambda collection_name, class_name: [enum_item.name for enum_item in ServiceArgType]
         )
 

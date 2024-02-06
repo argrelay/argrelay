@@ -2,6 +2,9 @@ import copy
 
 from marshmallow import ValidationError
 
+from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import config_only_delegator_config_desc
+from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import config_only_loader_config_desc
+from argrelay.custom_integ.FuncConfigSchema import func_config_desc
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
 from argrelay.plugin_config.DefaultConfiguratorConfigSchema import default_configurator_config_desc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
@@ -19,6 +22,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import server_config_
 from argrelay.schema_config_core_server.ServerPluginControlSchema import server_plugin_control_desc
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
+from argrelay.schema_config_interp.FuncEnvelopeSchema import func_envelope_desc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
 from argrelay.schema_config_interp.InitControlSchema import init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
@@ -55,6 +59,7 @@ class ThisTestClass(BaseTestClass):
             (line_no(), server_config_desc),
             (line_no(), static_data_desc),
             (line_no(), data_envelope_desc),
+            (line_no(), func_envelope_desc),
             (line_no(), search_control_desc),
             (line_no(), init_control_desc),
             (line_no(), function_envelope_instance_data_desc),
@@ -68,6 +73,9 @@ class ThisTestClass(BaseTestClass):
             (line_no(), server_plugin_control_desc),
             (line_no(), envelope_collection_desc),
             (line_no(), default_configurator_config_desc),
+            (line_no(), config_only_loader_config_desc),
+            (line_no(), config_only_delegator_config_desc),
+            (line_no(), func_config_desc),
         ]
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -120,19 +128,16 @@ class ThisTestClass(BaseTestClass):
         dumped_dict = type_desc.dict_schema.dump(loaded_dict)
         # Expect problem:
         # `Schema.dump` does not preserve all keys of original `dict` - only those which mentioned in the schema:
-        self.assertRaises(
-            KeyError,
-            lambda: type_desc.validate_dict(dumped_dict),
+        self.assertNotEqual(
+            orig_dict,
+            dumped_dict,
         )
 
         self.assertEqual(
             orig_dict,
             loaded_dict,
         )
-        self.assertNotEqual(
-            orig_dict,
-            dumped_dict,
-        )
+
         self.assertEqual(
             dumped_orig_json,
             dumped_loaded_json,

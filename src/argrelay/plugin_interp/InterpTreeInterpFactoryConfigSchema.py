@@ -34,7 +34,7 @@ class InterpTreeInterpFactoryConfigSchema(Schema):
     @validates_schema
     def validate_known(
         self,
-        input_dict,
+        input_dict: dict,
         **kwargs,
     ):
         interp_selector_tree = input_dict[interp_selector_tree_]

@@ -282,6 +282,10 @@ class FuncTreeInterp(AbstractInterp):
                     self.interp_ctx.help_hint_cache.get_value_with_help_hint(arg_type, x)
                     for x in self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
                     if (
+                        # NOTE: This checks for `str` meaning primitive (scalar, not `list` or `dict`),
+                        #       but this also filters out `int` or others.
+                        #       Primitive types should be converted to `str` when loaded.
+                        #       See `ConfigOnlyLoader.convert_envelope_fields_to_string` for example.
                         isinstance(x, str)
                         and
                         # FS_32_05_46_00: using `startswith`:
