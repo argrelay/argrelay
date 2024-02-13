@@ -152,7 +152,7 @@ upgrade_all_packages.bash
                     ["ls", "-lrt"],
                 ),
                 None,
-                f"unexpected CLI args: ['ls', '-lrt']",
+                f"unexpected CLI args: `['ls', '-lrt']` expected CLI args: `dict_keys([('ls',)])`",
                 "Basic call to `subprocess.run(...)` to fail because of non-matching CLI.",
             ),
             (
@@ -217,7 +217,7 @@ upgrade_all_packages.bash
                     ["ls", "-lrt", "3"],
                 ),
                 None,
-                f"unexpected CLI args: ['ls', '-lrt', '3']",
+                f"unexpected CLI args: `['ls', '-lrt', '3']` expected CLI args: `dict_keys([('ls', '-lrt', '1'), ('ls', '-lrt', '2')])`",
                 "Basic call to `subprocess.run(...)` multiple expected input to succeed because of non-matching CLI 3.",
             ),
         ]

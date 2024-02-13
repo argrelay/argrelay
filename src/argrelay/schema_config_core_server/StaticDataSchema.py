@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from marshmallow import Schema, RAISE, fields, post_load
 
-from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import envelope_collection_desc
 

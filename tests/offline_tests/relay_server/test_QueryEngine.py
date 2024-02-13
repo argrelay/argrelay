@@ -82,7 +82,7 @@ class ThisTestClass(BaseTestClass):
                     # Force restart of the server for `LocalClient` before tests:
                     LocalClientCommandFactory.local_server = None
                     # Start `LocalServer` with data:
-                    server_config = server_config_desc.from_default_file()
+                    server_config = server_config_desc.obj_from_default_file()
                     local_server = LocalServer(server_config)
                     local_server.start_local_server()
                     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)

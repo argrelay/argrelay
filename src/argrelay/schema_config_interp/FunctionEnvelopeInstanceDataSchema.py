@@ -13,6 +13,7 @@ delegator_plugin_instance_id_ = "delegator_plugin_instance_id"
 search_control_list_ = "search_control_list"
 
 
+# TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
 class FunctionEnvelopeInstanceDataSchema(Schema):
     """
     Schema for :class:`DataEnvelopeSchema.instance_data` of :class:`ReservedEnvelopeClass.ClassFunction`

@@ -18,10 +18,8 @@ from io import StringIO
 from typing import Type, Union, Callable
 from unittest import mock
 
-import pkg_resources
 import yaml
 
-import argrelay
 from argrelay.client_spec.ShellContext import (
     UNKNOWN_COMP_KEY,
     ShellContext,
@@ -309,7 +307,7 @@ class EnvMockBuilder:
         client_config: Union[dict, None] = None,
     ):
         if client_config is None:
-            client_config = load_custom_integ_client_config_dict()
+            client_config = client_config_desc.dict_from_default_file()
         self.client_config_dict = client_config
         return self
 
@@ -318,7 +316,7 @@ class EnvMockBuilder:
         server_config: Union[dict, None] = None,
     ):
         if server_config is None:
-            server_config = load_custom_integ_server_config_dict()
+            server_config = server_config_desc.dict_from_default_file()
         self.server_config_dict = server_config
         return self
 
@@ -931,29 +929,6 @@ def do_reset_local_server():
         yield
     finally:
         LocalClientCommandFactory.local_server = None
-
-
-########################################################################################################################
-# Config loaders
-
-def load_custom_integ_server_config_dict() -> dict:
-    test_server_config_path = server_config_desc.get_adjusted_file_path()
-    with open(test_server_config_path) as f:
-        server_config_dict = yaml.safe_load(f)
-    return server_config_dict
-
-
-def load_custom_integ_client_config_dict() -> dict:
-    test_client_config_path = client_config_desc.get_adjusted_file_path()
-    with open(test_client_config_path) as f:
-        client_config_dict = json.load(f)
-    return client_config_dict
-
-
-def _get_resource_path(rel_path: str):
-    # Composing path to resource this way keeps its base directory always at this relative path:
-    test_server_config_path = pkg_resources.resource_filename(argrelay.__name__, rel_path)
-    return test_server_config_path
 
 
 ########################################################################################################################

@@ -14,10 +14,12 @@ from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     ignored_func_ids_list_,
 )
 from argrelay.relay_client import __main__
+from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import index_fields_, data_envelopes_
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     static_data_,
     plugin_instance_entries_,
+    server_config_desc,
 )
 from argrelay.schema_config_core_server.StaticDataSchema import envelope_collections_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
@@ -40,8 +42,6 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import (
-    load_custom_integ_server_config_dict,
-    load_custom_integ_client_config_dict,
     LocalClientEnvMockBuilder,
 )
 
@@ -54,8 +54,8 @@ class ThisTestClass(BaseTestClass):
     #       Can there be equivalent for similar test coverage? I think no - when it is all automatic, func envelopes are unambiguously qualified by construction.
     @unittest.skip
     def test_validate_function_envelopes_unambiguously_qualified(self):
-        client_config_dict = load_custom_integ_client_config_dict()
-        server_config_dict = load_custom_integ_server_config_dict()
+        client_config_dict = client_config_desc.dict_from_default_file()
+        server_config_dict = server_config_desc.dict_from_default_file()
 
         envelope_collection = server_config_dict[static_data_][envelope_collections_].setdefault(
             ReservedEnvelopeClass.ClassFunction.name,

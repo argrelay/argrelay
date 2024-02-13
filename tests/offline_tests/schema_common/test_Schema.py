@@ -2,7 +2,11 @@ import copy
 
 from marshmallow import ValidationError
 
-from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import config_only_delegator_config_desc
+from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import base_config_delegator_config_desc
+from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import (
+    config_only_delegator_config_desc,
+    config_only_delegator_envelope_payload_desc,
+)
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import config_only_loader_config_desc
 from argrelay.custom_integ.FuncConfigSchema import func_config_desc
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
@@ -74,6 +78,8 @@ class ThisTestClass(BaseTestClass):
             (line_no(), envelope_collection_desc),
             (line_no(), default_configurator_config_desc),
             (line_no(), config_only_loader_config_desc),
+            (line_no(), base_config_delegator_config_desc),
+            (line_no(), config_only_delegator_envelope_payload_desc),
             (line_no(), config_only_delegator_config_desc),
             (line_no(), func_config_desc),
         ]
@@ -114,7 +120,8 @@ class ThisTestClass(BaseTestClass):
     def test_data_envelope_desc(self):
         """
         Special case for `DataEnvelopeSchema` (as its object is actually an arbitrary dict).
-        `Schema.dump` cannot be used as it does not preserve all extra keys - see `DataEnvelopeSchema` for details.
+        `Schema.dump` cannot be used (without a workaround) as it does not preserve all extra keys.
+        See `DataEnvelopeSchema` for details.
         """
         type_desc = data_envelope_desc
 
@@ -126,9 +133,10 @@ class ThisTestClass(BaseTestClass):
         dumped_loaded_json = type_desc.dict_schema.dumps(loaded_dict, sort_keys = True)
 
         dumped_dict = type_desc.dict_schema.dump(loaded_dict)
-        # Expect problem:
-        # `Schema.dump` does not preserve all keys of original `dict` - only those which mentioned in the schema:
-        self.assertNotEqual(
+        # Expect no problem:
+        # `Schema.dump` does not preserve all keys of original `dict` - only those which mentioned in the schema
+        # (but there is a special workaround to keep all keys):
+        self.assertEqual(
             orig_dict,
             dumped_dict,
         )
@@ -157,7 +165,7 @@ class ThisTestClass(BaseTestClass):
         Makes sure the minimal config data for client is loadable.
         """
 
-        client_config: ClientConfig = client_config_desc.from_yaml_str(
+        client_config: ClientConfig = client_config_desc.obj_from_yaml_str(
             """
             {
                 "connection_config": {

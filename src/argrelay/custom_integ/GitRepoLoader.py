@@ -22,7 +22,6 @@ from argrelay.custom_integ.git_utils import is_git_repo
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
-from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -36,23 +35,11 @@ class GitRepoLoader(AbstractLoader):
     Implements FS_67_16_61_97 git_plugin.
     """
 
-    def __init__(
+    def load_config(
         self,
-        server_config: ServerConfig,
-        plugin_instance_id: str,
-        plugin_config_dict: dict,
-    ):
-        super().__init__(
-            server_config,
-            plugin_instance_id,
-            plugin_config_dict,
-        )
-        self.plugin_config_dict = git_repo_loader_config_desc.from_input_dict(self.plugin_config_dict)
-
-    def validate_config(
-        self,
-    ):
-        git_repo_loader_config_desc.validate_dict(self.plugin_config_dict)
+        plugin_config_dict,
+    ) -> dict:
+        return git_repo_loader_config_desc.dict_from_input_dict(plugin_config_dict)
 
     def update_static_data(
         self,
@@ -122,7 +109,7 @@ class GitRepoLoader(AbstractLoader):
 
                 # Query Git root path of curr dir:
                 if is_git_repo(
-                   repo_root_abs_path,
+                    repo_root_abs_path,
                 ):
                     pass
                 else:

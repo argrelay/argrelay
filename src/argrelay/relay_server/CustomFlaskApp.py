@@ -39,7 +39,7 @@ class CustomFlaskApp(Flask):
             template_folder = template_folder,
             static_url_path = static_url_path,
         )
-        self.local_server: LocalServer = LocalServer(server_config_desc.from_default_file())
+        self.local_server: LocalServer = LocalServer(server_config_desc.obj_from_default_file())
 
     def run_with_config(self):
         # Use custom logging at DEBUG level - see: `log_request` and `log_response:
@@ -158,6 +158,7 @@ def configure_project_title(
         "[unknown]",
     )
 
+
 def configure_project_page_url(
     server_configurators,
 ) -> str:
@@ -166,6 +167,7 @@ def configure_project_page_url(
         lambda server_configurator: server_configurator.provide_project_page_url(),
         "",
     )
+
 
 def configure_project_git_commit_time(
     server_configurators,

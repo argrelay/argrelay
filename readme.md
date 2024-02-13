@@ -13,7 +13,7 @@ See: docs/dev_notes/screencast_notes.md
 # What's this?
 
 A tool to provide object selector (structured data search filter) for command line interface (CLI):
-*   User select objects via "enum language" using tags|labels|keywords which belong to one of the `enum` sets.
+*   User select objects via "enum language" using tags | labels | keywords which belong to one of the `enum` sets.
 *   The `enum` sets are dynamically composed of all the objects property values within user data.
 *   Fuzzy-search (yet easily predictable) is achieved by:
     *   relying on rare intersection between `enum` sets
@@ -33,40 +33,34 @@ Wrapping any command by `argrelay`:
 | :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control         |
 | :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                         |
 
-While retaining advantages of a CLI tool, `argrelay` tries to provide solution for intuitive data lookup.
+While retaining advantages of a CLI tool, `argrelay` tries to provide solution for intuitive data lookup:
+*   minimalistic enum-based query syntax (matching target executable command line)
+*   low client-side footprint (suitable for resource-constrained environments)
+*   conveniently browsable inventory (generic CLI builder)
 
-Selecting args directly in shell avoids error-prone coping-and-pasting and clumsy window switching.
+Selecting args directly in shell CLI avoids **otherwise** error-prone coping-and-pasting via clumsy GUI window switching.
 
 <a name="argrelay-original-use-case"></a>
 # Original use case
 
-Auto-complete [based on arbitrary data sets][later_stack_question] (e.g. config or ref data)<br/>
-**directly from standard shell** to run infra commands.
+Auto-complete commands [based on arbitrary data sets][later_stack_question],<br/>
+for example, using metadata for 10s x clusters, 100s x hosts, 1000s x processes, ...<br/>
+**directly from standard shell**.
 
-Flexible and [responsive lookup][completion_perf_notes.md] requires data indexing<br/>
-(e.g. the client has to start and query relevant data on each Tab-request)<br/>
-suggesting...
+Flexible and [responsive lookup][completion_perf_notes.md] required data indexing<br/>
+(e.g. each Tab-request demands short loading and querying time for context-specific data)<br/>
+which suggested a split...
 
 <a name="argrelay-client-server"></a>
 # Straightforward split: client & server
 
-The performance is achieved by running a standby server pre-loaded with data<br/>
+The performance qualities were achieved by running a standby server with pre-loaded data<br/>
 (instead of loading this data into each client).
-> For example, with several thousands of data entries,<br/>
-> even if someone could generate Bash completion config,<br/>
+> For example, with 1000s of data entries,<br/>
+> even if someone could generate static Bash completion config,<br/>
 > it would take considerable time to load it for every shell instance.
 
-Unlike static|generated|offline index per client, standby server also naturally supports dynamic data updates.
-
-<!--
-<a name="argrelay-accidental-use-case"></a>
-### Accidental use cases
-
-Familiar terminal with:
-*   data-intensive CLI and seamless search through live data
-*   minimalistic enum-based query syntax
-*   catalogues of selectable functions with unified/redefined CLI
--->
+Unlike static | generated | offline index per client, standby server also naturally supports dynamic data updates.
 
 <a name="argrelay-request-hotkeys"></a>
 # Request hotkeys
@@ -197,7 +191,7 @@ This sub-shell configures request hot keys to bind `relay_demo` command with `@/
 <a name="argrelay-focus"></a>
 # Focus: CLI search and data-assisted completion
 
-GUI-s are secondary for `argrelay`'s niche because<br/>
+GUI-s are secondary for `argrelay`'s purpose because<br/>
 GUI-s do not have the restrictions CLI-s have:
 *   Technically, the server can handle requests from anywhere (GUI).
 *   But primary API-s are feature-tailored to support CLI (because everyone does GUI).
@@ -228,7 +222,7 @@ Learn more about [how search works][how_search_works.md].
 
 There are two options at the moment - both using [MongoDB][MongoDB] API:
 
-| Category       | `mongomock` (default)                                                                | `pymongo`                                                                                        |
+| Category       | [`mongomock`][mongomock_github] (default)                                            | [`pymongo`][pymongo_github]                                                                      |
 |:---------------|:-------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
 | Data set size: | practical convenience limit ~ 10K objects                                            | tested with ~ 1M objects                                                                         |
 | Pro:           | nothing else to install                                                              | no practical data set size limit found (yet)<br/> for `argrelay` intended use cases              |
@@ -287,10 +281,7 @@ sequenceDiagram
 <a name="argrelay-feedback"></a>
 # Feedback
 
-Feel free to [raise issues][repo_issues] for:
-*   **any** questions (due to missing docs)
-*   bugs
-*   features
+Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
@@ -299,5 +290,8 @@ Feel free to [raise issues][repo_issues] for:
 [TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md
 [how_search_works.md]: docs/dev_notes/how_search_works.md
 [repo_issues]: https://github.com/argrelay/argrelay/issues
+[repo_discussions]: https://github.com/argrelay/argrelay/discussions
 [FS_29_54_67_86.dir_structure.md]: docs/feature_stories/FS_29_54_67_86.dir_structure.md
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
+[mongomock_github]: https://github.com/mongomock/mongomock
+[pymongo_github]: https://github.com/mongodb/mongo-python-driver

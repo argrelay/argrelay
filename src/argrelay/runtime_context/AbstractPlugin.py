@@ -30,21 +30,21 @@ class AbstractPlugin:
 
         The default implementation is to return `plugin_config_dict` as is.
 
-        The typical implementation is to do `Schema.dump(Schema.load(plugin_config_dict))`
+        The typical implementation is to call `TypeDesc.dict_from_input_dict`
         so that defaults are populated according to the given `Schema`.
         """
         return deepcopy(plugin_config_dict)
 
     def validate_config(
         self,
-    ):
+    ) -> None:
         """
         Validate schema or data for `plugin_config_dict`.
 
         The typical implementation is to call `TypeDesc.validate_dict(self.plugin_config_dict)`.
 
-        If `load_config` is implemented via `Schema.load(Schema.dump(plugin_config_dict))`,
-        validating step is only unnecessary if it does anything extra beyond what `Schema` can validate.
+        If `load_config` is implemented via `TypeDesc.dict_from_input_dict`,
+        validating step is only necessary if it does anything extra beyond what `Schema` can validate.
         """
         pass
 
@@ -58,7 +58,7 @@ class AbstractPlugin:
 
     def activate_plugin(
         self,
-    ):
+    ) -> None:
         """
         One-time plugin activation callback during server startup.
 
@@ -69,7 +69,7 @@ class AbstractPlugin:
     def validate_loaded_data(
         self,
         static_data: "StaticData"
-    ):
+    ) -> None:
         """
         Callback to validate data after all :class:`AbstractLoader`-s completed loading data.
 

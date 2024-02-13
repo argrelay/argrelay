@@ -55,17 +55,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         self,
         plugin_config_dict,
     ) -> dict:
-        # TODO_74_03_78_60: Call `TypeDesc` API to do load (to populate defaults) -> dump automatically.
-        return func_tree_interp_config_desc.dict_schema.dump(
-            func_tree_interp_config_desc.dict_schema.load(
-                plugin_config_dict
-            )
-        )
-
-    def validate_config(
-        self,
-    ):
-        func_tree_interp_config_desc.validate_dict(self.plugin_config_dict)
+        return func_tree_interp_config_desc.dict_from_input_dict(plugin_config_dict)
 
     def load_func_envelopes(
         self,
@@ -146,9 +136,11 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         init_envelop_collections(
             self.server_config,
             class_names,
-            lambda collection_name, class_name: [
-                ReservedArgType.EnvelopeClass.name,
-            ] + prop_names
+            lambda collection_name, class_name: (
+                [
+                    ReservedArgType.EnvelopeClass.name,
+                ] + prop_names
+            )
         )
         envelope_collection = self.server_config.static_data.envelope_collections[
             class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name]

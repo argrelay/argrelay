@@ -5,7 +5,6 @@ import pandas as pd
 
 from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import scalar_to_list_values
@@ -72,7 +71,7 @@ class ThisTestClass(BaseTestClass):
         with env_mock_builder.build():
 
             # All we want is started `LocalServer` with data:
-            server_config = server_config_desc.from_default_file()
+            server_config = server_config_desc.obj_from_default_file()
             local_server = LocalServer(server_config)
             local_server.start_local_server()
 

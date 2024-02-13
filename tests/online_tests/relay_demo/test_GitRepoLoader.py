@@ -19,12 +19,11 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_, server_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import (
-    load_custom_integ_server_config_dict,
     LocalClientEnvMockBuilder,
 )
 
@@ -141,7 +140,7 @@ class ThisTestClass(BaseTestClass):
                 ) = test_case
 
                 # Modify config to enable `GitRepoLoader` plugin:
-                server_config_dict = load_custom_integ_server_config_dict()
+                server_config_dict = server_config_desc.dict_from_default_file()
                 server_config_dict[plugin_instance_entries_][GitRepoLoader.__name__][plugin_config_] = plugin_config
 
                 env_mock_builder = (

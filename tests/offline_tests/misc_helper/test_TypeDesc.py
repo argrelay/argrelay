@@ -4,7 +4,7 @@ from marshmallow import ValidationError
 
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
 from argrelay.plugin_interp.NoopInterp import NoopInterp
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_, server_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_entry_desc,
     plugin_enabled_,
@@ -12,7 +12,6 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_class_name_,
 )
 from argrelay.test_infra import line_no
-from argrelay.test_infra.EnvMockBuilder import load_custom_integ_server_config_dict
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
@@ -43,7 +42,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(), "demo test data: expanded (realistic) sample",
-                load_custom_integ_server_config_dict()[plugin_instance_entries_][GitRepoLoader.__name__],
+                server_config_desc.dict_from_default_file()[plugin_instance_entries_][GitRepoLoader.__name__],
                 {
                     plugin_module_name_: GitRepoLoader.__module__,
                 },
@@ -80,7 +79,7 @@ class ThisTestClass(LocalTestClass):
                     expected_exception,
                 ) = test_case
                 if not expected_exception:
-                    static_data = plugin_entry_desc.from_input_dict(input_dict)
+                    static_data = plugin_entry_desc.obj_from_input_dict(input_dict)
 
                     # Assert those files which were specified in the `expected_dict_part`:
                     for key_to_verify in expected_dict_part:
@@ -92,4 +91,4 @@ class ThisTestClass(LocalTestClass):
                         self.confusing_result_presence_msg,
                     )
                     with self.assertRaises(expected_exception):
-                        plugin_entry_desc.from_input_dict(input_dict)
+                        plugin_entry_desc.obj_from_input_dict(input_dict)

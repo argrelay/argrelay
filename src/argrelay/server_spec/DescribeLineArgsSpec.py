@@ -1,3 +1,4 @@
+from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
@@ -39,6 +40,7 @@ spec_data = {
         call_context_desc.ref_name,
         interp_result_desc.ref_name,
         envelope_container_desc.ref_name,
+        data_envelope_desc.ref_name,
         assigned_value_desc.ref_name,
         search_control_desc.ref_name,
     ]),

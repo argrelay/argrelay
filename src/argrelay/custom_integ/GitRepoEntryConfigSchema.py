@@ -21,9 +21,6 @@ class GitRepoEntryConfigSchema(Schema):
     repo_rel_path = fields.String()
 
     is_repo_enabled = fields.Boolean(
-        # TODO: Docs say that this is the default value to be loaded (if missing),
-        #       but it does not work with False (apparently a bug) - make an MR to `marshmallow` to fix that:
-        #       https://stackoverflow.com/questions/71821237/marshmallow-field-not-loading-default-value#comment135472490_71881463
         load_default = True,
         required = False,
     )

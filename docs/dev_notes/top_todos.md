@@ -2,7 +2,7 @@
 TODO: top todos
 
 Tags:
-*   FINALIZE: The feature already works but needs coverage, small non-functional improvements, documentation.
+*   FINALIZE: The feature already works but needs coverage, small qualitative improvements, documentation.
 *   CLOSED: The issue is done or being tracked otherwise = no need to keep this todo, but still kept to keep in the view.
 *   REGISTER: The item is not yet registered, requires new feature story (FS) entry.
 *   USER_VISIBLE: Something what is visible to user (rather than just making things better).

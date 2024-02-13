@@ -22,7 +22,6 @@ from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.EnvMockBuilder import (
     ServerOnlyEnvMockBuilder,
     wrap_instance_method_on_instance,
-    load_custom_integ_server_config_dict,
 )
 from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
 from argrelay.test_infra.LocalTestClass import LocalTestClass
@@ -128,7 +127,7 @@ class ThisTestClass(LocalTestClass):
                 ServiceLoader.object_multiplier = object_multiplier
 
                 # Overwrite server config to use single or multiple collections:
-                server_config_dict: dict = load_custom_integ_server_config_dict()
+                server_config_dict: dict = server_config_desc.dict_from_default_file()
                 if use_single_collection:
                     server_config_dict[class_to_collection_map_] = {
                         # ---
@@ -174,7 +173,7 @@ class ThisTestClass(LocalTestClass):
                     # Force restart of the server for `LocalClient` before tests:
                     LocalClientCommandFactory.local_server = None
                     # Start `LocalServer` with data:
-                    server_config = server_config_desc.from_default_file()
+                    server_config = server_config_desc.obj_from_default_file()
                     local_server = LocalServer(server_config)
                     local_server.start_local_server()
                     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)

@@ -1,6 +1,7 @@
 
 * {
     font-family: monospace;
+    background-color: white;
 }
 
 .top_container {
@@ -98,10 +99,13 @@ input:focus {
 Input elements
 ***********************************************************************************************************************/
 
+/* Define common props for `command_history` and `command_line_input` together: */
 #command_history,
 #command_line_input {
-    width: 100%;
+    border-style: solid;
     border-width: 1px;
+
+    width: 100%;
 
     /*
     Limit size of the input element to the container:
@@ -109,16 +113,20 @@ Input elements
     */
     box-sizing: border-box;
 
-    background-color: whitesmoke;
+    /* Remove down triangle: */
+    appearance:none;
 }
 
 #command_history {
+    border-color: lightskyblue;
+    /* align `command_history` and `command_line_input` */
+    padding: 1px 2px 1px 2px;
     color: grey;
 }
 
 #command_line_input {
-    color: white;
-    background-color: black;
+    border-color: lightskyblue;
+    color: black;
 }
 
 ::placeholder {
@@ -131,19 +139,18 @@ Input states
 ***********************************************************************************************************************/
 
 .io_state_client_synced_input {
-    color: white !important;
+    color: black !important;
 }
 
 .io_state_pending_request_input {
-    color: yellow !important;
+    color: green !important;
 }
 
 .io_state_pending_response_input {
-    color: lime !important;
+    color: blue !important;
 }
 
 .io_state_request_failed_input {
-    background-color: yellow !important;
     color: red !important;
 }
 
@@ -158,8 +165,6 @@ Output elements
 
 .output_box {
     min-height: 1px;
-    background-color: whitesmoke;
-    border-color: gray;
     border-style: none;
 }
 
@@ -184,12 +189,10 @@ Legend
 
 .input_legend {
     padding: 2px;
-    background-color: black;
 }
 
 .output_legend {
     padding: 2px;
-    background-color: black;
 }
 
 /***********************************************************************************************************************
@@ -206,24 +209,23 @@ Suggestion details
     width: fit-content;
     margin: 0 2px 2px 0;
     padding: 2px;
-    background-color: black;
-    border-style: none;
+    border-style: solid;
     border-width: 1px;
-    border-color: gray;
+    border-color: lightskyblue;
 }
 
 .input_part {
-    color: white;
+    color: black;
 }
 
 .incomplete_part {
-    color: white;
-    background-color: green;
+    color: black;
+    background-color: palegreen;
 }
 
 .unique_part {
-    color: white;
-    background-color: maroon;
+    color: black;
+    background-color: pink;
 }
 
 .comment_part {

@@ -25,12 +25,7 @@ class DefaultConfigurator(AbstractConfigurator):
         self,
         plugin_config_dict,
     ) -> dict:
-        # TODO_74_03_78_60: Call `TypeDesc` API to do load (to populate defaults) -> dump automatically.
-        return default_configurator_config_desc.dict_schema.dump(
-            default_configurator_config_desc.dict_schema.load(
-                plugin_config_dict,
-            ),
-        )
+        return default_configurator_config_desc.dict_from_input_dict(plugin_config_dict)
 
     def provide_project_title(
         self,

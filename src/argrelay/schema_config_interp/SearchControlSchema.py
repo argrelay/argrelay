@@ -39,9 +39,13 @@ class SearchControlSchema(Schema):
         required = True,
     )
 
+    # FS_20_88_05_60: named args: maps `arg_name` (in command line) to `prop_name` (in `data_envelope`).
+    # Each `list` item must contain singleton `dict` (single key-value pair).
     keys_to_types_list = fields.List(
         fields.Dict(
+            # `arg_name`:
             keys = fields.String(),
+            # `prop_name`:
             values = fields.String(),
             required = True,
         ),

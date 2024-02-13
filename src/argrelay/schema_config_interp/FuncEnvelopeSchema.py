@@ -16,7 +16,6 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import fun
 
 
 class FuncEnvelopeSchema(DataEnvelopeSchema):
-
     class Meta:
         unknown = INCLUDE
         strict = True

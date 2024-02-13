@@ -237,6 +237,7 @@ plugin_instance_entries:
                 config:
                     print_with_level: funct_id_print_with_severity_level
                     print_with_exit: funct_id_print_with_exit_code
+                    print_with_io_redirect: funct_id_print_with_io_redirect
             delegator_plugin_ids: *all_direct_delegators
 
     FuncTreeInterpFactory.service:
@@ -249,6 +250,7 @@ plugin_instance_entries:
                 goto: goto_service_func
                 list: list_service_func
                 desc: desc_service_func
+            # TODO: remove this - add uncategorized functions into index under some "UNMAPPED" func_ids or something:
             ignored_func_ids_list:
                 -   goto_host_func
                 -   list_host_func
@@ -305,36 +307,15 @@ plugin_instance_entries:
         plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
         plugin_class_name: ConfigOnlyLoader
         plugin_config:
+            # TODO: Why do we need `class_name`-s in config separately if `data_envelope`-s already contain `EnvelopeClass`?
             class_names:
                 -   ConfigOnlyClass
+            # TODO: Why `index_field`-s are not per `class_name`? Or, more properly, per `collection_name`?
             index_fields:
                 -   severity_level
                 -   exit_code
             data_envelopes:
-                -
-                    EnvelopeClass: ConfigOnlyClass
-                    severity_level: INFO
-                    exit_code: 0
-                    envelope_payload:
-                        text_message: text message A
-                -
-                    EnvelopeClass: ConfigOnlyClass
-                    severity_level: WARN
-                    exit_code: 0
-                    envelope_payload:
-                        text_message: text message B
-                -
-                    EnvelopeClass: ConfigOnlyClass
-                    severity_level: ERROR
-                    exit_code: 1
-                    envelope_payload:
-                        text_message: text message C
-                -
-                    EnvelopeClass: ConfigOnlyClass
-                    severity_level: ERROR
-                    exit_code: 2
-                    envelope_payload:
-                        text_message: text message D
+                !include "data/ConfigOnlyLoader.data.yaml"
 
     NoopDelegator:
         plugin_module_name: argrelay.plugin_delegator.NoopDelegator
@@ -408,9 +389,9 @@ plugin_instance_entries:
         plugin_config:
             func_configs:
                 funct_id_print_with_severity_level:
-                    command_template: "echo \"{object_envelope['severity_level']}: {object_envelope['envelope_payload']['text_message']}\""
+                    # TODO_84_71_86_21: change to realistic example:
                     func_envelope:
-                        HelpHint: "Instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
+                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
                         instance_data:
                             search_control_list:
                                 -   collection_name: ConfigOnlyClass
@@ -418,10 +399,13 @@ plugin_instance_entries:
                                     keys_to_types_list:
                                         -   level: severity_level
                                         -   code: exit_code
+                        envelope_payload:
+                            command_template: "echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\""
+                            echo_command_on_stderr: True
                 funct_id_print_with_exit_code:
-                    command_template: "echo \"{object_envelope['envelope_payload']['text_message']}\" && exit {object_envelope['exit_code']}"
+                    # TODO_84_71_86_21: change to realistic example:
                     func_envelope:
-                        HelpHint: "Instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
+                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
                         instance_data:
                             search_control_list:
                                 -
@@ -430,6 +414,31 @@ plugin_instance_entries:
                                     keys_to_types_list:
                                         -   level: severity_level
                                         -   code: exit_code
+                        envelope_payload:
+                            command_template: |
+                                echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
+                                exit {envelope_containers[1].data_envelopes[0]['exit_code']}
+                funct_id_print_with_io_redirect:
+                    # TODO_84_71_86_21: change to realistic example:
+                    func_envelope:
+                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` on stdout or stderr based on exit code"
+                        instance_data:
+                            search_control_list:
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                        envelope_payload:
+                            command_template: |
+                                if [[ {envelope_containers[1].data_envelopes[0]['exit_code']} -eq 0 ]]
+                                then
+                                    echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&1
+                                else
+                                    echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&2
+                                fi
+                                exit {envelope_containers[1].data_envelopes[0]['exit_code']}
 
     # TODO: Add FS_80_45_89_81 / `error_message` func:
     ErrorDelegator:

@@ -170,4 +170,3 @@ class LocalServer:
         host_name = self.server_config.connection_config.server_host_name
         port_number = self.server_config.connection_config.server_port_number
         eprint(f"http://{host_name}:{port_number}")
-
