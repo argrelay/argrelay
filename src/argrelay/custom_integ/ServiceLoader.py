@@ -40,10 +40,11 @@ class ServiceLoader(AbstractLoader):
             plugin_config_dict,
         )
 
-    def validate_config(
+    def load_config(
         self,
-    ):
-        service_loader_config_desc.validate_dict(self.plugin_config_dict)
+        plugin_config_dict: dict,
+    ) -> dict:
+        return service_loader_config_desc.dict_from_input_dict(plugin_config_dict)
 
     def update_static_data(
         self,

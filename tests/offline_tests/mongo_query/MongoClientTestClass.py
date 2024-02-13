@@ -48,7 +48,7 @@ class MongoClientTestClass(BaseTestClass):
         # To connect to real mongo server, change this to False:
         # mongo_config_desc.dict_example[use_mongomock_] = False
 
-        mongo_config = mongo_config_desc.from_input_dict(mongo_config_desc.dict_example)
+        mongo_config = mongo_config_desc.obj_from_input_dict(mongo_config_desc.dict_example)
 
         # Overwrite default config example to use real MongoDB (`pymongo`) or not (`mongomock`):
         mongo_config.use_mongomock = self.use_mongomock

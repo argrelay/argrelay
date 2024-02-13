@@ -20,7 +20,7 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
 
     def _start_local_server(self):
         if not LocalClientCommandFactory.local_server:
-            self.server_config: ServerConfig = server_config_desc.from_default_file()
+            self.server_config: ServerConfig = server_config_desc.obj_from_default_file()
             ElapsedTime.measure("after_server_config_load")
             LocalClientCommandFactory.local_server = LocalServer(self.server_config)
             LocalClientCommandFactory.local_server.start_local_server()

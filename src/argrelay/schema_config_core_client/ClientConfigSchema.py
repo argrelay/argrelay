@@ -11,6 +11,11 @@ optimize_completion_request_ = "optimize_completion_request"
 show_pending_spinner_ = "show_pending_spinner"
 spinless_sleep_sec_ = "spinless_sleep_sec"
 
+
+# NOTE: Client does not use `Schema` to load config in prod code
+#       (only in tests due to heavy import caused by `Schema`).
+#       Therefore, validation and applying defaults is not done by this class.
+#       Duplicate the same requirements (for validation and defaults) in client prod code.
 class ClientConfigSchema(Schema):
     class Meta:
         unknown = RAISE
@@ -58,9 +63,6 @@ class ClientConfigSchema(Schema):
             optimize_completion_request = input_dict.get(optimize_completion_request_, True),
             connection_config = input_dict[connection_config_],
             show_pending_spinner = input_dict.get(show_pending_spinner_, False),
-            # TODO_74_03_78_60: Load all dict via `Schema.load(Schema.dump(input_dict))`.
-            #                   This should avoid duplicating defaults (and allow using simple `dict[key]` access).
-            #                   Does `Schema` populate them automatically if loaded so?
             spinless_sleep_sec = input_dict.get(spinless_sleep_sec_, 0.0),
         )
 

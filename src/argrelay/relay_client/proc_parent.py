@@ -19,6 +19,7 @@ child_stdout_chunks: list = []
 
 child_stderr_chunk_max_size: int = 100
 
+
 def signal_handler(signal_number, signal_frame):
     if signal_number == signal.SIGCHLD:
         # The child exited:
@@ -101,6 +102,7 @@ def generate_pending_cursor():
         for cursor_state in shifted_states:
             yield cursor_state
 
+
 def read_next_child_stdout_chunk(
     child_stdout: typing.TextIO,
 ) -> bool:
@@ -111,7 +113,7 @@ def read_next_child_stdout_chunk(
     else:
         return False
 
+
 def print_child_stdout_chunks():
     for child_stdout_chunk in child_stdout_chunks:
         print(child_stdout_chunk, flush = True, end = "")
-

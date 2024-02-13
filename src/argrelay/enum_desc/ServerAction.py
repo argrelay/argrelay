@@ -16,4 +16,3 @@ class ServerAction(Enum):
     """
 
     RelayLineArgs = "/relay_line_args/"
-

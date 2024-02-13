@@ -9,7 +9,7 @@ from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_v
 from argrelay.plugin_interp.NoopInterp import NoopInterp
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_
+from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_, server_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
     plugin_module_name_,
@@ -18,7 +18,6 @@ from argrelay.schema_config_plugin.PluginEntrySchema import (
 )
 from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.EnvMockBuilder import (
-    load_custom_integ_server_config_dict,
     LocalClientEnvMockBuilder,
 )
 from argrelay.test_infra.LocalTestClass import LocalTestClass
@@ -42,7 +41,7 @@ class ThisTestClass(LocalTestClass):
             # Compose same plugin id (as below):
             plugin_instance_id = NoopInterpFactory.__name__ + "." + first_command_name
             first_arg_vals_to_next_interp_factory_ids[first_command_name] = plugin_instance_id
-        server_config_dict = load_custom_integ_server_config_dict()
+        server_config_dict = server_config_desc.dict_from_default_file()
         plugin_entry = server_config_dict[plugin_instance_entries_][dependent_plugin_id]
         plugin_entry[plugin_config_] = {
             first_arg_vals_to_next_interp_factory_ids_: first_arg_vals_to_next_interp_factory_ids,

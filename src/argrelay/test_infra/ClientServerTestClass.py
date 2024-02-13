@@ -54,7 +54,7 @@ class ClientServerTestClass(InOutTestClass):
 
     @staticmethod
     def wait_for_connection_to_server():
-        client_config: ClientConfig = client_config_desc.from_default_file()
+        client_config: ClientConfig = client_config_desc.obj_from_default_file()
 
         delay_s = 1
         # 10 mins should be enough, right?
@@ -72,7 +72,9 @@ class ClientServerTestClass(InOutTestClass):
                     now_ts = datetime.now()
                     if now_ts > timeout_ts:
                         raise TimeoutError
-                    print(f"now: {now_ts.time()} timeout: {timeout_ts.time()} - waiting {delay_s} sec for connection to server...")
+                    print(
+                        f"now: {now_ts.time()} timeout: {timeout_ts.time()} - waiting {delay_s} sec for connection to server..."
+                    )
                     time.sleep(delay_s)
                     delay_s += 1 if delay_s < 30 else 0
                     continue

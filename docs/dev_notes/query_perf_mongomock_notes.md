@@ -57,7 +57,7 @@ Iteration 0: Baseline (unoptimized query)
 ```
 
 Creating indexes for while using `mongomock` makes no difference
-(understandably as mock is not supposed to address non-functional requirements).
+(understandably as mock is not supposed to address performance requirements).
 
 Iteration 1: Create index for index fields with `mongomock`
 

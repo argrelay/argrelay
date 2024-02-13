@@ -85,7 +85,9 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                 count_color = TermColor.found_count_n
             else:
                 count_color = TermColor.found_count_0
-            print(f"{envelope_container.search_control.envelope_class}: {count_color.value}{envelope_container.found_count}{TermColor.reset_style.value}")
+            print(
+                f"{envelope_container.search_control.envelope_class}: {count_color.value}{envelope_container.found_count}{TermColor.reset_style.value}"
+            )
 
             for key_to_type_dict in envelope_container.search_control.keys_to_types_list:
                 arg_key = next(iter(key_to_type_dict))

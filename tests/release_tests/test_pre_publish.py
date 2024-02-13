@@ -36,7 +36,7 @@ class ThisTestClass(BaseTestClass):
         )
         with env_mock_builder.build():
 
-            server_config: ServerConfig = server_config_desc.from_default_file()
+            server_config: ServerConfig = server_config_desc.obj_from_default_file()
             found_one = False
             git_loader_plugin_entry: Union[PluginEntry, None] = None
             for plugin_instance_id in server_config.plugin_instance_id_activate_list:

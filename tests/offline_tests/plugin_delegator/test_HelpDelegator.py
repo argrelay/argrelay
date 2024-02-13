@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Union
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
@@ -58,7 +59,6 @@ class ThisTestClass(LocalTestClass):
 
         for test_case in test_cases:
             with self.subTest(test_case):
-
                 self.verify_output_with_new_server_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_case.test_line,
@@ -119,4 +119,3 @@ class ThisTestCase(ShellInputTestCase):
         assert self.expected_suggestions is None
         self.expected_suggestions = given_expected_suggestions
         return self
-

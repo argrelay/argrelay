@@ -11,8 +11,8 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 
-
 _primitive_types = (bool, str, int, float)
+
 
 def convert_envelope_fields_to_string(
     data_envelope: dict,
@@ -27,6 +27,7 @@ def convert_envelope_fields_to_string(
         if isinstance(field_value, _primitive_types):
             data_envelope[field_name] = str(field_value)
     return data_envelope
+
 
 class ConfigOnlyLoader(AbstractLoader):
     """
@@ -44,12 +45,7 @@ class ConfigOnlyLoader(AbstractLoader):
             plugin_instance_id,
             plugin_config_dict,
         )
-        self.plugin_config_dict = config_only_loader_config_desc.from_input_dict(self.plugin_config_dict)
-
-    def validate_config(
-        self,
-    ):
-        config_only_loader_config_desc.validate_dict(self.plugin_config_dict)
+        self.plugin_config_dict = config_only_loader_config_desc.obj_from_input_dict(self.plugin_config_dict)
 
     def update_static_data(
         self,

@@ -7,8 +7,7 @@ from marshmallow import Schema, RAISE, fields, post_load
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
-from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc, mongo_id_
-from argrelay.schema_response.FilteredDict import FilteredDict
+from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 
 index_fields_ = "index_fields"
 data_envelopes_ = "data_envelopes"
@@ -27,11 +26,9 @@ class EnvelopeCollectionSchema(Schema):
 
     # TODO_00_79_72_55: do not store `data_envelopes`
     data_envelopes = fields.List(
-        FilteredDict(
-            filtered_keys = [mongo_id_]
-        ),
-        required = False,
+        fields.Nested(data_envelope_desc.dict_schema),
         load_default = [],
+        required = False,
     )
 
     @post_load

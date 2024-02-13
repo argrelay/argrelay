@@ -82,7 +82,7 @@ class AbstractDelegator(AbstractPlugin):
         self,
         envelope_containers: list[EnvelopeContainer],
         curr_container_ipos: int,
-    ):
+    ) -> None:
         """
         Implements FS_46_96_59_05 `init_control`.
         """
@@ -94,7 +94,7 @@ class AbstractDelegator(AbstractPlugin):
     def run_fill_control(
         self,
         interp_ctx: "InterpContext",
-    ):
+    ) -> None:
         """
         Implements FS_72_40_53_00 `fill_control`.
         """
@@ -103,7 +103,7 @@ class AbstractDelegator(AbstractPlugin):
     def run_interp_control(
         self,
         curr_interp: "AbstractInterp",
-    ):
+    ) -> None:
         """
         Implements FS_78_91_27_22 `interp_control`.
 
@@ -123,7 +123,9 @@ class AbstractDelegator(AbstractPlugin):
         pass
 
     @staticmethod
-    def invoke_action(invocation_input: InvocationInput):
+    def invoke_action(
+        invocation_input: InvocationInput,
+    ) -> None:
         """
         Implements FS_98_55_40_77 `invoke_control` on client side.
         There is no plugin instance on client side -
@@ -134,7 +136,9 @@ class AbstractDelegator(AbstractPlugin):
         pass
 
     @staticmethod
-    def extract_search_control_from_function_data_envelope(function_data_envelope: dict):
+    def extract_search_control_from_function_data_envelope(
+        function_data_envelope: dict,
+    ) -> list[SearchControl]:
         return [
             search_control_desc.dict_schema.load(search_control_dict)
             for search_control_dict in function_data_envelope[instance_data_][search_control_list_]
@@ -144,7 +148,7 @@ class AbstractDelegator(AbstractPlugin):
     def init_envelope_class(
         envelope_containers: list[EnvelopeContainer],
         curr_container_ipos: int,
-    ):
+    ) -> None:
         """
         Sets `ReservedArgType.EnvelopeClass` according to FS_31_70_49_15 search control.
         """

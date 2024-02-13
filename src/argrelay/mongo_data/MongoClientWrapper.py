@@ -100,7 +100,9 @@ def log_index_progress(
     try:
         assert envelope_per_col_i <= curr_envelope_i <= total_envelope_n
     finally:
-        eprint(f"collection: {mongo_collection}: indexed envelopes: {envelope_per_col_i}/{curr_envelope_i}/{total_envelope_n}...")
+        eprint(
+            f"collection: {mongo_collection}: indexed envelopes: {envelope_per_col_i}/{curr_envelope_i}/{total_envelope_n}..."
+        )
 
 
 def create_index(

@@ -51,7 +51,8 @@ def get_schema_definitions(ref_names: list[str]):
     In order for `flasgger` to generate GUI, it needs full list schema definitions
     (including those added recursively for nested schemas) for Open API specs
     referenced via `@swag_from` annotations.
-    At the moment, this list of schema names is composed manually (by checking errors on GUI).
+    At the moment, this list of schema names is composed manually
+    (by checking errors on GUI or by running `test_auto_schema_is_in_response`).
     Actual schemas are generated via `marshmallow` + `apispec` inside:
     `server_op_data_schemas.components.schemas`
     This function (although providing minimum functionality) is the single point
@@ -70,11 +71,14 @@ def get_schema_definitions(ref_names: list[str]):
 # *   ServerAction.RelayLineArgs
 add_type_desc_to_schema(call_context_desc)
 
-# Response for ServerAction.DescribeLineArgs:
+# Response for:
+# *   ServerAction.DescribeLineArgs:
 add_type_desc_to_schema(interp_result_desc)
 
-# Response for ServerAction.ProposeArgValues:
+# Response for:
+# *   ServerAction.ProposeArgValues:
 add_type_desc_to_schema(arg_values_desc)
 
-# Response for ServerAction.RelayLineArgs:
+# Response for:
+# *   ServerAction.RelayLineArgs:
 add_type_desc_to_schema(invocation_input_desc)

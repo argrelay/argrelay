@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Union
 
 from flask import Blueprint
 from flask import render_template
@@ -51,8 +50,8 @@ def create_blueprint_gui(
 
     return blueprint_gui
 
+
 def unix_time_to_iso_utc(
     unix_time: int,
 ) -> str:
     return f"{datetime.utcfromtimestamp(unix_time).isoformat()}Z"
-

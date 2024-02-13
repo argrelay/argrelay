@@ -1,0 +1,26 @@
+
+# TODO_84_71_86_21: change to realistic example:
+-
+    EnvelopeClass: ConfigOnlyClass
+    severity_level: INFO
+    exit_code: 0
+    envelope_payload:
+        text_message: text message A
+-
+    EnvelopeClass: ConfigOnlyClass
+    severity_level: WARN
+    exit_code: 0
+    envelope_payload:
+        text_message: text message B
+-
+    EnvelopeClass: ConfigOnlyClass
+    severity_level: ERROR
+    exit_code: 1
+    envelope_payload:
+        text_message: text message C
+-
+    EnvelopeClass: ConfigOnlyClass
+    severity_level: ERROR
+    exit_code: 2
+    envelope_payload:
+        text_message: text message D

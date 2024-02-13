@@ -32,10 +32,11 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         )
         self.is_recursive_func_load = False
 
-    def validate_config(
+    def load_config(
         self,
-    ):
-        tree_path_interp_factory_config_desc.validate_dict(self.plugin_config_dict)
+        plugin_config_dict,
+    ) -> dict:
+        return tree_path_interp_factory_config_desc.dict_from_input_dict(plugin_config_dict)
 
     def load_func_envelopes(
         self,

@@ -7,6 +7,7 @@ from typing import Callable
 import jsonpath_ng
 from jsonpath_ng import DatumInContext
 
+
 @dataclass
 class JsonTestOutputVerifier:
     """
@@ -50,4 +51,3 @@ class JsonTestOutputVerifier:
             callable_list = self.json_query_assert_list[json_query]
             for callable_item in callable_list:
                 callable_item(json_match)
-

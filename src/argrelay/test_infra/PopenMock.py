@@ -59,7 +59,7 @@ class PopenMock:
                     *p_output_config_tuple,
                 )
         else:
-            raise ValueError(f"unexpected CLI args: {cli_args}")
+            raise ValueError(f"unexpected CLI args: `{cli_args}` expected CLI args: `{self.expected_args_to_output.keys()}`")
 
 
 class ConfiguredPopenMockDelegatee:
