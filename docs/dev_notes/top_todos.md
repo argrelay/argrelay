@@ -52,10 +52,6 @@ Integration:
 *   Review all locations where `.argrelay.conf.d` is mentioned - it is likely that `@/conf` has to be used there instead.
     FINALIZE
 
-*   Add tests that config loading respects `ARGRELAY_CONF_BASE_DIR`, `~/.argrelay.conf.d`, or `@/conf`.
-    See FS_16_07_78_84.conf_dir_priority.md.
-    FINALIZE
-
 *   FS_61_67_08_53: arbitrary text args.
     Tracked via FS_61_67_08_53 and https://github.com/argrelay/argrelay/issues/46
     CLOSED

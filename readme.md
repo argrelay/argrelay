@@ -12,9 +12,15 @@ See: docs/dev_notes/screencast_notes.md
 <a name="argrelay-about"></a>
 # What's this?
 
-A tool to provide object selector (structured data search filter) for command line interface (CLI):
-*   User select objects via "enum language" using tags | labels | keywords which belong to one of the `enum` sets.
-*   The `enum` sets are dynamically composed of all the objects property values within user data.
+A tool to select input from **custom data** for command line interface (CLI).
+
+User is interrogated based on:
+*  command **input schema**
+*  data matching already given input
+
+Each command resembles "enum language":
+*   Tokens are tags | labels | keywords from one of the `enum` sets.
+*   The `enum` sets are the objects property values within user data.
 *   Fuzzy-search (yet easily predictable) is achieved by:
     *   relying on rare intersection between `enum` sets
     *   allowing unordered args (using priorities to resolve arg type in case `enum` sets intersect)
@@ -26,12 +32,15 @@ Wrapping any command by `argrelay`:
 <a name="argrelay-general-problem"></a>
 # General problem
 
-| GUI                                                                         | CLI                                        |
-|-----------------------------------------------------------------------------|--------------------------------------------|
-| :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality | :heavy_plus_sign: quick dev option         |
-| :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself     | :heavy_plus_sign: essential script-ability |
-| :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control         |
-| :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                         |
+| GUI                                                                         | CLI                                                         |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------|
+| :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality | :heavy_plus_sign: quick dev option                          |
+| :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself     | :heavy_plus_sign: essential script-ability                  |
+| :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control                          |
+| :heavy_minus_sign: (re-interact)                                            | :heavy_plus_sign: "replay" commands as **text**             |
+| :heavy_minus_sign: (screenshot)                                             | :heavy_plus_sign: save or share results as **text**         |
+| :heavy_minus_sign:                                                          | :heavy_plus_sign: search in commands or results as **text** |
+| :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                                          |
 
 While retaining advantages of a CLI tool, `argrelay` tries to provide solution for intuitive data lookup:
 *   minimalistic enum-based query syntax (matching target executable command line)
@@ -114,7 +123,7 @@ Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the 
 ./exe/relay_demo.bash
 ```
 
-This sub-shell configures request hot keys to bind `relay_demo` command with `@/bin/run_argrelay_client`:
+This sub-shell configures request hotkeys to bind `relay_demo` command with `@/exe/run_argrelay_client`:
 
 *   Interact with `relay_demo` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
 
