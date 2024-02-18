@@ -303,17 +303,13 @@ plugin_instance_entries:
                             GitRepoContentType: code
 
     ConfigOnlyLoader:
-        plugin_enabled: true
         plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
         plugin_class_name: ConfigOnlyLoader
         plugin_config:
-            # TODO: Why do we need `class_name`-s in config separately if `data_envelope`-s already contain `EnvelopeClass`?
-            class_names:
-                -   ConfigOnlyClass
-            # TODO: Why `index_field`-s are not per `class_name`? Or, more properly, per `collection_name`?
-            index_fields:
-                -   severity_level
-                -   exit_code
+            collection_name_to_index_fields_map:
+                ConfigOnlyClass:
+                    - severity_level
+                    - exit_code
             data_envelopes:
                 !include "data/ConfigOnlyLoader.data.yaml"
 

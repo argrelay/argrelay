@@ -597,8 +597,8 @@ deploy_files_procedure "${deploy_files_conf_path}" "symlink_method" "${argrelay_
 ########################################################################################################################
 # Prepare artifacts: generate resources.
 
-# Generate `@/bin/run_argrelay_server`:
-cat << PYTHON_SERVER_EOF > "${argrelay_dir}/bin/run_argrelay_server"
+# Generate `@/exe/run_argrelay_server`:
+cat << PYTHON_SERVER_EOF > "${argrelay_dir}/exe/run_argrelay_server"
 #!$(which python)
 # \`argrelay\`-generated integration file: https://github.com/argrelay/argrelay
 # It is NOT supposed to be version-controlled per project as it:
@@ -610,7 +610,7 @@ import os
 
 from argrelay import misc_helper_common
 
-# FS_29_54_67_86 dir_structure: \`@/bin/run_argrelay_server\` -> \`@/\`:
+# FS_29_54_67_86 dir_structure: \`@/exe/run_argrelay_server\` -> \`@/\`:
 misc_helper_common.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_server.__main__ import main
@@ -619,8 +619,8 @@ if __name__ == '__main__':
     main()
 PYTHON_SERVER_EOF
 
-# Generate `@/bin/run_argrelay_client`:
-cat << PYTHON_CLIENT_EOF > "${argrelay_dir}/bin/run_argrelay_client"
+# Generate `@/exe/run_argrelay_client`:
+cat << PYTHON_CLIENT_EOF > "${argrelay_dir}/exe/run_argrelay_client"
 #!$(which python)
 # \`argrelay\`-generated integration file: https://github.com/argrelay/argrelay
 # It is NOT supposed to be version-controlled per project as it:
@@ -632,7 +632,7 @@ import os
 
 from argrelay import misc_helper_common
 
-# FS_29_54_67_86 dir_structure: \`@/bin/run_argrelay_client\` -> \`@/\`:
+# FS_29_54_67_86 dir_structure: \`@/exe/run_argrelay_client\` -> \`@/\`:
 misc_helper_common.set_argrelay_dir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from argrelay.relay_client.__main__ import main
@@ -642,8 +642,8 @@ if __name__ == '__main__':
 PYTHON_CLIENT_EOF
 
 # Make both executable:
-chmod u+x "${argrelay_dir}/bin/run_argrelay_client"
-chmod u+x "${argrelay_dir}/bin/run_argrelay_server"
+chmod u+x "${argrelay_dir}/exe/run_argrelay_client"
+chmod u+x "${argrelay_dir}/exe/run_argrelay_server"
 
 ########################################################################################################################
 # Generate source-able Bash config file and generate symlinks for command to be used with `argrelay`.
@@ -659,7 +659,7 @@ then
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 # This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
 
-# Bash array of command names (names of symlinks to `@/bin/run_argrelay_client`):
+# Bash array of command names (names of symlinks to `@/exe/run_argrelay_client`):
 # shellcheck disable=SC2034
 argrelay_bind_command_basenames=(
     relay_demo
@@ -690,19 +690,21 @@ do
 
     symlink_path="${argrelay_dir}/bin/${argrelay_command_basename}"
 
-    # Symlink `@/bin/${argrelay_command_basename}` command to `@/bin/run_argrelay_client`:
+    # Symlink `@/bin/${argrelay_command_basename}` command to `@/exe/run_argrelay_client`:
     if [[ -L "${symlink_path}" ]]
     then
-        if [[ "$( readlink "${symlink_path}" )" != "run_argrelay_client" ]]
+        if [[ "$( readlink "${symlink_path}" )" != "../exe/run_argrelay_client" ]]
         then
-            echo "WARN: symlink does not point to \`run_argrelay_client\`: ${symlink_path}"
+            echo "WARN: symlink does not point to \`@/exe/run_argrelay_client\`: ${symlink_path}"
+            ln -snf "../exe/run_argrelay_client" "${symlink_path}"
         fi
     else
         if [[ -e "${symlink_path}" ]]
         then
-            echo "WARN: symlink creation is obstructed by the existing path: ${symlink_path}"
+            echo "ERROR: symlink creation is obstructed by the existing path (review and remove): ${symlink_path}"
+            exit 1
         else
-            ln -sn run_argrelay_client "${symlink_path}"
+            ln -sn "../exe/run_argrelay_client" "${symlink_path}"
         fi
     fi
 done

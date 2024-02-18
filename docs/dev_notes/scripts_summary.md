@@ -1,4 +1,6 @@
 
+TODO: Move this into FS_29_54_67_86 `dir_structure`
+
 Table
 
 | Script                         | Sets `PATH` | Activates `venv` | Re-installs | Purpose                                                      |

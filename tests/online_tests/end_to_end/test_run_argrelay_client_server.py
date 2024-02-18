@@ -15,7 +15,7 @@ class ThisTestClass(End2EndTestClass):
 
     def test_DescribeLineArgs(self):
         """
-        Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.DescribeArgs`.
+        Invokes client via generated `@/exe/run_argrelay_client` sending `ServerAction.DescribeArgs`.
         """
 
         # @formatter:off
@@ -62,7 +62,7 @@ class ThisTestClass(End2EndTestClass):
 
     def test_ProposeArgValues(self):
         """
-        Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
+        Invokes client via generated `@/exe/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
         """
 
         # @formatter:off
@@ -106,7 +106,7 @@ apac
 
     def test_RelayLineArgs(self):
         """
-        Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.RelayLineArgs`.
+        Invokes client via generated `@/exe/run_argrelay_client` sending `ServerAction.RelayLineArgs`.
         """
 
         # @formatter:off

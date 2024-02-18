@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import base_config_delegator_config_desc
+from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import BaseConfigDelegatorConfigSchema
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import func_configs_
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
@@ -39,7 +40,11 @@ class BaseConfigDelegator(AbstractDelegator):
         server_config: ServerConfig,
         plugin_instance_id: str,
         plugin_config_dict: dict,
+        delegator_config_desc: TypeDesc,
     ):
+        assert issubclass(delegator_config_desc.dict_schema.__class__, BaseConfigDelegatorConfigSchema)
+        self.delegator_config_desc = delegator_config_desc
+
         super().__init__(
             server_config,
             plugin_instance_id,
@@ -54,7 +59,7 @@ class BaseConfigDelegator(AbstractDelegator):
         Populate (if missing) or assert (if present) func-related fields.
         """
 
-        modified_plugin_config_dict = base_config_delegator_config_desc.dict_from_input_dict(plugin_config_dict)
+        modified_plugin_config_dict = self.delegator_config_desc.dict_from_input_dict(plugin_config_dict)
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
         func_configs: dict = modified_plugin_config_dict[func_configs_]
@@ -117,7 +122,7 @@ class BaseConfigDelegator(AbstractDelegator):
         self,
     ) -> None:
         # Re-validate schema because `load_config` applies changes to config:
-        base_config_delegator_config_desc.validate_dict(self.plugin_config_dict)
+        self.delegator_config_desc.validate_dict(self.plugin_config_dict)
 
     def get_supported_func_envelopes(
         self,

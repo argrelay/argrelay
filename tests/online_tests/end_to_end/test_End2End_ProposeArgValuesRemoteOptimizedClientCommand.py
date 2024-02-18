@@ -9,7 +9,7 @@ class ThisTestClass(End2EndTestClass):
 
     def test_ProposeArgValuesRemoteOptimizedClientCommand_sends_valid_JSON_for_commands_with_quotes(self):
         """
-        Invokes client via generated `@/bin/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
+        Invokes client via generated `@/exe/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
         """
 
         # @formatter:off

@@ -41,7 +41,7 @@ class ClientServerTestClass(InOutTestClass):
     def start_server(cls):
         with change_to_known_repo_path("."):
             cls.server_proc = subprocess.Popen([
-                f"{get_argrelay_dir()}/bin/run_argrelay_server",
+                f"{get_argrelay_dir()}/exe/run_argrelay_server",
             ])
         cls.wait_for_connection_to_server()
 
