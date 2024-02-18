@@ -17,6 +17,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import fun
 
 class FuncEnvelopeSchema(DataEnvelopeSchema):
     class Meta:
+        # Same as in base `DataEnvelopeSchema` - all unknown fields used as search props:
         unknown = INCLUDE
         strict = True
 

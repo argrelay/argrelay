@@ -10,11 +10,9 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     sample_field_type_B_,
     sample_field_type_C_,
 )
+from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
-class_names_ = "class_names"
-index_fields_ = "index_fields"
-data_envelopes_ = "data_envelopes"
-
+collection_name_to_index_fields_map_ = "collection_name_to_index_fields_map"
 
 class ConfigOnlyLoaderConfigSchema(Schema):
     """
@@ -25,13 +23,12 @@ class ConfigOnlyLoaderConfigSchema(Schema):
         unknown = RAISE
         strict = True
 
-    class_names = fields.List(
-        fields.String,
-        required = True,
-    )
-
-    index_fields = fields.List(
-        fields.String,
+    collection_name_to_index_fields_map = fields.Dict(
+        keys = fields.String(),
+        values = fields.List(
+            fields.String(),
+            required = True,
+        ),
         required = True,
     )
 
@@ -45,16 +42,15 @@ config_only_loader_config_desc = TypeDesc(
     dict_schema = ConfigOnlyLoaderConfigSchema(),
     ref_name = ConfigOnlyLoaderConfigSchema.__name__,
     dict_example = {
-        class_names_: [
-            ReservedEnvelopeClass.ClassFunction.name
-        ],
-        index_fields_: [
-            sample_field_type_A_,
-            sample_field_type_B_,
-            sample_field_type_C_,
-        ],
+        collection_name_to_index_fields_map_: {
+            ReservedEnvelopeClass.ClassFunction.name: [
+                sample_field_type_A_,
+                sample_field_type_B_,
+                sample_field_type_C_,
+            ],
+        },
         data_envelopes_: [
-            data_envelope_desc,
+            data_envelope_desc.dict_example,
         ],
     },
     default_file_path = "",

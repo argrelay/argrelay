@@ -1,4 +1,12 @@
 
+# TL;DR
+
+Combine all release notes in chronological order to see them on command line:
+
+```sh
+tail -n +1 docs/release_notes/v0.*
+```
+
 # Release notes
 
 These release notes are part of the Git history and can be updated retroactively because:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import Callable, Collection
 
 from marshmallow import Schema, RAISE, fields, post_load
 
@@ -8,9 +8,9 @@ from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
+from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
 index_fields_ = "index_fields"
-data_envelopes_ = "data_envelopes"
 
 
 class EnvelopeCollectionSchema(Schema):
@@ -61,7 +61,7 @@ envelope_collection_desc = TypeDesc(
 
 def init_envelop_collections(
     server_config: ServerConfig,
-    class_names: list[str],
+    class_names: Collection[str],
     get_index_fields: Callable[[str, str], list[str]],
 ):
     """

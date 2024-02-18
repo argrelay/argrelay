@@ -74,6 +74,12 @@ else
     conf_status="[error]"
 fi
 
+# Source extra config:
+if [[ -f "${argrelay_dir}/conf/dev_shell_rc.conf.bash" ]]
+then
+    source "${argrelay_dir}/conf/dev_shell_rc.conf.bash"
+fi
+
 # Enable auto-completion:
 source "${argrelay_dir}/exe/argrelay_rc.bash"
 

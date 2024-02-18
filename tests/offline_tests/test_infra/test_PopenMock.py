@@ -73,6 +73,8 @@ init_shell_env.bash
 play_x_server_demo.bash
 publish_package.bash
 relay_demo.bash
+run_argrelay_client
+run_argrelay_server
 run_max_tests.bash
 squash_branch.bash
 upgrade_all_packages.bash

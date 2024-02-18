@@ -356,7 +356,7 @@ then
 
     press_enter "${keystroke_pause}"
     press_enter
-    type_comment "# All standard shell composition obviously works too."
+    type_comment "# Any standard shell composition obviously works too."
     press_enter
     type_comment "# Let's try \"list\" function - it retrieves N services (instead of 1 for \"goto\")."
 
@@ -393,7 +393,7 @@ press_enter "${keystroke_pause}"
 press_enter "${keystroke_pause}"
 press_enter "${keystroke_pause}"
 press_enter
-type_comment "# Try it yourself by running \`@/exe/dev_shell.bash\` from the repo:"
+type_comment "# Try it yourself by running \`@/exe/relay_demo.bash\` from this repo:"
 press_enter
 type_comment "# https://github.com/argrelay/argrelay"
 press_enter

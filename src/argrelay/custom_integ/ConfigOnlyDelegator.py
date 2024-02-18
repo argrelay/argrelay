@@ -3,15 +3,14 @@ from __future__ import annotations
 import subprocess
 
 from argrelay.custom_integ.BaseConfigDelegator import BaseConfigDelegator
-from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import func_configs_
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import (
     config_only_delegator_config_desc,
     command_template_,
-    config_only_delegator_envelope_payload_desc, echo_command_on_stderr_,
+    echo_command_on_stderr_,
 )
-from argrelay.custom_integ.FuncConfigSchema import func_envelope_
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
 )
@@ -25,25 +24,18 @@ class ConfigOnlyDelegator(BaseConfigDelegator):
     Implements FS_49_96_50_77 config_only_delegator.
     """
 
-    def load_config(
+    def __init__(
         self,
-        plugin_config_dict,
-    ) -> dict:
-        plugin_config_dict = super().load_config(
-            plugin_config_dict,
-        )
-        plugin_config_dict = config_only_delegator_config_desc.dict_from_input_dict(plugin_config_dict)
-        for func_config in plugin_config_dict[func_configs_].values():
-            func_config[func_envelope_][envelope_payload_] = config_only_delegator_envelope_payload_desc.dict_from_input_dict(func_config[func_envelope_][envelope_payload_])
-        return plugin_config_dict
-
-    def validate_config(
-        self,
+        server_config: ServerConfig,
+        plugin_instance_id: str,
+        plugin_config_dict: dict,
     ):
-        # Re-validate schema because `load_config` applies changes to config:
-        config_only_delegator_config_desc.validate_dict(self.plugin_config_dict)
-        for func_config in self.plugin_config_dict[func_configs_].values():
-            config_only_delegator_envelope_payload_desc.validate_dict(func_config[func_envelope_][envelope_payload_])
+        super().__init__(
+            server_config,
+            plugin_instance_id,
+            plugin_config_dict,
+            config_only_delegator_config_desc,
+        )
 
     @staticmethod
     def invoke_action(

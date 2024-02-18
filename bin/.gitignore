@@ -1,8 +1,4 @@
 
-# Generated files:
-/run_argrelay_server
-/run_argrelay_client
-
 # Auto-created symlinks by `@/exe/argrelay_rc.bash` script:
 /relay_demo
 /some_command

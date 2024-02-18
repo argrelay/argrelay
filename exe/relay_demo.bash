@@ -88,7 +88,7 @@ function combined_on_exit_trap {
 
 trap combined_on_exit_trap EXIT
 
-"${argrelay_dir}/bin/run_argrelay_server" 1>> "${log_file}" 2>&1 &
+"${argrelay_dir}/exe/run_argrelay_server" 1>> "${log_file}" 2>&1 &
 echo $! > "${pid_file}"
 
 # Wait for 1 min (60 sec):

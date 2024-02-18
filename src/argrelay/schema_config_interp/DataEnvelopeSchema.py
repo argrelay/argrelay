@@ -39,7 +39,7 @@ class DataEnvelopeSchema(Schema):
     """
 
     class Meta:
-        # All other fields of data envelope becomes its metadata available for search queries.
+        # All other fields of data envelope becomes its metadata props available for search queries.
         # Note that it does not work for `Schema.dump`, only on `Schema.load`
         # (see `keep_unknown_fields` func below to work around that):
         unknown = INCLUDE
