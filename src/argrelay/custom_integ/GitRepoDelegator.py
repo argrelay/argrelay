@@ -80,7 +80,7 @@ class GitRepoDelegator(AbstractDelegator):
         given_function_envelope = {
             instance_data_: {
                 func_id_: goto_repo_func_,
-                delegator_plugin_instance_id_: GitRepoDelegator.__name__,
+                delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                     repo_search_control,
                 ],
@@ -94,7 +94,7 @@ class GitRepoDelegator(AbstractDelegator):
         given_function_envelope = {
             instance_data_: {
                 func_id_: desc_commit_func_,
-                delegator_plugin_instance_id_: GitRepoDelegator.__name__,
+                delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                     commit_search_control,
                 ],

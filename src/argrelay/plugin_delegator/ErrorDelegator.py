@@ -16,7 +16,7 @@ class ErrorDelegator(AbstractDelegator):
         local_server: LocalServer,
     ) -> InvocationInput:
         delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
-            self.__class__.__name__
+            self.plugin_instance_id
         ]
         invocation_input = InvocationInput(
             arg_values = interp_ctx.comp_suggestions,

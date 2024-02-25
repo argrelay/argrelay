@@ -169,7 +169,7 @@ class InterpContext:
             interp_n += 1
 
             # Query envelope values only - they will be used for consumption of command line args:
-            ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {type(self.curr_interp).__name__}")
+            ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {self.curr_interp}")
             self.query_prop_values()
 
             # Because each `prop_value` set (per `prop_type`) is treated independently,
@@ -179,11 +179,11 @@ class InterpContext:
             # but this is not done due to query overhead.
             # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
             # separate `interpret_command` calls is close to that logically better approach.
-            ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {type(self.curr_interp).__name__}")
+            ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {self.curr_interp}")
             self.curr_interp.consume_key_args()
             self.curr_interp.consume_pos_args()
 
-            ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {type(self.curr_interp).__name__}")
+            ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {self.curr_interp}")
             self.query_prop_values()
             if self.curr_container:
                 self.curr_container.populate_implicit_arg_values()
@@ -200,30 +200,30 @@ class InterpContext:
             # TODO: We could probably select whether to query only envelopes or
             #       query their values depending on `ServerAction`.
             #       But init of next envelope depends on prev envelope found.
-            ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {type(self.curr_interp).__name__}")
+            ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {self.curr_interp}")
             self.query_prop_values()
 
-            ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {type(self.curr_interp).__name__}")
+            ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {self.curr_interp}")
             interp_step: InterpStep = self.curr_interp.try_iterate()
-            ElapsedTime.measure(f"[i={interp_n}]: after_try_iterate: {type(self.curr_interp).__name__}: {interp_step}")
+            ElapsedTime.measure(f"[i={interp_n}]: after_try_iterate: {self.curr_interp}: {interp_step}")
             if interp_step is InterpStep.NextEnvelope:
                 continue
             elif interp_step is InterpStep.StopAll:
                 ElapsedTime.measure(
-                    f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}"
+                    f"[i={interp_n}]: before_contribute_to_completion: {self.curr_interp}"
                 )
                 self._contribute_to_completion()
                 ElapsedTime.measure(
-                    f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}"
+                    f"[i={interp_n}]: after_contribute_to_completion: {self.curr_interp}"
                 )
                 return
             elif interp_step is InterpStep.NextInterp:
                 ElapsedTime.measure(
-                    f"[i={interp_n}]: before_contribute_to_completion: {type(self.curr_interp).__name__}"
+                    f"[i={interp_n}]: before_contribute_to_completion: {self.curr_interp}"
                 )
                 self._contribute_to_completion()
                 ElapsedTime.measure(
-                    f"[i={interp_n}]: after_contribute_to_completion: {type(self.curr_interp).__name__}"
+                    f"[i={interp_n}]: after_contribute_to_completion: {self.curr_interp}"
                 )
                 self.prev_interp = self.curr_interp
                 next_interp = self.curr_interp.next_interp()

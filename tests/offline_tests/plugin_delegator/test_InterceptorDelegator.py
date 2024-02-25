@@ -25,13 +25,13 @@ class ThisTestClass(LocalTestClass):
                 [
                     "config",
                     "desc",
+                    "duplicates",
                     "echo",
                     "enum",
                     "goto",
                     "help",
                     "intercept",
                     "list",
-                    "subtree",
                 ],
                 None,
                 None,
@@ -185,6 +185,70 @@ class ThisTestClass(LocalTestClass):
                 #       because `ArgSource.InitValue` is set to `external` subsequently.
                 "Prepend `intercept` by another `intercept` multiple times.",
             ),
+        ]
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    test_line,
+                    comp_type,
+                    expected_suggestions,
+                    container_ipos_to_expected_assignments,
+                    delegator_class,
+                    case_comment,
+                ) = test_case
+
+                self.verify_output_with_new_server_via_local_client(
+                    self.__class__.same_test_data_per_class,
+                    test_line,
+                    comp_type,
+                    expected_suggestions,
+                    container_ipos_to_expected_assignments,
+                    delegator_class,
+                    None,
+                )
+
+    # TODO: clean up: this test already exists above
+    def test_single(self):
+        """
+        Test FS_88_66_66_73 `intercept` command/func
+        """
+
+        test_cases = [
+            (
+                line_no(),
+                "some_command intercept goto |",
+                CompType.PrefixShown,
+                [
+                    "host",
+                    "repo",
+                    "service",
+                ],
+                None,
+                None,
+                "Completion continues to be driven by function selected via `goto` and `service`.",
+            ),
+            # (
+            #     line_no(),
+            #     "some_command intercept |",
+            #     CompType.PrefixShown,
+            #     [
+            #         "config",
+            #         "desc",
+            #         "echo",
+            #         "enum",
+            #         "goto",
+            #         "help",
+            #         "intercept",
+            #         "list",
+            #         "subtree",
+            #     ],
+            #     None,
+            #     None,
+            #     "If `intercept` is already selected, it can be recursively suggested during selection of the function "
+            #     "it tries to intercept, if jump tree is configured accordingly.",
+            # ),
         ]
 
         for test_case in test_cases:

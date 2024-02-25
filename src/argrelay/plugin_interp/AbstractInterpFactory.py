@@ -40,16 +40,21 @@ class AbstractInterpFactory(AbstractPlugin):
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-    ):
+        func_ids_to_func_envelopes: dict[str, dict],
+    ) -> list[str]:
         """
         Load func `data_envelope`-s taking into account `interp_tree_abs_path`.
 
         Takes part in implementation of FS_01_89_09_24 interp tree.
+
+        Returns list of mapped `func_id`-s.
         """
         if interp_tree_abs_path in self.interp_tree_abs_paths_to_node_configs:
             raise RuntimeError(f"`{interp_tree_abs_path}` has already been loaded")
         else:
             self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path] = deepcopy(self.plugin_config_dict)
+
+        return []
 
     def create_interp(
         self,

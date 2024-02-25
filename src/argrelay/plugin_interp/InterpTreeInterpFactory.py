@@ -41,12 +41,14 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-    ):
+        func_ids_to_func_envelopes: dict[str, dict],
+    ) -> list[str]:
         with self._is_recursive_load() as is_recursive_load:
             if is_recursive_load:
-                return
-            self._load_func_envelopes(
+                return []
+            return self._load_func_envelopes(
                 interp_tree_abs_path,
+                func_ids_to_func_envelopes,
             )
 
     @contextlib.contextmanager
@@ -67,9 +69,11 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
     def _load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-    ):
-        super().load_func_envelopes(
+        func_ids_to_func_envelopes: dict[str, dict],
+    ) -> list[str]:
+        mapped_func_ids: list[str] = super().load_func_envelopes(
             interp_tree_abs_path,
+            func_ids_to_func_envelopes,
         )
         tree_walker: TreeWalker = TreeWalker(
             "interp_tree",
@@ -87,9 +91,11 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
                 interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_plugin_id]
                 sub_interp_tree_abs_path = interp_tree_abs_path + tuple(interp_rel_path)
 
-                interp_factory.load_func_envelopes(
+                mapped_func_ids.extend(interp_factory.load_func_envelopes(
                     sub_interp_tree_abs_path,
-                )
+                    func_ids_to_func_envelopes,
+                ))
+        return mapped_func_ids
 
     def create_interp(
         self,

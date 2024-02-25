@@ -3,12 +3,17 @@ from argrelay.enum_desc.TokenType import get_token_type, TokenType
 
 from argrelay.runtime_context.InterpContext import InterpContext
 
-
+# `AbstractInterp` is NOT a plugin `AbstractInterpFactory` is:
 class AbstractInterp:
     """
     Interpreter processes command line sharing current state via :class:`InterpContext`.
 
     New instance of interpreter is created by (a plugin implementing) `AbstractInterpFactory` for each request.
+    """
+
+    instance_counter: int = 0
+    """
+    Instance counter per interp class.
     """
 
     def __init__(
@@ -19,6 +24,9 @@ class AbstractInterp:
     ):
         self.interp_factory_id: str = interp_factory_id
 
+        self.__class__.instance_counter += 1
+        self.instance_number: int = self.instance_counter
+
         self.interp_tree_node_config_dict: dict = interp_tree_node_config_dict
         """
         The configs for individual `AbstractInterp` are called `interp_tree_node_config_dict` and cloned/populated by
@@ -28,8 +36,8 @@ class AbstractInterp:
         self.interp_ctx: InterpContext = interp_ctx
         self.base_container_ipos: int = interp_ctx.curr_container_ipos
 
-    def __repr__(self) -> str:
-        return f"fid: {self.interp_factory_id}, {super().__repr__()}"
+    def __str__(self) -> str:
+        return f"fid: {self.interp_factory_id} path: {self.interp_ctx.interp_tree_abs_path} instance: {self.instance_number}"
 
     def consume_key_args(self) -> None:
         pass

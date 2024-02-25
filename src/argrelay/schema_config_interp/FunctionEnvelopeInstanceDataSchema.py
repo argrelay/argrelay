@@ -42,7 +42,8 @@ function_envelope_instance_data_desc = TypeDesc(
     ref_name = FunctionEnvelopeInstanceDataSchema.__name__,
     dict_example = {
         func_id_: "some_function",
-        delegator_plugin_instance_id_: "NoopDelegator",
+        # TODO: Be able to import `NoopDelegator` and reference it via `__name__`:
+        delegator_plugin_instance_id_: "NoopDelegator.default",
         search_control_list_: [
             search_control_desc.dict_example,
         ],

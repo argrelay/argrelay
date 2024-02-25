@@ -90,7 +90,7 @@ class ThisTestClass(BaseTestClass):
     def test_loader(self):
         test_cases = [
             (
-                line_no(), f"{GitRepoLoader.__name__} enabled with random temp dir",
+                line_no(), f"`{GitRepoLoader.__name__}.default` enabled with random temp dir",
                 {
                     load_repo_commits_: True,
                     repo_entries_: {
@@ -141,7 +141,9 @@ class ThisTestClass(BaseTestClass):
 
                 # Modify config to enable `GitRepoLoader` plugin:
                 server_config_dict = server_config_desc.dict_from_default_file()
-                server_config_dict[plugin_instance_entries_][GitRepoLoader.__name__][plugin_config_] = plugin_config
+                server_config_dict[plugin_instance_entries_][
+                    f"{GitRepoLoader.__name__}.default"
+                ][plugin_config_] = plugin_config
 
                 env_mock_builder = (
                     LocalClientEnvMockBuilder()

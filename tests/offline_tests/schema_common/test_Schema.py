@@ -14,7 +14,6 @@ from argrelay.plugin_config.DefaultConfiguratorConfigSchema import default_confi
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import func_tree_interp_config_desc
-from argrelay.plugin_interp.JumpTreeInterpFactoryConfigSchema import jump_tree_interp_config_desc
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
@@ -73,7 +72,6 @@ class ThisTestClass(BaseTestClass):
             (line_no(), assigned_value_desc),
             (line_no(), envelope_container_desc),
             (line_no(), error_delegator_custom_data_desc),
-            (line_no(), jump_tree_interp_config_desc),
             (line_no(), server_plugin_control_desc),
             (line_no(), envelope_collection_desc),
             (line_no(), default_configurator_config_desc),

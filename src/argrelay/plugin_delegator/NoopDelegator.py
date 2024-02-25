@@ -19,7 +19,7 @@ class NoopDelegator(AbstractDelegator):
             tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
             tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
             delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
-                self.__class__.__name__
+                self.plugin_instance_id
             ],
             custom_plugin_data = {},
         )

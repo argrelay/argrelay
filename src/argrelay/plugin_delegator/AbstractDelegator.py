@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Union
+
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
@@ -103,7 +105,7 @@ class AbstractDelegator(AbstractPlugin):
     def run_interp_control(
         self,
         curr_interp: "AbstractInterp",
-    ) -> None:
+    ) -> Union[None, str]:
         """
         Implements FS_78_91_27_22 `interp_control`.
 

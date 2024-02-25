@@ -42,7 +42,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(), "demo test data: expanded (realistic) sample",
-                server_config_desc.dict_from_default_file()[plugin_instance_entries_][GitRepoLoader.__name__],
+                server_config_desc.dict_from_default_file()[plugin_instance_entries_][f"{GitRepoLoader.__name__}.default"],
                 {
                     plugin_module_name_: GitRepoLoader.__module__,
                 },
