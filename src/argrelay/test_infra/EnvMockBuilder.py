@@ -471,10 +471,12 @@ class EnvMockBuilder:
             """
             assert self.server_config_dict is not None
 
-            plugin_entry = self.server_config_dict[plugin_instance_entries_][GitRepoLoader.__name__]
+            # TODO: Do not hardcode plugin id (instance of `GitRepoLoader`):
+            plugin_entry = self.server_config_dict[plugin_instance_entries_][f"{GitRepoLoader.__name__}.default"]
             plugin_entry[plugin_enabled_] = self.enable_demo_git_loader
 
-            plugin_entry = self.server_config_dict[plugin_instance_entries_][ServiceLoader.__name__]
+            # TODO: Do not hardcode plugin id (instance of `ServiceLoader`):
+            plugin_entry = self.server_config_dict[plugin_instance_entries_][f"{ServiceLoader.__name__}.default"]
             plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
 
             if self.enable_query_cache is not None:

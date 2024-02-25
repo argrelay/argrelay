@@ -6,6 +6,7 @@ from argrelay.plugin_interp.TreeWalker import default_tree_leaf_
 
 interp_selector_tree_ = "interp_selector_tree"
 
+ignored_func_ids_list_ = "ignored_func_ids_list"
 
 def validate_tree_node(interp_selector_sub_tree: dict):
     if isinstance(interp_selector_sub_tree, str):
@@ -31,6 +32,18 @@ class InterpTreeInterpFactoryConfigSchema(Schema):
         required = True,
     )
 
+    # TODO: FS_42_76_93_51: Decide already whether first zero arg interp deserves its future life.
+    #                       This `ignored_func_ids_list` field is propagated down from
+    #                       the first zero arg interp (needed for its logic as root plugin instance in the global tree)
+    #                       and it also needs to pass validation of this schema (which it converts its config to):
+    # It is an error if `func_id` is published by enabled delegator but missing in `func_selector_tree`.
+    # To avoid the error, list such func id in `ignored_func_ids_list`.
+    ignored_func_ids_list = fields.List(
+        fields.String(),
+        required = False,
+        load_default = [],
+    )
+
     @validates_schema
     def validate_known(
         self,
@@ -46,8 +59,11 @@ class InterpTreeInterpFactoryConfigSchema(Schema):
 tree_path_interp_factory_config_example = {
     interp_selector_tree_: {
         "some_command": "some_plugin_name",
-        default_tree_leaf_: FuncTreeInterpFactory.__name__,
+        default_tree_leaf_: f"{FuncTreeInterpFactory.__name__}.default",
     },
+    ignored_func_ids_list_: [
+        "some_ignored_func",
+    ],
 }
 tree_path_interp_factory_config_desc = TypeDesc(
     dict_schema = InterpTreeInterpFactoryConfigSchema(),

@@ -52,7 +52,8 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
             is_error = True
             error_message = "ERROR: Function is not selected, try help, or press Tab to complete selection."
             error_code = 1
-            delegator_plugin_instance_id = ErrorDelegator.__name__
+            # TODO: Do not hardcode plugin id (instance of `ErrorDelegator`):
+            delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
 
         delegator_plugin: AbstractDelegator = self.local_server.server_config.action_delegators[
             delegator_plugin_instance_id

@@ -116,7 +116,7 @@ apac
                 0,
                 "",
                 "",
-                "`NoopDelegator` executes successfully without any output.",
+                "`NoopDelegator.default` executes successfully without any output.",
             ),
             (
                 line_no(), f"{self.default_bound_command} echo one two three four five".split(" "),

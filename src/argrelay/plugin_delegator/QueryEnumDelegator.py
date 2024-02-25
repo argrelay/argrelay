@@ -5,7 +5,6 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import DescribeLineArgsClientResponseHandler
 from argrelay.plugin_delegator.InterceptDelegator import InterceptDelegator
-from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
@@ -28,7 +27,7 @@ class QueryEnumDelegator(InterceptDelegator):
         func_envelopes = [{
             instance_data_: {
                 func_id_: SpecialFunc.query_enum_items_func.name,
-                delegator_plugin_instance_id_: QueryEnumDelegator.__name__,
+                delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                 ],
             },
@@ -37,12 +36,6 @@ class QueryEnumDelegator(InterceptDelegator):
             ReservedArgType.FuncId.name: SpecialFunc.query_enum_items_func.name,
         }]
         return func_envelopes
-
-    def run_interp_control(
-        self,
-        curr_interp: AbstractInterp,
-    ) -> str:
-        return super().run_interp_control(curr_interp)
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):

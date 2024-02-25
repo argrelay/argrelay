@@ -98,7 +98,8 @@ class InterpTreeInterp(AbstractInterp):
         if default_tree_leaf_ in curr_sub_tree:
             self.next_interp_factory_id = curr_sub_tree[default_tree_leaf_]
         else:
-            self.next_interp_factory_id = NoopInterpFactory.__name__
+            # TODO: Do not hardcode plugin id (instance of `NoopInterpFactory`):
+            self.next_interp_factory_id = f"{NoopInterpFactory.__name__}.default"
 
     def try_iterate(self) -> InterpStep:
         return InterpStep.NextInterp

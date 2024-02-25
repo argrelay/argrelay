@@ -84,7 +84,8 @@ def redirect_to_error(
     error_code,
 ):
     # Redirect to `ErrorDelegator`:
-    delegator_plugin_instance_id = ErrorDelegator.__name__
+    # TODO: Do not hardcode plugin id (instance of `ErrorDelegator`):
+    delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
     custom_plugin_data = {
         error_message_: error_message,
         error_code_: error_code,
@@ -183,7 +184,7 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: goto_host_func_,
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         host_search_control,
                         access_search_control,
@@ -196,7 +197,7 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: goto_service_func_,
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         service_search_control,
                         access_search_control,
@@ -209,7 +210,8 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: desc_host_func_,
-                    delegator_plugin_instance_id_: NoopDelegator.__name__,
+                    # TODO: Do not hardcode plugin id (instance of `NoopDelegator`):
+                    delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                     search_control_list_: [
                         host_search_control,
                     ],
@@ -221,7 +223,8 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: desc_service_func_,
-                    delegator_plugin_instance_id_: NoopDelegator.__name__,
+                    # TODO: Do not hardcode plugin id (instance of `NoopDelegator`):
+                    delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                     search_control_list_: [
                         service_search_control,
                     ],
@@ -233,7 +236,7 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: list_host_func_,
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         host_search_control,
                     ],
@@ -245,7 +248,7 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: list_service_func_,
-                    delegator_plugin_instance_id_: ServiceDelegator.__name__,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         service_search_control,
                     ],
@@ -343,7 +346,7 @@ class ServiceDelegator(AbstractDelegator):
                 )
 
                 # Plugin to invoke on client side:
-                delegator_plugin_instance_id = ServiceDelegator.__name__
+                delegator_plugin_instance_id = self.plugin_instance_id
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput(
                     arg_values = interp_ctx.comp_suggestions,

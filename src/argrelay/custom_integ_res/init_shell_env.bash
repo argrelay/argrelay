@@ -42,7 +42,6 @@ set -E
 # Error on undefined variables:
 set -u
 
-nested_shell_color="\e[44m"
 reset_color="\e[0m"
 delimiter_color="\e[31m"
 field_color="\e[94m"
@@ -95,7 +94,8 @@ unset init_shell_env_old_opts
 eval "${ARGRELAY_USER_SHELL_OPTS}"
 
 # Indicate nested shell by color:
-echo -e "${nested_shell_color}nested shell level:${reset_color} ${SHLVL} ${delimiter_color}|${reset_color} \
+echo -e "\
+${field_color}nested shell level:${reset_color} ${SHLVL} ${delimiter_color}|${reset_color} \
 ${field_color}argrelay:${reset_color} $( pip show argrelay | grep '^Version:' | cut -f2 -d' ' || true ) ${delimiter_color}|${reset_color} \
 ${field_color}@/conf:${reset_color} ${conf_status} ${delimiter_color}|${reset_color} \
 ${field_color}venv:${reset_color} ${VIRTUAL_ENV} ${delimiter_color}|${reset_color} \

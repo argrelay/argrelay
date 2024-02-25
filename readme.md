@@ -14,6 +14,18 @@ See: docs/dev_notes/screencast_notes.md
 
 A tool to select input from **custom data** for command line interface (CLI).
 
+The aim is to enrich two-way &#10231; interaction by data:
+*   &#10230; You input args you **remember** (via `Tab`-auto-completion) in **relaxed order**.
+*   &#10229; It reports (via `Alt+Shift+Q`):
+    *   What args it **matched**.
+    *   What **else** it needs.
+
+This broadens applicability of CLI input as a slim alternative to graphical user interface (GUI)
+competing in **convenience** for apps in tech industry.
+
+<a name="argrelay-overview"></a>
+# Interface overview
+
 User is interrogated based on:
 *  command **input schema**
 *  data matching already given input
@@ -28,26 +40,33 @@ Each command resembles "enum language":
 Wrapping any command by `argrelay`:
 *   naturally enables contextual auto-completion in Bash shell (see `Tab` hotkey below)
 *   provides generic help and navigation (see `Alt+Shift+Q` hotkey below)
+*   reduces cognitive load with minimalistic enum-based query syntax (matching target executable command line)
+*   maintains small client-side footprint (suitable for resource-constrained terminals)
+*   exposes conveniently browsable data inventory (generic CLI builder)
 
-<a name="argrelay-general-problem"></a>
-# General problem
+<a name="argrelay-general-dilemma"></a>
+# General dilemma
 
-| GUI                                                                         | CLI                                                         |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------|
-| :heavy_minus_sign: prohibitively time-consuming for an ad-hoc functionality | :heavy_plus_sign: quick dev option                          |
-| :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself     | :heavy_plus_sign: essential script-ability                  |
-| :heavy_minus_sign: limits system access (a layer behind a narrow API)       | :heavy_plus_sign: ultimate control                          |
-| :heavy_minus_sign: (re-interact)                                            | :heavy_plus_sign: "replay" commands as **text**             |
-| :heavy_minus_sign: (screenshot)                                             | :heavy_plus_sign: save or share results as **text**         |
-| :heavy_minus_sign:                                                          | :heavy_plus_sign: search in commands or results as **text** |
-| :heavy_plus_sign: intuitive data lookup                                     | :heavy_minus_sign:                                          |
+| GUI                                                                           | CLI                                                       |
+|-------------------------------------------------------------------------------|-----------------------------------------------------------|
+| :heavy_minus_sign: no universal way to reproduce (composite) GUI actions      | :heavy_plus_sign: share and "replay" commands as **text** |
+| :heavy_minus_sign: no universal way to store and search GUI results           | :heavy_plus_sign: share and search results as **text**    |
+| :heavy_minus_sign: no universal way to auto-trigger GUI actions on events     | :heavy_plus_sign: hook commands anyhow (e.g. schedule)    |
+| :heavy_minus_sign: might be time-consuming for an ad-hoc functionality        | :heavy_plus_sign: always quick dev option (low ceremony)  |
+| :heavy_minus_sign: a separate stack (skill set) from backend to contribute to | :heavy_plus_sign: familiarly dominates backend tools      |
+| :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself       | :heavy_plus_sign: inherent script-ability                 |
+| :heavy_minus_sign: limits system access (a layer behind a narrow API)         | :heavy_plus_sign: ultimate control                        |
+| :heavy_plus_sign: keyword captions                                            | :heavy_minus_sign: hardly remembered cryptic `-o` options |
+| :heavy_plus_sign: point-click actions                                         | :heavy_minus_sign: typing:exclamation:                    |
+| :heavy_plus_sign: intuitive data-driven interface                             | :heavy_minus_sign: interface:question:                    |
 
-While retaining advantages of a CLI tool, `argrelay` tries to provide solution for intuitive data lookup:
-*   minimalistic enum-based query syntax (matching target executable command line)
-*   low client-side footprint (suitable for resource-constrained environments)
-*   conveniently browsable inventory (generic CLI builder)
+While retaining advantages of a CLI tool, `argrelay` tries to provide:
+*   intuitive data-driven interface
+*   reduced typing (args auto-reduction)
+*   keyword options (args auto-completion)
 
-Selecting args directly in shell CLI avoids **otherwise** error-prone coping-and-pasting via clumsy GUI window switching.
+As opposed to GUI-demanding approaches like [Warp][Warp_site] or [IDEA terminal][IDEA_terminal],<br/>
+`argrelay` survives in basic text modes.
 
 <a name="argrelay-original-use-case"></a>
 # Original use case
@@ -55,6 +74,8 @@ Selecting args directly in shell CLI avoids **otherwise** error-prone coping-and
 Auto-complete commands [based on arbitrary data sets][later_stack_question],<br/>
 for example, using metadata for 10s x clusters, 100s x hosts, 1000s x processes, ...<br/>
 **directly from standard shell**.
+
+Selecting args directly in shell CLI avoids **otherwise** error-prone coping-and-pasting via clumsy GUI window switching.
 
 Flexible and [responsive lookup][completion_perf_notes.md] required data indexing<br/>
 (e.g. each Tab-request demands short loading and querying time for context-specific data)<br/>
@@ -145,7 +166,7 @@ This sub-shell configures request hotkeys to bind `relay_demo` command with `@/e
     exit
     ```
 
-# Behind the demo
+# Beyond the demo
 
 *   While inside the sub-shell, inspect how auto-completion is configured for `relay_demo`:
 
@@ -294,6 +315,8 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
+[Warp_site]: https://warp.dev/
+[IDEA_terminal]: https://www.jetbrains.com/help/idea/terminal-emulator.html
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
 [MongoDB]: https://www.mongodb.com/
 [TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md

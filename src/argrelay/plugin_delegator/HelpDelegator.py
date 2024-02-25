@@ -7,7 +7,6 @@ from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input
 from argrelay.plugin_delegator.InterceptDelegator import InterceptDelegator
-from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_interp.FuncTreeInterpFactory import tree_path_selector_prefix_
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import function_container_ipos_, InterpContext
@@ -33,7 +32,7 @@ class HelpDelegator(InterceptDelegator):
         func_envelopes = [{
             instance_data_: {
                 func_id_: SpecialFunc.help_hint_func.name,
-                delegator_plugin_instance_id_: HelpDelegator.__name__,
+                delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                 ],
             },
@@ -43,11 +42,6 @@ class HelpDelegator(InterceptDelegator):
         }]
         return func_envelopes
 
-    def run_interp_control(
-        self,
-        curr_interp: AbstractInterp,
-    ) -> str:
-        return super().run_interp_control(curr_interp)
 
     def run_invoke_control(
         self,
@@ -66,7 +60,7 @@ class HelpDelegator(InterceptDelegator):
                 .query_data_envelopes_for(subsequent_function_container)
             )
 
-            delegator_plugin_instance_id = HelpDelegator.__name__
+            delegator_plugin_instance_id = self.plugin_instance_id
 
             custom_plugin_data = search_control_desc.dict_schema.dump(subsequent_function_container.search_control)
 

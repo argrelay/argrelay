@@ -2,28 +2,26 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_interp.FuncTreeInterp import FuncTreeInterp, func_init_control_, func_search_control_
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
-    delegator_plugin_ids_,
     func_selector_tree_,
-    ignored_func_ids_list_,
     func_tree_interp_config_desc,
+    jump_tree_,
 )
 from argrelay.plugin_interp.TreeWalker import TreeWalker
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.ServerConfig import ServerConfig, assert_plugin_instance_id
+from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_
 from argrelay.schema_config_interp.SearchControlSchema import (
     keys_to_types_list_,
     populate_search_control,
 )
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_enabled_, plugin_dependencies_
 
 tree_path_selector_prefix_ = "tree_path_selector_"
 tree_path_selector_key_prefix_ = "s"
@@ -32,6 +30,7 @@ tree_path_selector_key_prefix_ = "s"
 class FuncTreeInterpFactory(AbstractInterpFactory):
     """
     Implements FS_26_43_73_72 func tree.
+    Implements FS_91_88_07_23 jump tree.
     """
 
     def __init__(
@@ -51,6 +50,18 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         # Each func id can be attached to more than one leaf (hence, there is a list of paths to that func id).
         self.func_ids_to_func_rel_paths: dict[str, list[list[str]]] = {}
 
+        # FS_91_88_07_23 jump tree
+        self.plugin_config_dict.setdefault(jump_tree_, {})
+        tree_walker: TreeWalker = TreeWalker(
+            "jump_tree",
+            self.plugin_config_dict[jump_tree_],
+        )
+        self.paths_to_jump: dict[tuple[str, ...], tuple[str, ...]] = tree_walker.build_paths_to_paths()
+        """
+        Implements FS_91_88_07_23 jump tree:
+        for given `interp_tree_abs_path` (FS_01_89_09_24) selects next `interp_tree_abs_path`.
+        """
+
     def load_config(
         self,
         plugin_config_dict,
@@ -60,20 +71,18 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
-    ):
+        func_ids_to_func_envelopes: dict[str, dict],
+    ) -> list[str]:
         """
         To implement FS_26_43_73_72 func tree, this plugin loads func `data_envelope`-s automatically.
 
-        It queries `delegator_plugin_ids` to retrieve func `data_envelope`-s and populates their search props
-        by inspecting configured `func_selector_tree` where each function is plugged into.
-
-        TODO: It should fail if function does not exists in `func_selector_tree` and `ignore_functions` list.
-
-        TODO: It should fail if function exists in `func_selector_tree` but was never found in loaded func envelopes.
-
+        It loops through func `data_envelope`-s and populates their tree path search props
+        according to configured `func_selector_tree` where each function is plugged into.
         """
-        super().load_func_envelopes(
+
+        mapped_func_ids: list[str] = super().load_func_envelopes(
             interp_tree_abs_path,
+            func_ids_to_func_envelopes,
         )
         interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
 
@@ -83,31 +92,25 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         )
         self.func_ids_to_func_rel_paths: dict[str, list[list[str]]] = func_tree_walker.build_str_leaves_paths()
 
-        # Retrieve func `data_envelope`-s from all delegators:
+        # Loop through func `data_envelope`-s from all delegators:
         func_envelopes_index: dict[str, dict[tuple[str, ...], dict]] = {}
-        for delegator_plugin_id in interp_tree_node_config_dict[delegator_plugin_ids_]:
-            assert_plugin_instance_id(
-                self.server_config,
-                delegator_plugin_id,
-                PluginType.DelegatorPlugin,
-            )
-            action_delegator: AbstractDelegator = self.server_config.action_delegators[delegator_plugin_id]
-            func_envelopes = action_delegator.get_supported_func_envelopes()
-            for func_envelope in func_envelopes:
-                func_id = func_envelope[ReservedArgType.FuncId.name]
-                if func_id not in self.func_ids_to_func_rel_paths:
-                    if func_id not in interp_tree_node_config_dict[ignored_func_ids_list_]:
-                        raise RuntimeError(
-                            f"plugin_instance_id='{self.plugin_instance_id}': func_id='{func_id}' is neither in `{func_selector_tree_}` nor in `{ignored_func_ids_list_}`"
-                        )
-                    else:
-                        # Func is ignored - skip:
-                        continue
-                if func_id not in func_envelopes_index:
-                    func_envelopes_index[func_id] = {}
-                for func_rel_path in self.func_ids_to_func_rel_paths[func_id]:
-                    assert tuple(func_rel_path) not in func_envelopes_index[func_id]
-                    func_envelopes_index[func_id][tuple(func_rel_path)] = deepcopy(func_envelope)
+        for func_id, func_envelope in func_ids_to_func_envelopes.items():
+            if func_id not in self.func_ids_to_func_rel_paths:
+                # Not used here:
+                continue
+            if func_id not in func_envelopes_index:
+                func_envelopes_index[func_id] = {}
+            for func_rel_path in self.func_ids_to_func_rel_paths[func_id]:
+                assert tuple(func_rel_path) not in func_envelopes_index[func_id]
+                func_envelopes_index[func_id][tuple(func_rel_path)] = deepcopy(func_envelope)
+            mapped_func_ids.append(func_id)
+
+        # Ensure every `func_id` mapped into the tree is part of `func_envelope`-s loaded from delegators:
+        for func_id in self.func_ids_to_func_rel_paths.keys():
+            if func_id not in mapped_func_ids:
+                raise RuntimeError(
+                    f"plugin_instance_id='{self.plugin_instance_id}': func_id='{func_id}' is not published by any enabled delegator activated so far - please check '{plugin_enabled_}' and '{plugin_dependencies_}'"
+                )
 
         self.populate_init_control(
             interp_tree_abs_path,
@@ -147,6 +150,8 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         ]
         # Write func envelopes into `StaticData` (as if it is a loader plugin):
         envelope_collection.data_envelopes.extend(interp_tree_abs_path_func_envelopes)
+
+        return mapped_func_ids
 
     # noinspection PyMethodMayBeStatic
     def populate_init_control(
@@ -253,6 +258,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             self.interp_tree_abs_paths_to_node_configs[interp_ctx.interp_tree_abs_path],
             interp_ctx,
             self.func_ids_to_func_rel_paths,
+            self.paths_to_jump,
         )
 
 

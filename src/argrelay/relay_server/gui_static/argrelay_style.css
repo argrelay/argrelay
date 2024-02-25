@@ -14,8 +14,8 @@
 
 .box_label {
     width: 100%;
-    color: grey;
-    text-align: right;
+    color: salmon;
+    text-align: left;
 }
 
 #project_title {
@@ -225,7 +225,7 @@ Suggestion details
 
 .unique_part {
     color: black;
-    background-color: pink;
+    background-color: khaki;
 }
 
 .comment_part {

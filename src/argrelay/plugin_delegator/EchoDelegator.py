@@ -26,7 +26,7 @@ class EchoDelegator(AbstractDelegator):
         func_envelopes = [{
             instance_data_: {
                 func_id_: SpecialFunc.echo_args_func.name,
-                delegator_plugin_instance_id_: EchoDelegator.__name__,
+                delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                 ],
             },
@@ -51,7 +51,7 @@ class EchoDelegator(AbstractDelegator):
             tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
             tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
             delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
-                self.__class__.__name__
+                self.plugin_instance_id
             ],
             custom_plugin_data = {},
         )

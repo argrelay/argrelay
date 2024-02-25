@@ -73,200 +73,322 @@ class_to_collection_map:
     AccessType: AccessType
 
 server_plugin_control:
-    first_interp_factory_id: FirstArgInterpFactory
+    first_interp_factory_id: FirstArgInterpFactory.default
     reusable_config_data:
 
+        # TODO: TODO_10_72_28_05: FS_33_76_82_84: global tree (non functional yet).
+        # TODO: Create schemas for each `node_type` with translator code from this tree to "legacy" structures:
+        #       *   add tests of their equivalence first
+        #       *   switch plugins to use it instead
+        #
+        #       This config is not function (not used yet) - it is a scratch board to see how this mess can be:
+        #       *   put into single global view (without composing it via recursive references to plugins)
+        #       *   simplified (without intermediate plugin instances performing single function but hard to follow in composition)
+        # `tree_node_type`-s: their "legacy" tree name: some explanation:
+        #       *   init_node: [no equivalent] : TODO: Do we need it?
+        #       *   zero_arg_node: first_arg_vals_to_next_interp_factory_ids:
+        #       *   interp_tree_node: interp_selector_tree:
+        #       *   func_tree_node: func_selector_tree:
+        #       *   tree_path_node: [no equivalent]: add extra tree level (but does nothing as the other types)
+        #       *   [no equivalent]: jump_tree: `jump_path` simply becomes config of a node (no need to have separate `jump_tree`)
+        #       *   [no equivalent]: tree_abs_path_to_interp_id: selecting which interp id to use simply becomes config of a node
+        global_tree:
+            node_type: init_node
+            sub_tree:
+                "relay_demo":
+                    node_type: zero_arg_node
+                    plugin_instance_id: InterpTreeInterpFactory.default
+                    sub_tree: &interp_tree_default
+                        "intercept": &intercept_invocation_func_interp_tree_node
+                            node_type: interp_tree_node
+                            plugin_instance_id: FuncTreeInterpFactory.intercept_invocation_func
+                            next_interp:
+                                jump_path:
+                                    -   "relay_demo"
+                                plugin_instance_id: InterpTreeInterpFactory.default
+                            sub_tree:
+                                "":
+                                    node_type: func_tree_node
+                                    func_id: intercept_invocation_func
+                        "help": &help_hint_func_interp_tree_node
+                            node_type: interp_tree_node
+                            plugin_instance_id: FuncTreeInterpFactory.help_hint_func
+                            next_interp:
+                                jump_path:
+                                    -   "relay_demo"
+                                plugin_instance_id: InterpTreeInterpFactory.default
+                            sub_tree:
+                                "":
+                                    node_type: func_tree_node
+                                    func_id: help_hint_func
+                        "enum":
+                            node_type: interp_tree_node
+                            plugin_instance_id: FuncTreeInterpFactory.query_enum_items_func
+                            next_interp:
+                                jump_path:
+                                    -   "relay_demo"
+                                plugin_instance_id: InterpTreeInterpFactory.default
+                            sub_tree:
+                                "":
+                                    node_type: func_tree_node
+                                    func_id: query_enum_items_func
+                        "": &default_func_interp_tree_node
+                            node_type: interp_tree_node
+                            plugin_instance_id: FuncTreeInterpFactory.default
+                            sub_tree:
+                                "echo":
+                                    node_type: func_tree_node
+                                    func_id: echo_args_func
+                                "list":
+                                    node_type: tree_path_node
+                                    sub_tree:
+                                        "host":
+                                            node_type: func_tree_node
+                                            func_id: list_host_func
+                                        "service":
+                                            node_type: func_tree_node
+                                            func_id: list_service_func
+                                "goto":
+                                    node_type: tree_path_node
+                                    sub_tree:
+                                        "repo":
+                                            node_type: func_tree_node
+                                            func_id: goto_repo_func
+                                        "host":
+                                            node_type: func_tree_node
+                                            func_id: goto_host_func
+                                        "service":
+                                            node_type: func_tree_node
+                                            func_id: goto_service_func
+                                "desc":
+                                    node_type: tree_path_node
+                                    sub_tree:
+                                        "commit":
+                                            node_type: func_tree_node
+                                            func_id: desc_commit_func
+                                        "host":
+                                            node_type: func_tree_node
+                                            func_id: desc_host_func
+                                        "service":
+                                            node_type: func_tree_node
+                                            func_id: desc_service_func
+                                "config":
+                                    node_type: tree_path_node
+                                    sub_tree:
+                                        "print_with_level":
+                                            node_type: func_tree_node
+                                            func_id: funct_id_print_with_severity_level
+                                        "print_with_exit":
+                                            node_type: func_tree_node
+                                            func_id: funct_id_print_with_exit_code
+                                        "print_with_io_redirect":
+                                            node_type: func_tree_node
+                                            func_id: funct_id_print_with_io_redirect
+                        "duplicates":
+                            "intercept":
+                                <<: *intercept_invocation_func_interp_tree_node
+                                next_interp:
+                                    jump_path:
+                                        -   "relay_demo"
+                                        -   "duplicates"
+                                    plugin_instance_id: InterpTreeInterpFactory.default
+                            "help":
+                                <<: *help_hint_func_interp_tree_node
+                                next_interp:
+                                    jump_path:
+                                        -   "relay_demo"
+                                        -   "duplicates"
+                                    plugin_instance_id: InterpTreeInterpFactory.default
+                            "": *default_func_interp_tree_node
+                "some_command":
+                    node_type: zero_arg_node
+                    plugin_instance_id: InterpTreeInterpFactory.default
+                    sub_tree: *interp_tree_default
+                "service_relay_demo":
+                    node_type: zero_arg_node
+                    plugin_instance_id: InterpTreeInterpFactory.service
+                    sub_tree:
+                        <<: *help_hint_func_interp_tree_node
+                        next_interp:
+                            jump_path:
+                                -   "service_relay_demo"
+                            plugin_instance_id: InterpTreeInterpFactory.service
+                        "":
+                            node_type: interp_tree_node
+                            plugin_instance_id: FuncTreeInterpFactory.service
+                            sub_tree:
+                                "goto":
+                                    node_type: func_tree_node
+                                    func_id: goto_service_func
+                                "list":
+                                    node_type: func_tree_node
+                                    func_id: list_service_func
+                                "desc":
+                                    node_type: func_tree_node
+                                    func_id: desc_service_func
+
         jump_tree: &jump_tree
-            relay_demo:
-                intercept:
-                    -   relay_demo
-                help:
-                    -   relay_demo
-                enum:
-                    -   relay_demo
-                subtree:
-                    intercept:
-                        -   relay_demo
-                        -   subtree
-                    help:
-                        -   relay_demo
-                        -   subtree
-                    enum:
-                        -   relay_demo
-                        -   subtree
-            some_command:
-                intercept:
-                    -   some_command
-                help:
-                    -   some_command
-                enum:
-                    -   some_command
-                subtree:
-                    intercept:
-                        -   some_command
-                        -   subtree
-                    help:
-                        -   some_command
-                        -   subtree
-                    enum:
-                        -   some_command
-                        -   subtree
-            service_relay_demo:
-                help:
-                    -   service_relay_demo
-
-        interp_sub_tree: &interp_sub_tree
-            intercept: JumpTreeInterpFactory.intercept_invocation_func
-            help: JumpTreeInterpFactory.help_hint_func
-            enum: JumpTreeInterpFactory.query_enum_items_func
-            "": FuncTreeInterpFactory
-
-        all_direct_delegators: &all_direct_delegators
-            -   NoopDelegator
-            -   EchoDelegator
-            -   ServiceDelegator
-            -   GitRepoDelegator
-            -   ConfigOnlyDelegator
+            "relay_demo":
+                "intercept":
+                    -   "relay_demo"
+                "help":
+                    -   "relay_demo"
+                "enum":
+                    -   "relay_demo"
+                "duplicates":
+                    "intercept":
+                        -   "relay_demo"
+                        -   "duplicates"
+                    "help":
+                        -   "relay_demo"
+                        -   "duplicates"
+            "some_command":
+                "intercept":
+                    -   "some_command"
+                "help":
+                    -   "some_command"
+                "enum":
+                    -   "some_command"
+                "duplicates":
+                    "intercept":
+                        -   "some_command"
+                        -   "duplicates"
+                    "help":
+                        -   "some_command"
+                        -   "duplicates"
+            "service_relay_demo":
+                "help":
+                    -   "service_relay_demo"
 
 plugin_instance_entries:
 
-    FirstArgInterpFactory:
+    FirstArgInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.FirstArgInterpFactory
         plugin_class_name: FirstArgInterpFactory
         plugin_dependencies:
-            -   InterpTreeInterpFactory
+            #   Delegators for `func_tree`:
+            -   NoopDelegator.default
+            -   EchoDelegator.default
+            -   InterceptDelegator.default
+            -   HelpDelegator.default
+            -   QueryEnumDelegator.default
+            -   ServiceDelegator.default
+            -   GitRepoDelegator.default
+            -   ConfigOnlyDelegator.default
+            #   Interps for `interp_tree` per command (zero-arg):
+            -   InterpTreeInterpFactory.default
             -   InterpTreeInterpFactory.service
+            #   Interps for normal funcs:
+            -   FuncTreeInterpFactory.default
+            #   Interps for special funcs:
+            -   FuncTreeInterpFactory.intercept_invocation_func
+            -   FuncTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory.query_enum_items_func
         plugin_config:
             first_arg_vals_to_next_interp_factory_ids:
                 # This binding uses existing file system name `relay_demo`:
-                relay_demo: InterpTreeInterpFactory
+                "relay_demo": InterpTreeInterpFactory.default
                 # Another equivalent binding
                 # (if `some_command` is configured, it will behave as `relay_demo` above):
-                some_command: InterpTreeInterpFactory
-                service_relay_demo: InterpTreeInterpFactory.service
+                "some_command": InterpTreeInterpFactory.default
+                "service_relay_demo": InterpTreeInterpFactory.service
+            ignored_func_ids_list:
+                -   desc_commit_func
 
-    InterpTreeInterpFactory:
+    InterpTreeInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
         plugin_class_name: InterpTreeInterpFactory
         plugin_dependencies:
-            -   JumpTreeInterpFactory.intercept_invocation_func
-            -   JumpTreeInterpFactory.help_hint_func
-            -   JumpTreeInterpFactory.query_enum_items_func
-            -   FuncTreeInterpFactory
+            -   FuncTreeInterpFactory.intercept_invocation_func
+            -   FuncTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory.query_enum_items_func
+            -   FuncTreeInterpFactory.default
         plugin_config:
             interp_selector_tree:
-                <<: *interp_sub_tree
-                # child subtree matches parent:
-                subtree: *interp_sub_tree
+                "intercept": FuncTreeInterpFactory.intercept_invocation_func
+                "help": FuncTreeInterpFactory.help_hint_func
+                "enum": FuncTreeInterpFactory.query_enum_items_func
+                "": FuncTreeInterpFactory.default
+                # child "duplicates" re-plug some of the interps:
+                "duplicates":
+                    "intercept": FuncTreeInterpFactory.intercept_invocation_func
+                    "help": FuncTreeInterpFactory.help_hint_func
+                    "": FuncTreeInterpFactory.default
 
     InterpTreeInterpFactory.service:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
         plugin_class_name: InterpTreeInterpFactory
         plugin_dependencies:
-            -   JumpTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory.help_hint_func
             -   FuncTreeInterpFactory.service
         plugin_config:
             interp_selector_tree:
-                help: JumpTreeInterpFactory.help_hint_func
+                "help": FuncTreeInterpFactory.help_hint_func
                 "": FuncTreeInterpFactory.service
 
-    # TODO: FS_33_76_82_84 `global_tree`: maintaining separate instance of `JumpTreeInterpFactory` plugin should be avoided.
-    #       See extended comment for `JumpTreeInterpFactory.help_hint_func`.
-    JumpTreeInterpFactory.intercept_invocation_func:
-        plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
-        plugin_class_name: JumpTreeInterpFactory
-        plugin_dependencies:
-            -   InterceptDelegator
+    # TODO: FS_33_76_82_84 `global_tree`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
+    #       See extended comment for `FuncTreeInterpFactory.help_hint_func`.
+    FuncTreeInterpFactory.intercept_invocation_func:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
             func_selector_tree: intercept_invocation_func
-            delegator_plugin_ids:
-                -   InterceptDelegator
 
-    # TODO: FS_33_76_82_84 `global_tree`: maintaining separate instance of `JumpTreeInterpFactory` plugin should be avoided.
-    # `jump_tree` is already "global" which navigates back to another interpreter when function is selected.
-    # `JumpTreeInterpFactory` extends `FuncTreeInterpFactory` to `select_next_interp_tree_abs_path`
-    # (what base `FuncTreeInterpFactory` does not do because its `run_interp_control` returns None).
-    # Func `select_next_interp_tree_abs_path` is where jump is performed based on current `interp_ctx.interp_tree_abs_path`.
-    # What `run_interp_control` for `JumpTreeInterpFactory` does is to ask `HelpDelegator` what is the next
-    # `plugin_id` (interp) to use, but it can be seen from the `global_tree` if specific tree path to `func_id`
-    # leads to `global_tree_node` configuring that new path.
-    # It means, regardless of the places to jump, there would be no need to configure new `JumpTreeInterpFactory`.
-    JumpTreeInterpFactory.help_hint_func:
-        plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
-        plugin_class_name: JumpTreeInterpFactory
-        plugin_dependencies:
-            -   HelpDelegator
+    FuncTreeInterpFactory.help_hint_func:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
             func_selector_tree: help_hint_func
-            delegator_plugin_ids:
-                -   HelpDelegator
 
-    # TODO: FS_33_76_82_84 `global_tree`: maintaining separate instance of `JumpTreeInterpFactory` plugin should be avoided.
-    #       See extended comment for `JumpTreeInterpFactory.help_hint_func`.
-    JumpTreeInterpFactory.query_enum_items_func:
-        plugin_module_name: argrelay.plugin_interp.JumpTreeInterpFactory
-        plugin_class_name: JumpTreeInterpFactory
-        plugin_dependencies:
-            -   QueryEnumDelegator
+    FuncTreeInterpFactory.query_enum_items_func:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
             func_selector_tree: query_enum_items_func
-            delegator_plugin_ids:
-                -   QueryEnumDelegator
 
-    FuncTreeInterpFactory:
+    FuncTreeInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
-        plugin_dependencies: *all_direct_delegators
         plugin_config:
             func_selector_tree:
-                echo: echo_args_func
-                list:
-                    host: list_host_func
-                    service: list_service_func
-                goto:
-                    repo: goto_repo_func
-                    host: goto_host_func
-                    service: goto_service_func
-                desc:
-                    commit: desc_commit_func
-                    host: desc_host_func
-                    service: desc_service_func
-                config:
-                    print_with_level: funct_id_print_with_severity_level
-                    print_with_exit: funct_id_print_with_exit_code
-                    print_with_io_redirect: funct_id_print_with_io_redirect
-            delegator_plugin_ids: *all_direct_delegators
+                "echo": echo_args_func
+                "goto":
+                    "repo": goto_repo_func
+                    "host": goto_host_func
+                    "service": goto_service_func
+                "list":
+                    "host": list_host_func
+                    "service": list_service_func
+                "desc":
+                    "commit": desc_commit_func
+                    "host": desc_host_func
+                    "service": desc_service_func
+                "config":
+                    "print_with_level": funct_id_print_with_severity_level
+                    "print_with_exit": funct_id_print_with_exit_code
+                    "print_with_io_redirect": funct_id_print_with_io_redirect
 
     FuncTreeInterpFactory.service:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
-        plugin_dependencies:
-            -   ServiceDelegator
         plugin_config:
             func_selector_tree:
-                goto: goto_service_func
-                list: list_service_func
-                desc: desc_service_func
-            # TODO: remove this - add uncategorized functions into index under some "UNMAPPED" func_ids or something:
-            ignored_func_ids_list:
-                -   goto_host_func
-                -   list_host_func
-                -   desc_host_func
-            delegator_plugin_ids:
-                -   ServiceDelegator
+                "goto": goto_service_func
+                "list": list_service_func
+                "desc": desc_service_func
 
-    NoopInterpFactory:
+    NoopInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.NoopInterpFactory
         plugin_class_name: NoopInterpFactory
 
-    NoopLoader:
+    NoopLoader.default:
         plugin_module_name: argrelay.plugin_loader.NoopLoader
         plugin_class_name: NoopLoader
 
-    ServiceLoader:
+    ServiceLoader.default:
         plugin_module_name: argrelay.custom_integ.ServiceLoader
         plugin_class_name: ServiceLoader
         plugin_config:
@@ -276,7 +398,7 @@ plugin_instance_entries:
                 # WARNING: with `mongomock` and not `enable_query_cache` requests run up for TD_38_03_48_51 may run up to 10 mins:
                 #-   TD_38_03_48_51  # large generated
 
-    GitRepoLoader:
+    GitRepoLoader.default:
         plugin_enabled: false
         plugin_module_name: argrelay.custom_integ.GitRepoLoader
         plugin_class_name: GitRepoLoader
@@ -302,7 +424,7 @@ plugin_instance_entries:
                             GitRepoAlias: mm
                             GitRepoContentType: code
 
-    ConfigOnlyLoader:
+    ConfigOnlyLoader.default:
         plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
         plugin_class_name: ConfigOnlyLoader
         plugin_config:
@@ -311,75 +433,75 @@ plugin_instance_entries:
                     - severity_level
                     - exit_code
             data_envelopes:
-                !include "data/ConfigOnlyLoader.data.yaml"
+                !include "data/ConfigOnlyLoader.default.data.yaml"
 
-    NoopDelegator:
+    NoopDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.NoopDelegator
         plugin_class_name: NoopDelegator
 
-    EchoDelegator:
+    EchoDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.EchoDelegator
         plugin_class_name: EchoDelegator
 
-    InterceptDelegator:
+    InterceptDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.InterceptDelegator
         plugin_class_name: InterceptDelegator
         plugin_dependencies:
-            -   FuncTreeInterpFactory
+            -   FuncTreeInterpFactory.default
         plugin_config:
             tree_abs_path_to_interp_id:
-                relay_demo:
-                    intercept: InterpTreeInterpFactory
-                    subtree:
-                        intercept: InterpTreeInterpFactory
-                some_command:
-                    intercept: InterpTreeInterpFactory
-                    subtree:
-                        intercept: InterpTreeInterpFactory
+                "relay_demo":
+                    "intercept": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "intercept": InterpTreeInterpFactory.default
+                "some_command":
+                    "intercept": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "intercept": InterpTreeInterpFactory.default
+                "service_relay_demo":
+                    "help": InterpTreeInterpFactory.service
 
-    HelpDelegator:
+    HelpDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.HelpDelegator
         plugin_class_name: HelpDelegator
         plugin_dependencies:
-            -   FuncTreeInterpFactory
+            -   FuncTreeInterpFactory.default
         plugin_config:
             tree_abs_path_to_interp_id:
-                relay_demo:
-                    help: InterpTreeInterpFactory
-                    subtree:
-                        help: InterpTreeInterpFactory
-                some_command:
-                    help: InterpTreeInterpFactory
-                    subtree:
-                        help: InterpTreeInterpFactory
-                service_relay_demo:
-                    help: InterpTreeInterpFactory.service
+                "relay_demo":
+                    "help": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "help": InterpTreeInterpFactory.default
+                "some_command":
+                    "help": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "help": InterpTreeInterpFactory.default
+                "service_relay_demo":
+                    "help": InterpTreeInterpFactory.service
 
-    QueryEnumDelegator:
+    QueryEnumDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.QueryEnumDelegator
         plugin_class_name: QueryEnumDelegator
         plugin_dependencies:
-            -   FuncTreeInterpFactory
+            -   FuncTreeInterpFactory.default
         plugin_config:
             tree_abs_path_to_interp_id:
-                relay_demo:
-                    enum: InterpTreeInterpFactory
-                    subtree:
-                        enum: InterpTreeInterpFactory
-                some_command:
-                    enum: InterpTreeInterpFactory
-                    subtree:
-                        enum: InterpTreeInterpFactory
+                "relay_demo":
+                    "enum": InterpTreeInterpFactory.default
+                "some_command":
+                    "enum": InterpTreeInterpFactory.default
+                "service_relay_demo":
+                    "help": InterpTreeInterpFactory.service
 
-    ServiceDelegator:
+    ServiceDelegator.default:
         plugin_module_name: argrelay.custom_integ.ServiceDelegator
         plugin_class_name: ServiceDelegator
 
-    GitRepoDelegator:
+    GitRepoDelegator.default:
         plugin_module_name: argrelay.custom_integ.GitRepoDelegator
         plugin_class_name: GitRepoDelegator
 
-    ConfigOnlyDelegator:
+    ConfigOnlyDelegator.default:
         plugin_module_name: argrelay.custom_integ.ConfigOnlyDelegator
         plugin_class_name: ConfigOnlyDelegator
         plugin_config:
@@ -437,15 +559,15 @@ plugin_instance_entries:
                                 exit {envelope_containers[1].data_envelopes[0]['exit_code']}
 
     # TODO: Add FS_80_45_89_81 / `error_message` func:
-    ErrorDelegator:
+    ErrorDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.ErrorDelegator
         plugin_class_name: ErrorDelegator
 
-    DefaultConfigurator:
+    DefaultConfigurator.default:
         plugin_module_name: argrelay.plugin_config.DefaultConfigurator
         plugin_class_name: DefaultConfigurator
         plugin_config:
-            project_title: relay_demo
+            project_title: "relay_demo"
             project_page_url: "https://argrelay.org"
             git_files_by_commit_id_url_prefix: "https://github.com/argrelay/argrelay/tree/"
             commit_id_url_prefix: "https://github.com/argrelay/argrelay/commit/"

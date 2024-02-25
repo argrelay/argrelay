@@ -4,13 +4,7 @@ from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
 func_selector_tree_ = "func_selector_tree"
 
-ignored_func_ids_list_ = "ignored_func_ids_list"
-
-delegator_plugin_ids_ = "delegator_plugin_ids"
-"""
-List of delegator plugin ids (classes derived from `AbstractDelegator`) which are used to provide
-function `data_envelope`-s to plug those functions into `func_selector_tree`.
-"""
+jump_tree_ = "jump_tree"
 
 
 class FuncTreeInterpFactoryConfigSchema(Schema):
@@ -26,17 +20,12 @@ class FuncTreeInterpFactoryConfigSchema(Schema):
         required = True,
     )
 
-    # It is an error if func id is reported by delegator in `delegator_plugin_ids` but missing in `func_selector_tree`.
-    # To avoid the error, list such func id in `ignored_func_ids_list`.
-    ignored_func_ids_list = fields.List(
-        fields.String(),
+    # This is a tree (`dict`) of arbitrary depth with `list[str]` leaves.
+    # Ideally, this should be defined as nested `dict`,
+    # but it is unknown how to do it in marshmallow.
+    # Implements FS_91_88_07_23 jump tree.
+    jump_tree = fields.Raw(
         required = False,
-        load_default = [],
-    )
-
-    delegator_plugin_ids = fields.List(
-        fields.String(),
-        required = True,
     )
 
 
@@ -51,12 +40,8 @@ func_tree_interp_config_example = {
             "service": "goto_service_func",
         },
     },
-    ignored_func_ids_list_: [
-        "some_ignored_func",
-    ],
-    delegator_plugin_ids_: [
-        "DelegatorPlugin1",
-        "DelegatorPlugin2",
+    jump_tree_: [
+        "relay_demo",
     ],
 }
 

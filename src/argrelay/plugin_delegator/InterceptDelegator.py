@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Union
+
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -40,7 +42,7 @@ class InterceptDelegator(AbstractDelegator):
         )
 
         func_tree_walker = TreeWalker(
-            "tree_abs_path_to_interp_id",
+            tree_abs_path_to_interp_id_,
             self.plugin_config_dict[tree_abs_path_to_interp_id_],
         )
         # Temporary (reversed) map which contains path per id (instead of id per path):
@@ -58,7 +60,7 @@ class InterceptDelegator(AbstractDelegator):
         func_envelopes = [{
             instance_data_: {
                 func_id_: SpecialFunc.intercept_invocation_func.name,
-                delegator_plugin_instance_id_: InterceptDelegator.__name__,
+                delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                 ],
             },
@@ -101,7 +103,7 @@ class InterceptDelegator(AbstractDelegator):
     def run_interp_control(
         self,
         curr_interp: AbstractInterp,
-    ) -> str:
+    ) -> Union[None, str]:
         # TODO_10_72_28_05: support special funcs for all commands:
         #                   Delegator must select next `interp_factory_id` based on `interp_tree_abs_path` via `tree_abs_path_to_interp_id` (not based on single plugin id specified)
         #                   because delegator can be accessible through multiple tree paths.
@@ -112,7 +114,10 @@ class InterceptDelegator(AbstractDelegator):
         # TODO: This must be special interpreter which is configured only to search functions (without their args).
         #       NEXT TODO: Why not support function args for special interp (e.g. `intercept` or `help` with format params)?
         #                  The interp_control is only run when func and all its args are selected and there should be next interp to continue.
-        return self.tree_path_to_next_interp_plugin_instance_id[curr_interp.interp_ctx.interp_tree_abs_path]
+        if curr_interp.interp_ctx.interp_tree_abs_path in self.tree_path_to_next_interp_plugin_instance_id:
+            return self.tree_path_to_next_interp_plugin_instance_id[curr_interp.interp_ctx.interp_tree_abs_path]
+        else:
+            return None
 
     def run_invoke_control(
         self,

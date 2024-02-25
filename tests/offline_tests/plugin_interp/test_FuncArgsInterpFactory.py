@@ -10,8 +10,6 @@ from argrelay.plugin_interp.FuncTreeInterp import func_search_control_
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     func_selector_tree_,
-    delegator_plugin_ids_,
-    ignored_func_ids_list_,
 )
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
@@ -71,7 +69,7 @@ class ThisTestClass(BaseTestClass):
         type_1 = "whatever_type_1"
         type_2 = "whatever_type_2"
 
-        plugin_instance_id = FuncTreeInterpFactory.__name__ + ".test"
+        plugin_instance_id = f"{FuncTreeInterpFactory.__name__}.test"
         assert plugin_instance_id not in server_config_dict[plugin_instance_entries_]
         server_config_dict[plugin_instance_entries_][plugin_instance_id] = {
             plugin_module_name_: FuncTreeInterpFactory.__module__,
@@ -80,10 +78,6 @@ class ThisTestClass(BaseTestClass):
             plugin_config_: {
                 func_selector_tree_: {
                 },
-                delegator_plugin_ids_: [
-                ],
-                ignored_func_ids_list_: [
-                ],
                 func_search_control_: {
                     collection_name_: ReservedEnvelopeClass.ClassFunction.name,
                     envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
@@ -99,7 +93,7 @@ class ThisTestClass(BaseTestClass):
         given_function_envelope = {
             instance_data_: {
                 func_id_: "func_1",
-                delegator_plugin_instance_id_: NoopDelegator.__name__,
+                delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -111,7 +105,7 @@ class ThisTestClass(BaseTestClass):
         given_function_envelope = {
             instance_data_: {
                 func_id_: "func_2",
-                delegator_plugin_instance_id_: NoopDelegator.__name__,
+                delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -137,7 +131,7 @@ class ThisTestClass(BaseTestClass):
         given_function_envelope = {
             instance_data_: {
                 func_id_: "func_3",
-                delegator_plugin_instance_id_: NoopDelegator.__name__,
+                delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
