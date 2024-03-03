@@ -132,14 +132,19 @@ class BaseConfigDelegator(AbstractDelegator):
             for func_config in self.plugin_config_dict[func_configs_].values()
         ]
 
+    def has_fill_control(
+        self,
+    ) -> bool:
+        return True
+
     def run_fill_control(
         self,
         interp_ctx: InterpContext,
-    ) -> None:
+    ) -> bool:
         """
         TODO_54_68_18_12: Support defaults for config-only delegator
         """
-        super().run_fill_control(interp_ctx)
+        return super().run_fill_control(interp_ctx)
 
     def run_invoke_control(
         self,

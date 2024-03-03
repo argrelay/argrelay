@@ -68,5 +68,6 @@ class ThisTestClass(LocalTestClass):
                     container_ipos_to_expected_assignments,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )

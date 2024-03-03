@@ -7,6 +7,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.relay_client import __main__
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra import parse_line_and_cpos
@@ -40,7 +41,7 @@ class LocalTestClass(InOutTestClass):
         test_line: str,
         comp_type: CompType,
         expected_suggestions: Union[list[str], None],
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, str]], None],
+        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
         delegator_class: Union[Type[AbstractDelegator], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
     ):
@@ -50,6 +51,7 @@ class LocalTestClass(InOutTestClass):
             comp_type,
             expected_suggestions,
             container_ipos_to_expected_assignments,
+            None,
             delegator_class,
             envelope_ipos_to_field_values,
             LocalClientEnvMockBuilder(),
@@ -61,7 +63,8 @@ class LocalTestClass(InOutTestClass):
         test_line: str,
         comp_type: CompType,
         expected_suggestions: Union[list[str], None],
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, str]], None],
+        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
+        container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
         delegator_class: Union[Type[AbstractDelegator], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         init_env_mock_builder: EnvMockBuilder,
@@ -107,6 +110,7 @@ class LocalTestClass(InOutTestClass):
                 call_ctx,
                 actual_suggestions,
                 container_ipos_to_expected_assignments,
+                container_ipos_to_options_hidden_by_default_value,
                 delegator_class,
                 envelope_ipos_to_field_values,
                 expected_suggestions,

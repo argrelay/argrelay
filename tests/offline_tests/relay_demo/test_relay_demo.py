@@ -204,6 +204,7 @@ class ThisTestClass(LocalTestClass):
                     None,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -327,6 +328,7 @@ class ThisTestClass(LocalTestClass):
                     CompType.InvokeAction,
                     None,
                     container_ipos_to_expected_assignments,
+                    None,
                     delegator_class,
                     envelope_ipos_to_field_values,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
@@ -434,67 +436,7 @@ class ThisTestClass(LocalTestClass):
 
         for test_case in test_cases:
             with self.subTest(test_case):
-                (
-                    line_number,
-                    test_line,
-                    comp_type,
-                    case_comment,
-                    stdout_str,
-                ) = test_case
-                (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
-
-                outer_env_mock_builder = (
-                    LocalClientEnvMockBuilder()
-                    .set_reset_local_server(False)
-                    .set_command_line(command_line)
-                    .set_cursor_cpos(cursor_cpos)
-                    .set_comp_type(comp_type)
-                    .set_test_data_ids_to_load([
-                        self.__class__.same_test_data_per_class,
-                    ])
-                )
-                with outer_env_mock_builder.build():
-                    command_obj = __main__.main()
-                    assert isinstance(command_obj, AbstractLocalClientCommand)
-                    interp_ctx = command_obj.interp_ctx
-
-                    if not stdout_str:
-                        # Output is not specified - not to be asserted:
-                        continue
-
-                    # TODO: Running print again with capturing `stdout`.
-                    #       Executing end-to-end above may generate
-                    #       noise output on `stdout`/`stderr` by local server logic.
-                    #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
-                    #       and printing it separately (when no other logic with extra output can intervene)
-                    #       to assert the output.
-                    #       Alternatively, run this test via `RemoteClient` (see `RemoteTestClass`) where output
-                    #       of the server is not captured (as it is a separate process).
-                    inner_env_mock_builder = (
-                        EmptyEnvMockBuilder()
-                        .set_capture_stdout(True)
-                        .set_capture_stderr(True)
-                    )
-                    with inner_env_mock_builder.build():
-                        interp_result: InterpResult = InterpResult(
-                            arg_values = interp_ctx.comp_suggestions,
-                            all_tokens = interp_ctx.parsed_ctx.all_tokens,
-                            consumed_tokens = interp_ctx.consumed_tokens,
-                            tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-                            tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
-                            envelope_containers = interp_ctx.envelope_containers,
-                        )
-                        DescribeLineArgsClientResponseHandler.render_result(interp_result)
-
-                        self.assertEqual(
-                            stdout_str,
-                            inner_env_mock_builder.actual_stdout.getvalue()
-                        )
-
-                        self.assertEqual(
-                            "",
-                            inner_env_mock_builder.actual_stderr.getvalue()
-                        )
+                self.verify_describe_output(test_case)
 
     def test_arg_assignments_for_completion_on_single_data_envelope(self):
         # @formatter:off
@@ -656,6 +598,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -727,6 +670,7 @@ class ThisTestClass(LocalTestClass):
                     container_ipos_to_expected_assignments,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -784,7 +728,188 @@ class ThisTestClass(LocalTestClass):
                     CompType.InvokeAction,
                     None,
                     None,
+                    None,
                     delegator_class,
                     envelope_ipos_to_field_values,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
+                )
+
+
+    def test_FS_72_53_55_13_show_non_default_options_data_only(self):
+        # @formatter:off
+        test_cases = [
+            (
+                line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
+                {
+                    1: {
+                        ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.HostName.name: AssignedValue("poiu-dd", ArgSource.ExplicitPosArg),
+                    },
+                    2: {
+                        ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.DefaultValue),
+                    },
+                    3: None,
+                },
+                {
+                    2: {
+                        ServiceArgType.AccessType.name: [
+                            "ro",
+                            "rw",
+                        ],
+                    },
+                    3: None,
+                },
+                None,
+                "Provide options hidden by `ArgSource.DefaultValue`.",
+            ),
+        ]
+        # @formatter:on
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    test_line,
+                    comp_type,
+                    container_ipos_to_expected_assignments,
+                    container_ipos_to_options_hidden_by_default_value,
+                    expected_suggestions,
+                    case_comment,
+                ) = test_case
+                self.verify_output_with_via_local_client(
+                    self.__class__.same_test_data_per_class,
+                    test_line,
+                    comp_type,
+                    expected_suggestions,
+                    container_ipos_to_expected_assignments,
+                    container_ipos_to_options_hidden_by_default_value,
+                    None,
+                    None,
+                    LocalClientEnvMockBuilder().set_reset_local_server(False),
+                )
+
+    def test_FS_72_53_55_13_show_non_default_options_print_out_only(self):
+        # @formatter:off
+        test_cases = [
+            (
+                line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
+                "FS_72_53_55_13: shows options hidden by default.",
+                f"""
+{TermColor.consumed_token.value}relay_demo{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} 
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}CodeMaturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: apac {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-apac-downstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} hhh rrr 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ServiceName: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{ServiceArgType.AccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}options:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
+""",
+            ),
+            (
+                line_no(), "relay_demo goto service dev downstream apac poiu-dd r|", CompType.DescribeArgs,
+                "FS_72_53_55_13: shows `ro` option hidden by default and FS_11_87_76_73 highlights them by prefix.",
+                f"""
+{TermColor.consumed_token.value}relay_demo{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}elay_demo{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}CodeMaturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: apac {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-apac-downstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} hhh {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}rr{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ServiceName: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{ServiceArgType.AccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}options:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
+""",
+            ),
+            # {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value}
+            # {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value}
+        ]
+        # @formatter:on
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                self.verify_describe_output(test_case)
+
+    def verify_describe_output(
+        self,
+        test_case,
+    ):
+        (
+            line_number,
+            test_line,
+            comp_type,
+            case_comment,
+            stdout_str,
+        ) = test_case
+        (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+
+        outer_env_mock_builder = (
+            LocalClientEnvMockBuilder()
+            .set_reset_local_server(False)
+            .set_command_line(command_line)
+            .set_cursor_cpos(cursor_cpos)
+            .set_comp_type(comp_type)
+            .set_test_data_ids_to_load([
+                self.__class__.same_test_data_per_class,
+            ])
+        )
+        with outer_env_mock_builder.build():
+            command_obj = __main__.main()
+            assert isinstance(command_obj, AbstractLocalClientCommand)
+            interp_ctx = command_obj.interp_ctx
+
+            if not stdout_str:
+                # Output is not specified - not to be asserted:
+                return
+
+            # TODO: Running print again with capturing `stdout`.
+            #       Executing end-to-end above may generate
+            #       noise output on `stdout`/`stderr` by local server logic.
+            #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
+            #       and printing it separately (when no other logic with extra output can intervene)
+            #       to assert the output.
+            #       Alternatively, run this test via `RemoteClient` (see `RemoteTestClass`) where output
+            #       of the server is not captured (as it is a separate process).
+            inner_env_mock_builder = (
+                EmptyEnvMockBuilder()
+                .set_capture_stdout(True)
+                .set_capture_stderr(True)
+            )
+            with inner_env_mock_builder.build():
+                interp_result: InterpResult = InterpResult(
+                    arg_values = interp_ctx.comp_suggestions,
+                    all_tokens = interp_ctx.parsed_ctx.all_tokens,
+                    consumed_tokens = interp_ctx.consumed_tokens,
+                    tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
+                    tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
+                    envelope_containers = interp_ctx.envelope_containers,
+                )
+                DescribeLineArgsClientResponseHandler.render_result(interp_result)
+
+                self.assertEqual(
+                    stdout_str,
+                    inner_env_mock_builder.actual_stdout.getvalue(),
+                )
+
+                self.assertEqual(
+                    "",
+                    inner_env_mock_builder.actual_stderr.getvalue(),
                 )

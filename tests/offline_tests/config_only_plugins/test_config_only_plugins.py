@@ -65,6 +65,7 @@ class ThisTestClass(LocalTestClass):
                     None,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -141,6 +142,7 @@ exit 1
                             self.__class__.same_test_data_per_class,
                             test_line,
                             comp_type,
+                            None,
                             None,
                             None,
                             None,

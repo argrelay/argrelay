@@ -93,14 +93,31 @@ class AbstractDelegator(AbstractPlugin):
             curr_container_ipos,
         )
 
+    def has_fill_control(
+        self,
+    ) -> bool:
+        """
+        FS_72_53_55_13: Optimization for showing values hidden by defaults.
+
+        *   If returns True, `run_fill_control` will be called subsequently
+            (and one more query will be run with populated values).
+        *   If returns False, `run_fill_control` will not be called
+            (and extra query is not necessary since there were no change of values by `run_fill_control`).
+        """
+        return False
+
     def run_fill_control(
         self,
         interp_ctx: "InterpContext",
-    ) -> None:
+    ) -> bool:
         """
         Implements FS_72_40_53_00 `fill_control`.
+
+        FS_72_53_55_13: Optimization for showing values hidden by defaults:
+        *   If returns True, it means at least one value was populated = one more query is necessary.
+        *   If returns False, no values were changed = extra query with populated values is not necessary.
         """
-        pass
+        return False
 
     def run_interp_control(
         self,

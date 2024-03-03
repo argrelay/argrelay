@@ -8,6 +8,7 @@ from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractR
 from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.relay_client import __main__
+from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.ClientServerTestClass import ClientServerTestClass
@@ -28,7 +29,7 @@ class RemoteTestClass(ClientServerTestClass):
         test_line: str,
         comp_type: CompType,
         expected_suggestions: Union[list[str], None],
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, str]], None],
+        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
         delegator_class: Union[Type[AbstractDelegator], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         init_env_mock_builder: EnvMockBuilder,
@@ -88,6 +89,7 @@ class RemoteTestClass(ClientServerTestClass):
                 call_ctx,
                 actual_suggestions,
                 container_ipos_to_expected_assignments,
+                None,
                 delegator_class,
                 envelope_ipos_to_field_values,
                 expected_suggestions,

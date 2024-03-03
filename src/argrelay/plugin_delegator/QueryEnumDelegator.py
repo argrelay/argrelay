@@ -20,6 +20,9 @@ subsequent_function_container_ipos_ = function_container_ipos_ + 1
 # TODO: Currently, QueryEnumDelegator is implemented by deriving from InterceptDelegator - this is strange.
 #       Use common base class instead, but don't make "QueryEnumDelegator is a InterceptDelegator".
 class QueryEnumDelegator(InterceptDelegator):
+    """
+    FS_02_25_41_81: Implements `query_enum_items_func`.
+    """
 
     def get_supported_func_envelopes(
         self,

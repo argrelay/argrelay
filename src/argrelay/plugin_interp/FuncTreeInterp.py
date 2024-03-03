@@ -182,12 +182,21 @@ class FuncTreeInterp(AbstractInterp):
             self.interp_ctx.curr_container_ipos,
         )
 
-    def delegate_fill_control(self):
+    def has_fill_control(
+        self,
+    ) -> bool:
+        return True
+
+    def delegate_fill_control(
+        self,
+    ) -> bool:
         delegator_plugin = self.get_func_delegator()
         if delegator_plugin:
-            delegator_plugin.run_fill_control(
+            return delegator_plugin.run_fill_control(
                 self.interp_ctx,
             )
+        else:
+            return False
 
     def get_found_func_data_envelope(self) -> Union[dict, None]:
         func_envelope = self.interp_ctx.envelope_containers[(

@@ -53,13 +53,27 @@ class EnvelopeContainer:
     When arg value from command line matches one of the values, this arg type moves to `assigned_types_to_values`.
     """
 
-    def populate_implicit_arg_values(self):
+    filled_types_to_values_hidden_by_defaults: dict[str, list[str]] = field(default_factory = lambda: {})
+    """
+    FS_72_53_55_13: values hidden by defaults:
+    This dict stores values which were hidden by applying defaults (see FS_72_40_53_00 fill control).
+    Only keys for those `arg_type`-s which have `ArgSource.InitValue` in `assigned_types_to_values` are listed here.
+    """
+
+    def populate_implicit_arg_values(
+        self,
+    ) -> bool:
         """
         When `data_envelope` is singled out, all remaining single-value `arg_type`-s become `ArgSource.ImplicitValue`.
 
         Implements FS_13_51_07_97 singled out implicit values.
+
+        Return:
+        *   True if any value was assigned.
+        *   False otherwise.
         """
 
+        any_assigned = False
         # Filter as in: FS_31_70_49_15 search control:
         for arg_type in self.search_control.keys_to_types_dict.values():
             if arg_type not in self.assigned_types_to_values:
@@ -70,7 +84,7 @@ class EnvelopeContainer:
                     # When a `data_envelope` is singled out, its array arg value will not be set as
                     # singled out via `ArgSource.ImplicitValue` (user can still select them explicitly).
                     # This is deliberate for now as the selection of specific value out of the array can be used
-                    # by delegators to implement difference in behavior.
+                    # by delegators to implement different in behavior.
 
                     if len(arg_values) == 1:
                         del self.remaining_types_to_values[arg_type]
@@ -79,3 +93,5 @@ class EnvelopeContainer:
                             arg_values[0],
                             ArgSource.ImplicitValue,
                         )
+                        any_assigned = True
+        return any_assigned

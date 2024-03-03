@@ -31,11 +31,15 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
     def render_result(
         interp_result: InterpResult,
     ):
+        """
+        FS_02_25_41_81: Renders results `query_enum_items_func` (Alt+Shift+Q)
+        """
 
         # TODO_11_77_28_50: print suggestions in `InterpResult.arg_values`
 
         print()
 
+        # Print command line:
         for i in range(len(interp_result.all_tokens)):
             if i == interp_result.tan_token_ipos:
                 DescribeLineArgsClientResponseHandler.render_tangent_token(interp_result, interp_result.all_tokens[i])
@@ -120,6 +124,24 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                         end = ""
                     )
                     print(TermColor.reset_style.value, end = "")
+
+                    # FS_72_53_55_13: Renders options hidden by default:
+                    if len(envelope_container.filled_types_to_values_hidden_by_defaults) != 0:
+
+                        print(" ", end = "")
+                        print(TermColor.caption_hidden_by_default.value, end = "")
+                        print("options:", end = "")
+                        print(TermColor.reset_style.value, end = " ")
+
+                        if arg_type in envelope_container.filled_types_to_values_hidden_by_defaults:
+                            values_hidden_by_defaults = envelope_container.filled_types_to_values_hidden_by_defaults[
+                                arg_type
+                            ]
+                            DescribeLineArgsClientResponseHandler.highlight_prefix(
+                                values_hidden_by_defaults,
+                                value_prefix,
+                                TermColor.value_hidden_by_default,
+                            )
 
                 elif arg_type in envelope_container.remaining_types_to_values:
                     print(" " * indent_size, end = "")

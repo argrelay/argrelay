@@ -80,6 +80,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     None,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 

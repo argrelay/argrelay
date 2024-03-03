@@ -25,15 +25,18 @@ class TermColor(Enum):
 
     fore_dark_red = "\033[31m"
     fore_dark_green = "\033[32m"
+    fore_dark_yellow = "\033[33m"
     fore_dark_cyan = "\033[36m"
     fore_dark_magenta = "\033[35m"
     fore_dark_gray = "\033[90m"
 
+    fore_bright_gray = "\033[90m"
     fore_bright_red = "\033[91m"
     fore_bright_green = "\033[92m"
     fore_bright_yellow = "\033[93m"
     fore_bright_blue = "\033[94m"
     fore_bright_cyan = "\033[96m"
+    fore_bright_magenta = "\033[95m"
     fore_bright_white = "\033[97m"
 
     fore_bold_dark_red = "\033[1;31m"
@@ -89,6 +92,16 @@ class TermColor(Enum):
     """
 
     no_option_to_suggest = fore_dark_gray
+
+    caption_hidden_by_default = fore_bright_magenta
+    """
+    FS_72_53_55_13: Caption for values hidden by default.
+    """
+
+    value_hidden_by_default = fore_dark_yellow
+    """
+    FS_72_53_55_13: Option hidden by default.
+    """
 
     found_count_0 = back_dark_red
     found_count_1 = fore_dark_green
