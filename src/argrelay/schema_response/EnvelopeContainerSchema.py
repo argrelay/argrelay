@@ -17,7 +17,7 @@ data_envelopes_ = "data_envelopes"
 found_count_ = "found_count"
 assigned_types_to_values_ = "assigned_types_to_values"
 remaining_types_to_values_ = "remaining_types_to_values"
-
+filled_types_to_values_hidden_by_defaults_ = "filled_types_to_values_hidden_by_defaults"
 
 class EnvelopeContainerSchema(Schema):
     class Meta:
@@ -52,6 +52,14 @@ class EnvelopeContainerSchema(Schema):
         required = True,
     )
 
+    filled_types_to_values_hidden_by_defaults = fields.Dict(
+        keys = fields.String(),
+        values = fields.List(
+            fields.String(),
+        ),
+        required = True,
+    )
+
     @post_load
     def make_object(
         self,
@@ -64,6 +72,7 @@ class EnvelopeContainerSchema(Schema):
             found_count = input_dict[found_count_],
             assigned_types_to_values = input_dict[assigned_types_to_values_],
             remaining_types_to_values = input_dict[remaining_types_to_values_],
+            filled_types_to_values_hidden_by_defaults = input_dict[filled_types_to_values_hidden_by_defaults_],
         )
 
 
@@ -88,6 +97,8 @@ envelope_container_desc = TypeDesc(
                 "C_value_3",
                 "C_value_9",
             ],
+        },
+        filled_types_to_values_hidden_by_defaults_: {
         },
     },
     default_file_path = "",

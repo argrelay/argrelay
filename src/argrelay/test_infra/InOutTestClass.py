@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from typing import Union, Type
 
+from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
+from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder
@@ -19,7 +21,8 @@ class InOutTestClass(BaseTestClass):
         self,
         call_ctx: CallContext,
         actual_suggestions: list[str],
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, str]], None],
+        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
+        container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
         delegator_class: Union[Type[AbstractDelegator], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         expected_suggestions: Union[list[str], None],
@@ -35,6 +38,22 @@ class InOutTestClass(BaseTestClass):
                 self.verify_envelope_containers(
                     envelope_containers,
                     container_ipos_to_expected_assignments,
+                )
+
+            if container_ipos_to_options_hidden_by_default_value is not None:
+                self.verify_options_hidden_by_default_value(
+                    envelope_containers,
+                    container_ipos_to_options_hidden_by_default_value,
+                )
+
+            if (
+                container_ipos_to_expected_assignments is not None
+                and
+                container_ipos_to_options_hidden_by_default_value is not None
+            ):
+                self.verify_expected_assignments_with_option_type_hidden_by_default(
+                    container_ipos_to_expected_assignments,
+                    container_ipos_to_options_hidden_by_default_value
                 )
 
             if delegator_class is not None:
@@ -79,7 +98,7 @@ class InOutTestClass(BaseTestClass):
     def verify_envelope_containers(
         self,
         envelope_containers,
-        container_ipos_to_expected_assignments,
+        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
     ):
         for container_ipos, expected_assignments in container_ipos_to_expected_assignments.items():
             try:
@@ -87,9 +106,9 @@ class InOutTestClass(BaseTestClass):
                     self.assertFalse(0 <= container_ipos < len(envelope_containers))
                 else:
                     self.assertTrue(0 <= container_ipos < len(envelope_containers))
-                    for arg_type, arg_value in expected_assignments.items():
+                    for arg_type, assigned_value in expected_assignments.items():
                         try:
-                            if arg_value is None:
+                            if assigned_value is None:
                                 self.assertTrue(
                                     arg_type not in
                                     envelope_containers
@@ -97,18 +116,83 @@ class InOutTestClass(BaseTestClass):
                                 )
                             else:
                                 self.assertEqual(
-                                    arg_value,
+                                    assigned_value,
                                     envelope_containers
                                     [container_ipos].assigned_types_to_values
                                     [arg_type],
                                 )
                         except:
                             eprint(
-                                f"container_ipos:{container_ipos} arg_type:{arg_type} arg_value:{arg_value}",
+                                f"container_ipos:{container_ipos} arg_type:{arg_type} assigned_value:{assigned_value}",
                             )
                             raise
             except:
                 print(f"envelope_containers:\n{envelope_containers}")
+                raise
+
+    def verify_options_hidden_by_default_value(
+        self,
+        envelope_containers: list[EnvelopeContainer],
+        container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
+    ):
+        for container_ipos, options_hidden_by_default_value_per_type in container_ipos_to_options_hidden_by_default_value.items():
+            try:
+                if options_hidden_by_default_value_per_type is None:
+                    self.assertFalse(0 <= container_ipos < len(envelope_containers))
+                else:
+                    self.assertTrue(0 <= container_ipos < len(envelope_containers))
+                    for arg_type, options_hidden_by_default_value in options_hidden_by_default_value_per_type.items():
+                        try:
+                            if options_hidden_by_default_value is None:
+                                self.assertTrue(
+                                    arg_type not in
+                                    envelope_containers
+                                    [container_ipos].filled_types_to_values_hidden_by_defaults
+                                )
+                            else:
+                                self.assertEqual(
+                                    options_hidden_by_default_value,
+                                    envelope_containers
+                                    [container_ipos].filled_types_to_values_hidden_by_defaults
+                                    [arg_type],
+                                )
+                        except:
+                            eprint(
+                                f"container_ipos:{container_ipos} arg_type:{arg_type} options_hidden_by_default_value:{options_hidden_by_default_value}",
+                            )
+                            raise
+            except:
+                print(f"envelope_containers:\n{envelope_containers}")
+                raise
+
+    def verify_expected_assignments_with_option_type_hidden_by_default(
+        self,
+        container_ipos_to_expected_assignments: dict[int, dict[str, AssignedValue]],
+        container_ipos_to_options_hidden_by_default_value: dict[int, dict[str, list[str]]],
+    ):
+        """
+        Make sure that, for given `container_ipos`, if there are both:
+        *   options hidden by default
+        *   assigned value
+        then, the assigned value has `ArgSource.DefaultValue`.
+        """
+        for container_ipos, expected_assignments in container_ipos_to_expected_assignments.items():
+            try:
+                if expected_assignments is not None:
+                    if container_ipos in container_ipos_to_options_hidden_by_default_value:
+                        for arg_type, assigned_value in expected_assignments.items():
+                            options_hidden_by_default_value_per_type = container_ipos_to_options_hidden_by_default_value[
+                                container_ipos
+                            ]
+                            if arg_type in options_hidden_by_default_value_per_type:
+                                self.assertEqual(
+                                    assigned_value.arg_source,
+                                    ArgSource.DefaultValue,
+                                )
+            except:
+                print(f"container_ipos_to_expected_assignments:\n{container_ipos_to_expected_assignments}")
+                print(
+                    f"container_ipos_to_options_hidden_by_default_value:\n{container_ipos_to_options_hidden_by_default_value}")
                 raise
 
     def verify_data_envelopes(

@@ -100,6 +100,7 @@ class ThisTestClass(LocalTestClass):
                     comp_type,
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
+                    None,
                     delegator_class,
                     None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),

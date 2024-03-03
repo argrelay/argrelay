@@ -5,6 +5,7 @@ from typing import Union
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import __main__
+from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.test_infra import line_no_from_ctor
 from argrelay.test_infra.CustomTestCase import ShellInputTestCase
@@ -97,7 +98,7 @@ class ThisTestCase(ShellInputTestCase):
         case_comment: str,
         test_line: str,
         comp_type: CompType,
-        container_ipos_to_expected_assignments: dict[int, dict[str, str]],
+        container_ipos_to_expected_assignments: dict[int, dict[str, AssignedValue]],
         sever_action_verifier: ServerActionVerifier,
     ):
         super().__init__(

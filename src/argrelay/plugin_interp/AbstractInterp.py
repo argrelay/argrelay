@@ -48,8 +48,21 @@ class AbstractInterp:
     def try_iterate(self) -> InterpStep:
         pass
 
-    def delegate_fill_control(self) -> None:
-        pass
+    def has_fill_control(
+        self,
+    ) -> bool:
+        """
+        FS_72_53_55_13: See `AbstractDelegator.has_fill_control` for more information.
+        """
+        return False
+
+    def delegate_fill_control(
+        self,
+    ) -> bool:
+        """
+        FS_72_53_55_13: See `AbstractDelegator.run_fill_control` for more information.
+        """
+        return False
 
     def propose_arg_completion(self) -> None:
         pass

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import field, dataclass
 
+from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
@@ -185,23 +187,42 @@ class InterpContext:
 
             ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {self.curr_interp}")
             self.query_prop_values()
+            # Reset to False was we just executed new query:
+            query_changed = False
+
             if self.curr_container:
-                self.curr_container.populate_implicit_arg_values()
+                query_changed = (
+                    self.curr_container.populate_implicit_arg_values()
+                    or
+                    query_changed
+                )
 
-            if self.parsed_ctx.server_action is ServerAction.DescribeLineArgs:
-                # TODO: FS_72_53_55_13: options before defaults
-                # Describing args will need to show options except default - query values before defaults:
-                pass
+            if self.curr_interp.has_fill_control():
+                if self.parsed_ctx.server_action is ServerAction.DescribeLineArgs:
+                    # TODO: FS_72_53_55_13: options before defaults
+                    # Describing args will need to show options except default - query values before defaults:
+                    ElapsedTime.measure(f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}")
+                    self.query_prop_values()
+                    # Reset to False was we just executed new query:
+                    query_changed = False
 
-            # Apply defaults:
-            self.curr_interp.delegate_fill_control()
+                    self._save_potentially_hidden_by_defaults()
 
-            # Query envelopes after all defaults applied:
+                # Apply defaults:
+                query_changed = (
+                    self.curr_interp.delegate_fill_control()
+                    or
+                    query_changed
+                )
+                self._leave_only_hidden_by_defaults()
+
+            # Query envelopes after all implicit and default values assigned:
             # TODO: We could probably select whether to query only envelopes or
             #       query their values depending on `ServerAction`.
             #       But init of next envelope depends on prev envelope found.
-            ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {self.curr_interp}")
-            self.query_prop_values()
+            if query_changed:
+                ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {self.curr_interp}")
+                self.query_prop_values()
 
             ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {self.curr_interp}")
             interp_step: InterpStep = self.curr_interp.try_iterate()
@@ -233,6 +254,33 @@ class InterpContext:
                     return
             else:
                 raise RuntimeError(interp_step)
+
+    def _save_potentially_hidden_by_defaults(self):
+        if not self.curr_container:
+            return
+        for remaining_type in self.curr_container.remaining_types_to_values.keys():
+            self.curr_container.filled_types_to_values_hidden_by_defaults[
+                remaining_type
+            ] = deepcopy(self.curr_container.remaining_types_to_values[remaining_type])
+
+    def _leave_only_hidden_by_defaults(self):
+        if not self.curr_container:
+            return
+        types_not_hidden_by_defaults = []
+        for type_potentially_hidden_by_defaults in self.curr_container.filled_types_to_values_hidden_by_defaults.keys():
+            if type_potentially_hidden_by_defaults in self.curr_container.assigned_types_to_values:
+                if (
+                    self.curr_container.assigned_types_to_values[
+                        type_potentially_hidden_by_defaults
+                    ].arg_source
+                    is not
+                    ArgSource.DefaultValue
+                ):
+                    types_not_hidden_by_defaults.append(type_potentially_hidden_by_defaults)
+            else:
+                types_not_hidden_by_defaults.append(type_potentially_hidden_by_defaults)
+        for arg_type in types_not_hidden_by_defaults:
+            del self.curr_container.filled_types_to_values_hidden_by_defaults[arg_type]
 
     def _contribute_to_completion(self):
         if self.parsed_ctx.server_action is ServerAction.ProposeArgValues:

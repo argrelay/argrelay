@@ -260,10 +260,15 @@ class ServiceDelegator(AbstractDelegator):
         ]
         return func_envelopes
 
+    def has_fill_control(
+        self,
+    ) -> bool:
+        return True
+
     def run_fill_control(
         self,
         interp_ctx: "InterpContext",
-    ):
+    ) -> bool:
         func_id = get_func_id_from_interp_ctx(interp_ctx)
         if func_id in [
             goto_host_func_,
@@ -291,6 +296,7 @@ class ServiceDelegator(AbstractDelegator):
                         set_default_to(ServiceArgType.AccessType.name, "ro", access_container)
                     else:
                         set_default_to(ServiceArgType.AccessType.name, "rw", access_container)
+                    return True
 
         elif func_id in [
             list_host_func_,
@@ -299,6 +305,8 @@ class ServiceDelegator(AbstractDelegator):
             pass
         else:
             raise RuntimeError
+
+        return False
 
     def run_invoke_control(
         self,
