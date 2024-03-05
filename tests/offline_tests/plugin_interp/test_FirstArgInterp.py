@@ -64,6 +64,7 @@ class ThisTestClass(LocalTestClass):
                 "funct_id_print_with_severity_level",
                 "funct_id_print_with_exit_code",
                 "funct_id_print_with_io_redirect",
+                "funct_id_double_execution",
 
                 "intercept_invocation_func",
                 "help_hint_func",

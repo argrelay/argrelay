@@ -13,6 +13,11 @@ indent_size = 2
 
 class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
 
+    default_overrides_caption: str = "overrides"
+    """
+    FS_72_53_55_13: Caption for options hidden by defaults.
+    """
+
     def __init__(
         self,
     ):
@@ -130,7 +135,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
 
                         print(" ", end = "")
                         print(TermColor.caption_hidden_by_default.value, end = "")
-                        print("options:", end = "")
+                        print(f"{DescribeLineArgsClientResponseHandler.default_overrides_caption}:", end = "")
                         print(TermColor.reset_style.value, end = " ")
 
                         if arg_type in envelope_container.filled_types_to_values_hidden_by_defaults:
