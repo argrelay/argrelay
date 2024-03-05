@@ -92,6 +92,9 @@ class TermColor(Enum):
     """
 
     no_option_to_suggest = fore_dark_gray
+    """
+    When none of the relevant `data_envelope`-s has values for the given prop.
+    """
 
     caption_hidden_by_default = fore_bright_magenta
     """

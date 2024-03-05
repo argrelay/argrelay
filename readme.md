@@ -49,6 +49,7 @@ Wrapping any command by `argrelay`:
 
 | GUI                                                                           | CLI                                                       |
 |-------------------------------------------------------------------------------|-----------------------------------------------------------|
+| :heavy_minus_sign: may not exist early in development (for app or features)   | :heavy_plus_sign: likely available early in development   |
 | :heavy_minus_sign: no universal way to reproduce (composite) GUI actions      | :heavy_plus_sign: share and "replay" commands as **text** |
 | :heavy_minus_sign: no universal way to store and search GUI results           | :heavy_plus_sign: share and search results as **text**    |
 | :heavy_minus_sign: no universal way to auto-trigger GUI actions on events     | :heavy_plus_sign: hook commands anyhow (e.g. schedule)    |

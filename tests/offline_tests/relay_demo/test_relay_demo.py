@@ -355,10 +355,10 @@ class ThisTestClass(LocalTestClass):
                 "FS_41_40_39_44: TODO: suggest from interp tree.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}29{TermColor.reset_style.value}
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}31{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc duplicates echo enum goto help intercept list 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service 
 """,
             ),
             (
@@ -812,7 +812,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceArgType.AccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}options:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
 """,
             ),
             (
@@ -836,7 +836,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceArgType.AccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}options:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
 """,
             ),
             # {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value}

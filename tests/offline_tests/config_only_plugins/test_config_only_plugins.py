@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
+from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
@@ -22,6 +24,7 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(), "some_command config |", CompType.PrefixHidden,
                 [
+                    "double_execution",
                     "print_with_exit",
                     "print_with_io_redirect",
                     "print_with_level",
@@ -64,6 +67,66 @@ class ThisTestClass(LocalTestClass):
                     expected_suggestions,
                     None,
                     None,
+                    None,
+                    None,
+                    LocalClientEnvMockBuilder().set_reset_local_server(False),
+                )
+
+    def test_FS_49_96_50_77_config_only_with_FS_72_53_55_13_default_overrides(self):
+        # @formatter:off
+        test_cases = [
+            (
+                line_no(), "some_command config double_execution ERROR 1 |", CompType.DescribeArgs,
+                {
+                    1: {
+                        "severity_level": AssignedValue("ERROR", ArgSource.ExplicitPosArg),
+                        "exit_code": AssignedValue("1", ArgSource.ExplicitPosArg),
+                    },
+                    2: {
+                        "severity_level": AssignedValue("ERROR", ArgSource.DefaultValue),
+                        "exit_code": AssignedValue("1", ArgSource.DefaultValue),
+                    },
+                    3: None,
+                },
+                {
+                    2: {
+                        "severity_level": [
+                            "ERROR",
+                            "INFO",
+                            "WARN",
+                        ],
+                        "exit_code": [
+                            "0",
+                            "1",
+                            "2",
+                        ],
+                    },
+                    3: None,
+                },
+                None,
+                "TODO: Provide options hidden .",
+            ),
+        ]
+        # @formatter:on
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    test_line,
+                    comp_type,
+                    container_ipos_to_expected_assignments,
+                    container_ipos_to_options_hidden_by_default_value,
+                    expected_suggestions,
+                    case_comment,
+                ) = test_case
+                self.verify_output_with_via_local_client(
+                    self.__class__.same_test_data_per_class,
+                    test_line,
+                    comp_type,
+                    expected_suggestions,
+                    container_ipos_to_expected_assignments,
+                    container_ipos_to_options_hidden_by_default_value,
                     None,
                     None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),

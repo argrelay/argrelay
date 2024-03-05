@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import BaseConfigDelegatorConfigSchema
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import func_configs_
-from argrelay.custom_integ.FuncConfigSchema import func_envelope_
+from argrelay.custom_integ.FuncConfigSchema import func_envelope_, fill_control_list_
+from argrelay.custom_integ.ServiceDelegator import set_default_to
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_interp_ctx
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -142,9 +143,31 @@ class BaseConfigDelegator(AbstractDelegator):
         interp_ctx: InterpContext,
     ) -> bool:
         """
+        FS_49_96_50_77: (part of implementation for config-only delegator) populates defaults
         TODO_54_68_18_12: Support defaults for config-only delegator
         """
-        return super().run_fill_control(interp_ctx)
+        any_assignment = False
+        if interp_ctx.curr_container_ipos > function_container_ipos_:
+            func_id = get_func_id_from_interp_ctx(interp_ctx)
+            func_config = self.plugin_config_dict[func_configs_][func_id]
+            if fill_control_list_ in func_config:
+                fill_control_list = func_config[fill_control_list_]
+                if interp_ctx.curr_container_ipos < len(fill_control_list):
+
+                    # Define vars in current context to evaluate `prop_value_template` below:
+                    envelope_containers = interp_ctx.envelope_containers
+
+                    fill_control: dict = fill_control_list[interp_ctx.curr_container_ipos]
+                    for prop_name, prop_value_template in fill_control.items():
+                        if prop_value_template is not None:
+                            # The input is trusted (from config), right? Then:
+                            # https://stackoverflow.com/a/54071505/441652
+                            prop_value = eval(f'f"""{prop_value_template}"""')
+
+                            set_default_to(prop_name, prop_value, interp_ctx.curr_container)
+                            any_assignment = True
+
+        return any_assignment
 
     def run_invoke_control(
         self,

@@ -184,6 +184,9 @@ server_plugin_control:
                                         "print_with_io_redirect":
                                             node_type: func_tree_node
                                             func_id: funct_id_print_with_io_redirect
+                                        "double_execution":
+                                            node_type: func_tree_node
+                                            func_id: funct_id_double_execution
                         "duplicates":
                             "intercept":
                                 <<: *intercept_invocation_func_interp_tree_node
@@ -370,6 +373,7 @@ plugin_instance_entries:
                     "print_with_level": funct_id_print_with_severity_level
                     "print_with_exit": funct_id_print_with_exit_code
                     "print_with_io_redirect": funct_id_print_with_io_redirect
+                    "double_execution": funct_id_double_execution
 
     FuncTreeInterpFactory.service:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
@@ -505,14 +509,15 @@ plugin_instance_entries:
         plugin_module_name: argrelay.custom_integ.ConfigOnlyDelegator
         plugin_class_name: ConfigOnlyDelegator
         plugin_config:
+            # TODO_84_71_86_21: change to realistic examples:
             func_configs:
                 funct_id_print_with_severity_level:
-                    # TODO_84_71_86_21: change to realistic example:
                     func_envelope:
                         HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
                         instance_data:
                             search_control_list:
-                                -   collection_name: ConfigOnlyClass
+                                -
+                                    collection_name: ConfigOnlyClass
                                     envelope_class: ConfigOnlyClass
                                     keys_to_types_list:
                                         -   level: severity_level
@@ -521,7 +526,6 @@ plugin_instance_entries:
                             command_template: "echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\""
                             echo_command_on_stderr: True
                 funct_id_print_with_exit_code:
-                    # TODO_84_71_86_21: change to realistic example:
                     func_envelope:
                         HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
                         instance_data:
@@ -537,7 +541,6 @@ plugin_instance_entries:
                                 echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
                                 exit {envelope_containers[1].data_envelopes[0]['exit_code']}
                 funct_id_print_with_io_redirect:
-                    # TODO_84_71_86_21: change to realistic example:
                     func_envelope:
                         HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` on stdout or stderr based on exit code"
                         instance_data:
@@ -557,6 +560,37 @@ plugin_instance_entries:
                                     echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&2
                                 fi
                                 exit {envelope_containers[1].data_envelopes[0]['exit_code']}
+                funct_id_double_execution:
+                    fill_control_list:
+                        # 0th = func container:
+                        -   { }
+                        # 1st container:
+                        -   { }
+                        # 2nd container:
+                        -
+                            severity_level: "{envelope_containers[1].data_envelopes[0]['severity_level']}"
+                            exit_code: "{envelope_containers[1].data_envelopes[0]['exit_code']}"
+                    func_envelope:
+                        HelpHint: "Example: take two command templates and execute them: print `text_message` prefixed with `severity_level` and print exit code (without using it for exit)"
+                        instance_data:
+                            search_control_list:
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                        envelope_payload:
+                            command_template: |
+                                echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: exit_code={envelope_containers[1].data_envelopes[0]['exit_code']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
+                                echo \"{envelope_containers[2].data_envelopes[0]['severity_level']}: exit_code={envelope_containers[2].data_envelopes[0]['exit_code']}: {envelope_containers[2].data_envelopes[0]['envelope_payload']['text_message']}\"
+                            echo_command_on_stderr: False
 
     # TODO: Add FS_80_45_89_81 / `error_message` func:
     ErrorDelegator.default:
