@@ -47,7 +47,7 @@ server_port_number="$( jq --raw-output ".connection_config.server_port_number" "
 #       etc.
 
 # TODO: Check if server is local.
-#       Do not check via hostname.
+#       Do not check via host_name.
 #       Simply check netstat against port number to select pid.
 #       Check if pid file exists.
 #       Check if pid in pid file matches pid from netstat.

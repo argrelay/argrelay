@@ -59,47 +59,47 @@ relay_demo goto host cm1 fs3 gr5 hs7 rw |
 0.000036s: after_cache_lookup
 0.000001s: before_mongo_find
 0.000022s: after_mongo_find
-0.247683s: end_query_envelopes: dict_keys(['EnvelopeClass', 'CodeMaturity']) 100
+0.247683s: end_query_envelopes: dict_keys(['EnvelopeClass', 'code_maturity']) 100
 0.000010s: begin_query_envelopes: ClassCluster
 0.000006s: before_cache_lookup
 0.000027s: after_cache_lookup
 0.000001s: before_mongo_find
 0.000023s: after_mongo_find
-0.238283s: end_query_envelopes: dict_keys(['EnvelopeClass', 'CodeMaturity', 'FlowStage']) 10
+0.238283s: end_query_envelopes: dict_keys(['EnvelopeClass', 'code_maturity', 'flow_stage']) 10
 0.000010s: begin_query_envelopes: ClassCluster
 0.000007s: before_cache_lookup
 0.000028s: after_cache_lookup
 0.000001s: before_mongo_find
 0.000025s: after_mongo_find
-0.239986s: end_query_envelopes: dict_keys(['EnvelopeClass', 'CodeMaturity', 'FlowStage', 'GeoRegion']) 1
+0.239986s: end_query_envelopes: dict_keys(['EnvelopeClass', 'code_maturity', 'flow_stage', 'geo_region']) 1
 0.000009s: [i=3]: before_try_iterate: DemoInterp
 0.000021s: begin_query_envelopes: ClassHost
 0.000004s: before_cache_lookup
 0.000027s: after_cache_lookup
 0.000001s: before_mongo_find
 0.000024s: after_mongo_find
-0.251899s: end_query_envelopes: dict_keys(['EnvelopeClass', 'ClusterName']) 10
+0.251899s: end_query_envelopes: dict_keys(['EnvelopeClass', 'cluster_name']) 10
 0.000007s: [i=4]: before_consume_args: DemoInterp
 0.000009s: begin_query_envelopes: ClassHost
 0.000006s: before_cache_lookup
 0.000027s: after_cache_lookup
 0.000001s: before_mongo_find
 0.000023s: after_mongo_find
-0.247702s: end_query_envelopes: dict_keys(['EnvelopeClass', 'ClusterName', 'HostName']) 1
+0.247702s: end_query_envelopes: dict_keys(['EnvelopeClass', 'cluster_name', 'host_name']) 1
 0.000008s: [i=4]: before_try_iterate: DemoInterp
-0.000023s: begin_query_envelopes: AccessType
+0.000023s: begin_query_envelopes: access_type
 0.000004s: before_cache_lookup
 0.000032s: after_cache_lookup
 0.000001s: before_mongo_find
 0.000026s: after_mongo_find
 0.250506s: end_query_envelopes: dict_keys(['EnvelopeClass']) 2
 0.000007s: [i=5]: before_consume_args: DemoInterp
-0.000008s: begin_query_envelopes: AccessType
+0.000008s: begin_query_envelopes: access_type
 0.000006s: before_cache_lookup
 0.000027s: after_cache_lookup
 0.000001s: before_mongo_find
 0.000023s: after_mongo_find
-0.242053s: end_query_envelopes: dict_keys(['EnvelopeClass', 'AccessType']) 1
+0.242053s: end_query_envelopes: dict_keys(['EnvelopeClass', 'access_type']) 1
 0.000008s: [i=5]: before_try_iterate: DemoInterp
 0.000012s: [i=5]: before_contribute_to_completion: DemoInterp
 0.000012s: [i=5]: after_contribute_to_completion: DemoInterp
@@ -139,35 +139,35 @@ relay_demo goto host cm1 fs3 gr5 hs7 rw |
 0.000005s: begin_query_envelopes: ClassCluster
 0.000003s: before_cache_lookup
 0.000015s: after_cache_lookup
-0.000004s: end_query_envelopes: dict_keys(['EnvelopeClass', 'CodeMaturity']) 100
+0.000004s: end_query_envelopes: dict_keys(['EnvelopeClass', 'code_maturity']) 100
 0.000004s: begin_query_envelopes: ClassCluster
 0.000003s: before_cache_lookup
 0.000014s: after_cache_lookup
-0.000004s: end_query_envelopes: dict_keys(['EnvelopeClass', 'CodeMaturity', 'FlowStage']) 10
+0.000004s: end_query_envelopes: dict_keys(['EnvelopeClass', 'code_maturity', 'flow_stage']) 10
 0.000003s: begin_query_envelopes: ClassCluster
 0.000003s: before_cache_lookup
 0.000013s: after_cache_lookup
-0.000004s: end_query_envelopes: dict_keys(['EnvelopeClass', 'CodeMaturity', 'FlowStage', 'GeoRegion']) 1
+0.000004s: end_query_envelopes: dict_keys(['EnvelopeClass', 'code_maturity', 'flow_stage', 'geo_region']) 1
 0.000004s: [i=3]: before_try_iterate: DemoInterp
 0.000010s: begin_query_envelopes: ClassHost
 0.000003s: before_cache_lookup
 0.000012s: after_cache_lookup
-0.000003s: end_query_envelopes: dict_keys(['EnvelopeClass', 'ClusterName']) 10
+0.000003s: end_query_envelopes: dict_keys(['EnvelopeClass', 'cluster_name']) 10
 0.000002s: [i=4]: before_consume_args: DemoInterp
 0.000004s: begin_query_envelopes: ClassHost
 0.000003s: before_cache_lookup
 0.000013s: after_cache_lookup
-0.000003s: end_query_envelopes: dict_keys(['EnvelopeClass', 'ClusterName', 'HostName']) 1
+0.000003s: end_query_envelopes: dict_keys(['EnvelopeClass', 'cluster_name', 'host_name']) 1
 0.000003s: [i=4]: before_try_iterate: DemoInterp
-0.000008s: begin_query_envelopes: AccessType
+0.000008s: begin_query_envelopes: access_type
 0.000002s: before_cache_lookup
 0.000012s: after_cache_lookup
 0.000003s: end_query_envelopes: dict_keys(['EnvelopeClass']) 2
 0.000002s: [i=5]: before_consume_args: DemoInterp
-0.000004s: begin_query_envelopes: AccessType
+0.000004s: begin_query_envelopes: access_type
 0.000003s: before_cache_lookup
 0.000012s: after_cache_lookup
-0.000003s: end_query_envelopes: dict_keys(['EnvelopeClass', 'AccessType']) 1
+0.000003s: end_query_envelopes: dict_keys(['EnvelopeClass', 'access_type']) 1
 0.000002s: [i=5]: before_try_iterate: DemoInterp
 0.000004s: [i=5]: before_contribute_to_completion: DemoInterp
 0.000007s: [i=5]: after_contribute_to_completion: DemoInterp

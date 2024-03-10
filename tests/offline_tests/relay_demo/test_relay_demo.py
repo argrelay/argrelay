@@ -60,7 +60,7 @@ class ThisTestClass(LocalTestClass):
                 [],
                 "FS_23_62_89_43: "
                 "Host `qwer` is already singled out `data_envelope` "
-                "(only one `ServiceEnvelopeClass.ClassHost` within current `ServiceArgType.ClusterName`),"
+                "(only one `ServiceEnvelopeClass.ClassHost` within current `ServiceArgType.cluster_name`),"
                 "therefore, it is not suggested.",
             ),
             (
@@ -73,8 +73,8 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod apac|", CompType.SubsequentHelp,
                 [],
                 "FS_23_62_89_43: "
-                "`ServiceArgType.CodeMaturity` = `prod` singles out `ServiceEnvelopeClass.ClassCluster` which "
-                "skips suggestion for `ServiceArgType.GeoRegion`",
+                "`ServiceArgType.code_maturity` = `prod` singles out `ServiceEnvelopeClass.ClassCluster` which "
+                "skips suggestion for `ServiceArgType.geo_region`",
             ),
             (
                 line_no(), "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |", CompType.PrefixShown,
@@ -88,7 +88,7 @@ class ThisTestClass(LocalTestClass):
                     "prod",
                     "qa",
                 ],
-                "`PrefixHidden`: arg values for `ClusterName` search is specified ahead function query "
+                "`PrefixHidden`: arg values for `cluster_name` search is specified ahead function query "
                 "but order is \"ignored\"",
             ),
             (
@@ -113,8 +113,8 @@ class ThisTestClass(LocalTestClass):
                 "some_command goto upstream dev amer desc host |", CompType.SubsequentHelp,
                 [],
                 "FS_23_62_89_43: "
-                "`ServiceArgType.CodeMaturity` = `dev` and `ServiceArgType.GeoRegion` = `amer` "
-                "single out one host and one service, leaving only `ServiceArgType.AccessType` "
+                "`ServiceArgType.code_maturity` = `dev` and `ServiceArgType.geo_region` = `amer` "
+                "single out one host and one service, leaving only `ServiceArgType.access_type` "
                 "to be the next to suggest which has a default "
                 "leading to no suggestions at all.",
             ),
@@ -229,7 +229,7 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.ClassHost.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                     },
                     2: None,
                 },
@@ -240,27 +240,27 @@ class ThisTestClass(LocalTestClass):
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "zxcv-du",
+                        ServiceArgType.host_name.name: "zxcv-du",
                     },
                     2: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "zxcv-dd",
+                        ServiceArgType.host_name.name: "zxcv-dd",
                     },
                     3: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "poiu-dd",
+                        ServiceArgType.host_name.name: "poiu-dd",
                     },
                     4: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "asdf-du",
+                        ServiceArgType.host_name.name: "asdf-du",
                     },
                     5: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "xcvb-dd",
+                        ServiceArgType.host_name.name: "xcvb-dd",
                     },
                     6: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "qwer-du",
+                        ServiceArgType.host_name.name: "qwer-du",
                     },
                     7: None,
                 },
@@ -280,12 +280,12 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.ClassService.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.ServiceName.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.GeoRegion.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
                     },
                     2: {
-                        # Nothing is assigned for `ServiceArgType.AccessType`, but it exists.
+                        # Nothing is assigned for `ServiceArgType.access_type`, but it exists.
                     },
                     3: None,
                 },
@@ -296,13 +296,13 @@ class ThisTestClass(LocalTestClass):
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.ServiceName.name: "s_b",
-                        ServiceArgType.HostName.name: "qwer-pd-1",
+                        ServiceArgType.service_name.name: "s_b",
+                        ServiceArgType.host_name.name: "qwer-pd-1",
                     },
                     2: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.ServiceName.name: "s_b",
-                        ServiceArgType.HostName.name: "qwer-pd-2",
+                        ServiceArgType.service_name.name: "s_b",
+                        ServiceArgType.host_name.name: "qwer-pd-2",
                     },
                     3: None,
                 },
@@ -355,10 +355,10 @@ class ThisTestClass(LocalTestClass):
                 "FS_41_40_39_44: TODO: suggest from interp tree.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}31{TermColor.reset_style.value}
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}33{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc duplicates echo enum goto help intercept list 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag 
 """,
             ),
             (
@@ -372,23 +372,23 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}CodeMaturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: emea {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-emea-upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa bbb sss 
-{" " * indent_size}{TermColor.remaining_value.value}ServiceName: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}a{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}b{TermColor.reset_style.value} 
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}HostName: asdf-du {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.22 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.172.16.2.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.AccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}AccessType: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}geo_region: emea {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}cluster_name: dev-emea-upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*group_label: ?{TermColor.reset_style.value} aaa bbb sss 
+{" " * indent_size}{TermColor.remaining_value.value}service_name: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}a{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}b{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}host_name: asdf-du {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.22 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.172.16.2.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{ServiceArgType.access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
 """,
             ),
             (
                 line_no(), "some_command goto host upstream |", CompType.DescribeArgs,
-                "Regular description with some props specified (FlowStage) and many still to be narrowed down.",
+                "Regular description with some props specified (flow_stage) and many still to be narrowed down.",
                 # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} 
@@ -397,14 +397,14 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: host {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassHost.name}: {TermColor.found_count_n.value}10{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*CodeMaturity: ?{TermColor.reset_style.value} dev prod qa 
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}GeoRegion: ?{TermColor.reset_style.value} amer apac emea 
-{" " * indent_size}{TermColor.remaining_value.value}ClusterName: ?{TermColor.reset_style.value} dev-amer-upstream dev-apac-upstream dev-emea-upstream prod-apac-upstream qa-amer-upstream qa-apac-upstream 
-{" " * indent_size}{TermColor.remaining_value.value}HostName: ?{TermColor.reset_style.value} asdf-du hjkl-qu poiu-qu qwer-du qwer-pd-1 qwer-pd-2 qwer-pd-3 rt-qu rtyu-qu zxcv-du 
-{" " * indent_size}{TermColor.remaining_value.value}IpAddress: ?{TermColor.reset_style.value} ip.172.16.2.1 ip.172.16.4.2 ip.172.16.7.2 ip.192.168.1.1 ip.192.168.3.1 ip.192.168.4.1 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 
-{ServiceArgType.AccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}AccessType: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*code_maturity: ?{TermColor.reset_style.value} dev prod qa 
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}geo_region: ?{TermColor.reset_style.value} amer apac emea 
+{" " * indent_size}{TermColor.remaining_value.value}cluster_name: ?{TermColor.reset_style.value} dev-amer-upstream dev-apac-upstream dev-emea-upstream prod-apac-upstream qa-amer-upstream qa-apac-upstream 
+{" " * indent_size}{TermColor.remaining_value.value}host_name: ?{TermColor.reset_style.value} asdf-du hjkl-qu poiu-qu qwer-du qwer-pd-1 qwer-pd-2 qwer-pd-3 rt-qu rtyu-qu zxcv-du 
+{" " * indent_size}{TermColor.remaining_value.value}ip_address: ?{TermColor.reset_style.value} ip.172.16.2.1 ip.172.16.4.2 ip.172.16.7.2 ip.192.168.1.1 ip.192.168.3.1 ip.192.168.4.1 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 
+{ServiceArgType.access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
 """,
             ),
             (
@@ -417,18 +417,18 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}CodeMaturity: prod {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}FlowStage: upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}GeoRegion: apac {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: prod-apac-upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} aaa bbb sss 
-{" " * indent_size}{TermColor.remaining_value.value}ServiceName: ?{TermColor.reset_style.value} s_a s_b 
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.07 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.7.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.AccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}AccessType: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}code_maturity: prod {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}flow_stage: upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}geo_region: apac {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}cluster_name: prod-apac-upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*group_label: ?{TermColor.reset_style.value} aaa bbb sss 
+{" " * indent_size}{TermColor.remaining_value.value}service_name: ?{TermColor.reset_style.value} s_a s_b 
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}host_name: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.07 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.7.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{ServiceArgType.access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
 """,
             ),
         ]
@@ -445,10 +445,10 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
-                    ServiceArgType.GeoRegion.name: AssignedValue("emea", ArgSource.ImplicitValue),
-                    ServiceArgType.FlowStage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                    ServiceArgType.ClusterName.name: AssignedValue("dev-emea-downstream", ArgSource.ExplicitPosArg),
+                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                    ServiceArgType.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
+                    ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                    ServiceArgType.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ExplicitPosArg),
                 },
                 "Implicit assignment of all cluster categories when cluster name is specified",
             ),
@@ -456,7 +456,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod-apac-downstream wert-pd-1 |", CompType.PrefixShown,
                 2,
                 {
-                    ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.DefaultValue),
+                    ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
                 },
                 "Default `ro` for `prod`",
             ),
@@ -464,7 +464,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod-apac-downstream wert-pd-1 rw |", CompType.PrefixShown,
                 2,
                 {
-                    ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.ExplicitPosArg),
+                    ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.ExplicitPosArg),
                 },
                 "Override default `ro` for `prod` to `rw`",
             ),
@@ -472,7 +472,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host dev-apac-upstream zxcv-du |", CompType.PrefixShown,
                 2,
                 {
-                    ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.DefaultValue),
+                    ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
                 },
                 "Default `rw` for non-`prod`",
             ),
@@ -491,7 +491,7 @@ class ThisTestClass(LocalTestClass):
                     f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
                     f"{func_envelope_path_step_prop_name(1)}": AssignedValue("desc", ArgSource.ExplicitPosArg),
                     f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
-                    ServiceArgType.AccessType.name: None,
+                    ServiceArgType.access_type.name: None,
                 },
                 # TODO: Test assertion has nothing to do with incomplete token - it asserts first (func) envelope, but not the `zxcv`-related one.
                 # TODO: Is "complete in invocation mode" but this is Tab-completion mode:
@@ -532,8 +532,8 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod|", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: None,
-                    ServiceArgType.AccessType.name: None,
+                    ServiceArgType.code_maturity.name: None,
+                    ServiceArgType.access_type.name: None,
                 },
                 "No implicit assignment for incomplete token",
             ),
@@ -541,18 +541,18 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                    ServiceArgType.AccessType.name: None,
+                    ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                    ServiceArgType.access_type.name: None,
                 },
                 "No implicit assignment of access type to \"ro\" when code maturity is \"prod\" in completion",
             ),
-            # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
+            # TODO: re-implement functionality via data - see `code_maturityProcessor`:
             # (
             #     line_no(), "some_command goto host prod |", CompType.PrefixShown,
             #     1,
             #     {
-            #         ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-            #         ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.ImplicitValue),
+            #         ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.ImplicitValue),
             #     },
             #     "Implicit assignment of access type to \"ro\" when code maturity is \"prod\" in invocation",
             # ),
@@ -560,18 +560,18 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host dev |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-                    ServiceArgType.AccessType.name: None,
+                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                    ServiceArgType.access_type.name: None,
                 },
                 "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion",
             ),
-            # TODO: re-implement functionality via data - see `CodeMaturityProcessor`:
+            # TODO: re-implement functionality via data - see `code_maturityProcessor`:
             # (
             #     line_no(), "some_command goto host dev |", CompType.PrefixShown,
             #     1,
             #     {
-            #         ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-            #         ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.ImplicitValue),
+            #         ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+            #         ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.ImplicitValue),
             #     },
             #     "Implicit assignment of access type to \"rw\" when code maturity is \"uat\" in invocation",
             # ),
@@ -609,11 +609,11 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod wert-pd-1|", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.HostName.name: AssignedValue("wert-pd-1", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServiceArgType.host_name.name: AssignedValue("wert-pd-1", ArgSource.ExplicitPosArg),
                     },
                     2: {
-                        ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.DefaultValue),
+                        ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
@@ -624,11 +624,11 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "relay_demo goto service tt|", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
-                        ServiceArgType.ServiceName.name: AssignedValue("tt", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                        ServiceArgType.service_name.name: AssignedValue("tt", ArgSource.ExplicitPosArg),
                     },
                     2: {
-                        ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.DefaultValue),
+                        ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
@@ -684,9 +684,9 @@ class ThisTestClass(LocalTestClass):
                 {
                     1: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.ClusterName.name: "prod-apac-downstream",
-                        ServiceArgType.HostName.name: "wert-pd-1",
-                        ServiceArgType.ServiceName.name: "tt1",
+                        ServiceArgType.cluster_name.name: "prod-apac-downstream",
+                        ServiceArgType.host_name.name: "wert-pd-1",
+                        ServiceArgType.service_name.name: "tt1",
                     },
                 },
                 "Verify invocation input when ErrorDelegator is used.",
@@ -698,14 +698,14 @@ class ThisTestClass(LocalTestClass):
                     # vararg_ipos + 0
                     1: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.ClusterName.name: "dev-emea-upstream",
-                        ServiceArgType.ServiceName.name: "s_a",
+                        ServiceArgType.cluster_name.name: "dev-emea-upstream",
+                        ServiceArgType.service_name.name: "s_a",
                     },
                     # vararg_ipos + 1
                     2: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.ClusterName.name: "dev-emea-upstream",
-                        ServiceArgType.ServiceName.name: "s_b",
+                        ServiceArgType.cluster_name.name: "dev-emea-upstream",
+                        ServiceArgType.service_name.name: "s_b",
                     },
                 },
                 "Verify invocation input with FS_18_64_57_18 varargs when ServiceDelegator is used.",
@@ -742,17 +742,17 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-                        ServiceArgType.HostName.name: AssignedValue("poiu-dd", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.host_name.name: AssignedValue("poiu-dd", ArgSource.ExplicitPosArg),
                     },
                     2: {
-                        ServiceArgType.AccessType.name: AssignedValue("rw", ArgSource.DefaultValue),
+                        ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
                 {
                     2: {
-                        ServiceArgType.AccessType.name: [
+                        ServiceArgType.access_type.name: [
                             "ro",
                             "rw",
                         ],
@@ -801,18 +801,18 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}CodeMaturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: apac {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-apac-downstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} hhh rrr 
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}ServiceName: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.AccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}geo_region: apac {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}cluster_name: dev-apac-downstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*group_label: ?{TermColor.reset_style.value} hhh rrr 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}service_name: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}host_name: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{ServiceArgType.access_type.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
 """,
             ),
             (
@@ -825,18 +825,18 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}CodeMaturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}FlowStage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}GeoRegion: apac {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}ClusterName: dev-apac-downstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*GroupLabel: ?{TermColor.reset_style.value} hhh {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}rr{TermColor.reset_style.value} 
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}ServiceName: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}HostName: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}LiveStatus: [none]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}DataCenter: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}IpAddress: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.AccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}AccessType: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}geo_region: apac {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}cluster_name: dev-apac-downstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*group_label: ?{TermColor.reset_style.value} hhh {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}rr{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}service_name: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_pos_arg_value.value}host_name: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{ServiceArgType.access_type.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
 """,
             ),
             # {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value}

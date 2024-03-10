@@ -3,6 +3,7 @@ from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.plugin_delegator.InterceptDelegator import output_format_class_name, OutputFormat, output_format_prop_name
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
@@ -40,6 +41,19 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
+                "some_command intercept goto |",
+                CompType.PrefixShown,
+                [
+                    "host",
+                    "repo",
+                    "service",
+                ],
+                None,
+                None,
+                "Completion continues to select functions with `goto` path node in it.",
+            ),
+            (
+                line_no(),
                 "some_command intercept goto service s_b |",
                 CompType.PrefixShown,
                 [
@@ -61,7 +75,7 @@ class ThisTestClass(LocalTestClass):
             #     ],
             #     None,
             #     None,
-            #     # TODO: FS_13_51_07_97 list arg value: the `data_envelope` is singled out, but list arg values should still be suggested:
+            #     # TODO: FS_13_51_07_97 list arg value: the `data_envelope` is singled out, but list arg values should still be suggested (or not?):
             #     "FS_13_51_07_97 list arg value: singled out `data_envelope` with list arg value "
             #     "will still show all options of the list "
             #     "because explicit selection of one of these values from singled out `data_envelop` "
@@ -115,22 +129,64 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
                     },
                     1: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            output_format_class_name,
+                            ArgSource.InitValue,
+                        ),
+                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                    },
+                    2: {
                         f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
                         f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
-                    2: {
-                        ServiceArgType.ServiceName.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.HostName.name: AssignedValue("qwer-pd-2", ArgSource.ExplicitPosArg),
-                    },
                     3: {
-                        ServiceArgType.AccessType.name: AssignedValue("ro", ArgSource.DefaultValue),
+                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServiceArgType.host_name.name: AssignedValue("qwer-pd-2", ArgSource.ExplicitPosArg),
                     },
-                    4: None,
+                    4: {
+                        ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
+                    },
+                    5: None,
                 },
                 None,
                 "Invocation payload is provided by function selected via `goto` and `service`.",
+            ),
+            (
+                line_no(),
+                "some_command intercept goto service s_b prod repr_format qwer-pd-2 |",
+                CompType.InvokeAction,
+                None,
+                {
+                    0: {
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                    },
+                    1: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            output_format_class_name,
+                            ArgSource.InitValue,
+                        ),
+                        output_format_prop_name: AssignedValue(OutputFormat.repr_format.name, ArgSource.ExplicitPosArg),
+                    },
+                    2: {
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
+                    },
+                    3: {
+                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServiceArgType.host_name.name: AssignedValue("qwer-pd-2", ArgSource.ExplicitPosArg),
+                    },
+                    4: {
+                        ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
+                    },
+                    5: None,
+                },
+                None,
+                "Default `json_format` for `intercept` is overridden by `repr_format`.",
             ),
             (
                 line_no(),
@@ -148,11 +204,10 @@ class ThisTestClass(LocalTestClass):
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
+                            output_format_class_name,
                             ArgSource.InitValue,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
                     },
                     2: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
@@ -164,11 +219,10 @@ class ThisTestClass(LocalTestClass):
                     },
                     3: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
+                            output_format_class_name,
                             ArgSource.InitValue,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
                     },
                     4: {
                         ReservedArgType.EnvelopeClass.name: AssignedValue(
@@ -176,79 +230,42 @@ class ThisTestClass(LocalTestClass):
                             ArgSource.InitValue,
                         ),
                         f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
                     },
-                    5: None,
+                    5: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            output_format_class_name,
+                            ArgSource.InitValue,
+                        ),
+                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                    },
+                    6: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                    },
+                    7: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            output_format_class_name,
+                            ArgSource.InitValue,
+                        ),
+                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                    },
+                    8: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                    },
+                    9: None,
                 },
                 None,
-                # TODO: This only captures the behavior of such command line.
-                #       Currently, it cannot select another `intercept` function
-                #       because `ArgSource.InitValue` is set to `external` subsequently.
                 "Prepend `intercept` by another `intercept` multiple times.",
             ),
-        ]
-
-        for test_case in test_cases:
-            with self.subTest(test_case):
-                (
-                    line_number,
-                    test_line,
-                    comp_type,
-                    expected_suggestions,
-                    container_ipos_to_expected_assignments,
-                    delegator_class,
-                    case_comment,
-                ) = test_case
-
-                self.verify_output_with_new_server_via_local_client(
-                    self.__class__.same_test_data_per_class,
-                    test_line,
-                    comp_type,
-                    expected_suggestions,
-                    container_ipos_to_expected_assignments,
-                    delegator_class,
-                    None,
-                )
-
-    # TODO: clean up: this test already exists above
-    def test_single(self):
-        """
-        Test FS_88_66_66_73 `intercept` command/func
-        """
-
-        test_cases = [
-            (
-                line_no(),
-                "some_command intercept goto |",
-                CompType.PrefixShown,
-                [
-                    "host",
-                    "repo",
-                    "service",
-                ],
-                None,
-                None,
-                "Completion continues to be driven by function selected via `goto` and `service`.",
-            ),
-            # (
-            #     line_no(),
-            #     "some_command intercept |",
-            #     CompType.PrefixShown,
-            #     [
-            #         "config",
-            #         "desc",
-            #         "echo",
-            #         "enum",
-            #         "goto",
-            #         "help",
-            #         "intercept",
-            #         "list",
-            #         "subtree",
-            #     ],
-            #     None,
-            #     None,
-            #     "If `intercept` is already selected, it can be recursively suggested during selection of the function "
-            #     "it tries to intercept, if jump tree is configured accordingly.",
-            # ),
         ]
 
         for test_case in test_cases:

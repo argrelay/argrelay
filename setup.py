@@ -36,7 +36,7 @@ def list_dir(
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.6.7",
+    version = "0.6.8",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server = total recall for Bash shell",
@@ -89,6 +89,7 @@ See: https://github.com/argrelay/argrelay
     package_dir = {
         "": "./src/",
         "argrelay_docs": "./",
+        "argrelay_data": "./",
     },
     package_data = {
         "argrelay": [
@@ -116,6 +117,7 @@ See: https://github.com/argrelay/argrelay
         "argrelay_docs": list_dir("./docs/") + [
             "readme.md",
         ],
+        "argrelay_data": list_dir("./data/"),
     },
     include_package_data = True,
     python_requires = ">=3.7",

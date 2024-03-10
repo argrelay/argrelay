@@ -23,9 +23,11 @@ class ThisTestClass(BaseTestClass):
     For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
     """
 
-    def test_git_repo_loader_is_disabled(self):
+    def test_default_git_repo_loader_is_disabled(self):
         """
-        `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
+        `GitRepoLoader.default` should not be enabled in `argrelay.server.yaml`.
+
+        `GitRepoLoader.self` can be enabled.
         """
 
         # Still use mock because config data for the mock is loaded from source files:
@@ -46,10 +48,14 @@ class ThisTestClass(BaseTestClass):
                     and
                     plugin_entry.plugin_class_name == GitRepoLoader_class.__name__
                 ):
-                    if found_one:
-                        raise RuntimeError("two " + GitRepoLoader_class.__name__ + " plugins?")
-                    found_one = True
-                    git_loader_plugin_entry = plugin_entry
+                    if ".self" in plugin_instance_id:
+                        # Ignore ".self" - it is allowed:
+                        pass
+                    else:
+                        if found_one:
+                            raise RuntimeError("two " + GitRepoLoader_class.__name__ + " plugins?")
+                        found_one = True
+                        git_loader_plugin_entry = plugin_entry
             if not found_one:
                 raise RuntimeError("missing " + GitRepoLoader_class.__name__ + " plugin?")
 

@@ -144,7 +144,7 @@ echo "INFO: curr git_tag: ${git_tag}" 1>&2
 git_hash="$( git rev-parse HEAD )"
 time_stamp="$( date -u +"%Y-%m-%dT%H:%M:%SZ" )"
 publisher_user="$( whoami )"
-publisher_host="$( hostname )"
+publisher_host="$( host_name )"
 
 # Versions has to be prefixed with `v` in tag:
 if [[ "v${argrelay_version}" != "${git_tag}" ]]
