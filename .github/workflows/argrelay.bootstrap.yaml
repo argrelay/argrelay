@@ -32,6 +32,10 @@ jobs:
             -   run: "python -c \"import sys; print(sys.version);\""
 
             -   uses: actions/checkout@v4
+                with:
+                    # Required for `test_GitRepoLoader_offline.py`:
+                    fetch-depth: 100
+                    fetch-tags: True
 
             -   run: "${{ github.workspace }}/dst/.github/argrelay.bootstrap.bash existing_conf_and_no_args"
 

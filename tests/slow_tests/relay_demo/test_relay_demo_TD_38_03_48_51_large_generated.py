@@ -26,9 +26,9 @@ class ThisTestClass(LocalTestClass):
                 [f"hs{host_number}" for host_number in range(0, ServiceLoader.object_multiplier)],
                 {
                     1: {
-                        ServiceArgType.CodeMaturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
-                        ServiceArgType.FlowStage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
-                        ServiceArgType.GeoRegion.name: AssignedValue("gr3", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
+                        ServiceArgType.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("gr3", ArgSource.ExplicitPosArg),
                     },
                 },
                 "Ensure it suggests relevant hosts.",
@@ -40,12 +40,12 @@ class ThisTestClass(LocalTestClass):
                 ],
                 {
                     1: {
-                        ServiceArgType.CodeMaturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
-                        ServiceArgType.FlowStage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
-                        ServiceArgType.GeoRegion.name: None,
+                        ServiceArgType.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
+                        ServiceArgType.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: None,
                     },
                 },
-                "Ensure it suggests the only `GeoRegion` matching the current prefix.",
+                "Ensure it suggests the only `geo_region` matching the current prefix.",
             ),
         ]
 

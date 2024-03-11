@@ -4,6 +4,7 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import DescribeLineArgsClientResponseHandler
+from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
 from argrelay.plugin_delegator.InterceptDelegator import InterceptDelegator
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
@@ -17,9 +18,7 @@ from argrelay.schema_response.InvocationInput import InvocationInput
 subsequent_function_container_ipos_ = function_container_ipos_ + 1
 
 
-# TODO: Currently, QueryEnumDelegator is implemented by deriving from InterceptDelegator - this is strange.
-#       Use common base class instead, but don't make "QueryEnumDelegator is a InterceptDelegator".
-class QueryEnumDelegator(InterceptDelegator):
+class QueryEnumDelegator(AbstractJumpDelegator):
     """
     FS_02_25_41_81: Implements `query_enum_items_func`.
     """

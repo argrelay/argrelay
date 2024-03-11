@@ -34,6 +34,11 @@ def get_git_repo_root_path(
 def is_git_repo(
     git_repo_path,
 ) -> bool:
+    """
+    Detects whether `git_repo_path` points within a git repository.
+
+    It is not required for `git_repo_path` to match git repo root (any sub-dir is accepted).
+    """
     git_repo_root_path = get_git_repo_root_path(git_repo_path)
     if git_repo_root_path is None:
         return False

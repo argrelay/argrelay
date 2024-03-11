@@ -58,8 +58,9 @@ class ThisTestClass(LocalTestClass):
                 "list_host_func",
                 "desc_host_func",
 
-                "goto_repo_func",
-                "desc_commit_func",
+                "goto_git_repo_func",
+                "desc_git_tag_func",
+                "desc_git_commit_func",
 
                 "funct_id_print_with_severity_level",
                 "funct_id_print_with_exit_code",

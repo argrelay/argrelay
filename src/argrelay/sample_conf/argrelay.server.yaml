@@ -70,7 +70,7 @@ class_to_collection_map:
     ClassCluster: ClassCluster
     ClassHost: ClassHost
     ClassService: ClassService
-    AccessType: AccessType
+    access_type: access_type
 
 server_plugin_control:
     first_interp_factory_id: FirstArgInterpFactory.default
@@ -153,7 +153,7 @@ server_plugin_control:
                                     sub_tree:
                                         "repo":
                                             node_type: func_tree_node
-                                            func_id: goto_repo_func
+                                            func_id: goto_git_repo_func
                                         "host":
                                             node_type: func_tree_node
                                             func_id: goto_host_func
@@ -163,9 +163,12 @@ server_plugin_control:
                                 "desc":
                                     node_type: tree_path_node
                                     sub_tree:
+                                        "tag":
+                                            node_type: func_tree_node
+                                            func_id: desc_git_tag_func
                                         "commit":
                                             node_type: func_tree_node
-                                            func_id: desc_commit_func
+                                            func_id: desc_git_commit_func
                                         "host":
                                             node_type: func_tree_node
                                             func_id: desc_host_func
@@ -296,7 +299,8 @@ plugin_instance_entries:
                 "some_command": InterpTreeInterpFactory.default
                 "service_relay_demo": InterpTreeInterpFactory.service
             ignored_func_ids_list:
-                -   desc_commit_func
+                -   desc_git_tag_func
+                -   desc_git_commit_func
 
     InterpTreeInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
@@ -359,14 +363,15 @@ plugin_instance_entries:
             func_selector_tree:
                 "echo": echo_args_func
                 "goto":
-                    "repo": goto_repo_func
+                    "repo": goto_git_repo_func
                     "host": goto_host_func
                     "service": goto_service_func
                 "list":
                     "host": list_host_func
                     "service": list_service_func
                 "desc":
-                    "commit": desc_commit_func
+                    "tag": desc_git_tag_func
+                    "commit": desc_git_commit_func
                     "host": desc_host_func
                     "service": desc_service_func
                 "config":
@@ -403,30 +408,51 @@ plugin_instance_entries:
                 #-   TD_38_03_48_51  # large generated
 
     GitRepoLoader.default:
+        # Disabled by default because of reliance on other repos (unlike `GitRepoLoader.self`):
         plugin_enabled: false
         plugin_module_name: argrelay.custom_integ.GitRepoLoader
         plugin_class_name: GitRepoLoader
         plugin_config:
-            load_repo_commits: False
+            load_git_tags_default: False
+            load_git_commits_default: False
             repo_entries:
                 "~/repos":
                     -
                         repo_rel_path: argrelay.git
                         envelope_properties:
-                            GitRepoAlias: ar
-                            GitRepoContentType: code
+                            git_repo_alias: ar
+                            git_repo_content_type: code
                     -
-                        repo_rel_path: argcomplete.git
+                        repo_rel_path: mongomock.git
                         is_repo_enabled: True
                         envelope_properties:
-                            GitRepoAlias: ac
-                            GitRepoContentType: ref
+                            git_repo_alias: mongom
+                            git_repo_content_type: ref
                     -
                         repo_rel_path: marshmallow.git
                         is_repo_enabled: False
                         envelope_properties:
-                            GitRepoAlias: mm
-                            GitRepoContentType: code
+                            git_repo_alias: marshm
+                            git_repo_content_type: code
+
+    GitRepoLoader.self:
+        # Enabled by default because it is assumed that project is git-managed:
+        plugin_enabled: true
+        plugin_module_name: argrelay.custom_integ.GitRepoLoader
+        plugin_class_name: GitRepoLoader
+        plugin_config:
+            load_git_tags_default: False
+            load_git_commits_default: False
+            repo_entries:
+                "":
+                    -   repo_rel_path: ""
+                        load_repo_tags: True
+                        load_repo_commits: True
+                        load_tags_last_days: 90
+                        load_commits_max_count: 50
+                        envelope_properties:
+                            git_repo_alias: argrelay
+                            git_repo_content_type: code
 
     ConfigOnlyLoader.default:
         plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
@@ -434,8 +460,10 @@ plugin_instance_entries:
         plugin_config:
             collection_name_to_index_fields_map:
                 ConfigOnlyClass:
-                    - severity_level
-                    - exit_code
+                    -   severity_level
+                    -   exit_code
+                OutputFormat:
+                    -   output_format
             data_envelopes:
                 !include "data/ConfigOnlyLoader.default.data.yaml"
 

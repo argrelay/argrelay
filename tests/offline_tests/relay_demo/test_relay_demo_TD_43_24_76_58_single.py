@@ -26,9 +26,9 @@ class ThisTestClass(LocalTestClass):
                 ],
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
                 },
-                "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServiceArgType.CodeMaturity`",
+                "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServiceArgType.code_maturity`",
             ),
             (
                 line_no(), "some_command host goto dev |", CompType.PrefixShown,
@@ -38,9 +38,9 @@ class ThisTestClass(LocalTestClass):
                 ],
                 1,
                 {
-                    ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                 },
-                "Even if all `data_envelope`-s has the same `dev` `ServiceArgType.CodeMaturity`, "
+                "Even if all `data_envelope`-s has the same `dev` `ServiceArgType.code_maturity`, "
                 "if it is provided, the value `dev` is still consumed."
             ),
         ]

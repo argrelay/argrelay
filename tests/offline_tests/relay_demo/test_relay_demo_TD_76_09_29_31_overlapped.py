@@ -27,7 +27,7 @@ class ThisTestClass(LocalTestClass):
                 ["amer", "emea"],
                 {},
                 None,
-                "TD_76_09_29_31: GeoRegion set is suggested (while HostName set is the same)",
+                "TD_76_09_29_31: geo_region set is suggested (while host_name set is the same)",
             ),
             (
                 line_no(),
@@ -36,7 +36,7 @@ class ThisTestClass(LocalTestClass):
                 ["amer", "emea"],
                 {},
                 None,
-                "TD_76_09_29_31: HostName set is suggested (while GeoRegion set is the same)",
+                "TD_76_09_29_31: host_name set is suggested (while geo_region set is the same)",
             ),
             (
                 line_no(),
@@ -69,16 +69,16 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-                        ServiceArgType.GeoRegion.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
-                        ServiceArgType.FlowStage.name: AssignedValue("downstream", ArgSource.ExplicitPosArg),
-                        ServiceArgType.ClusterName.name: AssignedValue("dev-amer-downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.HostName.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
+                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ExplicitPosArg),
+                        ServiceArgType.cluster_name.name: AssignedValue("dev-amer-downstream", ArgSource.ImplicitValue),
+                        ServiceArgType.host_name.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
                     },
                 },
                 # TODO: add verification of consumed and unconsumed tokens
                 ErrorDelegator,
-                "TD_76_09_29_31: Both GeoRegion and HostName are correctly assigned",
+                "TD_76_09_29_31: Both geo_region and host_name are correctly assigned",
             ),
         ]
 
