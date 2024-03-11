@@ -6,6 +6,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input
+from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
 from argrelay.plugin_delegator.InterceptDelegator import InterceptDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import tree_path_selector_prefix_
 from argrelay.relay_server.LocalServer import LocalServer
@@ -22,9 +23,7 @@ from argrelay.schema_response.InvocationInput import InvocationInput
 subsequent_function_container_ipos_ = function_container_ipos_ + 1
 
 
-# TODO: Currently, HelpDelegator is implemented by deriving from InterceptDelegator - this is strange.
-#       Use common base class instead, but don't make "HelpDelegator is a InterceptDelegator".
-class HelpDelegator(InterceptDelegator):
+class HelpDelegator(AbstractJumpDelegator):
 
     def get_supported_func_envelopes(
         self,

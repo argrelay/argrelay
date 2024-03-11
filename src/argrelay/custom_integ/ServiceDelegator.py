@@ -128,10 +128,10 @@ class ServiceDelegator(AbstractDelegator):
             class_to_collection_map,
             ServiceEnvelopeClass.ClassCluster.name,
             [
-                {"code": ServiceArgType.CodeMaturity.name},
-                {"stage": ServiceArgType.FlowStage.name},
-                {"region": ServiceArgType.GeoRegion.name},
-                {"cluster": ServiceArgType.ClusterName.name},
+                {"code": ServiceArgType.code_maturity.name},
+                {"stage": ServiceArgType.flow_stage.name},
+                {"region": ServiceArgType.geo_region.name},
+                {"cluster": ServiceArgType.cluster_name.name},
             ],
         )
 
@@ -140,14 +140,14 @@ class ServiceDelegator(AbstractDelegator):
             ServiceEnvelopeClass.ClassHost.name,
             [
                 # ClassCluster:
-                {"code": ServiceArgType.CodeMaturity.name},
-                {"stage": ServiceArgType.FlowStage.name},
-                {"region": ServiceArgType.GeoRegion.name},
-                {"cluster": ServiceArgType.ClusterName.name},
+                {"code": ServiceArgType.code_maturity.name},
+                {"stage": ServiceArgType.flow_stage.name},
+                {"region": ServiceArgType.geo_region.name},
+                {"cluster": ServiceArgType.cluster_name.name},
                 # ClassHost:
-                {"host": ServiceArgType.HostName.name},
+                {"host": ServiceArgType.host_name.name},
                 # ---
-                {"ip": ServiceArgType.IpAddress.name},
+                {"ip": ServiceArgType.ip_address.name},
             ],
         )
 
@@ -156,27 +156,27 @@ class ServiceDelegator(AbstractDelegator):
             ServiceEnvelopeClass.ClassService.name,
             [
                 # ClassCluster:
-                {"code": ServiceArgType.CodeMaturity.name},
-                {"stage": ServiceArgType.FlowStage.name},
-                {"region": ServiceArgType.GeoRegion.name},
-                {"cluster": ServiceArgType.ClusterName.name},
+                {"code": ServiceArgType.code_maturity.name},
+                {"stage": ServiceArgType.flow_stage.name},
+                {"region": ServiceArgType.geo_region.name},
+                {"cluster": ServiceArgType.cluster_name.name},
                 # ClassService:
-                {"group": ServiceArgType.GroupLabel.name},
-                {"service": ServiceArgType.ServiceName.name},
+                {"group": ServiceArgType.group_label.name},
+                {"service": ServiceArgType.service_name.name},
                 # ClassHost:
-                {"host": ServiceArgType.HostName.name},
+                {"host": ServiceArgType.host_name.name},
                 # ---
-                {"status": ServiceArgType.LiveStatus.name},
-                {"dc": ServiceArgType.DataCenter.name},
-                {"ip": ServiceArgType.IpAddress.name},
+                {"status": ServiceArgType.live_status.name},
+                {"dc": ServiceArgType.data_center.name},
+                {"ip": ServiceArgType.ip_address.name},
             ],
         )
 
         access_search_control = populate_search_control(
             class_to_collection_map,
-            ServiceArgType.AccessType.name,
+            ServiceArgType.access_type.name,
             [
-                {"access": ServiceArgType.AccessType.name},
+                {"access": ServiceArgType.access_type.name},
             ],
         )
 
@@ -277,7 +277,7 @@ class ServiceDelegator(AbstractDelegator):
             assert host_container_ipos_ == service_container_ipos_
             object_container_ipos = host_container_ipos_
 
-            # If need to specify `AccessType` `data_envelope`:
+            # If we need to specify `access_type` `data_envelope`:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + access_container_ipos_:
                 # Take object found so far:
                 data_envelope = interp_ctx.envelope_containers[(
@@ -288,14 +288,14 @@ class ServiceDelegator(AbstractDelegator):
                     interp_ctx.curr_interp.base_container_ipos + access_container_ipos_
                 )]
 
-                # Select default value to search `AccessType` `data_envelope` based on `CodeMaturity`:
-                code_arg_type = ServiceArgType.CodeMaturity.name
+                # Select default value to search `access_type` `data_envelope` based on `code_maturity`:
+                code_arg_type = ServiceArgType.code_maturity.name
                 if code_arg_type in data_envelope:
                     code_arg_val = data_envelope[code_arg_type]
                     if code_arg_val == "prod":
-                        set_default_to(ServiceArgType.AccessType.name, "ro", access_container)
+                        set_default_to(ServiceArgType.access_type.name, "ro", access_container)
                     else:
-                        set_default_to(ServiceArgType.AccessType.name, "rw", access_container)
+                        set_default_to(ServiceArgType.access_type.name, "rw", access_container)
                     return True
 
         elif func_id in [

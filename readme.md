@@ -12,19 +12,22 @@ See: docs/dev_notes/screencast_notes.md
 <a name="argrelay-about"></a>
 # What's this?
 
-A tool to select input from **custom data** for command line interface (CLI).
+A method to "ergonomically" select **custom data** input for command line interface (CLI) tools.
 
-The aim is to enrich two-way &#10231; interaction by data:
+The aim is to enrich two-way &#10231; interaction by **"pre-pared"** data:
 *   &#10230; You input args you **remember** (via `Tab`-auto-completion) in **relaxed order**.
-*   &#10229; It reports (via `Alt+Shift+Q`):
+*   &#10229; It reports (via `Alt+Shift+Q` query):
     *   What args it **matched**.
     *   What **else** it needs.
 
 This broadens applicability of CLI input as a slim alternative to graphical user interface (GUI)
-competing in **convenience** for apps in tech industry.
+competing in **convenience** for apps especially for developers.
+
+*   When your data is (luckily) instantly and directly queryable, use [`argcomplete`][argcomplete_github].
+*   When your data is sizeable, user needs performance (indexing), relaxed syntax, keyword-based search, use `argrelay`.
 
 <a name="argrelay-overview"></a>
-# Interface overview
+# Interaction overview
 
 User is interrogated based on:
 *  command **input schema**
@@ -49,11 +52,14 @@ Wrapping any command by `argrelay`:
 
 | GUI                                                                           | CLI                                                       |
 |-------------------------------------------------------------------------------|-----------------------------------------------------------|
-| :heavy_minus_sign: may not exist early in development (for app or features)   | :heavy_plus_sign: likely available early in development   |
-| :heavy_minus_sign: no universal way to reproduce (composite) GUI actions      | :heavy_plus_sign: share and "replay" commands as **text** |
-| :heavy_minus_sign: no universal way to store and search GUI results           | :heavy_plus_sign: share and search results as **text**    |
-| :heavy_minus_sign: no universal way to auto-trigger GUI actions on events     | :heavy_plus_sign: hook commands anyhow (e.g. schedule)    |
+| :heavy_plus_sign: diagrams, images, video                                     | :heavy_multiplication_x: only via integration with GUI    |
 | :heavy_minus_sign: might be time-consuming for an ad-hoc functionality        | :heavy_plus_sign: always quick dev option (low ceremony)  |
+| :heavy_minus_sign: may not exist early in feature development                 | :heavy_plus_sign: likely available early in development   |
+| :heavy_minus_sign: no simple way to store and share GUI output                | :heavy_plus_sign: store and share results as **text**     |
+| :heavy_minus_sign: no universal way to reproduce (composite) GUI actions      | :heavy_plus_sign: paste and "replay" commands as **text** |
+| :heavy_minus_sign: no universal way to search stored GUI output               | :heavy_plus_sign: `grep`-search results as **text**       |
+| :heavy_minus_sign: no universal way to compare GUI output                     | :heavy_plus_sign: `diff`-compare results as **text**      |
+| :heavy_minus_sign: no universal way to auto-trigger GUI actions on events     | :heavy_plus_sign: hook commands anyhow (e.g. schedule)    |
 | :heavy_minus_sign: a separate stack (skill set) from backend to contribute to | :heavy_plus_sign: familiarly dominates backend tools      |
 | :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself       | :heavy_plus_sign: inherent script-ability                 |
 | :heavy_minus_sign: limits system access (a layer behind a narrow API)         | :heavy_plus_sign: ultimate control                        |
@@ -316,6 +322,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
+[argcomplete_github]: https://github.com/kislyuk/argcomplete
 [Warp_site]: https://warp.dev/
 [IDEA_terminal]: https://www.jetbrains.com/help/idea/terminal-emulator.html
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md

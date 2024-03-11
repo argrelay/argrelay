@@ -77,13 +77,15 @@ def store_envelope_collection(
 
         try:
             data_envelope_desc.validate_dict(envelope_to_store)
+
+            if envelope_id_ in envelope_to_store:
+                envelope_to_store[mongo_id_] = data_envelope[envelope_id_]
+
+            col_proxy.insert_one(envelope_to_store)
         except:
             print(f"envelope_to_store: {envelope_to_store}")
-
-        if envelope_id_ in envelope_to_store:
-            envelope_to_store[mongo_id_] = data_envelope[envelope_id_]
-
-        col_proxy.insert_one(envelope_to_store)
+            # Rethrow previous error:
+            raise
 
     log_index_progress(mongo_collection, envelope_per_col_i, curr_envelope_i, total_envelope_n)
 

@@ -31,7 +31,7 @@ TODO: Create separate FS with the first two sections of this doc to describe arg
 
     *   [host] = group of command line args to find `data_envelope` of `ClassHost`
 
-    *   [access] = group of command line args (only one) to find `data_envelope` providing `AccessType`
+    *   [access] = group of command line args (only one) to find `data_envelope` providing `access_type`
 
 # A few things to note in the example ahead of the explanation
 

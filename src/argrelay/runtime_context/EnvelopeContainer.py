@@ -84,7 +84,7 @@ class EnvelopeContainer:
                     # When a `data_envelope` is singled out, its array arg value will not be set as
                     # singled out via `ArgSource.ImplicitValue` (user can still select them explicitly).
                     # This is deliberate for now as the selection of specific value out of the array can be used
-                    # by delegators to implement different in behavior.
+                    # by delegators to implement difference in behavior.
 
                     if len(arg_values) == 1:
                         del self.remaining_types_to_values[arg_type]

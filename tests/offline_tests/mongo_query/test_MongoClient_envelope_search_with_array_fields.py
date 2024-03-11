@@ -20,24 +20,24 @@ class ThisTestClass(MongoClientTestClass):
 
         # Fields which will be indexed:
         index_fields = [
-            ServiceArgType.AccessType.name,
-            ServiceArgType.LiveStatus.name,
-            ServiceArgType.CodeMaturity.name,
+            ServiceArgType.access_type.name,
+            ServiceArgType.live_status.name,
+            ServiceArgType.code_maturity.name,
         ]
 
         envelope_001 = {
             envelope_payload_: {
                 object_name_: "envelope_001",
             },
-            ServiceArgType.AccessType.name: "ro",
+            ServiceArgType.access_type.name: "ro",
         }
 
         envelope_002 = {
             envelope_payload_: {
                 object_name_: "envelope_002",
             },
-            ServiceArgType.AccessType.name: "rw",
-            ServiceArgType.LiveStatus.name: [
+            ServiceArgType.access_type.name: "rw",
+            ServiceArgType.live_status.name: [
                 "red",
                 "blue",
             ],
@@ -47,57 +47,57 @@ class ThisTestClass(MongoClientTestClass):
             envelope_payload_: {
                 object_name_: "envelope_003",
             },
-            ServiceArgType.AccessType.name: "rw",
+            ServiceArgType.access_type.name: "rw",
             # NOTE: some of the envelopes have scalar value for the same field which has arrays in other envelopes:
-            ServiceArgType.LiveStatus.name: "blue",
+            ServiceArgType.live_status.name: "blue",
         }
 
         envelope_004 = {
             envelope_payload_: {
                 object_name_: "envelope_004",
             },
-            ServiceArgType.AccessType.name: "rw",
-            ServiceArgType.LiveStatus.name: [
+            ServiceArgType.access_type.name: "rw",
+            ServiceArgType.live_status.name: [
                 "red",
                 "yellow",
             ],
-            ServiceArgType.CodeMaturity.name: "prod",
+            ServiceArgType.code_maturity.name: "prod",
         }
 
         envelope_005 = {
             envelope_payload_: {
                 object_name_: "envelope_005",
             },
-            ServiceArgType.AccessType.name: "rw",
-            ServiceArgType.LiveStatus.name: [
+            ServiceArgType.access_type.name: "rw",
+            ServiceArgType.live_status.name: [
                 "blue",
                 "green",
             ],
-            ServiceArgType.CodeMaturity.name: "prod",
+            ServiceArgType.code_maturity.name: "prod",
         }
 
         envelope_006 = {
             envelope_payload_: {
                 object_name_: "envelope_006",
             },
-            ServiceArgType.AccessType.name: "rw",
+            ServiceArgType.access_type.name: "rw",
             # NOTE: some of the envelopes have scalar value for the same field which has arrays in other envelopes:
-            ServiceArgType.LiveStatus.name: "green",
-            ServiceArgType.CodeMaturity.name: "prod",
+            ServiceArgType.live_status.name: "green",
+            ServiceArgType.code_maturity.name: "prod",
         }
 
         envelope_007 = {
             envelope_payload_: {
                 object_name_: "envelope_007",
             },
-            ServiceArgType.AccessType.name: "rw",
-            ServiceArgType.LiveStatus.name: [
+            ServiceArgType.access_type.name: "rw",
+            ServiceArgType.live_status.name: [
                 "red",
                 "green",
                 "blue",
                 "yellow",
             ],
-            ServiceArgType.CodeMaturity.name: "prod",
+            ServiceArgType.code_maturity.name: "prod",
         }
 
         self.col_proxy.insert_many([
@@ -115,7 +115,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.LiveStatus.name: "red",
+                ServiceArgType.live_status.name: "red",
             }),
             [
                 "envelope_002",
@@ -127,7 +127,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.LiveStatus.name: "yellow",
+                ServiceArgType.live_status.name: "yellow",
             }),
             [
                 "envelope_004",
@@ -138,7 +138,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.LiveStatus.name: "blue",
+                ServiceArgType.live_status.name: "blue",
             }),
             [
                 "envelope_002",
@@ -151,7 +151,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.LiveStatus.name: "green",
+                ServiceArgType.live_status.name: "green",
             }),
             [
                 "envelope_005",
@@ -163,7 +163,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.LiveStatus.name: [
+                ServiceArgType.live_status.name: [
                     "green",
                     "blue",
                 ]
@@ -176,7 +176,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.LiveStatus.name: [
+                ServiceArgType.live_status.name: [
                     "green",
                     "blue",
                 ]

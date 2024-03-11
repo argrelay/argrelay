@@ -12,7 +12,7 @@ from argrelay.custom_integ.GitRepoEntryConfigSchema import (
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
-    load_repo_commits_,
+    load_git_commits_default_,
     repo_entries_,
 )
 from argrelay.enum_desc.CompType import CompType
@@ -92,38 +92,38 @@ class ThisTestClass(BaseTestClass):
             (
                 line_no(), f"`{GitRepoLoader.__name__}.default` enabled with random temp dir",
                 {
-                    load_repo_commits_: True,
+                    load_git_commits_default_: True,
                     repo_entries_: {
                         self.temp_dir.name: [
                             {
                                 repo_rel_path_: "qwer/abc",
                                 envelope_properties_: {
-                                    GitRepoArgType.GitRepoAlias.name: "ar",
-                                    GitRepoArgType.GitRepoContentType.name: "self",
+                                    GitRepoArgType.git_repo_alias.name: "ar",
+                                    GitRepoArgType.git_repo_content_type.name: "self",
                                 },
                             },
                             {
                                 repo_rel_path_: "qwer/xyz",
                                 is_repo_enabled_: True,
                                 envelope_properties_: {
-                                    GitRepoArgType.GitRepoAlias.name: "ac",
-                                    GitRepoArgType.GitRepoContentType.name: "code",
+                                    GitRepoArgType.git_repo_alias.name: "ac",
+                                    GitRepoArgType.git_repo_content_type.name: "code",
                                 },
                             },
                             {
                                 repo_rel_path_: "zxcv",
                                 is_repo_enabled_: True,
                                 envelope_properties_: {
-                                    GitRepoArgType.GitRepoAlias.name: "clone",
-                                    GitRepoArgType.GitRepoContentType.name: "self",
+                                    GitRepoArgType.git_repo_alias.name: "clone",
+                                    GitRepoArgType.git_repo_content_type.name: "self",
                                 },
                             },
                             {
                                 repo_rel_path_: "poiu",
                                 is_repo_enabled_: False,
                                 envelope_properties_: {
-                                    GitRepoArgType.GitRepoAlias.name: "missing",
-                                    GitRepoArgType.GitRepoContentType.name: "conf",
+                                    GitRepoArgType.git_repo_alias.name: "missing",
+                                    GitRepoArgType.git_repo_content_type.name: "conf",
                                 },
                             },
                         ],
@@ -154,7 +154,7 @@ class ThisTestClass(BaseTestClass):
                     .set_comp_type(CompType.PrefixShown)
                 )
                 with env_mock_builder.build():
-                    # The test simply triggers server data load and verifies its content.
+                    # The test simply triggers server data load and verifies its loaded.
 
                     # Populate static data by plugin via `LocalClient` who starts `LocalServer`:
                     command_obj: AbstractLocalClientCommand = __main__.main()

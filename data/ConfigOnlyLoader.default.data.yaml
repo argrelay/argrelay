@@ -24,3 +24,17 @@
     exit_code: 2
     envelope_payload:
         text_message: text message D
+
+# Used by `InterceptDelegator` to select output format.
+-
+    EnvelopeClass: OutputFormat
+    output_format: json_format
+-
+    EnvelopeClass: OutputFormat
+    output_format: repr_format
+-
+    EnvelopeClass: OutputFormat
+    output_format: text_format
+-
+    EnvelopeClass: OutputFormat
+    output_format: table_format

@@ -36,14 +36,14 @@ class ThisTestClass(ManualServerTestClass):
             )
             self.assertEqual(
                 "prod-apac-downstream",
-                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.ClusterName.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.cluster_name.name]
             )
             self.assertEqual(
                 "wert-pd-1",
-                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.HostName.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.host_name.name]
             )
             self.assertEqual(
                 "tt1",
-                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.ServiceName.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.service_name.name]
             )
             self.assertTrue(True)

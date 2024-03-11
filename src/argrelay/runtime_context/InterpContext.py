@@ -187,7 +187,7 @@ class InterpContext:
 
             ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {self.curr_interp}")
             self.query_prop_values()
-            # Reset to False was we just executed new query:
+            # Reset to False as we just executed new query:
             query_changed = False
 
             if self.curr_container:
@@ -203,7 +203,7 @@ class InterpContext:
                     # Describing args will need to show options except default - query values before defaults:
                     ElapsedTime.measure(f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}")
                     self.query_prop_values()
-                    # Reset to False was we just executed new query:
+                    # Reset to False as we just executed new query:
                     query_changed = False
 
                     self._save_potentially_hidden_by_defaults()

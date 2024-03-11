@@ -39,7 +39,7 @@ class ThisTestClass(RemoteTestClass):
                             ServiceEnvelopeClass.ClassHost.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.CodeMaturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                     },
                     2: None,
                 },
@@ -50,27 +50,27 @@ class ThisTestClass(RemoteTestClass):
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "zxcv-du",
+                        ServiceArgType.host_name.name: "zxcv-du",
                     },
                     2: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "zxcv-dd",
+                        ServiceArgType.host_name.name: "zxcv-dd",
                     },
                     3: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "poiu-dd",
+                        ServiceArgType.host_name.name: "poiu-dd",
                     },
                     4: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "asdf-du",
+                        ServiceArgType.host_name.name: "asdf-du",
                     },
                     5: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "xcvb-dd",
+                        ServiceArgType.host_name.name: "xcvb-dd",
                     },
                     6: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.HostName.name: "qwer-du",
+                        ServiceArgType.host_name.name: "qwer-du",
                     },
                     7: None,
                 },
@@ -91,12 +91,12 @@ class ThisTestClass(RemoteTestClass):
                             ServiceEnvelopeClass.ClassService.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.ServiceName.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServiceArgType.CodeMaturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.GeoRegion.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
                     },
                     2: {
-                        # Nothing is assigned for `ServiceArgType.AccessType`, but it exists.
+                        # Nothing is assigned for `ServiceArgType.access_type`, but it exists.
                     },
                     3: None,
                 },
@@ -107,13 +107,13 @@ class ThisTestClass(RemoteTestClass):
                     },
                     1: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.ServiceName.name: "s_b",
-                        ServiceArgType.HostName.name: "qwer-pd-1",
+                        ServiceArgType.service_name.name: "s_b",
+                        ServiceArgType.host_name.name: "qwer-pd-1",
                     },
                     2: {
                         ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.ServiceName.name: "s_b",
-                        ServiceArgType.HostName.name: "qwer-pd-2",
+                        ServiceArgType.service_name.name: "s_b",
+                        ServiceArgType.host_name.name: "qwer-pd-2",
                     },
                     3: None,
                 },

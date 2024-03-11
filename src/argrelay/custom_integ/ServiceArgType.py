@@ -12,31 +12,34 @@ class ServiceArgType(Enum):
 
     # ---
 
-    CodeMaturity = auto()
-    GeoRegion = auto()
-    FlowStage = auto()
+    code_maturity = auto()
+    geo_region = auto()
+    flow_stage = auto()
 
     # ---
 
-    ClusterName = auto()
+    cluster_name = auto()
 
     # ---
 
-    DataCenter = auto()
-    HostName = auto()
-    IpAddress = auto()
-    GroupLabel = auto()
-    ServiceName = auto()
+    data_center = auto()
+    host_name = auto()
+    ip_address = auto()
+
+    # FS_06_99_43_60: example of using non-scalar value (array|list):
+    group_label = auto()
+
+    service_name = auto()
 
     # ---
 
-    AccessType = auto()
+    access_type = auto()
 
     # ---
 
-    LiveStatus = auto()
+    live_status = auto()
     """
-    TODO: Currently `LiveStatus` is not used - it can be thought of as manually or dynamically assigned to the resource.
+    TODO: Currently `live_status` is not used - it can be thought of as manually or dynamically assigned to the resource.
     """
 
     def __str__(self):
