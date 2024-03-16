@@ -50,7 +50,7 @@ service_container_ipos_ = 1
 access_container_ipos_ = 2
 
 
-def set_default_to(arg_type, arg_val, envelope_container):
+def set_default_to(arg_type, arg_val, envelope_container) -> bool:
     if arg_type in envelope_container.search_control.types_to_keys_dict:
         if arg_type not in envelope_container.assigned_types_to_values:
             if arg_type in envelope_container.remaining_types_to_values:
@@ -60,9 +60,11 @@ def set_default_to(arg_type, arg_val, envelope_container):
                         arg_val,
                         ArgSource.DefaultValue,
                     )
+                    return True
         else:
             # Setting `ArgSource.DefaultValue`: it cannot override any, right? No point to handle assigned case:
             pass
+    return False
 
 
 def redirect_to_no_func_error(
@@ -174,7 +176,7 @@ class ServiceDelegator(AbstractDelegator):
 
         access_search_control = populate_search_control(
             class_to_collection_map,
-            ServiceArgType.access_type.name,
+            ServiceEnvelopeClass.ClassAccessType.name,
             [
                 {"access": ServiceArgType.access_type.name},
             ],
@@ -270,6 +272,7 @@ class ServiceDelegator(AbstractDelegator):
         interp_ctx: "InterpContext",
     ) -> bool:
         func_id = get_func_id_from_interp_ctx(interp_ctx)
+        any_assignment = False
         if func_id in [
             goto_host_func_,
             goto_service_func_,
@@ -293,10 +296,17 @@ class ServiceDelegator(AbstractDelegator):
                 if code_arg_type in data_envelope:
                     code_arg_val = data_envelope[code_arg_type]
                     if code_arg_val == "prod":
-                        set_default_to(ServiceArgType.access_type.name, "ro", access_container)
+                        any_assignment = (
+                            set_default_to(ServiceArgType.access_type.name, "ro", access_container)
+                            or
+                            any_assignment
+                        )
                     else:
-                        set_default_to(ServiceArgType.access_type.name, "rw", access_container)
-                    return True
+                        any_assignment = (
+                            set_default_to(ServiceArgType.access_type.name, "rw", access_container)
+                            or
+                            any_assignment
+                        )
 
         elif func_id in [
             list_host_func_,
@@ -306,7 +316,7 @@ class ServiceDelegator(AbstractDelegator):
         else:
             raise RuntimeError
 
-        return False
+        return any_assignment
 
     def run_invoke_control(
         self,

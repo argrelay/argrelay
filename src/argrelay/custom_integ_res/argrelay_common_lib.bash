@@ -69,7 +69,7 @@ function ensure_inside_dev_shell {
 }
 
 function remove_pid_file_if_stale {
-    # Use case: clean up stale pid file.
+    # Use case (FS_86_73_43_45): clean up stale pid file.
 
     pid_file="${1}"
 
@@ -87,7 +87,7 @@ function remove_pid_file_if_stale {
 }
 
 function kill_via_pid_file_or_ensure_closed_port {
-    # Use case: trigger server shut down if pid file exists or ensure server is down otherwise.
+    # Use case (FS_86_73_43_45): trigger server shut down if pid file exists or ensure server is down otherwise.
     # Unlike `wait_for_closed_port`, this func does not wait for port to close.
     # It only ensures port is closed when there is no pid file.
 
@@ -126,7 +126,7 @@ function kill_via_pid_file_or_ensure_closed_port {
 }
 
 function exit_if_port_open {
-    # Use case: do nothing if server is up (exit current process).
+    # Use case (FS_86_73_43_45): do nothing if server is up (exit current process).
 
     server_host_name="${1}"
     server_port_number="${2}"
@@ -148,7 +148,7 @@ function exit_if_port_open {
 }
 
 function wait_for_open_port {
-    # Use case: ensure server is up before return.
+    # Use case (FS_86_73_43_45): ensure server is up before return.
 
     timeout_sec="${1}"
     pid_file="${2}"
@@ -182,7 +182,7 @@ function wait_for_open_port {
 }
 
 function wait_for_closed_port {
-    # Use case: ensure server is down before return.
+    # Use case  (FS_86_73_43_45): ensure server is down before return.
     # Unlike `kill_via_pid_file_or_ensure_closed_port`, this func does not trigger server shut down.
 
     timeout_sec="${1}"

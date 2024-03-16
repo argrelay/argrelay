@@ -133,7 +133,7 @@ class ThisTestClass(RemoteTestClass):
                     case_comment,
                 ) = test_case
 
-                self.verify_output_with_via_remote_client(
+                self.verify_output_via_remote_client(
                     test_line,
                     CompType.InvokeAction,
                     None,

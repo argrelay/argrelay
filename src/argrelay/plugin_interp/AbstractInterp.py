@@ -39,11 +39,36 @@ class AbstractInterp:
     def __str__(self) -> str:
         return f"fid: {self.interp_factory_id} path: {self.interp_ctx.interp_tree_abs_path} instance: {self.instance_number}"
 
-    def consume_key_args(self) -> None:
-        pass
+    def consumes_args_at_once(self) -> bool:
+        """
+        Tell whether this interp consumes args one by one (FS_44_36_84_88) - see `consume_pos_arg` for details.
+        """
+        return False
 
-    def consume_pos_args(self) -> None:
-        pass
+    def consume_key_args(self) -> bool:
+        """
+        Same as `consume_pos_args`, but for keyword arguments.
+        """
+        # TODO: FS_20_88_05_60 named args: stub
+        return False
+
+    def consume_pos_args(self) -> bool:
+        """
+        Consume (usually) one arg at time: if consumed, return True, otherwise return False.
+
+        If interp consumes all args at once,
+        it has to override `consumes_args_at_once` to return `True`.
+
+        Whether to consume more than one arg depends on whether it causes situation like
+        FS_51_67_38_37 (impossible arg combinations). For example:
+        *   FS_26_43_73_72 (func tree)
+            All args (for func `data_container` or subsequent func `data_container` as arguments) has to be
+            consumed one by one FS_44_36_84_88) because user is allowed to specify them in any order and
+            consuming several at a time will cause FS_51_67_38_37 (impossible arg combinations).
+        *   FS_01_89_09_24 (interp tree)
+            All args can be consumed at once because user has to specify them in the order of the interp tree path.
+        """
+        return False
 
     def try_iterate(self) -> InterpStep:
         pass

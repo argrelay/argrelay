@@ -52,22 +52,29 @@ class InterpTreeInterp(AbstractInterp):
         # Token with ipos = 0 is the command name eaten by `FirstArgInterp` (FS_42_76_93_51 first interp):
         self.base_token_ipos: int = 1
 
-    def consume_pos_args(self) -> None:
+    def consumes_args_at_once(self) -> bool:
+        return True
+
+    def consume_pos_args(self) -> bool:
         """
         Consumes heading args in `unconsumed_tokens` according to the `interp_selector_tree`.
+
+        Unlike normal guideline to consume one arg at time (FS_44_36_84_88), this func consumes all possible
+        because args are selected according to the `interp_selector_tree` (not via query)
+        and do not become incompatible by consuming all (causing FS_51_67_38_37 impossible arg combinations).
         """
 
-        self.interp_tree_rel_path: list[str] = []
         curr_sub_tree = self.interp_selector_tree
+        any_consumed = False
         while True:
             if isinstance(curr_sub_tree, str):
                 # Tree leaf is reached - use it:
                 self.next_interp_factory_id = curr_sub_tree
-                return
+                return any_consumed
 
             if not self.interp_ctx.unconsumed_tokens:
                 self.set_default_factory_id(curr_sub_tree)
-                return
+                return any_consumed
 
             # Always consume next unconsumed token:
             # TODO: Is this assumption valid/safe that next unconsumed `ipos` is in the order it appears on command line?
@@ -83,10 +90,11 @@ class InterpTreeInterp(AbstractInterp):
                     self.interp_ctx.consumed_tokens.append(curr_token_ipos)
                     del self.interp_ctx.unconsumed_tokens[0]
                     curr_sub_tree = curr_sub_tree[curr_token_value]
+                    any_consumed = True
                     continue
                 else:
                     self.set_default_factory_id(curr_sub_tree)
-                    return
+                    return any_consumed
             else:
                 raise LookupError()
 

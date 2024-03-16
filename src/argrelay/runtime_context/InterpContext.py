@@ -148,6 +148,80 @@ class InterpContext:
         self.curr_container.found_count = query_result.found_count
         ElapsedTime.measure(f"end_query_envelopes: {query_dict} {self.curr_container.found_count}")
 
+    def consume_args(
+        self,
+        interp_n: int
+    ):
+        # Query envelope values only - they will be used for consumption of command line args:
+        ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {self.curr_interp}")
+        self.query_prop_values()
+        while True:
+            # Reset to False as we just executed new query:
+            query_changed = False
+            arg_was_consumed = False
+
+            # Because each `prop_value` set (per `prop_type`) is treated independently,
+            # assignment of `prop_value`-s from args may set combinations
+            # which yields no search result in subsequent query.
+            # Logically, it is better to consume args one by one and running query after each consumption,
+            # but this is not done due to query overhead.
+            # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
+            # separate `interpret_command` calls is close to that logically better approach.
+            if not query_changed:
+                ElapsedTime.measure(f"[i={interp_n}]: before_consume_key_args: {self.curr_interp}")
+                arg_was_consumed = self.curr_interp.consume_key_args()
+                query_changed = arg_was_consumed
+            if not query_changed:
+                ElapsedTime.measure(f"[i={interp_n}]: before_consume_pos_args: {self.curr_interp}")
+                arg_was_consumed = self.curr_interp.consume_pos_args()
+                query_changed = arg_was_consumed
+
+            if query_changed:
+                ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {self.curr_interp}")
+                self.query_prop_values()
+                query_changed = False
+
+            if self.curr_container:
+                # Set implicit values (so that applying defaults knows what they are):
+                self.curr_container.populate_implicit_arg_values()
+
+            if self.curr_interp.has_fill_control():
+                if self.parsed_ctx.server_action is ServerAction.DescribeLineArgs:
+                    # TODO: FS_72_53_55_13: options before defaults
+                    # Describing args will need to show options except default - query values before defaults:
+                    ElapsedTime.measure(f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}")
+                    self.query_prop_values()
+                    # Reset to False as we just executed new query:
+                    query_changed = False
+
+                    self._save_potentially_hidden_by_defaults()
+
+                # Apply defaults (they may apply more than single value at a time):
+                query_changed = (
+                    self.curr_interp.delegate_fill_control()
+                    or
+                    query_changed
+                )
+                self._leave_only_hidden_by_defaults()
+
+
+            # Query envelopes after all implicit and default values assigned:
+            # TODO: We could probably select whether to query only envelopes or
+            #       query their values depending on `ServerAction`.
+            #       But init of next envelope depends on prev envelope found.
+            if query_changed:
+                ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {self.curr_interp}")
+                self.query_prop_values()
+                if self.curr_interp.consumes_args_at_once():
+                    break
+            elif arg_was_consumed:
+                # Run next cycle to see if one more can be consumed:
+                if self.curr_interp.consumes_args_at_once():
+                    break
+            else:
+                break
+
+
     # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that) together with this loop:
     def interpret_command(
         self,
@@ -170,59 +244,7 @@ class InterpContext:
         while True:
             interp_n += 1
 
-            # Query envelope values only - they will be used for consumption of command line args:
-            ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {self.curr_interp}")
-            self.query_prop_values()
-
-            # Because each `prop_value` set (per `prop_type`) is treated independently,
-            # assignment of `prop_value`-s from args may set combinations
-            # which yields no search result in subsequent query.
-            # Logically, it is better to consume args one by one and running query after each consumption,
-            # but this is not done due to query overhead.
-            # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
-            # separate `interpret_command` calls is close to that logically better approach.
-            ElapsedTime.measure(f"[i={interp_n}]: before_consume_args: {self.curr_interp}")
-            self.curr_interp.consume_key_args()
-            self.curr_interp.consume_pos_args()
-
-            ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {self.curr_interp}")
-            self.query_prop_values()
-            # Reset to False as we just executed new query:
-            query_changed = False
-
-            if self.curr_container:
-                query_changed = (
-                    self.curr_container.populate_implicit_arg_values()
-                    or
-                    query_changed
-                )
-
-            if self.curr_interp.has_fill_control():
-                if self.parsed_ctx.server_action is ServerAction.DescribeLineArgs:
-                    # TODO: FS_72_53_55_13: options before defaults
-                    # Describing args will need to show options except default - query values before defaults:
-                    ElapsedTime.measure(f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}")
-                    self.query_prop_values()
-                    # Reset to False as we just executed new query:
-                    query_changed = False
-
-                    self._save_potentially_hidden_by_defaults()
-
-                # Apply defaults:
-                query_changed = (
-                    self.curr_interp.delegate_fill_control()
-                    or
-                    query_changed
-                )
-                self._leave_only_hidden_by_defaults()
-
-            # Query envelopes after all implicit and default values assigned:
-            # TODO: We could probably select whether to query only envelopes or
-            #       query their values depending on `ServerAction`.
-            #       But init of next envelope depends on prev envelope found.
-            if query_changed:
-                ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {self.curr_interp}")
-                self.query_prop_values()
+            self.consume_args(interp_n)
 
             ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {self.curr_interp}")
             interp_step: InterpStep = self.curr_interp.try_iterate()

@@ -183,6 +183,17 @@ class ThisTestClass(LocalTestClass):
                 "FS_92_75_93_01: Register bug that double quotes (which are used as special char in JSON format) "
                 "are at causing interpretation problem to suggest completion options for tangent arg.",
             ),
+            (
+                line_no(), "some_command goto host dev downstream amer amer|", CompType.PrefixShown,
+                [],
+                "Step 1: No suggestions because FS_23_62_89_43 tangent token narrows down selection to 0 options."
+            ),
+            (
+                line_no(), "some_command goto host dev downstream amer amer |", CompType.PrefixShown,
+                ['apac', 'emea'],
+                "Step 2: Some suggestions exists because FS_23_62_89_43 tangent token is not present and "
+                "the logic skips unconsumed args suggesting what is missing for the next arg type. ",
+            ),
         ]
         # @formatter:on
 
@@ -196,7 +207,11 @@ class ThisTestClass(LocalTestClass):
                     case_comment,
                 ) = test_case
 
-                self.verify_output_with_via_local_client(
+                # # TODO: Delete this:
+                # if line_number != 59:
+                #     continue
+
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
@@ -217,6 +232,8 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 "some_command list host dev |",
+                # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
+                [],
                 {
                     0: {
                         # TODO: Use `ExplicitPosArg` for the first arg instead of `InitValue`:
@@ -269,6 +286,8 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 "some_command goto service s_b prod |",
+                # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
+                [],
                 {
                     0: {
                         f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
@@ -316,17 +335,18 @@ class ThisTestClass(LocalTestClass):
                 (
                     line_number,
                     test_line,
+                    expected_suggestions,
                     container_ipos_to_expected_assignments,
                     delegator_class,
                     envelope_ipos_to_field_values,
                     case_comment,
                 ) = test_case
 
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     CompType.InvokeAction,
-                    None,
+                    expected_suggestions,
                     container_ipos_to_expected_assignments,
                     None,
                     delegator_class,
@@ -382,7 +402,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.22 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.172.16.2.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
 """,
             ),
@@ -403,7 +423,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}cluster_name: ?{TermColor.reset_style.value} dev-amer-upstream dev-apac-upstream dev-emea-upstream prod-apac-upstream qa-amer-upstream qa-apac-upstream 
 {" " * indent_size}{TermColor.remaining_value.value}host_name: ?{TermColor.reset_style.value} asdf-du hjkl-qu poiu-qu qwer-du qwer-pd-1 qwer-pd-2 qwer-pd-3 rt-qu rtyu-qu zxcv-du 
 {" " * indent_size}{TermColor.remaining_value.value}ip_address: ?{TermColor.reset_style.value} ip.172.16.2.1 ip.172.16.4.2 ip.172.16.7.2 ip.192.168.1.1 ip.192.168.3.1 ip.192.168.4.1 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 
-{ServiceArgType.access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
 """,
             ),
@@ -427,7 +447,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.07 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.7.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
 """,
             ),
@@ -588,7 +608,7 @@ class ThisTestClass(LocalTestClass):
                     expected_assignments,
                     case_comment,
                 ) = test_case
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
@@ -662,7 +682,7 @@ class ThisTestClass(LocalTestClass):
                     expected_suggestions,
                     case_comment,
                 ) = test_case
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
@@ -722,7 +742,7 @@ class ThisTestClass(LocalTestClass):
                     envelope_ipos_to_field_values,
                     case_comment,
                 ) = test_case
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     CompType.InvokeAction,
@@ -776,7 +796,7 @@ class ThisTestClass(LocalTestClass):
                     expected_suggestions,
                     case_comment,
                 ) = test_case
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
@@ -811,7 +831,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.access_type.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
 """,
             ),
@@ -835,7 +855,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{ServiceArgType.access_type.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
 """,
             ),

@@ -164,8 +164,11 @@ class BaseConfigDelegator(AbstractDelegator):
                             # https://stackoverflow.com/a/54071505/441652
                             prop_value = eval(f'f"""{prop_value_template}"""')
 
-                            set_default_to(prop_name, prop_value, interp_ctx.curr_container)
-                            any_assignment = True
+                            any_assignment = (
+                                set_default_to(prop_name, prop_value, interp_ctx.curr_container)
+                                or
+                                any_assignment
+                            )
 
         return any_assignment
 

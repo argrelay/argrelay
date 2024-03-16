@@ -24,7 +24,7 @@ class RemoteTestClass(ClientServerTestClass):
     """
 
     # TODO: Allow intercepting subprocess.* invocation and asserting their input (e.g. whether specific command was invoked).
-    def verify_output_with_via_remote_client(
+    def verify_output_via_remote_client(
         self,
         test_line: str,
         comp_type: CompType,

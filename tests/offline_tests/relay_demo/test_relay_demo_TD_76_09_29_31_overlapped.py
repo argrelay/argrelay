@@ -17,6 +17,9 @@ class ThisTestClass(LocalTestClass):
     def test_propose_auto_comp_TD_76_09_29_31_overlapped(self):
         """
         Test arg values suggestion with TD_76_09_29_31 # overlapped
+
+        Tests:
+        *   FS_76_29_13_28 arg consumption priorities
         """
 
         test_cases = [
@@ -25,43 +28,98 @@ class ThisTestClass(LocalTestClass):
                 "some_command host dev goto downstream |",
                 CompType.PrefixShown,
                 ["amer", "emea"],
-                {},
-                None,
-                "TD_76_09_29_31: geo_region set is suggested (while host_name set is the same)",
+                {
+                    0: {
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
+                    },
+                    1: {
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: None,
+                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ExplicitPosArg),
+                        ServiceArgType.cluster_name.name: None,
+                        ServiceArgType.host_name.name: None,
+                    },
+                    3: None,
+                },
+                "TD_76_09_29_31: Step 1: geo_region is suggested "
+                "(host_name is not yet based on FS_76_29_13_28 arg consumption priorities)",
             ),
             (
                 line_no(),
                 "some_command host dev goto downstream amer |",
                 CompType.PrefixShown,
-                ["amer", "emea"],
-                {},
-                None,
-                "TD_76_09_29_31: host_name set is suggested (while geo_region set is the same)",
+                ["amer", "emea", "host-3-amer"],
+                {
+                    0: {
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
+                    },
+                    1: {
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
+                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ExplicitPosArg),
+                        ServiceArgType.cluster_name.name: AssignedValue("dev-amer-downstream", ArgSource.ImplicitValue),
+                        ServiceArgType.host_name.name: None,
+                    },
+                    3: None,
+                },
+                "TD_76_09_29_31: Step 2: host_name is suggested "
+                "(while geo_region is already assigned based on FS_76_29_13_28 arg consumption priorities)",
             ),
             (
                 line_no(),
                 "some_command goto host dev downstream amer am|",
                 CompType.PrefixShown,
                 ["amer"],
-                {},
-                None,
-                "TD_76_09_29_31 # overlapped: one of the explicit value matches more than one type, "
-                "but it is not assigned to all arg types => some suggestion for incomplete missing arg types",
+                {
+                    0: {
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
+                    },
+                    1: {
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
+                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ExplicitPosArg),
+                        ServiceArgType.cluster_name.name: AssignedValue("dev-amer-downstream", ArgSource.ImplicitValue),
+                        ServiceArgType.host_name.name: None,
+                    },
+                    3: None,
+                },
+                "TD_76_09_29_31 overlapped: Step 1: one of the explicit value matches more than one type, "
+                "but it is not assigned to all arg types => suggest only for incomplete missing arg types",
             ),
             (
                 line_no(),
-                "some_command goto host dev downstream amer amer |",
+                "some_command goto host dev downstream amer host|",
                 CompType.PrefixShown,
-                [],
-                {},
-                None,
-                "TD_76_09_29_31 # overlapped: all values assigned - no more suggestions",
+                ["host-3-amer"],
+                {
+                    0: {
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
+                    },
+                    1: {
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
+                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ExplicitPosArg),
+                        ServiceArgType.cluster_name.name: AssignedValue("dev-amer-downstream", ArgSource.ImplicitValue),
+                        ServiceArgType.host_name.name: None,
+                    },
+                    3: None,
+                },
+                "TD_76_09_29_31 overlapped: Step 1: one of the explicit value matches more than one type, "
+                "but it is not assigned to all arg types => suggest only for incomplete missing arg types",
             ),
             (
                 line_no(),
                 "some_command host dev goto downstream amer amer |",
-                CompType.InvokeAction,
-                None,
+                CompType.DescribeArgs,
+                [],
                 {
                     0: {
                         f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
@@ -75,10 +133,12 @@ class ThisTestClass(LocalTestClass):
                         ServiceArgType.cluster_name.name: AssignedValue("dev-amer-downstream", ArgSource.ImplicitValue),
                         ServiceArgType.host_name.name: AssignedValue("amer", ArgSource.ExplicitPosArg),
                     },
+                    3: None,
                 },
-                # TODO: add verification of consumed and unconsumed tokens
-                ErrorDelegator,
-                "TD_76_09_29_31: Both geo_region and host_name are correctly assigned",
+                # TODO_70_48_96_29: add verification of consumed and unconsumed tokens
+                "TD_76_09_29_31 overlapped: "
+                "Both geo_region and host_name are correctly assigned. "
+                "All values assigned - no more suggestions. ",
             ),
         ]
 
@@ -90,18 +150,17 @@ class ThisTestClass(LocalTestClass):
                     comp_type,
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
-                    delegator_class,
                     case_comment,
                 ) = test_case
 
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
                     None,
-                    delegator_class,
+                    None,
                     None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )

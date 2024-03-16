@@ -136,7 +136,7 @@ class ThisTestClass(LocalTestClass):
                         ServiceEnvelopeClass.ClassCluster.name: ThisTestClass.__name__,
                         ServiceEnvelopeClass.ClassHost.name: ThisTestClass.__name__,
                         ServiceEnvelopeClass.ClassService.name: ThisTestClass.__name__,
-                        ServiceArgType.access_type.name: ThisTestClass.__name__,
+                        ServiceEnvelopeClass.ClassAccessType.name: ThisTestClass.__name__,
                         # ---
                         GitRepoEnvelopeClass.ClassGitRepo.name: ThisTestClass.__name__,
                         GitRepoEnvelopeClass.ClassGitTag.name: ThisTestClass.__name__,
@@ -153,7 +153,7 @@ class ThisTestClass(LocalTestClass):
                         ServiceEnvelopeClass.ClassCluster.name: ServiceEnvelopeClass.ClassCluster.name,
                         ServiceEnvelopeClass.ClassHost.name: ServiceEnvelopeClass.ClassHost.name,
                         ServiceEnvelopeClass.ClassService.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.access_type.name: ServiceArgType.access_type.name,
+                        ServiceEnvelopeClass.ClassAccessType.name: ServiceEnvelopeClass.ClassAccessType.name,
                         # ---
                         GitRepoEnvelopeClass.ClassGitRepo.name: GitRepoEnvelopeClass.ClassGitRepo.name,
                         GitRepoEnvelopeClass.ClassGitTag.name: GitRepoEnvelopeClass.ClassGitRepo.name,

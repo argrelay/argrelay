@@ -70,7 +70,7 @@ class ServiceLoader(AbstractLoader):
             ServiceEnvelopeClass.ClassCluster.name,
             ServiceEnvelopeClass.ClassHost.name,
             ServiceEnvelopeClass.ClassService.name,
-            ServiceArgType.access_type.name,
+            ServiceEnvelopeClass.ClassAccessType.name,
         ]
 
         init_envelop_collections(
@@ -91,7 +91,7 @@ class ServiceLoader(AbstractLoader):
             class_to_collection_map[ServiceEnvelopeClass.ClassService.name]
         ].data_envelopes
         access_envelopes = static_data.envelope_collections[
-            class_to_collection_map[ServiceArgType.access_type.name]
+            class_to_collection_map[ServiceEnvelopeClass.ClassAccessType.name]
         ].data_envelopes
 
         self.populate_common_access_type(access_envelopes)
@@ -101,6 +101,11 @@ class ServiceLoader(AbstractLoader):
             service_envelopes,
         )
         self.populate_TD_76_09_29_31_overlapped(
+            cluster_envelopes,
+            host_envelopes,
+            service_envelopes,
+        )
+        self.populate_TD_99_99_88_75_mutually_exclusive(
             cluster_envelopes,
             host_envelopes,
             service_envelopes,
@@ -222,13 +227,13 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_payload_: {
                 },
-                ReservedArgType.EnvelopeClass.name: ServiceArgType.access_type.name,
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassAccessType.name,
                 ServiceArgType.access_type.name: "ro",
             },
             {
                 envelope_payload_: {
                 },
-                ReservedArgType.EnvelopeClass.name: ServiceArgType.access_type.name,
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassAccessType.name,
                 ServiceArgType.access_type.name: "rw",
             },
         ])
@@ -1124,8 +1129,21 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.geo_region.name: "amer",
                 ServiceArgType.flow_stage.name: "downstream",
                 ServiceArgType.cluster_name.name: "dev-amer-downstream",
-                # host_name is intentionally mathing another host_name from different geo_region (also named alike):
+                # host_name is intentionally matching another host_name from different geo_region (also named alike):
                 ServiceArgType.host_name.name: "emea",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "amer",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-amer-downstream",
+                # host_name is intentionally matching another host_name from different geo_region (also named alike):
+                ServiceArgType.host_name.name: "host-3-amer",
             },
 
             {
@@ -1151,8 +1169,110 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.geo_region.name: "emea",
                 ServiceArgType.flow_stage.name: "downstream",
                 ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                # host_name is intentionally mathing another host_name from different geo_region (also named alike):
+                # host_name is intentionally matching another host_name from different geo_region (also named alike):
                 ServiceArgType.host_name.name: "amer",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_76_09_29_31",  # overlapped
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                # host_name is intentionally matching another host_name from different geo_region (also named alike):
+                ServiceArgType.host_name.name: "host-3-emea",
+            },
+        ])
+
+    def populate_TD_99_99_88_75_mutually_exclusive(
+        self,
+        cluster_envelopes: list[dict],
+        host_envelopes: list[dict],
+        service_envelopes: list[dict],
+    ):
+        if not self.is_test_data_allowed("TD_99_99_88_75"):
+            return
+
+        cluster_envelopes.extend([
+
+            ############################################################################################################
+            # TD_99_99_88_75 # mutually exclusive: clusters
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_99_99_88_75",  # mutually exclusive
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServiceArgType.code_maturity.name: "qa",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-amer-downstream",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_99_99_88_75",  # mutually exclusive
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+            },
+        ])
+
+        host_envelopes.extend([
+
+            ############################################################################################################
+            # TD_99_99_88_75 # mutually exclusive: hosts
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_99_99_88_75",  # mutually exclusive
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "qa",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "qa-apac-downstream",
+                ServiceArgType.host_name.name: "host-a-1",
+            },
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_99_99_88_75",  # mutually exclusive
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "qa",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "qa-apac-downstream",
+                ServiceArgType.host_name.name: "host-a-2",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_99_99_88_75",  # mutually exclusive
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ServiceArgType.host_name.name: "host-b-1",
+            },
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_99_99_88_75",  # mutually exclusive
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ServiceArgType.host_name.name: "host-b-2",
             },
         ])
 
