@@ -21,9 +21,9 @@ class DistinctValuesQuery(Enum):
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049
         --------------------------------
-                  original_find_and_loop     0.009     0.030     0.115     0.440     1.632     6.137    33.669
-                         native_distinct     0.038     0.122     0.363     0.969     2.183     4.740     7.102
-                        native_aggregate     0.044     0.151     0.679     2.899    13.257    49.728   292.153
+                  original_find_and_loop     0.011     0.035     0.122     0.461     1.650     5.945    27.836
+                         native_distinct     0.062     0.192     0.576     1.455     2.993     6.287    10.603
+                        native_aggregate     0.084     0.212     0.909     3.650    15.173    58.340   326.188
         ================================
         use_mongomock: True
         use_single_collection: False
@@ -31,9 +31,9 @@ class DistinctValuesQuery(Enum):
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049
         --------------------------------
-                  original_find_and_loop     0.006     0.018     0.113     0.414     1.662     5.831    29.375
-                         native_distinct     0.027     0.096     0.327     0.812     1.830     3.578     6.403
-                        native_aggregate     0.020     0.066     0.258     1.108     4.923    17.561    95.461
+                  original_find_and_loop     0.007     0.028     0.096     0.439     1.672     5.939    27.561
+                         native_distinct     0.048     0.159     0.465     1.224     2.725     5.539     9.572
+                        native_aggregate     0.031     0.109     0.398     1.758     7.802    28.463   126.566
         ```
 
         *   The fastest on small collections is `original_find_and_loop`.
@@ -49,9 +49,9 @@ class DistinctValuesQuery(Enum):
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049
         --------------------------------
-                  original_find_and_loop     0.013     0.023     0.043     0.090     0.182     0.428     0.746
-                         native_distinct     0.041     0.065     0.117     0.241     0.462     0.796     1.458
-                        native_aggregate     0.022     0.027     0.050     0.081     0.125     0.210     0.368
+                  original_find_and_loop     0.022     0.031     0.065     0.115     0.222     0.505     0.748
+                         native_distinct     0.063     0.102     0.195     0.435     0.857     1.493     2.591
+                        native_aggregate     0.022     0.038     0.064     0.109     0.165     0.324     0.469
         ================================
         use_mongomock: False
         use_single_collection: False
@@ -59,9 +59,9 @@ class DistinctValuesQuery(Enum):
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049
         --------------------------------
-                  original_find_and_loop     0.015     0.020     0.039     0.087     0.148     0.345     0.633
-                         native_distinct     0.044     0.048     0.087     0.173     0.299     0.512     0.903
-                        native_aggregate     0.016     0.021     0.033     0.054     0.086     0.159     0.231
+                  original_find_and_loop     0.020     0.025     0.048     0.144     0.175     0.383     0.590
+                         native_distinct     0.048     0.067     0.123     0.228     0.365     0.594     0.991
+                        native_aggregate     0.022     0.027     0.040     0.067     0.109     0.176     0.271
         ```
 
         The fastest is `native_aggregate`.

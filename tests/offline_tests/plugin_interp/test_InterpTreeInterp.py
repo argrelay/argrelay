@@ -88,7 +88,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |",
                 CompType.PrefixShown,
-                ["amer", "emea"],
+                ["amer", "emea", "host-3-amer"],
                 {},
                 None,
                 "FS_01_89_09_24: Even if `intercept` is not specified in the beginning, "
@@ -101,7 +101,7 @@ class ThisTestClass(LocalTestClass):
                 # TODO: FS_23_62_89_43: This can be fixed to take into account cursor position
                 #                       and suggest not only missing args for already populated command line,
                 #                       but also internal functions available for that position (e.g. `intercept`)
-                ["amer", "emea"],
+                ["amer", "emea", "host-3-amer"],
                 {},
                 None,
                 "FS_01_89_09_24: Suggest functions available for this position "

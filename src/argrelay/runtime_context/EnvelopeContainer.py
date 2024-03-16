@@ -64,6 +64,8 @@ class EnvelopeContainer:
         self,
     ) -> bool:
         """
+        When possible arg_values are singled out, assign them as `ArgSource.ImplicitValue`.
+
         When `data_envelope` is singled out, all remaining single-value `arg_type`-s become `ArgSource.ImplicitValue`.
 
         Implements FS_13_51_07_97 singled out implicit values.

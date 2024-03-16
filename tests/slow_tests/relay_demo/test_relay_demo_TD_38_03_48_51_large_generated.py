@@ -60,7 +60,7 @@ class ThisTestClass(LocalTestClass):
                     case_comment,
                 ) = test_case
 
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,

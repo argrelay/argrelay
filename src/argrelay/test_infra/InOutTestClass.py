@@ -31,7 +31,6 @@ class InOutTestClass(BaseTestClass):
         try:
 
             if expected_suggestions is not None:
-                # If `expected_suggestions`, verify them:
                 self.assertEqual(expected_suggestions, actual_suggestions)
 
             if container_ipos_to_expected_assignments is not None:
@@ -80,15 +79,12 @@ class InOutTestClass(BaseTestClass):
                 self.assertIsNone(delegator_class)
                 self.assertIsNone(envelope_ipos_to_field_values)
             elif call_ctx.server_action is ServerAction.DescribeLineArgs:
-                # TODO: TODO_11_77_28_50 suggestions are already in all responses:
-                self.assertIsNone(expected_suggestions)
                 # TODO: TODO_42_81_01_90: assert data instead of print out: there will be no delegator_class, but a mock to intercept response for enum query:
                 self.assertIsNone(delegator_class)
                 # TODO: TODO_42_81_01_90: assert data instead of print out: the data should be available:
                 self.assertIsNone(envelope_ipos_to_field_values)
             elif call_ctx.server_action is ServerAction.RelayLineArgs:
-                # TODO: TODO_11_77_28_50 suggestions are already in all responses:
-                self.assertIsNone(expected_suggestions)
+                pass
             else:
                 raise RuntimeError
 

@@ -125,7 +125,7 @@ server_config_desc = TypeDesc(
             ServiceEnvelopeClass.ClassCluster.name: ServiceEnvelopeClass.ClassCluster.name,
             ServiceEnvelopeClass.ClassHost.name: ServiceEnvelopeClass.ClassHost.name,
             ServiceEnvelopeClass.ClassService.name: ServiceEnvelopeClass.ClassService.name,
-            ServiceArgType.access_type.name: ServiceArgType.access_type.name,
+            ServiceEnvelopeClass.ClassAccessType.name: ServiceEnvelopeClass.ClassAccessType.name,
         },
         server_plugin_control_: server_plugin_control_desc.dict_example,
         plugin_instance_entries_: {

@@ -98,26 +98,45 @@ class FuncTreeInterp(AbstractInterp):
             self.interp_tree_node_config_dict[func_search_control_]
         )
 
-    def consume_key_args(self) -> None:
-        # TODO: FS_20_88_05_60 named args: stub
-        pass
 
-    def consume_pos_args(self) -> None:
+    def consume_pos_args(self) -> bool:
         """
         Scans through `unconsumed_tokens` and tries to match its value against values of each type.
+
+        Implements:
+        *   FS_76_29_13_28 arg consumption priorities
+        *   FS_44_36_84_88 consume args one by one
+            This func consumes all until the first unconsumed non-singled out arg.
         """
 
         consumed_token_ipos_list = []
+        any_consumed = False
+        # Related to FS_13_51_07_97 singled out implicit values:
+        # Whether we can consume more than one (without creating FS_51_67_38_37 impossible arg combinations)
+        # depends on whether first set of consumed args are already singled out.
+        # If arg is singled out but still matches unconsumed arg, it must be assigned as `ArgSource.ExplicitPosArg`
+        # rather than be left unconsumed and (later) be assigned as `ArgSource.ImplicitValue`.
+        can_consume_more = True
         for unconsumed_token_ipos in self.interp_ctx.unconsumed_tokens:
             unconsumed_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
-            # See if token matches any type by value:
 
+            # TODO: FS_76_29_13_28 Why not define the order based on FS_31_70_49_15 `search_control`
+            #       (instead of whatever internal order `remaining_types_to_values` has)?
+            #       It could already be the case that `remaining_types_to_values` are ordered as `search_control`.
+            #       Why not make it explicit?
+
+            # See if token matches any type by value:
             for arg_type, arg_values in self.interp_ctx.curr_container.remaining_types_to_values.items():
                 if unconsumed_token in arg_values:
                     self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
                         unconsumed_token,
                         ArgSource.ExplicitPosArg,
                     )
+                    if len(arg_values) != 1:
+                        # This was not singled out arg:
+                        # stop consuming to avoid FS_51_67_38_37 impossible arg combinations.
+                        can_consume_more = False
+                    any_consumed = True
                     consumed_token_ipos_list.append(unconsumed_token_ipos)
                     self.interp_ctx.consumed_tokens.append(unconsumed_token_ipos)
                     # TD_76_09_29_31: overlapped
@@ -125,9 +144,14 @@ class FuncTreeInterp(AbstractInterp):
                     del self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
                     break
 
+            if not can_consume_more:
+                break
+
         # perform list modifications out of the prev loop:
         for consumed_token_ipos in consumed_token_ipos_list:
             self.interp_ctx.unconsumed_tokens.remove(consumed_token_ipos)
+
+        return any_consumed
 
     def try_iterate(self) -> InterpStep:
         """

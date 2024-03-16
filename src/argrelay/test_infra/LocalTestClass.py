@@ -45,7 +45,7 @@ class LocalTestClass(InOutTestClass):
         delegator_class: Union[Type[AbstractDelegator], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
     ):
-        self.verify_output_with_via_local_client(
+        self.verify_output_via_local_client(
             test_data,
             test_line,
             comp_type,
@@ -57,7 +57,7 @@ class LocalTestClass(InOutTestClass):
             LocalClientEnvMockBuilder(),
         )
 
-    def verify_output_with_via_local_client(
+    def verify_output_via_local_client(
         self,
         test_data: str,
         test_line: str,

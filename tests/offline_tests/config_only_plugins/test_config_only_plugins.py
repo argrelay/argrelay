@@ -60,7 +60,7 @@ class ThisTestClass(LocalTestClass):
                     case_comment,
                 ) = test_case
 
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
@@ -120,7 +120,7 @@ class ThisTestClass(LocalTestClass):
                     expected_suggestions,
                     case_comment,
                 ) = test_case
-                self.verify_output_with_via_local_client(
+                self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
@@ -201,7 +201,7 @@ exit 1
 
                 with mock_subprocess_popen(popen_mock_config) as popen_mock:
                     with self.assertRaises(SystemExit) as cm:
-                        self.verify_output_with_via_local_client(
+                        self.verify_output_via_local_client(
                             self.__class__.same_test_data_per_class,
                             test_line,
                             comp_type,

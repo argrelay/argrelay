@@ -80,6 +80,7 @@ class InterceptDelegator(AbstractJumpDelegator):
         interp_ctx: InterpContext,
     ) -> bool:
         func_id = get_func_id_from_interp_ctx(interp_ctx)
+        any_assignment = False
         if func_id in [
             SpecialFunc.intercept_invocation_func.name,
         ]:
@@ -88,9 +89,13 @@ class InterceptDelegator(AbstractJumpDelegator):
                 format_output_container = interp_ctx.envelope_containers[(
                     interp_ctx.curr_interp.base_container_ipos + format_output_container_ipos_
                 )]
-                set_default_to(output_format_prop_name, OutputFormat.json_format.name, format_output_container)
-                return True
-        return False
+                any_assignment = (
+                    set_default_to(output_format_prop_name, OutputFormat.json_format.name, format_output_container)
+                    or
+                    any_assignment
+                )
+
+        return any_assignment
 
     def run_invoke_control(
         self,
