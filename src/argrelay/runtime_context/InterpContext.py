@@ -152,34 +152,41 @@ class InterpContext:
         self,
         interp_n: int
     ):
-        # Query envelope values only - they will be used for consumption of command line args:
-        ElapsedTime.measure(f"[i={interp_n}]: before_init_query: {self.curr_interp}")
-        self.query_prop_values()
         while True:
-            # Reset to False as we just executed new query:
-            query_changed = False
-            arg_was_consumed = False
 
-            # Because each `prop_value` set (per `prop_type`) is treated independently,
-            # assignment of `prop_value`-s from args may set combinations
-            # which yields no search result in subsequent query.
-            # Logically, it is better to consume args one by one and running query after each consumption,
-            # but this is not done due to query overhead.
-            # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
-            # separate `interpret_command` calls is close to that logically better approach.
-            if not query_changed:
-                ElapsedTime.measure(f"[i={interp_n}]: before_consume_key_args: {self.curr_interp}")
-                arg_was_consumed = self.curr_interp.consume_key_args()
-                query_changed = arg_was_consumed
-            if not query_changed:
-                ElapsedTime.measure(f"[i={interp_n}]: before_consume_pos_args: {self.curr_interp}")
-                arg_was_consumed = self.curr_interp.consume_pos_args()
-                query_changed = arg_was_consumed
-
-            if query_changed:
-                ElapsedTime.measure(f"[i={interp_n}]: before_reduce_query: {self.curr_interp}")
+            # FS_44_36_84_88 consume args one by one:
+            while True:
+                # Query envelope values only - they will be used for consumption of command line args:
+                ElapsedTime.measure(f"[i={interp_n}]: before_entry_query: {self.curr_interp}")
                 self.query_prop_values()
-                query_changed = False
+                # Reset to False as we just executed new query:
+                arg_was_consumed = False
+
+                # Because each `prop_value` set (per `prop_type`) is treated independently,
+                # assignment of `prop_value`-s from args may set combinations
+                # which yields no search result in subsequent query.
+                # Logically, it is better to consume args one by one and running query after each consumption,
+                # but this is not done due to query overhead.
+                # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
+                # separate `interpret_command` calls is close to that logically better approach.
+                if not arg_was_consumed:
+                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_key_args: {self.curr_interp}")
+                    arg_was_consumed = self.curr_interp.consume_key_args()
+                if not arg_was_consumed:
+                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_pos_args: {self.curr_interp}")
+                    arg_was_consumed = self.curr_interp.consume_pos_args()
+
+                if arg_was_consumed:
+                    if self.curr_interp.consumes_args_at_once():
+                        # No known interp consuming at once depends on query - do not query, simply exit loop:
+                        break
+                    else:
+                        # Run next cycle to see if one more can be consumed:
+                        pass
+                else:
+                    break
+
+            query_changed = False
 
             if self.curr_container:
                 # Set implicit values (so that applying defaults knows what they are):
@@ -204,20 +211,16 @@ class InterpContext:
                 )
                 self._leave_only_hidden_by_defaults()
 
-
             # Query envelopes after all implicit and default values assigned:
             # TODO: We could probably select whether to query only envelopes or
             #       query their values depending on `ServerAction`.
             #       But init of next envelope depends on prev envelope found.
             if query_changed:
-                ElapsedTime.measure(f"[i={interp_n}]: before_final_query: {self.curr_interp}")
-                self.query_prop_values()
                 if self.curr_interp.consumes_args_at_once():
+                    # No known interp consuming at once depends on query - do not query, simply exit loop:
                     break
-            elif arg_was_consumed:
-                # Run next cycle to see if one more can be consumed:
-                if self.curr_interp.consumes_args_at_once():
-                    break
+                else:
+                    pass
             else:
                 break
 

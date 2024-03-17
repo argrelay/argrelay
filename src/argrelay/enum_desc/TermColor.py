@@ -26,8 +26,9 @@ class TermColor(Enum):
     fore_dark_red = "\033[31m"
     fore_dark_green = "\033[32m"
     fore_dark_yellow = "\033[33m"
-    fore_dark_cyan = "\033[36m"
+    fore_dark_blue = "\033[34m"
     fore_dark_magenta = "\033[35m"
+    fore_dark_cyan = "\033[36m"
     fore_dark_gray = "\033[90m"
 
     fore_bright_gray = "\033[90m"
@@ -35,8 +36,8 @@ class TermColor(Enum):
     fore_bright_green = "\033[92m"
     fore_bright_yellow = "\033[93m"
     fore_bright_blue = "\033[94m"
-    fore_bright_cyan = "\033[96m"
     fore_bright_magenta = "\033[95m"
+    fore_bright_cyan = "\033[96m"
     fore_bright_white = "\033[97m"
 
     fore_bold_dark_red = "\033[1;31m"
@@ -85,7 +86,7 @@ class TermColor(Enum):
     *   `BaseResponse.consumed_tokens`
     """
 
-    unconsumed_token = fore_dark_magenta
+    unconsumed_token = fore_bright_magenta
     """
     See:
     *   `InterpContext.unconsumed_tokens`
@@ -96,7 +97,7 @@ class TermColor(Enum):
     When none of the relevant `data_envelope`-s has values for the given prop.
     """
 
-    caption_hidden_by_default = fore_bright_magenta
+    caption_hidden_by_default = fore_dark_magenta
     """
     FS_72_53_55_13: Caption for values hidden by default.
     """

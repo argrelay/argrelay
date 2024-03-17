@@ -10,7 +10,7 @@ class ThisTestClass(LocalTestClass):
 
     def test_FS_01_89_09_24_fetch_tree_node(self):
         """
-        Tests part of FS_01_89_09_24
+        Tests part of FS_01_89_09_24 interp tree
         """
         empty_tree = {}
         full_tree = {
@@ -47,7 +47,7 @@ class ThisTestClass(LocalTestClass):
                     fetch_tree_node(tree_dict, node_coord),
                 )
 
-    def test_FS_01_89_09_24_tree(self):
+    def test_FS_01_89_09_24_interp_tree(self):
         """
         Test arg values suggestion with FS_01_89_09_24 # interp tree
         """
@@ -69,7 +69,6 @@ class ThisTestClass(LocalTestClass):
                     "list",
                 ],
                 {},
-                None,
                 "FS_01_89_09_24: `intercept` and `help` are suggested via data search via props "
                 "generated via interp tree",
             ),
@@ -81,7 +80,6 @@ class ThisTestClass(LocalTestClass):
                     "intercept",
                 ],
                 {},
-                None,
                 "FS_01_89_09_24: prefix suggestion also works for `intercept` (`help` is filtered out).",
             ),
             (
@@ -90,7 +88,6 @@ class ThisTestClass(LocalTestClass):
                 CompType.PrefixShown,
                 ["amer", "emea", "host-3-amer"],
                 {},
-                None,
                 "FS_01_89_09_24: Even if `intercept` is not specified in the beginning, "
                 "`InterpTreeInterp` does not suggest it",
             ),
@@ -103,7 +100,6 @@ class ThisTestClass(LocalTestClass):
                 #                       but also internal functions available for that position (e.g. `intercept`)
                 ["amer", "emea", "host-3-amer"],
                 {},
-                None,
                 "FS_01_89_09_24: Suggest functions available for this position "
                 "even if the rest of the command line is populated.",
             ),
@@ -117,7 +113,6 @@ class ThisTestClass(LocalTestClass):
                     comp_type,
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
-                    delegator_class,
                     case_comment,
                 ) = test_case
 
@@ -127,6 +122,6 @@ class ThisTestClass(LocalTestClass):
                     comp_type,
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
-                    delegator_class,
+                    None,
                     None,
                 )
