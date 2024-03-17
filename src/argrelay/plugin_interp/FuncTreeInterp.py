@@ -112,11 +112,12 @@ class FuncTreeInterp(AbstractInterp):
         consumed_token_ipos_list = []
         any_consumed = False
         # Related to FS_13_51_07_97 singled out implicit values:
-        # Whether we can consume more than one (without creating FS_51_67_38_37 impossible arg combinations)
-        # depends on whether first set of consumed args are already singled out.
+        # We can keep consuming args (without creating FS_51_67_38_37 impossible arg combinations)
+        # as long as they are singled out - we cannot consume two ambiguous args at once, but
+        # we can consume as many singled out as possible (plus one ambiguous).
         # If arg is singled out but still matches unconsumed arg, it must be assigned as `ArgSource.ExplicitPosArg`
         # rather than be left unconsumed and (later) be assigned as `ArgSource.ImplicitValue`.
-        can_consume_more = True
+        consumed_ambiguous_value = False
         for unconsumed_token_ipos in self.interp_ctx.unconsumed_tokens:
             unconsumed_token = self.interp_ctx.parsed_ctx.all_tokens[unconsumed_token_ipos]
 
@@ -128,24 +129,26 @@ class FuncTreeInterp(AbstractInterp):
             # See if token matches any type by value:
             for arg_type, arg_values in self.interp_ctx.curr_container.remaining_types_to_values.items():
                 if unconsumed_token in arg_values:
-                    self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
-                        unconsumed_token,
-                        ArgSource.ExplicitPosArg,
-                    )
-                    if len(arg_values) != 1:
-                        # This was not singled out arg:
-                        # stop consuming to avoid FS_51_67_38_37 impossible arg combinations.
-                        can_consume_more = False
-                    any_consumed = True
-                    consumed_token_ipos_list.append(unconsumed_token_ipos)
-                    self.interp_ctx.consumed_tokens.append(unconsumed_token_ipos)
-                    # TD_76_09_29_31: overlapped
-                    # Assign matching unconsumed arg value to the first type it matches (only once):
-                    del self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
-                    break
-
-            if not can_consume_more:
-                break
+                    if (
+                        len(arg_values) == 1
+                        or
+                        not consumed_ambiguous_value
+                    ):
+                        self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
+                            unconsumed_token,
+                            ArgSource.ExplicitPosArg,
+                        )
+                        if len(arg_values) > 1:
+                            # This was not singled out arg:
+                            # allow only one ambiguous consumption to avoid FS_51_67_38_37 impossible arg combinations.
+                            consumed_ambiguous_value = True
+                        any_consumed = True
+                        consumed_token_ipos_list.append(unconsumed_token_ipos)
+                        self.interp_ctx.consumed_tokens.append(unconsumed_token_ipos)
+                        # TD_76_09_29_31: overlapped
+                        # Assign matching unconsumed arg value to the first type it matches (only once):
+                        del self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
+                        break
 
         # perform list modifications out of the prev loop:
         for consumed_token_ipos in consumed_token_ipos_list:
