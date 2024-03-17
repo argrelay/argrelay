@@ -122,7 +122,13 @@ class ThisTestClass(LocalTestClass):
 
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
-                expected_suggestions = [f"sn0{index_value}" for index_value in range(object_multiplier)]
+                expected_suggestions = [
+                    f"sn0{index_value}" for index_value in range(object_multiplier)
+                    # Look up is set for `active` by default:
+                    # Even (0, 2, ...) => active
+                    # Odd (1, 3, ...) => passive
+                    if index_value % 2 == 0
+                ]
 
                 ServiceLoader.object_multiplier = object_multiplier
 

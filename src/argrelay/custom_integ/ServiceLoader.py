@@ -1411,6 +1411,8 @@ class ServiceLoader(AbstractLoader):
                                 ServiceArgType.run_mode.name: run_mode,
                             }
 
+                            # Even (0, 2, ...) => active
+                            # Odd (1, 3, ...) => passive
                             if run_mode == "active":
                                 run_mode = "passive"
                             else:
