@@ -165,6 +165,7 @@ class ServiceDelegator(AbstractDelegator):
                 # ClassService:
                 {"group": ServiceArgType.group_label.name},
                 {"service": ServiceArgType.service_name.name},
+                {"mode": ServiceArgType.run_mode.name},
                 # ClassHost:
                 {"host": ServiceArgType.host_name.name},
                 # ---
@@ -279,6 +280,19 @@ class ServiceDelegator(AbstractDelegator):
         ]:
             assert host_container_ipos_ == service_container_ipos_
             object_container_ipos = host_container_ipos_
+
+            if func_id == goto_service_func_:
+                if (
+                    interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + service_container_ipos_
+                ):
+                    service_container = interp_ctx.envelope_containers[(
+                        interp_ctx.curr_interp.base_container_ipos + object_container_ipos
+                    )]
+                    any_assignment = (
+                        set_default_to(ServiceArgType.run_mode.name, "active", service_container)
+                        or
+                        any_assignment
+                    )
 
             # If we need to specify `access_type` `data_envelope`:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + access_container_ipos_:

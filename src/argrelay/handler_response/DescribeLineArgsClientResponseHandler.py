@@ -132,13 +132,13 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
 
                     # FS_72_53_55_13: Renders options hidden by default:
                     if len(envelope_container.filled_types_to_values_hidden_by_defaults) != 0:
-
-                        print(" ", end = "")
-                        print(TermColor.caption_hidden_by_default.value, end = "")
-                        print(f"{DescribeLineArgsClientResponseHandler.default_overrides_caption}:", end = "")
-                        print(TermColor.reset_style.value, end = " ")
-
                         if arg_type in envelope_container.filled_types_to_values_hidden_by_defaults:
+
+                            print(" ", end = "")
+                            print(TermColor.caption_hidden_by_default.value, end = "")
+                            print(f"{DescribeLineArgsClientResponseHandler.default_overrides_caption}:", end = "")
+                            print(TermColor.reset_style.value, end = " ")
+
                             values_hidden_by_defaults = envelope_container.filled_types_to_values_hidden_by_defaults[
                                 arg_type
                             ]

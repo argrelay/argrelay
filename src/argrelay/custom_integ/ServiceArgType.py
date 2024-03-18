@@ -31,6 +31,8 @@ class ServiceArgType(Enum):
 
     service_name = auto()
 
+    run_mode = auto()
+
     # ---
 
     access_type = auto()

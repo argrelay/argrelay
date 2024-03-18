@@ -150,6 +150,8 @@ class ServiceLoader(AbstractLoader):
                         data_envelope[ServiceArgType.host_name.name]
                         + "." +
                         data_envelope[ServiceArgType.service_name.name]
+                        + "." +
+                        data_envelope[ServiceArgType.run_mode.name]
                     )
 
     @staticmethod
@@ -632,6 +634,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "zxcv-du",
                 ServiceArgType.ip_address.name: "ip.192.168.1.1",
                 ServiceArgType.service_name.name: "s_a",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "aaa",
                     "sss",
@@ -650,6 +653,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "zxcv-du",
                 ServiceArgType.ip_address.name: "ip.192.168.1.1",
                 ServiceArgType.service_name.name: "s_b",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "bbb",
                     "sss",
@@ -668,6 +672,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "zxcv-du",
                 ServiceArgType.ip_address.name: "ip.192.168.1.1",
                 ServiceArgType.service_name.name: "s_c",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "ccc",
                     "sss",
@@ -686,6 +691,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "zxcv-dd",
                 ServiceArgType.ip_address.name: "ip.172.16.1.2",
                 ServiceArgType.service_name.name: "tt",
+                ServiceArgType.run_mode.name: "active",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
                 ServiceArgType.group_label.name: "rrr",
             },
@@ -702,6 +708,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "poiu-dd",
                 ServiceArgType.ip_address.name: "ip.192.168.1.3",
                 ServiceArgType.service_name.name: "xx",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "rrr",
                     "hhh",
@@ -720,6 +727,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "asdf-du",
                 ServiceArgType.ip_address.name: "ip.172.16.2.1",
                 ServiceArgType.service_name.name: "s_a",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "aaa",
                     "sss",
@@ -738,6 +746,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "asdf-du",
                 ServiceArgType.ip_address.name: "ip.172.16.2.1",
                 ServiceArgType.service_name.name: "s_b",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "bbb",
                     "sss",
@@ -756,6 +765,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "xcvb-dd",
                 ServiceArgType.ip_address.name: "ip.192.168.2.2",
                 ServiceArgType.service_name.name: "xx",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "rrr",
                     "hhh",
@@ -774,6 +784,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "xcvb-dd",
                 ServiceArgType.ip_address.name: "ip.192.168.2.2",
                 ServiceArgType.service_name.name: "zz",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "rrr",
                     "hhh",
@@ -793,6 +804,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "qwer-du",
                 ServiceArgType.ip_address.name: "ip.192.168.3.1",
                 ServiceArgType.service_name.name: "s_a",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "aaa",
                     "sss",
@@ -811,6 +823,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "hjkl-qu",
                 ServiceArgType.ip_address.name: "ip.192.168.4.1",
                 ServiceArgType.service_name.name: "s_a",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "aaa",
                     "sss",
@@ -829,6 +842,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "hjkl-qu",
                 ServiceArgType.ip_address.name: "ip.192.168.4.1",
                 ServiceArgType.service_name.name: "s_b",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "bbb",
                     "sss",
@@ -847,6 +861,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "poiu-qu",
                 ServiceArgType.ip_address.name: "ip.172.16.4.2",
                 ServiceArgType.service_name.name: "s_c",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "ccc",
                     "sss",
@@ -865,6 +880,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "rtyu-qu",
                 ServiceArgType.ip_address.name: "ip.192.168.6.1",
                 ServiceArgType.service_name.name: "s_a",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "aaa",
                     "sss",
@@ -883,6 +899,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "sdfgh-qd",
                 ServiceArgType.ip_address.name: "ip.192.168.6.3",
                 ServiceArgType.service_name.name: "tt1",
+                ServiceArgType.run_mode.name: "active",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
                 ServiceArgType.group_label.name: "rrr",
             },
@@ -899,6 +916,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "sdfgb-qd",
                 ServiceArgType.ip_address.name: "ip.192.168.6.4",
                 ServiceArgType.service_name.name: "xx",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "rrr",
                     "hhh",
@@ -917,6 +935,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "qwer-pd-1",
                 ServiceArgType.ip_address.name: "ip.192.168.7.1",
                 ServiceArgType.service_name.name: "s_a",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "aaa",
                     "sss",
@@ -935,6 +954,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "qwer-pd-1",
                 ServiceArgType.ip_address.name: "ip.192.168.7.1",
                 ServiceArgType.service_name.name: "s_b",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "bbb",
                     "sss",
@@ -953,6 +973,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "qwer-pd-3",
                 ServiceArgType.ip_address.name: "ip.192.168.7.2",
                 ServiceArgType.service_name.name: "s_c",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "ccc",
                     "sss",
@@ -971,6 +992,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "qwer-pd-2",
                 ServiceArgType.ip_address.name: "ip.172.16.7.2",
                 ServiceArgType.service_name.name: "s_a",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "aaa",
                     "sss",
@@ -989,6 +1011,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "qwer-pd-2",
                 ServiceArgType.ip_address.name: "ip.172.16.7.2",
                 ServiceArgType.service_name.name: "s_b",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "bbb",
                     "xxx",
@@ -1007,6 +1030,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "qwer-pd-2",
                 ServiceArgType.ip_address.name: "ip.172.16.7.2",
                 ServiceArgType.service_name.name: "s_c",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "ccc",
                     "sss",
@@ -1025,6 +1049,41 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "wert-pd-1",
                 ServiceArgType.ip_address.name: "ip.192.168.7.3",
                 ServiceArgType.service_name.name: "tt1",
+                ServiceArgType.run_mode.name: "active",
+                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                ServiceArgType.group_label.name: "rrr",
+            },
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
+                ServiceArgType.code_maturity.name: "prod",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "prod-apac-downstream",
+                ServiceArgType.data_center.name: "dc.07",
+                ServiceArgType.host_name.name: "wert-pd-1",
+                ServiceArgType.ip_address.name: "ip.192.168.7.3",
+                ServiceArgType.service_name.name: "tt2",
+                ServiceArgType.run_mode.name: "passive",
+                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                ServiceArgType.group_label.name: "rrr",
+            },
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_63_37_05_36",  # demo
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
+                ServiceArgType.code_maturity.name: "prod",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "prod-apac-downstream",
+                ServiceArgType.data_center.name: "dc.07",
+                ServiceArgType.host_name.name: "wert-pd-2",
+                ServiceArgType.ip_address.name: "ip.192.168.7.4",
+                ServiceArgType.service_name.name: "tt1",
+                ServiceArgType.run_mode.name: "passive",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
                 ServiceArgType.group_label.name: "rrr",
             },
@@ -1041,6 +1100,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "wert-pd-2",
                 ServiceArgType.ip_address.name: "ip.192.168.7.4",
                 ServiceArgType.service_name.name: "tt2",
+                ServiceArgType.run_mode.name: "active",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
                 ServiceArgType.group_label.name: "rrr",
             },
@@ -1057,6 +1117,7 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.host_name.name: "wert-pd-2",
                 ServiceArgType.ip_address.name: "ip.192.168.7.4",
                 ServiceArgType.service_name.name: "xx",
+                ServiceArgType.run_mode.name: "active",
                 ServiceArgType.group_label.name: [
                     "rrr",
                     "hhh",
@@ -1331,6 +1392,7 @@ class ServiceLoader(AbstractLoader):
 
                         host_envelopes.append(generated_host)
 
+                        run_mode = "active"
                         for service_name in ["sn{:02d}".format(snn) for snn in range(0, self.object_multiplier)]:
                             ############################################################################################################
                             # services
@@ -1346,7 +1408,15 @@ class ServiceLoader(AbstractLoader):
                                 ServiceArgType.cluster_name.name: cluster_name,
                                 ServiceArgType.host_name.name: host_name,
                                 ServiceArgType.service_name.name: service_name,
+                                ServiceArgType.run_mode.name: run_mode,
                             }
+
+                            # Even (0, 2, ...) => active
+                            # Odd (1, 3, ...) => passive
+                            if run_mode == "active":
+                                run_mode = "passive"
+                            else:
+                                run_mode = "active"
 
                             service_envelopes.append(generated_service)
 
