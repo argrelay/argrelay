@@ -91,6 +91,7 @@ class ThisTestClass(BaseTestClass):
 
                     host_name = table_row[f"`{ServiceArgType.host_name}`"].strip().strip("`")
                     service_name = table_row[f"`{ServiceArgType.service_name}`"].strip().strip("`")
+                    run_mode = table_row[f"`{ServiceArgType.run_mode}`"].strip().strip("`")
 
                     ip_address = table_row[f"`{ServiceArgType.ip_address}`"].strip().strip("`")
                     data_center = table_row[f"`{ServiceArgType.data_center}`"].strip().strip("`")
@@ -156,6 +157,7 @@ class ThisTestClass(BaseTestClass):
                             query_dict.update({
                                 ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
                                 ServiceArgType.service_name.name: service_name,
+                                ServiceArgType.run_mode.name: run_mode,
                             })
                             mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassService.name]
                             service_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
