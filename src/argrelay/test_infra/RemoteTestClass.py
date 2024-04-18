@@ -32,6 +32,7 @@ class RemoteTestClass(ClientServerTestClass):
         container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
         delegator_class: Union[Type[AbstractDelegator], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
+        expected_container_ipos_to_used_arg_buckets: Union[dict[int, list[int]], None],
         init_env_mock_builder: EnvMockBuilder,
     ):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -94,4 +95,5 @@ class RemoteTestClass(ClientServerTestClass):
                 envelope_ipos_to_field_values,
                 expected_suggestions,
                 envelope_containers,
+                expected_container_ipos_to_used_arg_buckets,
             )

@@ -15,6 +15,8 @@ class ParsedContext(CallContext):
     """
     Internal immutable parsed view of :class:`InputContext`
 
+    Implements `FS_27_16_67_19` line syntax.
+
     `tan_token_*` = `tangent_token`, see FS_23_62_89_43.
     """
 
@@ -54,16 +56,25 @@ class ParsedContext(CallContext):
     @staticmethod
     def parse_input(
         call_ctx: CallContext,
-    ):
+    ) -> tuple[
+        list[str],
+        int,
+        int,
+        int,
+        str,
+        str,
+        str,
+    ]:
         """
         Given `|` is the cursor in this command line:
         ```
-        some_command some_su|b_command some_arg
+        some_command some_su|b_command some_arg % next_arg   last_arg
         ```
         ```
-                            |                       # non-existing char placed to indicate cursor cpos
-        0            1                 2            # token ipos
-        01234567890123456789 01234567890123456789   # char cpos (the least significant digit)
+                            |                                         # non-existing char placed to indicate cursor cpos
+                                                %                     # arg bucket separator
+        0            1                 2        3 4          5        # token ipos
+        01234567890123456789 0123456789012345678901234567890123456789 # char cpos (the least significant digit)
         ```
         Then function returns:
         (
@@ -71,6 +82,9 @@ class ParsedContext(CallContext):
                 "some_command",             # 0
                 "some_sub_command",         # 1 (tangent token = token "touched" by the cursor)
                 "some_arg",                 # 2
+                "%",                        # 3 arg bucket separator
+                "next_arg",                 # 4
+                "last_arg"                  # 5
             ],
             1                               # tangent token item position (ipos)
             13                              # left-most char position (cpos) of tangent token (including it)

@@ -76,7 +76,6 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
                     # Func is ignored - skip:
                     continue
 
-
     def create_interp(
         self,
         interp_ctx: InterpContext,

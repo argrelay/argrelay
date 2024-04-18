@@ -81,6 +81,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     None,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -182,14 +183,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                         .set_capture_stderr(True)
                     )
                     with inner_env_mock_builder.build():
-                        interp_result: InterpResult = InterpResult(
-                            arg_values = interp_ctx.comp_suggestions,
-                            all_tokens = interp_ctx.parsed_ctx.all_tokens,
-                            consumed_tokens = interp_ctx.consumed_tokens,
-                            tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-                            tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
-                            envelope_containers = interp_ctx.envelope_containers,
-                        )
+                        interp_result: InterpResult = InterpResult.from_interp_context(interp_ctx)
                         DescribeLineArgsClientResponseHandler.render_result(interp_result)
 
                         self.assertEqual(

@@ -79,17 +79,24 @@ class TermColor(Enum):
     See `EnvelopeContainer.remaining_types_to_values`.
     """
 
+    excluded_token = fore_dark_blue
+    """
+    See:
+    *   `InterpContext.excluded_tokens`
+    *   `InterpResult.excluded_tokens`
+    """
+
     consumed_token = fore_bright_blue
     """
     See:
-    *   `InterpContext.consumed_tokens`
-    *   `BaseResponse.consumed_tokens`
+    *   `InterpContext.consumed_arg_buckets`
+    *   `InterpResult.consumed_arg_buckets`
     """
 
-    unconsumed_token = fore_bright_magenta
+    remaining_token = fore_bright_magenta
     """
     See:
-    *   `InterpContext.unconsumed_tokens`
+    *   `InterpContext.remaining_arg_buckets`
     """
 
     no_option_to_suggest = fore_dark_gray

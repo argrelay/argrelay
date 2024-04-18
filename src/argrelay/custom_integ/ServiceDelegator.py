@@ -93,13 +93,8 @@ def redirect_to_error(
         error_code_: error_code,
     }
     error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
-    invocation_input = InvocationInput(
-        arg_values = interp_ctx.comp_suggestions,
-        all_tokens = interp_ctx.parsed_ctx.all_tokens,
-        consumed_tokens = interp_ctx.consumed_tokens,
-        envelope_containers = interp_ctx.envelope_containers,
-        tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-        tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
+    invocation_input = InvocationInput.with_interp_context(
+        interp_ctx,
         delegator_plugin_entry = server_config.plugin_instance_entries[delegator_plugin_instance_id],
         custom_plugin_data = custom_plugin_data,
     )
@@ -380,13 +375,8 @@ class ServiceDelegator(AbstractDelegator):
                 # Plugin to invoke on client side:
                 delegator_plugin_instance_id = self.plugin_instance_id
                 # Package into `InvocationInput` payload object:
-                invocation_input = InvocationInput(
-                    arg_values = interp_ctx.comp_suggestions,
-                    all_tokens = interp_ctx.parsed_ctx.all_tokens,
-                    consumed_tokens = interp_ctx.consumed_tokens,
-                    envelope_containers = interp_ctx.envelope_containers,
-                    tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-                    tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
+                invocation_input = InvocationInput.with_interp_context(
+                    interp_ctx,
                     delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
                         delegator_plugin_instance_id
                     ],

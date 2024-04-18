@@ -6,6 +6,7 @@ from icecream import ic
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ServerAction import ServerAction
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
@@ -80,7 +81,7 @@ class ThisTestClass(BaseTestClass):
             __main__.main()
             self.assertEqual(
                 "",
-                env_mock_builder.actual_stderr.getvalue(),
+                ic(env_mock_builder.actual_stderr.getvalue()),
             )
             self.assertEqual(
                 "\n".join(arg_values_desc.dict_example[arg_values_]) + "\n",
@@ -98,11 +99,11 @@ class ThisTestClass(BaseTestClass):
             __main__.main()
             self.assertEqual(
                 "",
-                env_mock_builder.actual_stderr.getvalue(),
+                ic(env_mock_builder.actual_stderr.getvalue()),
             )
             self.assertEqual(
                 f"""
-{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}unrecognized_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}token{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}prod{TermColor.reset_style.value} 
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}unrecognized_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}token{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}prod{TermColor.reset_style.value} {TermColor.excluded_token.value}{SpecialChar.ArgBucketDelimiter.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}TypeA: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}TypeB: [none]{TermColor.reset_style.value}
@@ -127,7 +128,7 @@ class ThisTestClass(BaseTestClass):
             __main__.main()
             self.assertEqual(
                 "",
-                env_mock_builder.actual_stderr.getvalue(),
+                ic(env_mock_builder.actual_stderr.getvalue()),
             )
             self.assertEqual(
                 "",

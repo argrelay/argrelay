@@ -69,5 +69,6 @@ class ThisTestClass(LocalTestClass):
                     None,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )

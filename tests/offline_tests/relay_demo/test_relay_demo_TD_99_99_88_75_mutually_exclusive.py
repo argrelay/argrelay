@@ -6,7 +6,6 @@ from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
@@ -163,8 +162,8 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-b-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `emea` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert unconsumed arg vals:
-                "FS_44_36_84_88: `qa` become unconsumed "
+                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                "FS_44_36_84_88: `qa` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),
             (
@@ -191,8 +190,8 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-a-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `qa` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert unconsumed arg vals:
-                "FS_44_36_84_88: `emea` become unconsumed "
+                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                "FS_44_36_84_88: `emea` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),
             (
@@ -219,8 +218,8 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-a-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `apac` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert unconsumed arg vals:
-                "FS_44_36_84_88: `dev` become unconsumed "
+                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                "FS_44_36_84_88: `dev` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),
             (
@@ -247,8 +246,8 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-b-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `dev` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert unconsumed arg vals:
-                "FS_44_36_84_88: `apac` become unconsumed "
+                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                "FS_44_36_84_88: `apac` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),
         ]
@@ -270,6 +269,7 @@ class ThisTestClass(LocalTestClass):
                     comp_type,
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
+                    None,
                     None,
                     None,
                     None,

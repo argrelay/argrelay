@@ -54,6 +54,7 @@ class LocalTestClass(InOutTestClass):
             None,
             delegator_class,
             envelope_ipos_to_field_values,
+            None,
             LocalClientEnvMockBuilder(),
         )
 
@@ -67,6 +68,7 @@ class LocalTestClass(InOutTestClass):
         container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
         delegator_class: Union[Type[AbstractDelegator], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
+        expected_container_ipos_to_used_arg_buckets: Union[dict[int, list[int]], None],
         init_env_mock_builder: EnvMockBuilder,
     ):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -115,4 +117,5 @@ class LocalTestClass(InOutTestClass):
                 envelope_ipos_to_field_values,
                 expected_suggestions,
                 interp_ctx.envelope_containers,
+                expected_container_ipos_to_used_arg_buckets,
             )

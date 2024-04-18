@@ -7,7 +7,6 @@ from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
-from argrelay.plugin_delegator.InterceptDelegator import InterceptDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import tree_path_selector_prefix_
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import function_container_ipos_, InterpContext
@@ -41,7 +40,6 @@ class HelpDelegator(AbstractJumpDelegator):
         }]
         return func_envelopes
 
-
     def run_invoke_control(
         self,
         interp_ctx: InterpContext,
@@ -63,13 +61,8 @@ class HelpDelegator(AbstractJumpDelegator):
 
             custom_plugin_data = search_control_desc.dict_schema.dump(subsequent_function_container.search_control)
 
-            invocation_input = InvocationInput(
-                arg_values = interp_ctx.comp_suggestions,
-                all_tokens = interp_ctx.parsed_ctx.all_tokens,
-                consumed_tokens = interp_ctx.consumed_tokens,
-                envelope_containers = interp_ctx.envelope_containers,
-                tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-                tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
+            invocation_input = InvocationInput.with_interp_context(
+                interp_ctx,
                 delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
                     delegator_plugin_instance_id
                 ],

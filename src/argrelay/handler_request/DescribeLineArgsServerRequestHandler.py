@@ -28,14 +28,7 @@ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
         self.interpret_command(self.local_server, call_ctx)
         ElapsedTime.measure("after_interpret_command")
 
-        input_object = InterpResult(
-            arg_values = self.interp_ctx.comp_suggestions,
-            all_tokens = self.interp_ctx.parsed_ctx.all_tokens,
-            consumed_tokens = self.interp_ctx.consumed_tokens,
-            envelope_containers = self.interp_ctx.envelope_containers,
-            tan_token_ipos = self.interp_ctx.parsed_ctx.tan_token_ipos,
-            tan_token_l_part = self.interp_ctx.parsed_ctx.tan_token_l_part,
-        )
+        input_object = InterpResult.from_interp_context(self.interp_ctx)
         response_dict = interp_result_desc.dict_schema.dump(input_object)
 
         return response_dict

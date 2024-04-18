@@ -5,7 +5,6 @@ import time
 
 from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.enum_desc.CompType import CompType

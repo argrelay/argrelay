@@ -213,7 +213,6 @@ class GitRepoLoader(AbstractLoader):
 
                     git_repo = Repo(repo_root_abs_path)
                     for git_commit in git_repo.iter_commits(max_count = load_commits_max_count):
-
                         (
                             commit_timestamp_utc,
                             commit_date_utc,

@@ -6,6 +6,7 @@ from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import ignored_f
 
 first_arg_vals_to_next_interp_factory_ids_ = "first_arg_vals_to_next_interp_factory_ids"
 
+
 class FirstArgInterpFactoryConfigSchema(Schema):
     class Meta:
         unknown = RAISE

@@ -174,7 +174,7 @@ class ThisTestClass(LocalTestClass):
                     "apac",
                 ],
                 "FS_92_75_93_01: Ensure double quotes (which are used as special char in JSON format) "
-                "are at least not causing problem in (A) unconsumed (B) non-tangent arg for (C) local server test.",
+                "are at least not causing problem in (A) remaining (B) non-tangent arg for (C) local server test.",
             ),
             (
                 line_no(), "some_command host goto upstream \"a\"|", CompType.PrefixShown,
@@ -192,7 +192,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host dev downstream amer amer |", CompType.PrefixShown,
                 ['apac', 'emea'],
                 "Step 2: Some suggestions exists because FS_23_62_89_43 tangent token is not present and "
-                "the logic skips unconsumed args suggesting what is missing for the next arg type. ",
+                "the logic skips remaining args suggesting what is missing for the next arg type. ",
             ),
         ]
         # @formatter:on
@@ -216,6 +216,7 @@ class ThisTestClass(LocalTestClass):
                     test_line,
                     comp_type,
                     expected_suggestions,
+                    None,
                     None,
                     None,
                     None,
@@ -281,17 +282,22 @@ class ThisTestClass(LocalTestClass):
                     },
                     7: None,
                 },
+                {
+                    0: [0],
+                    1: [0],
+                    2: None,
+                },
                 "FS_18_64_57_18: Basic test that list multiple objects"
             ),
             (
                 line_no(),
-                "some_command goto service s_b prod |",
+                "some_command list service s_b prod |",
                 # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
                 [],
                 {
                     0: {
                         f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("list", ArgSource.ExplicitPosArg),
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
                     1: {
@@ -303,12 +309,9 @@ class ThisTestClass(LocalTestClass):
                         ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
                         ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
                     },
-                    2: {
-                        # Nothing is assigned for `ServiceArgType.access_type`, but it exists.
-                    },
-                    3: None,
+                    2: None,
                 },
-                ErrorDelegator,
+                ServiceDelegator,
                 {
                     0: {
                         ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -325,6 +328,11 @@ class ThisTestClass(LocalTestClass):
                     },
                     3: None,
                 },
+                {
+                    0: [0],
+                    1: [0],
+                    2: None,
+                },
                 "FS_18_64_57_18: Invocation happens with ambiguous (multiple) services to select - "
                 "without narrowing down to single service object",
             ),
@@ -339,6 +347,7 @@ class ThisTestClass(LocalTestClass):
                     container_ipos_to_expected_assignments,
                     delegator_class,
                     envelope_ipos_to_field_values,
+                    expected_container_ipos_to_used_arg_buckets,
                     case_comment,
                 ) = test_case
 
@@ -351,6 +360,147 @@ class ThisTestClass(LocalTestClass):
                     None,
                     delegator_class,
                     envelope_ipos_to_field_values,
+                    expected_container_ipos_to_used_arg_buckets,
+                    LocalClientEnvMockBuilder().set_reset_local_server(False),
+                )
+
+    def test_FS_97_64_39_94_arg_buckets(self):
+        """
+        Test how FS_97_64_39_94 `arg_bucket`-s are used by `envelope_container`-s
+        """
+
+        test_cases = [
+            (
+                line_no(),
+                "% some_command % list % host % dev |",
+                # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
+                [],
+                {
+                    0: {
+                        # TODO: Use `ExplicitPosArg` for the first arg instead of `InitValue`:
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("list", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
+                    },
+                    1: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ServiceEnvelopeClass.ClassHost.name,
+                            ArgSource.InitValue,
+                        ),
+                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                    },
+                    2: None,
+                },
+                ServiceDelegator,
+                {
+                    0: {
+                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                    },
+                    1: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServiceArgType.host_name.name: "zxcv-du",
+                    },
+                    2: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServiceArgType.host_name.name: "zxcv-dd",
+                    },
+                    3: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServiceArgType.host_name.name: "poiu-dd",
+                    },
+                    4: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServiceArgType.host_name.name: "asdf-du",
+                    },
+                    5: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServiceArgType.host_name.name: "xcvb-dd",
+                    },
+                    6: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServiceArgType.host_name.name: "qwer-du",
+                    },
+                    7: None,
+                },
+                {
+                    0: [2, 3],
+                    1: [4],
+                    2: None,
+                },
+                "FS_97_64_39_94: `arg_bucket` with `some_command` is not used by any `envelope_container` and "
+                "the rest of `arg_bucket`-s are set according to arg consumption",
+            ),
+            (
+                line_no(),
+                "some_command list service s_b % SOME_UNKNOWN_VALUE % prod |",
+                # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
+                [],
+                {
+                    0: {
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("list", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
+                    },
+                    1: {
+                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                            ServiceEnvelopeClass.ClassService.name,
+                            ArgSource.InitValue,
+                        ),
+                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                    },
+                    2: None,
+                },
+                ServiceDelegator,
+                {
+                    0: {
+                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                    },
+                    1: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
+                        ServiceArgType.service_name.name: "s_b",
+                        ServiceArgType.host_name.name: "qwer-pd-1",
+                    },
+                    2: {
+                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
+                        ServiceArgType.service_name.name: "s_b",
+                        ServiceArgType.host_name.name: "qwer-pd-2",
+                    },
+                    3: None,
+                },
+                {
+                    0: [0],
+                    1: [0, 2],
+                    2: None,
+                },
+                "FS_97_64_39_94: `arg_bucket` with SOME_UNKNOWN_VALUE is not used",
+            ),
+        ]
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    test_line,
+                    expected_suggestions,
+                    container_ipos_to_expected_assignments,
+                    delegator_class,
+                    envelope_ipos_to_field_values,
+                    expected_container_ipos_to_used_arg_buckets,
+                    case_comment,
+                ) = test_case
+
+                self.verify_output_via_local_client(
+                    self.__class__.same_test_data_per_class,
+                    test_line,
+                    CompType.InvokeAction,
+                    expected_suggestions,
+                    container_ipos_to_expected_assignments,
+                    None,
+                    delegator_class,
+                    envelope_ipos_to_field_values,
+                    expected_container_ipos_to_used_arg_buckets,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -432,7 +582,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto service qwer-p|d-1 s_", CompType.DescribeArgs,
                 "FS_11_87_76_73: Highlight left part (prefix) of tangent token in description.",
                 f"""
-{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.unconsumed_token.value}s_{TermColor.reset_style.value} 
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.remaining_token.value}s_{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -621,6 +771,7 @@ class ThisTestClass(LocalTestClass):
                     None,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -693,6 +844,7 @@ class ThisTestClass(LocalTestClass):
                     None,
                     None,
                     None,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -753,9 +905,9 @@ class ThisTestClass(LocalTestClass):
                     None,
                     delegator_class,
                     envelope_ipos_to_field_values,
+                    None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
-
 
     def test_FS_72_53_55_13_show_non_default_options_data_only(self):
         # @formatter:off
@@ -805,6 +957,7 @@ class ThisTestClass(LocalTestClass):
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
                     container_ipos_to_options_hidden_by_default_value,
+                    None,
                     None,
                     None,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
@@ -941,14 +1094,7 @@ class ThisTestClass(LocalTestClass):
                 .set_capture_stderr(True)
             )
             with inner_env_mock_builder.build():
-                interp_result: InterpResult = InterpResult(
-                    arg_values = interp_ctx.comp_suggestions,
-                    all_tokens = interp_ctx.parsed_ctx.all_tokens,
-                    consumed_tokens = interp_ctx.consumed_tokens,
-                    tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-                    tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
-                    envelope_containers = interp_ctx.envelope_containers,
-                )
+                interp_result: InterpResult = InterpResult.from_interp_context(interp_ctx)
                 DescribeLineArgsClientResponseHandler.render_result(interp_result)
 
                 self.assertEqual(

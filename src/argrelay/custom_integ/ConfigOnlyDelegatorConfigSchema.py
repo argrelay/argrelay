@@ -15,6 +15,7 @@ from argrelay.schema_config_interp.FuncEnvelopeSchema import (
 command_template_ = "command_template"
 echo_command_on_stderr_ = "echo_command_on_stderr"
 
+
 class ConfigOnlyDelegatorConfigSchema(BaseConfigDelegatorConfigSchema):
     """
     Part of FS_49_96_50_77 config_only_delegator implementation.
@@ -56,6 +57,7 @@ class ConfigOnlyDelegatorConfigSchema(BaseConfigDelegatorConfigSchema):
         for func_config in input_dict[func_configs_].values():
             config_only_delegator_envelope_payload_desc.validate_dict(func_config[func_envelope_][envelope_payload_])
 
+
 class ConfigOnlyDelegatorEnvelopePayloadSchema(Schema):
     class Meta:
         unknown = RAISE
@@ -77,6 +79,7 @@ class ConfigOnlyDelegatorEnvelopePayloadSchema(Schema):
 
     # TODO_74_73_60_93: Support expected envelope count in config-only delegator:
     # Similar to TODO_54_68_18_12 (above), it should be part of _new_ `BaseConfigDelegatorEnvelopePayloadSchema`.
+
 
 _config_only_func_config_dict_example = deepcopy(func_config_desc.dict_example)
 _config_only_func_config_dict_example[func_envelope_][envelope_payload_].update({

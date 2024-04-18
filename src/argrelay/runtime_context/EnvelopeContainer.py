@@ -38,6 +38,11 @@ class EnvelopeContainer:
     Counter of `data_envelope`-s found in the last query.
     """
 
+    used_arg_buckets: set[int] = field(default_factory = lambda: set())
+    """
+    FS_97_64_39_94 arg buckets (indexes) where args were consumed from for current `envelope_container`.
+    """
+
     # TODO: Maybe rename to `context_types_to_values`?
     # TODO: Part of (or actually is?) `args_context`: FS_62_25_92_06:
     assigned_types_to_values: dict[str, AssignedValue] = field(default_factory = lambda: {})

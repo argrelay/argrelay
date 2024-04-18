@@ -58,7 +58,9 @@ class ConfigOnlyLoader(AbstractLoader):
 
         # FS_49_96_50_77 config_only_loader plugin:
         # *   `collection_name_to_index_fields_map`:
-        collection_name_to_index_fields_map: dict[str, list[str]] = self.plugin_config_dict[collection_name_to_index_fields_map_]
+        collection_name_to_index_fields_map: dict[str, list[str]] = self.plugin_config_dict[
+            collection_name_to_index_fields_map_
+        ]
         # *   list of `data_envelope`-s (actual data):
         data_envelopes = [
             convert_envelope_fields_to_string(data_envelope)

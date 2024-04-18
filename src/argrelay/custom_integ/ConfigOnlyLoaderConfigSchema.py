@@ -14,6 +14,7 @@ from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
 collection_name_to_index_fields_map_ = "collection_name_to_index_fields_map"
 
+
 class ConfigOnlyLoaderConfigSchema(Schema):
     """
     Part of FS_49_96_50_77 config_only_loader implementation.
