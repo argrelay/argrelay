@@ -12,7 +12,6 @@ indent_size = 2
 
 
 class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
-
     default_overrides_caption: str = "overrides"
     """
     FS_72_53_55_13: Caption for options hidden by defaults.
@@ -48,14 +47,19 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
         for i in range(len(interp_result.all_tokens)):
             if i == interp_result.tan_token_ipos:
                 DescribeLineArgsClientResponseHandler.render_tangent_token(interp_result, interp_result.all_tokens[i])
-            elif i in interp_result.consumed_tokens:
+            elif i in interp_result.consumed_token_ipos_list():
                 print(
                     f"{TermColor.consumed_token.value}{interp_result.all_tokens[i]}{TermColor.reset_style.value}",
                     end = " ",
                 )
+            elif i in interp_result.excluded_tokens:
+                print(
+                    f"{TermColor.excluded_token.value}{interp_result.all_tokens[i]}{TermColor.reset_style.value}",
+                    end = " ",
+                )
             else:
                 print(
-                    f"{TermColor.unconsumed_token.value}{interp_result.all_tokens[i]}{TermColor.reset_style.value}",
+                    f"{TermColor.remaining_token.value}{interp_result.all_tokens[i]}{TermColor.reset_style.value}",
                     end = " ",
                 )
 
@@ -133,7 +137,6 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                     # FS_72_53_55_13: Renders options hidden by default:
                     if len(envelope_container.filled_types_to_values_hidden_by_defaults) != 0:
                         if arg_type in envelope_container.filled_types_to_values_hidden_by_defaults:
-
                             print(" ", end = "")
                             print(TermColor.caption_hidden_by_default.value, end = "")
                             print(f"{DescribeLineArgsClientResponseHandler.default_overrides_caption}:", end = "")

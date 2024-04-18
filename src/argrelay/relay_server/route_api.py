@@ -37,7 +37,7 @@ def create_blueprint_api(local_server: LocalServer):
         else:
             abort(415)
 
-        ElapsedTime.measure("after_input_context_creation")
+        ElapsedTime.measure("after_call_context_creation")
         ElapsedTime.is_debug_enabled = call_ctx.is_debug_enabled
         return call_ctx
 

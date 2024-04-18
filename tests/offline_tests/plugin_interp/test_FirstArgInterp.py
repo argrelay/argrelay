@@ -102,11 +102,11 @@ class ThisTestClass(LocalTestClass):
             interp_ctx = command_obj.interp_ctx
 
             if not expected_consumed_first_token:
-                self.assertEqual([], interp_ctx.consumed_tokens)
+                self.assertEqual([], interp_ctx.consumed_token_ipos_list())
                 return
 
             # FirstArgInterp is supposed to consume first pos arg only (first token):
-            self.assertEqual([0], interp_ctx.consumed_tokens)
+            self.assertEqual([0], interp_ctx.consumed_token_ipos_list())
             first_token_value = interp_ctx.parsed_ctx.all_tokens[0]
 
             interp_factory_id = first_arg_vals_to_next_interp_factory_ids[first_token_value]

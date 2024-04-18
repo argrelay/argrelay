@@ -23,7 +23,7 @@ Top:
     Tracked via FS_92_75_93_01.clean_command_line.md
     CLOSED
 
-*   Consumed and unconsumed tokens:
+*   Consumed and remaining tokens:
     *   Send them to invocation (e.g. to decide to run or not to run function and how they can be used).
     *   Verify them in tests.
     FINALIZE

@@ -1,5 +1,3 @@
-import tempfile
-
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
 from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (

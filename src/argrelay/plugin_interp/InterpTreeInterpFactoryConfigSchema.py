@@ -8,6 +8,7 @@ interp_selector_tree_ = "interp_selector_tree"
 
 ignored_func_ids_list_ = "ignored_func_ids_list"
 
+
 def validate_tree_node(interp_selector_sub_tree: dict):
     if isinstance(interp_selector_sub_tree, str):
         return

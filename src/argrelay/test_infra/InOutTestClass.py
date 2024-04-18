@@ -27,6 +27,7 @@ class InOutTestClass(BaseTestClass):
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         expected_suggestions: Union[list[str], None],
         envelope_containers: list[EnvelopeContainer],
+        expected_container_ipos_to_used_arg_buckets: dict[int, list[int]],
     ):
         try:
 
@@ -70,6 +71,19 @@ class InOutTestClass(BaseTestClass):
                     EnvMockBuilder.invocation_input.get_data_envelopes(),
                     envelope_ipos_to_field_values,
                 )
+
+            if expected_container_ipos_to_used_arg_buckets is not None:
+                # TODO_32_99_70_35: candidate for generic library of JSONPath verifiers:
+                for envelope_container_ipos, expected_arg_bucket_index_list in expected_container_ipos_to_used_arg_buckets.items():
+                    if expected_arg_bucket_index_list is not None:
+                        envelope_container = envelope_containers[envelope_container_ipos]
+                        self.assertEqual(
+                            expected_arg_bucket_index_list,
+                            list(envelope_container.used_arg_buckets),
+                        )
+                    else:
+                        assert envelope_container_ipos >= len(envelope_containers)
+
 
         except:
 
@@ -177,9 +191,11 @@ class InOutTestClass(BaseTestClass):
                 if expected_assignments is not None:
                     if container_ipos in container_ipos_to_options_hidden_by_default_value:
                         for arg_type, assigned_value in expected_assignments.items():
-                            options_hidden_by_default_value_per_type = container_ipos_to_options_hidden_by_default_value[
-                                container_ipos
-                            ]
+                            options_hidden_by_default_value_per_type = (
+                                container_ipos_to_options_hidden_by_default_value[
+                                    container_ipos
+                                ]
+                            )
                             if arg_type in options_hidden_by_default_value_per_type:
                                 self.assertEqual(
                                     assigned_value.arg_source,

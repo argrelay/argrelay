@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import field, dataclass
+from typing import Union
 
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ServerAction import ServerAction
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
@@ -15,6 +17,7 @@ from argrelay.relay_server.QueryResult import QueryResult
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_context.SearchControl import SearchControl
+from argrelay.runtime_context.arg_buckets_utils import arg_buckets_to_token_ipos_list
 
 function_container_ipos_ = 0
 
@@ -42,14 +45,36 @@ class InterpContext:
 
     help_hint_cache: HelpHintCache = field()
 
-    unconsumed_tokens: list[int] = field(init = False)
+    excluded_tokens: list[int] = field(init = False, default_factory = lambda: [])
     """
-    Remaining tokens (their ipos) which are still unconsumed (in ascending order).
+    Tokens excluded by ways other than consumption into `consumed_arg_buckets`.
     """
 
-    consumed_tokens: list[int] = field(init = False, default_factory = lambda: [])
+    included_arg_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
     """
-    Already consumed tokens (their ipos) in the order of their consumption.
+    FS_97_64_39_94: arg buckets
+    
+    If `included_arg_buckets` are combined,
+    the result will contain both `remaining_arg_buckets` and `consumed_arg_buckets`.
+    Field `included_arg_buckets` is maximum set for arg buckets -
+    it is similar to maximum set `ParsedContext.all_tokens`,
+    but it cannot contain all tokens - it must exclude at least `SpecialChar.ArgBucketDelimiter` to start with.
+    """
+
+    remaining_arg_buckets: list[list[int]] = field(init = False)
+    """
+    Same as `included_arg_buckets` but for remaining tokens only.
+    """
+
+    consumed_arg_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
+    """
+    Same as `included_arg_buckets` but for consumed tokens only.
+    """
+
+    token_ipos_to_arg_bucket_map: dict[int, int] = field(init = False, default_factory = lambda: {})
+    """
+    Index reversed to `included_arg_buckets` -
+    for each `token_ipos` it gives the index of the `arg_bucket` it is in.
     """
 
     envelope_containers: list[EnvelopeContainer] = field(init = False, default_factory = lambda: [])
@@ -91,23 +116,60 @@ class InterpContext:
     """
 
     def __post_init__(self):
-        self.unconsumed_tokens = self._init_unconsumed_tokens()
+        self._init_arg_buckets()
 
-    def _init_unconsumed_tokens(self):
-        if self.parsed_ctx.server_action is ServerAction.ProposeArgValues:
-            return [
-                token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
-                # FS_23_62_89_43:
-                # `ServerAction.ProposeArgValues` excludes tangent token because it is supposed to be completed:
-                if token_ipos != self.parsed_ctx.tan_token_ipos
-            ]
-        else:
-            return [
-                token_ipos for token_ipos in range(0, len(self.parsed_ctx.all_tokens))
-                # FS_23_62_89_43:
-                # Process all tokens (including tangent token) in case of `ServerAction.DescribeLineArgs`.
-                # Obviously, same applies for `ServerAction.RelayLineArgs` (as there is no chance to propose more).
-            ]
+    def _init_arg_buckets(self):
+        self.included_arg_buckets.append([])
+        curr_bucket_index = len(self.included_arg_buckets) - 1
+        curr_arg_bucket = self.included_arg_buckets[curr_bucket_index]
+        for token_ipos in range(0, len(self.parsed_ctx.all_tokens)):
+
+            # Split and populate FS_97_64_39_94 arg buckets:
+            if self.parsed_ctx.all_tokens[token_ipos] == SpecialChar.ArgBucketDelimiter.value:
+                self.included_arg_buckets.append([])
+                curr_bucket_index = len(self.included_arg_buckets) - 1
+                curr_arg_bucket = self.included_arg_buckets[curr_bucket_index]
+                # Exclude `SpecialChar.ArgBucketDelimiter` unconditionally:
+                self.excluded_tokens.append(token_ipos)
+            else:
+
+                if self.parsed_ctx.server_action is ServerAction.ProposeArgValues:
+                    # FS_23_62_89_43 tangent arg value completion:
+                    # `ServerAction.ProposeArgValues` excludes tangent token because it is supposed to be completed:
+                    if token_ipos == self.parsed_ctx.tan_token_ipos:
+                        self.excluded_tokens.append(token_ipos)
+                    else:
+                        curr_arg_bucket.append(token_ipos)
+                        self.token_ipos_to_arg_bucket_map[token_ipos] = curr_bucket_index
+                else:
+                    # FS_23_62_89_43 tangent arg value completion:
+                    # Process all tokens (including tangent token) in case of `ServerAction.DescribeLineArgs`.
+                    # Obviously, same applies for `ServerAction.RelayLineArgs` (as there is no chance to propose more).
+                    curr_arg_bucket.append(token_ipos)
+                    self.token_ipos_to_arg_bucket_map[token_ipos] = curr_bucket_index
+
+        # Init remaining and consumed:
+        self.remaining_arg_buckets = deepcopy(self.included_arg_buckets)
+        for i in range(len(self.included_arg_buckets)):
+            self.consumed_arg_buckets.append([])
+
+    def next_remaining_token_ipos(
+        self,
+    ) -> Union[int, None]:
+        for arg_bucket in self.remaining_arg_buckets:
+            for token_ipos in arg_bucket:
+                return token_ipos
+        return None
+
+    def remaining_token_ipos_list(
+        self,
+    ) -> list[int]:
+        return arg_buckets_to_token_ipos_list(self.remaining_arg_buckets)
+
+    def consumed_token_ipos_list(
+        self,
+    ) -> list[int]:
+        return arg_buckets_to_token_ipos_list(self.consumed_arg_buckets)
 
     def alloc_searchable_containers(
         self,
@@ -223,7 +285,6 @@ class InterpContext:
                     pass
             else:
                 break
-
 
     # TODO: Move all dynamic and non-serializable objects into `InterpRuntime` (or something like that) together with this loop:
     def interpret_command(

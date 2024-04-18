@@ -4,6 +4,9 @@ from argrelay.test_infra.EnvMockBuilder import default_test_parsed_context
 
 
 class ThisTestClass(BaseTestClass):
+    """
+    Tests `FS_27_16_67_19` line syntax.
+    """
 
     def test_parse_input(self):
         # @formatter:off

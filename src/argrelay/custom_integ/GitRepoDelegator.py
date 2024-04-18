@@ -166,13 +166,8 @@ class GitRepoDelegator(AbstractDelegator):
             function_container.data_envelopes[0][instance_data_]
             [delegator_plugin_instance_id_]
         )
-        invocation_input = InvocationInput(
-            arg_values = interp_ctx.comp_suggestions,
-            all_tokens = interp_ctx.parsed_ctx.all_tokens,
-            consumed_tokens = interp_ctx.consumed_tokens,
-            envelope_containers = interp_ctx.envelope_containers,
-            tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-            tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
+        invocation_input = InvocationInput.with_interp_context(
+            interp_ctx,
             delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
                 delegator_plugin_instance_id
             ],

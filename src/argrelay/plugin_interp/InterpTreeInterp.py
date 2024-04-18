@@ -57,7 +57,7 @@ class InterpTreeInterp(AbstractInterp):
 
     def consume_pos_args(self) -> bool:
         """
-        Consumes heading args in `unconsumed_tokens` according to the `interp_selector_tree`.
+        Consumes heading args in `remaining_arg_buckets` according to the `interp_selector_tree`.
 
         Unlike normal guideline to consume one arg at time (FS_44_36_84_88), this func consumes all possible
         because args are selected according to the `interp_selector_tree` (not via query)
@@ -72,14 +72,15 @@ class InterpTreeInterp(AbstractInterp):
                 self.next_interp_factory_id = curr_sub_tree
                 return any_consumed
 
-            if not self.interp_ctx.unconsumed_tokens:
+            # Always consume next remaining token:
+            # TODO: Is this assumption valid/safe that next remaining `ipos` is in the order it appears on command line?
+            #       Apparently, it is fine as we keep deleting head of `remaining_arg_buckets` below:
+            curr_token_ipos = self.interp_ctx.next_remaining_token_ipos()
+
+            if curr_token_ipos is None:
                 self.set_default_factory_id(curr_sub_tree)
                 return any_consumed
 
-            # Always consume next unconsumed token:
-            # TODO: Is this assumption valid/safe that next unconsumed `ipos` is in the order it appears on command line?
-            #       Apparently, it is fine as we keep deleting head of `unconsumed_tokens` below:
-            curr_token_ipos = self.interp_ctx.unconsumed_tokens[0]
             curr_token_value = self.interp_ctx.parsed_ctx.all_tokens[curr_token_ipos]
             assert self.is_pos_arg(curr_token_ipos)
 
@@ -87,8 +88,11 @@ class InterpTreeInterp(AbstractInterp):
                 if curr_token_value in curr_sub_tree:
                     # Consume one more arg into path:
                     self.interp_tree_rel_path.append(curr_token_value)
-                    self.interp_ctx.consumed_tokens.append(curr_token_ipos)
-                    del self.interp_ctx.unconsumed_tokens[0]
+
+                    bucket_index = self.interp_ctx.token_ipos_to_arg_bucket_map[curr_token_ipos]
+                    self.interp_ctx.consumed_arg_buckets[bucket_index].append(curr_token_ipos)
+                    del self.interp_ctx.remaining_arg_buckets[bucket_index][0]
+
                     curr_sub_tree = curr_sub_tree[curr_token_value]
                     any_consumed = True
                     continue
@@ -153,7 +157,7 @@ class InterpTreeInterp(AbstractInterp):
         (after those recorded in `interp_tree_rel_path`) available for consumption by subsequent interpreters.
         """
 
-        if len(self.interp_ctx.unconsumed_tokens) == 0:
+        if self.interp_ctx.next_remaining_token_ipos() is None:
             return True
         else:
             return False
@@ -161,8 +165,8 @@ class InterpTreeInterp(AbstractInterp):
         # TODO: Clean up code below or take into account tangent token (ipos cursor position).
         #       Note that there is no ipos cursor position at the moment.
         #       It has to be computed with help of FS_23_62_89_43 tangent token
-        #       (which might be a surrogate one if cursor does nto touch non-whitespace chars).
-        remaining_consumed_tokens = deepcopy(self.interp_ctx.consumed_tokens)
+        #       (which might be a surrogate one if cursor does not touch non-whitespace chars).
+        remaining_consumed_tokens = deepcopy(self.interp_ctx.consumed_token_ipos_list())
 
         # Remove everything until `base_token_ipos`:
         for token_ipos in range(0, self.base_token_ipos):

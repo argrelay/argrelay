@@ -939,23 +939,26 @@ def do_reset_local_server():
 def default_test_parsed_context(
     command_line: str,
     cursor_cpos: int,
+    comp_type: CompType = CompType.PrefixShown,
 ) -> ParsedContext:
     return ParsedContext.from_instance(
-        default_test_input_context(
+        default_test_call_context(
             command_line,
             cursor_cpos,
+            comp_type,
         ),
     )
 
 
-def default_test_input_context(
+def default_test_call_context(
     command_line: str,
     cursor_cpos: int,
+    comp_type: CompType = CompType.PrefixShown,
 ) -> CallContext:
     return ShellContext(
         command_line = command_line,
         cursor_cpos = cursor_cpos,
-        comp_type = CompType.PrefixShown,
+        comp_type = comp_type,
         comp_key = UNKNOWN_COMP_KEY,
         is_debug_enabled = False,
     ).create_call_context()
