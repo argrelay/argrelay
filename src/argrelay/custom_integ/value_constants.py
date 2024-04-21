@@ -11,5 +11,7 @@ desc_service_func_ = "desc_service_func"
 list_host_func_ = "list_host_func"
 list_service_func_ = "list_service_func"
 
+diff_service_func_ = "diff_service_func"
+
 desc_git_tag_func_ = "desc_git_tag_func"
 desc_git_commit_func_ = "desc_git_commit_func"

@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from marshmallow import Schema, fields, RAISE, post_load
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData

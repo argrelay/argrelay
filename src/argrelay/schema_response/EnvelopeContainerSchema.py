@@ -15,7 +15,7 @@ Schema for :class:`EnvelopeContainer`
 search_control_ = "search_control"
 data_envelopes_ = "data_envelopes"
 found_count_ = "found_count"
-used_arg_buckets_ = "used_arg_buckets"
+used_arg_bucket_ = "used_arg_bucket"
 assigned_types_to_values_ = "assigned_types_to_values"
 remaining_types_to_values_ = "remaining_types_to_values"
 filled_types_to_values_hidden_by_defaults_ = "filled_types_to_values_hidden_by_defaults"
@@ -40,9 +40,9 @@ class EnvelopeContainerSchema(Schema):
         required = True,
     )
 
-    used_arg_buckets = fields.List(
-        fields.Integer(),
+    used_arg_bucket = fields.Integer(
         required = True,
+        allow_none = True,
     )
 
     assigned_types_to_values = fields.Dict(
@@ -70,14 +70,14 @@ class EnvelopeContainerSchema(Schema):
     @post_load
     def make_object(
         self,
-        input_dict,
+        input_dict: dict,
         **kwargs,
     ):
         return EnvelopeContainer(
             search_control = input_dict[search_control_],
             data_envelopes = input_dict[data_envelopes_],
             found_count = input_dict[found_count_],
-            used_arg_buckets = input_dict[used_arg_buckets_],
+            used_arg_bucket = input_dict[used_arg_bucket_],
             assigned_types_to_values = input_dict[assigned_types_to_values_],
             remaining_types_to_values = input_dict[remaining_types_to_values_],
             filled_types_to_values_hidden_by_defaults = input_dict[filled_types_to_values_hidden_by_defaults_],
@@ -93,9 +93,7 @@ envelope_container_desc = TypeDesc(
             data_envelope_desc.dict_example,
         ],
         found_count_: 1,
-        used_arg_buckets_: [
-            0,
-        ],
+        used_arg_bucket_: 0,
         assigned_types_to_values_: {
             "SomeTypeA": assigned_value_desc.dict_example,
         },

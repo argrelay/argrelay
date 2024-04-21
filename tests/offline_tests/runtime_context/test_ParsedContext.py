@@ -9,7 +9,6 @@ class ThisTestClass(BaseTestClass):
     """
 
     def test_parse_input(self):
-        # @formatter:off
         test_cases = [
 
             # blank:
@@ -93,7 +92,6 @@ class ThisTestClass(BaseTestClass):
             (line_no(), "  aa  bb | ", -1, -1, "", -1, ["aa", "bb"], ""),
             (line_no(), "  aa  bb  |", -1, -1, "", -1, ["aa", "bb"], ""),
         ]
-        # @formatter:on
         for test_case in test_cases:
             with self.subTest(test_case):
                 (

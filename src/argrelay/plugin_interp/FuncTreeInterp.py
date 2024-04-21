@@ -103,9 +103,10 @@ class FuncTreeInterp(AbstractInterp):
         Scans through `remaining_arg_buckets` and tries to match its value against values of each type.
 
         Implements:
-        *   FS_76_29_13_28 arg consumption priorities
-        *   FS_44_36_84_88 consume args one by one
+        *   FS_76_29_13_28 arg consumption priorities.
+        *   FS_44_36_84_88 consume args one by one:
             This func consumes all until the first remaining non-singled out arg.
+        *   FS_97_64_39_94 `arg_bucket`-s: consumption is limited to single bucket per `envelope_container`.
         """
 
         consumed_token_ipos_list = []
@@ -117,48 +118,77 @@ class FuncTreeInterp(AbstractInterp):
         # If arg is singled out but still matches remaining arg, it must be assigned as `ArgSource.ExplicitPosArg`
         # rather than be left remaining and (later) be assigned as `ArgSource.ImplicitValue`.
         consumed_ambiguous_value = False
-        for bucket_index, bucket_list in enumerate(self.interp_ctx.remaining_arg_buckets):
-            for remaining_token_ipos in bucket_list:
-
-                remaining_token = self.interp_ctx.parsed_ctx.all_tokens[remaining_token_ipos]
-
-                # TODO: FS_76_29_13_28 Why not define the order based on FS_31_70_49_15 `search_control`
-                #       (instead of whatever internal order `remaining_types_to_values` has)?
-                #       It could already be the case that `remaining_types_to_values` are ordered as `search_control`.
-                #       Why not make it explicit?
-
-                # See if token matches any type by value:
-                for arg_type, arg_values in self.interp_ctx.curr_container.remaining_types_to_values.items():
-                    if remaining_token in arg_values:
-                        if (
-                            len(arg_values) == 1
-                            or
-                            not consumed_ambiguous_value
-                        ):
-                            self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
-                                remaining_token,
-                                ArgSource.ExplicitPosArg,
-                            )
-                            self.interp_ctx.curr_container.used_arg_buckets.add(bucket_index)
-                            if len(arg_values) > 1:
-                                # This was not singled out arg:
-                                # allow only one ambiguous consumption to avoid FS_51_67_38_37 impossible arg combinations.
-                                consumed_ambiguous_value = True
-                            any_consumed = True
-                            consumed_token_ipos_list.append(remaining_token_ipos)
-
-                            self.interp_ctx.consumed_arg_buckets[bucket_index].append(remaining_token_ipos)
-
-                            # TD_76_09_29_31: overlapped
-                            # Assign matching remaining arg value to the first type it matches (only once):
-                            del self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
-                            break
+        if self.interp_ctx.curr_container.used_arg_bucket is not None:
+            # If `envelope_container` has one `used_arg_bucket`, loop through it only:
+            any_consumed = self.consume_pos_args_from_arg_bucket(
+                bucket_index = self.interp_ctx.curr_container.used_arg_bucket,
+                bucket_list = self.interp_ctx.remaining_arg_buckets[self.interp_ctx.curr_container.used_arg_bucket],
+                consumed_ambiguous_value = consumed_ambiguous_value,
+                consumed_token_ipos_list = consumed_token_ipos_list,
+            )
+        else:
+            # Otherwise, loop through all buckets until the single `used_arg_bucket` is chosen:
+            for bucket_index, bucket_list in enumerate(self.interp_ctx.remaining_arg_buckets):
+                any_consumed = self.consume_pos_args_from_arg_bucket(
+                    bucket_index = bucket_index,
+                    bucket_list = bucket_list,
+                    consumed_ambiguous_value = consumed_ambiguous_value,
+                    consumed_token_ipos_list = consumed_token_ipos_list,
+                )
+                if any_consumed:
+                    # Consume from single `arg_bucket` only:
+                    break
 
         # perform list modifications out of the prev loop:
         for consumed_token_ipos in consumed_token_ipos_list:
             bucket_index = self.interp_ctx.token_ipos_to_arg_bucket_map[consumed_token_ipos]
             self.interp_ctx.remaining_arg_buckets[bucket_index].remove(consumed_token_ipos)
 
+        return any_consumed
+
+    def consume_pos_args_from_arg_bucket(
+        self,
+        bucket_index,
+        bucket_list,
+        consumed_ambiguous_value,
+        consumed_token_ipos_list,
+    ) -> bool:
+        any_consumed = False
+        for remaining_token_ipos in bucket_list:
+
+            remaining_token = self.interp_ctx.parsed_ctx.all_tokens[remaining_token_ipos]
+
+            # TODO: FS_76_29_13_28 Why not define the order based on FS_31_70_49_15 `search_control`
+            #       (instead of whatever internal order `remaining_types_to_values` has)?
+            #       It could already be the case that `remaining_types_to_values` are ordered as `search_control`.
+            #       Why not make it explicit?
+
+            # See if token matches any type by value:
+            for arg_type, arg_values in self.interp_ctx.curr_container.remaining_types_to_values.items():
+                if remaining_token in arg_values:
+                    if (
+                        len(arg_values) == 1
+                        or
+                        not consumed_ambiguous_value
+                    ):
+                        self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
+                            remaining_token,
+                            ArgSource.ExplicitPosArg,
+                        )
+                        self.interp_ctx.curr_container.used_arg_bucket = bucket_index
+                        if len(arg_values) > 1:
+                            # This was not singled out arg:
+                            # allow only one ambiguous consumption to avoid FS_51_67_38_37 impossible arg combinations.
+                            consumed_ambiguous_value = True
+                        any_consumed = True
+                        consumed_token_ipos_list.append(remaining_token_ipos)
+
+                        self.interp_ctx.consumed_arg_buckets[bucket_index].append(remaining_token_ipos)
+
+                        # TD_76_09_29_31: overlapped
+                        # Assign matching remaining arg value to the first type it matches (only once):
+                        del self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
+                        break
         return any_consumed
 
     def try_iterate(self) -> InterpStep:

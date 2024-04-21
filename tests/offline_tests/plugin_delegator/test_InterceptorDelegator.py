@@ -26,6 +26,7 @@ class ThisTestClass(LocalTestClass):
                 [
                     "config",
                     "desc",
+                    "diff",
                     "duplicates",
                     "echo",
                     "enum",

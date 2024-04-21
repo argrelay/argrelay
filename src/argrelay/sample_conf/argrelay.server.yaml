@@ -148,6 +148,12 @@ server_plugin_control:
                                         "service":
                                             node_type: func_tree_node
                                             func_id: list_service_func
+                                "diff":
+                                    node_type: tree_path_node
+                                    sub_tree:
+                                        "service":
+                                            node_type: func_tree_node
+                                            func_id: diff_service_func
                                 "goto":
                                     node_type: tree_path_node
                                     sub_tree:
@@ -229,6 +235,9 @@ server_plugin_control:
                                 "list":
                                     node_type: func_tree_node
                                     func_id: list_service_func
+                                "diff":
+                                    node_type: func_tree_node
+                                    func_id: diff_service_func
                                 "desc":
                                     node_type: func_tree_node
                                     func_id: desc_service_func
@@ -369,6 +378,8 @@ plugin_instance_entries:
                 "list":
                     "host": list_host_func
                     "service": list_service_func
+                "diff":
+                    "service": diff_service_func
                 "desc":
                     "tag": desc_git_tag_func
                     "commit": desc_git_commit_func
@@ -387,6 +398,7 @@ plugin_instance_entries:
             func_selector_tree:
                 "goto": goto_service_func
                 "list": list_service_func
+                "diff": diff_service_func
                 "desc": desc_service_func
 
     NoopInterpFactory.default:

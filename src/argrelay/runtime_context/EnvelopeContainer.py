@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Union
 
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.runtime_context.SearchControl import SearchControl
@@ -38,9 +39,9 @@ class EnvelopeContainer:
     Counter of `data_envelope`-s found in the last query.
     """
 
-    used_arg_buckets: set[int] = field(default_factory = lambda: set())
+    used_arg_bucket: Union[int, None] = field(default = None)
     """
-    FS_97_64_39_94 arg buckets (indexes) where args were consumed from for current `envelope_container`.
+    FS_97_64_39_94 `arg_bucket` (index) where args were consumed from for the current `envelope_container`.
     """
 
     # TODO: Maybe rename to `context_types_to_values`?

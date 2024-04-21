@@ -14,7 +14,6 @@ class ThisTestClass(LocalTestClass):
         Test to build map (`dict`) of `str` leaf key to its tree paths.
         """
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
@@ -166,7 +165,6 @@ class ThisTestClass(LocalTestClass):
                 "Bigger tree.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -206,7 +204,6 @@ class ThisTestClass(LocalTestClass):
         Test to build map (`dict`) of `tuple`/`list` leaf key to its tree paths.
         """
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
@@ -418,7 +415,6 @@ class ThisTestClass(LocalTestClass):
                 "Bigger tree.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -458,7 +454,6 @@ class ThisTestClass(LocalTestClass):
         Test mapping each path in the tree into path from the leaf (`list` in tree becomes `tuple` in map).
         """
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
@@ -573,7 +568,7 @@ class ThisTestClass(LocalTestClass):
                     (
                         "l1_2",
                         "l2_2",
-                    ):(
+                    ): (
                         "path_step_1",
                         "path_step_2",
                         "path_step_3",
@@ -653,7 +648,6 @@ class ThisTestClass(LocalTestClass):
                 "Bigger tree.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):

@@ -59,9 +59,13 @@ class InterpTreeInterp(AbstractInterp):
         """
         Consumes heading args in `remaining_arg_buckets` according to the `interp_selector_tree`.
 
-        Unlike normal guideline to consume one arg at time (FS_44_36_84_88), this func consumes all possible
+        Unlike normal guideline to consume one arg at time (FS_44_36_84_88),
+        this func consumes all possible args
         because args are selected according to the `interp_selector_tree` (not via query)
         and do not become incompatible by consuming all (causing FS_51_67_38_37 impossible arg combinations).
+
+        Also, FS_01_89_09_24 interp tree does not observe FS_97_64_39_94 `arg_bucket` boundaries
+        and consumes all necessary args sequentially.
         """
 
         curr_sub_tree = self.interp_selector_tree
