@@ -47,7 +47,7 @@ class ThisTestCase(ShellInputTestCase):
 
 class ThisTestClass(BaseTestClass):
     """
-    Tests `FS_97_64_39_94` arg buckets.
+    Tests parsing of `FS_97_64_39_94` arg buckets.
     """
 
     def test_parse_input(self):

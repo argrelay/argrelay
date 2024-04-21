@@ -24,7 +24,6 @@ class ThisTestClass(BaseTestClass):
         Test enabled and disabled cache has no diff and that cache actually works
         """
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
@@ -41,7 +40,6 @@ class ThisTestClass(BaseTestClass):
                 ],
             ),
         ]
-        # @formatter:on
 
         # Extend test cases with generated data
         # (Cartesian product with all `DistinctValuesQuery` and enabled|disabled cache):

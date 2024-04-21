@@ -12,7 +12,6 @@ class ThisTestClass(LocalTestClass):
         Test serialization of plugin id DAG.
         """
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
@@ -176,7 +175,6 @@ class ThisTestClass(LocalTestClass):
                 "It is fine to list plugin ids with no dependencies (`id_3`).",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):

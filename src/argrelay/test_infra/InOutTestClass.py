@@ -27,7 +27,7 @@ class InOutTestClass(BaseTestClass):
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         expected_suggestions: Union[list[str], None],
         envelope_containers: list[EnvelopeContainer],
-        expected_container_ipos_to_used_arg_buckets: dict[int, list[int]],
+        expected_container_ipos_to_used_arg_bucket: Union[dict[int, Union[int, None]], None],
     ):
         try:
 
@@ -72,18 +72,14 @@ class InOutTestClass(BaseTestClass):
                     envelope_ipos_to_field_values,
                 )
 
-            if expected_container_ipos_to_used_arg_buckets is not None:
+            if expected_container_ipos_to_used_arg_bucket is not None:
                 # TODO_32_99_70_35: candidate for generic library of JSONPath verifiers:
-                for envelope_container_ipos, expected_arg_bucket_index_list in expected_container_ipos_to_used_arg_buckets.items():
-                    if expected_arg_bucket_index_list is not None:
-                        envelope_container = envelope_containers[envelope_container_ipos]
-                        self.assertEqual(
-                            expected_arg_bucket_index_list,
-                            list(envelope_container.used_arg_buckets),
-                        )
-                    else:
-                        assert envelope_container_ipos >= len(envelope_containers)
-
+                for envelope_container_ipos, envelope_container in enumerate(envelope_containers):
+                    expected_used_arg_bucket = expected_container_ipos_to_used_arg_bucket[envelope_container_ipos]
+                    self.assertEqual(
+                        expected_used_arg_bucket,
+                        envelope_container.used_arg_bucket,
+                    )
 
         except:
 
@@ -145,6 +141,11 @@ class InOutTestClass(BaseTestClass):
         envelope_containers: list[EnvelopeContainer],
         container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
     ):
+        """
+        Make sure that specified expected `options_hidden_by_default_value` list
+        (per `envelope_container` ipos, per `arg_type`) match what is populated into
+        `EnvelopeContainer.filled_types_to_values_hidden_by_defaults`.
+        """
         for container_ipos, options_hidden_by_default_value_per_type in container_ipos_to_options_hidden_by_default_value.items():
             try:
                 if options_hidden_by_default_value_per_type is None:
@@ -197,14 +198,23 @@ class InOutTestClass(BaseTestClass):
                                 ]
                             )
                             if arg_type in options_hidden_by_default_value_per_type:
-                                self.assertEqual(
-                                    assigned_value.arg_source,
-                                    ArgSource.DefaultValue,
-                                )
+                                if options_hidden_by_default_value_per_type[arg_type] is None:
+                                    self.assertNotEqual(
+                                        assigned_value.arg_source,
+                                        ArgSource.DefaultValue,
+                                    )
+                                else:
+                                    self.assertEqual(
+                                        assigned_value.arg_source,
+                                        ArgSource.DefaultValue,
+                                    )
             except:
-                print(f"container_ipos_to_expected_assignments:\n{container_ipos_to_expected_assignments}")
                 print(
-                    f"container_ipos_to_options_hidden_by_default_value:\n{container_ipos_to_options_hidden_by_default_value}")
+                    f"container_ipos_to_expected_assignments:\n{container_ipos_to_expected_assignments}"
+                )
+                print(
+                    f"container_ipos_to_options_hidden_by_default_value:\n{container_ipos_to_options_hidden_by_default_value}"
+                )
                 raise
 
     def verify_data_envelopes(

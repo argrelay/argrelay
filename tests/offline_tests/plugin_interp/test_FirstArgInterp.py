@@ -52,6 +52,7 @@ class ThisTestClass(LocalTestClass):
             ignored_func_ids_list_: [
                 "goto_service_func",
                 "list_service_func",
+                "diff_service_func",
                 "desc_service_func",
 
                 "goto_host_func",

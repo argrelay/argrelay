@@ -30,14 +30,15 @@ describe('argrelay GUI', () => {
         cy
             .get('[data-cy=suggestion_output]')
             .children()
-            .should('have.length', 9)
+            .should('have.length', 10)
             .then(suggested_elems => {
                 const suggested_strings = [...suggested_elems]
                     .map(suggested_elem => suggested_elem.textContent)
-                expect(suggested_strings).to.have.length(9)
+                expect(suggested_strings).to.have.length(10)
                 expect(suggested_strings).to.include('desc')
                 expect(suggested_strings).to.include('duplicates')
                 expect(suggested_strings).to.include('config')
+                expect(suggested_strings).to.include('diff')
                 expect(suggested_strings).to.include('echo')
                 expect(suggested_strings).to.include('enum')
                 expect(suggested_strings).to.include('goto')

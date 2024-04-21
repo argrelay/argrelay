@@ -18,12 +18,11 @@ class ThisTestClass(BaseTestClass):
         Hope the output of chosen commands does not depend on the target machine (at least by asserted values).
         """
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
                 {
-                    ("true", ): None,
+                    ("true",): None,
                 },
                 lambda: subprocess.run(
                     ["true"],
@@ -37,7 +36,7 @@ class ThisTestClass(BaseTestClass):
             (
                 line_no(),
                 {
-                    ("false", ): None,
+                    ("false",): None,
                 },
                 lambda: subprocess.run(
                     ["false"],
@@ -90,7 +89,7 @@ upgrade_all_packages.bash
                     ("ls", "-1", "missing_dir_entry",): None,
                 },
                 lambda: subprocess.run(
-                    ["ls", "-1", "missing_dir_entry",],
+                    ["ls", "-1", "missing_dir_entry", ],
                     # Not capturing output (stderr may vary a lot depending on the target machine).
                 ),
                 (
@@ -102,7 +101,6 @@ upgrade_all_packages.bash
                 "Execute (more complex) real external command unsuccessfully",
             ),
         ]
-        # @formatter:on
 
         with change_to_known_repo_path("./tests"):
             for test_case in test_cases:
@@ -129,7 +127,6 @@ upgrade_all_packages.bash
 
     def test_PopenMock_via_run_and_direct_Popen(self):
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
@@ -167,7 +164,7 @@ upgrade_all_packages.bash
                     ),
                 },
                 lambda: subprocess.Popen(
-                "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data",
+                    "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data",
                     shell = True,
                 ),
                 (
@@ -223,7 +220,6 @@ upgrade_all_packages.bash
                 "Basic call to `subprocess.run(...)` multiple expected input to succeed because of non-matching CLI 3.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -262,7 +258,6 @@ upgrade_all_packages.bash
 
     def test_PopenMock_via_call(self):
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(),
@@ -293,7 +288,6 @@ upgrade_all_packages.bash
                 "Basic call to `subprocess.call(...)` to succeed because of matching CLI: 1 exit code.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):

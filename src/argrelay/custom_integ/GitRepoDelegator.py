@@ -116,7 +116,7 @@ class GitRepoDelegator(AbstractDelegator):
                 ],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "Describe Git repository",
+            ReservedArgType.HelpHint.name: "Goto Git repository (`cd` to its path)",
             ReservedArgType.FuncId.name: goto_git_repo_func_,
         }
         func_envelopes.append(given_function_envelope)

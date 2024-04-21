@@ -9,6 +9,7 @@ from argrelay.custom_integ.value_constants import (
     goto_service_func_,
     list_host_func_,
     list_service_func_,
+    diff_service_func_,
     desc_host_func_,
     desc_service_func_,
 )
@@ -48,6 +49,9 @@ from argrelay.schema_response.InvocationInput import InvocationInput
 host_container_ipos_ = 1
 service_container_ipos_ = 1
 access_container_ipos_ = 2
+
+diff_service_container_left_ipos_ = 1
+diff_service_container_right_ipos_ = 2
 
 
 def set_default_to(arg_type, arg_val, envelope_container) -> bool:
@@ -255,6 +259,21 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedArgType.HelpHint.name: "List service instances matching search query",
                 ReservedArgType.FuncId.name: list_service_func_,
             },
+            {
+                instance_data_: {
+                    func_id_: diff_service_func_,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
+                    search_control_list_: [
+                        # This function was created to demo FS_97_64_39_94 `arg_bucket`-s:
+                        # it intentionally uses two services as to specify in its args:
+                        service_search_control,
+                        service_search_control,
+                    ],
+                },
+                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedArgType.HelpHint.name: "Diff two service instances",
+                ReservedArgType.FuncId.name: diff_service_func_,
+            },
         ]
         return func_envelopes
 
@@ -269,6 +288,7 @@ class ServiceDelegator(AbstractDelegator):
     ) -> bool:
         func_id = get_func_id_from_interp_ctx(interp_ctx)
         any_assignment = False
+
         if func_id in [
             goto_host_func_,
             goto_service_func_,
@@ -277,17 +297,11 @@ class ServiceDelegator(AbstractDelegator):
             object_container_ipos = host_container_ipos_
 
             if func_id == goto_service_func_:
-                if (
-                    interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + service_container_ipos_
-                ):
-                    service_container = interp_ctx.envelope_containers[(
-                        interp_ctx.curr_interp.base_container_ipos + object_container_ipos
-                    )]
-                    any_assignment = (
-                        set_default_to(ServiceArgType.run_mode.name, "active", service_container)
-                        or
-                        any_assignment
-                    )
+                any_assignment = self._fill_service_container(
+                    any_assignment,
+                    interp_ctx,
+                    object_container_ipos,
+                )
 
             # If we need to specify `access_type` `data_envelope`:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + access_container_ipos_:
@@ -316,7 +330,19 @@ class ServiceDelegator(AbstractDelegator):
                             or
                             any_assignment
                         )
-
+        elif func_id in [
+            diff_service_func_,
+        ]:
+            any_assignment = self._fill_service_container(
+                any_assignment,
+                interp_ctx,
+                diff_service_container_left_ipos_,
+            )
+            any_assignment = self._fill_service_container(
+                any_assignment,
+                interp_ctx,
+                diff_service_container_right_ipos_,
+            )
         elif func_id in [
             list_host_func_,
             list_service_func_,
@@ -325,6 +351,25 @@ class ServiceDelegator(AbstractDelegator):
         else:
             raise RuntimeError
 
+        return any_assignment
+
+    def _fill_service_container(
+        self,
+        any_assignment,
+        interp_ctx,
+        object_container_ipos,
+    ):
+        if (
+            interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + object_container_ipos
+        ):
+            service_container = interp_ctx.envelope_containers[(
+                interp_ctx.curr_interp.base_container_ipos + object_container_ipos
+            )]
+            any_assignment = (
+                set_default_to(ServiceArgType.run_mode.name, "active", service_container)
+                or
+                any_assignment
+            )
         return any_assignment
 
     def run_invoke_control(
@@ -350,6 +395,19 @@ class ServiceDelegator(AbstractDelegator):
                 .get_query_engine()
                 .query_data_envelopes_for(vararg_container)
             )
+
+            # Actual implementation is not defined for demo:
+            return redirect_to_error(
+                interp_ctx,
+                local_server.server_config,
+                error_delegator_stub_custom_data_example[error_message_],
+                error_delegator_stub_custom_data_example[error_code_],
+            )
+        elif func_id in [
+            diff_service_func_,
+        ]:
+            # TODO_75_52_01_67: `arg_bucket`-s to support multiple var args:
+            #                   query both service lists and compare them.
 
             # Actual implementation is not defined for demo:
             return redirect_to_error(

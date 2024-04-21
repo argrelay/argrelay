@@ -35,6 +35,9 @@ func_tree_interp_config_example = {
             "repo": "list_repo_func",
             "service": "list_service_func",
         },
+        "diff": {
+            "service": "diff_service_func",
+        },
         "goto": {
             "repo": "goto_git_repo_func",
             "service": "goto_service_func",

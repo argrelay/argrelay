@@ -74,7 +74,6 @@ class ThisTestClass(LocalTestClass):
                 )
 
     def test_FS_49_96_50_77_config_only_with_FS_72_53_55_13_default_overrides(self):
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "some_command config double_execution ERROR 1 |", CompType.DescribeArgs,
@@ -108,7 +107,6 @@ class ThisTestClass(LocalTestClass):
                 "FS_72_53_55_13: Provide options hidden by defaults.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):

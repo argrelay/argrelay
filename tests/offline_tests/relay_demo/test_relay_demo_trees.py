@@ -41,14 +41,13 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
 
         # TODO: Add test to run both `some_command` and `relay_demo` and compare output is identical for identical requests.
 
-        # @formatter:off
         test_cases = [
-
             (
                 line_no(), "relay_demo |", CompType.PrefixHidden,
                 [
                     "config",
                     "desc",
+                    "diff",
                     "duplicates",
                     "echo",
                     "enum",
@@ -60,7 +59,6 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                 "Basic test.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -86,7 +84,6 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                 )
 
     def test_describe_args(self):
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "relay_demo |", CompType.DescribeArgs,
@@ -137,7 +134,6 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                 None,
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -169,7 +165,8 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                         # Output is not specified - not to be asserted:
                         continue
 
-                    # TODO: Running print again with capturing `stdout`.
+                    # TODO_43_41_95_86: use server logger to disable stdout:
+                    #       Running print again with capturing `stdout`.
                     #       Executing end-to-end above may generate
                     #       noise output on `stdout`/`stderr` by local server logic.
                     #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict

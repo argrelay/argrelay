@@ -12,16 +12,16 @@ See: docs/dev_notes/screencast_notes.md
 <a name="argrelay-about"></a>
 # What's this?
 
-A method to "ergonomically" select **custom data** input for command line interface (CLI) tools.
+A framework to "ergonomically" select **custom data** input for command line interface (CLI) tools.
 
-The aim is to enrich two-way &#10231; interaction by **"pre-pared"** data:
+The aim is to enrich two-way &#10231; interaction by **prepared** reference data:
 *   &#10230; You input args you **remember** (via `Tab`-auto-completion) in **relaxed order**.
 *   &#10229; It reports (via `Alt+Shift+Q` query):
-    *   What args it **matched**.
-    *   What **else** it needs.
+    *   What args it **matched** to server data within command schema.
+    *   What **else** it needs to populate command args.
 
 This broadens applicability of CLI input as a slim alternative to graphical user interface (GUI)
-competing in **convenience** for apps especially for developers.
+competing in **convenience** for apps especially for developers = "doing more with less".
 
 *   When your data is (luckily) instantly and directly queryable, use [`argcomplete`][argcomplete_github].
 *   When your data is sizeable, user needs performance (indexing), relaxed syntax, keyword-based search, use `argrelay`.

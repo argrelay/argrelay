@@ -12,7 +12,6 @@ class ThisTestClass(BaseTestClass):
         Test CallContext JSON-dump
         """
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "basic conversion",
@@ -20,7 +19,6 @@ class ThisTestClass(BaseTestClass):
                 '{"server_action": "ProposeArgValues", "command_line": "some_command prod amer upstream sdfg  ", "cursor_cpos": 36, "comp_scope": "ScopeInitial", "is_debug_enabled": false}',
             ),
         ]
-        # @formatter:on
         for test_case in test_cases:
             with self.subTest(test_case):
                 (line_number, case_comment, test_line, comp_type, expected_json) = test_case

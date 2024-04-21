@@ -33,7 +33,6 @@ class ThisTestClass(LocalTestClass):
         """
         Test arg values suggestion with TD_63_37_05_36 # demo
         """
-        # @formatter:off
         test_cases = [
             # TODO: If tangent token left part does not fall into next expected space, in case of `CompType.SubsequentHelp` suggest to specify named arg.
 
@@ -44,6 +43,7 @@ class ThisTestClass(LocalTestClass):
                 [
                     "config",
                     "desc",
+                    "diff",
                     "duplicates",
                     "echo",
                     "enum",
@@ -195,7 +195,6 @@ class ThisTestClass(LocalTestClass):
                 "the logic skips remaining args suggesting what is missing for the next arg type. ",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -206,10 +205,6 @@ class ThisTestClass(LocalTestClass):
                     expected_suggestions,
                     case_comment,
                 ) = test_case
-
-                # # TODO: Delete this:
-                # if line_number != 59:
-                #     continue
 
                 self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
@@ -283,8 +278,8 @@ class ThisTestClass(LocalTestClass):
                     7: None,
                 },
                 {
-                    0: [0],
-                    1: [0],
+                    0: 0,
+                    1: 0,
                     2: None,
                 },
                 "FS_18_64_57_18: Basic test that list multiple objects"
@@ -329,8 +324,8 @@ class ThisTestClass(LocalTestClass):
                     3: None,
                 },
                 {
-                    0: [0],
-                    1: [0],
+                    0: 0,
+                    1: 0,
                     2: None,
                 },
                 "FS_18_64_57_18: Invocation happens with ambiguous (multiple) services to select - "
@@ -347,7 +342,7 @@ class ThisTestClass(LocalTestClass):
                     container_ipos_to_expected_assignments,
                     delegator_class,
                     envelope_ipos_to_field_values,
-                    expected_container_ipos_to_used_arg_buckets,
+                    expected_container_ipos_to_used_arg_bucket,
                     case_comment,
                 ) = test_case
 
@@ -360,7 +355,7 @@ class ThisTestClass(LocalTestClass):
                     None,
                     delegator_class,
                     envelope_ipos_to_field_values,
-                    expected_container_ipos_to_used_arg_buckets,
+                    expected_container_ipos_to_used_arg_bucket,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
@@ -372,7 +367,7 @@ class ThisTestClass(LocalTestClass):
         test_cases = [
             (
                 line_no(),
-                "% some_command % list % host % dev |",
+                "% some_command % list host % dev |",
                 # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
                 [],
                 {
@@ -423,16 +418,32 @@ class ThisTestClass(LocalTestClass):
                     7: None,
                 },
                 {
-                    0: [2, 3],
-                    1: [4],
+                    0: 2,
+                    1: 3,
                     2: None,
                 },
-                "FS_97_64_39_94: `arg_bucket` with `some_command` is not used by any `envelope_container` and "
+                "FS_97_64_39_94: Case A1: `arg_bucket` with `some_command` is not used by any `envelope_container`, "
                 "the rest of `arg_bucket`-s are set according to arg consumption",
             ),
             (
                 line_no(),
-                "some_command list service s_b % SOME_UNKNOWN_VALUE % prod |",
+                "% some_command list host % dev |",
+                # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
+                [],
+                None,
+                ServiceDelegator,
+                None,
+                {
+                    0: 1,
+                    1: 2,
+                    2: None,
+                },
+                "FS_97_64_39_94: Case A2: `arg_bucket` with `some_command` is used as its args define function, "
+                "the rest of `arg_bucket`-s are set according to arg consumption",
+            ),
+            (
+                line_no(),
+                "some_command list service % SOME_UNKNOWN_VALUE % s_b prod |",
                 # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
                 [],
                 {
@@ -470,8 +481,8 @@ class ThisTestClass(LocalTestClass):
                     3: None,
                 },
                 {
-                    0: [0],
-                    1: [0, 2],
+                    0: 0,
+                    1: 2,
                     2: None,
                 },
                 "FS_97_64_39_94: `arg_bucket` with SOME_UNKNOWN_VALUE is not used",
@@ -487,7 +498,7 @@ class ThisTestClass(LocalTestClass):
                     container_ipos_to_expected_assignments,
                     delegator_class,
                     envelope_ipos_to_field_values,
-                    expected_container_ipos_to_used_arg_buckets,
+                    expected_container_ipos_to_used_arg_bucket,
                     case_comment,
                 ) = test_case
 
@@ -500,12 +511,11 @@ class ThisTestClass(LocalTestClass):
                     None,
                     delegator_class,
                     envelope_ipos_to_field_values,
-                    expected_container_ipos_to_used_arg_buckets,
+                    expected_container_ipos_to_used_arg_bucket,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
     def test_describe_args(self):
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "some_command list service dev upstream amer |", CompType.DescribeArgs,
@@ -525,10 +535,10 @@ class ThisTestClass(LocalTestClass):
                 "FS_41_40_39_44: TODO: suggest from interp tree.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}33{TermColor.reset_style.value}
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}35{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc duplicates echo enum goto help intercept list 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag 
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc diff duplicates echo enum goto help intercept list 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc diff double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag 
 """,
             ),
             (
@@ -604,14 +614,12 @@ class ThisTestClass(LocalTestClass):
 """,
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
                 self.verify_describe_output(test_case)
 
     def test_arg_assignments_for_completion_on_single_data_envelope(self):
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
@@ -748,7 +756,6 @@ class ThisTestClass(LocalTestClass):
             #     "Implicit assignment of access type to \"rw\" when code maturity is \"uat\" in invocation",
             # ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -776,7 +783,6 @@ class ThisTestClass(LocalTestClass):
                 )
 
     def test_arg_assignments_for_completion_on_multiple_data_envelopes(self):
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "some_command goto host prod wert-pd-1|", CompType.DescribeArgs,
@@ -823,7 +829,6 @@ class ThisTestClass(LocalTestClass):
                 "suggestions on Tab list all matching that prefix, not just `tt`.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -850,7 +855,6 @@ class ThisTestClass(LocalTestClass):
 
     def test_invocation_input(self):
 
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "some_command goto service prod downstream wert-pd-1 |",
@@ -885,7 +889,6 @@ class ThisTestClass(LocalTestClass):
                 "Verify invocation input with FS_18_64_57_18 varargs when ServiceDelegator is used.",
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -909,8 +912,13 @@ class ThisTestClass(LocalTestClass):
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
-    def test_FS_72_53_55_13_show_non_default_options_data_only(self):
-        # @formatter:off
+    def test_FS_72_53_55_13_show_non_default_options_data_only_with_FS_97_64_39_94_arg_buckets(self):
+        """
+        Test all 3 working together:
+        *   FS_72_40_53_00 fill control
+        *   FS_72_53_55_13 options hidden by default
+        *   FS_97_64_39_94 arg bucket
+        """
         test_cases = [
             (
                 line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
@@ -933,11 +941,86 @@ class ThisTestClass(LocalTestClass):
                     },
                     3: None,
                 },
-                None,
-                "Provide options hidden by `ArgSource.DefaultValue`.",
+                {
+                    0: 0,
+                    1: 0,
+                    2: None,
+                },
+                "Ensure options hidden by `ArgSource.DefaultValue` for `ServiceArgType.access_type` "
+                "and `EnvelopeContainer.used_arg_bucket` stays None.",
+            ),
+            (
+                line_no(), "relay_demo diff prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,
+                {
+                    1: {
+                        ServiceArgType.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
+                    },
+                    2: {
+                        ServiceArgType.run_mode.name: AssignedValue("passive", ArgSource.ExplicitPosArg),
+                    },
+                    3: None,
+                },
+                {
+                    1: {
+                        ServiceArgType.run_mode.name: [
+                            "active",
+                            "passive",
+                        ],
+                    },
+                    2: {
+                        # Ensure there is nothing hidden by default
+                        # (because there is no `ArgSource.DefaultValue`, but `ArgSource.ExplicitPosArg` instead)
+                        ServiceArgType.run_mode.name: None,
+                    },
+                    3: None,
+                },
+                {
+                    0: 0,
+                    1: 0,
+                    2: 1,
+                },
+                "Case A1: "
+                "FS_97_64_39_94 `arg_bucket`-s used by the 1st/left service `envelope_container` prevents assignment "
+                "of `ServiceArgType.run_mode` = `passive` specified for the 2nd/right service `envelope_container`. "
+                "In other words, 1st/left service `envelope_container` still uses default, not override, "
+                "while 2nd/right service `envelope_container` accepts that override, not using default.",
+            ),
+            (
+                line_no(), "relay_demo diff prod downstream rrr tt1 % tt1 % passive |", CompType.DescribeArgs,
+                {
+                    1: {
+                        ServiceArgType.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
+                    },
+                    2: {
+                        ServiceArgType.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
+                    },
+                    3: None,
+                },
+                {
+                    1: {
+                        ServiceArgType.run_mode.name: [
+                            "active",
+                            "passive",
+                        ],
+                    },
+                    2: {
+                        ServiceArgType.run_mode.name: [
+                            "active",
+                            "passive",
+                        ],
+                    },
+                    3: None,
+                },
+                {
+                    0: 0,
+                    1: 0,
+                    2: 1,
+                },
+                "Case A2: "
+                "Similar to case A1, but now FS_97_64_39_94 `arg_bucket` with override is not used by any of the "
+                "two service `envelope_container`-s (both 1st/left and 2nd/right have no default overrides)."
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -947,24 +1030,23 @@ class ThisTestClass(LocalTestClass):
                     comp_type,
                     container_ipos_to_expected_assignments,
                     container_ipos_to_options_hidden_by_default_value,
-                    expected_suggestions,
+                    expected_container_ipos_to_used_arg_bucket,
                     case_comment,
                 ) = test_case
                 self.verify_output_via_local_client(
                     self.__class__.same_test_data_per_class,
                     test_line,
                     comp_type,
-                    expected_suggestions,
+                    None,
                     container_ipos_to_expected_assignments,
                     container_ipos_to_options_hidden_by_default_value,
                     None,
                     None,
-                    None,
+                    expected_container_ipos_to_used_arg_bucket,
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
     def test_FS_72_53_55_13_show_non_default_options_print_out_only(self):
-        # @formatter:off
         test_cases = [
             (
                 line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
@@ -1042,7 +1124,6 @@ class ThisTestClass(LocalTestClass):
 """,
             ),
         ]
-        # @formatter:on
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -1080,7 +1161,8 @@ class ThisTestClass(LocalTestClass):
                 # Output is not specified - not to be asserted:
                 return
 
-            # TODO: Running print again with capturing `stdout`.
+            # TODO_43_41_95_86: use server logger to disable stdout:
+            #       Running print again with capturing `stdout`.
             #       Executing end-to-end above may generate
             #       noise output on `stdout`/`stderr` by local server logic.
             #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
