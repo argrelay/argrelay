@@ -3,6 +3,7 @@ from __future__ import annotations
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError, post_load
 
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_context.SearchControl import SearchControl
 
@@ -19,7 +20,7 @@ List of keys to use for named args during interpretation and arg types to use in
 """
 
 
-class SearchControlSchema(Schema):
+class SearchControlSchema(ObjectSchema):
     """
     Implements FS_31_70_49_15 # search_control
 
@@ -30,6 +31,8 @@ class SearchControlSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = SearchControl
 
     collection_name = fields.String(
         required = True,
@@ -51,18 +54,6 @@ class SearchControlSchema(Schema):
         ),
         required = True,
     )
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return SearchControl(
-            collection_name = input_dict[collection_name_],
-            envelope_class = input_dict[envelope_class_],
-            keys_to_types_list = input_dict[keys_to_types_list_],
-        )
 
     @validates_schema
     def validate_known(

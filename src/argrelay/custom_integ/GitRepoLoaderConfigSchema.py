@@ -16,13 +16,13 @@ class GitRepoLoaderConfigSchema(Schema):
         strict = True
 
     load_git_tags_default = fields.Boolean(
-        default = False,
         required = False,
+        load_default = False,
     )
 
     load_git_commits_default = fields.Boolean(
-        default = False,
         required = False,
+        load_default = False,
     )
 
     # Maps `repo_base_path` to list of repo entries.

@@ -68,8 +68,8 @@ class ConfigOnlyDelegatorEnvelopePayloadSchema(Schema):
     )
 
     echo_command_on_stderr = fields.Boolean(
-        load_default = False,
         required = False,
+        load_default = False,
     )
 
     # TODO_54_68_18_12: Support defaults for config-only delegator:

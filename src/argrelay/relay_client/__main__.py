@@ -107,6 +107,7 @@ def client_config_dict_to_object(client_config_dict):
     Optimized dict -> object conversion avoiding import of `*Schema` for performance:
     """
     client_config = ClientConfig(
+        __comment__ = client_config_dict.get("use_local_requests", None),
         use_local_requests = client_config_dict.get("use_local_requests", False),
         optimize_completion_request = client_config_dict.get("optimize_completion_request", True),
         connection_config = ConnectionConfig(

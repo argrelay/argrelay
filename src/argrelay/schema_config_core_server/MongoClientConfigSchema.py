@@ -1,15 +1,18 @@
-from marshmallow import Schema, fields, RAISE, post_load
+from marshmallow import fields, RAISE
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.mongo_data.MongoClientConfig import MongoClientConfig
 
 client_connection_string_ = "client_connection_string"
 
 
-class MongoClientConfigSchema(Schema):
+class MongoClientConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = MongoClientConfig
 
     client_connection_string = fields.String()
     """
@@ -21,16 +24,6 @@ class MongoClientConfigSchema(Schema):
     The simplest:
     mongodb://localhost
     """
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return MongoClientConfig(
-            client_connection_string = input_dict[client_connection_string_],
-        )
 
 
 mongo_client_config_desc = TypeDesc(

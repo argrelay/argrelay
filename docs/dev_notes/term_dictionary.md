@@ -151,7 +151,7 @@ See also FS_00_13_77_97 plugin framework.
 ### `tree_path`
 
 Tree (direct acyclic graphs with one parent per child) are often used in config - see:
-*   FS_33_76_82_84 global tree
+*   FS_33_76_82_84 composite tree
 *   FS_01_89_09_24 interp tree
 *   FS_26_43_73_72 func tree
 *   FS_91_88_07_23 jump tree

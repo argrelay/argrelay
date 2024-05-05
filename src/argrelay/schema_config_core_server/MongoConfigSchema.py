@@ -1,7 +1,7 @@
-from marshmallow import Schema, fields, RAISE, post_load
+from marshmallow import fields, RAISE
 
 from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
-from argrelay.misc_helper_common import ensure_value_is_enum
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.mongo_data.MongoConfig import MongoConfig
 from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_client_config_desc
@@ -13,10 +13,12 @@ mongo_client_ = "mongo_client"
 mongo_server_ = "mongo_server"
 
 
-class MongoConfigSchema(Schema):
+class MongoConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = MongoConfig
 
     use_mongomock = fields.Boolean()
     """
@@ -36,20 +38,6 @@ class MongoConfigSchema(Schema):
     mongo_client = fields.Nested(mongo_client_config_desc.dict_schema)
 
     mongo_server = fields.Nested(mongo_server_config_desc.dict_schema)
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return MongoConfig(
-            use_mongomock = input_dict[use_mongomock_],
-            # TODO: Is calling `ensure_value_is_enum` even required?
-            distinct_values_query = ensure_value_is_enum(input_dict[distinct_values_query_], DistinctValuesQuery),
-            mongo_client = input_dict[mongo_client_],
-            mongo_server = input_dict[mongo_server_],
-        )
 
 
 mongo_config_desc = TypeDesc(

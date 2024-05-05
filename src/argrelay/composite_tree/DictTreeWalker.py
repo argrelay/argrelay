@@ -4,26 +4,117 @@ from collections.abc import Callable
 from copy import deepcopy
 from typing import Union
 
-default_tree_leaf_ = ""
+from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
 
+surrogate_node_id_ = ""
+"""
+Surrogate node id allows "planting" entire sub-tree in place of itself.
 
-class TreeWalker:
+But the node that this surrogate node id identifies is not removed (the tree is not modified) -
+functionally that node must be present. It is only excluded from the path to access its sub-tree.
+
+Surrogate node id is skipped and does not affect (e.g.) command line
+(as trees often used to construct path which would be used to select its nodes via command line).
+
+Surrogate node id can also simplify representation of trees with leaf value only
+(as replacement of `dict` type where leaf type is used directly), for example,
+instead of:
+```yaml
+some_tree:
+    "": leaf_value
+```
+use this (no `dict`):
+```yaml
+some_tree: leaf_value
+```
+"""
+
+surrogate_tree_leaf_ = ""
+"""
+Surrogate tree leaf can be used as `dict` value to instruct to use `dict` key instead of `dict` value.
+
+For example, this trees are equivalent:
+```yaml
+some_tree:
+    "some_value": ""
+```
+use this (no `dict`):
+```yaml
+some_tree: "some_value"
+```
+"""
+
+def normalize_tree(
+    input_tree: Union[dict, str],
+) -> dict:
     """
-    Helper with logic to traverse tree - used to implement:
+    Transform `input_tree` to some equivalent form which makes all trees comparable.
+
+    *   If `input_tree` is not `dict`, make it `dict` by inserting using `surrogate_node_id_`.
+    *   If `input_tree` has only one node with `surrogate_node_id_`, collapse that layer.
+    *   Tree of 0 depth with (non-`dict`) is transformed to `dict` with `surrogate_tree_leaf_`.
+
+    NOTE: `input_tree` of depth 0 with `str` leave equal to `surrogate_tree_leaf_` is invalid.
+
+    NOTE: These two dicts are equivalent:
+    *   with `surrogate_tree_leaf_`: { "some_value": "" }
+    *   with `surrogate_node_id_`: { "": "some_value" }
+    To resolve the ambiguity, "some_value" is transformed using `surrogate_node_id_`.
+    """
+
+    return _normalize_tree(input_tree, 0)
+
+def _normalize_tree(
+    input_tree: Union[dict, str],
+    tree_depth: int,
+) -> Union[dict, str]:
+
+    output_tree: dict = {}
+
+    if isinstance(input_tree, str):
+        if input_tree == surrogate_tree_leaf_:
+            if tree_depth != 0:
+                return input_tree
+            else:
+                raise ValueError(f"`input_tree` with single leaf `{surrogate_node_id_}` is invalid.")
+        else:
+            if tree_depth != 0:
+                return input_tree
+            else:
+                output_tree[surrogate_node_id_] = input_tree
+    elif isinstance(input_tree, dict):
+        if len(input_tree) == 1 and surrogate_node_id_ in input_tree:
+            output_tree.update(_normalize_tree(input_tree[surrogate_node_id_], tree_depth + 1))
+        else:
+            for node_id in input_tree:
+                output_tree[node_id] = _normalize_tree(input_tree[node_id], tree_depth + 1)
+    else:
+        raise ValueError(f"unexpected `input_tree` type: {type(input_tree)}")
+
+    return output_tree
+
+
+class DictTreeWalker:
+    """
+    This tree walker is used to build various data structures extracted from (simple) `dict` trees:
     *   FS_01_89_09_24 interp tree
     *   FS_26_43_73_72 func tree
     *   FS_91_88_07_23 jump tree
-    *   FS_33_76_82_84 global tree
 
-    The tree is specified as `dict` (normally, in config).
+    As opposed to (complex) FS_33_76_82_84 `composite_tree` (with node types),
+    the `dict` trees are specified in config via `dict` without node types -
+    only node id names (as `dict` keys) and tree leaves (as `str` or `list`).
+
+    These simple trees can also be extracted from FS_33_76_82_84 `composite_tree` via `CompositeWalker`
+    (where each node has its type and additional info, not just path step name and value at tree leaves).
     """
 
     def __init__(
         self,
-        tree_name: str,
+        info_type: CompositeInfoType,
         tree_dict: dict,
     ):
-        self.tree_name = tree_name
+        self.info_type = info_type
         self.tree_dict = tree_dict
         self.leaf_type = None
 
@@ -114,7 +205,7 @@ class TreeWalker:
         if isinstance(sub_tree, dict):
             for node_id in sub_tree:
                 tree_node = sub_tree[node_id]
-                if node_id == default_tree_leaf_:
+                if node_id == surrogate_node_id_:
                     self._build_leaves_sub_paths(
                         curr_path,
                         tree_node,
@@ -148,7 +239,7 @@ class TreeWalker:
         if isinstance(sub_tree, dict):
             for node_id in sub_tree:
                 tree_node = sub_tree[node_id]
-                if node_id == default_tree_leaf_:
+                if node_id == surrogate_node_id_:
                     self._build_paths_to_paths(
                         curr_path,
                         tree_node,
@@ -174,10 +265,10 @@ class TreeWalker:
         leaf_node: str,
         output_leaves_paths: dict[str, list[list[str]]],
     ) -> None:
-        if leaf_node == default_tree_leaf_:
+        if leaf_node == surrogate_tree_leaf_:
             if len(curr_path) < 1:
                 raise ValueError(
-                    f"{self.tree_name}: tree path `{curr_path}` must contain at least one step to use leaf `{default_tree_leaf_}`"
+                    f"{self.info_type}: tree path `{curr_path}` must contain at least one step to use leaf `{surrogate_tree_leaf_}`"
                 )
             leaf_id = curr_path[-1]
             leaf_path = curr_path[:-1]
@@ -216,7 +307,7 @@ class TreeWalker:
     ):
         if not all(isinstance(leaf_list_item, str) for leaf_list_item in list_value):
             raise ValueError(
-                f"{self.tree_name}: tree path `{curr_path}` leaf list must contain only `str`"
+                f"{self.info_type}: tree path `{curr_path}` leaf list must contain only `str`"
             )
 
     def _raise_on_wrong_type(
@@ -225,5 +316,5 @@ class TreeWalker:
         typed_value,
     ):
         raise ValueError(
-            f"{self.tree_name}: tree path `{curr_path}` leaf type `{typed_value.__class__.__name__}` is neither `{self.leaf_type.__name__}` nor `dict`"
+            f"{self.info_type}: tree path `{curr_path}` leaf type `{typed_value.__class__.__name__}` is neither `{self.leaf_type.__name__}` nor `dict`"
         )

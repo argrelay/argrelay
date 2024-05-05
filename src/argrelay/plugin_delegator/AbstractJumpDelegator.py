@@ -2,13 +2,18 @@ from __future__ import annotations
 
 from typing import Union
 
+from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
+from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
+from argrelay.composite_tree.CompositeTreeWalker import extract_tree_abs_path_to_interp_id
+from argrelay.composite_tree.DictTreeWalker import DictTreeWalker
+from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.AbstractJumpDelegatorConfigSchema import (
+    tree_abs_path_to_interp_id_,
+    abstract_jump_delegator_config_desc, single_func_id_,
+)
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.plugin_interp.TreeWalker import TreeWalker
 from argrelay.runtime_data.ServerConfig import ServerConfig
-
-# TODO: TODO_10_72_28_05: Consider config schema for both `InterceptDelegator` and `HelpDelegator` (however, this should be removed with FS_33_76_82_84 gtree):
-tree_abs_path_to_interp_id_ = "tree_abs_path_to_interp_id"
 
 
 class AbstractJumpDelegator(AbstractDelegator):
@@ -25,18 +30,39 @@ class AbstractJumpDelegator(AbstractDelegator):
             plugin_config_dict,
         )
 
-        func_tree_walker = TreeWalker(
-            tree_abs_path_to_interp_id_,
+        self._compare_config_with_composite_tree()
+
+        dict_tree_walker = DictTreeWalker(
+            CompositeInfoType.tree_abs_path_to_interp_id,
             self.plugin_config_dict[tree_abs_path_to_interp_id_],
         )
         # Temporary (reversed) map which contains path per id (instead of id per path):
-        temporary_id_to_paths: dict[str, list[list[str]]] = func_tree_walker.build_str_leaves_paths()
+        temporary_id_to_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
 
         # Reverse temporary path per id map into id per path map:
         self.tree_path_to_next_interp_plugin_instance_id: dict[tuple[str, ...], str] = {}
         for interp_plugin_id, tree_abs_paths in temporary_id_to_paths.items():
             for tree_abs_path in tree_abs_paths:
                 self.tree_path_to_next_interp_plugin_instance_id[tuple(tree_abs_path)] = interp_plugin_id
+
+    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
+    def _compare_config_with_composite_tree(
+        self,
+    ):
+        expected_dict = self.plugin_config_dict[tree_abs_path_to_interp_id_]
+        actual_dict = extract_tree_abs_path_to_interp_id(
+            self.server_config.server_plugin_control.composite_forest,
+            self.plugin_config_dict[single_func_id_],
+        )
+        eprint(f"expected_dict: {expected_dict}")
+        eprint(f"actual_dict: {actual_dict}")
+        assert expected_dict == actual_dict
+
+    def load_config(
+        self,
+        plugin_config_dict,
+    ) -> dict:
+        return abstract_jump_delegator_config_desc.dict_from_input_dict(plugin_config_dict)
 
     def run_interp_control(
         self,

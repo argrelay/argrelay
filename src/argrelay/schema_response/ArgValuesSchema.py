@@ -1,5 +1,6 @@
-from marshmallow import Schema, fields, RAISE, pre_dump, post_load
+from marshmallow import fields, RAISE
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_response.ArgValues import ArgValues
 
@@ -19,7 +20,7 @@ _arg_values_example = {
 # to populate proposed arg_values to allow unconditionally assert proposed values in all tests
 # (for all `ServerAction`-s).
 
-class ArgValuesSchema(Schema):
+class ArgValuesSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
@@ -27,36 +28,14 @@ class ArgValuesSchema(Schema):
     model_class = ArgValues
 
     arg_values = fields.List(
-        fields.String(default = ""),
-        default = [],
+        fields.String(
+            load_default = "",
+        ),
+        load_default = [],
         metadata = {
             "example": _arg_values_example[arg_values_],
         },
     )
-
-    @pre_dump
-    def make_dict(
-        self,
-        input_object: ArgValues,
-        **kwargs,
-    ):
-        return {
-            arg_values_: input_object.arg_values,
-        }
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        """
-        Implements inheritance as described here:
-        https://stackoverflow.com/a/65668854/441652
-        """
-        return type(self).model_class(
-            **input_dict,
-        )
 
 
 arg_values_desc = TypeDesc(

@@ -231,10 +231,13 @@ source "${argrelay_dir}/conf/python_conf.bash"
 curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
 # Ensure Python version is not old:
 min_required_version="3.7"
-if ( echo "${curr_python_version}"; echo "${min_required_version}"; ) | sort --version-sort --check 2> /dev/null
+if [[ "${curr_python_version}" != "${min_required_version}" ]]
 then
-    # versions sorted = curr Python version is older:
-    "${ret_command}" 1
+    if ( echo "${curr_python_version}"; echo "${min_required_version}"; ) | sort --version-sort --check 2> /dev/null
+    then
+        # versions sorted = curr Python version is older:
+        "${ret_command}" 1
+    fi
 fi
 
 if [ ! -e "${path_to_venvX}" ]

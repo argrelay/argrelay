@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, RAISE, post_load
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 
@@ -8,7 +9,7 @@ query_cache_ttl_sec_ = "query_cache_ttl_sec"
 query_cache_max_size_bytes_ = "query_cache_max_size_bytes"
 
 
-class QueryCacheConfigSchema(Schema):
+class QueryCacheConfigSchema(ObjectSchema):
     """
     Config schema for FS_39_58_01_91 query cache.
     """
@@ -17,23 +18,13 @@ class QueryCacheConfigSchema(Schema):
         unknown = RAISE
         strict = True
 
+    model_class = QueryCacheConfig
+
     enable_query_cache = fields.Boolean()
 
     query_cache_ttl_sec = fields.Integer()
 
     query_cache_max_size_bytes = fields.Integer()
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return QueryCacheConfig(
-            enable_query_cache = input_dict[enable_query_cache_],
-            query_cache_ttl_sec = input_dict[query_cache_ttl_sec_],
-            query_cache_max_size_bytes = input_dict[query_cache_max_size_bytes_],
-        )
 
 
 query_cache_config_desc = TypeDesc(

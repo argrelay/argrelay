@@ -36,7 +36,7 @@ def list_dir(
 setuptools.setup(
     name = "argrelay",
     # See `docs/dev_notes/version_format.md`:
-    version = "0.6.13",
+    version = "0.7.0",
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server = total recall for Bash shell",
@@ -128,6 +128,7 @@ See: https://github.com/argrelay/argrelay
         "jsonschema",
         "flasgger",
         "marshmallow",
+        "marshmallow-oneofschema",
         "apispec",
         "pymongo",
         "GitPython",

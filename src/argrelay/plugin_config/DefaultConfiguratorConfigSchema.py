@@ -1,5 +1,6 @@
-from marshmallow import Schema, RAISE, fields, post_load
+from marshmallow import RAISE, fields
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_config.DefaultConfiguratorConfig import DefaultConfiguratorConfig
 
@@ -16,39 +17,32 @@ git_files_by_commit_id_url_prefix_ = "git_files_by_commit_id_url_prefix"
 commit_id_url_prefix_ = "commit_id_url_prefix"
 
 
-class DefaultConfiguratorConfigSchema(Schema):
+class DefaultConfiguratorConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         ordered = True
 
+    model_class = DefaultConfiguratorConfig
+
     project_title = fields.String(
         required = False,
+        load_default = None,
     )
 
     project_page_url = fields.String(
         required = False,
+        load_default = None,
     )
 
     git_files_by_commit_id_url_prefix = fields.String(
         required = False,
+        load_default = None,
     )
 
     commit_id_url_prefix = fields.String(
         required = False,
+        load_default = None,
     )
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return DefaultConfiguratorConfig(
-            project_title = input_dict.get(project_title_, None),
-            project_page_url = input_dict.get(project_page_url_, None),
-            git_files_by_commit_id_url_prefix = input_dict.get(git_files_by_commit_id_url_prefix_, None),
-            commit_id_url_prefix = input_dict.get(commit_id_url_prefix_, None),
-        )
 
 
 default_configurator_config_desc = TypeDesc(

@@ -1,4 +1,6 @@
+from argrelay.composite_tree.CompositeTreeWalker import extract_zero_arg_interp_tree
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
     first_arg_interp_factory_config_desc,
@@ -34,6 +36,18 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
             plugin_instance_id,
             converted_config,
         )
+
+    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
+    def _compare_config_with_composite_tree(
+        self,
+    ):
+        expected_dict = self.plugin_config_dict[interp_selector_tree_]
+        actual_dict = extract_zero_arg_interp_tree(
+            self.server_config.server_plugin_control.composite_forest,
+        )
+        eprint(f"expected_dict: {expected_dict}")
+        eprint(f"actual_dict: {actual_dict}")
+        assert expected_dict == actual_dict
 
     def activate_plugin(
         self,

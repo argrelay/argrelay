@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from marshmallow import RAISE, fields, pre_dump
+from marshmallow import RAISE, fields
 
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
@@ -56,23 +56,6 @@ class InterpResultSchema(ArgValuesSchema):
     tan_token_ipos = fields.Integer()
 
     tan_token_l_part = fields.String()
-
-    @pre_dump
-    def make_dict(
-        self,
-        input_object: InterpResult,
-        **kwargs,
-    ):
-        data_dict = super().make_dict(input_object)
-        data_dict.update({
-            all_tokens_: input_object.all_tokens,
-            excluded_tokens_: input_object.excluded_tokens,
-            consumed_arg_buckets_: input_object.consumed_arg_buckets,
-            envelope_containers_: input_object.envelope_containers,
-            tan_token_ipos_: input_object.tan_token_ipos,
-            tan_token_l_part_: input_object.tan_token_l_part,
-        })
-        return data_dict
 
 
 _interp_result_example = deepcopy(arg_values_desc.dict_example)
