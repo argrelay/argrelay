@@ -21,6 +21,16 @@ class AbstractPlugin:
 
         self.validate_config()
 
+    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
+    def _compare_config_with_composite_tree(
+        self,
+    ):
+        """
+        Compares `CompositeInfoType` extracted from `composite_tree` with
+        data manually specified in `plugin_config_dict`.
+        """
+        pass
+
     def load_config(
         self,
         plugin_config_dict,

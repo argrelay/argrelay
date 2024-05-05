@@ -1,5 +1,6 @@
-from marshmallow import Schema, RAISE, fields, post_load
+from marshmallow import RAISE, fields
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
@@ -21,10 +22,12 @@ remaining_types_to_values_ = "remaining_types_to_values"
 filled_types_to_values_hidden_by_defaults_ = "filled_types_to_values_hidden_by_defaults"
 
 
-class EnvelopeContainerSchema(Schema):
+class EnvelopeContainerSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         ordered = True
+
+    model_class = EnvelopeContainer
 
     search_control = fields.Nested(
         search_control_desc.dict_schema,
@@ -66,22 +69,6 @@ class EnvelopeContainerSchema(Schema):
         ),
         required = True,
     )
-
-    @post_load
-    def make_object(
-        self,
-        input_dict: dict,
-        **kwargs,
-    ):
-        return EnvelopeContainer(
-            search_control = input_dict[search_control_],
-            data_envelopes = input_dict[data_envelopes_],
-            found_count = input_dict[found_count_],
-            used_arg_bucket = input_dict[used_arg_bucket_],
-            assigned_types_to_values = input_dict[assigned_types_to_values_],
-            remaining_types_to_values = input_dict[remaining_types_to_values_],
-            filled_types_to_values_hidden_by_defaults = input_dict[filled_types_to_values_hidden_by_defaults_],
-        )
 
 
 envelope_container_desc = TypeDesc(

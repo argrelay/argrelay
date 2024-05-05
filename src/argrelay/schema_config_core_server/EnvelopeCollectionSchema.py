@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Callable, Collection
 
-from marshmallow import Schema, RAISE, fields, post_load
+from marshmallow import RAISE, fields
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -13,10 +14,12 @@ from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 index_fields_ = "index_fields"
 
 
-class EnvelopeCollectionSchema(Schema):
+class EnvelopeCollectionSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = EnvelopeCollection
 
     index_fields = fields.List(
         fields.String(),
@@ -27,20 +30,9 @@ class EnvelopeCollectionSchema(Schema):
     # TODO_00_79_72_55: do not store `data_envelopes`
     data_envelopes = fields.List(
         fields.Nested(data_envelope_desc.dict_schema),
-        load_default = [],
         required = False,
+        load_default = [],
     )
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return EnvelopeCollection(
-            index_fields = input_dict[index_fields_],
-            data_envelopes = input_dict[data_envelopes_],
-        )
 
 
 envelope_collection_desc = TypeDesc(

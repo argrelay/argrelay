@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from marshmallow import RAISE, fields, pre_dump
+from marshmallow import RAISE, fields
 
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
@@ -30,19 +30,6 @@ class InvocationInputSchema(InterpResultSchema):
     custom_plugin_data = fields.Dict(
         required = False,
     )
-
-    @pre_dump
-    def make_dict(
-        self,
-        input_object: InvocationInput,
-        **kwargs,
-    ):
-        data_dict = super().make_dict(input_object)
-        data_dict.update({
-            delegator_plugin_entry_: input_object.delegator_plugin_entry,
-            custom_plugin_data_: input_object.custom_plugin_data,
-        })
-        return data_dict
 
 
 _invocation_input_example = deepcopy(interp_result_desc.dict_example)

@@ -3,6 +3,7 @@ from __future__ import annotations
 from marshmallow import Schema, fields, RAISE, post_load
 
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -25,10 +26,12 @@ plugin_instance_entries_ = "plugin_instance_entries"
 static_data_ = "static_data"
 
 
-class ServerConfigSchema(Schema):
+class ServerConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = ServerConfig
 
     connection_config = fields.Nested(
         connection_config_desc.dict_schema,
@@ -90,24 +93,17 @@ class ServerConfigSchema(Schema):
         input_dict,
         **kwargs,
     ):
+        # Build DAG:
         plugin_instance_id_activate_order_dag = {}
         for plugin_instance_id in input_dict[plugin_instance_entries_]:
             plugin_entry: PluginEntry = input_dict[plugin_instance_entries_][plugin_instance_id]
             plugin_instance_id_activate_order_dag[plugin_instance_id] = plugin_entry.plugin_dependencies
 
-        # Populate `plugin_instance_id` from `plugin_instance_entries` into each
-        return ServerConfig(
-            connection_config = input_dict[connection_config_],
-            mongo_config = input_dict[mongo_config_],
-            query_cache_config = input_dict[query_cache_config_],
-            gui_banner_config = input_dict[gui_banner_config_],
-            class_to_collection_map = input_dict[class_to_collection_map_],
-            server_plugin_control = input_dict[server_plugin_control_],
+        return type(self).model_class(
+            **input_dict,
             plugin_instance_id_activate_list = serialize_dag_to_list(
                 plugin_instance_id_activate_order_dag,
             ),
-            plugin_instance_entries = input_dict[plugin_instance_entries_],
-            static_data = input_dict[static_data_],
         )
 
 

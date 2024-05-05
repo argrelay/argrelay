@@ -1,8 +1,8 @@
-from marshmallow import Schema, fields, RAISE, post_load, pre_dump
+from marshmallow import fields, RAISE
 
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.misc_helper_common import ensure_value_is_enum
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.server_spec.CallContext import CallContext
 
@@ -23,10 +23,12 @@ _call_context_example = {
 }
 
 
-class CallContextSchema(Schema):
+class CallContextSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         ordered = True
+
+    model_class = CallContext
 
     server_action = fields.Enum(
         ServerAction,
@@ -66,35 +68,6 @@ class CallContextSchema(Schema):
             "example": _call_context_example[is_debug_enabled_],
         },
     )
-
-    @pre_dump
-    def make_dict(
-        self,
-        input_object: CallContext,
-        **kwargs,
-    ):
-        return {
-            server_action_: input_object.server_action,
-            command_line_: input_object.command_line,
-            cursor_cpos_: input_object.cursor_cpos,
-            comp_scope_: ensure_value_is_enum(input_object.comp_scope, CompScope),
-            is_debug_enabled_: input_object.is_debug_enabled,
-        }
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return CallContext(
-            server_action = ensure_value_is_enum(input_dict[server_action_], ServerAction),
-            command_line = input_dict[command_line_],
-            cursor_cpos = input_dict[cursor_cpos_],
-            # TODO: Is calling `ensure_value_is_enum` even required?
-            comp_scope = ensure_value_is_enum(input_dict[comp_scope_], CompScope),
-            is_debug_enabled = input_dict[is_debug_enabled_],
-        )
 
 
 call_context_desc = TypeDesc(

@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import contextlib
 
+from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
+from argrelay.composite_tree.CompositeTreeWalker import extract_interp_tree
+from argrelay.composite_tree.DictTreeWalker import DictTreeWalker
 from argrelay.enum_desc.PluginType import PluginType
+from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_interp.InterpTreeInterp import InterpTreeInterp
 from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import (
     tree_path_interp_factory_config_desc,
     interp_selector_tree_,
 )
-from argrelay.plugin_interp.TreeWalker import TreeWalker
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig, assert_plugin_instance_id
 
@@ -31,6 +34,21 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             plugin_config_dict,
         )
         self.is_recursive_func_load = False
+
+        self._compare_config_with_composite_tree()
+
+    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
+    def _compare_config_with_composite_tree(
+        self,
+    ):
+        expected_dict = self.plugin_config_dict[interp_selector_tree_]
+        actual_dict = extract_interp_tree(
+            self.server_config.server_plugin_control.composite_forest,
+            self.plugin_instance_id,
+        )
+        eprint(f"expected_dict: {expected_dict}")
+        eprint(f"actual_dict: {actual_dict}")
+        assert expected_dict == actual_dict
 
     def load_config(
         self,
@@ -75,12 +93,12 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             interp_tree_abs_path,
             func_ids_to_func_envelopes,
         )
-        tree_walker: TreeWalker = TreeWalker(
-            "interp_tree",
+        dict_tree_walker: DictTreeWalker = DictTreeWalker(
+            CompositeInfoType.interp_tree,
             self.plugin_config_dict[interp_selector_tree_],
         )
         # Walk configured interp tree and call `load_func_envelopes` with `interp_tree_abs_path` for each interp.
-        interp_rel_paths: dict[str, list[list[str]]] = tree_walker.build_str_leaves_paths()
+        interp_rel_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
         for interp_plugin_id in interp_rel_paths:
             for interp_rel_path in interp_rel_paths[interp_plugin_id]:
                 assert_plugin_instance_id(

@@ -24,28 +24,28 @@ class GitRepoEntryConfigSchema(Schema):
     )
 
     load_repo_tags = fields.Boolean(
-        default = False,
         required = False,
+        load_default = False,
     )
 
     load_repo_commits = fields.Boolean(
-        default = False,
         required = False,
+        load_default = False,
     )
 
     load_tags_last_days = fields.Integer(
-        default = 300,
         required = False,
+        load_default = 300,
     )
 
     load_commits_max_count = fields.Integer(
-        default = 100,
         required = False,
+        load_default = 100,
     )
 
     is_repo_enabled = fields.Boolean(
-        load_default = True,
         required = False,
+        load_default = True,
     )
 
     # These key-values are copied into `data_envelope`:

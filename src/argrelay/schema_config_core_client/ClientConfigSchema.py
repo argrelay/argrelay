@@ -1,5 +1,6 @@
-from marshmallow import Schema, RAISE, fields, post_load
+from marshmallow import RAISE, fields
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
@@ -16,20 +17,24 @@ spinless_sleep_sec_ = "spinless_sleep_sec"
 #       (only in tests due to heavy import caused by `Schema`).
 #       Therefore, validation and applying defaults is not done by this class.
 #       Duplicate the same requirements (for validation and defaults) in client prod code.
-class ClientConfigSchema(Schema):
+class ClientConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
 
+    model_class = ClientConfig
+
     # Allow this field in JSON (otherwise schema validation fails):
     __comment__ = fields.String(
         required = False,
+        load_default = "",
     )
 
     # Serve requests from local data or send to server
     # (used in test only - see `LocalClient` and FS_66_17_43_42 test infra):
     use_local_requests = fields.Boolean(
         required = False,
+        load_default = False,
     )
 
     # Use one of these (default = True):
@@ -37,6 +42,7 @@ class ClientConfigSchema(Schema):
     # *   if False: ProposeArgValuesRemoteClientCommand
     optimize_completion_request = fields.Boolean(
         required = False,
+        load_default = True,
     )
 
     connection_config = fields.Nested(connection_config_desc.dict_schema)
@@ -44,27 +50,14 @@ class ClientConfigSchema(Schema):
     # Enables spinner for FS_14_59_14_06: pending requests.
     show_pending_spinner = fields.Boolean(
         required = False,
+        load_default = False,
     )
 
     spinless_sleep_sec = fields.Number(
         required = False,
         # Noticeable threshold is around 200 ms, but default to spin immediately:
-        default = 0.0,
+        load_default = 0.0,
     )
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return ClientConfig(
-            use_local_requests = input_dict.get(use_local_requests_, False),
-            optimize_completion_request = input_dict.get(optimize_completion_request_, True),
-            connection_config = input_dict[connection_config_],
-            show_pending_spinner = input_dict.get(show_pending_spinner_, False),
-            spinless_sleep_sec = input_dict.get(spinless_sleep_sec_, 0.0),
-        )
 
 
 client_config_desc = TypeDesc(

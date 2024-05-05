@@ -2,6 +2,14 @@ import copy
 
 from marshmallow import ValidationError
 
+from argrelay.composite_tree.CompositeNodeSchema import (
+    base_node_desc,
+    interp_tree_node_desc,
+    zero_arg_node_desc,
+    func_tree_node_desc,
+    tree_path_node_desc,
+)
+from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
 from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import base_config_delegator_config_desc
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import (
     config_only_delegator_config_desc,
@@ -10,13 +18,19 @@ from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import (
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import config_only_loader_config_desc
 from argrelay.custom_integ.FuncConfigSchema import func_config_desc
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
+from argrelay.misc_helper_common.ObjectSchema import object_desc
 from argrelay.plugin_config.DefaultConfiguratorConfigSchema import default_configurator_config_desc
+from argrelay.plugin_delegator.AbstractJumpDelegatorConfigSchema import abstract_jump_delegator_config_desc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import func_tree_interp_config_desc
 from argrelay.runtime_data.ClientConfig import ClientConfig
-from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
+from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc, connection_config_
+from argrelay.schema_config_core_client.ConnectionConfigSchema import (
+    connection_config_desc,
+    server_host_name_,
+    server_port_number_,
+)
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import envelope_collection_desc
 from argrelay.schema_config_core_server.MongoClientConfigSchema import mongo_client_config_desc
 from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
@@ -42,46 +56,72 @@ from argrelay.test_infra.BaseTestClass import BaseTestClass
 
 
 class ThisTestClass(BaseTestClass):
+    test_cases = [
+        (line_no(), object_desc),
+        (line_no(), call_context_desc),
+        (line_no(), invocation_input_desc),
+        (line_no(), plugin_entry_desc),
+        (line_no(), git_repo_loader_config_desc),
+        (line_no(), client_config_desc),
+        (line_no(), connection_config_desc),
+        (line_no(), first_arg_interp_factory_config_desc),
+        (line_no(), mongo_client_config_desc),
+        (line_no(), mongo_config_desc),
+        (line_no(), mongo_server_config_desc),
+        (line_no(), server_config_desc),
+        (line_no(), static_data_desc),
+        (line_no(), data_envelope_desc),
+        (line_no(), func_envelope_desc),
+        (line_no(), search_control_desc),
+        (line_no(), init_control_desc),
+        (line_no(), function_envelope_instance_data_desc),
+        (line_no(), func_tree_interp_config_desc),
+        (line_no(), arg_values_desc),
+        (line_no(), interp_result_desc),
+        (line_no(), assigned_value_desc),
+        (line_no(), envelope_container_desc),
+        (line_no(), error_delegator_custom_data_desc),
+        (line_no(), abstract_jump_delegator_config_desc),
+        (line_no(), server_plugin_control_desc),
+        (line_no(), envelope_collection_desc),
+        (line_no(), default_configurator_config_desc),
+        (line_no(), config_only_loader_config_desc),
+        (line_no(), base_config_delegator_config_desc),
+        (line_no(), config_only_delegator_envelope_payload_desc),
+        (line_no(), config_only_delegator_config_desc),
+        (line_no(), func_config_desc),
+
+        # FS_33_76_82_84 composite tree and its nodes:
+        (line_no(), composite_forest_desc),
+        (line_no(), base_node_desc),
+        (line_no(), zero_arg_node_desc),
+        (line_no(), interp_tree_node_desc),
+        (line_no(), func_tree_node_desc),
+        (line_no(), tree_path_node_desc),
+    ]
+
+    def test_type_desc_load_of_minimal_dict(self):
+        """
+        Ensure schema can load empty dict
+        """
+
+        for test_case in self.test_cases:
+            with self.subTest(test_case):
+                (line_number, type_desc) = test_case
+
+                # TODO: Ensure (test) that minimal dict is minimal
+                #       (by trying to remove any field and reload - it should fail).
+                # TODO: Load minimal dict per schema (to test defaults are loaded):
+                #       Currently, only test selected dict to load their minimal dict:
+                if type_desc is default_configurator_config_desc:
+                    type_desc.dict_schema.load({})
 
     def test_type_desc_example_is_loadable_and_dumpable(self):
         """
         Uses each schema definition to load and dump its own example.
         """
 
-        test_cases = [
-            (line_no(), call_context_desc),
-            (line_no(), invocation_input_desc),
-            (line_no(), plugin_entry_desc),
-            (line_no(), git_repo_loader_config_desc),
-            (line_no(), client_config_desc),
-            (line_no(), connection_config_desc),
-            (line_no(), first_arg_interp_factory_config_desc),
-            (line_no(), mongo_client_config_desc),
-            (line_no(), mongo_config_desc),
-            (line_no(), mongo_server_config_desc),
-            (line_no(), server_config_desc),
-            (line_no(), static_data_desc),
-            (line_no(), data_envelope_desc),
-            (line_no(), func_envelope_desc),
-            (line_no(), search_control_desc),
-            (line_no(), init_control_desc),
-            (line_no(), function_envelope_instance_data_desc),
-            (line_no(), func_tree_interp_config_desc),
-            (line_no(), arg_values_desc),
-            (line_no(), interp_result_desc),
-            (line_no(), assigned_value_desc),
-            (line_no(), envelope_container_desc),
-            (line_no(), error_delegator_custom_data_desc),
-            (line_no(), server_plugin_control_desc),
-            (line_no(), envelope_collection_desc),
-            (line_no(), default_configurator_config_desc),
-            (line_no(), config_only_loader_config_desc),
-            (line_no(), base_config_delegator_config_desc),
-            (line_no(), config_only_delegator_envelope_payload_desc),
-            (line_no(), config_only_delegator_config_desc),
-            (line_no(), func_config_desc),
-        ]
-        for test_case in test_cases:
+        for test_case in self.test_cases:
             with self.subTest(test_case):
                 (line_number, type_desc) = test_case
 
@@ -164,14 +204,22 @@ class ThisTestClass(BaseTestClass):
         """
 
         client_config: ClientConfig = client_config_desc.obj_from_yaml_str(
+            f"""
+            {{
+                "{connection_config_}": {{
+                    "{server_host_name_}": "localhost",
+                    "{server_port_number_}": 8787,
+                }}
+            }}
             """
-            {
-                "connection_config": {
-                    "server_host_name": "localhost",
-                    "server_port_number": 8787,
-                }
-            }
-            """
+        )
+        self.assertEqual(
+            client_config.use_local_requests,
+            False,
+        )
+        self.assertEqual(
+            client_config.optimize_completion_request,
+            True,
         )
         self.assertEqual(
             client_config.connection_config.server_host_name,
@@ -182,10 +230,10 @@ class ThisTestClass(BaseTestClass):
             DEFAULT_PORT_NUMBER,
         )
         self.assertEqual(
-            client_config.use_local_requests,
+            client_config.show_pending_spinner,
             False,
         )
         self.assertEqual(
-            client_config.optimize_completion_request,
-            True,
+            client_config.spinless_sleep_sec,
+            0.0,
         )

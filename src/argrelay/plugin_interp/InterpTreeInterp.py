@@ -7,7 +7,7 @@ from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
-from argrelay.plugin_interp.TreeWalker import default_tree_leaf_
+from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_
 from argrelay.runtime_context.InterpContext import InterpContext
 
 
@@ -111,8 +111,8 @@ class InterpTreeInterp(AbstractInterp):
         curr_sub_tree,
     ):
         # Impossible to consume more arg - use default of the current sub-tree:
-        if default_tree_leaf_ in curr_sub_tree:
-            self.next_interp_factory_id = curr_sub_tree[default_tree_leaf_]
+        if surrogate_node_id_ in curr_sub_tree:
+            self.next_interp_factory_id = curr_sub_tree[surrogate_node_id_]
         else:
             # TODO: Do not hardcode plugin id (instance of `NoopInterpFactory`):
             self.next_interp_factory_id = f"{NoopInterpFactory.__name__}.default"
@@ -147,7 +147,7 @@ class InterpTreeInterp(AbstractInterp):
                 if (
                     isinstance(x, str)
                     and
-                    x != default_tree_leaf_
+                    x != surrogate_node_id_
                     and
                     # FS_32_05_46_00: using `startswith`:
                     x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)

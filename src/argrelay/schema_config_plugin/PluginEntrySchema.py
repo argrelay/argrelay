@@ -1,5 +1,6 @@
-from marshmallow import Schema, fields, RAISE, post_load, pre_dump
+from marshmallow import fields, RAISE
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.PluginEntry import PluginEntry
 
@@ -10,10 +11,12 @@ plugin_class_name_ = "plugin_class_name"
 plugin_dependencies_ = "plugin_dependencies"
 
 
-class PluginEntrySchema(Schema):
+class PluginEntrySchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = PluginEntry
 
     plugin_enabled = fields.Boolean(
         required = False,
@@ -39,34 +42,6 @@ class PluginEntrySchema(Schema):
         required = False,
         load_default = {},
     )
-
-    @pre_dump
-    def make_dict(
-        self,
-        input_object: PluginEntry,
-        **kwargs,
-    ):
-        return {
-            plugin_enabled_: input_object.plugin_enabled,
-            plugin_module_name_: input_object.plugin_module_name,
-            plugin_class_name_: input_object.plugin_class_name,
-            plugin_dependencies_: input_object.plugin_dependencies,
-            plugin_config_: input_object.plugin_config,
-        }
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return PluginEntry(
-            plugin_enabled = input_dict[plugin_enabled_],
-            plugin_module_name = input_dict[plugin_module_name_],
-            plugin_class_name = input_dict[plugin_class_name_],
-            plugin_dependencies = input_dict[plugin_dependencies_],
-            plugin_config = input_dict[plugin_config_],
-        )
 
 
 _plugin_entry_example = {

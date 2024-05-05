@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, RAISE, post_load
 
+from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.mongo_data.MongoServerConfig import MongoServerConfig
 
@@ -8,28 +9,18 @@ start_server_ = "start_server"
 server_start_command_ = "server_start_command"
 
 
-class MongoServerConfigSchema(Schema):
+class MongoServerConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    model_class = MongoServerConfig
 
     database_name = fields.String()
 
     start_server = fields.Boolean()
 
     server_start_command = fields.String()
-
-    @post_load
-    def make_object(
-        self,
-        input_dict,
-        **kwargs,
-    ):
-        return MongoServerConfig(
-            database_name = input_dict[database_name_],
-            start_server = input_dict[start_server_],
-            server_start_command = input_dict[server_start_command_],
-        )
 
 
 mongo_server_config_desc = TypeDesc(

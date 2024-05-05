@@ -15,16 +15,16 @@ See: docs/dev_notes/screencast_notes.md
 A framework to "ergonomically" select **custom data** input for command line interface (CLI) tools.
 
 The aim is to enrich two-way &#10231; interaction by **prepared** reference data:
-*   &#10230; You input args you **remember** (via `Tab`-auto-completion) in **relaxed order**.
-*   &#10229; It reports (via `Alt+Shift+Q` query):
+*   &#10230; Human inputs args he **remembers** (via `Tab`-auto-completion) in **relaxed order**.
+*   &#10229; Machine feeds back (via `Alt+Shift+Q` query):
     *   What args it **matched** to server data within command schema.
-    *   What **else** it needs to populate command args.
+    *   What **else** it needs to populate remaining command args.
 
 This broadens applicability of CLI input as a slim alternative to graphical user interface (GUI)
 competing in **convenience** for apps especially for developers = "doing more with less".
 
-*   When your data is (luckily) instantly and directly queryable, use [`argcomplete`][argcomplete_github].
-*   When your data is sizeable, user needs performance (indexing), relaxed syntax, keyword-based search, use `argrelay`.
+*   When your data is instantly and directly queryable, try [`argcomplete`][argcomplete_github].
+*   When your data is sizeable, user needs performance (indexing), relaxed syntax, keyword-based search, try `argrelay`.
 
 <a name="argrelay-overview"></a>
 # Interaction overview
@@ -65,10 +65,10 @@ Wrapping any command by `argrelay`:
 | :heavy_minus_sign: uses APIs but hardly exposes API to integrate itself       | :heavy_plus_sign: inherent script-ability                 |
 | :heavy_minus_sign: limits system access (a layer behind a narrow API)         | :heavy_plus_sign: ultimate control                        |
 | :heavy_plus_sign: keyword captions                                            | :heavy_minus_sign: hardly remembered cryptic `-o` options |
-| :heavy_plus_sign: point-click actions                                         | :heavy_minus_sign: typing:exclamation:                    |
-| :heavy_plus_sign: intuitive data-driven interface                             | :heavy_minus_sign: interface:question:                    |
+| :heavy_plus_sign: point-click actions                                         | :heavy_minus_sign: increased typing:exclamation:          |
+| :heavy_plus_sign: intuitive data-driven interface                             | :heavy_minus_sign: interface:question: more like API      |
 
-While retaining advantages of a CLI tool, `argrelay` tries to provide:
+While retaining advantages of a CLI tool, `argrelay` tries to provide those last :heavy_plus_sign:-s:
 *   intuitive data-driven interface
 *   reduced typing (args auto-reduction)
 *   keyword options (args auto-completion)

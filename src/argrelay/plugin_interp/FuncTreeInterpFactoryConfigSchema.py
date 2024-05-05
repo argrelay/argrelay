@@ -7,11 +7,13 @@ func_selector_tree_ = "func_selector_tree"
 jump_tree_ = "jump_tree"
 
 
+# TODO_40_10_18_32: add custom base to all schemas:
 class FuncTreeInterpFactoryConfigSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
 
+    # TODO_79_67_28_83: Express recursive dict schema:
     # This is a tree (`dict`) of arbitrary depth with `str` leaves.
     # Ideally, this should be defined as nested `dict`,
     # but it is unknown how to do it in marshmallow.
@@ -20,6 +22,7 @@ class FuncTreeInterpFactoryConfigSchema(Schema):
         required = True,
     )
 
+    # TODO_79_67_28_83: Express recursive dict schema:
     # This is a tree (`dict`) of arbitrary depth with `list[str]` leaves.
     # Ideally, this should be defined as nested `dict`,
     # but it is unknown how to do it in marshmallow.

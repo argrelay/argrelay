@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.composite_tree.CompositeForestSchema import tree_roots_
+from argrelay.composite_tree.CompositeNodeSchema import node_type_, plugin_instance_id_, sub_tree_
+from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
 from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
@@ -12,7 +15,12 @@ from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
 from argrelay.plugin_interp.NoopInterp import NoopInterp
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_, server_config_desc
+from argrelay.schema_config_core_server.ServerConfigSchema import (
+    plugin_instance_entries_,
+    server_config_desc,
+    server_plugin_control_,
+)
+from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
     plugin_module_name_,
@@ -37,43 +45,43 @@ class ThisTestClass(LocalTestClass):
             "known_command2",
         ]
 
+        server_config_dict = server_config_desc.dict_from_default_file()
+
         # Patch server config for `FirstArgInterpFactory` - bind all `first_command_names` to `NoopInterpFactory`:
-        first_arg_vals_to_next_interp_factory_ids = {}
         dependent_plugin_id = f"{FirstArgInterpFactory.__name__}.default"
+        plugin_entry = server_config_dict[plugin_instance_entries_][dependent_plugin_id]
         for first_command_name in first_command_names:
             # Compose same plugin id (as below):
             plugin_instance_id = f"{NoopInterpFactory.__name__}.{first_command_name}"
-            first_arg_vals_to_next_interp_factory_ids[first_command_name] = plugin_instance_id
-        server_config_dict = server_config_desc.dict_from_default_file()
-        plugin_entry = server_config_dict[plugin_instance_entries_][dependent_plugin_id]
-        plugin_entry[plugin_config_] = {
-            first_arg_vals_to_next_interp_factory_ids_: first_arg_vals_to_next_interp_factory_ids,
-            # List all known `func_id`-s (without using them by this plugin) to keep validation happy:
-            ignored_func_ids_list_: [
-                "goto_service_func",
-                "list_service_func",
-                "diff_service_func",
-                "desc_service_func",
+            plugin_entry[plugin_config_][first_arg_vals_to_next_interp_factory_ids_][first_command_name] = plugin_instance_id
 
-                "goto_host_func",
-                "list_host_func",
-                "desc_host_func",
+        first_arg_vals_to_next_interp_factory_ids = plugin_entry[plugin_config_][first_arg_vals_to_next_interp_factory_ids_]
 
-                "goto_git_repo_func",
-                "desc_git_tag_func",
-                "desc_git_commit_func",
+        # List all known `func_id`-s (without using them by this plugin) to keep validation happy:
+        plugin_entry[plugin_config_][ignored_func_ids_list_] = [
+            "goto_service_func",
+            "list_service_func",
+            "diff_service_func",
+            "desc_service_func",
 
-                "funct_id_print_with_severity_level",
-                "funct_id_print_with_exit_code",
-                "funct_id_print_with_io_redirect",
-                "funct_id_double_execution",
+            "goto_host_func",
+            "list_host_func",
+            "desc_host_func",
 
-                "intercept_invocation_func",
-                "help_hint_func",
-                "query_enum_items_func",
-                "echo_args_func",
-            ],
-        }
+            "goto_git_repo_func",
+            "desc_git_tag_func",
+            "desc_git_commit_func",
+
+            "funct_id_print_with_severity_level",
+            "funct_id_print_with_exit_code",
+            "funct_id_print_with_io_redirect",
+            "funct_id_double_execution",
+
+            "intercept_invocation_func",
+            "help_hint_func",
+            "query_enum_items_func",
+            "echo_args_func",
+        ]
 
         # Patch server config to add NoopInterpFactory (2 plugin instances):
         for first_command_name in first_command_names:
@@ -89,6 +97,12 @@ class ThisTestClass(LocalTestClass):
             server_config_dict[
                 plugin_instance_entries_
             ][dependent_plugin_id][plugin_dependencies_].append(plugin_instance_id)
+
+            server_config_dict[server_plugin_control_][composite_forest_][tree_roots_][first_command_name] = {
+                node_type_: CompositeNodeType.zero_arg_node.name,
+                plugin_instance_id_: plugin_instance_id,
+                sub_tree_: None,
+            }
 
         env_mock_builder = (
             LocalClientEnvMockBuilder()
