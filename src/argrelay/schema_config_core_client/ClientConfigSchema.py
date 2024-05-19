@@ -66,5 +66,5 @@ client_config_desc = TypeDesc(
     dict_example = {
         connection_config_: connection_config_desc.dict_example,
     },
-    default_file_path = "argrelay.client.json",
+    default_file_path = "argrelay_client.json",
 )

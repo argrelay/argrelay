@@ -17,6 +17,7 @@ def set_argrelay_dir(argrelay_dir):
 
 
 def get_argrelay_dir():
+    assert _argrelay_dir is not None
     return _argrelay_dir
 
 

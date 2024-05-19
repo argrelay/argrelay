@@ -10,6 +10,7 @@ server_action_ = "server_action"
 command_line_ = "command_line"
 cursor_cpos_ = "cursor_cpos"
 comp_scope_ = "comp_scope"
+client_pid_ = "client_pid"
 is_debug_enabled_ = "is_debug_enabled"
 
 _sample_command_line = "some_command goto service "
@@ -19,6 +20,7 @@ _call_context_example = {
     command_line_: _sample_command_line,
     cursor_cpos_: len(_sample_command_line),
     comp_scope_: CompScope.ScopeInitial.name,
+    client_pid_: 0,
     is_debug_enabled_: False,
 }
 
@@ -60,6 +62,14 @@ class CallContextSchema(ObjectSchema):
             "description": "Name for a completion scope - see " + CompScope.__name__ + " enum",
             "example": _call_context_example[comp_scope_],
         },
+    )
+    client_pid = fields.Integer(
+        required = False,
+        metadata = {
+            "description": "PID of the client process local to the client host (0 = not set)",
+            "example": _call_context_example[client_pid_],
+        },
+        load_default = 0,
     )
     is_debug_enabled = fields.Boolean(
         required = True,

@@ -69,6 +69,9 @@ then
     exit 1
 fi
 
+# TODO: The step below also uninstalls `argrelay` (which provides this script) -
+#       subsequently, if bootstrap fails to install `argrelay` again,
+#       this script will be missing to re-try upgrade and user will have to `pip install argrelay` manually.
 # Clear `venv` (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
 

@@ -99,6 +99,7 @@ class ShellContext:
             command_line = self.command_line,
             cursor_cpos = self.cursor_cpos,
             comp_scope = CompScope.from_comp_type(self.comp_type),
+            client_pid = os.getpid(),
             is_debug_enabled = self.is_debug_enabled,
         )
 

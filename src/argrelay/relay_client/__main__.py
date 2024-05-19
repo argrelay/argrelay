@@ -15,7 +15,7 @@ ElapsedTime.measure("after_program_entry")
 def main():
     ElapsedTime.measure("after_initial_imports")
 
-    file_path = get_config_path("argrelay.client.json")
+    file_path = get_config_path("argrelay_client.json")
     client_config = load_client_config(file_path)
     ElapsedTime.measure("after_loading_client_config")
 
@@ -65,6 +65,9 @@ def main():
             call_ctx,
         )
     else:
+        # TODO: There is a bug - if a child is used, it deadlocks occasionally while importing `requests`:
+        #       https://github.com/argrelay/argrelay/issues/89
+        #       The workaround is to abort (Ctrl+C) and retry - but this is annoying.
         if (
             call_ctx.server_action is ServerAction.ProposeArgValues
             and

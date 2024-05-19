@@ -47,6 +47,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.runtime_data.ConnectionConfig",
             "argrelay.server_spec.CallContext",
             "json",
+            "os",
             "socket"
         ],
         "argrelay.client_spec.ShellContext": [

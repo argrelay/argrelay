@@ -12,8 +12,8 @@ module_path_file_tuples=(
     #       Integration assumes different plugins, their configs, etc.
 
     # For example:
-    argrelay sample_conf argrelay.server.yaml
-    argrelay sample_conf argrelay.client.json
+    argrelay sample_conf argrelay_server.yaml
+    argrelay sample_conf argrelay_client.json
 )
 ########################################################################################################################
 

@@ -7,7 +7,7 @@ This doc is an (incomplete and outdated) attempt to list next steps as a tutoria
 *   Modify [`ServiceLoader.py` plugin][link_to_load_data_envelopes] to provide data beyond [demo data set][TD_63_37_05_36.demo_services_data.md].
 
     The data can be simply hard-coded with different `test_data` tag<br/>
-    (other than `TD_63_37_05_36` demo) and selected in `argrelay.server.yaml`:
+    (other than `TD_63_37_05_36` demo) and selected in `argrelay_server.yaml`:
 
     ```diff
         ServiceLoader:

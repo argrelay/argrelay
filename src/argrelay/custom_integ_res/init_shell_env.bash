@@ -43,8 +43,8 @@ set -E
 set -u
 
 reset_color="\e[0m"
-delimiter_color="\e[31m"
-field_color="\e[94m"
+delimiter_color="\e[91m"
+field_color="\e[96m"
 
 script_source="${BASH_SOURCE[0]}"
 # The dir of this script:
@@ -83,8 +83,8 @@ fi
 source "${argrelay_dir}/exe/argrelay_rc.bash"
 
 # TODO: FS_16_07_78_84: respect conf dir priority:
-server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay.client.json" )"
-server_port_number="$( jq --raw-output ".connection_config.server_port_number" "${argrelay_dir}/conf/argrelay.client.json" )"
+server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay_client.json" )"
+server_port_number="$( jq --raw-output ".connection_config.server_port_number" "${argrelay_dir}/conf/argrelay_client.json" )"
 
 eval "${init_shell_env_old_opts}"
 unset init_shell_env_old_opts
@@ -93,7 +93,7 @@ unset init_shell_env_old_opts
 # shellcheck disable=SC2154
 eval "${ARGRELAY_USER_SHELL_OPTS}"
 
-# Indicate nested shell by color:
+# This is a basic info normally reported by FS_36_17_84_44 `check_env` script:
 echo -e "\
 ${field_color}nested shell level:${reset_color} ${SHLVL} ${delimiter_color}|${reset_color} \
 ${field_color}argrelay:${reset_color} $( pip show argrelay | grep '^Version:' | cut -f2 -d' ' || true ) ${delimiter_color}|${reset_color} \
