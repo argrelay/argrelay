@@ -12,6 +12,7 @@
 # They should simply point to the latest in configured `venv` (no version control is required):
 /argrelay_common_lib.bash
 /argrelay_rc.bash
+/check_env.bash
 /dev_shell.bash
 /init_shell_env.bash
 /upgrade_all_packages.bash

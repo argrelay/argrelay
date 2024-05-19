@@ -1,6 +1,18 @@
+import os
+
 from argrelay.client_spec.ShellContext import UNKNOWN_COMP_KEY, ShellContext
+from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.CompType import CompType
-from argrelay.schema_request.CallContextSchema import call_context_desc
+from argrelay.enum_desc.ServerAction import ServerAction
+from argrelay.schema_request.CallContextSchema import (
+    call_context_desc,
+    client_pid_,
+    is_debug_enabled_,
+    server_action_,
+    comp_scope_,
+    cursor_cpos_,
+    command_line_,
+)
 from argrelay.test_infra import line_no, parse_line_and_cpos
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 
@@ -16,7 +28,12 @@ class ThisTestClass(BaseTestClass):
             (
                 line_no(), "basic conversion",
                 "some_command prod amer upstream sdfg|  ", CompType.PrefixShown,
-                '{"server_action": "ProposeArgValues", "command_line": "some_command prod amer upstream sdfg  ", "cursor_cpos": 36, "comp_scope": "ScopeInitial", "is_debug_enabled": false}',
+                f'{{"{server_action_}": "{ServerAction.ProposeArgValues.name}", '
+                f'"{command_line_}": "some_command prod amer upstream sdfg  ", '
+                f'"{cursor_cpos_}": 36, '
+                f'"{comp_scope_}": "{CompScope.ScopeInitial.name}", '
+                f'"{client_pid_}": {os.getpid()}, '
+                f'"{is_debug_enabled_}": false}}',
             ),
         ]
         for test_case in test_cases:

@@ -1,6 +1,6 @@
 
 # Ignore these changes as it is used for demo:
 /dev_env_packages.txt
-/argrelay.client.json
-/argrelay.server.yaml
+/argrelay_client.json
+/argrelay_server.yaml
 

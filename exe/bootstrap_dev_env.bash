@@ -57,12 +57,38 @@ set -u
 
 ########################################################################################################################
 
+if [[ "${0}" != "${BASH_SOURCE[0]}" ]]
+then
+    # sourced from another script:
+    is_script_sourced="true"
+else
+    # executed directly in its own shell:
+    is_script_sourced="false"
+fi
+
+########################################################################################################################
+
+# Bash does not allow `return` if the script is not sourced (`exit` must be used):
+# https://stackoverflow.com/a/49857550/441652
+# But using `exit` would exit the caller script (which sources this bootstrap).
+# Using `return` outside of func would exit the caller script as well, but this is manageable -
+# to avoid that, the caller should wrap calling bootstrap into a func.
+# Pick the command conditionally:
+if [[ "${is_script_sourced}" == "true" ]]
+then
+    ret_command="return"
+else
+    ret_command="exit"
+fi
+
+########################################################################################################################
+
 success_color="\e[42m"
 failure_color="\e[41m"
 reset_color="\e[0m"
 
 # Indicate success|failure by color:
-function color_failure_and_success {
+function color_failure_and_success_bootstrap_env {
     exit_code="${?}"
     if [[ "${exit_code}" == "0" ]]
     then
@@ -73,11 +99,11 @@ function color_failure_and_success {
         fi
     else
         echo -e "${failure_color}FAILURE:${reset_color} ${BASH_SOURCE[0]}: exit_code: ${exit_code}" 1>&2
-        exit "${exit_code}"
+        "${ret_command}" "${exit_code}"
     fi
 }
 
-trap color_failure_and_success EXIT
+trap color_failure_and_success_bootstrap_env EXIT
 
 # Let some code know that it runs under `@/exe/bootstrap_dev_env.bash` (e.g to run some tests conditionally):
 ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
@@ -101,16 +127,6 @@ argrelay_dir="$( dirname "." )"
 
 # Ensure it is called from project root (which should contain `@/exe/` dir):
 test -d "${argrelay_dir}/exe/"
-
-# Bash does not allow `return` if the script is not sourced (`exit` must be used):
-# https://stackoverflow.com/a/49857550/441652
-# But using `exit` would exit the script which sources this bootstrap - pick the command conditionally instead:
-if [[ "${0}" != "${BASH_SOURCE[0]}" ]]
-then
-    ret_command="return"
-else
-    ret_command="exit"
-fi
 
 # Collect flags from command line args:
 unused_input_args=()
@@ -529,8 +545,8 @@ module_path_file_tuples=(
     #       Integration assumes different plugins, their configs, etc.
 
     # For example:
-    # project_module sample_conf argrelay.server.yaml
-    # project_module sample_conf argrelay.client.json
+    # project_module sample_conf argrelay_server.yaml
+    # project_module sample_conf argrelay_client.json
 )
 ########################################################################################################################
 deploy_config_files_conf_EOF
@@ -586,6 +602,7 @@ then
 module_path_file_tuples=(
     argrelay custom_integ_res argrelay_common_lib.bash
     argrelay custom_integ_res argrelay_rc.bash
+    argrelay custom_integ_res check_env.bash
     argrelay custom_integ_res dev_shell.bash
     argrelay custom_integ_res init_shell_env.bash
     argrelay custom_integ_res upgrade_all_packages.bash

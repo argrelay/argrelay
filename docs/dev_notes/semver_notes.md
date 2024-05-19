@@ -9,7 +9,12 @@ For `argrelay`, there are multiple interfaces:
 *   filesystem structure
 *   shell scripts (env vars and source-able funcs)
 
-This is a wide interface surface to track for a single package.
+This is a very wide interface surface to track for a single package.
+
+As `semver` suggests, there is no guarantee of compatibility for all `0.Y.Z` versions of `argrelay`
+(until `1.0.0` is released) - version numbers are changed discretionarily:
+*   "important" changes increment `0.Y+1.Z`
+*   others (less "important") increment `0.Y.Z+1`
 
 TODO_78_94_31_68: Split argrelay into multiple packages.
 This will make it simpler to track compatibilities if each interface is represented by a package with its definition:

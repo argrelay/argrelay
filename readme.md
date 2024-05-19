@@ -55,6 +55,7 @@ Wrapping any command by `argrelay`:
 | :heavy_plus_sign: diagrams, images, video                                     | :heavy_multiplication_x: only via integration with GUI    |
 | :heavy_minus_sign: might be time-consuming for an ad-hoc functionality        | :heavy_plus_sign: always quick dev option (low ceremony)  |
 | :heavy_minus_sign: may not exist early in feature development                 | :heavy_plus_sign: likely available early in development   |
+| :heavy_minus_sign: error is a pop-up requiring human attendance               | :heavy_plus_sign: error is an error code = ubiquitous API |
 | :heavy_minus_sign: no simple way to store and share GUI output                | :heavy_plus_sign: store and share results as **text**     |
 | :heavy_minus_sign: repeat steps 500 times? give up!                           | :heavy_plus_sign: repeat steps 500 time? loop!            |
 | :heavy_minus_sign: no universal way to reproduce (composite) GUI actions      | :heavy_plus_sign: paste and "replay" commands as **text** |
@@ -66,7 +67,7 @@ Wrapping any command by `argrelay`:
 | :heavy_minus_sign: limits system access (a layer behind a narrow API)         | :heavy_plus_sign: ultimate control                        |
 | :heavy_plus_sign: keyword captions                                            | :heavy_minus_sign: hardly remembered cryptic `-o` options |
 | :heavy_plus_sign: point-click actions                                         | :heavy_minus_sign: increased typing:exclamation:          |
-| :heavy_plus_sign: intuitive data-driven interface                             | :heavy_minus_sign: interface:question: more like API      |
+| :heavy_plus_sign: intuitive data-driven human interface                       | :heavy_minus_sign: human interface:question: API, in fact |
 
 While retaining advantages of a CLI tool, `argrelay` tries to provide those last :heavy_plus_sign:-s:
 *   intuitive data-driven interface
@@ -75,6 +76,14 @@ While retaining advantages of a CLI tool, `argrelay` tries to provide those last
 
 As opposed to GUI-demanding approaches like [Warp][Warp_site] or [IDEA terminal][IDEA_terminal],<br/>
 `argrelay` survives in basic text modes.
+
+Given that `argrelay` target audience are devs (using shell),<br/>
+the advantages of CLI tools over GUI can be summarized property-by-property:
+
+|                          | output    | interaction   | design | languages | integration | cycle | reviewers | team    | users  | resources |
+|--------------------------|-----------|---------------|--------|-----------|-------------|-------|-----------|---------|--------|-----------|
+| :heavy_minus_sign: GUI   | rigid     | manual        | heavy  | exclusive | denying     | days  | many      | another | anyone | max       |
+| :heavy_plus_sign: CLI    | adaptable | automate-able | light  | inclusive | composable  | hours | few       | same    | devs   | min       |
 
 <a name="argrelay-original-use-case"></a>
 # Original use case
@@ -190,8 +199,8 @@ This sub-shell configures request hotkeys to bind `relay_demo` command with `@/e
 
 *   Inspect configs:
 
-    *   `@/conf/argrelay.server.yaml`
-    *   `@/conf/argrelay.client.json`
+    *   `@/conf/argrelay_server.yaml`
+    *   `@/conf/argrelay_client.json`
 
 *   To reset the demo, remove `@/conf`:
 
@@ -269,7 +278,7 @@ There are two options at the moment - both using [MongoDB][MongoDB] API:
 Quantitative comparison tables between the two can be seen in docstring for `DistinctValuesQuery` enum.
 
 `pymongo` connects to a running MongoDB instance which has to be configured in<br/>
-`argrelay.server.yaml` under `mongo_config` and `mongomock` should be disabled:
+`argrelay_server.yaml` under `mongo_config` and `mongomock` should be disabled:
 
 ```diff
 -    use_mongomock: True

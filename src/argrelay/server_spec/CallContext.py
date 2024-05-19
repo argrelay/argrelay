@@ -18,6 +18,7 @@ class CallContext:
     command_line: str = field()
     cursor_cpos: int = field()
     comp_scope: CompScope = field()
+    client_pid: int = field()
     is_debug_enabled: bool = field()
 
     def print_debug(
@@ -31,4 +32,5 @@ class CallContext:
         eprint(f"\"{self.command_line}\"", end = " ")
         eprint(f"cursor_cpos: {self.cursor_cpos}", end = " ")
         eprint(f"comp_scope: {self.comp_scope}", end = " ")
+        eprint(f"client_pid: {self.client_pid}", end = " ")
         eprint(TermColor.reset_style.value, end = end_str)

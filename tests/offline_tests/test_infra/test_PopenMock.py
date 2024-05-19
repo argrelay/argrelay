@@ -64,6 +64,7 @@ class ThisTestClass(BaseTestClass):
 argrelay_rc.bash
 bootstrap_dev_env.bash
 build_project.bash
+check_env.bash
 deploy_config_files_conf.bash
 deploy_project.bash
 deploy_resource_files_conf.bash
@@ -75,7 +76,7 @@ relay_demo.bash
 run_argrelay_client
 run_argrelay_server
 run_max_tests.bash
-squash_branch.bash
+squash_and_push_branch.bash
 upgrade_all_packages.bash
 """,
                     b"",

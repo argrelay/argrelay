@@ -1,4 +1,5 @@
 import json
+import os
 import socket
 
 from argrelay.enum_desc.ServerAction import ServerAction
@@ -60,6 +61,7 @@ class ProposeArgValuesRemoteOptimizedClientCommand:
     "command_line": {json.dumps(self.call_ctx.command_line)},
     "cursor_cpos": {self.call_ctx.cursor_cpos},
     "comp_scope": "{self.call_ctx.comp_scope.name}",
+    "client_pid": "{os.getpid()}",
     "is_debug_enabled": "{'true' if self.call_ctx.is_debug_enabled else 'false'}"
 }}
 """)

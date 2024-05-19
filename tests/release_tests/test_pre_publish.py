@@ -20,12 +20,12 @@ class ThisTestClass(BaseTestClass):
     """
     Check things which should not be published
 
-    For example, `GitRepoLoader` should not be enabled in `argrelay.server.yaml`.
+    For example, `GitRepoLoader` should not be enabled in `argrelay_server.yaml`.
     """
 
     def test_default_git_repo_loader_is_disabled(self):
         """
-        `GitRepoLoader.default` should not be enabled in `argrelay.server.yaml`.
+        `GitRepoLoader.default` should not be enabled in `argrelay_server.yaml`.
 
         `GitRepoLoader.self` can be enabled.
         """
@@ -74,7 +74,7 @@ class ThisTestClass(BaseTestClass):
             self.assertTrue(os.path.isdir("env_tests"))
             self.assertFalse(os.path.exists("env_tests/__init__.py"))
 
-    def test_config_base_dir_is_not_overriden(self):
+    def test_config_base_dir_is_not_overridden(self):
         """
         `ARGRELAY_CONF_BASE_DIR` should not be defined
 
@@ -99,8 +99,8 @@ class ThisTestClass(BaseTestClass):
 
         Ensure server and client config files are not deployed:
 
-        *   `~/.argrelay.conf.d/argrelay.server.yaml`
-        *   `~/.argrelay.conf.d/argrelay.client.json`
+        *   `~/.argrelay.conf.d/argrelay_server.yaml`
+        *   `~/.argrelay.conf.d/argrelay_client.json`
 
         Move them under different name to preserve or delete them completely.
 
@@ -110,8 +110,8 @@ class ThisTestClass(BaseTestClass):
         """
 
         for file_path in [
-            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.server.yaml",
-            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay.client.json",
+            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_server.yaml",
+            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_client.json",
         ]:
             self.assertFalse(os.path.exists(file_path))
 

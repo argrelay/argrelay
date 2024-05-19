@@ -25,7 +25,7 @@ class AbstractServerRequestHandler:
         call_ctx: CallContext,
     ) -> None:
         parsed_ctx = ParsedContext.from_instance(call_ctx)
-        # TODO: Split server_config and static_data in argrelay.server.yaml (both top level, not config including data):
+        # TODO: Split server_config and static_data in argrelay_server.yaml (both top level, not config including data):
         self.interp_ctx = InterpContext(
             parsed_ctx = parsed_ctx,
             interp_factories = local_server.server_config.interp_factories,

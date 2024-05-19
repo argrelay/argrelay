@@ -48,8 +48,11 @@ def split_process() -> (
         )
     elif child_pid == 0:
         os.close(r_child_stdout_fd)
-        # Child writes to the pipe (instead of the terminal):
-        sys.stdout = os.fdopen(w_child_stdout_fd, "w")
+        # Child writes to the pipe (instead of the terminal) -
+        # close original stdout file descriptor and use pipe:
+        # https://stackoverflow.com/a/31503924/441652
+        os.dup2(w_child_stdout_fd, sys.stdout.fileno())
+        os.close(w_child_stdout_fd)
         return (
             False,
             0,

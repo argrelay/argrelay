@@ -58,10 +58,13 @@ do
 
             "${argrelay_dir}/exe/bootstrap_dev_env.bash"
 
+            # Script `check_env` should succeed after bootstrap:
+            "${argrelay_dir}/exe/check_env.bash"
+
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
-                ":(exclude)dst/.github/argrelay.client.json" \
-                ":(exclude)dst/.github/argrelay.server.yaml" \
+                ":(exclude)dst/.github/argrelay_client.json" \
+                ":(exclude)dst/.github/argrelay_server.yaml" \
 
         ;;
         "fail_on_conf_mismatch")
@@ -74,8 +77,8 @@ do
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
-                ":(exclude)dst/.github/argrelay.client.json" \
-                ":(exclude)dst/.github/argrelay.server.yaml" \
+                ":(exclude)dst/.github/argrelay_client.json" \
+                ":(exclude)dst/.github/argrelay_server.yaml" \
 
         ;;
         "reset_conf")
@@ -85,8 +88,8 @@ do
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
-                ":(exclude)dst/.github/argrelay.client.json" \
-                ":(exclude)dst/.github/argrelay.server.yaml" \
+                ":(exclude)dst/.github/argrelay_client.json" \
+                ":(exclude)dst/.github/argrelay_server.yaml" \
 
         ;;
         "succeed_on_conf_match")
@@ -95,8 +98,8 @@ do
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/dev_env_packages.txt" \
-                ":(exclude)dst/.github/argrelay.client.json" \
-                ":(exclude)dst/.github/argrelay.server.yaml" \
+                ":(exclude)dst/.github/argrelay_client.json" \
+                ":(exclude)dst/.github/argrelay_server.yaml" \
 
         ;;
         *)

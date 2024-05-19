@@ -60,8 +60,8 @@ source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 remove_pid_file_if_stale "${pid_file}"
 
 # NOTE: `server_host_name` is supposed to be local for this script to make sense:
-server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay.client.json" )"
-server_port_number="$( jq --raw-output ".connection_config.server_port_number" "${argrelay_dir}/conf/argrelay.client.json" )"
+server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay_client.json" )"
+server_port_number="$( jq --raw-output ".connection_config.server_port_number" "${argrelay_dir}/conf/argrelay_client.json" )"
 
 kill_via_pid_file_or_ensure_closed_port "${pid_file}" "${server_host_name}" "${server_port_number}"
 # Wait for 1 min (60 sec):
