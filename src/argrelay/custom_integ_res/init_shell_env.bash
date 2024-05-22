@@ -6,7 +6,7 @@
 
 # The steps this script implements FS_58_61_77_69 dev_shell:
 # *   Runs `@/exe/bootstrap_dev_env.bash` to activate Python `venv`.
-# *   Runs `@/exe/argrelay_rc.bash` to configure auto-completion for this shell session.
+# *   Runs `@/exe/shell_env.bash` to configure auto-completion for this shell session.
 
 # Note that enabling exit on error (like `set -e` below) will exit parent
 # `@/exe/dev_shell.bash` script (as this one is sourced) - that is intentional.
@@ -80,7 +80,7 @@ then
 fi
 
 # Enable auto-completion:
-source "${argrelay_dir}/exe/argrelay_rc.bash"
+source "${argrelay_dir}/exe/shell_env.bash"
 
 # TODO: FS_16_07_78_84: respect conf dir priority:
 server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay_client.json" )"

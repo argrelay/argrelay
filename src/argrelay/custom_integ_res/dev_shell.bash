@@ -80,7 +80,7 @@ cd "${argrelay_dir}" || exit 1
 ARGRELAY_DEV_SHELL="$(date)"
 export ARGRELAY_DEV_SHELL
 
-echo -e "${banner_color}INFO: keep starting nested \`@/exe/dev_shell.bash\` on demand or \`source\` this config by default in \`~/.bashrc\`: ${argrelay_dir}/exe/argrelay_rc.bash${reset_color}" 1>&2
+echo -e "${banner_color}INFO: keep starting nested \`@/exe/dev_shell.bash\` on demand or \`source\` this config by default in \`~/.bashrc\`: ${argrelay_dir}/exe/shell_env.bash${reset_color}" 1>&2
 
 # The new shell executes `@/exe/init_shell_env.bash` script as its init file:
 # https://serverfault.com/questions/368054

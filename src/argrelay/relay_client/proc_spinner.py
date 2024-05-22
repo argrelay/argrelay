@@ -20,7 +20,7 @@ child_stdout_chunks: list = []
 child_stderr_chunk_max_size: int = 100
 
 
-def signal_handler(signal_number, signal_frame):
+def _signal_handler(signal_number, signal_frame):
     if signal_number == signal.SIGCHLD:
         # The child exited:
         pass
@@ -36,7 +36,7 @@ def spin_wait_for_child(
     Display spinner while child request is running.
     """
 
-    signal.signal(signal.SIGCHLD, signal_handler)
+    signal.signal(signal.SIGCHLD, _signal_handler)
     # Prevent spinner on instant replies - have an initial sleep first
     # before drawing spinner for the first time
     # (this sleep will exit prematurely if the child exits):
@@ -117,3 +117,20 @@ def read_next_child_stdout_chunk(
 def print_child_stdout_chunks():
     for child_stdout_chunk in child_stdout_chunks:
         print(child_stdout_chunk, flush = True, end = "")
+
+
+def spinner_main(
+    child_pid,
+    child_stdout,
+    client_config,
+    shell_ctx,
+):
+    spin_wait_for_child(
+        child_pid,
+        child_stdout,
+        shell_ctx,
+        client_config.spinless_sleep_sec,
+    )
+    while read_next_child_stdout_chunk(child_stdout):
+        pass
+    print_child_stdout_chunks()

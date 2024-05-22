@@ -1,31 +1,15 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Union
 
+from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_, fetch_subtree_node
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
-from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_
 from argrelay.runtime_context.InterpContext import InterpContext
-
-
-def fetch_tree_node(
-    tree_dict: dict,
-    node_path: list[str],
-):
-    """
-    Fetches tree node by node path.
-    """
-
-    curr_node_value = tree_dict
-    for node_path_part in node_path:
-        if isinstance(curr_node_value, dict) and node_path_part in curr_node_value:
-            curr_node_value = curr_node_value[node_path_part]
-        else:
-            return None
-    return curr_node_value
 
 
 class InterpTreeInterp(AbstractInterp):
@@ -46,7 +30,7 @@ class InterpTreeInterp(AbstractInterp):
         )
         self.interp_selector_tree: dict = interp_tree_node_config_dict[interp_selector_tree_]
         self.next_interp_factory_id: Union[str, None] = None
-        self.interp_tree_rel_path: list[str] = []
+        self.interp_tree_abs_path = list(interp_ctx.interp_tree_abs_path)
 
         # TODO: Why hard-coded? Isn't it possible for this plugin to be plugged into any depth of the tree?
         # Token with ipos = 0 is the command name eaten by `FirstArgInterp` (FS_42_76_93_51 first interp):
@@ -68,7 +52,10 @@ class InterpTreeInterp(AbstractInterp):
         and consumes all necessary args sequentially.
         """
 
-        curr_sub_tree = self.interp_selector_tree
+        curr_sub_tree = fetch_subtree_node(
+            self.interp_selector_tree,
+            self.interp_tree_abs_path,
+        )
         any_consumed = False
         while True:
             if isinstance(curr_sub_tree, str):
@@ -91,7 +78,7 @@ class InterpTreeInterp(AbstractInterp):
             if isinstance(curr_sub_tree, dict):
                 if curr_token_value in curr_sub_tree:
                     # Consume one more arg into path:
-                    self.interp_tree_rel_path.append(curr_token_value)
+                    self.interp_tree_abs_path.append(curr_token_value)
 
                     bucket_index = self.interp_ctx.token_ipos_to_arg_bucket_map[curr_token_ipos]
                     self.interp_ctx.consumed_arg_buckets[bucket_index].append(curr_token_ipos)
@@ -123,10 +110,7 @@ class InterpTreeInterp(AbstractInterp):
     def next_interp(self) -> "AbstractInterp":
         # Selected `next_interp_factory_id` need to be given one of the paths in the FS_01_89_09_24 interp tree
         # (because each `next_interp_factory_id` can be plugged into multiple interp tree leaves).
-        # Compose next `interp_tree_abs_path` based on:
-        # *   curr `interp_tree_abs_path` given at creation of curr interp
-        # *   next selected `interp_tree_rel_path` to that `next_interp_factory_id` in the interp tree
-        self.interp_ctx.interp_tree_abs_path = self.interp_ctx.interp_tree_abs_path + tuple(self.interp_tree_rel_path)
+        self.interp_ctx.interp_tree_abs_path = tuple(self.interp_tree_abs_path)
         return self.interp_ctx.create_next_interp(self.next_interp_factory_id)
 
     def propose_arg_completion(self) -> None:
@@ -137,9 +121,9 @@ class InterpTreeInterp(AbstractInterp):
         if not self.is_eligible_for_suggestion():
             return
 
-        curr_sub_tree = fetch_tree_node(
+        curr_sub_tree = fetch_subtree_node(
             self.interp_selector_tree,
-            self.interp_tree_rel_path,
+            self.interp_tree_abs_path,
         )
         if isinstance(curr_sub_tree, dict):
             for proposed_value in [
@@ -158,7 +142,7 @@ class InterpTreeInterp(AbstractInterp):
     def is_eligible_for_suggestion(self):
         """
         Suggesting anything is possible only if there is no other tokens
-        (after those recorded in `interp_tree_rel_path`) available for consumption by subsequent interpreters.
+        (after those recorded in `interp_tree_abs_path`) available for consumption by subsequent interpreters.
         """
 
         if self.interp_ctx.next_remaining_token_ipos() is None:
@@ -177,9 +161,9 @@ class InterpTreeInterp(AbstractInterp):
             assert token_ipos in remaining_consumed_tokens
             remaining_consumed_tokens.remove(token_ipos)
 
-        # Remove everything eaten into `interp_tree_rel_path`:
+        # Remove everything eaten into `interp_tree_abs_path`:
         token_ipos = self.base_token_ipos
-        for node_path_token in self.interp_tree_rel_path:
+        for node_path_token in self.interp_tree_abs_path:
             assert token_ipos in remaining_consumed_tokens
             remaining_consumed_tokens.remove(token_ipos)
             token_ipos += 1

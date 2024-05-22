@@ -721,7 +721,7 @@ class LocalClientEnvMockBuilder(EnvMockBuilder):
     ):
         super().__init__()
 
-        # TODO: enable validation that client code is actually invoked (e.g. invocation of make_request in main):
+        # TODO: enable validation that client code is actually invoked (e.g. invocation of make_request in proc_worker):
 
         # Ensure that client and server read their config files by test process:
         self.set_mock_client_config_file_read(True)
@@ -760,7 +760,7 @@ class ServerOnlyEnvMockBuilder(EnvMockBuilder):
     ):
         super().__init__()
 
-        # TODO: enable validation that client code is not invoked (e.g. invocation of make_request):
+        # TODO: enable validation that client code is actually invoked (e.g. invocation of make_request in proc_worker):
 
         # For server-only test, client config file read should not happen by test process
         # (if this mock is enabled, but not used, it fails):

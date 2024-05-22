@@ -3,7 +3,6 @@ import sys
 
 from argrelay.client_spec.ShellContext import ShellContext
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import get_config_path
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ClientConfig import ClientConfig
@@ -37,65 +36,22 @@ def main():
         ) = split_process()
 
         if is_parent:
-            from argrelay.relay_client.proc_parent import (
-                print_child_stdout_chunks,
-                read_next_child_stdout_chunk,
-                spin_wait_for_child,
-            )
-            spin_wait_for_child(
+            from argrelay.relay_client.proc_spinner import spinner_main
+            spinner_main(
                 child_pid,
                 child_stdout,
-                shell_ctx,
-                client_config.spinless_sleep_sec,
+                client_config,
+                shell_ctx
             )
-
-            while read_next_child_stdout_chunk(child_stdout):
-                pass
-
-            print_child_stdout_chunks()
             return
 
-    if client_config.use_local_requests:
-        # This branch with `use_local_requests` is used only for testing
-        # (to inspect internal server data via `LocalClient` and `LocalServer`):
-        from argrelay.test_infra.LocalClient import LocalClient
-
-        command_obj = make_request_via_abstract_client(
-            LocalClient(client_config),
-            call_ctx,
-        )
-    else:
-        # TODO: There is a bug - if a child is used, it deadlocks occasionally while importing `requests`:
-        #       https://github.com/argrelay/argrelay/issues/89
-        #       The workaround is to abort (Ctrl+C) and retry - but this is annoying.
-        if (
-            call_ctx.server_action is ServerAction.ProposeArgValues
-            and
-            client_config.optimize_completion_request
-        ):
-            from argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand import (
-                ProposeArgValuesRemoteOptimizedClientCommand
-            )
-            command_obj = ProposeArgValuesRemoteOptimizedClientCommand(
-                call_ctx = call_ctx,
-                connection_config = client_config.connection_config,
-            )
-            make_request(
-                command_obj,
-            )
-        else:
-            from argrelay.relay_client.RemoteClient import RemoteClient
-            command_obj = make_request_via_abstract_client(
-                RemoteClient(client_config),
-                call_ctx,
-            )
-
-    ElapsedTime.measure("on_exit")
-    if shell_ctx.is_debug_enabled:
-        ElapsedTime.print_all()
-
+    from argrelay.relay_client.proc_worker import worker_main
+    command_obj = worker_main(
+        call_ctx,
+        client_config,
+        shell_ctx,
+    )
     return command_obj
-
 
 def load_client_config(file_path):
     import json
@@ -121,22 +77,6 @@ def client_config_dict_to_object(client_config_dict):
         spinless_sleep_sec = client_config_dict.get("spinless_sleep_sec", 0.0),
     )
     return client_config
-
-
-def make_request_via_abstract_client(
-    abstract_client: "AbstractClient",
-    call_ctx,
-) -> "AbstractClientCommand":
-    ElapsedTime.measure("before_client_invocation")
-    return abstract_client.make_request(call_ctx)
-
-
-def make_request(
-    command_obj,
-):
-    command_obj.execute_command()
-    ElapsedTime.measure("after_execute_command")
-    return command_obj
 
 
 if __name__ == "__main__":

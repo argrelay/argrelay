@@ -6,4 +6,4 @@
 #     *   `@/tmp/multiple_clients/client_a/`
 #     *   `@/tmp/multiple_clients/client_b/`
 # shellcheck disable=SC2154
-source "${argrelay_dir}/../client_a/exe/argrelay_rc.bash"
+source "${argrelay_dir}/../client_a/exe/shell_env.bash"

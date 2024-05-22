@@ -188,9 +188,10 @@ class _CompositeTreeWalker_zero_arg_interp_tree(AbstractCompositeTreeWalker):
         if self.curr_node.node_type is CompositeNodeType.zero_arg_node:
             assert len(self.curr_path) == 1
             _put_value_into_dict_path(
+                # TODO: There could be multiple `zero_arg_node`-s each with its own interp,
+                #       but now, there is only one interp selected by `first_interp_factory_id`.
+                #       In fact, `first_interp_factory_id` must be per zero arg - see FS_15_79_76_85 line processor.
                 self.curr_node.plugin_instance_id,
-                # TODO: TODO_10_72_28_05: if tree is global, this would not be necessary
-                #       and both `interp_tree` and `zero_arg_interp_tree` would be identical
                 self.curr_path,
                 self.zero_arg_interp_tree,
             )
@@ -279,10 +280,7 @@ class _CompositeTreeWalker_interp_tree(AbstractCompositeTreeWalker):
             if self.curr_parent_plugin_instance_id == self.plugin_instance_id:
                 _put_value_into_dict_path(
                     self.curr_node.plugin_instance_id,
-                    # TODO: TODO_10_72_28_05: if tree is global, this would not be necessary
-                    #       and both `interp_tree` and `zero_arg_interp_tree` would be identical
-                    # skip path step of `zero_arg_node`:
-                    self.curr_path[1:],
+                    self.curr_path,
                     self.interp_tree,
                 )
             return TraverseDecision.skip_sub_tree

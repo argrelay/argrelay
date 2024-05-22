@@ -1,5 +1,5 @@
 from argrelay.enum_desc.CompType import CompType
-from argrelay.plugin_interp.InterpTreeInterp import fetch_tree_node
+from argrelay.composite_tree.DictTreeWalker import fetch_subtree_node
 from argrelay.test_infra import line_no
 
 from argrelay.test_infra.LocalTestClass import LocalTestClass
@@ -44,7 +44,7 @@ class ThisTestClass(LocalTestClass):
 
                 self.assertEqual(
                     expected_result,
-                    fetch_tree_node(tree_dict, node_coord),
+                    fetch_subtree_node(tree_dict, node_coord),
                 )
 
     def test_FS_01_89_09_24_interp_tree(self):

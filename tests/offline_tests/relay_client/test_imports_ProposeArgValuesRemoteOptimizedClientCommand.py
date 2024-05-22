@@ -16,6 +16,7 @@ from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
 from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import (
     __main__,
+    proc_worker,
 )
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.test_infra import change_to_known_repo_path
@@ -35,6 +36,7 @@ class ThisTestClass(BaseTestClass):
     # Otherwise, select the imports on the required execution path manually here:
     entry_module_names = [
         __main__.__name__,
+        proc_worker.__name__,
         ProposeArgValuesRemoteOptimizedClientCommand.__name__,
     ]
 
@@ -87,12 +89,17 @@ class ThisTestClass(BaseTestClass):
         "argrelay.relay_client.__main__": [
             "argrelay.client_spec.ShellContext",
             "argrelay.enum_desc.CompType",
-            "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common",
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ClientConfig",
             "argrelay.runtime_data.ConnectionConfig",
             "sys"
+        ],
+        "argrelay.relay_client.proc_worker": [
+            "argrelay.enum_desc.ServerAction",
+            "argrelay.misc_helper_common",
+            "argrelay.misc_helper_common.ElapsedTime",
+            "signal",
         ],
         "argrelay.runtime_data.ClientConfig": [
             "argrelay.runtime_data.ConnectionConfig",
@@ -113,6 +120,7 @@ class ThisTestClass(BaseTestClass):
         "enum": [],
         "json": [],
         "os": [],
+        "signal": [],
         "socket": [],
         "sys": [],
         "time": []
