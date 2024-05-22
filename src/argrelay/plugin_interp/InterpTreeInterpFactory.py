@@ -4,7 +4,7 @@ import contextlib
 
 from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
 from argrelay.composite_tree.CompositeTreeWalker import extract_interp_tree
-from argrelay.composite_tree.DictTreeWalker import DictTreeWalker
+from argrelay.composite_tree.DictTreeWalker import DictTreeWalker, sequence_starts_with
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
@@ -98,19 +98,21 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             self.plugin_config_dict[interp_selector_tree_],
         )
         # Walk configured interp tree and call `load_func_envelopes` with `interp_tree_abs_path` for each interp.
-        interp_rel_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
-        for interp_plugin_id in interp_rel_paths:
-            for interp_rel_path in interp_rel_paths[interp_plugin_id]:
+        interp_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
+        for interp_plugin_id in interp_abs_paths:
+            for sub_interp_tree_abs_path in interp_abs_paths[interp_plugin_id]:
+                if not sequence_starts_with(sub_interp_tree_abs_path, interp_tree_abs_path):
+                    # skip: other `interp_tree_abs_path`-s are going to be separate calls to this func:
+                    continue
                 assert_plugin_instance_id(
                     self.server_config,
                     interp_plugin_id,
                     PluginType.InterpFactoryPlugin,
                 )
                 interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_plugin_id]
-                sub_interp_tree_abs_path = interp_tree_abs_path + tuple(interp_rel_path)
 
                 mapped_func_ids.extend(interp_factory.load_func_envelopes(
-                    sub_interp_tree_abs_path,
+                    tuple(sub_interp_tree_abs_path),
                     func_ids_to_func_envelopes,
                 ))
         return mapped_func_ids

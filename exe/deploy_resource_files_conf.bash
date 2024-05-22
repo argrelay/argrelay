@@ -8,7 +8,7 @@
 # shellcheck disable=SC2034
 module_path_file_tuples=(
     argrelay custom_integ_res argrelay_common_lib.bash
-    argrelay custom_integ_res argrelay_rc.bash
+    argrelay custom_integ_res shell_env.bash
     argrelay custom_integ_res check_env.bash
     argrelay custom_integ_res dev_shell.bash
     argrelay custom_integ_res init_shell_env.bash

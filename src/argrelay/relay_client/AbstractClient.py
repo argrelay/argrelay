@@ -1,4 +1,4 @@
-import argrelay.relay_client.__main__ as relay_client_main
+import argrelay.relay_client.proc_worker
 from argrelay.relay_client import AbstractClientCommand
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
 from argrelay.runtime_data.ClientConfig import ClientConfig
@@ -24,6 +24,6 @@ class AbstractClient:
         call_ctx: CallContext,
     ) -> AbstractClientCommand:
         command_obj = self.command_factory.create_command(call_ctx)
-        return relay_client_main.make_request(
+        return argrelay.relay_client.proc_worker.make_request(
             command_obj,
         )

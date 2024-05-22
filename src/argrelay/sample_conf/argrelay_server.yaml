@@ -400,15 +400,17 @@ plugin_instance_entries:
             -   FuncTreeInterpFactory.default
         plugin_config:
             interp_selector_tree:
-                "intercept": FuncTreeInterpFactory.intercept_invocation_func
-                "help": FuncTreeInterpFactory.help_hint_func
-                "enum": FuncTreeInterpFactory.query_enum_items_func
-                "": FuncTreeInterpFactory.default
-                # child "duplicates" re-plug some of the interps:
-                "duplicates":
+                "relay_demo": &default_interp_selector_tree
                     "intercept": FuncTreeInterpFactory.intercept_invocation_func
                     "help": FuncTreeInterpFactory.help_hint_func
+                    "enum": FuncTreeInterpFactory.query_enum_items_func
                     "": FuncTreeInterpFactory.default
+                    # child "duplicates" re-plug some of the interps:
+                    "duplicates":
+                        "intercept": FuncTreeInterpFactory.intercept_invocation_func
+                        "help": FuncTreeInterpFactory.help_hint_func
+                        "": FuncTreeInterpFactory.default
+                "some_command": *default_interp_selector_tree
 
     InterpTreeInterpFactory.service:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
@@ -418,8 +420,9 @@ plugin_instance_entries:
             -   FuncTreeInterpFactory.service
         plugin_config:
             interp_selector_tree:
-                "help": FuncTreeInterpFactory.help_hint_func
-                "": FuncTreeInterpFactory.service
+                "service_relay_demo":
+                    "help": FuncTreeInterpFactory.help_hint_func
+                    "": FuncTreeInterpFactory.service
 
     # TODO: FS_33_76_82_84 `composite_tree`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
     #       See extended comment for `FuncTreeInterpFactory.help_hint_func`.

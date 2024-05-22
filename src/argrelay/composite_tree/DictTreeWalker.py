@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from copy import deepcopy
-from typing import Union
+from typing import Union, Sequence
 
 from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
 
@@ -44,6 +44,7 @@ some_tree: "some_value"
 ```
 """
 
+
 def normalize_tree(
     input_tree: Union[dict, str],
 ) -> dict:
@@ -64,11 +65,11 @@ def normalize_tree(
 
     return _normalize_tree(input_tree, 0)
 
+
 def _normalize_tree(
     input_tree: Union[dict, str],
     tree_depth: int,
 ) -> Union[dict, str]:
-
     output_tree: dict = {}
 
     if isinstance(input_tree, str):
@@ -92,6 +93,40 @@ def _normalize_tree(
         raise ValueError(f"unexpected `input_tree` type: {type(input_tree)}")
 
     return output_tree
+
+
+def fetch_subtree_node(
+    tree_dict: dict,
+    node_path: Sequence[str],
+):
+    """
+    Fetches tree node by node path.
+    """
+
+    curr_node_value = tree_dict
+    for node_path_part in node_path:
+        if isinstance(curr_node_value, dict) and node_path_part in curr_node_value:
+            curr_node_value = curr_node_value[node_path_part]
+        else:
+            return None
+    return curr_node_value
+
+
+def sequence_starts_with(
+    outer_seq: Sequence[str],
+    inner_seq: Sequence[str],
+) -> bool:
+    """
+    Similar to `str.startwith` but in terms of sequence elements.
+    """
+    for part_index, part_value in enumerate(inner_seq):
+        if part_index < len(outer_seq):
+            if outer_seq[part_index] != part_value:
+                return False
+        else:
+            # `outer_seq` is smaller than `inner_seq`:
+            return False
+    return True
 
 
 class DictTreeWalker:

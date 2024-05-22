@@ -61,7 +61,7 @@ function ensure_inside_dev_shell {
         exit 1
     fi
 
-    # Ensure it is a `venv` (`@/exe/dev_shell.bash` activates `venv` configured in `@/conf/python_conf.bash`):
+    # Ensure it is a `venv` (`@/exe/dev_shell.bash` activates `venv` configured in `@/conf/python_env.conf.bash`):
     test -n "${VIRTUAL_ENV}"
 
     # Ensure `@/conf` is already in place:

@@ -74,7 +74,7 @@ This is a non-exhaustive list of reasons and clues how to address them:
 
     Create it - again, see also [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md].
 
-*   Missing `@/conf/python_conf.bash` file.
+*   Missing `@/conf/python_env.conf.bash` file.
 
     This file provides config for Python interpreter and creation of Python virtual environment.
 
@@ -95,12 +95,12 @@ This is a non-exhaustive list of reasons and clues how to address them:
 *   Missing `argrelay` package.
 
     To generate client and server executables, bootstrap needs installed `argrelay` package
-    in the venv (as configured in `@/conf/python_conf.bash`) used by the bootstrap process.
+    in the venv (as configured in `@/conf/python_env.conf.bash`) used by the bootstrap process.
 
     In turn, `@/exe/deploy_project.bash` script should deploy `argrelay` (directly or indirectly via dependencies).
 
     *   Long-term fix is to ensure `@/exe/deploy_project.bash` installs `argrelay`.
-    *   Short-term fix is to activate the same venv (as configured in `@/conf/python_conf.bash`) and install `argrelay` manually.
+    *   Short-term fix is to activate the same venv (as configured in `@/conf/python_env.conf.bash`) and install `argrelay` manually.
 
 *   Other missing files.
 

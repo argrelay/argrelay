@@ -2,7 +2,7 @@
 
 # This script upgrades all Python packages in `venv`.
 #
-# If Python has to be upgraded as well based on the latest version in `@/conf/python_conf.bash`,
+# If Python has to be upgraded as well based on the latest version in `@/conf/python_env.conf.bash`,
 # remove the `venv` first and re-run `@/exe/bootstrap_dev_env.bash`.
 #
 # The basic steps are:

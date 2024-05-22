@@ -186,7 +186,7 @@ then
         ln -snf "${config_path}" "${argrelay_dir}/conf"
 
         # Load Python config to reset its `venv`:
-        source "${argrelay_dir}/conf/python_conf.bash"
+        source "${argrelay_dir}/conf/python_env.conf.bash"
 
         # Careful: instead of `rm -rf` (in case of misconfig), move `venv` to `/tmp/`:
         run_timestamp="$( date -u "+%Y-%m-%dT%H-%M-%SZ" )"
@@ -210,11 +210,11 @@ test -d "${argrelay_dir}/conf/"
 ########################################################################################################################
 # Init Python.
 
-if [[ ! -f "${argrelay_dir}/conf/python_conf.bash" ]]
+if [[ ! -f "${argrelay_dir}/conf/python_env.conf.bash" ]]
 then
-    echo "ERROR: \`${argrelay_dir}/conf/python_conf.bash\` does not exists" 1>&2
+    echo "ERROR: \`${argrelay_dir}/conf/python_env.conf.bash\` does not exists" 1>&2
     echo "It is required to init \`venv\` with specific base Python interpreter." 1>&2
-    echo "Provide \`${argrelay_dir}/conf/python_conf.bash\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${argrelay_dir}/conf/python_env.conf.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
     cat << 'deploy_project_EOF'
 ########################################################################################################################
@@ -240,7 +240,7 @@ fi
 # Load user config for env vars:
 # *   path_to_pythonX
 # *   path_to_venvX
-source "${argrelay_dir}/conf/python_conf.bash"
+source "${argrelay_dir}/conf/python_env.conf.bash"
 
 # Cut out Python version number chars (from first digit until first space):
 # shellcheck disable=SC2154
@@ -262,16 +262,16 @@ then
     pythonX_dirname="$(dirname "${path_to_pythonX}")"
 
     # Make `pythonX_basename` accessible throughout this script (until `venv` activation overrides it):
-    # shellcheck disable=SC2154 # `path_to_pythonX` is assigned in `@/conf/python_conf.bash`:
+    # shellcheck disable=SC2154 # `path_to_pythonX` is assigned in `@/conf/python_env.conf.bash`:
     export PATH="${pythonX_dirname}:${PATH}"
 
     # Test python:
-    # shellcheck disable=SC2154 # `pythonX_basename` is assigned in `@/conf/python_conf.bash`:
+    # shellcheck disable=SC2154 # `pythonX_basename` is assigned in `@/conf/python_env.conf.bash`:
     which "${pythonX_basename}"
     if ! "${pythonX_basename}" -c 'print("'"${pythonX_basename}"' from '"${pythonX_dirname}"' works")'
     then
         echo "ERROR: \`${pythonX_basename}\` from \`${pythonX_dirname}\` does not work" 1>&2
-        echo "Update \`${argrelay_dir}/conf/python_conf.bash\` to continue." 1>&2
+        echo "Update \`${argrelay_dir}/conf/python_env.conf.bash\` to continue." 1>&2
         "${ret_command}" 1
     fi
 
@@ -423,7 +423,7 @@ function detect_file_deployment_command {
     primary_path="$( realpath "${1}" )"
     # This is the target (if copy) or the link (if symlink):
     secondary_path="$( realpath "${2}" )"
-    # `venv` path from `@/conf/python_conf.bash`:
+    # `venv` path from `@/conf/python_env.conf.bash`:
     # shellcheck disable=SC2154
     abs_path_to_venvX="$( realpath "${path_to_venvX}")"
 
@@ -601,7 +601,7 @@ then
 # module_name relative_dir_path resource_file_name
 module_path_file_tuples=(
     argrelay custom_integ_res argrelay_common_lib.bash
-    argrelay custom_integ_res argrelay_rc.bash
+    argrelay custom_integ_res shell_env.bash
     argrelay custom_integ_res check_env.bash
     argrelay custom_integ_res dev_shell.bash
     argrelay custom_integ_res init_shell_env.bash
@@ -668,11 +668,11 @@ chmod u+x "${argrelay_dir}/exe/run_argrelay_server"
 ########################################################################################################################
 # Generate source-able Bash config file and generate symlinks for command to be used with `argrelay`.
 
-if [[ ! -f "${argrelay_dir}/conf/argrelay_rc_conf.bash" ]]
+if [[ ! -f "${argrelay_dir}/conf/shell_env.conf.bash" ]]
 then
-    echo "ERROR: \`${argrelay_dir}/conf/argrelay_rc_conf.bash\` does not exists" 1>&2
+    echo "ERROR: \`${argrelay_dir}/conf/shell_env.conf.bash\` does not exists" 1>&2
     echo "It is required to know which command names will have \`argrelay\` auto-completion." 1>&2
-    echo "Provide \`${argrelay_dir}/conf/argrelay_rc_conf.bash\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${argrelay_dir}/conf/shell_env.conf.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
     cat << 'argelay_rc_conf_EOF'
 ########################################################################################################################
@@ -693,7 +693,7 @@ fi
 
 # Load user config for env vars:
 # *   argrelay_bind_command_basenames
-source "${argrelay_dir}/conf/argrelay_rc_conf.bash"
+source "${argrelay_dir}/conf/shell_env.conf.bash"
 
 # shellcheck disable=SC2154
 if [[ "${#argrelay_bind_command_basenames[@]}" -lt 1 ]]

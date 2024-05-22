@@ -62,7 +62,7 @@ do
 done
 
 # Start `@/exe/dev_shell.bash` for `client_b` only
-# (which has `@/conf/dev_shell_rc.conf.bash` to source `@/exe/argrelay_rc.bash` from `client_a`):
+# (which has `@/conf/dev_shell_rc.conf.bash` to source `@/exe/shell_env.bash` from `client_a`):
 "${argrelay_dir}/tmp/multiple_clients/client_b/exe/dev_shell.bash"
 
 # TODO: At the moment, this script simply set things up to check working setup manually.

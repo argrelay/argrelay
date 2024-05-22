@@ -330,23 +330,38 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "intercept": "FuncTreeInterpFactory.intercept_invocation_func",
-                    "help": "FuncTreeInterpFactory.help_hint_func",
-                    "enum": "FuncTreeInterpFactory.query_enum_items_func",
-                    "": "FuncTreeInterpFactory.default",
-                    "duplicates": {
+                    "relay_demo": {
                         "intercept": "FuncTreeInterpFactory.intercept_invocation_func",
                         "help": "FuncTreeInterpFactory.help_hint_func",
+                        "enum": "FuncTreeInterpFactory.query_enum_items_func",
                         "": "FuncTreeInterpFactory.default",
-                    }
+                        "duplicates": {
+                            "intercept": "FuncTreeInterpFactory.intercept_invocation_func",
+                            "help": "FuncTreeInterpFactory.help_hint_func",
+                            "": "FuncTreeInterpFactory.default",
+                        },
+                    },
+                    "some_command": {
+                        "intercept": "FuncTreeInterpFactory.intercept_invocation_func",
+                        "help": "FuncTreeInterpFactory.help_hint_func",
+                        "enum": "FuncTreeInterpFactory.query_enum_items_func",
+                        "": "FuncTreeInterpFactory.default",
+                        "duplicates": {
+                            "intercept": "FuncTreeInterpFactory.intercept_invocation_func",
+                            "help": "FuncTreeInterpFactory.help_hint_func",
+                            "": "FuncTreeInterpFactory.default",
+                        },
+                    },
                 },
                 f"{InterpTreeInterpFactory.__name__}.default",
             ),
             (
                 line_no(),
                 {
-                    "help": "FuncTreeInterpFactory.help_hint_func",
-                    "": "FuncTreeInterpFactory.service",
+                    "service_relay_demo": {
+                        "help": "FuncTreeInterpFactory.help_hint_func",
+                        "": "FuncTreeInterpFactory.service",
+                    },
                 },
                 f"{InterpTreeInterpFactory.__name__}.service",
             ),
