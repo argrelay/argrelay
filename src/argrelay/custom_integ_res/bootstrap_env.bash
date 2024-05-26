@@ -20,17 +20,17 @@ then
     set -v
 fi
 
-if [[ -n "${bootstrap_dev_env_old_opts+x}" ]] ; then exit 1 ; fi
+if [[ -n "${bootstrap_env_old_opts+x}" ]] ; then exit 1 ; fi
 
 # Save `set`-able options to restore them at the end of this source-able script:
 # https://unix.stackexchange.com/a/383581/23886
 # Not saving history because:
 # *   it is not modified within `argrelay` scripts
 # *   it should not be restored in non-interactive files (disabled by default)
-bootstrap_dev_env_old_opts="$( set +o | grep -v "[[:space:]]history$" )"
+bootstrap_env_old_opts="$( set +o | grep -v "[[:space:]]history$" )"
 case "${-}" in
-    *e*) bootstrap_dev_env_old_opts="${bootstrap_dev_env_old_opts}; set -e" ;;
-      *) bootstrap_dev_env_old_opts="${bootstrap_dev_env_old_opts}; set +e" ;;
+    *e*) bootstrap_env_old_opts="${bootstrap_env_old_opts}; set -e" ;;
+      *) bootstrap_env_old_opts="${bootstrap_env_old_opts}; set +e" ;;
 esac
 
 ########################################################################################################################
@@ -105,9 +105,9 @@ function color_failure_and_success_bootstrap_env {
 
 trap color_failure_and_success_bootstrap_env EXIT
 
-# Let some code know that it runs under `@/exe/bootstrap_dev_env.bash` (e.g to run some tests conditionally):
-ARGRELAY_BOOTSTRAP_DEV_ENV="$(date)"
-export ARGRELAY_BOOTSTRAP_DEV_ENV
+# Let some code know that it runs under `@/exe/bootstrap_env.bash` (e.g to run some tests conditionally):
+ARGRELAY_BOOTSTRAP_ENV="$(date)"
+export ARGRELAY_BOOTSTRAP_ENV
 
 script_source="${BASH_SOURCE[0]}"
 # shellcheck disable=SC2034
@@ -115,7 +115,7 @@ script_name="$( basename -- "${script_source}" )"
 # The dir of this script:
 # shellcheck disable=SC2034
 script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
-# Note: In case of `bootstrap_dev_env.bash`, `argrelay_dir` is not `script_dir`, but always the current directory
+# Note: In case of `bootstrap_env.bash`, `argrelay_dir` is not `script_dir`, but always the current directory
 # (it is supposed to be started from the dir where project is being set up).
 # FS_29_54_67_86 dir_structure: current dir = `@/`:
 argrelay_dir="$( dirname "." )"
@@ -216,7 +216,7 @@ then
     echo "It is required to init \`venv\` with specific base Python interpreter." 1>&2
     echo "Provide \`${argrelay_dir}/conf/python_env.conf.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    cat << 'deploy_project_EOF'
+    cat << 'python_env_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 # This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
@@ -233,7 +233,7 @@ path_to_pythonX="/usr/local/bin/python3.7"
 # shellcheck disable=SC2034
 venv_prompt_prefix="@"
 ########################################################################################################################
-deploy_project_EOF
+python_env_conf_EOF
     "${ret_command}" 1
 fi
 
@@ -305,7 +305,7 @@ python_version_a="$( "${path_to_pythonX}" --version )"
 python_version_b="$( "${abs_path_to_venvX}/bin/python" --version )"
 if [[ "${python_version_a}" != "${python_version_b}" ]]
 then
-    # One way to attempt to resolve this is to remove `venv` and re-run `@/exe/bootstrap_dev_env.bash`:
+    # One way to attempt to resolve this is to remove `venv` and re-run `@/exe/bootstrap_env.bash`:
     echo "ERROR: version mismatch for Python to init \`venv\` and Python in existing \`venv\`: ${python_version_a} ${python_version_b}" 1>&2
     "${ret_command}" 1
 fi
@@ -316,7 +316,7 @@ fi
 full_path_to_python="$( command which python )"
 if [[ ! "${full_path_to_python}" -ef "${path_to_pythonX}" ]]
 then
-    # One way to attempt to resolve this is to remove `venv` and re-run `@/exe/bootstrap_dev_env.bash`:
+    # One way to attempt to resolve this is to remove `venv` and re-run `@/exe/bootstrap_env.bash`:
     echo "ERROR: path to \`python\` binary = \`${full_path_to_python}\` after activation of \`venv\` = \`${abs_path_to_venvX}\` is not linked to \`python\` binary = \`${path_to_pythonX}\` used to create this \`venv\`" 1>&2
     "${ret_command}" 1
 fi
@@ -335,7 +335,7 @@ fi
 if [[ -n "${activate_venv_only_flag:-}" ]]
 then
     # Ths script is being run by `@/exe/dev_shell.bash` (sourced by `@/exe/init_shell_env.bash`).
-    # If bootstrap procedure is required, call `@/exe/bootstrap_dev_env.bash` itself without `activate_venv_only_flag`.
+    # If bootstrap procedure is required, call `@/exe/bootstrap_env.bash` itself without `activate_venv_only_flag`.
     # Python `venv` has already been activated - return, ignore the rest:
     "${ret_command}" 0
 fi
@@ -347,40 +347,40 @@ python -m pip install --upgrade pip
 #   ModuleNotFoundError: No module named 'pkg_resources'
 python -m pip install --upgrade setuptools
 
-# Ensure `@/conf/dev_env_packages.txt` exists:
-touch "${argrelay_dir}/conf/dev_env_packages.txt"
+# Ensure `@/conf/env_packages.txt` exists:
+touch "${argrelay_dir}/conf/env_packages.txt"
 
 ########################################################################################################################
-# Deploy project dependencies.
+# Install project dependencies.
 
-if [[ ! -f "${argrelay_dir}/exe/deploy_project.bash" ]]
+if [[ ! -f "${argrelay_dir}/exe/install_project.bash" ]]
 then
-    echo "ERROR: \`${argrelay_dir}/exe/deploy_project.bash\` does not exists" 1>&2
+    echo "ERROR: \`${argrelay_dir}/exe/install_project.bash\` does not exists" 1>&2
     echo "It is required to install packages to extract artifacts from them." 1>&2
-    echo "Provide \`${argrelay_dir}/exe/deploy_project.bash\`, for example (copy and paste and modify):" 1>&2
+    echo "Provide \`${argrelay_dir}/exe/install_project.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
-    cat << 'deploy_project_EOF'
+    cat << 'install_project_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# This is a custom deployment script *sourced* by `@/exe/bootstrap_dev_env.bash`.
+# This is a custom install script *sourced* by `@/exe/bootstrap_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
-# Normally, for integration project, the deploy scripts like this should pip-install itself (in the editable mode).
+# Normally, for integration project, the install scripts like this should pip-install itself (in the editable mode).
 
-# Saved dev dependencies (if clean deployment is required, make `@/conf/dev_env_packages.txt` file empty):
-python -m pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
+# Saved env dependencies (if clean install is required, make `@/conf/env_packages.txt` file empty):
+python -m pip install -r "${argrelay_dir}/conf/env_packages.txt"
 
 # Use editable mode:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
 python -m pip install -e .[tests]
 ########################################################################################################################
-deploy_project_EOF
+install_project_EOF
     "${ret_command}" 1
 fi
 
-source "${argrelay_dir}/exe/deploy_project.bash"
+source "${argrelay_dir}/exe/install_project.bash"
 
 # Get path of `argrelay` module:
 argrelay_module_file_path="$(
@@ -397,25 +397,25 @@ argrelay_module_dir_path="$( dirname "${argrelay_module_file_path}" )"
 if [[ -z "${recursion_flag:-}" ]]
 then
     # Overwrite itself:
-    cp -p "${argrelay_module_dir_path}/custom_integ_res/bootstrap_dev_env.bash" "${argrelay_dir}/exe/"
+    cp -p "${argrelay_module_dir_path}/custom_integ_res/bootstrap_env.bash" "${argrelay_dir}/exe/"
     # Recursively call itself again (now with `recursion_flag`):
-    "${argrelay_dir}/exe/bootstrap_dev_env.bash" "recursion_flag"
+    "${argrelay_dir}/exe/bootstrap_env.bash" "recursion_flag"
     # Recursive call should have executed the rest of file:
     "${ret_command}" 0
 fi
 
 ########################################################################################################################
-# Define common deployment functions.
+# Define common install functions.
 
-function detect_file_deployment_command {
+function detect_file_install_command {
     # This func is used for the editable install mode cases.
-    # When config files (not resource files) need to be deployed from a distribution package,
+    # When config files (not resource files) need to be installed from a distribution package,
     # that package might be installed in editable mode.
     # *   If in editable mode, use symlinks.
     # *   If not in editable mode, use copy.
     # The detection of editable mode is done by looking at the `venv` path in the orig file.
     #
-    # Detect file deployment method based on path of the source (if copy) or the target (if symlink):
+    # Detect file install method based on path of the source (if copy) or the target (if symlink):
     # *   If the path contains path to `venv` (file is from orig package), copy.
     # *   If the path does not contain path to `venv` (file is from sources), symlink.
 
@@ -429,43 +429,43 @@ function detect_file_deployment_command {
 
     if [[ "${primary_path}" == "${abs_path_to_venvX}"* ]]
     then
-        file_deployment_command="cp -p"
+        file_install_command="cp -p"
     else
-        file_deployment_command="ln -sn"
+        file_install_command="ln -sn"
     fi
 
-    eval "${file_deployment_command}" "${primary_path}" "${secondary_path}"
+    eval "${file_install_command}" "${primary_path}" "${secondary_path}"
 }
 
-function deploy_files_procedure {
+function install_files_procedure {
 
-    deploy_files_conf_path="${1}"
-    deployment_mode="${2}"
+    install_files_conf_path="${1}"
+    install_mode="${2}"
     target_dir="${3}"
     # Whether override should be used or not depends on whether the file is a config or it is a resource:
     # *   config files are specific to target environment and are kept untouched (manually updated if needed)
-    # *   resource files are common for all deployments - they represent the latest update and should be overriden
+    # *   resource files are common for all installs - they represent the latest update and should be overriden
     override_target_file="${4}"
 
     # Load user config for env vars:
     # *   module_path_file_tuples
     # shellcheck disable=SC1090
-    source "${deploy_files_conf_path}"
+    source "${install_files_conf_path}"
 
-    case "${deployment_mode}" in
+    case "${install_mode}" in
         "symlink_method")
             # Use symlinks (e.g. to modify files when they are part of Git repo):
-            file_deployment_command="ln -sn"
+            file_install_command="ln -sn"
         ;;
         "copy_method")
             # Use copies (e.g. to avoid modifying orig package content):
-            file_deployment_command="cp -p"
+            file_install_command="cp -p"
         ;;
         "detect_method")
-            file_deployment_command="detect_file_deployment_command"
+            file_install_command="detect_file_install_command"
         ;;
         *)
-            echo "ERROR: unknown deployment_mode: \"${deployment_mode}\"" 1>&2
+            echo "ERROR: unknown install_mode: \"${install_mode}\"" 1>&2
             "${ret_command}" 1
         ;;
     esac
@@ -504,15 +504,15 @@ python_module_path_EOF
             config_file_path="${module_path}/${relative_dir_path}/${file_name}"
             test -f "${config_file_path}"
 
-            # Deploy file to the target:
+            # Install file to the target:
             if [[ ! -e "${target_dir}/${file_name}" ]] && [[ ! -L "${target_dir}/${file_name}" ]]
             then
-                eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
+                eval "${file_install_command}" "${config_file_path}" "${target_dir}/${file_name}"
             else
                 if [[ "${override_target_file}" == "override_target_file" ]]
                 then
                     rm "${target_dir}/${file_name}"
-                    eval "${file_deployment_command}" "${config_file_path}" "${target_dir}/${file_name}"
+                    eval "${file_install_command}" "${config_file_path}" "${target_dir}/${file_name}"
                 fi
             fi
         fi
@@ -520,22 +520,22 @@ python_module_path_EOF
 }
 
 ########################################################################################################################
-# Prepare artifacts: deploy configs (conditionally copies or symlinks).
+# Prepare artifacts: install configs (conditionally copies or symlinks).
 
-deploy_files_conf_path="${argrelay_dir}/exe/deploy_config_files_conf.bash"
+install_files_conf_path="${argrelay_dir}/exe/config_files.conf.bash"
 
-if [[ ! -f "${deploy_files_conf_path}" ]]
+if [[ ! -f "${install_files_conf_path}" ]]
 then
-    echo "ERROR: \`${deploy_files_conf_path}\` does not exists" 1>&2
-    echo "It is required to know list of configs to be deployed." 1>&2
-    echo "Provide \`${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
+    echo "ERROR: \`${install_files_conf_path}\` does not exists" 1>&2
+    echo "It is required to know list of configs to be installed." 1>&2
+    echo "Provide \`${install_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
-    cat << 'deploy_config_files_conf_EOF'
+    cat << 'config_files_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 # This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `@/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `@/exe/bootstrap_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying config files, format:
 # module_name relative_dir_path config_file_name
@@ -549,7 +549,7 @@ module_path_file_tuples=(
     # project_module sample_conf argrelay_client.json
 )
 ########################################################################################################################
-deploy_config_files_conf_EOF
+config_files_conf_EOF
     "${ret_command}" 1
 fi
 
@@ -577,25 +577,25 @@ then
     fi
 fi
 
-deploy_files_procedure "${deploy_files_conf_path}" "detect_method" "${argrelay_conf_base_dir}" "do_not_override"
+install_files_procedure "${install_files_conf_path}" "detect_method" "${argrelay_conf_base_dir}" "do_not_override"
 
 ########################################################################################################################
-# Prepare artifacts: deploy resources (symlinks).
+# Prepare artifacts: install resources (symlinks).
 
-deploy_files_conf_path="${argrelay_dir}/exe/deploy_resource_files_conf.bash"
+install_files_conf_path="${argrelay_dir}/exe/resource_files.conf.bash"
 
-if [[ ! -f "${deploy_files_conf_path}" ]]
+if [[ ! -f "${install_files_conf_path}" ]]
 then
-    echo "ERROR: \`${deploy_files_conf_path}\` does not exists" 1>&2
-    echo "It is required to know list of resources to be deployed." 1>&2
-    echo "Provide \`${deploy_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
+    echo "ERROR: \`${install_files_conf_path}\` does not exists" 1>&2
+    echo "It is required to know list of resources to be installed." 1>&2
+    echo "Provide \`${install_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
     # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
-    cat << 'deploy_resource_files_conf_EOF'
+    cat << 'resource_files_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 # This resource file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `@/exe/bootstrap_dev_env.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `@/exe/bootstrap_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying resource files, format:
 # module_name relative_dir_path resource_file_name
@@ -605,20 +605,20 @@ module_path_file_tuples=(
     argrelay custom_integ_res check_env.bash
     argrelay custom_integ_res dev_shell.bash
     argrelay custom_integ_res init_shell_env.bash
-    argrelay custom_integ_res upgrade_all_packages.bash
+    argrelay custom_integ_res upgrade_env_packages.bash
 )
 ########################################################################################################################
-deploy_resource_files_conf_EOF
+resource_files_conf_EOF
     "${ret_command}" 1
 fi
 
-deploy_files_procedure "${deploy_files_conf_path}" "symlink_method" "${argrelay_dir}/exe/" "override_target_file"
+install_files_procedure "${install_files_conf_path}" "symlink_method" "${argrelay_dir}/exe/" "override_target_file"
 
 ########################################################################################################################
 # Prepare artifacts: generate resources.
 
 # Generate `@/exe/run_argrelay_server`:
-cat << PYTHON_SERVER_EOF > "${argrelay_dir}/exe/run_argrelay_server"
+cat << run_argrelay_server_EOF > "${argrelay_dir}/exe/run_argrelay_server"
 #!$(which python)
 # \`argrelay\`-generated integration file: https://github.com/argrelay/argrelay
 # It is NOT supposed to be version-controlled per project as it:
@@ -637,10 +637,10 @@ from argrelay.relay_server.__main__ import main
 
 if __name__ == '__main__':
     main()
-PYTHON_SERVER_EOF
+run_argrelay_server_EOF
 
 # Generate `@/exe/run_argrelay_client`:
-cat << PYTHON_CLIENT_EOF > "${argrelay_dir}/exe/run_argrelay_client"
+cat << run_argrelay_client_EOF > "${argrelay_dir}/exe/run_argrelay_client"
 #!$(which python)
 # \`argrelay\`-generated integration file: https://github.com/argrelay/argrelay
 # It is NOT supposed to be version-controlled per project as it:
@@ -659,7 +659,7 @@ from argrelay.relay_client.__main__ import main
 
 if __name__ == '__main__':
     main()
-PYTHON_CLIENT_EOF
+run_argrelay_client_EOF
 
 # Make both executable:
 chmod u+x "${argrelay_dir}/exe/run_argrelay_client"
@@ -674,7 +674,7 @@ then
     echo "It is required to know which command names will have \`argrelay\` auto-completion." 1>&2
     echo "Provide \`${argrelay_dir}/conf/shell_env.conf.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    cat << 'argelay_rc_conf_EOF'
+    cat << 'shell_env_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 # This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
@@ -687,7 +687,7 @@ argrelay_bind_command_basenames=(
     service_relay_demo
 )
 ########################################################################################################################
-argelay_rc_conf_EOF
+shell_env_conf_EOF
     "${ret_command}" 1
 fi
 
@@ -748,7 +748,7 @@ then
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
-# This is a custom build script *sourced* by `@/exe/bootstrap_dev_env.bash`.
+# This is a custom build script *sourced* by `@/exe/bootstrap_env.bash`.
 # Python `venv` is already activated before it is sourced.
 
 # Normally, for integration project, the build scripts like this should build and test itself.
@@ -767,8 +767,8 @@ source "${argrelay_dir}/exe/build_project.bash"
 ########################################################################################################################
 # Capture dependencies.
 
-# Update `@/conf/dev_env_packages.txt` to know what was there at the time of bootstrapping:
-cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
+# Update `@/conf/env_packages.txt` to know what was there at the time of bootstrapping:
+cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/env_packages.txt"
 ###############################################################################
 # Note that these dependencies are not necessarily required ones,
 # those required are listed in `setup.py` script and can be installed as:
@@ -777,12 +777,12 @@ cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/dev_env_packages.txt"
 REQUIREMENTS_EOF
 # FS_85_33_46_53 bootstrap package management:
 # Ignore `argrelay` itself (or anything installed in editable mode):
-pip freeze --exclude-editable >> "${argrelay_dir}/conf/dev_env_packages.txt"
+pip freeze --exclude-editable >> "${argrelay_dir}/conf/env_packages.txt"
 
 ########################################################################################################################
 
-eval "${bootstrap_dev_env_old_opts}"
-unset bootstrap_dev_env_old_opts
+eval "${bootstrap_env_old_opts}"
+unset bootstrap_env_old_opts
 
 ########################################################################################################################
 # EOF

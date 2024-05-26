@@ -15,7 +15,7 @@ then
         exit 1
     fi
 
-    # See `@/exe/bootstrap_dev_env.bash` regarding `history`:
+    # See `@/exe/bootstrap_env.bash` regarding `history`:
     # shellcheck disable=SC2034
     # shellcheck disable=SC2155
     export ARGRELAY_USER_SHELL_OPTS="$( unset ARGRELAY_DEBUG ; bash -l -i -c " set +o | grep -v \"[[:space:]]history$\" " 2> /dev/null )"
@@ -32,7 +32,7 @@ if [[ -n "${dev_shell_old_opts+x}" ]] ; then exit 1 ; fi
 
 # Save `set`-able options to restore them at the end of this source-able script:
 # https://unix.stackexchange.com/a/383581/23886
-# See `@/exe/bootstrap_dev_env.bash` regarding `history`:
+# See `@/exe/bootstrap_env.bash` regarding `history`:
 dev_shell_old_opts="$( set +o | grep -v "[[:space:]]history$" )"
 case "${-}" in
     *e*) dev_shell_old_opts="${dev_shell_old_opts}; set -e" ;;

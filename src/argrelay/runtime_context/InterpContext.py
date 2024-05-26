@@ -255,15 +255,18 @@ class InterpContext:
                 self.curr_container.populate_implicit_arg_values()
 
             if self.curr_interp.has_fill_control():
-                if self.parsed_ctx.server_action is ServerAction.DescribeLineArgs:
-                    # TODO: FS_72_53_55_13: options before defaults
-                    # Describing args will need to show options except default - query values before defaults:
-                    ElapsedTime.measure(f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}")
-                    self.query_prop_values()
-                    # Reset to False as we just executed new query:
-                    query_changed = False
+                # FS_72_53_55_13: options before defaults
+                # Describing args will need to show options except default - query values before applying defaults:
+                ElapsedTime.measure(f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}")
+                # This step may be optimized away and is only needed to detect non-default options for
+                # `ServerAction.DescribeLineArgs` but we perform it for all requests to
+                # ensure they have common view in case of possible data issues
+                # (e.g. TODO_39_25_11_76: `data_envelope`-s with missing props).
+                self.query_prop_values()
+                # Reset to False as we just executed new query:
+                query_changed = False
 
-                    self._save_potentially_hidden_by_defaults()
+                self._save_potentially_hidden_by_defaults()
 
                 # Apply defaults (they may apply more than single value at a time):
                 query_changed = (
@@ -342,6 +345,12 @@ class InterpContext:
                 raise RuntimeError(interp_step)
 
     def _save_potentially_hidden_by_defaults(self):
+        """
+        Save all `remaining_types_to_values` before applying defaults.
+
+        These `filled_types_to_values_hidden_by_defaults` are subsequently
+        filtered out in `_leave_only_hidden_by_defaults`.
+        """
         if not self.curr_container:
             return
         for remaining_type in self.curr_container.remaining_types_to_values.keys():
@@ -350,6 +359,15 @@ class InterpContext:
             ] = deepcopy(self.curr_container.remaining_types_to_values[remaining_type])
 
     def _leave_only_hidden_by_defaults(self):
+        """
+        Weed out those `assigned_types_to_values` from `filled_types_to_values_hidden_by_defaults`
+        which were set by applying defaults.
+
+        Use `filled_types_to_values_hidden_by_defaults` saved before applying defaults
+        (in `_save_potentially_hidden_by_defaults` for all `remaining_types_to_values`)
+        and remove those which were not hidden by defaults
+        to yield only those hidden by defaults.
+        """
         if not self.curr_container:
             return
         types_not_hidden_by_defaults = []
@@ -365,6 +383,7 @@ class InterpContext:
                     types_not_hidden_by_defaults.append(type_potentially_hidden_by_defaults)
             else:
                 types_not_hidden_by_defaults.append(type_potentially_hidden_by_defaults)
+        # Delete items outside the previous loop:
         for arg_type in types_not_hidden_by_defaults:
             del self.curr_container.filled_types_to_values_hidden_by_defaults[arg_type]
 

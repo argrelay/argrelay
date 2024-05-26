@@ -52,7 +52,7 @@ log_file="${argrelay_dir}/logs/${script_name}.log"
 
 # Use bootstrap to set `@/conf/` to `@/dst/relay_demo`:
 cd "${argrelay_dir}" || exit 1
-"${argrelay_dir}/exe/bootstrap_dev_env.bash" "dst/relay_demo"
+"${argrelay_dir}/exe/bootstrap_env.bash" "dst/relay_demo"
 
 # Bootstrap finished, now we can source the lib:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"

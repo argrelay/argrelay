@@ -4,11 +4,14 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 
+has_error_happened = False
+
 def _signal_handler(signal_number, signal_frame):
-    if signal_number == signal.SIGCHLD:
+    if signal_number == signal.SIGALRM:
         # Import hanged:
-        eprint("ERROR: Import hanged - see: https://github.com/argrelay/argrelay/issues/89")
-        exit(1)
+        eprint("ERROR: `import` hanged - see: https://github.com/argrelay/argrelay/issues/89")
+        global has_error_happened
+        has_error_happened = True
 
 def worker_main(
     call_ctx,
@@ -50,6 +53,8 @@ def worker_main(
             signal.alarm(1)
             from argrelay.relay_client.RemoteClient import RemoteClient
             signal.alarm(0)
+            if has_error_happened:
+                eprint("INFO: `import` passed")
             command_obj = make_request_via_abstract_client(
                 RemoteClient(client_config),
                 call_ctx,

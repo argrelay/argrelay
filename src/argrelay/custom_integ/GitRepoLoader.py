@@ -35,6 +35,25 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
 )
 
+def normalize_single_line_to_black_spaces(
+    s: str,
+) -> str:
+    """
+    Get rid of white spaces.
+
+    See FS_99_81_19_25 no space in options.
+    """
+    return s.strip().replace(" ", "_")
+
+def normalize_multiple_lines_to_black_spaces(
+    s: str,
+) -> str:
+    """
+    Get rid of multiple lines (take the first one only) and white spaces.
+
+    See FS_99_81_19_25 no space in options.
+    """
+    return s.partition('\n')[0].strip().replace(" ", "_")
 
 class GitRepoLoader(AbstractLoader):
     """
@@ -109,7 +128,7 @@ class GitRepoLoader(AbstractLoader):
             # Process repo entries collecting `repo_root_rel_path` and `repo_root_abs_path`:
             for repo_entry in repo_entries:
 
-                repo_root_rel_path: str = repo_entry[repo_rel_path_]
+                repo_root_rel_path: str = repo_entry[repo_rel_path_] or "."
                 repo_root_abs_path: str = os.path.join(repo_base_abs_path, repo_root_rel_path)
 
                 if not repo_entry[is_repo_enabled_]:
@@ -194,9 +213,9 @@ class GitRepoLoader(AbstractLoader):
                             #
                             GitRepoArgType.git_repo_commit_id.name: git_commit.hexsha,
                             GitRepoArgType.git_repo_short_commit_id.name: git_commit.hexsha[:7],
-                            GitRepoArgType.git_repo_commit_author_name.name: git_commit.author.name,
-                            GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email,
-                            GitRepoArgType.git_repo_commit_message.name: git_commit.message,
+                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(git_commit.author.name),
+                            GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email.lower(),
+                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(git_commit.message),
                             GitRepoArgType.git_repo_commit_date.name: commit_date_utc,
                             GitRepoArgType.git_repo_commit_time.name: commit_time_utc,
                         })
@@ -232,9 +251,9 @@ class GitRepoLoader(AbstractLoader):
                             #
                             GitRepoArgType.git_repo_commit_id.name: git_commit.hexsha,
                             GitRepoArgType.git_repo_short_commit_id.name: git_commit.hexsha[:7],
-                            GitRepoArgType.git_repo_commit_author_name.name: git_commit.author.name,
-                            GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email.lower(),
-                            GitRepoArgType.git_repo_commit_message.name: git_commit.message,
+                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(git_commit.author.name),
+                            GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email,
+                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(git_commit.message),
                             GitRepoArgType.git_repo_commit_date.name: commit_date_utc,
                             GitRepoArgType.git_repo_commit_time.name: commit_time_utc,
                         })
@@ -264,7 +283,7 @@ class GitRepoLoader(AbstractLoader):
         object_categories: list[str] = self.categorize_git_object(data_envelope)
 
         if not object_categories:
-            object_categories.append("UKNOWN_category")
+            object_categories.append("UNKNOWN_category")
 
         data_envelope.update({
             GitRepoArgType.git_repo_object_category.name: object_categories,

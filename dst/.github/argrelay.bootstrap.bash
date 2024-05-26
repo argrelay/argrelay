@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# GitHub job script to run `@/exe/bootstrap_dev_env.bash` in different modes directly or via `@/exe/relay_demo.bash`.
+# GitHub job script to run `@/exe/bootstrap_env.bash` in different modes directly or via `@/exe/relay_demo.bash`.
 
 # Debug: Print commands before execution:
 set -x
@@ -56,13 +56,13 @@ do
             # Configure `@/conf/` (make it existing) before running bootstrap with no args:
             ln -sn "dst/.github" "conf"
 
-            "${argrelay_dir}/exe/bootstrap_dev_env.bash"
+            "${argrelay_dir}/exe/bootstrap_env.bash"
 
             # Script `check_env` should succeed after bootstrap:
             "${argrelay_dir}/exe/check_env.bash"
 
             ensure_no_uncommitted_changes_except \
-                ":(exclude)dst/.github/dev_env_packages.txt" \
+                ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
 
@@ -76,7 +76,7 @@ do
             test "${exit_code}" != "0"
 
             ensure_no_uncommitted_changes_except \
-                ":(exclude)dst/.github/dev_env_packages.txt" \
+                ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
 
@@ -87,7 +87,7 @@ do
             "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
 
             ensure_no_uncommitted_changes_except \
-                ":(exclude)dst/.github/dev_env_packages.txt" \
+                ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
 
@@ -97,7 +97,7 @@ do
             "${argrelay_dir}/exe/relay_demo.bash" relay_demo list service aaa
 
             ensure_no_uncommitted_changes_except \
-                ":(exclude)dst/.github/dev_env_packages.txt" \
+                ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
 

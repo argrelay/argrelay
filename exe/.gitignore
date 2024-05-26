@@ -3,17 +3,17 @@
 /run_argrelay_server
 /run_argrelay_client
 
-# DO NOT IGNORE: see FS_85_33_46_53 bootstrap_dev_env for explanation:
-!/bootstrap_dev_env.bash
+# DO NOT IGNORE: see FS_85_33_46_53 `bootstrap_env` for explanation:
+!/bootstrap_env.bash
 
-# These files (see `@exe/deploy_resource_files_conf.bash`)
-# are deployed as resources using `symlink_method`
-# (see `deploy_files_procedure` in `bootstrap_dev_env.bash`).
+# These files (see `@exe/resource_files.conf.bash`)
+# are installed as resources using `symlink_method`
+# (see `install_files_procedure` in `bootstrap_env.bash`).
 # They should simply point to the latest in configured `venv` (no version control is required):
 /argrelay_common_lib.bash
 /shell_env.bash
 /check_env.bash
 /dev_shell.bash
 /init_shell_env.bash
-/upgrade_all_packages.bash
+/upgrade_env_packages.bash
 

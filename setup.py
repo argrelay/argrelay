@@ -108,11 +108,11 @@ See: https://github.com/argrelay/argrelay
             # other resource files:
             "custom_integ_res/argrelay_common_lib.bash",
             "custom_integ_res/shell_env.bash",
-            "custom_integ_res/bootstrap_dev_env.bash",
+            "custom_integ_res/bootstrap_env.bash",
             "custom_integ_res/check_env.bash",
             "custom_integ_res/dev_shell.bash",
             "custom_integ_res/init_shell_env.bash",
-            "custom_integ_res/upgrade_all_packages.bash",
+            "custom_integ_res/upgrade_env_packages.bash",
 
         ],
         "argrelay_docs": list_dir("./docs/") + [

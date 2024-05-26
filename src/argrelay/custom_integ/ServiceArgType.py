@@ -41,7 +41,7 @@ class ServiceArgType(Enum):
 
     live_status = auto()
     """
-    TODO: Currently `live_status` is not used - it can be thought of as manually or dynamically assigned to the resource.
+    A value manually or dynamically assigned to the resource indicating its status.
     """
 
     def __str__(self):

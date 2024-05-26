@@ -120,6 +120,11 @@ class ServiceLoader(AbstractLoader):
             host_envelopes,
             service_envelopes,
         )
+        self.populate_TD_39_25_11_76_missing_props(
+            cluster_envelopes,
+            host_envelopes,
+            service_envelopes,
+        )
 
         self.generate_envelope_id(cluster_envelopes + host_envelopes + service_envelopes)
 
@@ -185,7 +190,8 @@ class ServiceLoader(AbstractLoader):
             ReservedArgType.EnvelopeClass.name,
             ReservedArgType.ArgType.name,
             ReservedArgType.ArgValue.name,
-            ReservedArgType.HelpHint.name,
+            # `ReservedArgType.HelpHint` is not indexed (and uses as search param) - instead, it is a search result:
+            # ReservedArgType.HelpHint.name,
         ]:
             if help_hint_index_field not in help_hint_index_fields:
                 help_hint_index_fields.append(help_hint_index_field)
@@ -1508,5 +1514,128 @@ class ServiceLoader(AbstractLoader):
                 ServiceArgType.flow_stage.name: "downstream",
                 ServiceArgType.cluster_name.name: "dev-emea-downstream",
                 ServiceArgType.host_name.name: "asdf",
+            },
+        ])
+
+    def populate_TD_39_25_11_76_missing_props(
+        self,
+        cluster_envelopes: list[dict],
+        host_envelopes: list[dict],
+        service_envelopes: list[dict],
+    ):
+        if not self.is_test_data_allowed("TD_39_25_11_76"):
+            return
+
+        cluster_envelopes.extend([
+
+            ############################################################################################################
+            # TD_39_25_11_76 # missing props: clusters
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-apac-downstream",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+            },
+
+        ])
+
+        host_envelopes.extend([
+
+            ############################################################################################################
+            # TD_39_25_11_76 # missing props: hosts
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-apac-downstream",
+                ServiceArgType.host_name.name: "qwer",
+                ServiceArgType.live_status.name: "green",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-apac-downstream",
+                ServiceArgType.host_name.name: "asdf",
+                ServiceArgType.live_status.name: "yellow",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "apac",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-apac-downstream",
+                ServiceArgType.host_name.name: "zxcv",
+                # NOTE: `ServiceArgType.live_status` for this `data_envelope` is missing only in `apac` (not in `emea`).
+                # ServiceArgType.live_status.name: "red",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ServiceArgType.host_name.name: "qwer",
+                ServiceArgType.live_status.name: "green",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ServiceArgType.host_name.name: "asdf",
+                ServiceArgType.live_status.name: "yellow",
+            },
+
+            {
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                ServiceArgType.code_maturity.name: "dev",
+                ServiceArgType.geo_region.name: "emea",
+                ServiceArgType.flow_stage.name: "downstream",
+                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ServiceArgType.host_name.name: "zxcv",
+                ServiceArgType.live_status.name: "red",
             },
         ])

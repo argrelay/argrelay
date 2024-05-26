@@ -1,8 +1,19 @@
 import os
+import signal
 import sys
 import typing
 from typing import Union
 
+_child_exited: bool = False
+
+def _signal_handler(signal_number, signal_frame):
+    if signal_number == signal.SIGCHLD:
+        global _child_exited
+        _child_exited = True
+
+def is_child_exited() -> bool:
+    global _child_exited
+    return _child_exited
 
 def split_process() -> (
     bool,
@@ -35,12 +46,21 @@ def split_process() -> (
     """
     # Create pipe for the child to write results as its stdout:
     r_child_stdout_fd, w_child_stdout_fd = os.pipe()
+
+    # This seems unnecessary (probably necessary for `os.exec`), but anyway:
+    # https://stackoverflow.com/q/30277081/441652
+    os.set_inheritable(r_child_stdout_fd, True)
+    os.set_inheritable(w_child_stdout_fd, True)
+
+    signal.signal(signal.SIGCHLD, _signal_handler)
     child_pid: int = os.fork()
 
     if child_pid > 0:
         os.close(w_child_stdout_fd)
+
         # Parent reads from the pipe to the child (later, when child has completed):
         child_stdout = os.fdopen(r_child_stdout_fd)
+
         return (
             True,
             child_pid,
@@ -48,11 +68,19 @@ def split_process() -> (
         )
     elif child_pid == 0:
         os.close(r_child_stdout_fd)
+
         # Child writes to the pipe (instead of the terminal) -
         # close original stdout file descriptor and use pipe:
         # https://stackoverflow.com/a/31503924/441652
         os.dup2(w_child_stdout_fd, sys.stdout.fileno())
+
+        # Automatically flush on new line:
+        # https://stackoverflow.com/questions/107705/disable-output-buffering#comment108383749_181654
+        sys.stdout.reconfigure(line_buffering = True, write_through = True)
+
+        # Close original file descriptor (it is duplicated into `stdout`):
         os.close(w_child_stdout_fd)
+
         return (
             False,
             0,
