@@ -45,7 +45,7 @@ argrelay_dir="$( dirname "${script_dir}" )"
 # Switch to `@/` to avoid creating temporary dirs somewhere else:
 cd "${argrelay_dir}" || exit 1
 
-# Run `@/exe/bootstrap_dev_env.bash` if this file does not exits:
+# Run `@/exe/bootstrap_env.bash` if this file does not exits:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ensure_inside_dev_shell
 
@@ -58,19 +58,19 @@ then
 fi
 
 # TODO_64_79_28_85: switch to `dst/release_env`
-# TODO_64_79_28_85: use upgrade_all_packages.bash
+# TODO_64_79_28_85: use upgrade_env_packages.bash
 
 # Clear venv (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
 # Restore only saved dev packages
-# (if fresh dependencies are required, clear `@/conf/dev_env_packages.txt` first):
-pip install -r "${argrelay_dir}/conf/dev_env_packages.txt"
-# Packages installed by `@/exe/bootstrap_dev_env.bash` depend on
-# `@/exe/deploy_project.bash`, but normally it:
-# *  installs only those missing in `@/conf/dev_env_packages.txt`
+# (if fresh dependencies are required, clear `@/conf/env_packages.txt` first):
+pip install -r "${argrelay_dir}/conf/env_packages.txt"
+# Packages installed by `@/exe/bootstrap_env.bash` depend on
+# `@/exe/install_project.bash`, but normally it:
+# *  installs only those missing in `@/conf/env_packages.txt`
 #    (specifically those with editable mode like `argrelay` itself)
 # *  restores missing transitive dependencies
-"${argrelay_dir}/exe/bootstrap_dev_env.bash"
+"${argrelay_dir}/exe/bootstrap_env.bash"
 
 # Ensure all changes are committed:
 # https://stackoverflow.com/a/3879077/441652

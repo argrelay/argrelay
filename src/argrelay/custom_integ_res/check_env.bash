@@ -61,7 +61,7 @@ trap color_failure_and_success_check_env EXIT
 
 ########################################################################################################################
 
-# This wrapper function is required to avoid `@/exe/bootstrap_dev_env.bash` exiting this script
+# This wrapper function is required to avoid `@/exe/bootstrap_env.bash` exiting this script
 # (otherwise this script will miss the chance to provide detailed error description).
 # The problem is that `return` command executed within boostrap are actually executed here -
 # when wrapped into a func, `return` within bootstrap will exist just that func:
@@ -70,7 +70,7 @@ function activate_venv {
     cd "${argrelay_dir}"
     # Run bootstrap to activate venv only:
     set +e
-    source "${argrelay_dir}/exe/bootstrap_dev_env.bash" activate_venv_only_flag
+    source "${argrelay_dir}/exe/bootstrap_env.bash" activate_venv_only_flag
     exit_code="${?}"
     # Restore trap (overridden by bootstrap):
     trap color_failure_and_success_check_env EXIT
@@ -83,10 +83,10 @@ function activate_venv {
 echo -e "${success_color}INFO:${reset_color} ${field_color}script_dir:${reset_color} ${script_dir}"
 
 ########################################################################################################################
-# Report `argrelay_dir` by verifying that `argrelay_dir` contains `@/exe/bootstrap_dev_env.bash`:
-if [[ ! -f "${argrelay_dir}/exe/bootstrap_dev_env.bash" ]]
+# Report `argrelay_dir` by verifying that `argrelay_dir` contains `@/exe/bootstrap_env.bash`:
+if [[ ! -f "${argrelay_dir}/exe/bootstrap_env.bash" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_color} \`argrelay_dir\` must have \`@/exe/bootstrap_dev_env.bash\` script, but it is missing: ${argrelay_dir}/exe/bootstrap_dev_env.bash"
+    echo -e "${failure_color}ERROR:${reset_color} \`argrelay_dir\` must have \`@/exe/bootstrap_env.bash\` script, but it is missing: ${argrelay_dir}/exe/bootstrap_env.bash"
     exit 1
 fi
 echo -e "${success_color}INFO:${reset_color} ${field_color}argrelay_dir:${reset_color} ${argrelay_dir}"
@@ -117,7 +117,7 @@ echo -e "${success_color}INFO:${reset_color} ${field_color}@/conf:${reset_color}
 # Report `venv_path`:
 if ! activate_venv
 then
-    echo -e "${failure_color}ERROR:${reset_color} \`venv\` activation via \`@/exe/bootstrap_dev_env.bash\` script failed - re-run bootstrap manually and inspect the reason why it fails via its extensive debug output: ${argrelay_dir}/exe/bootstrap_dev_env.bash"
+    echo -e "${failure_color}ERROR:${reset_color} \`venv\` activation via \`@/exe/bootstrap_env.bash\` script failed - re-run bootstrap manually and inspect the reason why it fails via its extensive debug output: ${argrelay_dir}/exe/bootstrap_env.bash"
     exit 1
 fi
 echo -e "${success_color}INFO:${reset_color} ${field_color}venv_path:${reset_color} ${VIRTUAL_ENV}"

@@ -160,7 +160,7 @@ Ease integration into external project:
     *   argrelay_distrib_dir - the path to useful artifacts (where known after venv is sourced)
     TODO: Is this still a problem?
           Yes.
-          *   `argrelay_inst_dir` must be the project (where argrelay is used or itself, or where it is deployed).
+          *   `argrelay_inst_dir` must be the project (where `argrelay` is used itself, or where it is installed).
           *   Anything else like `argrelay_module_dir_path` obtained by running Python is package_dir
     See also: FS_29_54_67_86.dir_structure.md
     FINALIZE

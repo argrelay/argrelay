@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from pymongo import MongoClient
 
+from argrelay.composite_tree.DictTreeWalker import contains_whitespace
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper_common import eprint
@@ -118,6 +119,7 @@ class LocalServer:
     def _validate_static_data(self):
         self._validate_static_data_schema()
         self._validata_static_data_by_plugins()
+        self._validate_data_envelope_string_prop_values()
 
     def _validate_static_data_schema(self):
         # Note that this is slow for large data sets:
@@ -132,6 +134,43 @@ class LocalServer:
 
         for plugin_instance in all_plugins:
             plugin_instance.validate_loaded_data(self.server_config.static_data)
+
+    def _validate_data_envelope_string_prop_values(self):
+        """
+        This validation ensures there is no blank values (`None`, whitespace, etc.) in `index_field`-s.
+
+        See also FS_99_81_19_25 no space in options.
+        """
+        for envelope_collection in self.server_config.static_data.envelope_collections.values():
+            for index_field in envelope_collection.index_fields:
+                for data_envelope in envelope_collection.data_envelopes:
+                    if index_field not in data_envelope:
+                        # TODO: TODO_39_25_11_76: `data_envelope`-s with missing props:
+                        #       even if it may lead to confusion, it is allowed to happen.
+                        continue
+                    envelope_class = data_envelope[ReservedArgType.EnvelopeClass.name]
+                    prop_value_or_values = data_envelope[index_field]
+                    if isinstance(prop_value_or_values, list):
+                        for prop_value in prop_value_or_values:
+                            self._validate_string_prop_value(envelope_class, index_field, prop_value)
+                    else:
+                        prop_value = prop_value_or_values
+                        self._validate_string_prop_value(envelope_class, index_field, prop_value)
+
+    def _validate_string_prop_value(
+        self,
+        envelope_class,
+        index_field,
+        prop_value,
+    ):
+        if isinstance(prop_value, str):
+            if not prop_value and prop_value.strip():
+                raise ValueError(f"`{envelope_class}.{index_field}` [{prop_value}] has to be non-blank string")
+            if contains_whitespace(prop_value):
+                raise ValueError(f"`{envelope_class}.{index_field}` [{prop_value}] cannot contain whitespace")
+        else:
+            # FS_06_99_43_60: list arg value:
+            raise ValueError(f"`{envelope_class}.{index_field}` has to be a `list` of `str` or `str`")
 
     def _start_mongo_server(self):
         self.mongo_server.start_mongo_server(self.server_config.mongo_config)

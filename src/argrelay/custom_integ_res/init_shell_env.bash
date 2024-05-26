@@ -5,7 +5,7 @@
 # Instead, run `@/exe/dev_shell.bash`.
 
 # The steps this script implements FS_58_61_77_69 dev_shell:
-# *   Runs `@/exe/bootstrap_dev_env.bash` to activate Python `venv`.
+# *   Runs `@/exe/bootstrap_env.bash` to activate Python `venv`.
 # *   Runs `@/exe/shell_env.bash` to configure auto-completion for this shell session.
 
 # Note that enabling exit on error (like `set -e` below) will exit parent
@@ -22,7 +22,7 @@ if [[ -n "${init_shell_env_old_opts+x}" ]] ; then exit 1 ; fi
 
 # Save `set`-able options to restore them at the end of this source-able script:
 # https://unix.stackexchange.com/a/383581/23886
-# See `@/exe/bootstrap_dev_env.bash` regarding `history`:
+# See `@/exe/bootstrap_env.bash` regarding `history`:
 init_shell_env_old_opts="$( set +o | grep -v "[[:space:]]history$" )"
 case "${-}" in
     *e*) init_shell_env_old_opts="${init_shell_env_old_opts}; set -e" ;;
@@ -54,9 +54,9 @@ argrelay_dir="$( dirname "${script_dir}" )"
 
 # It is expected that `@/exe/dev_shell.bash` switches to the target project dir itself (not this script).
 
-# FS_85_33_46_53: a copy of script `@/exe/bootstrap_dev_env.bash` has to be stored within the project
+# FS_85_33_46_53: a copy of script `@/exe/bootstrap_env.bash` has to be stored within the project
 # as the creator of everything:
-source "${argrelay_dir}/exe/bootstrap_dev_env.bash" activate_venv_only_flag
+source "${argrelay_dir}/exe/bootstrap_env.bash" activate_venv_only_flag
 
 # Collect info about `@/conf/`:
 if [[ -L "${argrelay_dir}/conf" ]]
@@ -74,9 +74,9 @@ else
 fi
 
 # Source extra config:
-if [[ -f "${argrelay_dir}/conf/dev_shell_rc.conf.bash" ]]
+if [[ -f "${argrelay_dir}/conf/dev_shell_env.bash" ]]
 then
-    source "${argrelay_dir}/conf/dev_shell_rc.conf.bash"
+    source "${argrelay_dir}/conf/dev_shell_env.bash"
 fi
 
 # Enable auto-completion:

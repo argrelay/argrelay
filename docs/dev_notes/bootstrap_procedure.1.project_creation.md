@@ -1,13 +1,13 @@
 
-This procedure describes using [`FS_85_33_46_53.bootstrap_dev_env.md`][FS_85_33_46_53.bootstrap_dev_env.md] feature for step 1:
+This procedure describes using [`FS_85_33_46_53.bootstrap_env.md`][FS_85_33_46_53.bootstrap_env.md] feature for step 1:
 1.  project creation from scratch: [`bootstrap_procedure.1.project_creation.md`][bootstrap_procedure.1.project_creation.md]
-2.  initial deployment for existing project: [`bootstrap_procedure.2.initial_deployment.md`][bootstrap_procedure.2.initial_deployment.md]
+2.  initial installation for existing project: [`bootstrap_procedure.2.initial_installation.md`][bootstrap_procedure.2.initial_installation.md]
 3.  `argrelay` upgrade as (dependency for existing project): [`bootstrap_procedure.3.argrelay_upgrade.md`][bootstrap_procedure.3.argrelay_upgrade.md]
 
 # Project creation with bootstrap script
 
-Obtain (copy and paste or download) [`bootstrap_dev_env.bash`][bootstrap_dev_env.bash] into temporary path,<br/>
-for example, `/tmp/bootstrap_dev_env.bash`.
+Obtain (copy and paste or download) [`bootstrap_env.bash`][bootstrap_env.bash] into temporary path,<br/>
+for example, `/tmp/bootstrap_env.bash`.
 
 Then, run it **from the project root directory**:
 *   The project root dir is referred to as `@/` - see [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md].
@@ -15,7 +15,7 @@ Then, run it **from the project root directory**:
 
 ```sh
 cd path/to/project/dir
-bash /tmp/bootstrap_dev_env.bash
+bash /tmp/bootstrap_env.bash
 ```
 
 It will likely fail first time (exits with code other than 0) due to missing config files,<br/>
@@ -53,7 +53,7 @@ Keep re-running bootstrap until it succeeds (until it exits with code 0) address
 
 ```sh
 cd path/to/project/dir
-bash /tmp/bootstrap_dev_env.bash
+bash /tmp/bootstrap_env.bash
 ```
 
 If it is a new `argrelay`-based project created from scratch,<br/>
@@ -80,34 +80,34 @@ This is a non-exhaustive list of reasons and clues how to address them:
 
     If missing, bootstrap prints initial copy-and-paste-able content of this file.
 
-*   Missing `@/exe/deploy_project.bash` file.
+*   Missing `@/exe/install_project.bash` file.
 
-    This file is project-specific custom script to deploy project packages into Python venv.
+    This file is project-specific custom script to install project packages into Python venv.
 
     If missing, bootstrap prints initial copy-and-paste-able content of this file.
 
 *   Missing `setup.py` file.
 
-    This is expected by template version of `@/exe/deploy_project.bash` file.
+    This is expected by template version of `@/exe/install_project.bash` file.
 
-    If missing, either create minimal `setup.py` or modify `@/exe/deploy_project.bash`.
+    If missing, either create minimal `setup.py` or modify `@/exe/install_project.bash`.
 
 *   Missing `argrelay` package.
 
     To generate client and server executables, bootstrap needs installed `argrelay` package
     in the venv (as configured in `@/conf/python_env.conf.bash`) used by the bootstrap process.
 
-    In turn, `@/exe/deploy_project.bash` script should deploy `argrelay` (directly or indirectly via dependencies).
+    In turn, `@/exe/install_project.bash` script should install `argrelay` (directly or indirectly via dependencies).
 
-    *   Long-term fix is to ensure `@/exe/deploy_project.bash` installs `argrelay`.
+    *   Long-term fix is to ensure `@/exe/install_project.bash` installs `argrelay`.
     *   Short-term fix is to activate the same venv (as configured in `@/conf/python_env.conf.bash`) and install `argrelay` manually.
 
 *   Other missing files.
 
     This could be:
 
-    *   `@/exe/deploy_config_files_conf.bash`
-    *   `@/exe/deploy_resource_files_conf.bash`
+    *   `@/exe/config_files.conf.bash`
+    *   `@/exe/resource_files.conf.bash`
     *   `@/exe/build_project.bash`
     *   ...
 
@@ -116,16 +116,16 @@ This is a non-exhaustive list of reasons and clues how to address them:
 # When bootstrap succeeds
 
 Eventually, when bootstrap succeeds (exits with code 0),<br/>
-its copy will be stored into `@/exe/bootstrap_dev_env.bash` (it should be version-controlled).
+its copy will be stored into `@/exe/bootstrap_env.bash` (it should be version-controlled).
 
 To see how it works, try [`FS_58_61_77_69.dev_shell.md`][FS_58_61_77_69.dev_shell.md].
 
 [bootstrap_procedure.1.project_creation.md]: bootstrap_procedure.1.project_creation.md
-[bootstrap_procedure.2.initial_deployment.md]: bootstrap_procedure.2.initial_deployment.md
+[bootstrap_procedure.2.initial_installation.md]: bootstrap_procedure.2.initial_installation
 [bootstrap_procedure.3.argrelay_upgrade.md]: bootstrap_procedure.3.argrelay_upgrade.md
 
-[FS_85_33_46_53.bootstrap_dev_env.md]: ../feature_stories/FS_85_33_46_53.bootstrap_dev_env.md
+[FS_85_33_46_53.bootstrap_env.md]: ../feature_stories/FS_85_33_46_53.bootstrap_env.md
 [FS_29_54_67_86.dir_structure.md]: ../feature_stories/FS_29_54_67_86.dir_structure.md
 [FS_58_61_77_69.dev_shell.md]: ../feature_stories/FS_58_61_77_69.dev_shell.md
-[bootstrap_dev_env.bash]: ../../exe/bootstrap_dev_env.bash
+[bootstrap_env.bash]: ../../exe/bootstrap_env.bash
 [root_readme.md]: ../../readme.md

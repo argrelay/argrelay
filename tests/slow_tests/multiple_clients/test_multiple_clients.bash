@@ -4,7 +4,7 @@
 # *   Make two clones of current git repo:
 #     *   `@/tmp/multiple_clients/client_a/`
 #     *   `@/tmp/multiple_clients/client_b/`
-# *   Run `@/exe/bootstrap_dev_env.bash` for both with `@/conf/` respectively (within each repo):
+# *   Run `@/exe/bootstrap_env.bash` for both with `@/conf/` respectively (within each repo):
 #     *   `@/dst/client_a/`
 #     *   `@/dst/client_b/`
 # *   Start nested `@/exe/dev_shell.bash` for both (in that order)
@@ -35,7 +35,7 @@ script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/tests/slow_tests/multiple_clients/` -> `@/`:
 argrelay_dir="$( dirname "$( dirname "$( dirname "${script_dir}" )" )" )"
 
-# Run `@/exe/bootstrap_dev_env.bash` if this file does not exits:
+# Run `@/exe/bootstrap_env.bash` if this file does not exits:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ensure_inside_dev_shell
 
@@ -55,14 +55,14 @@ do
     git clone "${git_this_origin}" "${argrelay_dir}/tmp/multiple_clients/${client_x}"
 done
 
-# Run `@/exe/bootstrap_dev_env.bash` for both:
+# Run `@/exe/bootstrap_env.bash` for both:
 for client_x in client_a client_b
 do
-    cd "${argrelay_dir}/tmp/multiple_clients/${client_x}/" && "./exe/bootstrap_dev_env.bash" "./dst/${client_x}"
+    cd "${argrelay_dir}/tmp/multiple_clients/${client_x}/" && "./exe/bootstrap_env.bash" "./dst/${client_x}"
 done
 
 # Start `@/exe/dev_shell.bash` for `client_b` only
-# (which has `@/conf/dev_shell_rc.conf.bash` to source `@/exe/shell_env.bash` from `client_a`):
+# (which has `@/conf/dev_shell_env.bash` to source `@/exe/shell_env.bash` from `client_a`):
 "${argrelay_dir}/tmp/multiple_clients/client_b/exe/dev_shell.bash"
 
 # TODO: At the moment, this script simply set things up to check working setup manually.

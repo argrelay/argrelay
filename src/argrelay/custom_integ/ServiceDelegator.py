@@ -148,6 +148,7 @@ class ServiceDelegator(AbstractDelegator):
                 # ClassHost:
                 {"host": ServiceArgType.host_name.name},
                 # ---
+                {"status": ServiceArgType.live_status.name},
                 {"ip": ServiceArgType.ip_address.name},
             ],
         )

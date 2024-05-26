@@ -583,6 +583,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}geo_region: ?{TermColor.reset_style.value} amer apac emea 
 {" " * indent_size}{TermColor.remaining_value.value}cluster_name: ?{TermColor.reset_style.value} dev-amer-upstream dev-apac-upstream dev-emea-upstream prod-apac-upstream qa-amer-upstream qa-apac-upstream 
 {" " * indent_size}{TermColor.remaining_value.value}host_name: ?{TermColor.reset_style.value} asdf-du hjkl-qu poiu-qu qwer-du qwer-pd-1 qwer-pd-2 qwer-pd-3 rt-qu rtyu-qu zxcv-du 
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}ip_address: ?{TermColor.reset_style.value} ip.172.16.2.1 ip.172.16.4.2 ip.172.16.7.2 ip.192.168.1.1 ip.192.168.3.1 ip.192.168.4.1 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}

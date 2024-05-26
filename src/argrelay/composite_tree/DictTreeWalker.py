@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import string
 from collections.abc import Callable
 from copy import deepcopy
 from typing import Union, Sequence
@@ -127,6 +128,13 @@ def sequence_starts_with(
             # `outer_seq` is smaller than `inner_seq`:
             return False
     return True
+
+
+def contains_whitespace(s):
+    for c in s:
+        if c in string.whitespace:
+            return True
+    return False
 
 
 class DictTreeWalker:

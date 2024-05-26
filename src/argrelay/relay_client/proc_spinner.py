@@ -1,5 +1,4 @@
 import os
-import signal
 import time
 import typing
 from random import randrange
@@ -7,6 +6,7 @@ from random import randrange
 from argrelay.client_spec.ShellContext import ShellContext
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper_common import eprint
+from argrelay.relay_client.proc_split import is_child_exited
 
 # Use regular Tab indent size:
 spinner_length: int = 4
@@ -20,12 +20,6 @@ child_stdout_chunks: list = []
 child_stderr_chunk_max_size: int = 100
 
 
-def _signal_handler(signal_number, signal_frame):
-    if signal_number == signal.SIGCHLD:
-        # The child exited:
-        pass
-
-
 def spin_wait_for_child(
     child_pid: int,
     child_stdout: typing.TextIO,
@@ -36,11 +30,13 @@ def spin_wait_for_child(
     Display spinner while child request is running.
     """
 
-    signal.signal(signal.SIGCHLD, _signal_handler)
     # Prevent spinner on instant replies - have an initial sleep first
     # before drawing spinner for the first time
     # (this sleep will exit prematurely if the child exits):
-    time.sleep(spinless_sleep_sec)
+    if is_child_running(child_pid):
+        # There is a chance that child exits here (after the check above but before the sleep below).
+        # Ignore that - it is unlikely and, when it happens, the worst case is a needless sleep.
+        time.sleep(spinless_sleep_sec)
     if not is_child_running(child_pid):
         return
 
@@ -82,9 +78,12 @@ def is_child_running(
         child_pid,
         child_status,
     ) = os.waitpid(child_pid, os.WNOHANG)
+    # NOTE: `os.waitpid` and `is_child_exited` are not atomic - do we need to keep `assert` below?
     if child_pid == 0 and child_status == 0:
+        assert not is_child_exited()
         return True
     else:
+        assert is_child_exited()
         return False
 
 

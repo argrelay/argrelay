@@ -87,17 +87,17 @@ class ThisTestClass(BaseTestClass):
         (
             (os.environ.get("ARGRELAY_DEV_SHELL", False))
             or
-            (os.environ.get("ARGRELAY_BOOTSTRAP_DEV_ENV", False))
+            (os.environ.get("ARGRELAY_BOOTSTRAP_ENV", False))
             or
             (os.environ.get("PYCHARM_HOSTED", False))
         ),
-        "To allow deployed config files, skip when in `@/exe/dev_shell.bash` or in IDE.",
+        "To allow installed config files, skip when in `@/exe/dev_shell.bash` or in IDE.",
     )
-    def test_config_files_are_not_deployed(self):
+    def test_config_files_are_not_installed(self):
         """
         TODO: This test is old - search all dirs according to `FS_16_07_78_84.conf_dir_priority.md`.
 
-        Ensure server and client config files are not deployed:
+        Ensure server and client config files are not installed:
 
         *   `~/.argrelay.conf.d/argrelay_server.yaml`
         *   `~/.argrelay.conf.d/argrelay_client.json`

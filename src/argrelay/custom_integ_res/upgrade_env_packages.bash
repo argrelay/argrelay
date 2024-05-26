@@ -3,13 +3,13 @@
 # This script upgrades all Python packages in `venv`.
 #
 # If Python has to be upgraded as well based on the latest version in `@/conf/python_env.conf.bash`,
-# remove the `venv` first and re-run `@/exe/bootstrap_dev_env.bash`.
+# remove the `venv` first and re-run `@/exe/bootstrap_env.bash`.
 #
 # The basic steps are:
-# *   remove all package version records in `@/conf/dev_env_packages.txt`
-# *   optionally, set user-specified `argrelay` version in `@/conf/dev_env_packages.txt`
+# *   remove all package version records in `@/conf/env_packages.txt`
+# *   optionally, set user-specified `argrelay` version in `@/conf/env_packages.txt`
 # *   uninstall everything from `venv`
-# *   let `@/exe/bootstrap_dev_env.bash` re-install all (transitive) dependencies at their latest versions
+# *   let `@/exe/bootstrap_env.bash` re-install all (transitive) dependencies at their latest versions
 
 # Define with `s` in value to debug:
 if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
@@ -51,17 +51,17 @@ fi
 # Switch to `@/` to avoid creating temporary dirs somewhere else:
 cd "${argrelay_dir}" || exit 1
 
-# Run `@/exe/bootstrap_dev_env.bash` if this file does not exits:
+# Run `@/exe/bootstrap_env.bash` if this file does not exits:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ensure_inside_dev_shell
 
 # Clear all package versions:
-true > "conf/dev_env_packages.txt"
+true > "conf/env_packages.txt"
 
 if [[ -n "${exact_argrelay_version+x}" ]]
 then
     # Set `argrelay` to the specified exact version:
-    echo "argrelay==${exact_argrelay_version}" > "conf/dev_env_packages.txt"
+    echo "argrelay==${exact_argrelay_version}" > "conf/env_packages.txt"
 elif [[ "$( pip show argrelay | grep '^Version:' | cut -f2 -d' ' || true )" == *dev* ]]
 then
     # Do not allow upgrades without specifying `exact_argrelay_version` if current version is a pre-release one:
@@ -75,6 +75,6 @@ fi
 # Clear `venv` (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
 
-# Bootstrap to let `@/exe/deploy_project.bash` install all packages
+# Bootstrap to let `@/exe/install_project.bash` install all packages
 # via transitive dependencies and at their latest versions:
-"${argrelay_dir}/exe/bootstrap_dev_env.bash"
+"${argrelay_dir}/exe/bootstrap_env.bash"

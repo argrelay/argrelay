@@ -42,7 +42,7 @@ script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # FS_29_54_67_86 dir_structure: `@/exe/` -> `@/`:
 argrelay_dir="$( dirname "${script_dir}" )"
 
-# Run `@/exe/bootstrap_dev_env.bash` if this file does not exits:
+# Run `@/exe/bootstrap_env.bash` if this file does not exits:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ensure_inside_dev_shell
 

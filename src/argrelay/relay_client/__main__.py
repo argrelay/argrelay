@@ -41,7 +41,7 @@ def main():
                 child_pid,
                 child_stdout,
                 client_config,
-                shell_ctx
+                shell_ctx,
             )
             return
 
