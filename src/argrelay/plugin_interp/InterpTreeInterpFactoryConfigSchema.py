@@ -1,8 +1,8 @@
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError
 
+from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
-from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_
 
 interp_selector_tree_ = "interp_selector_tree"
 

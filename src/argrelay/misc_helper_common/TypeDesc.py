@@ -29,6 +29,8 @@ def construct_include(
     """
     Method which allows `!include`-ing files in YAML.
 
+    Implements FS_70_55_40_99 splitting config files.
+
     See:
     https://stackoverflow.com/a/9577670/441652
     """

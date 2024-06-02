@@ -6,12 +6,14 @@ from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 
 has_error_happened = False
 
+
 def _signal_handler(signal_number, signal_frame):
     if signal_number == signal.SIGALRM:
         # Import hanged:
         eprint("ERROR: `import` hanged - see: https://github.com/argrelay/argrelay/issues/89")
         global has_error_happened
         has_error_happened = True
+
 
 def worker_main(
     call_ctx,

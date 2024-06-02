@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, RAISE, post_load
+from marshmallow import fields, RAISE
 
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc

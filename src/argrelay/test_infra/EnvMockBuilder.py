@@ -52,8 +52,11 @@ from argrelay.schema_config_core_server.QueryCacheConfigSchema import enable_que
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     mongo_config_,
     server_config_desc,
-    plugin_instance_entries_,
     query_cache_config_,
+)
+from argrelay.schema_config_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+    plugin_instance_entries_,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_, plugin_enabled_
 from argrelay.schema_response.InvocationInput import InvocationInput
@@ -78,8 +81,9 @@ class EnvMockBuilder:
 
     *   Mock server and client config files - see usage of:
 
-        *   `set_server_config_dict`
         *   `set_client_config_dict`
+        *   `set_server_config_dict`
+        *   `set_plugin_config_dict`
 
     *   Capture `stdout` and `stderr` - see usage of:
 
@@ -160,13 +164,16 @@ class EnvMockBuilder:
 
     client_config_dict: Union[dict, None] = field(default_factory = lambda: None)
     server_config_dict: Union[dict, None] = field(default_factory = lambda: None)
+    plugin_config_dict: Union[dict, None] = field(default_factory = lambda: None)
 
     mock_client_config_file_read: bool = field(default = False)
     mock_server_config_file_read: bool = field(default = False)
+    mock_plugin_config_file_read: bool = field(default = False)
 
     # Implement FS_62_25_92_06 generated config for `out`-processes to read it (see FS_66_17_43_42 test infra):
     generate_client_config_file: bool = field(default = False)
     generate_server_config_file: bool = field(default = False)
+    generate_plugin_config_file: bool = field(default = False)
     temp_test_config_dir: Union[tempfile.TemporaryDirectory, None] = None
 
     ####################################################################################################################
@@ -311,6 +318,12 @@ class EnvMockBuilder:
         self.client_config_dict = client_config
         return self
 
+    def clear_client_config_dict(
+        self,
+    ):
+        self.client_config_dict = None
+        return self
+
     def set_server_config_dict(
         self,
         server_config: Union[dict, None] = None,
@@ -320,11 +333,35 @@ class EnvMockBuilder:
         self.server_config_dict = server_config
         return self
 
+    def clear_server_config_dict(
+        self,
+    ):
+        self.server_config_dict = None
+        return self
+
+    def set_plugin_config_dict(
+        self,
+        plugin_config: Union[dict, None] = None,
+    ):
+        if plugin_config is None:
+            plugin_config = plugin_config_desc.dict_from_default_file()
+        self.plugin_config_dict = plugin_config
+        return self
+
+    def clear_plugin_config_dict(
+        self,
+    ):
+        self.plugin_config_dict = None
+        return self
+
     def get_client_config_json(self):
         return json.dump(self.client_config_dict)
 
     def get_server_config_yaml(self):
         return yaml.dump(self.server_config_dict)
+
+    def get_plugin_config_yaml(self):
+        return yaml.dump(self.plugin_config_dict)
 
     def set_mock_client_config_file_read(self, given_val: bool):
         self.mock_client_config_file_read = given_val
@@ -334,12 +371,20 @@ class EnvMockBuilder:
         self.mock_server_config_file_read = given_val
         return self
 
+    def set_mock_plugin_config_file_read(self, given_val: bool):
+        self.mock_plugin_config_file_read = given_val
+        return self
+
     def set_generate_client_config_file(self, given_val: bool):
         self.generate_client_config_file = given_val
         return self
 
     def set_generate_server_config_file(self, given_val: bool):
         self.generate_server_config_file = given_val
+        return self
+
+    def set_generate_plugin_config_file(self, given_val: bool):
+        self.generate_plugin_config_file = given_val
         return self
 
     ####################################################################################################################
@@ -429,9 +474,6 @@ class EnvMockBuilder:
         if self.server_config_dict is not None:
             self.assert_server_config_substitute_enabled()
 
-        if self.enable_demo_git_loader:
-            self.assert_server_config_substitute_enabled()
-
         if self.enable_query_cache is not None:
             self.assert_server_config_substitute_enabled()
 
@@ -440,6 +482,15 @@ class EnvMockBuilder:
 
         if self.use_mongomock is not None:
             self.assert_server_config_substitute_enabled()
+
+        ################################################################################################################
+        # Plugin config
+
+        if self.plugin_config_dict is not None:
+            self.assert_plugin_config_substitute_enabled()
+
+        if self.enable_demo_git_loader:
+            self.assert_plugin_config_substitute_enabled()
 
         ################################################################################################################
 
@@ -471,14 +522,6 @@ class EnvMockBuilder:
             """
             assert self.server_config_dict is not None
 
-            # TODO: Do not hardcode plugin id (instance of `GitRepoLoader`):
-            plugin_entry = self.server_config_dict[plugin_instance_entries_][f"{GitRepoLoader.__name__}.default"]
-            plugin_entry[plugin_enabled_] = self.enable_demo_git_loader
-
-            # TODO: Do not hardcode plugin id (instance of `ServiceLoader`):
-            plugin_entry = self.server_config_dict[plugin_instance_entries_][f"{ServiceLoader.__name__}.default"]
-            plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
-
             if self.enable_query_cache is not None:
                 self.server_config_dict[query_cache_config_][enable_query_cache_] = self.enable_query_cache
 
@@ -492,6 +535,26 @@ class EnvMockBuilder:
             if self.mock_server_config_file_read:
                 self.file_mock.path_to_data[server_config_desc.get_adjusted_file_path()] = yaml.dump(
                     self.server_config_dict
+                )
+
+        if self.mock_plugin_config_file_read or self.generate_plugin_config_file:
+            """
+            Change server config data, then mock file access to return that data for tests.
+            """
+            assert self.plugin_config_dict is not None
+
+            # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `GitRepoLoader`):
+            plugin_entry = self.plugin_config_dict[plugin_instance_entries_][f"{GitRepoLoader.__name__}.default"]
+            plugin_entry[plugin_enabled_] = self.enable_demo_git_loader
+
+            # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ServiceLoader`):
+            plugin_entry = self.plugin_config_dict[plugin_instance_entries_][f"{ServiceLoader.__name__}.default"]
+            plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
+
+            # set mocked file content:
+            if self.mock_plugin_config_file_read:
+                self.file_mock.path_to_data[plugin_config_desc.get_adjusted_file_path()] = yaml.dump(
+                    self.plugin_config_dict
                 )
 
         with ExitStack() as exit_stack:
@@ -564,6 +627,8 @@ class EnvMockBuilder:
                 self.generate_client_config_file
                 or
                 self.generate_server_config_file
+                or
+                self.generate_plugin_config_file
             ):
                 yield_list.append(exit_stack.enter_context(
                     self.generate_configs()
@@ -584,6 +649,12 @@ class EnvMockBuilder:
                 or
                 self.mock_server_config_file_read != self.generate_server_config_file
             )
+            and
+            (
+                self.mock_plugin_config_file_read == self.generate_plugin_config_file == False
+                or
+                self.mock_plugin_config_file_read != self.generate_plugin_config_file
+            )
         ), "FS_62_25_92_06: generated config: mocked config and generated config are mutually exclusive"
 
     def assert_client_config_substitute_enabled(self):
@@ -600,6 +671,13 @@ class EnvMockBuilder:
             self.generate_server_config_file
         ), "FS_62_25_92_06: generated config: when enabled: either mocked config or generated config"
 
+    def assert_plugin_config_substitute_enabled(self):
+        assert (
+            self.mock_plugin_config_file_read
+            or
+            self.generate_plugin_config_file
+        ), "FS_62_25_92_06: generated config: when enabled: either mocked config or generated config"
+
     @contextlib.contextmanager
     def assert_all_cm(self):
         try:
@@ -609,6 +687,8 @@ class EnvMockBuilder:
                 self.assert_client_config_read()
             if self.mock_server_config_file_read and not self.was_server_started_on_build:
                 self.assert_server_config_read()
+            if self.mock_plugin_config_file_read and not self.was_server_started_on_build:
+                self.assert_plugin_config_read()
 
     def assert_client_config_read(self):
         self.assert_file_read(client_config_desc.get_adjusted_file_path())
@@ -616,13 +696,24 @@ class EnvMockBuilder:
     def assert_server_config_read(self):
         self.assert_file_read(server_config_desc.get_adjusted_file_path())
 
+    def assert_plugin_config_read(self):
+        self.assert_file_read(plugin_config_desc.get_adjusted_file_path())
+
     def assert_file_read(self, file_path: str):
         """
         Ensures that mocked file was actually accessed.
 
         If fails here, it means either/or:
-        *   test setup was over-mocked (e.g. see `mock_server_config_file_read`, `mock_client_config_file_read`)
+
+        *   test setup was over-mocked
+
+            see:
+            *   `mock_client_config_file_read`
+            *   `mock_server_config_file_read`
+            *   `mock_plugin_config_file_read`
+
         *   test did not hit functionality that is supposed to access the file
+
         """
         self.file_mock.path_to_mock[file_path].assert_called_with(file_path)
 
@@ -655,10 +746,16 @@ class EnvMockBuilder:
             self.temp_test_config_dir.name,
             server_config_desc.default_file_path,
         )
+        plugin_config_path = os.path.join(
+            self.temp_test_config_dir.name,
+            plugin_config_desc.default_file_path,
+        )
         if self.generate_client_config_file:
             self.generate_client_config(str(client_config_path))
         if self.generate_server_config_file:
             self.generate_server_config(str(server_config_path))
+        if self.generate_plugin_config_file:
+            self.generate_plugin_config(str(plugin_config_path))
 
     def generate_client_config(
         self,
@@ -677,6 +774,16 @@ class EnvMockBuilder:
         with open(file_path, "w") as yaml_file:
             yaml.dump(
                 self.server_config_dict,
+                yaml_file,
+            )
+
+    def generate_plugin_config(
+        self,
+        file_path: str,
+    ):
+        with open(file_path, "w") as yaml_file:
+            yaml.dump(
+                self.plugin_config_dict,
                 yaml_file,
             )
 
@@ -701,6 +808,7 @@ class EmptyEnvMockBuilder(EnvMockBuilder):
         # Disable all mocks which set tripwires if not used:
         self.set_mock_client_config_file_read(False)
         self.set_mock_server_config_file_read(False)
+        self.set_mock_plugin_config_file_read(False)
         self.set_client_config_with_local_server(False)
         # Client config is not substituted but otherwise default `show_pending_spinner = False` requires it - use None:
         self.set_show_pending_spinner(None)
@@ -726,12 +834,15 @@ class LocalClientEnvMockBuilder(EnvMockBuilder):
         # Ensure that client and server read their config files by test process:
         self.set_mock_client_config_file_read(True)
         self.set_mock_server_config_file_read(True)
+        self.set_mock_plugin_config_file_read(True)
         self.set_generate_client_config_file(False)
         self.set_generate_server_config_file(False)
+        self.set_generate_plugin_config_file(False)
 
         # Load default configs as file access mocks input:
         self.set_client_config_dict()
         self.set_server_config_dict()
+        self.set_plugin_config_dict()
 
         # For local client (with local server) tests,
         # ensure client uses `LocalClient` without marshalling data via HTTP:
@@ -769,10 +880,13 @@ class ServerOnlyEnvMockBuilder(EnvMockBuilder):
 
         # For server-only test, use mocked server config file access (to control its content in test):
         self.set_mock_server_config_file_read(True)
+        self.set_mock_plugin_config_file_read(True)
         self.set_generate_server_config_file(False)
+        self.set_generate_plugin_config_file(False)
 
         # Load default server config as file access mock input:
         self.set_server_config_dict()
+        self.set_plugin_config_dict()
 
         # For server-only test, client code is not used, but if it is, try to fail via REST API:
         self.set_client_config_with_local_server(False)
@@ -811,7 +925,9 @@ class LiveServerEnvMockBuilder(EnvMockBuilder):
         # For live server test, server config file substitution should not happen by test process code
         # (because it happens within server process - un-verify-able from the test process):
         self.set_mock_server_config_file_read(False)
+        self.set_mock_plugin_config_file_read(False)
         self.set_generate_server_config_file(False)
+        self.set_generate_plugin_config_file(False)
 
         # For live server test, running local server contradicts with the live server - disable:
         self.set_client_config_with_local_server(False)

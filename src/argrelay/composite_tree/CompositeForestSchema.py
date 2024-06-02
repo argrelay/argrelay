@@ -1,8 +1,7 @@
 from marshmallow import fields, RAISE
 
 from argrelay.composite_tree.CompositeForest import CompositeForest
-from argrelay.composite_tree.CompositeNodeSchema import CompositeNodeSchema, node_type_, sub_tree_, zero_arg_node_desc
-from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
+from argrelay.composite_tree.CompositeNodeSchema import CompositeNodeSchema, zero_arg_node_desc
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 

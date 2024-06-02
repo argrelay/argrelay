@@ -16,11 +16,11 @@ from argrelay.plugin_interp.NoopInterp import NoopInterp
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import (
-    plugin_instance_entries_,
     server_config_desc,
     server_plugin_control_,
 )
 from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_instance_entries_, plugin_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
     plugin_module_name_,
@@ -46,16 +46,21 @@ class ThisTestClass(LocalTestClass):
         ]
 
         server_config_dict = server_config_desc.dict_from_default_file()
+        plugin_config_dict = plugin_config_desc.dict_from_default_file()
 
         # Patch server config for `FirstArgInterpFactory` - bind all `first_command_names` to `NoopInterpFactory`:
         dependent_plugin_id = f"{FirstArgInterpFactory.__name__}.default"
-        plugin_entry = server_config_dict[plugin_instance_entries_][dependent_plugin_id]
+        plugin_entry = plugin_config_dict[plugin_instance_entries_][dependent_plugin_id]
         for first_command_name in first_command_names:
             # Compose same plugin id (as below):
             plugin_instance_id = f"{NoopInterpFactory.__name__}.{first_command_name}"
-            plugin_entry[plugin_config_][first_arg_vals_to_next_interp_factory_ids_][first_command_name] = plugin_instance_id
+            plugin_entry[plugin_config_][first_arg_vals_to_next_interp_factory_ids_][
+                first_command_name
+            ] = plugin_instance_id
 
-        first_arg_vals_to_next_interp_factory_ids = plugin_entry[plugin_config_][first_arg_vals_to_next_interp_factory_ids_]
+        first_arg_vals_to_next_interp_factory_ids = plugin_entry[plugin_config_][
+            first_arg_vals_to_next_interp_factory_ids_
+        ]
 
         # List all known `func_id`-s (without using them by this plugin) to keep validation happy:
         plugin_entry[plugin_config_][ignored_func_ids_list_] = [
@@ -91,10 +96,10 @@ class ThisTestClass(LocalTestClass):
                 plugin_module_name_: NoopInterpFactory.__module__,
                 plugin_class_name_: NoopInterpFactory.__name__,
             }
-            assert plugin_instance_id not in server_config_dict[plugin_instance_entries_]
-            server_config_dict[plugin_instance_entries_][plugin_instance_id] = plugin_entry
+            assert plugin_instance_id not in plugin_config_dict[plugin_instance_entries_]
+            plugin_config_dict[plugin_instance_entries_][plugin_instance_id] = plugin_entry
 
-            server_config_dict[
+            plugin_config_dict[
                 plugin_instance_entries_
             ][dependent_plugin_id][plugin_dependencies_].append(plugin_instance_id)
 
@@ -110,6 +115,7 @@ class ThisTestClass(LocalTestClass):
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.PrefixShown)
             .set_server_config_dict(server_config_dict)
+            .set_plugin_config_dict(plugin_config_dict)
         )
         with env_mock_builder.build():
             command_obj = __main__.main()

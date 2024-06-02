@@ -15,6 +15,4 @@ class ServerPluginControl:
 
     first_interp_factory_id: str = field()
 
-    reusable_config_data: str = field()
-
     composite_forest: CompositeForest = field()

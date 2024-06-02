@@ -6,14 +6,17 @@ from typing import Union
 
 _child_exited: bool = False
 
+
 def _signal_handler(signal_number, signal_frame):
     if signal_number == signal.SIGCHLD:
         global _child_exited
         _child_exited = True
 
+
 def is_child_exited() -> bool:
     global _child_exited
     return _child_exited
+
 
 def split_process() -> (
     bool,

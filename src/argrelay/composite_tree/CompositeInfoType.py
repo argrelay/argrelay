@@ -29,7 +29,6 @@ class CompositeInfoType(Enum):
     TODO: It is identical to `interp_tree`, but `interp_tree` does not include zero arg components.
     """
 
-
     jump_tree = auto()
     """
     See FS_91_88_07_23 jump tree.

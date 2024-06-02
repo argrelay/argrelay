@@ -199,8 +199,9 @@ This sub-shell configures request hotkeys to bind `relay_demo` command with `@/e
 
 *   Inspect configs:
 
-    *   `@/conf/argrelay_server.yaml`
     *   `@/conf/argrelay_client.json`
+    *   `@/conf/argrelay_server.yaml`
+    *   `@/conf/argrelay_plugin.yaml`
 
 *   To reset the demo, remove `@/conf`:
 

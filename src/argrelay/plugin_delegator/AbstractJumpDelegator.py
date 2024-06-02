@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
 from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
 from argrelay.composite_tree.CompositeTreeWalker import extract_tree_abs_path_to_interp_id
 from argrelay.composite_tree.DictTreeWalker import DictTreeWalker

@@ -168,7 +168,7 @@ class GitRepoDelegator(AbstractDelegator):
         )
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
+            delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
                 delegator_plugin_instance_id
             ],
             custom_plugin_data = {},

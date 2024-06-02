@@ -10,18 +10,10 @@ Tags:
 
 Top:
 
-
-*   Add color for envelope class in desc output - green if found 1, yellow if not yet (still N), gray if 0.
-    See also: FS_80_45_89_81 / list_envelope
-    FINALIZE
 *   If command accept one envelope, but not yet disambiguated, then it should be possible to provide generic hook to list envelopes based on existing filter.
     Basically, if 1, invoke target function, if N, invoke list, print error to stderr, exit with non 0.
     See also: FS_80_45_89_81 / list_envelope
     REGISTER
-
-*   Clean `#`-comments from command line arguments by parser.
-    Tracked via FS_92_75_93_01.clean_command_line.md
-    CLOSED
 
 *   Consumed and remaining tokens:
     *   Send them to invocation (e.g. to decide to run or not to run function and how they can be used).
@@ -172,6 +164,7 @@ Ease integration into external project:
     Maybe it should be possible to provide just the list of configured plugins (their loading order)
     and they will load automatically from expected location?
     Also split core server config (open ports, mongo, cache) and plugin management.
+    See also: FS_83_23_99_90 client plugin config override.
     REGISTER
 
 *   Make Git plugin a bit more useful (e.g. in addition to loading commit data, be able to switch to pre-configured Git repos).

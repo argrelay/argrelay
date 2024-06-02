@@ -16,6 +16,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
     class_to_collection_map_,
 )
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.EnvMockBuilder import (
@@ -181,7 +182,11 @@ class ThisTestClass(LocalTestClass):
                     LocalClientCommandFactory.local_server = None
                     # Start `LocalServer` with data:
                     server_config = server_config_desc.obj_from_default_file()
-                    local_server = LocalServer(server_config)
+                    plugin_config = plugin_config_desc.obj_from_default_file()
+                    local_server = LocalServer(
+                        server_config,
+                        plugin_config,
+                    )
                     local_server.start_local_server()
                     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
 

@@ -64,6 +64,7 @@ class BaseNodeSchema(ObjectSchema):
             node_type = self.node_type,
         )
 
+
 class ZeroArgNodeSchema(BaseNodeSchema):
     """
     See FS_42_76_93_51 very first zero arg mapping interp.
