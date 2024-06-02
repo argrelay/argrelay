@@ -9,6 +9,7 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import scalar_to_list_values
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.test_infra import change_to_known_repo_path, test_data_
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
@@ -72,7 +73,11 @@ class ThisTestClass(BaseTestClass):
 
             # All we want is started `LocalServer` with data:
             server_config = server_config_desc.obj_from_default_file()
-            local_server = LocalServer(server_config)
+            plugin_config = plugin_config_desc.obj_from_default_file()
+            local_server = LocalServer(
+                server_config,
+                plugin_config,
+            )
             local_server.start_local_server()
 
             # For each populated row, verify that such `host_name`/`service_name` exists.

@@ -5,6 +5,7 @@ from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.test_infra import line_no_from_ctor
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.CustomTestCase import ShellInputTestCase
@@ -64,7 +65,11 @@ class ThisTestClass(BaseTestClass):
         with env_mock_builder.build():
             # Init `LocalServer` with data:
             dummy_server_config = server_config_desc.obj_from_default_file()
-            dummy_local_server = LocalServer(dummy_server_config)
+            dummy_plugin_config = plugin_config_desc.obj_from_default_file()
+            dummy_local_server = LocalServer(
+                dummy_server_config,
+                dummy_plugin_config,
+            )
 
             assert "%" == SpecialChar.ArgBucketDelimiter.value, "if not `%`, update test cases"
 

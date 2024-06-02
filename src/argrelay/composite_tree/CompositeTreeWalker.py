@@ -205,6 +205,7 @@ class _CompositeTreeWalker_zero_arg_interp_tree(AbstractCompositeTreeWalker):
         else:
             raise Exception(f"Unknown: {self.curr_node.node_type}")
 
+
 class _CompositeTreeWalker_jump_tree(AbstractCompositeTreeWalker):
 
     def __init__(

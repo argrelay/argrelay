@@ -4,7 +4,7 @@ from marshmallow import ValidationError
 
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
 from argrelay.plugin_interp.NoopInterp import NoopInterp
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_, server_config_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_instance_entries_, plugin_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_entry_desc,
     plugin_enabled_,
@@ -42,7 +42,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(), "demo test data: expanded (realistic) sample",
-                server_config_desc.dict_from_default_file()[plugin_instance_entries_][
+                plugin_config_desc.dict_from_default_file()[plugin_instance_entries_][
                     f"{GitRepoLoader.__name__}.default"
                 ],
                 {

@@ -1,0 +1,423 @@
+# `argrelay` plugin config: https://github.com/argrelay/argrelay
+
+reusable_config_data:
+
+    jump_tree: &jump_tree
+        "relay_demo":
+            "intercept":
+                -   "relay_demo"
+            "help":
+                -   "relay_demo"
+            "enum":
+                -   "relay_demo"
+            "duplicates":
+                "intercept":
+                    -   "relay_demo"
+                    -   "duplicates"
+                "help":
+                    -   "relay_demo"
+                    -   "duplicates"
+                "":
+                    -   "relay_demo"
+                    -   "duplicates"
+            "":
+                -   "relay_demo"
+        "some_command":
+            "intercept":
+                -   "some_command"
+            "help":
+                -   "some_command"
+            "enum":
+                -   "some_command"
+            "duplicates":
+                "intercept":
+                    -   "some_command"
+                    -   "duplicates"
+                "help":
+                    -   "some_command"
+                    -   "duplicates"
+                "":
+                    -   "some_command"
+                    -   "duplicates"
+            "":
+                - "some_command"
+        "service_relay_demo":
+            "help":
+                -   "service_relay_demo"
+            "":
+                -   "service_relay_demo"
+
+plugin_instance_entries:
+
+    FirstArgInterpFactory.default:
+        plugin_module_name: argrelay.plugin_interp.FirstArgInterpFactory
+        plugin_class_name: FirstArgInterpFactory
+        plugin_dependencies:
+            #   Delegators for `func_tree`:
+            -   NoopDelegator.default
+            -   EchoDelegator.default
+            -   InterceptDelegator.default
+            -   HelpDelegator.default
+            -   QueryEnumDelegator.default
+            -   ServiceDelegator.default
+            -   GitRepoDelegator.default
+            -   ConfigOnlyDelegator.default
+            #   Interps for `interp_tree` per command (zero-arg):
+            -   InterpTreeInterpFactory.default
+            -   InterpTreeInterpFactory.service
+            #   Interps for normal funcs:
+            -   FuncTreeInterpFactory.default
+            #   Interps for special funcs:
+            -   FuncTreeInterpFactory.intercept_invocation_func
+            -   FuncTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory.query_enum_items_func
+        plugin_config:
+            first_arg_vals_to_next_interp_factory_ids:
+                # This binding uses existing file system name `relay_demo`:
+                "relay_demo": InterpTreeInterpFactory.default
+                # Another equivalent binding
+                # (if `some_command` is configured, it will behave as `relay_demo` above):
+                "some_command": InterpTreeInterpFactory.default
+                "service_relay_demo": InterpTreeInterpFactory.service
+            ignored_func_ids_list:
+                -   desc_git_tag_func
+                -   desc_git_commit_func
+
+    InterpTreeInterpFactory.default:
+        plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
+        plugin_class_name: InterpTreeInterpFactory
+        plugin_dependencies:
+            -   FuncTreeInterpFactory.intercept_invocation_func
+            -   FuncTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory.query_enum_items_func
+            -   FuncTreeInterpFactory.default
+        plugin_config:
+            interp_selector_tree:
+                "relay_demo": &default_interp_selector_tree
+                    "intercept": FuncTreeInterpFactory.intercept_invocation_func
+                    "help": FuncTreeInterpFactory.help_hint_func
+                    "enum": FuncTreeInterpFactory.query_enum_items_func
+                    "": FuncTreeInterpFactory.default
+                    # child "duplicates" re-plug some of the interps:
+                    "duplicates":
+                        "intercept": FuncTreeInterpFactory.intercept_invocation_func
+                        "help": FuncTreeInterpFactory.help_hint_func
+                        "": FuncTreeInterpFactory.default
+                "some_command": *default_interp_selector_tree
+
+    InterpTreeInterpFactory.service:
+        plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
+        plugin_class_name: InterpTreeInterpFactory
+        plugin_dependencies:
+            -   FuncTreeInterpFactory.help_hint_func
+            -   FuncTreeInterpFactory.service
+        plugin_config:
+            interp_selector_tree:
+                "service_relay_demo":
+                    "help": FuncTreeInterpFactory.help_hint_func
+                    "": FuncTreeInterpFactory.service
+
+    # TODO: FS_33_76_82_84 `composite_tree`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
+    #       See extended comment for `FuncTreeInterpFactory.help_hint_func`.
+    FuncTreeInterpFactory.intercept_invocation_func:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_config:
+            jump_tree: *jump_tree
+            func_selector_tree: intercept_invocation_func
+
+    FuncTreeInterpFactory.help_hint_func:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_config:
+            jump_tree: *jump_tree
+            func_selector_tree: help_hint_func
+
+    FuncTreeInterpFactory.query_enum_items_func:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_config:
+            jump_tree: *jump_tree
+            func_selector_tree: query_enum_items_func
+
+    FuncTreeInterpFactory.default:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_config:
+            jump_tree: *jump_tree
+            func_selector_tree:
+                "echo": echo_args_func
+                "goto":
+                    "repo": goto_git_repo_func
+                    "host": goto_host_func
+                    "service": goto_service_func
+                "list":
+                    "host": list_host_func
+                    "service": list_service_func
+                "diff":
+                    "service": diff_service_func
+                "desc":
+                    "tag": desc_git_tag_func
+                    "commit": desc_git_commit_func
+                    "host": desc_host_func
+                    "service": desc_service_func
+                "config":
+                    "print_with_level": funct_id_print_with_severity_level
+                    "print_with_exit": funct_id_print_with_exit_code
+                    "print_with_io_redirect": funct_id_print_with_io_redirect
+                    "double_execution": funct_id_double_execution
+
+    FuncTreeInterpFactory.service:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_config:
+            jump_tree: *jump_tree
+            func_selector_tree:
+                "goto": goto_service_func
+                "list": list_service_func
+                "diff": diff_service_func
+                "desc": desc_service_func
+
+    NoopInterpFactory.default:
+        plugin_module_name: argrelay.plugin_interp.NoopInterpFactory
+        plugin_class_name: NoopInterpFactory
+
+    NoopLoader.default:
+        plugin_module_name: argrelay.plugin_loader.NoopLoader
+        plugin_class_name: NoopLoader
+
+    ServiceLoader.default:
+        plugin_module_name: argrelay.custom_integ.ServiceLoader
+        plugin_class_name: ServiceLoader
+        plugin_config:
+            test_data_ids_to_load:
+                #-   TD_70_69_38_46  # no data
+                -   TD_63_37_05_36  # demo
+                # WARNING: with `mongomock` and not `enable_query_cache` requests run up for TD_38_03_48_51 may run up to 10 mins:
+                #-   TD_38_03_48_51  # large generated
+
+    GitRepoLoader.default:
+        # Disabled by default because of reliance on other repos (unlike `GitRepoLoader.self`):
+        plugin_enabled: false
+        plugin_module_name: argrelay.custom_integ.GitRepoLoader
+        plugin_class_name: GitRepoLoader
+        plugin_config:
+            load_git_tags_default: False
+            load_git_commits_default: False
+            repo_entries:
+                "~/repos":
+                    -
+                        repo_rel_path: argrelay.git
+                        envelope_properties:
+                            git_repo_alias: ar
+                            git_repo_content_type: code
+                    -
+                        repo_rel_path: mongomock.git
+                        is_repo_enabled: True
+                        envelope_properties:
+                            git_repo_alias: mongom
+                            git_repo_content_type: ref
+                    -
+                        repo_rel_path: marshmallow.git
+                        is_repo_enabled: False
+                        envelope_properties:
+                            git_repo_alias: marshm
+                            git_repo_content_type: code
+
+    GitRepoLoader.self:
+        # Enabled by default because it is assumed that project is git-managed:
+        plugin_enabled: true
+        plugin_module_name: argrelay.custom_integ.GitRepoLoader
+        plugin_class_name: GitRepoLoader
+        plugin_config:
+            load_git_tags_default: False
+            load_git_commits_default: False
+            repo_entries:
+                "":
+                    -   repo_rel_path: ""
+                        load_repo_tags: True
+                        load_repo_commits: True
+                        load_tags_last_days: 90
+                        load_commits_max_count: 50
+                        envelope_properties:
+                            git_repo_alias: argrelay
+                            git_repo_content_type: code
+
+    ConfigOnlyLoader.default:
+        plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
+        plugin_class_name: ConfigOnlyLoader
+        plugin_config:
+            collection_name_to_index_fields_map:
+                ConfigOnlyClass:
+                    -   severity_level
+                    -   exit_code
+                OutputFormat:
+                    -   output_format
+            data_envelopes:
+                !include "data/ConfigOnlyLoader.default.data.yaml"
+
+    NoopDelegator.default:
+        plugin_module_name: argrelay.plugin_delegator.NoopDelegator
+        plugin_class_name: NoopDelegator
+
+    EchoDelegator.default:
+        plugin_module_name: argrelay.plugin_delegator.EchoDelegator
+        plugin_class_name: EchoDelegator
+
+    InterceptDelegator.default:
+        plugin_module_name: argrelay.plugin_delegator.InterceptDelegator
+        plugin_class_name: InterceptDelegator
+        plugin_dependencies:
+            -   FuncTreeInterpFactory.default
+        plugin_config:
+            single_func_id: intercept_invocation_func
+            tree_abs_path_to_interp_id:
+                "relay_demo":
+                    "intercept": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "intercept": InterpTreeInterpFactory.default
+                "some_command":
+                    "intercept": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "intercept": InterpTreeInterpFactory.default
+
+    HelpDelegator.default:
+        plugin_module_name: argrelay.plugin_delegator.HelpDelegator
+        plugin_class_name: HelpDelegator
+        plugin_dependencies:
+            -   FuncTreeInterpFactory.default
+        plugin_config:
+            single_func_id: help_hint_func
+            tree_abs_path_to_interp_id:
+                "relay_demo":
+                    "help": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "help": InterpTreeInterpFactory.default
+                "some_command":
+                    "help": InterpTreeInterpFactory.default
+                    "duplicates":
+                        "help": InterpTreeInterpFactory.default
+                "service_relay_demo":
+                    "help": InterpTreeInterpFactory.service
+
+    QueryEnumDelegator.default:
+        plugin_module_name: argrelay.plugin_delegator.QueryEnumDelegator
+        plugin_class_name: QueryEnumDelegator
+        plugin_dependencies:
+            -   FuncTreeInterpFactory.default
+        plugin_config:
+            single_func_id: query_enum_items_func
+            tree_abs_path_to_interp_id:
+                "relay_demo":
+                    "enum": InterpTreeInterpFactory.default
+                "some_command":
+                    "enum": InterpTreeInterpFactory.default
+
+    ServiceDelegator.default:
+        plugin_module_name: argrelay.custom_integ.ServiceDelegator
+        plugin_class_name: ServiceDelegator
+
+    GitRepoDelegator.default:
+        plugin_module_name: argrelay.custom_integ.GitRepoDelegator
+        plugin_class_name: GitRepoDelegator
+
+    ConfigOnlyDelegator.default:
+        plugin_module_name: argrelay.custom_integ.ConfigOnlyDelegator
+        plugin_class_name: ConfigOnlyDelegator
+        plugin_config:
+            # TODO_84_71_86_21: change to realistic examples:
+            func_configs:
+                funct_id_print_with_severity_level:
+                    func_envelope:
+                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
+                        instance_data:
+                            search_control_list:
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                        envelope_payload:
+                            command_template: "echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\""
+                            echo_command_on_stderr: True
+                funct_id_print_with_exit_code:
+                    func_envelope:
+                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
+                        instance_data:
+                            search_control_list:
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                        envelope_payload:
+                            command_template: |
+                                echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
+                                exit {envelope_containers[1].data_envelopes[0]['exit_code']}
+                funct_id_print_with_io_redirect:
+                    func_envelope:
+                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` on stdout or stderr based on exit code"
+                        instance_data:
+                            search_control_list:
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                        envelope_payload:
+                            command_template: |
+                                if [[ {envelope_containers[1].data_envelopes[0]['exit_code']} -eq 0 ]]
+                                then
+                                    echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&1
+                                else
+                                    echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&2
+                                fi
+                                exit {envelope_containers[1].data_envelopes[0]['exit_code']}
+                funct_id_double_execution:
+                    fill_control_list:
+                        # 0th = func container:
+                        -   { }
+                        # 1st container:
+                        -   { }
+                        # 2nd container:
+                        -
+                            severity_level: "{envelope_containers[1].data_envelopes[0]['severity_level']}"
+                            exit_code: "{envelope_containers[1].data_envelopes[0]['exit_code']}"
+                    func_envelope:
+                        HelpHint: "Example: take two command templates and execute them: print `text_message` prefixed with `severity_level` and print exit code (without using it for exit)"
+                        instance_data:
+                            search_control_list:
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                                -
+                                    collection_name: ConfigOnlyClass
+                                    envelope_class: ConfigOnlyClass
+                                    keys_to_types_list:
+                                        -   level: severity_level
+                                        -   code: exit_code
+                        envelope_payload:
+                            command_template: |
+                                echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: exit_code={envelope_containers[1].data_envelopes[0]['exit_code']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
+                                echo \"{envelope_containers[2].data_envelopes[0]['severity_level']}: exit_code={envelope_containers[2].data_envelopes[0]['exit_code']}: {envelope_containers[2].data_envelopes[0]['envelope_payload']['text_message']}\"
+                            echo_command_on_stderr: False
+
+    # TODO: Add FS_80_45_89_81 / `error_message` func:
+    ErrorDelegator.default:
+        plugin_module_name: argrelay.plugin_delegator.ErrorDelegator
+        plugin_class_name: ErrorDelegator
+
+    DefaultConfigurator.default:
+        plugin_module_name: argrelay.plugin_config.DefaultConfigurator
+        plugin_class_name: DefaultConfigurator
+        plugin_config:
+            project_title: "relay_demo"
+            project_page_url: "https://argrelay.org"
+            git_files_by_commit_id_url_prefix: "https://github.com/argrelay/argrelay/tree/"
+            commit_id_url_prefix: "https://github.com/argrelay/argrelay/commit/"

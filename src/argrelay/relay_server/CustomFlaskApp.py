@@ -14,6 +14,7 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.route_api import create_blueprint_api
 from argrelay.relay_server.route_gui import create_blueprint_gui
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH, ARGRELAY_GUI_PATH
 
 # Set this here (because `require` function may fail in other contexts):
@@ -39,7 +40,10 @@ class CustomFlaskApp(Flask):
             template_folder = template_folder,
             static_url_path = static_url_path,
         )
-        self.local_server: LocalServer = LocalServer(server_config_desc.obj_from_default_file())
+        self.local_server: LocalServer = LocalServer(
+            server_config_desc.obj_from_default_file(),
+            plugin_config_desc.obj_from_default_file(),
+        )
 
     def run_with_config(self):
         # Use custom logging at DEBUG level - see: `log_request` and `log_response:

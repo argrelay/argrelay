@@ -17,7 +17,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
-from argrelay.schema_config_core_server.ServerConfigSchema import plugin_instance_entries_, server_config_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import (
@@ -280,14 +280,14 @@ class ThisTestClass(LocalTestClass):
                 ) = test_case
 
                 # Modify config to enable `GitRepoLoader` plugin:
-                server_config_dict = server_config_desc.dict_from_default_file()
-                server_config_dict[plugin_instance_entries_][
+                plugin_config_dict = plugin_config_desc.dict_from_default_file()
+                plugin_config_dict[plugin_instance_entries_][
                     git_loader_plugin_name
                 ][plugin_config_] = plugin_config
 
                 env_mock_builder = (
                     LocalClientEnvMockBuilder()
-                    .set_server_config_dict(server_config_dict)
+                    .set_plugin_config_dict(plugin_config_dict)
                     .set_command_line("some_command help")
                     .set_cursor_cpos(0)
                     .set_comp_type(CompType.PrefixShown)

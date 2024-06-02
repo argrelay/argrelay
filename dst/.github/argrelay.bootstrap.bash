@@ -65,6 +65,7 @@ do
                 ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
+                ":(exclude)dst/.github/argrelay_plugin.yaml" \
 
         ;;
         "fail_on_conf_mismatch")
@@ -79,6 +80,7 @@ do
                 ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
+                ":(exclude)dst/.github/argrelay_plugin.yaml" \
 
         ;;
         "reset_conf")
@@ -90,6 +92,7 @@ do
                 ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
+                ":(exclude)dst/.github/argrelay_plugin.yaml" \
 
         ;;
         "succeed_on_conf_match")
@@ -100,6 +103,7 @@ do
                 ":(exclude)dst/.github/env_packages.txt" \
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
+                ":(exclude)dst/.github/argrelay_plugin.yaml" \
 
         ;;
         *)

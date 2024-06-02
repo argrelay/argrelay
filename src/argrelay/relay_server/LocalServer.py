@@ -17,6 +17,7 @@ from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_context.AbstractPlugin import instantiate_plugin, AbstractPlugin
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
@@ -32,9 +33,11 @@ class LocalServer:
     def __init__(
         self,
         server_config: ServerConfig,
+        plugin_config: PluginConfig,
     ):
         self.server_instance_id = uuid.uuid4()
         self.server_config: ServerConfig = server_config
+        self.plugin_config: PluginConfig = plugin_config
         self.mongo_server: MongoServerWrapper = MongoServerWrapper()
         self.mongo_client: MongoClient = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
         self.query_engine: QueryEngine = QueryEngine(
@@ -70,8 +73,8 @@ class LocalServer:
         Calls each plugin to update :class:`StaticData`.
         """
 
-        for plugin_instance_id in self.server_config.plugin_instance_id_activate_list:
-            plugin_entry: PluginEntry = self.server_config.plugin_instance_entries[plugin_instance_id]
+        for plugin_instance_id in self.plugin_config.plugin_instance_id_activate_list:
+            plugin_entry: PluginEntry = self.plugin_config.plugin_instance_entries[plugin_instance_id]
 
             if not plugin_entry.plugin_enabled:
                 continue

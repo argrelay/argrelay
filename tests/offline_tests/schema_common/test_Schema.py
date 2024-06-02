@@ -2,6 +2,7 @@ import copy
 
 from marshmallow import ValidationError
 
+from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
 from argrelay.composite_tree.CompositeNodeSchema import (
     base_node_desc,
     interp_tree_node_desc,
@@ -9,7 +10,6 @@ from argrelay.composite_tree.CompositeNodeSchema import (
     func_tree_node_desc,
     tree_path_node_desc,
 )
-from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
 from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import base_config_delegator_config_desc
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import (
     config_only_delegator_config_desc,
@@ -43,6 +43,7 @@ from argrelay.schema_config_interp.FuncEnvelopeSchema import func_envelope_desc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
 from argrelay.schema_config_interp.InitControlSchema import init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
@@ -69,6 +70,7 @@ class ThisTestClass(BaseTestClass):
         (line_no(), mongo_config_desc),
         (line_no(), mongo_server_config_desc),
         (line_no(), server_config_desc),
+        (line_no(), plugin_config_desc),
         (line_no(), static_data_desc),
         (line_no(), data_envelope_desc),
         (line_no(), func_envelope_desc),

@@ -111,7 +111,6 @@ class ThisTestClass(LocalTestClass):
                     actual_output_tree,
                 )
 
-
     def test_build_str_leaves_paths(self):
         """
         Test to build map (`dict`) of `str` leaf key to its tree paths.

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from marshmallow import Schema, RAISE, fields, post_load
+from marshmallow import RAISE, fields
 
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema

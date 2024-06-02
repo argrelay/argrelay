@@ -32,6 +32,7 @@ from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
@@ -73,11 +74,11 @@ def set_default_to(arg_type, arg_val, envelope_container) -> bool:
 
 def redirect_to_no_func_error(
     interp_ctx,
-    server_config,
+    plugin_config,
 ):
     return redirect_to_error(
         interp_ctx,
-        server_config,
+        plugin_config,
         "ERROR: objects cannot be searched until function is fully qualified",
         1,
     )
@@ -85,12 +86,12 @@ def redirect_to_no_func_error(
 
 def redirect_to_error(
     interp_ctx,
-    server_config,
+    plugin_config: PluginConfig,
     error_message,
     error_code,
 ):
     # Redirect to `ErrorDelegator`:
-    # TODO: Do not hardcode plugin id (instance of `ErrorDelegator`):
+    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ErrorDelegator`):
     delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
     custom_plugin_data = {
         error_message_: error_message,
@@ -99,7 +100,7 @@ def redirect_to_error(
     error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput.with_interp_context(
         interp_ctx,
-        delegator_plugin_entry = server_config.plugin_instance_entries[delegator_plugin_instance_id],
+        delegator_plugin_entry = plugin_config.plugin_instance_entries[delegator_plugin_instance_id],
         custom_plugin_data = custom_plugin_data,
     )
     return invocation_input
@@ -213,7 +214,7 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: desc_host_func_,
-                    # TODO: Do not hardcode plugin id (instance of `NoopDelegator`):
+                    # TODO: DTODO_62_75_33_41: Do not hardcode plugin instance id (instance of `NoopDelegator`):
                     delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                     search_control_list_: [
                         host_search_control,
@@ -226,7 +227,7 @@ class ServiceDelegator(AbstractDelegator):
             {
                 instance_data_: {
                     func_id_: desc_service_func_,
-                    # TODO: Do not hardcode plugin id (instance of `NoopDelegator`):
+                    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `NoopDelegator`):
                     delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                     search_control_list_: [
                         service_search_control,
@@ -400,7 +401,7 @@ class ServiceDelegator(AbstractDelegator):
             # Actual implementation is not defined for demo:
             return redirect_to_error(
                 interp_ctx,
-                local_server.server_config,
+                local_server.plugin_config,
                 error_delegator_stub_custom_data_example[error_message_],
                 error_delegator_stub_custom_data_example[error_code_],
             )
@@ -413,7 +414,7 @@ class ServiceDelegator(AbstractDelegator):
             # Actual implementation is not defined for demo:
             return redirect_to_error(
                 interp_ctx,
-                local_server.server_config,
+                local_server.plugin_config,
                 error_delegator_stub_custom_data_example[error_message_],
                 error_delegator_stub_custom_data_example[error_code_],
             )
@@ -436,7 +437,7 @@ class ServiceDelegator(AbstractDelegator):
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput.with_interp_context(
                     interp_ctx,
-                    delegator_plugin_entry = local_server.server_config.plugin_instance_entries[
+                    delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
                         delegator_plugin_instance_id
                     ],
                     custom_plugin_data = {},

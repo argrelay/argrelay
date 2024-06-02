@@ -3,8 +3,10 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommandFactory import AbstractClientCommandFactory
 from argrelay.relay_server.LocalServer import LocalServer
+from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.server_spec.CallContext import CallContext
 
 
@@ -21,8 +23,12 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
     def _start_local_server(self):
         if not LocalClientCommandFactory.local_server:
             self.server_config: ServerConfig = server_config_desc.obj_from_default_file()
+            self.plugin_config: PluginConfig = plugin_config_desc.obj_from_default_file()
             ElapsedTime.measure("after_server_config_load")
-            LocalClientCommandFactory.local_server = LocalServer(self.server_config)
+            LocalClientCommandFactory.local_server = LocalServer(
+                self.server_config,
+                self.plugin_config,
+            )
             LocalClientCommandFactory.local_server.start_local_server()
             ElapsedTime.measure("after_local_server_start")
         else:

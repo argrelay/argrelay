@@ -35,6 +35,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
 )
 
+
 def normalize_single_line_to_black_spaces(
     s: str,
 ) -> str:
@@ -45,6 +46,7 @@ def normalize_single_line_to_black_spaces(
     """
     return s.strip().replace(" ", "_")
 
+
 def normalize_multiple_lines_to_black_spaces(
     s: str,
 ) -> str:
@@ -54,6 +56,7 @@ def normalize_multiple_lines_to_black_spaces(
     See FS_99_81_19_25 no space in options.
     """
     return s.partition('\n')[0].strip().replace(" ", "_")
+
 
 class GitRepoLoader(AbstractLoader):
     """
@@ -213,9 +216,13 @@ class GitRepoLoader(AbstractLoader):
                             #
                             GitRepoArgType.git_repo_commit_id.name: git_commit.hexsha,
                             GitRepoArgType.git_repo_short_commit_id.name: git_commit.hexsha[:7],
-                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(git_commit.author.name),
+                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(
+                                git_commit.author.name,
+                            ),
                             GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email.lower(),
-                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(git_commit.message),
+                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(
+                                git_commit.message,
+                            ),
                             GitRepoArgType.git_repo_commit_date.name: commit_date_utc,
                             GitRepoArgType.git_repo_commit_time.name: commit_time_utc,
                         })
@@ -251,9 +258,13 @@ class GitRepoLoader(AbstractLoader):
                             #
                             GitRepoArgType.git_repo_commit_id.name: git_commit.hexsha,
                             GitRepoArgType.git_repo_short_commit_id.name: git_commit.hexsha[:7],
-                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(git_commit.author.name),
+                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(
+                                git_commit.author.name,
+                            ),
                             GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email,
-                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(git_commit.message),
+                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(
+                                git_commit.message,
+                            ),
                             GitRepoArgType.git_repo_commit_date.name: commit_date_utc,
                             GitRepoArgType.git_repo_commit_time.name: commit_time_utc,
                         })

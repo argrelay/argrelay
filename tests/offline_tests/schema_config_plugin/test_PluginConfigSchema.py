@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.schema_config_core_server.ServerConfigSchema import serialize_dag_to_list
+from argrelay.schema_config_plugin.PluginConfigSchema import serialize_dag_to_list
 from argrelay.test_infra import line_no
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 

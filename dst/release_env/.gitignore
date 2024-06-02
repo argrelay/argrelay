@@ -3,4 +3,4 @@
 # should be symlinks to the examples
 /argrelay_client.json
 /argrelay_server.yaml
-
+/argrelay_plugin.yaml

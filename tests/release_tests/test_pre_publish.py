@@ -6,11 +6,9 @@ from unittest import skipIf
 
 from argrelay.custom_integ import GitRepoLoader as GitRepoLoader_module
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
+from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
-from argrelay.runtime_data.ServerConfig import ServerConfig
-from argrelay.schema_config_core_server.ServerConfigSchema import (
-    server_config_desc,
-)
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.test_infra import change_to_known_repo_path
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
@@ -20,29 +18,33 @@ class ThisTestClass(BaseTestClass):
     """
     Check things which should not be published
 
-    For example, `GitRepoLoader` should not be enabled in `argrelay_server.yaml`.
+    For example, `GitRepoLoader` should not be enabled in `argrelay_plugin.yaml`.
     """
 
     def test_default_git_repo_loader_is_disabled(self):
         """
-        `GitRepoLoader.default` should not be enabled in `argrelay_server.yaml`.
+        `GitRepoLoader.default` should not be enabled in `argrelay_plugin.yaml`.
 
         `GitRepoLoader.self` can be enabled.
         """
 
         # Still use mock because config data for the mock is loaded from source files:
-        # * `load_custom_integ_server_config_dict`
         # * `load_custom_integ_client_config_dict`
+        # * `load_custom_integ_server_config_dict`
+        # * `load_custom_integ_plugin_config_dict`
         env_mock_builder = (
             ServerOnlyEnvMockBuilder()
+            # This test does not use server code and loads plugin config directly - disable mocking server config load:
+            .set_mock_server_config_file_read(False)
+            .clear_server_config_dict()
         )
         with env_mock_builder.build():
 
-            server_config: ServerConfig = server_config_desc.obj_from_default_file()
+            plugin_config: PluginConfig = plugin_config_desc.obj_from_default_file()
             found_one = False
             git_loader_plugin_entry: Union[PluginEntry, None] = None
-            for plugin_instance_id in server_config.plugin_instance_id_activate_list:
-                plugin_entry: PluginEntry = server_config.plugin_instance_entries[plugin_instance_id]
+            for plugin_instance_id in plugin_config.plugin_instance_id_activate_list:
+                plugin_entry: PluginEntry = plugin_config.plugin_instance_entries[plugin_instance_id]
                 if (
                     plugin_entry.plugin_module_name == GitRepoLoader_module.__name__
                     and
@@ -99,19 +101,21 @@ class ThisTestClass(BaseTestClass):
 
         Ensure server and client config files are not installed:
 
-        *   `~/.argrelay.conf.d/argrelay_server.yaml`
         *   `~/.argrelay.conf.d/argrelay_client.json`
+        *   `~/.argrelay.conf.d/argrelay_server.yaml`
+        *   `~/.argrelay.conf.d/argrelay_plugin.yaml`
 
         Move them under different name to preserve or delete them completely.
 
         This, in turn ensures that no other tests rely on their existence (and use proper file access mocking).
 
-        Note that `test_config_base_dir_is_not_overriden` ensures that we only need to test for ~ = user home.
+        Note that `test_config_base_dir_is_not_overridden` ensures that we only need to test for ~ = user home.
         """
 
         for file_path in [
-            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_server.yaml",
             os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_client.json",
+            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_server.yaml",
+            os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_plugin.yaml",
         ]:
             self.assertFalse(os.path.exists(file_path))
 
