@@ -14,6 +14,7 @@ from argrelay.custom_integ.value_constants import (
     desc_service_func_,
 )
 from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.AbstractDelegator import (
@@ -196,6 +197,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedArgType.HelpHint.name: "Go (log in) to remote host",
+                ReservedArgType.FuncState.name: FuncState.demo.name,
                 ReservedArgType.FuncId.name: goto_host_func_,
             },
             {
@@ -209,6 +211,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedArgType.HelpHint.name: "Go (log in) to remote host and dir path with specified service",
+                ReservedArgType.FuncState.name: FuncState.demo.name,
                 ReservedArgType.FuncId.name: goto_service_func_,
             },
             {
@@ -222,6 +225,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedArgType.HelpHint.name: "Describe remote host",
+                ReservedArgType.FuncState.name: FuncState.demo.name,
                 ReservedArgType.FuncId.name: desc_host_func_,
             },
             {
@@ -235,6 +239,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedArgType.HelpHint.name: "Describe service instance",
+                ReservedArgType.FuncState.name: FuncState.demo.name,
                 ReservedArgType.FuncId.name: desc_service_func_,
             },
             {
@@ -247,6 +252,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedArgType.HelpHint.name: "List remote hosts matching search query",
+                ReservedArgType.FuncState.name: FuncState.demo.name,
                 ReservedArgType.FuncId.name: list_host_func_,
             },
             {
@@ -259,6 +265,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedArgType.HelpHint.name: "List service instances matching search query",
+                ReservedArgType.FuncState.name: FuncState.demo.name,
                 ReservedArgType.FuncId.name: list_service_func_,
             },
             {
@@ -274,6 +281,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedArgType.HelpHint.name: "Diff two service instances",
+                ReservedArgType.FuncState.name: FuncState.demo.name,
                 ReservedArgType.FuncId.name: diff_service_func_,
             },
         ]

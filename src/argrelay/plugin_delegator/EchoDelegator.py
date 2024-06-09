@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
@@ -34,6 +35,7 @@ class EchoDelegator(AbstractDelegator):
             ReservedArgType.HelpHint.name: (
                 f"Print command line args `{InvocationInput.__name__}`"
             ),
+            ReservedArgType.FuncState.name: FuncState.beta.name,
             ReservedArgType.FuncId.name: SpecialFunc.echo_args_func.name,
         }]
         return func_envelopes

@@ -64,7 +64,6 @@ plugin_instance_entries:
             -   ConfigOnlyDelegator.default
             #   Interps for `interp_tree` per command (zero-arg):
             -   InterpTreeInterpFactory.default
-            -   InterpTreeInterpFactory.service
             #   Interps for normal funcs:
             -   FuncTreeInterpFactory.default
             #   Interps for special funcs:
@@ -78,7 +77,7 @@ plugin_instance_entries:
                 # Another equivalent binding
                 # (if `some_command` is configured, it will behave as `relay_demo` above):
                 "some_command": InterpTreeInterpFactory.default
-                "service_relay_demo": InterpTreeInterpFactory.service
+                "service_relay_demo": InterpTreeInterpFactory.default
             ignored_func_ids_list:
                 -   desc_git_tag_func
                 -   desc_git_commit_func
@@ -91,6 +90,7 @@ plugin_instance_entries:
             -   FuncTreeInterpFactory.help_hint_func
             -   FuncTreeInterpFactory.query_enum_items_func
             -   FuncTreeInterpFactory.default
+            -   FuncTreeInterpFactory.service
         plugin_config:
             interp_selector_tree:
                 "relay_demo": &default_interp_selector_tree
@@ -104,15 +104,6 @@ plugin_instance_entries:
                         "help": FuncTreeInterpFactory.help_hint_func
                         "": FuncTreeInterpFactory.default
                 "some_command": *default_interp_selector_tree
-
-    InterpTreeInterpFactory.service:
-        plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
-        plugin_class_name: InterpTreeInterpFactory
-        plugin_dependencies:
-            -   FuncTreeInterpFactory.help_hint_func
-            -   FuncTreeInterpFactory.service
-        plugin_config:
-            interp_selector_tree:
                 "service_relay_demo":
                     "help": FuncTreeInterpFactory.help_hint_func
                     "": FuncTreeInterpFactory.service
@@ -298,7 +289,7 @@ plugin_instance_entries:
                     "duplicates":
                         "help": InterpTreeInterpFactory.default
                 "service_relay_demo":
-                    "help": InterpTreeInterpFactory.service
+                    "help": InterpTreeInterpFactory.default
 
     QueryEnumDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.QueryEnumDelegator

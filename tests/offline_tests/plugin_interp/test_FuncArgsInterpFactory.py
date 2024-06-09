@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
@@ -98,6 +99,7 @@ class ThisTestClass(BaseTestClass):
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedArgType.FuncState.name: FuncState.demo.name,
             ReservedArgType.FuncId.name: "func_1",
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
@@ -110,6 +112,7 @@ class ThisTestClass(BaseTestClass):
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedArgType.FuncState.name: FuncState.demo.name,
             ReservedArgType.FuncId.name: "func_2",
             type_1: "type_1_value_2",
             type_2: "type_2_value_2",
@@ -137,6 +140,7 @@ class ThisTestClass(BaseTestClass):
                 search_control_list_: [],
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedArgType.FuncState.name: FuncState.demo.name,
             ReservedArgType.FuncId.name: "func_3",
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",

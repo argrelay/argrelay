@@ -13,15 +13,24 @@ class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_39_25_11_76"  # missing props
 
     def test_arg_assignments_and_suggestions_for_TD_39_25_11_76_missing_props(self):
+        """
+        NOTE: These test cases do not work at the level of details originally specified for them.
+              Now, there is a validation to prevent TODO_39_25_11_76 missing props
+              Therefore, they are failed with exception on server start and the test cases were changed to
+              simply assert that.
+        """
+
         test_cases = [
             (
                 line_no(), "relay_demo goto host zxcv |", CompType.PrefixShown,
+                ValueError,
                 [],
                 None,
                 "See Step 1 in the next test case."
             ),
             (
                 line_no(), "relay_demo goto host zxcv |", CompType.DescribeArgs,
+                ValueError,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
                 {
@@ -55,6 +64,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(), "relay_demo goto host asdf |", CompType.PrefixShown,
+                ValueError,
                 [
                     "apac",
                     "emea",
@@ -64,6 +74,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(), "relay_demo goto host asdf |", CompType.DescribeArgs,
+                ValueError,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
                 {
@@ -97,19 +108,26 @@ class ThisTestClass(LocalTestClass):
                     line_number,
                     test_line,
                     comp_type,
+                    expected_exception,
                     expected_suggestions,
                     container_ipos_to_expected_assignments,
                     case_comment,
                 ) = test_case
-                self.verify_output_via_local_client(
-                    self.__class__.same_test_data_per_class,
-                    test_line,
-                    comp_type,
-                    expected_suggestions,
-                    container_ipos_to_expected_assignments,
-                    None,
-                    None,
-                    None,
-                    None,
-                    LocalClientEnvMockBuilder().set_reset_local_server(False),
+
+                with self.assertRaises(ValueError) as exc_context:
+                    self.verify_output_via_local_client(
+                        self.__class__.same_test_data_per_class,
+                        test_line,
+                        comp_type,
+                        expected_suggestions,
+                        container_ipos_to_expected_assignments,
+                        None,
+                        None,
+                        None,
+                        None,
+                        LocalClientEnvMockBuilder(),
+                    )
+                self.assertEqual(
+                    expected_exception,
+                    type(exc_context.exception),
                 )

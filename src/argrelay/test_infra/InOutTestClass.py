@@ -122,7 +122,7 @@ class InOutTestClass(BaseTestClass):
                                 )
                             elif isinstance(assigned_value, list):
                                 # A bit of hack: if `list`, then check if it matches `remaining_types_to_values`:
-                                self.assertTrue(
+                                self.assertEqual(
                                     assigned_value,
                                     envelope_containers
                                     [container_ipos].remaining_types_to_values

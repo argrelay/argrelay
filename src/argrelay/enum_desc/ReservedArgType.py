@@ -20,3 +20,5 @@ class ReservedArgType(Enum):
     ArgValue = auto()
 
     HelpHint = auto()
+
+    FuncState = auto()

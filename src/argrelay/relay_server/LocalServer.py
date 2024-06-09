@@ -7,6 +7,7 @@ from pymongo import MongoClient
 from argrelay.composite_tree.DictTreeWalker import contains_whitespace
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
@@ -20,6 +21,7 @@ from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
+from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 
 
@@ -48,10 +50,25 @@ class LocalServer:
         self.help_hint_cache: HelpHintCache = HelpHintCache(
             self.query_engine,
         )
+
+        self.cleaned_mongo_collections: set[str] = set()
+        """
+        *   On one hand, Mongo collections may have state and need to be cleaned.
+        *   On another hand, they can repeatedly loaded by more than one plugin (potentially adding more data).
+
+        Server uses `cleaned_mongo_collections` to track what collection have been cleaned once and what have not.
+        """
+
+        # TODO: TODO_39_25_11_76: missing props: index to validate missing props:
+        # Set of all prop names (2-level map) per `collection_name` and `envelope_class`:
+        self.prop_names_per_collection_per_class: dict[str, dict[str, set[str]]] = {}
+
         # seconds since epoch:
         self.server_start_time: int = int(time.time())
 
-    def start_local_server(self):
+    def start_local_server(
+        self,
+    ):
         self._activate_plugins()
         self._start_mongo_server()
         self._load_mongo_data()
@@ -59,16 +76,24 @@ class LocalServer:
         self._populate_help_hint_cache()
         self._log_connection_url()
 
-    def stop_local_server(self):
+    def stop_local_server(
+        self,
+    ):
         self._stop_mongo_server()
 
-    def get_mongo_database(self):
+    def get_mongo_database(
+        self,
+    ):
         return self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
 
-    def get_query_engine(self):
+    def get_query_engine(
+        self,
+    ):
         return self.query_engine
 
-    def _activate_plugins(self):
+    def _activate_plugins(
+        self,
+    ):
         """
         Calls each plugin to update :class:`StaticData`.
         """
@@ -91,8 +116,6 @@ class LocalServer:
                 plugin_instance.activate_plugin()
                 # Store instance of `AbstractLoader` under specified id for future use:
                 self.server_config.data_loaders[plugin_instance_id] = plugin_instance
-                # Use loader to update data:
-                self.server_config.static_data = plugin_instance.update_static_data(self.server_config.static_data)
                 continue
 
             if plugin_type is PluginType.InterpFactoryPlugin:
@@ -116,20 +139,23 @@ class LocalServer:
                 self.server_config.server_configurators[plugin_instance_id] = plugin_instance
                 continue
 
-        eprint("validating data...")
-        self._validate_static_data()
+    def _pre_validate_static_data(
+        self,
+    ):
+        self._pre_validate_static_data_schema()
+        self._pre_validata_static_data_by_plugins()
+        self._pre_validate_data_envelope_string_prop_values()
 
-    def _validate_static_data(self):
-        self._validate_static_data_schema()
-        self._validata_static_data_by_plugins()
-        self._validate_data_envelope_string_prop_values()
-
-    def _validate_static_data_schema(self):
+    def _pre_validate_static_data_schema(
+        self,
+    ):
         # Note that this is slow for large data sets:
         static_data_dict = static_data_desc.dict_schema.dump(self.server_config.static_data)
         static_data_desc.validate_dict(static_data_dict)
 
-    def _validata_static_data_by_plugins(self):
+    def _pre_validata_static_data_by_plugins(
+        self,
+    ):
         all_plugins: [AbstractLoader] = []
         all_plugins.extend(self.server_config.data_loaders.values())
         all_plugins.extend(self.server_config.interp_factories.values())
@@ -138,27 +164,39 @@ class LocalServer:
         for plugin_instance in all_plugins:
             plugin_instance.validate_loaded_data(self.server_config.static_data)
 
-    def _validate_data_envelope_string_prop_values(self):
+    def _pre_validate_data_envelope_string_prop_values(
+        self,
+    ):
         """
         This validation ensures there is no blank values (`None`, whitespace, etc.) in `index_field`-s.
 
         See also FS_99_81_19_25 no space in options.
         """
-        for envelope_collection in self.server_config.static_data.envelope_collections.values():
+
+        for collection_name, envelope_collection in self.server_config.static_data.envelope_collections.items():
+            prop_names_per_class: dict[str, set[str]] = self.prop_names_per_collection_per_class.setdefault(
+                collection_name,
+                {},
+            )
             for index_field in envelope_collection.index_fields:
                 for data_envelope in envelope_collection.data_envelopes:
-                    if index_field not in data_envelope:
-                        # TODO: TODO_39_25_11_76: `data_envelope`-s with missing props:
-                        #       even if it may lead to confusion, it is allowed to happen.
-                        continue
                     envelope_class = data_envelope[ReservedArgType.EnvelopeClass.name]
-                    prop_value_or_values = data_envelope[index_field]
-                    if isinstance(prop_value_or_values, list):
-                        for prop_value in prop_value_or_values:
-                            self._validate_string_prop_value(envelope_class, index_field, prop_value)
+
+                    if index_field not in data_envelope:
+                        # TODO_39_25_11_76: `data_envelope`-s with missing props:
+                        # Let the `data_envelope` load without some `prop_name`-s from `index_field`-s -
+                        # if any of `data_envelope`-s have that `prop_name`, it will fail validation.
+                        # It is allowed to have no `prop_name` for all `data_envelope` until one has it.
+                        continue
                     else:
-                        prop_value = prop_value_or_values
-                        self._validate_string_prop_value(envelope_class, index_field, prop_value)
+                        prop_names_per_class.setdefault(envelope_class, set()).add(index_field)
+
+                    prop_value = data_envelope[index_field]
+                    self._validate_string_prop_value(
+                        envelope_class,
+                        index_field,
+                        prop_value,
+                    )
 
     def _validate_string_prop_value(
         self,
@@ -171,25 +209,123 @@ class LocalServer:
                 raise ValueError(f"`{envelope_class}.{index_field}` [{prop_value}] has to be non-blank string")
             if contains_whitespace(prop_value):
                 raise ValueError(f"`{envelope_class}.{index_field}` [{prop_value}] cannot contain whitespace")
+        elif isinstance(prop_value, list):
+            for prop_value_item in prop_value:
+                self._validate_string_prop_value(
+                    envelope_class,
+                    index_field,
+                    prop_value_item,
+                )
         else:
             # FS_06_99_43_60: list arg value:
             raise ValueError(f"`{envelope_class}.{index_field}` has to be a `list` of `str` or `str`")
 
-    def _start_mongo_server(self):
+    def _post_validate_loaded_data(
+        self,
+    ):
+        self._post_validate_data_envelope_missing_prop_names()
+
+    def _post_validate_data_envelope_missing_prop_names(
+        self,
+    ):
+        """
+        See TODO_39_25_11_76 missing props.
+        """
+
+        # Verify that all prop names per (2-level map) `collection_name` and `envelope_class`
+        # exists in all corresponding `data_envelope`-s loaded:
+        for collection_name, prop_names_per_class in self.prop_names_per_collection_per_class.items():
+            data_envelopes = self.query_engine.query_data_envelopes(
+                collection_name,
+                {},
+            )
+            for data_envelope in data_envelopes:
+                envelope_class = data_envelope[ReservedArgType.EnvelopeClass.name]
+
+                # TODO: TODO_39_25_11_76 missing props: skip funcs for now - they have to be fixed generically:
+                if envelope_class == ReservedEnvelopeClass.ClassFunction.name:
+                    continue
+
+                for prop_name in prop_names_per_class[envelope_class]:
+                    if prop_name not in data_envelope:
+                        raise ValueError(
+                            f"data_envelope of (collection_name: `{collection_name}`, envelope_class: `{envelope_class}`) does not have (prop_name: `{prop_name}`): {data_envelope}"
+                        )
+                    prop_value = data_envelope[prop_name]
+                    self._validate_string_prop_value(
+                        envelope_class,
+                        prop_name,
+                        prop_value,
+                    )
+
+    def _start_mongo_server(
+        self,
+    ):
         self.mongo_server.start_mongo_server(self.server_config.mongo_config)
 
-    def _stop_mongo_server(self):
+    def _stop_mongo_server(
+        self,
+    ):
         self.mongo_server.stop_mongo_server()
 
-    def _load_mongo_data(self):
-        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
-        MongoClientWrapper.store_envelopes(
-            mongo_db,
-            # TODO_00_79_72_55: Remove `static_data` from `server_config`:
-            self.server_config.static_data,
+    def _load_mongo_data(
+        self,
+    ):
+
+        total_envelope_n: int = 0
+        curr_envelope_i: int = 0
+
+        # TODO_00_79_72_55: Remove `static_data` from `server_config`:
+        # Initial step: load any data from config:
+        self._load_mongo_data_step(
+            "config_data",
+            total_envelope_n,
+            curr_envelope_i,
         )
 
-    def _create_mongo_index(self):
+        for plugin_instance_id in self.plugin_config.plugin_instance_id_activate_list:
+            if plugin_instance_id in self.server_config.data_loaders:
+                plugin_instance = self.server_config.data_loaders[plugin_instance_id]
+                self.server_config.static_data = StaticData(
+                    envelope_collections = {},
+                )
+                # Use loader to update data:
+                self.server_config.static_data = plugin_instance.update_static_data(
+                    self.server_config.static_data,
+                    self.query_engine,
+                )
+                self._load_mongo_data_step(
+                    plugin_instance_id,
+                    total_envelope_n,
+                    curr_envelope_i,
+                )
+
+        self._post_validate_loaded_data()
+
+    def _load_mongo_data_step(
+        self,
+        step_name: str,
+        total_envelope_n: int,
+        curr_envelope_i: int,
+    ):
+        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+
+        eprint(f"{step_name}:")
+
+        self._pre_validate_static_data()
+
+        MongoClientWrapper.store_envelopes(
+            mongo_db,
+            self.cleaned_mongo_collections,
+            # TODO_00_79_72_55: Remove `static_data` from `server_config`:
+            self.server_config.static_data,
+            total_envelope_n,
+            curr_envelope_i,
+        )
+
+    def _create_mongo_index(
+        self,
+    ):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
 
         for collection_name in self.server_config.static_data.envelope_collections:
@@ -205,10 +341,14 @@ class LocalServer:
                 envelope_collection.index_fields,
             )
 
-    def _populate_help_hint_cache(self):
+    def _populate_help_hint_cache(
+        self,
+    ):
         self.help_hint_cache.populate_cache()
 
-    def _log_connection_url(self):
+    def _log_connection_url(
+        self,
+    ):
         host_name = self.server_config.connection_config.server_host_name
         port_number = self.server_config.connection_config.server_port_number
         eprint(f"http://{host_name}:{port_number}")
