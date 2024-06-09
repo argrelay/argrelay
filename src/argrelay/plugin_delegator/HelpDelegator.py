@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from argrelay.custom_integ.ServiceDelegator import redirect_to_no_func_error
+from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
@@ -36,6 +37,7 @@ class HelpDelegator(AbstractJumpDelegator):
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedArgType.HelpHint.name: "List defined function matching search criteria with their help hints",
+            ReservedArgType.FuncState.name: FuncState.gamma.name,
             ReservedArgType.FuncId.name: SpecialFunc.help_hint_func.name,
         }]
         return func_envelopes

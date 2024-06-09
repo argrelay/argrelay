@@ -155,7 +155,7 @@ class ThisTestClass(LocalTestClass):
                         },
                     },
                     "service_relay_demo": {
-                        "help": f"{InterpTreeInterpFactory.__name__}.service",
+                        "help": f"{InterpTreeInterpFactory.__name__}.default",
                     },
                 },
                 SpecialFunc.help_hint_func.name,
@@ -204,7 +204,7 @@ class ThisTestClass(LocalTestClass):
                 {
                     "relay_demo": "InterpTreeInterpFactory.default",
                     "some_command": "InterpTreeInterpFactory.default",
-                    "service_relay_demo": "InterpTreeInterpFactory.service",
+                    "service_relay_demo": "InterpTreeInterpFactory.default",
                 },
             ),
         ]
@@ -352,18 +352,12 @@ class ThisTestClass(LocalTestClass):
                             "": "FuncTreeInterpFactory.default",
                         },
                     },
-                },
-                f"{InterpTreeInterpFactory.__name__}.default",
-            ),
-            (
-                line_no(),
-                {
                     "service_relay_demo": {
                         "help": "FuncTreeInterpFactory.help_hint_func",
                         "": "FuncTreeInterpFactory.service",
                     },
                 },
-                f"{InterpTreeInterpFactory.__name__}.service",
+                f"{InterpTreeInterpFactory.__name__}.default",
             ),
         ]
 

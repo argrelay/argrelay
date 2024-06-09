@@ -1,5 +1,6 @@
 from marshmallow import fields, validates_schema, INCLUDE
 
+from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
@@ -50,6 +51,7 @@ func_envelope_desc = TypeDesc(
         sample_field_type_C_: "C_value_1",
         ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
         ReservedArgType.HelpHint.name: f"Some help hint",
+        ReservedArgType.FuncState.name: FuncState.demo.name,
         ReservedArgType.FuncId.name: func_id_some_func_,
     },
     default_file_path = "",

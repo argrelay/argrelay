@@ -72,6 +72,7 @@ class GitRepoLoader(AbstractLoader):
     def update_static_data(
         self,
         static_data: StaticData,
+        query_engine: QueryEngine,
     ) -> StaticData:
 
         if not self.plugin_config_dict:

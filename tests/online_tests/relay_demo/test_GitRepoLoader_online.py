@@ -16,9 +16,10 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     repo_entries_,
 )
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.relay_client import __main__
-from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
@@ -159,26 +160,21 @@ class ThisTestClass(BaseTestClass):
                     # Populate static data by plugin via `LocalClient` who starts `LocalServer`:
                     command_obj: AbstractLocalClientCommand = __main__.main()
                     assert isinstance(command_obj, AbstractLocalClientCommand)
-                    static_data = command_obj.local_server.server_config.static_data
+                    local_server: LocalServer = command_obj.local_server
 
-                    repo_envelope_collection = static_data.envelope_collections.setdefault(
-                        GitRepoEnvelopeClass.ClassGitRepo.name,
-                        EnvelopeCollection(
-                            index_fields = [],
-                            data_envelopes = [],
-                        ),
+                    repo_envelopes = local_server.query_engine.query_data_envelopes(
+                        local_server.server_config.class_to_collection_map[GitRepoEnvelopeClass.ClassGitRepo.name],
+                        {
+                            f"{ReservedArgType.EnvelopeClass.name}": f"{GitRepoEnvelopeClass.ClassGitRepo.name}",
+                        },
                     )
 
                     # Verify:
                     are_all_empty = True
                     for type_name in [enum_item.name for enum_item in GitRepoArgType]:
-                        assert type_name in static_data.envelope_collections[
-                            GitRepoEnvelopeClass.ClassGitRepo.name
-                        ].index_fields
-
                         # Find list of all values in `data_envelope`-s per `type_name`:
                         typed_values = []
-                        for data_envelope in repo_envelope_collection.data_envelopes:
+                        for data_envelope in repo_envelopes:
                             if type_name in data_envelope:
                                 typed_value = data_envelope[type_name]
                                 if typed_value not in typed_values:

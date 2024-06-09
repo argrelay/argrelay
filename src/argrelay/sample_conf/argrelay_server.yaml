@@ -278,21 +278,21 @@ server_plugin_control:
                                     plugin_instance_id: InterpTreeInterpFactory.default
             "service_relay_demo":
                 node_type: zero_arg_node
-                plugin_instance_id: InterpTreeInterpFactory.service
+                plugin_instance_id: InterpTreeInterpFactory.default
                 sub_tree:
                     "help":
                         <<: *help_hint_func_interp_tree_node
                         next_interp:
                             jump_path:
                                 -   "service_relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.service
+                            plugin_instance_id: InterpTreeInterpFactory.default
                     "":
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.service
                         next_interp:
                             jump_path:
                                 -   "service_relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.service
+                            plugin_instance_id: InterpTreeInterpFactory.default
                         sub_tree:
                             "goto":
                                 node_type: func_tree_node

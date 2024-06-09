@@ -2,6 +2,10 @@ from enum import Enum, auto
 
 
 class PluginType(Enum):
+    """
+    See `AbstractPlugin.get_plugin_type`.
+    """
+
     LoaderPlugin = auto()
     """
     See classes derived from `AbstractLoader`.

@@ -2,6 +2,10 @@ from enum import Enum, auto
 
 
 class InterpStep(Enum):
+    """
+    Step decision in interpretation loop - see `InterpContext.interpret_command`.
+    """
+
     StopAll = auto()
     """
     No way to continue interpretation - no enough info.

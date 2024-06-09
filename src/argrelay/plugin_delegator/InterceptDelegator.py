@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum, auto
 
 from argrelay.custom_integ.ServiceDelegator import set_default_to
+from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
@@ -66,6 +67,7 @@ class InterceptDelegator(AbstractJumpDelegator):
                 f"Intercept and print `{InvocationInput.__name__}` "
                 "for specified function and its args"
             ),
+            ReservedArgType.FuncState.name: FuncState.alpha.name,
             ReservedArgType.FuncId.name: SpecialFunc.intercept_invocation_func.name,
         }]
         return func_envelopes

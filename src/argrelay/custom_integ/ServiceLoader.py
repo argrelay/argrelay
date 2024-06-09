@@ -10,6 +10,7 @@ from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
@@ -49,6 +50,7 @@ class ServiceLoader(AbstractLoader):
     def update_static_data(
         self,
         static_data: StaticData,
+        query_engine: QueryEngine,
     ) -> StaticData:
 
         static_data = self.load_data_envelopes(static_data)
@@ -1532,6 +1534,7 @@ class ServiceLoader(AbstractLoader):
             # TD_39_25_11_76 # missing props: clusters
 
             {
+                # nothing missing:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
@@ -1543,6 +1546,7 @@ class ServiceLoader(AbstractLoader):
             },
 
             {
+                # nothing missing:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
@@ -1561,6 +1565,7 @@ class ServiceLoader(AbstractLoader):
             # TD_39_25_11_76 # missing props: hosts
 
             {
+                # nothing missing:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
@@ -1574,6 +1579,7 @@ class ServiceLoader(AbstractLoader):
             },
 
             {
+                # nothing missing:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
@@ -1587,6 +1593,7 @@ class ServiceLoader(AbstractLoader):
             },
 
             {
+                # missing `ServiceArgType.live_status`:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
@@ -1601,6 +1608,7 @@ class ServiceLoader(AbstractLoader):
             },
 
             {
+                # nothing missing:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
@@ -1614,6 +1622,7 @@ class ServiceLoader(AbstractLoader):
             },
 
             {
+                # nothing missing:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
@@ -1627,6 +1636,7 @@ class ServiceLoader(AbstractLoader):
             },
 
             {
+                # nothing missing:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props

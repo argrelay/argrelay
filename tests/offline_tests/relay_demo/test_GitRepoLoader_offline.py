@@ -18,7 +18,11 @@ from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
+from argrelay.schema_config_plugin.PluginEntrySchema import (
+    plugin_enabled_,
+    plugin_dependencies_,
+    plugin_config_,
+)
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
@@ -35,13 +39,13 @@ class ThisTestClass(LocalTestClass):
 
     def test_loader(self):
 
-        git_loader_plugin_name = f"{GitRepoLoader.__name__}.self"
+        git_loader_plugin_instance_id = f"{GitRepoLoader.__name__}.self"
         argrelay_git_repo_dir = get_argrelay_dir()
 
         test_cases = [
             (
                 line_no(),
-                f"`{git_loader_plugin_name}` with empty base path and empty rel path (to load local argrelay.git)",
+                f"`{git_loader_plugin_instance_id}` with empty base path and empty rel path (to load local argrelay.git)",
                 {
                     repo_entries_: {
                         "": [
@@ -60,7 +64,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
-                f"`{git_loader_plugin_name}` with empty base path and non-empty rel path (to load local argrelay.git)",
+                f"`{git_loader_plugin_instance_id}` with empty base path and non-empty rel path (to load local argrelay.git)",
                 {
                     repo_entries_: {
                         "/": [
@@ -79,7 +83,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
-                f"`{git_loader_plugin_name}` with non-empty base path and empty rel path (to load local argrelay.git)",
+                f"`{git_loader_plugin_instance_id}` with non-empty base path and empty rel path (to load local argrelay.git)",
                 {
                     repo_entries_: {
                         argrelay_git_repo_dir: [
@@ -98,7 +102,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
-                f"`{git_loader_plugin_name}` loads repo without tags and commits",
+                f"`{git_loader_plugin_instance_id}` loads repo without tags and commits",
                 {
                     load_git_tags_default_: False,
                     load_git_commits_default_: False,
@@ -153,7 +157,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
-                f"`{git_loader_plugin_name}` loads repo with tags but without commits",
+                f"`{git_loader_plugin_instance_id}` loads repo with tags but without commits",
                 {
                     load_git_tags_default_: True,
                     load_git_commits_default_: False,
@@ -209,7 +213,7 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
-                f"`{git_loader_plugin_name}` loads repo without tags but with commits",
+                f"`{git_loader_plugin_instance_id}` loads repo without tags but with commits",
                 {
                     load_git_tags_default_: False,
                     load_git_commits_default_: True,
@@ -279,11 +283,19 @@ class ThisTestClass(LocalTestClass):
                     expected_non_empty_props_per_class,
                 ) = test_case
 
-                # Modify config to enable `GitRepoLoader` plugin:
+                # Make `GitRepoLoader` plugin depend on all other plugins (to make it the last):
                 plugin_config_dict = plugin_config_desc.dict_from_default_file()
-                plugin_config_dict[plugin_instance_entries_][
-                    git_loader_plugin_name
-                ][plugin_config_] = plugin_config
+                all_plugin_instance_ids = []
+                for plugin_instance_id, plugin_instance_entry in plugin_config_dict[plugin_instance_entries_].items():
+                    if git_loader_plugin_instance_id != plugin_instance_id:
+                        all_plugin_instance_ids.append(plugin_instance_id)
+                # Modify config to enable `GitRepoLoader` plugin:
+                git_loader_plugin_instance_entry = plugin_config_dict[plugin_instance_entries_][
+                    git_loader_plugin_instance_id
+                ]
+                git_loader_plugin_instance_entry[plugin_config_] = plugin_config
+                git_loader_plugin_instance_entry[plugin_enabled_] = True
+                git_loader_plugin_instance_entry[plugin_dependencies_] = all_plugin_instance_ids
 
                 env_mock_builder = (
                     LocalClientEnvMockBuilder()

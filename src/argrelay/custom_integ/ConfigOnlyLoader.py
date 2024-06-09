@@ -8,6 +8,7 @@ from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
@@ -51,6 +52,7 @@ class ConfigOnlyLoader(AbstractLoader):
     def update_static_data(
         self,
         static_data: StaticData,
+        query_engine: QueryEngine,
     ) -> StaticData:
 
         # Config for FS_56_43_05_79 different collections:

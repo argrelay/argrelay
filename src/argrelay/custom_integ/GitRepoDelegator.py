@@ -9,6 +9,7 @@ from argrelay.custom_integ.value_constants import (
     desc_git_commit_func_,
     desc_git_tag_func_,
 )
+from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common import eprint
@@ -117,6 +118,7 @@ class GitRepoDelegator(AbstractDelegator):
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedArgType.HelpHint.name: "Goto Git repository (`cd` to its path)",
+            ReservedArgType.FuncState.name: FuncState.beta.name,
             ReservedArgType.FuncId.name: goto_git_repo_func_,
         }
         func_envelopes.append(given_function_envelope)
@@ -131,6 +133,7 @@ class GitRepoDelegator(AbstractDelegator):
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedArgType.HelpHint.name: "Describe Git tag",
+            ReservedArgType.FuncState.name: FuncState.demo.name,
             ReservedArgType.FuncId.name: desc_git_tag_func_,
         }
         func_envelopes.append(given_function_envelope)
@@ -145,6 +148,7 @@ class GitRepoDelegator(AbstractDelegator):
             },
             ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedArgType.HelpHint.name: "Describe Git commit",
+            ReservedArgType.FuncState.name: FuncState.demo.name,
             ReservedArgType.FuncId.name: desc_git_commit_func_,
         }
         func_envelopes.append(given_function_envelope)

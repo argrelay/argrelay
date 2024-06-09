@@ -209,7 +209,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         interp_tree_node_config_dict,
     ):
         """
-        Provide search control based on `func_ids_to_func_rel_paths`.
+        Provide `func_search_control` based on `func_ids_to_func_rel_paths`.
         """
 
         class_to_collection_map: dict = self.server_config.class_to_collection_map
@@ -239,6 +239,14 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             keys_to_types_list.append({
                 f"{path_step_key_arg_name(sel_ipos)}": f"{func_envelope_path_step_prop_name(sel_ipos)}"
             })
+
+        # Include other fields:
+        keys_to_types_list.append({
+            "state": ReservedArgType.FuncState.name
+        })
+        keys_to_types_list.append({
+            "id": ReservedArgType.FuncId.name
+        })
 
     def populate_func_tree_props(
         self,

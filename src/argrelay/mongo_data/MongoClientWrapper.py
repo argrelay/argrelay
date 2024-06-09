@@ -27,10 +27,12 @@ def get_mongo_client(mongo_config: MongoConfig):
 
 def store_envelopes(
     mongo_db: Database,
+    cleaned_mongo_collections: set[str],
     static_data: StaticData,
+    total_envelope_n: int,
+    curr_envelope_i: int,
 ):
     # Calculate total:
-    total_envelope_n: int = 0
     for mongo_collection in static_data.envelope_collections:
         envelope_collection: EnvelopeCollection = static_data.envelope_collections[
             mongo_collection
@@ -38,13 +40,13 @@ def store_envelopes(
         total_envelope_n += len(envelope_collection.data_envelopes)
 
     # Index all:
-    curr_envelope_i: int = 0
     for mongo_collection in static_data.envelope_collections:
         envelope_collection: EnvelopeCollection = static_data.envelope_collections[
             mongo_collection
         ]
         curr_envelope_i += store_envelope_collection(
             mongo_db,
+            cleaned_mongo_collections,
             mongo_collection,
             envelope_collection,
             curr_envelope_i,
@@ -56,14 +58,17 @@ def store_envelopes(
 
 def store_envelope_collection(
     mongo_db: Database,
+    cleaned_mongo_collections: set[str],
     mongo_collection: str,
     envelope_collection: EnvelopeCollection,
     curr_envelope_i: int,
     total_envelope_n: int,
 ) -> int:
     col_proxy: Collection = mongo_db[mongo_collection]
-    col_proxy.delete_many({})
-    col_proxy.drop_indexes()
+    if mongo_collection not in cleaned_mongo_collections:
+        col_proxy.delete_many({})
+        col_proxy.drop_indexes()
+        cleaned_mongo_collections.add(mongo_collection)
 
     base_curr_envelope_i: int = curr_envelope_i
     envelope_per_col_i: int = 0
