@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass, object_name_
 
@@ -15,41 +15,41 @@ class ThisTestClass(MongoClientTestClass):
 
         # Fields which will be indexed:
         index_fields = [
-            ServiceArgType.access_type.name,
-            ServiceArgType.live_status.name,
-            ServiceArgType.code_maturity.name,
+            ServicePropName.access_type.name,
+            ServicePropName.live_status.name,
+            ServicePropName.code_maturity.name,
         ]
 
         envelope_001 = {
             envelope_payload_: {
                 object_name_: "envelope_001",
             },
-            ServiceArgType.access_type.name: "ro",
+            ServicePropName.access_type.name: "ro",
         }
 
         envelope_002 = {
             envelope_payload_: {
                 object_name_: "envelope_002",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: "red",
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: "red",
         }
 
         envelope_003 = {
             envelope_payload_: {
                 object_name_: "envelope_003",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: "blue",
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: "blue",
         }
 
         envelope_004 = {
             envelope_payload_: {
                 object_name_: "envelope_004",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: "red",
-            ServiceArgType.code_maturity.name: "prod",
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: "red",
+            ServicePropName.code_maturity.name: "prod",
         }
 
         self.col_proxy.insert_many([
@@ -64,8 +64,8 @@ class ThisTestClass(MongoClientTestClass):
         print("query 1:")
         for data_envelope in self.col_proxy.find(
             {
-                ServiceArgType.access_type.name: "rw",
-                ServiceArgType.live_status.name: "red",
+                ServicePropName.access_type.name: "rw",
+                ServicePropName.live_status.name: "red",
             }
         ):
             print("data_envelope: ", data_envelope)

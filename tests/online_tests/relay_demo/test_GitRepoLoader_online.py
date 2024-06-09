@@ -3,7 +3,7 @@ import subprocess
 import tempfile
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
     is_repo_enabled_,
@@ -16,7 +16,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     repo_entries_,
 )
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.relay_client import __main__
 from argrelay.relay_server.LocalServer import LocalServer
@@ -99,32 +99,32 @@ class ThisTestClass(BaseTestClass):
                             {
                                 repo_rel_path_: "qwer/abc",
                                 envelope_properties_: {
-                                    GitRepoArgType.git_repo_alias.name: "ar",
-                                    GitRepoArgType.git_repo_content_type.name: "self",
+                                    GitRepoPropName.git_repo_alias.name: "ar",
+                                    GitRepoPropName.git_repo_content_type.name: "self",
                                 },
                             },
                             {
                                 repo_rel_path_: "qwer/xyz",
                                 is_repo_enabled_: True,
                                 envelope_properties_: {
-                                    GitRepoArgType.git_repo_alias.name: "ac",
-                                    GitRepoArgType.git_repo_content_type.name: "code",
+                                    GitRepoPropName.git_repo_alias.name: "ac",
+                                    GitRepoPropName.git_repo_content_type.name: "code",
                                 },
                             },
                             {
                                 repo_rel_path_: "zxcv",
                                 is_repo_enabled_: True,
                                 envelope_properties_: {
-                                    GitRepoArgType.git_repo_alias.name: "clone",
-                                    GitRepoArgType.git_repo_content_type.name: "self",
+                                    GitRepoPropName.git_repo_alias.name: "clone",
+                                    GitRepoPropName.git_repo_content_type.name: "self",
                                 },
                             },
                             {
                                 repo_rel_path_: "poiu",
                                 is_repo_enabled_: False,
                                 envelope_properties_: {
-                                    GitRepoArgType.git_repo_alias.name: "missing",
-                                    GitRepoArgType.git_repo_content_type.name: "conf",
+                                    GitRepoPropName.git_repo_alias.name: "missing",
+                                    GitRepoPropName.git_repo_content_type.name: "conf",
                                 },
                             },
                         ],
@@ -165,13 +165,13 @@ class ThisTestClass(BaseTestClass):
                     repo_envelopes = local_server.query_engine.query_data_envelopes(
                         local_server.server_config.class_to_collection_map[GitRepoEnvelopeClass.ClassGitRepo.name],
                         {
-                            f"{ReservedArgType.EnvelopeClass.name}": f"{GitRepoEnvelopeClass.ClassGitRepo.name}",
+                            f"{ReservedPropName.envelope_class.name}": f"{GitRepoEnvelopeClass.ClassGitRepo.name}",
                         },
                     )
 
                     # Verify:
                     are_all_empty = True
-                    for type_name in [enum_item.name for enum_item in GitRepoArgType]:
+                    for type_name in [enum_item.name for enum_item in GitRepoPropName]:
                         # Find list of all values in `data_envelope`-s per `type_name`:
                         typed_values = []
                         for data_envelope in repo_envelopes:

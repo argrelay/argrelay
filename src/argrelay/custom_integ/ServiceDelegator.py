@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.value_constants import (
     goto_host_func_,
@@ -15,7 +15,7 @@ from argrelay.custom_integ.value_constants import (
 )
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.AbstractDelegator import (
     AbstractDelegator,
@@ -131,10 +131,10 @@ class ServiceDelegator(AbstractDelegator):
             class_to_collection_map,
             ServiceEnvelopeClass.ClassCluster.name,
             [
-                {"code": ServiceArgType.code_maturity.name},
-                {"stage": ServiceArgType.flow_stage.name},
-                {"region": ServiceArgType.geo_region.name},
-                {"cluster": ServiceArgType.cluster_name.name},
+                {"code": ServicePropName.code_maturity.name},
+                {"stage": ServicePropName.flow_stage.name},
+                {"region": ServicePropName.geo_region.name},
+                {"cluster": ServicePropName.cluster_name.name},
             ],
         )
 
@@ -143,15 +143,15 @@ class ServiceDelegator(AbstractDelegator):
             ServiceEnvelopeClass.ClassHost.name,
             [
                 # ClassCluster:
-                {"code": ServiceArgType.code_maturity.name},
-                {"stage": ServiceArgType.flow_stage.name},
-                {"region": ServiceArgType.geo_region.name},
-                {"cluster": ServiceArgType.cluster_name.name},
+                {"code": ServicePropName.code_maturity.name},
+                {"stage": ServicePropName.flow_stage.name},
+                {"region": ServicePropName.geo_region.name},
+                {"cluster": ServicePropName.cluster_name.name},
                 # ClassHost:
-                {"host": ServiceArgType.host_name.name},
+                {"host": ServicePropName.host_name.name},
                 # ---
-                {"status": ServiceArgType.live_status.name},
-                {"ip": ServiceArgType.ip_address.name},
+                {"status": ServicePropName.live_status.name},
+                {"ip": ServicePropName.ip_address.name},
             ],
         )
 
@@ -160,20 +160,20 @@ class ServiceDelegator(AbstractDelegator):
             ServiceEnvelopeClass.ClassService.name,
             [
                 # ClassCluster:
-                {"code": ServiceArgType.code_maturity.name},
-                {"stage": ServiceArgType.flow_stage.name},
-                {"region": ServiceArgType.geo_region.name},
-                {"cluster": ServiceArgType.cluster_name.name},
+                {"code": ServicePropName.code_maturity.name},
+                {"stage": ServicePropName.flow_stage.name},
+                {"region": ServicePropName.geo_region.name},
+                {"cluster": ServicePropName.cluster_name.name},
                 # ClassService:
-                {"group": ServiceArgType.group_label.name},
-                {"service": ServiceArgType.service_name.name},
-                {"mode": ServiceArgType.run_mode.name},
+                {"group": ServicePropName.group_label.name},
+                {"service": ServicePropName.service_name.name},
+                {"mode": ServicePropName.run_mode.name},
                 # ClassHost:
-                {"host": ServiceArgType.host_name.name},
+                {"host": ServicePropName.host_name.name},
                 # ---
-                {"status": ServiceArgType.live_status.name},
-                {"dc": ServiceArgType.data_center.name},
-                {"ip": ServiceArgType.ip_address.name},
+                {"status": ServicePropName.live_status.name},
+                {"dc": ServicePropName.data_center.name},
+                {"ip": ServicePropName.ip_address.name},
             ],
         )
 
@@ -181,7 +181,7 @@ class ServiceDelegator(AbstractDelegator):
             class_to_collection_map,
             ServiceEnvelopeClass.ClassAccessType.name,
             [
-                {"access": ServiceArgType.access_type.name},
+                {"access": ServicePropName.access_type.name},
             ],
         )
 
@@ -195,10 +195,10 @@ class ServiceDelegator(AbstractDelegator):
                         access_search_control,
                     ],
                 },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Go (log in) to remote host",
-                ReservedArgType.FuncState.name: FuncState.demo.name,
-                ReservedArgType.FuncId.name: goto_host_func_,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: "Go (log in) to remote host",
+                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_id.name: goto_host_func_,
             },
             {
                 instance_data_: {
@@ -209,10 +209,10 @@ class ServiceDelegator(AbstractDelegator):
                         access_search_control,
                     ],
                 },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Go (log in) to remote host and dir path with specified service",
-                ReservedArgType.FuncState.name: FuncState.demo.name,
-                ReservedArgType.FuncId.name: goto_service_func_,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: "Go (log in) to remote host and dir path with specified service",
+                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_id.name: goto_service_func_,
             },
             {
                 instance_data_: {
@@ -223,10 +223,10 @@ class ServiceDelegator(AbstractDelegator):
                         host_search_control,
                     ],
                 },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Describe remote host",
-                ReservedArgType.FuncState.name: FuncState.demo.name,
-                ReservedArgType.FuncId.name: desc_host_func_,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: "Describe remote host",
+                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_id.name: desc_host_func_,
             },
             {
                 instance_data_: {
@@ -237,10 +237,10 @@ class ServiceDelegator(AbstractDelegator):
                         service_search_control,
                     ],
                 },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Describe service instance",
-                ReservedArgType.FuncState.name: FuncState.demo.name,
-                ReservedArgType.FuncId.name: desc_service_func_,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: "Describe service instance",
+                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_id.name: desc_service_func_,
             },
             {
                 instance_data_: {
@@ -250,10 +250,10 @@ class ServiceDelegator(AbstractDelegator):
                         host_search_control,
                     ],
                 },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "List remote hosts matching search query",
-                ReservedArgType.FuncState.name: FuncState.demo.name,
-                ReservedArgType.FuncId.name: list_host_func_,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: "List remote hosts matching search query",
+                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_id.name: list_host_func_,
             },
             {
                 instance_data_: {
@@ -263,10 +263,10 @@ class ServiceDelegator(AbstractDelegator):
                         service_search_control,
                     ],
                 },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "List service instances matching search query",
-                ReservedArgType.FuncState.name: FuncState.demo.name,
-                ReservedArgType.FuncId.name: list_service_func_,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: "List service instances matching search query",
+                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_id.name: list_service_func_,
             },
             {
                 instance_data_: {
@@ -279,10 +279,10 @@ class ServiceDelegator(AbstractDelegator):
                         service_search_control,
                     ],
                 },
-                ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-                ReservedArgType.HelpHint.name: "Diff two service instances",
-                ReservedArgType.FuncState.name: FuncState.demo.name,
-                ReservedArgType.FuncId.name: diff_service_func_,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: "Diff two service instances",
+                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_id.name: diff_service_func_,
             },
         ]
         return func_envelopes
@@ -325,18 +325,18 @@ class ServiceDelegator(AbstractDelegator):
                 )]
 
                 # Select default value to search `access_type` `data_envelope` based on `code_maturity`:
-                code_arg_type = ServiceArgType.code_maturity.name
+                code_arg_type = ServicePropName.code_maturity.name
                 if code_arg_type in data_envelope:
                     code_arg_val = data_envelope[code_arg_type]
                     if code_arg_val == "prod":
                         any_assignment = (
-                            set_default_to(ServiceArgType.access_type.name, "ro", access_container)
+                            set_default_to(ServicePropName.access_type.name, "ro", access_container)
                             or
                             any_assignment
                         )
                     else:
                         any_assignment = (
-                            set_default_to(ServiceArgType.access_type.name, "rw", access_container)
+                            set_default_to(ServicePropName.access_type.name, "rw", access_container)
                             or
                             any_assignment
                         )
@@ -376,7 +376,7 @@ class ServiceDelegator(AbstractDelegator):
                 interp_ctx.curr_interp.base_container_ipos + object_container_ipos
             )]
             any_assignment = (
-                set_default_to(ServiceArgType.run_mode.name, "active", service_container)
+                set_default_to(ServicePropName.run_mode.name, "active", service_container)
                 or
                 any_assignment
             )

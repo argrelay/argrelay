@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.value_constants import goto_service_func_, goto_host_func_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import (
@@ -62,7 +62,7 @@ class ThisTestClass(LocalTestClass):
                 [],
                 "FS_23_62_89_43: "
                 "Host `qwer` is already singled out `data_envelope` "
-                "(only one `ServiceEnvelopeClass.ClassHost` within current `ServiceArgType.cluster_name`),"
+                "(only one `ServiceEnvelopeClass.ClassHost` within current `ServicePropName.cluster_name`),"
                 "therefore, it is not suggested.",
             ),
             (
@@ -75,8 +75,8 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod apac|", CompType.SubsequentHelp,
                 [],
                 "FS_23_62_89_43: "
-                "`ServiceArgType.code_maturity` = `prod` singles out `ServiceEnvelopeClass.ClassCluster` which "
-                "skips suggestion for `ServiceArgType.geo_region`",
+                "`ServicePropName.code_maturity` = `prod` singles out `ServiceEnvelopeClass.ClassCluster` which "
+                "skips suggestion for `ServicePropName.geo_region`",
             ),
             (
                 line_no(), "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |", CompType.PrefixShown,
@@ -115,8 +115,8 @@ class ThisTestClass(LocalTestClass):
                 "some_command goto upstream dev amer desc host |", CompType.SubsequentHelp,
                 [],
                 "FS_23_62_89_43: "
-                "`ServiceArgType.code_maturity` = `dev` and `ServiceArgType.geo_region` = `amer` "
-                "single out one host and one service, leaving only `ServiceArgType.access_type` "
+                "`ServicePropName.code_maturity` = `dev` and `ServicePropName.geo_region` = `amer` "
+                "single out one host and one service, leaving only `ServicePropName.access_type` "
                 "to be the next to suggest which has a default "
                 "leading to no suggestions at all.",
             ),
@@ -240,42 +240,42 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassHost.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                     },
                     2: None,
                 },
                 ServiceDelegator,
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "zxcv-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "zxcv-du",
                     },
                     2: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "zxcv-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "zxcv-dd",
                     },
                     3: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "poiu-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "poiu-dd",
                     },
                     4: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "asdf-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "asdf-du",
                     },
                     5: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "xcvb-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "xcvb-dd",
                     },
                     6: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "qwer-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "qwer-du",
                     },
                     7: None,
                 },
@@ -298,30 +298,30 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassService.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServicePropName.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
                     },
                     2: None,
                 },
                 ServiceDelegator,
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.service_name.name: "s_b",
-                        ServiceArgType.host_name.name: "qwer-pd-1",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.service_name.name: "s_b",
+                        ServicePropName.host_name.name: "qwer-pd-1",
                     },
                     2: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.service_name.name: "s_b",
-                        ServiceArgType.host_name.name: "qwer-pd-2",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.service_name.name: "s_b",
+                        ServicePropName.host_name.name: "qwer-pd-2",
                     },
                     3: None,
                 },
@@ -380,42 +380,42 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassHost.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                     },
                     2: None,
                 },
                 ServiceDelegator,
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "zxcv-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "zxcv-du",
                     },
                     2: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "zxcv-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "zxcv-dd",
                     },
                     3: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "poiu-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "poiu-dd",
                     },
                     4: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "asdf-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "asdf-du",
                     },
                     5: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "xcvb-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "xcvb-dd",
                     },
                     6: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "qwer-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "qwer-du",
                     },
                     7: None,
                 },
@@ -455,30 +455,30 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassService.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServicePropName.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
                     },
                     2: None,
                 },
                 ServiceDelegator,
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.service_name.name: "s_b",
-                        ServiceArgType.host_name.name: "qwer-pd-1",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.service_name.name: "s_b",
+                        ServicePropName.host_name.name: "qwer-pd-1",
                     },
                     2: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.service_name.name: "s_b",
-                        ServiceArgType.host_name.name: "qwer-pd-2",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.service_name.name: "s_b",
+                        ServicePropName.host_name.name: "qwer-pd-2",
                     },
                     3: None,
                 },
@@ -541,8 +541,8 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc diff duplicates echo enum goto help intercept list 
 {" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc diff double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag 
-{" " * indent_size}{TermColor.remaining_value.value}{ReservedArgType.FuncState.name}: ?{TermColor.reset_style.value} alpha beta demo gamma 
-{" " * indent_size}{TermColor.remaining_value.value}{ReservedArgType.FuncId.name}: ?{TermColor.reset_style.value} desc_git_commit_func desc_git_tag_func desc_host_func desc_service_func diff_service_func echo_args_func funct_id_double_execution funct_id_print_with_exit_code funct_id_print_with_io_redirect funct_id_print_with_severity_level goto_git_repo_func goto_host_func goto_service_func help_hint_func intercept_invocation_func list_host_func list_service_func query_enum_items_func 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} alpha beta demo gamma 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} desc_git_commit_func desc_git_tag_func desc_host_func desc_service_func diff_service_func echo_args_func funct_id_double_execution funct_id_print_with_exit_code funct_id_print_with_io_redirect funct_id_print_with_severity_level goto_git_repo_func goto_host_func goto_service_func help_hint_func intercept_invocation_func list_host_func list_service_func query_enum_items_func 
 """,
             ),
             (
@@ -555,8 +555,8 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncState.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncId.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -583,8 +583,8 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: host {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncState.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncId.name}: {goto_host_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_host_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassHost.name}: {TermColor.found_count_n.value}10{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*code_maturity: ?{TermColor.reset_style.value} dev prod qa 
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -606,8 +606,8 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncState.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncId.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}code_maturity: prod {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}flow_stage: upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
@@ -636,10 +636,10 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
-                    ServiceArgType.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
-                    ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                    ServiceArgType.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ExplicitPosArg),
+                    ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                    ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
+                    ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                    ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ExplicitPosArg),
                 },
                 "Implicit assignment of all cluster categories when cluster name is specified",
             ),
@@ -647,7 +647,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod-apac-downstream wert-pd-1 |", CompType.PrefixShown,
                 2,
                 {
-                    ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
+                    ServicePropName.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
                 },
                 "Default `ro` for `prod`",
             ),
@@ -655,7 +655,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod-apac-downstream wert-pd-1 rw |", CompType.PrefixShown,
                 2,
                 {
-                    ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.ExplicitPosArg),
+                    ServicePropName.access_type.name: AssignedValue("rw", ArgSource.ExplicitPosArg),
                 },
                 "Override default `ro` for `prod` to `rw`",
             ),
@@ -663,7 +663,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host dev-apac-upstream zxcv-du |", CompType.PrefixShown,
                 2,
                 {
-                    ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
+                    ServicePropName.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
                 },
                 "Default `rw` for non-`prod`",
             ),
@@ -682,7 +682,7 @@ class ThisTestClass(LocalTestClass):
                     f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
                     f"{func_envelope_path_step_prop_name(1)}": AssignedValue("desc", ArgSource.ExplicitPosArg),
                     f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
-                    ServiceArgType.access_type.name: None,
+                    ServicePropName.access_type.name: None,
                 },
                 # TODO: Test assertion has nothing to do with incomplete token - it asserts first (func) envelope, but not the `zxcv`-related one.
                 # TODO: Is "complete in invocation mode" but this is Tab-completion mode:
@@ -723,8 +723,8 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod|", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.code_maturity.name: None,
-                    ServiceArgType.access_type.name: None,
+                    ServicePropName.code_maturity.name: None,
+                    ServicePropName.access_type.name: None,
                 },
                 "No implicit assignment for incomplete token",
             ),
@@ -732,8 +732,8 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                    ServiceArgType.access_type.name: None,
+                    ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                    ServicePropName.access_type.name: None,
                 },
                 "No implicit assignment of access type to \"ro\" when code maturity is \"prod\" in completion",
             ),
@@ -742,8 +742,8 @@ class ThisTestClass(LocalTestClass):
             #     line_no(), "some_command goto host prod |", CompType.PrefixShown,
             #     1,
             #     {
-            #         ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-            #         ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.ImplicitValue),
+            #         ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+            #         ServicePropName.access_type.name: AssignedValue("ro", ArgSource.ImplicitValue),
             #     },
             #     "Implicit assignment of access type to \"ro\" when code maturity is \"prod\" in invocation",
             # ),
@@ -751,8 +751,8 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host dev |", CompType.PrefixShown,
                 1,
                 {
-                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-                    ServiceArgType.access_type.name: None,
+                    ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                    ServicePropName.access_type.name: None,
                 },
                 "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion",
             ),
@@ -761,8 +761,8 @@ class ThisTestClass(LocalTestClass):
             #     line_no(), "some_command goto host dev |", CompType.PrefixShown,
             #     1,
             #     {
-            #         ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-            #         ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.ImplicitValue),
+            #         ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+            #         ServicePropName.access_type.name: AssignedValue("rw", ArgSource.ImplicitValue),
             #     },
             #     "Implicit assignment of access type to \"rw\" when code maturity is \"uat\" in invocation",
             # ),
@@ -799,11 +799,11 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto host prod wert-pd-1|", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.host_name.name: AssignedValue("wert-pd-1", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServicePropName.host_name.name: AssignedValue("wert-pd-1", ArgSource.ExplicitPosArg),
                     },
                     2: {
-                        ServiceArgType.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
@@ -814,11 +814,11 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "relay_demo goto service tt|", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
-                        ServiceArgType.service_name.name: AssignedValue("tt", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                        ServicePropName.service_name.name: AssignedValue("tt", ArgSource.ExplicitPosArg),
                     },
                     2: {
-                        ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
@@ -872,10 +872,10 @@ class ThisTestClass(LocalTestClass):
                 ErrorDelegator,
                 {
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                        ServiceArgType.host_name.name: "wert-pd-1",
-                        ServiceArgType.service_name.name: "tt1",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.cluster_name.name: "prod-apac-downstream",
+                        ServicePropName.host_name.name: "wert-pd-1",
+                        ServicePropName.service_name.name: "tt1",
                     },
                 },
                 "Verify invocation input when ErrorDelegator is used.",
@@ -886,15 +886,15 @@ class ThisTestClass(LocalTestClass):
                 {
                     # vararg_ipos + 0
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.cluster_name.name: "dev-emea-upstream",
-                        ServiceArgType.service_name.name: "s_a",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.cluster_name.name: "dev-emea-upstream",
+                        ServicePropName.service_name.name: "s_a",
                     },
                     # vararg_ipos + 1
                     2: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.cluster_name.name: "dev-emea-upstream",
-                        ServiceArgType.service_name.name: "s_b",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.cluster_name.name: "dev-emea-upstream",
+                        ServicePropName.service_name.name: "s_b",
                     },
                 },
                 "Verify invocation input with FS_18_64_57_18 varargs when ServiceDelegator is used.",
@@ -935,17 +935,17 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-                        ServiceArgType.host_name.name: AssignedValue("poiu-dd", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServicePropName.host_name.name: AssignedValue("poiu-dd", ArgSource.ExplicitPosArg),
                     },
                     2: {
-                        ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
                 {
                     2: {
-                        ServiceArgType.access_type.name: [
+                        ServicePropName.access_type.name: [
                             "ro",
                             "rw",
                         ],
@@ -957,23 +957,23 @@ class ThisTestClass(LocalTestClass):
                     1: 0,
                     2: None,
                 },
-                "Ensure options hidden by `ArgSource.DefaultValue` for `ServiceArgType.access_type` "
+                "Ensure options hidden by `ArgSource.DefaultValue` for `ServicePropName.access_type` "
                 "and `EnvelopeContainer.used_arg_bucket` stays None.",
             ),
             (
                 line_no(), "relay_demo diff prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
+                        ServicePropName.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
                     },
                     2: {
-                        ServiceArgType.run_mode.name: AssignedValue("passive", ArgSource.ExplicitPosArg),
+                        ServicePropName.run_mode.name: AssignedValue("passive", ArgSource.ExplicitPosArg),
                     },
                     3: None,
                 },
                 {
                     1: {
-                        ServiceArgType.run_mode.name: [
+                        ServicePropName.run_mode.name: [
                             "active",
                             "passive",
                         ],
@@ -981,7 +981,7 @@ class ThisTestClass(LocalTestClass):
                     2: {
                         # Ensure there is nothing hidden by default
                         # (because there is no `ArgSource.DefaultValue`, but `ArgSource.ExplicitPosArg` instead)
-                        ServiceArgType.run_mode.name: None,
+                        ServicePropName.run_mode.name: None,
                     },
                     3: None,
                 },
@@ -992,7 +992,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "Case A1: "
                 "FS_97_64_39_94 `arg_bucket`-s used by the 1st/left service `envelope_container` prevents assignment "
-                "of `ServiceArgType.run_mode` = `passive` specified for the 2nd/right service `envelope_container`. "
+                "of `ServicePropName.run_mode` = `passive` specified for the 2nd/right service `envelope_container`. "
                 "In other words, 1st/left service `envelope_container` still uses default, not override, "
                 "while 2nd/right service `envelope_container` accepts that override, not using default.",
             ),
@@ -1000,22 +1000,22 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "relay_demo diff prod downstream rrr tt1 % tt1 % passive |", CompType.DescribeArgs,
                 {
                     1: {
-                        ServiceArgType.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
+                        ServicePropName.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
                     },
                     2: {
-                        ServiceArgType.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
+                        ServicePropName.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
                 {
                     1: {
-                        ServiceArgType.run_mode.name: [
+                        ServicePropName.run_mode.name: [
                             "active",
                             "passive",
                         ],
                     },
                     2: {
-                        ServiceArgType.run_mode.name: [
+                        ServicePropName.run_mode.name: [
                             "active",
                             "passive",
                         ],
@@ -1068,8 +1068,8 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncState.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncId.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -1095,8 +1095,8 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}elay_demo{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncState.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncId.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -1122,8 +1122,8 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncState.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedArgType.FuncId.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}3{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: prod {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}

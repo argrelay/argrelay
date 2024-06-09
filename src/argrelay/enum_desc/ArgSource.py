@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 
-# TODO: TODO_66_66_75_78: Rename to prop source - see also `ReservedArgType` (to be renamed to `ReservedPropType`).
+# TODO: TODO_66_66_75_78: Rename to prop source - see also `ReservedPropName` (to be renamed to `ReservedPropType`).
 class ArgSource(IntEnum):
     """
     Specifies how each :class:`AssignedValue` was obtained.

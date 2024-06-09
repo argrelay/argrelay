@@ -4,10 +4,11 @@ import copy
 import json
 
 from cachetools import TTLCache
+from pymongo.cursor import Cursor
 from pymongo.database import Database
 
 from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
@@ -55,11 +56,21 @@ class QueryEngine:
         final invocation for vararg-like multiple `data_envelope`-s (FS_18_64_57_18).
         Therefore, it is not latency-sensitive (results are not cached).
 
-        See also `QueryResult.data_envelopes`.
+        See also `QueryResult.query_prop_values`.
         """
 
-        query_res = self.mongo_db[collection_name].find(query_dict)
-        return list(iter(query_res))
+        mongo_cursor: Cursor = self.get_data_envelopes_cursor(
+            collection_name,
+            query_dict,
+        )
+        return list(iter(mongo_cursor))
+
+    def get_data_envelopes_cursor(
+        self,
+        collection_name: str,
+        query_dict: dict,
+    ) -> Cursor:
+         return self.mongo_db[collection_name].find(query_dict)
 
     def query_prop_values(
         self,
@@ -356,7 +367,7 @@ def populate_query_dict(
     envelope_container: EnvelopeContainer,
 ) -> dict:
     query_dict = {
-        ReservedArgType.EnvelopeClass.name: envelope_container.search_control.envelope_class,
+        ReservedPropName.envelope_class.name: envelope_container.search_control.envelope_class,
     }
     # FS_31_70_49_15: populate arg values to search from the context:
     for arg_type in envelope_container.search_control.types_to_keys_dict:

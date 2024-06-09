@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
@@ -35,42 +35,42 @@ class ThisTestClass(RemoteTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassHost.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                     },
                     2: None,
                 },
                 ServiceDelegator,
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "zxcv-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "zxcv-du",
                     },
                     2: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "zxcv-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "zxcv-dd",
                     },
                     3: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "poiu-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "poiu-dd",
                     },
                     4: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "asdf-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "asdf-du",
                     },
                     5: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "xcvb-dd",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "xcvb-dd",
                     },
                     6: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceArgType.host_name.name: "qwer-du",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ServicePropName.host_name.name: "qwer-du",
                     },
                     7: None,
                 },
@@ -87,33 +87,33 @@ class ThisTestClass(RemoteTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassService.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServiceArgType.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServicePropName.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
                     },
                     2: {
-                        # Nothing is assigned for `ServiceArgType.access_type`, but it exists.
+                        # Nothing is assigned for `ServicePropName.access_type`, but it exists.
                     },
                     3: None,
                 },
                 ErrorDelegator,
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.service_name.name: "s_b",
-                        ServiceArgType.host_name.name: "qwer-pd-1",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.service_name.name: "s_b",
+                        ServicePropName.host_name.name: "qwer-pd-1",
                     },
                     2: {
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceArgType.service_name.name: "s_b",
-                        ServiceArgType.host_name.name: "qwer-pd-2",
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ServicePropName.service_name.name: "s_b",
+                        ServicePropName.host_name.name: "qwer-pd-2",
                     },
                     3: None,
                 },

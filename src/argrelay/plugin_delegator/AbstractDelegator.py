@@ -4,7 +4,7 @@ from typing import Union
 
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.PluginType import PluginType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.runtime_context.AbstractPlugin import AbstractPlugin
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import function_container_ipos_
@@ -169,11 +169,11 @@ class AbstractDelegator(AbstractPlugin):
         curr_container_ipos: int,
     ) -> None:
         """
-        Sets `ReservedArgType.EnvelopeClass` according to FS_31_70_49_15 search control.
+        Sets `ReservedPropName.envelope_class` according to FS_31_70_49_15 search control.
         """
         curr_container = envelope_containers[curr_container_ipos]
         curr_container.assigned_types_to_values[
-            ReservedArgType.EnvelopeClass.name
+            ReservedPropName.envelope_class.name
         ] = AssignedValue(
             curr_container.search_control.envelope_class,
             ArgSource.InitValue,

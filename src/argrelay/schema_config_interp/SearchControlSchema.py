@@ -11,7 +11,7 @@ collection_name_ = "collection_name"
 
 envelope_class_ = "envelope_class"
 """
-Specifies `ReservedArgType.EnvelopeClass` to search.
+Specifies `ReservedPropName.envelope_class` to search.
 """
 
 keys_to_types_list_ = "keys_to_types_list"

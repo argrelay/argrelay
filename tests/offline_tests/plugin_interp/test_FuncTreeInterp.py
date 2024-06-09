@@ -1,8 +1,8 @@
-from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -27,7 +27,7 @@ class ThisTestClass(LocalTestClass):
                 [],
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ReservedEnvelopeClass.ClassFunction.name,
                             ArgSource.InitValue,
                         ),
@@ -36,11 +36,11 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("tag", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             GitRepoEnvelopeClass.ClassGitTag.name,
                             ArgSource.InitValue,
                         ),
-                        GitRepoArgType.git_repo_alias.name: AssignedValue("argrelay", ArgSource.ImplicitValue),
+                        GitRepoPropName.git_repo_alias.name: AssignedValue("argrelay", ArgSource.ImplicitValue),
                     },
                     3: None,
                 },
@@ -54,7 +54,7 @@ class ThisTestClass(LocalTestClass):
                 [],
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ReservedEnvelopeClass.ClassFunction.name,
                             ArgSource.InitValue,
                         ),
@@ -63,11 +63,11 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("tag", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             GitRepoEnvelopeClass.ClassGitTag.name,
                             ArgSource.InitValue,
                         ),
-                        GitRepoArgType.git_repo_alias.name: AssignedValue("argrelay", ArgSource.ImplicitValue),
+                        GitRepoPropName.git_repo_alias.name: AssignedValue("argrelay", ArgSource.ImplicitValue),
                     },
                     3: None,
                 },

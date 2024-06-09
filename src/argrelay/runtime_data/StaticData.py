@@ -17,5 +17,5 @@ class StaticData:
     """
     MondoDB collection name to its `EnvelopeCollection`.
 
-    Collection name is normally (but not necessarily) matching one of the `ReservedArgType.EnvelopeClass`.
+    Collection name is normally (but not necessarily) matching one of the `ReservedPropName.envelope_class`.
     """

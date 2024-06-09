@@ -6,10 +6,11 @@ from pymongo import MongoClient
 
 from argrelay.composite_tree.DictTreeWalker import contains_whitespace
 from argrelay.enum_desc.PluginType import PluginType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
+from argrelay.mongo_data.MongoClientWrapper import log_validation_progress
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
@@ -62,6 +63,9 @@ class LocalServer:
         # TODO: TODO_39_25_11_76: missing props: index to validate missing props:
         # Set of all prop names (2-level map) per `collection_name` and `envelope_class`:
         self.prop_names_per_collection_per_class: dict[str, dict[str, set[str]]] = {}
+
+        # Number of envelopes loaded per `collection_name`:
+        self.count_per_collection: dict[str, int] = {}
 
         # seconds since epoch:
         self.server_start_time: int = int(time.time())
@@ -178,9 +182,14 @@ class LocalServer:
                 collection_name,
                 {},
             )
+            self.count_per_collection[collection_name] = (
+                self.count_per_collection.setdefault(collection_name, 0)
+                +
+                len(envelope_collection.data_envelopes)
+            )
             for index_field in envelope_collection.index_fields:
                 for data_envelope in envelope_collection.data_envelopes:
-                    envelope_class = data_envelope[ReservedArgType.EnvelopeClass.name]
+                    envelope_class = data_envelope[ReservedPropName.envelope_class.name]
 
                     if index_field not in data_envelope:
                         # TODO_39_25_11_76: `data_envelope`-s with missing props:
@@ -235,12 +244,20 @@ class LocalServer:
         # Verify that all prop names per (2-level map) `collection_name` and `envelope_class`
         # exists in all corresponding `data_envelope`-s loaded:
         for collection_name, prop_names_per_class in self.prop_names_per_collection_per_class.items():
-            data_envelopes = self.query_engine.query_data_envelopes(
+            eprint(f"collection to validate: {collection_name}")
+            total_envelope_n = self.count_per_collection[collection_name]
+            curr_envelope_i = 0
+            log_validation_progress(collection_name, curr_envelope_i, total_envelope_n)
+
+            for data_envelope in self.query_engine.get_data_envelopes_cursor(
                 collection_name,
                 {},
-            )
-            for data_envelope in data_envelopes:
-                envelope_class = data_envelope[ReservedArgType.EnvelopeClass.name]
+            ):
+                curr_envelope_i += 1
+                envelope_class = data_envelope[ReservedPropName.envelope_class.name]
+
+                if curr_envelope_i % 1_000 == 0:
+                    log_validation_progress(collection_name, curr_envelope_i, total_envelope_n)
 
                 # TODO: TODO_39_25_11_76 missing props: skip funcs for now - they have to be fixed generically:
                 if envelope_class == ReservedEnvelopeClass.ClassFunction.name:
@@ -257,6 +274,8 @@ class LocalServer:
                         prop_name,
                         prop_value,
                     )
+
+            log_validation_progress(collection_name, curr_envelope_i, total_envelope_n)
 
     def _start_mongo_server(
         self,
@@ -334,7 +353,7 @@ class LocalServer:
             ]
             # Include `envelope_class` field into index by default:
             index_fields: list[str] = deepcopy(envelope_collection.index_fields)
-            index_fields.append(ReservedArgType.EnvelopeClass.name)
+            index_fields.append(ReservedPropName.envelope_class.name)
             MongoClientWrapper.create_index(
                 mongo_db,
                 collection_name,

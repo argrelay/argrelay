@@ -1,7 +1,7 @@
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.relay_client import __main__
 from argrelay.test_infra import parse_line_and_cpos
@@ -32,18 +32,18 @@ class ThisTestClass(ManualServerTestClass):
             invocation_input = EnvMockBuilder.invocation_input
             self.assertEqual(
                 ServiceEnvelopeClass.ClassService.name,
-                invocation_input.envelope_containers[1].data_envelopes[0][ReservedArgType.EnvelopeClass.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ReservedPropName.envelope_class.name]
             )
             self.assertEqual(
                 "prod-apac-downstream",
-                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.cluster_name.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServicePropName.cluster_name.name]
             )
             self.assertEqual(
                 "wert-pd-1",
-                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.host_name.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServicePropName.host_name.name]
             )
             self.assertEqual(
                 "tt1",
-                invocation_input.envelope_containers[1].data_envelopes[0][ServiceArgType.service_name.name]
+                invocation_input.envelope_containers[1].data_envelopes[0][ServicePropName.service_name.name]
             )
             self.assertTrue(True)

@@ -4,7 +4,7 @@ from enum import Enum, auto
 
 from argrelay.custom_integ.ServiceDelegator import set_default_to
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input, get_func_id_from_interp_ctx
@@ -62,13 +62,13 @@ class InterceptDelegator(AbstractJumpDelegator):
                     output_format_search_control,
                 ],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: (
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.help_hint.name: (
                 f"Intercept and print `{InvocationInput.__name__}` "
                 "for specified function and its args"
             ),
-            ReservedArgType.FuncState.name: FuncState.alpha.name,
-            ReservedArgType.FuncId.name: SpecialFunc.intercept_invocation_func.name,
+            ReservedPropName.func_state.name: FuncState.alpha.name,
+            ReservedPropName.func_id.name: SpecialFunc.intercept_invocation_func.name,
         }]
         return func_envelopes
 

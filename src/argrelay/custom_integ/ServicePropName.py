@@ -1,7 +1,7 @@
 from enum import Enum, auto
 
 
-class ServiceArgType(Enum):
+class ServicePropName(Enum):
     """
     Custom arg types used by :class:`ServiceLoader`.
 

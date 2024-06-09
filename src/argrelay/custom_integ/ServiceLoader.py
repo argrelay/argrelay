@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServiceLoaderConfigSchema import (
     service_loader_config_desc,
     test_data_ids_to_load_,
 )
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
@@ -79,7 +79,7 @@ class ServiceLoader(AbstractLoader):
             self.server_config,
             class_names,
             # Same index fields for all collections (can be fine-tuned later):
-            lambda collection_name, class_name: [enum_item.name for enum_item in ServiceArgType]
+            lambda collection_name, class_name: [enum_item.name for enum_item in ServicePropName]
         )
 
         # Select `data_envelope` lists used by each collection name
@@ -144,21 +144,21 @@ class ServiceLoader(AbstractLoader):
     ):
         for data_envelope in data_envelopes:
             if envelope_id_ not in data_envelope:
-                if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
+                if data_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.ClassHost.name:
                     data_envelope[envelope_id_] = (
-                        data_envelope[ServiceArgType.cluster_name.name]
+                        data_envelope[ServicePropName.cluster_name.name]
                         + "." +
-                        data_envelope[ServiceArgType.host_name.name]
+                        data_envelope[ServicePropName.host_name.name]
                     )
-                if data_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassService.name:
+                if data_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.ClassService.name:
                     data_envelope[envelope_id_] = (
-                        data_envelope[ServiceArgType.cluster_name.name]
+                        data_envelope[ServicePropName.cluster_name.name]
                         + "." +
-                        data_envelope[ServiceArgType.host_name.name]
+                        data_envelope[ServicePropName.host_name.name]
                         + "." +
-                        data_envelope[ServiceArgType.service_name.name]
+                        data_envelope[ServicePropName.service_name.name]
                         + "." +
-                        data_envelope[ServiceArgType.run_mode.name]
+                        data_envelope[ServicePropName.run_mode.name]
                     )
 
     @staticmethod
@@ -167,10 +167,10 @@ class ServiceLoader(AbstractLoader):
         static_data: StaticData,
     ):
         """
-        This demos FS_71_87_33_52 help_hint for `ServiceArgType.ip_address`.
+        This demos FS_71_87_33_52 help_hint for `ServicePropName.ip_address`.
 
         It simply generates `data_envelope`-s of `ReservedEnvelopeClass.ClassHelp` for
-        values of `ServiceArgType.ip_address` equal to corresponding `ServiceArgType.host_name`.
+        values of `ServicePropName.ip_address` equal to corresponding `ServicePropName.host_name`.
         """
 
         class_to_collection_map.setdefault(
@@ -189,11 +189,11 @@ class ServiceLoader(AbstractLoader):
 
         # Init index fields (if they do not exist):
         for help_hint_index_field in [
-            ReservedArgType.EnvelopeClass.name,
-            ReservedArgType.ArgType.name,
-            ReservedArgType.ArgValue.name,
-            # `ReservedArgType.HelpHint` is not indexed (and uses as search param) - instead, it is a search result:
-            # ReservedArgType.HelpHint.name,
+            ReservedPropName.envelope_class.name,
+            ReservedPropName.arg_type.name,
+            ReservedPropName.arg_value.name,
+            # `ReservedPropName.help_hint` is not indexed (and uses as search param) - instead, it is a search result:
+            # ReservedPropName.help_hint.name,
         ]:
             if help_hint_index_field not in help_hint_index_fields:
                 help_hint_index_fields.append(help_hint_index_field)
@@ -206,13 +206,13 @@ class ServiceLoader(AbstractLoader):
         for host_envelope in host_envelopes:
             # This `if`-filter is not necessary until non-host-class-envelopes
             # get stored into the same collection:
-            if host_envelope[ReservedArgType.EnvelopeClass.name] == ServiceEnvelopeClass.ClassHost.name:
-                if ServiceArgType.ip_address.name in host_envelope:
+            if host_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.ClassHost.name:
+                if ServicePropName.ip_address.name in host_envelope:
                     help_hint_envelopes.append({
-                        f"{ReservedArgType.EnvelopeClass.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
-                        f"{ReservedArgType.ArgType.name}": f"{ServiceArgType.ip_address.name}",
-                        f"{ReservedArgType.ArgValue.name}": f"{host_envelope[ServiceArgType.ip_address.name]}",
-                        f"{ReservedArgType.HelpHint.name}": f"{host_envelope[ServiceArgType.host_name.name]}",
+                        f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
+                        f"{ReservedPropName.arg_type.name}": f"{ServicePropName.ip_address.name}",
+                        f"{ReservedPropName.arg_value.name}": f"{host_envelope[ServicePropName.ip_address.name]}",
+                        f"{ReservedPropName.help_hint.name}": f"{host_envelope[ServicePropName.host_name.name]}",
                     })
 
     def is_test_data_allowed(
@@ -237,14 +237,14 @@ class ServiceLoader(AbstractLoader):
             {
                 envelope_payload_: {
                 },
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassAccessType.name,
-                ServiceArgType.access_type.name: "ro",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                ServicePropName.access_type.name: "ro",
             },
             {
                 envelope_payload_: {
                 },
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassAccessType.name,
-                ServiceArgType.access_type.name: "rw",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                ServicePropName.access_type.name: "rw",
             },
         ])
 
@@ -269,111 +269,111 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-apac-upstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-apac-upstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-emea-upstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-emea-upstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-amer-upstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-amer-upstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-apac-upstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-apac-upstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-emea-downstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-amer-upstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-amer-upstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-amer-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-amer-downstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
             },
         ])
 
@@ -387,79 +387,79 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-apac-upstream",
-                ServiceArgType.data_center.name: "dc.01",
-                ServiceArgType.host_name.name: "zxcv-du",
-                ServiceArgType.ip_address.name: "ip.192.168.1.1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-apac-upstream",
+                ServicePropName.data_center.name: "dc.01",
+                ServicePropName.host_name.name: "zxcv-du",
+                ServicePropName.ip_address.name: "ip.192.168.1.1",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.data_center.name: "dc.11",
-                ServiceArgType.host_name.name: "zxcv-dd",
-                ServiceArgType.ip_address.name: "ip.172.16.1.2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.data_center.name: "dc.11",
+                ServicePropName.host_name.name: "zxcv-dd",
+                ServicePropName.ip_address.name: "ip.172.16.1.2",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.data_center.name: "dc.01",
-                ServiceArgType.host_name.name: "poiu-dd",
-                ServiceArgType.ip_address.name: "ip.192.168.1.3",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.data_center.name: "dc.01",
+                ServicePropName.host_name.name: "poiu-dd",
+                ServicePropName.ip_address.name: "ip.192.168.1.3",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-emea-upstream",
-                ServiceArgType.data_center.name: "dc.22",
-                ServiceArgType.host_name.name: "asdf-du",
-                ServiceArgType.ip_address.name: "ip.172.16.2.1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-emea-upstream",
+                ServicePropName.data_center.name: "dc.22",
+                ServicePropName.host_name.name: "asdf-du",
+                ServicePropName.ip_address.name: "ip.172.16.2.1",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.data_center.name: "dc.02",
-                ServiceArgType.host_name.name: "xcvb-dd",
-                ServiceArgType.ip_address.name: "ip.192.168.2.2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.data_center.name: "dc.02",
+                ServicePropName.host_name.name: "xcvb-dd",
+                ServicePropName.ip_address.name: "ip.192.168.2.2",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-amer-upstream",
-                ServiceArgType.data_center.name: "dc.03",
-                ServiceArgType.host_name.name: "qwer-du",
-                ServiceArgType.ip_address.name: "ip.192.168.3.1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-amer-upstream",
+                ServicePropName.data_center.name: "dc.03",
+                ServicePropName.host_name.name: "qwer-du",
+                ServicePropName.ip_address.name: "ip.192.168.3.1",
             },
 
             # qa
@@ -468,92 +468,92 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-apac-upstream",
-                ServiceArgType.data_center.name: "dc.04",
-                ServiceArgType.host_name.name: "hjkl-qu",
-                ServiceArgType.ip_address.name: "ip.192.168.4.1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-apac-upstream",
+                ServicePropName.data_center.name: "dc.04",
+                ServicePropName.host_name.name: "hjkl-qu",
+                ServicePropName.ip_address.name: "ip.192.168.4.1",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-apac-upstream",
-                ServiceArgType.data_center.name: "dc.44",
-                ServiceArgType.host_name.name: "poiu-qu",
-                ServiceArgType.ip_address.name: "ip.172.16.4.2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-apac-upstream",
+                ServicePropName.data_center.name: "dc.44",
+                ServicePropName.host_name.name: "poiu-qu",
+                ServicePropName.ip_address.name: "ip.172.16.4.2",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-amer-upstream",
-                ServiceArgType.data_center.name: "dc.06",
-                ServiceArgType.host_name.name: "rtyu-qu",
-                ServiceArgType.ip_address.name: "ip.192.168.6.1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-amer-upstream",
+                ServicePropName.data_center.name: "dc.06",
+                ServicePropName.host_name.name: "rtyu-qu",
+                ServicePropName.ip_address.name: "ip.192.168.6.1",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-amer-upstream",
-                ServiceArgType.data_center.name: "dc.06",
-                ServiceArgType.host_name.name: "rt-qu",
-                ServiceArgType.ip_address.name: "ip.192.168.6.2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-amer-upstream",
+                ServicePropName.data_center.name: "dc.06",
+                ServicePropName.host_name.name: "rt-qu",
+                ServicePropName.ip_address.name: "ip.192.168.6.2",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-amer-downstream",
-                ServiceArgType.data_center.name: "dc.06",
-                ServiceArgType.host_name.name: "sdfgh-qd",
-                ServiceArgType.ip_address.name: "ip.192.168.6.3",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-amer-downstream",
+                ServicePropName.data_center.name: "dc.06",
+                ServicePropName.host_name.name: "sdfgh-qd",
+                ServicePropName.ip_address.name: "ip.192.168.6.3",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-amer-downstream",
-                ServiceArgType.data_center.name: "dc.06",
-                ServiceArgType.host_name.name: "sdfgb-qd",
-                ServiceArgType.ip_address.name: "ip.192.168.6.4",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-amer-downstream",
+                ServicePropName.data_center.name: "dc.06",
+                ServicePropName.host_name.name: "sdfgb-qd",
+                ServicePropName.ip_address.name: "ip.192.168.6.4",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-amer-downstream",
-                ServiceArgType.data_center.name: "dc.66",
-                ServiceArgType.host_name.name: "sdfg-qd",
-                ServiceArgType.ip_address.name: "ip.172.16.6.5",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-amer-downstream",
+                ServicePropName.data_center.name: "dc.66",
+                ServicePropName.host_name.name: "sdfg-qd",
+                ServicePropName.ip_address.name: "ip.172.16.6.5",
             },
 
             # prod
@@ -562,66 +562,66 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "qwer-pd-1",
-                ServiceArgType.ip_address.name: "ip.192.168.7.1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "qwer-pd-1",
+                ServicePropName.ip_address.name: "ip.192.168.7.1",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "qwer-pd-3",
-                ServiceArgType.ip_address.name: "ip.192.168.7.2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "qwer-pd-3",
+                ServicePropName.ip_address.name: "ip.192.168.7.2",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.77",
-                ServiceArgType.host_name.name: "qwer-pd-2",
-                ServiceArgType.ip_address.name: "ip.172.16.7.2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.77",
+                ServicePropName.host_name.name: "qwer-pd-2",
+                ServicePropName.ip_address.name: "ip.172.16.7.2",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "wert-pd-1",
-                ServiceArgType.ip_address.name: "ip.192.168.7.3",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "wert-pd-1",
+                ServicePropName.ip_address.name: "ip.192.168.7.3",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "wert-pd-2",
-                ServiceArgType.ip_address.name: "ip.192.168.7.4",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "wert-pd-2",
+                ServicePropName.ip_address.name: "ip.192.168.7.4",
             },
         ])
 
@@ -633,17 +633,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-apac-upstream",
-                ServiceArgType.data_center.name: "dc.01",
-                ServiceArgType.host_name.name: "zxcv-du",
-                ServiceArgType.ip_address.name: "ip.192.168.1.1",
-                ServiceArgType.service_name.name: "s_a",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-apac-upstream",
+                ServicePropName.data_center.name: "dc.01",
+                ServicePropName.host_name.name: "zxcv-du",
+                ServicePropName.ip_address.name: "ip.192.168.1.1",
+                ServicePropName.service_name.name: "s_a",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "aaa",
                     "sss",
                 ],
@@ -652,17 +652,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-apac-upstream",
-                ServiceArgType.data_center.name: "dc.01",
-                ServiceArgType.host_name.name: "zxcv-du",
-                ServiceArgType.ip_address.name: "ip.192.168.1.1",
-                ServiceArgType.service_name.name: "s_b",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-apac-upstream",
+                ServicePropName.data_center.name: "dc.01",
+                ServicePropName.host_name.name: "zxcv-du",
+                ServicePropName.ip_address.name: "ip.192.168.1.1",
+                ServicePropName.service_name.name: "s_b",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "bbb",
                     "sss",
                 ],
@@ -671,17 +671,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-apac-upstream",
-                ServiceArgType.data_center.name: "dc.01",
-                ServiceArgType.host_name.name: "zxcv-du",
-                ServiceArgType.ip_address.name: "ip.192.168.1.1",
-                ServiceArgType.service_name.name: "s_c",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-apac-upstream",
+                ServicePropName.data_center.name: "dc.01",
+                ServicePropName.host_name.name: "zxcv-du",
+                ServicePropName.ip_address.name: "ip.192.168.1.1",
+                ServicePropName.service_name.name: "s_c",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "ccc",
                     "sss",
                 ],
@@ -690,34 +690,34 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.data_center.name: "dc.11",
-                ServiceArgType.host_name.name: "zxcv-dd",
-                ServiceArgType.ip_address.name: "ip.172.16.1.2",
-                ServiceArgType.service_name.name: "tt",
-                ServiceArgType.run_mode.name: "active",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.data_center.name: "dc.11",
+                ServicePropName.host_name.name: "zxcv-dd",
+                ServicePropName.ip_address.name: "ip.172.16.1.2",
+                ServicePropName.service_name.name: "tt",
+                ServicePropName.run_mode.name: "active",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
-                ServiceArgType.group_label.name: "rrr",
+                ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.data_center.name: "dc.01",
-                ServiceArgType.host_name.name: "poiu-dd",
-                ServiceArgType.ip_address.name: "ip.192.168.1.3",
-                ServiceArgType.service_name.name: "xx",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.data_center.name: "dc.01",
+                ServicePropName.host_name.name: "poiu-dd",
+                ServicePropName.ip_address.name: "ip.192.168.1.3",
+                ServicePropName.service_name.name: "xx",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "rrr",
                     "hhh",
                 ],
@@ -726,17 +726,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-emea-upstream",
-                ServiceArgType.data_center.name: "dc.22",
-                ServiceArgType.host_name.name: "asdf-du",
-                ServiceArgType.ip_address.name: "ip.172.16.2.1",
-                ServiceArgType.service_name.name: "s_a",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-emea-upstream",
+                ServicePropName.data_center.name: "dc.22",
+                ServicePropName.host_name.name: "asdf-du",
+                ServicePropName.ip_address.name: "ip.172.16.2.1",
+                ServicePropName.service_name.name: "s_a",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "aaa",
                     "sss",
                 ],
@@ -745,17 +745,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-emea-upstream",
-                ServiceArgType.data_center.name: "dc.22",
-                ServiceArgType.host_name.name: "asdf-du",
-                ServiceArgType.ip_address.name: "ip.172.16.2.1",
-                ServiceArgType.service_name.name: "s_b",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-emea-upstream",
+                ServicePropName.data_center.name: "dc.22",
+                ServicePropName.host_name.name: "asdf-du",
+                ServicePropName.ip_address.name: "ip.172.16.2.1",
+                ServicePropName.service_name.name: "s_b",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "bbb",
                     "sss",
                 ],
@@ -764,17 +764,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.data_center.name: "dc.02",
-                ServiceArgType.host_name.name: "xcvb-dd",
-                ServiceArgType.ip_address.name: "ip.192.168.2.2",
-                ServiceArgType.service_name.name: "xx",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.data_center.name: "dc.02",
+                ServicePropName.host_name.name: "xcvb-dd",
+                ServicePropName.ip_address.name: "ip.192.168.2.2",
+                ServicePropName.service_name.name: "xx",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "rrr",
                     "hhh",
                 ],
@@ -783,17 +783,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.data_center.name: "dc.02",
-                ServiceArgType.host_name.name: "xcvb-dd",
-                ServiceArgType.ip_address.name: "ip.192.168.2.2",
-                ServiceArgType.service_name.name: "zz",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.data_center.name: "dc.02",
+                ServicePropName.host_name.name: "xcvb-dd",
+                ServicePropName.ip_address.name: "ip.192.168.2.2",
+                ServicePropName.service_name.name: "zz",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "rrr",
                     "hhh",
                     "odd",
@@ -803,17 +803,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "dev-amer-upstream",
-                ServiceArgType.data_center.name: "dc.03",
-                ServiceArgType.host_name.name: "qwer-du",
-                ServiceArgType.ip_address.name: "ip.192.168.3.1",
-                ServiceArgType.service_name.name: "s_a",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "dev-amer-upstream",
+                ServicePropName.data_center.name: "dc.03",
+                ServicePropName.host_name.name: "qwer-du",
+                ServicePropName.ip_address.name: "ip.192.168.3.1",
+                ServicePropName.service_name.name: "s_a",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "aaa",
                     "sss",
                 ],
@@ -822,17 +822,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-apac-upstream",
-                ServiceArgType.data_center.name: "dc.04",
-                ServiceArgType.host_name.name: "hjkl-qu",
-                ServiceArgType.ip_address.name: "ip.192.168.4.1",
-                ServiceArgType.service_name.name: "s_a",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-apac-upstream",
+                ServicePropName.data_center.name: "dc.04",
+                ServicePropName.host_name.name: "hjkl-qu",
+                ServicePropName.ip_address.name: "ip.192.168.4.1",
+                ServicePropName.service_name.name: "s_a",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "aaa",
                     "sss",
                 ],
@@ -841,17 +841,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-apac-upstream",
-                ServiceArgType.data_center.name: "dc.04",
-                ServiceArgType.host_name.name: "hjkl-qu",
-                ServiceArgType.ip_address.name: "ip.192.168.4.1",
-                ServiceArgType.service_name.name: "s_b",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-apac-upstream",
+                ServicePropName.data_center.name: "dc.04",
+                ServicePropName.host_name.name: "hjkl-qu",
+                ServicePropName.ip_address.name: "ip.192.168.4.1",
+                ServicePropName.service_name.name: "s_b",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "bbb",
                     "sss",
                 ],
@@ -860,17 +860,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-apac-upstream",
-                ServiceArgType.data_center.name: "dc.44",
-                ServiceArgType.host_name.name: "poiu-qu",
-                ServiceArgType.ip_address.name: "ip.172.16.4.2",
-                ServiceArgType.service_name.name: "s_c",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-apac-upstream",
+                ServicePropName.data_center.name: "dc.44",
+                ServicePropName.host_name.name: "poiu-qu",
+                ServicePropName.ip_address.name: "ip.172.16.4.2",
+                ServicePropName.service_name.name: "s_c",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "ccc",
                     "sss",
                 ],
@@ -879,17 +879,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "qa-amer-upstream",
-                ServiceArgType.data_center.name: "dc.06",
-                ServiceArgType.host_name.name: "rtyu-qu",
-                ServiceArgType.ip_address.name: "ip.192.168.6.1",
-                ServiceArgType.service_name.name: "s_a",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "qa-amer-upstream",
+                ServicePropName.data_center.name: "dc.06",
+                ServicePropName.host_name.name: "rtyu-qu",
+                ServicePropName.ip_address.name: "ip.192.168.6.1",
+                ServicePropName.service_name.name: "s_a",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "aaa",
                     "sss",
                 ],
@@ -898,34 +898,34 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-amer-downstream",
-                ServiceArgType.data_center.name: "dc.06",
-                ServiceArgType.host_name.name: "sdfgh-qd",
-                ServiceArgType.ip_address.name: "ip.192.168.6.3",
-                ServiceArgType.service_name.name: "tt1",
-                ServiceArgType.run_mode.name: "active",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-amer-downstream",
+                ServicePropName.data_center.name: "dc.06",
+                ServicePropName.host_name.name: "sdfgh-qd",
+                ServicePropName.ip_address.name: "ip.192.168.6.3",
+                ServicePropName.service_name.name: "tt1",
+                ServicePropName.run_mode.name: "active",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
-                ServiceArgType.group_label.name: "rrr",
+                ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-amer-downstream",
-                ServiceArgType.data_center.name: "dc.06",
-                ServiceArgType.host_name.name: "sdfgb-qd",
-                ServiceArgType.ip_address.name: "ip.192.168.6.4",
-                ServiceArgType.service_name.name: "xx",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-amer-downstream",
+                ServicePropName.data_center.name: "dc.06",
+                ServicePropName.host_name.name: "sdfgb-qd",
+                ServicePropName.ip_address.name: "ip.192.168.6.4",
+                ServicePropName.service_name.name: "xx",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "rrr",
                     "hhh",
                 ],
@@ -934,17 +934,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "qwer-pd-1",
-                ServiceArgType.ip_address.name: "ip.192.168.7.1",
-                ServiceArgType.service_name.name: "s_a",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "qwer-pd-1",
+                ServicePropName.ip_address.name: "ip.192.168.7.1",
+                ServicePropName.service_name.name: "s_a",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "aaa",
                     "sss",
                 ],
@@ -953,17 +953,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "qwer-pd-1",
-                ServiceArgType.ip_address.name: "ip.192.168.7.1",
-                ServiceArgType.service_name.name: "s_b",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "qwer-pd-1",
+                ServicePropName.ip_address.name: "ip.192.168.7.1",
+                ServicePropName.service_name.name: "s_b",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "bbb",
                     "sss",
                 ],
@@ -972,17 +972,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "qwer-pd-3",
-                ServiceArgType.ip_address.name: "ip.192.168.7.2",
-                ServiceArgType.service_name.name: "s_c",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "qwer-pd-3",
+                ServicePropName.ip_address.name: "ip.192.168.7.2",
+                ServicePropName.service_name.name: "s_c",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "ccc",
                     "sss",
                 ],
@@ -991,17 +991,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.77",
-                ServiceArgType.host_name.name: "qwer-pd-2",
-                ServiceArgType.ip_address.name: "ip.172.16.7.2",
-                ServiceArgType.service_name.name: "s_a",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.77",
+                ServicePropName.host_name.name: "qwer-pd-2",
+                ServicePropName.ip_address.name: "ip.172.16.7.2",
+                ServicePropName.service_name.name: "s_a",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "aaa",
                     "sss",
                 ],
@@ -1010,17 +1010,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.77",
-                ServiceArgType.host_name.name: "qwer-pd-2",
-                ServiceArgType.ip_address.name: "ip.172.16.7.2",
-                ServiceArgType.service_name.name: "s_b",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.77",
+                ServicePropName.host_name.name: "qwer-pd-2",
+                ServicePropName.ip_address.name: "ip.172.16.7.2",
+                ServicePropName.service_name.name: "s_b",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "bbb",
                     "xxx",
                 ],
@@ -1029,17 +1029,17 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "upstream",
-                ServiceArgType.cluster_name.name: "prod-apac-upstream",
-                ServiceArgType.data_center.name: "dc.77",
-                ServiceArgType.host_name.name: "qwer-pd-2",
-                ServiceArgType.ip_address.name: "ip.172.16.7.2",
-                ServiceArgType.service_name.name: "s_c",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "upstream",
+                ServicePropName.cluster_name.name: "prod-apac-upstream",
+                ServicePropName.data_center.name: "dc.77",
+                ServicePropName.host_name.name: "qwer-pd-2",
+                ServicePropName.ip_address.name: "ip.172.16.7.2",
+                ServicePropName.service_name.name: "s_c",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "ccc",
                     "sss",
                 ],
@@ -1048,85 +1048,85 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "wert-pd-1",
-                ServiceArgType.ip_address.name: "ip.192.168.7.3",
-                ServiceArgType.service_name.name: "tt1",
-                ServiceArgType.run_mode.name: "active",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "wert-pd-1",
+                ServicePropName.ip_address.name: "ip.192.168.7.3",
+                ServicePropName.service_name.name: "tt1",
+                ServicePropName.run_mode.name: "active",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
-                ServiceArgType.group_label.name: "rrr",
+                ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "wert-pd-1",
-                ServiceArgType.ip_address.name: "ip.192.168.7.3",
-                ServiceArgType.service_name.name: "tt2",
-                ServiceArgType.run_mode.name: "passive",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "wert-pd-1",
+                ServicePropName.ip_address.name: "ip.192.168.7.3",
+                ServicePropName.service_name.name: "tt2",
+                ServicePropName.run_mode.name: "passive",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
-                ServiceArgType.group_label.name: "rrr",
+                ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "wert-pd-2",
-                ServiceArgType.ip_address.name: "ip.192.168.7.4",
-                ServiceArgType.service_name.name: "tt1",
-                ServiceArgType.run_mode.name: "passive",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "wert-pd-2",
+                ServicePropName.ip_address.name: "ip.192.168.7.4",
+                ServicePropName.service_name.name: "tt1",
+                ServicePropName.run_mode.name: "passive",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
-                ServiceArgType.group_label.name: "rrr",
+                ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "wert-pd-2",
-                ServiceArgType.ip_address.name: "ip.192.168.7.4",
-                ServiceArgType.service_name.name: "tt2",
-                ServiceArgType.run_mode.name: "active",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "wert-pd-2",
+                ServicePropName.ip_address.name: "ip.192.168.7.4",
+                ServicePropName.service_name.name: "tt2",
+                ServicePropName.run_mode.name: "active",
                 # FS_06_99_43_60 providing scalar value for list/array field is also possible:
-                ServiceArgType.group_label.name: "rrr",
+                ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                ServiceArgType.code_maturity.name: "prod",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "prod-apac-downstream",
-                ServiceArgType.data_center.name: "dc.07",
-                ServiceArgType.host_name.name: "wert-pd-2",
-                ServiceArgType.ip_address.name: "ip.192.168.7.4",
-                ServiceArgType.service_name.name: "xx",
-                ServiceArgType.run_mode.name: "active",
-                ServiceArgType.group_label.name: [
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ServicePropName.code_maturity.name: "prod",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "prod-apac-downstream",
+                ServicePropName.data_center.name: "dc.07",
+                ServicePropName.host_name.name: "wert-pd-2",
+                ServicePropName.ip_address.name: "ip.192.168.7.4",
+                ServicePropName.service_name.name: "xx",
+                ServicePropName.run_mode.name: "active",
+                ServicePropName.group_label.name: [
                     "rrr",
                     "hhh",
                 ],
@@ -1151,22 +1151,22 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-amer-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-amer-downstream",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
             },
         ])
 
@@ -1179,80 +1179,80 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
                 # TD_76_09_29_31 geo_region set overlaps with host_name set:
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-amer-downstream",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-amer-downstream",
                 # TD_76_09_29_31 host_name set overlaps with geo_region set:
-                ServiceArgType.host_name.name: "amer",
+                ServicePropName.host_name.name: "amer",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-amer-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-amer-downstream",
                 # host_name is intentionally matching another host_name from different geo_region (also named alike):
-                ServiceArgType.host_name.name: "emea",
+                ServicePropName.host_name.name: "emea",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "amer",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-amer-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "amer",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-amer-downstream",
                 # host_name is intentionally matching another host_name from different geo_region (also named alike):
-                ServiceArgType.host_name.name: "host-3-amer",
+                ServicePropName.host_name.name: "host-3-amer",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
                 # TD_76_09_29_31 geo_region set overlaps with host_name set:
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
                 # TD_76_09_29_31 host_name set overlaps with geo_region set:
-                ServiceArgType.host_name.name: "emea",
+                ServicePropName.host_name.name: "emea",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
                 # host_name is intentionally matching another host_name from different geo_region (also named alike):
-                ServiceArgType.host_name.name: "amer",
+                ServicePropName.host_name.name: "amer",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
                 # host_name is intentionally matching another host_name from different geo_region (also named alike):
-                ServiceArgType.host_name.name: "host-3-emea",
+                ServicePropName.host_name.name: "host-3-emea",
             },
         ])
 
@@ -1274,22 +1274,22 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-amer-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-amer-downstream",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
             },
         ])
 
@@ -1302,46 +1302,46 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-apac-downstream",
-                ServiceArgType.host_name.name: "host-a-1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-apac-downstream",
+                ServicePropName.host_name.name: "host-a-1",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "qa",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "qa-apac-downstream",
-                ServiceArgType.host_name.name: "host-a-2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "qa",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "qa-apac-downstream",
+                ServicePropName.host_name.name: "host-a-2",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.host_name.name: "host-b-1",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.host_name.name: "host-b-1",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.host_name.name: "host-b-2",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.host_name.name: "host-b-2",
             },
         ])
 
@@ -1372,11 +1372,11 @@ class ServiceLoader(AbstractLoader):
                         envelope_payload_: {
                         },
                         test_data_: "TD_38_03_48_51",  # large generated
-                        ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                        ServiceArgType.code_maturity.name: code_maturity,
-                        ServiceArgType.geo_region.name: geo_region,
-                        ServiceArgType.flow_stage.name: flow_stage,
-                        ServiceArgType.cluster_name.name: cluster_name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                        ServicePropName.code_maturity.name: code_maturity,
+                        ServicePropName.geo_region.name: geo_region,
+                        ServicePropName.flow_stage.name: flow_stage,
+                        ServicePropName.cluster_name.name: cluster_name,
                     }
 
                     cluster_envelopes.append(generated_cluster)
@@ -1390,12 +1390,12 @@ class ServiceLoader(AbstractLoader):
                             envelope_payload_: {
                             },
                             test_data_: "TD_38_03_48_51",  # large generated
-                            ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                            ServiceArgType.code_maturity.name: code_maturity,
-                            ServiceArgType.geo_region.name: geo_region,
-                            ServiceArgType.flow_stage.name: flow_stage,
-                            ServiceArgType.cluster_name.name: cluster_name,
-                            ServiceArgType.host_name.name: host_name,
+                            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                            ServicePropName.code_maturity.name: code_maturity,
+                            ServicePropName.geo_region.name: geo_region,
+                            ServicePropName.flow_stage.name: flow_stage,
+                            ServicePropName.cluster_name.name: cluster_name,
+                            ServicePropName.host_name.name: host_name,
                         }
 
                         host_envelopes.append(generated_host)
@@ -1409,14 +1409,14 @@ class ServiceLoader(AbstractLoader):
                                 envelope_payload_: {
                                 },
                                 test_data_: "TD_38_03_48_51",  # large generated
-                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                                ServiceArgType.code_maturity.name: code_maturity,
-                                ServiceArgType.geo_region.name: geo_region,
-                                ServiceArgType.flow_stage.name: flow_stage,
-                                ServiceArgType.cluster_name.name: cluster_name,
-                                ServiceArgType.host_name.name: host_name,
-                                ServiceArgType.service_name.name: service_name,
-                                ServiceArgType.run_mode.name: run_mode,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                                ServicePropName.code_maturity.name: code_maturity,
+                                ServicePropName.geo_region.name: geo_region,
+                                ServicePropName.flow_stage.name: flow_stage,
+                                ServicePropName.cluster_name.name: cluster_name,
+                                ServicePropName.host_name.name: host_name,
+                                ServicePropName.service_name.name: service_name,
+                                ServicePropName.run_mode.name: run_mode,
                             }
 
                             # Even (0, 2, ...) => active
@@ -1446,22 +1446,22 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
             },
         ])
 
@@ -1474,48 +1474,48 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.host_name.name: "qwer",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.host_name.name: "qwer",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.host_name.name: "asdf",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.host_name.name: "asdf",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.host_name.name: "qwer",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.host_name.name: "qwer",
             },
 
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.host_name.name: "asdf",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.host_name.name: "asdf",
             },
         ])
 
@@ -1538,11 +1538,11 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
             },
 
             {
@@ -1550,11 +1550,11 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
             },
 
         ])
@@ -1569,13 +1569,13 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.host_name.name: "qwer",
-                ServiceArgType.live_status.name: "green",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.host_name.name: "qwer",
+                ServicePropName.live_status.name: "green",
             },
 
             {
@@ -1583,42 +1583,28 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.host_name.name: "asdf",
-                ServiceArgType.live_status.name: "yellow",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.host_name.name: "asdf",
+                ServicePropName.live_status.name: "yellow",
             },
 
             {
-                # missing `ServiceArgType.live_status`:
+                # missing `ServicePropName.live_status`:
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "apac",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-apac-downstream",
-                ServiceArgType.host_name.name: "zxcv",
-                # NOTE: `ServiceArgType.live_status` for this `data_envelope` is missing only in `apac` (not in `emea`).
-                # ServiceArgType.live_status.name: "red",
-            },
-
-            {
-                # nothing missing:
-                envelope_payload_: {
-                },
-                test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.host_name.name: "qwer",
-                ServiceArgType.live_status.name: "green",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "apac",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-apac-downstream",
+                ServicePropName.host_name.name: "zxcv",
+                # NOTE: `ServicePropName.live_status` for this `data_envelope` is missing only in `apac` (not in `emea`).
+                # ServicePropName.live_status.name: "red",
             },
 
             {
@@ -1626,13 +1612,13 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.host_name.name: "asdf",
-                ServiceArgType.live_status.name: "yellow",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.host_name.name: "qwer",
+                ServicePropName.live_status.name: "green",
             },
 
             {
@@ -1640,12 +1626,26 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
-                ServiceArgType.code_maturity.name: "dev",
-                ServiceArgType.geo_region.name: "emea",
-                ServiceArgType.flow_stage.name: "downstream",
-                ServiceArgType.cluster_name.name: "dev-emea-downstream",
-                ServiceArgType.host_name.name: "zxcv",
-                ServiceArgType.live_status.name: "red",
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.host_name.name: "asdf",
+                ServicePropName.live_status.name: "yellow",
+            },
+
+            {
+                # nothing missing:
+                envelope_payload_: {
+                },
+                test_data_: "TD_39_25_11_76",  # missing props
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ServicePropName.code_maturity.name: "dev",
+                ServicePropName.geo_region.name: "emea",
+                ServicePropName.flow_stage.name: "downstream",
+                ServicePropName.cluster_name.name: "dev-emea-downstream",
+                ServicePropName.host_name.name: "zxcv",
+                ServicePropName.live_status.name: "red",
             },
         ])

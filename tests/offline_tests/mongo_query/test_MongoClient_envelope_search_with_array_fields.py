@@ -3,7 +3,7 @@ from __future__ import annotations
 from icecream import ic
 from pymongo.collection import Collection
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass, object_name_
 
@@ -20,24 +20,24 @@ class ThisTestClass(MongoClientTestClass):
 
         # Fields which will be indexed:
         index_fields = [
-            ServiceArgType.access_type.name,
-            ServiceArgType.live_status.name,
-            ServiceArgType.code_maturity.name,
+            ServicePropName.access_type.name,
+            ServicePropName.live_status.name,
+            ServicePropName.code_maturity.name,
         ]
 
         envelope_001 = {
             envelope_payload_: {
                 object_name_: "envelope_001",
             },
-            ServiceArgType.access_type.name: "ro",
+            ServicePropName.access_type.name: "ro",
         }
 
         envelope_002 = {
             envelope_payload_: {
                 object_name_: "envelope_002",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: [
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: [
                 "red",
                 "blue",
             ],
@@ -47,57 +47,57 @@ class ThisTestClass(MongoClientTestClass):
             envelope_payload_: {
                 object_name_: "envelope_003",
             },
-            ServiceArgType.access_type.name: "rw",
+            ServicePropName.access_type.name: "rw",
             # NOTE: some of the envelopes have scalar value for the same field which has arrays in other envelopes:
-            ServiceArgType.live_status.name: "blue",
+            ServicePropName.live_status.name: "blue",
         }
 
         envelope_004 = {
             envelope_payload_: {
                 object_name_: "envelope_004",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: [
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: [
                 "red",
                 "yellow",
             ],
-            ServiceArgType.code_maturity.name: "prod",
+            ServicePropName.code_maturity.name: "prod",
         }
 
         envelope_005 = {
             envelope_payload_: {
                 object_name_: "envelope_005",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: [
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: [
                 "blue",
                 "green",
             ],
-            ServiceArgType.code_maturity.name: "prod",
+            ServicePropName.code_maturity.name: "prod",
         }
 
         envelope_006 = {
             envelope_payload_: {
                 object_name_: "envelope_006",
             },
-            ServiceArgType.access_type.name: "rw",
+            ServicePropName.access_type.name: "rw",
             # NOTE: some of the envelopes have scalar value for the same field which has arrays in other envelopes:
-            ServiceArgType.live_status.name: "green",
-            ServiceArgType.code_maturity.name: "prod",
+            ServicePropName.live_status.name: "green",
+            ServicePropName.code_maturity.name: "prod",
         }
 
         envelope_007 = {
             envelope_payload_: {
                 object_name_: "envelope_007",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: [
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: [
                 "red",
                 "green",
                 "blue",
                 "yellow",
             ],
-            ServiceArgType.code_maturity.name: "prod",
+            ServicePropName.code_maturity.name: "prod",
         }
 
         self.col_proxy.insert_many([
@@ -115,7 +115,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.live_status.name: "red",
+                ServicePropName.live_status.name: "red",
             }),
             [
                 "envelope_002",
@@ -127,7 +127,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.live_status.name: "yellow",
+                ServicePropName.live_status.name: "yellow",
             }),
             [
                 "envelope_004",
@@ -138,7 +138,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.live_status.name: "blue",
+                ServicePropName.live_status.name: "blue",
             }),
             [
                 "envelope_002",
@@ -151,7 +151,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.live_status.name: "green",
+                ServicePropName.live_status.name: "green",
             }),
             [
                 "envelope_005",
@@ -163,7 +163,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.live_status.name: [
+                ServicePropName.live_status.name: [
                     "green",
                     "blue",
                 ]
@@ -176,7 +176,7 @@ class ThisTestClass(MongoClientTestClass):
         self.find_and_assert(
             self.col_proxy,
             ic({
-                ServiceArgType.live_status.name: [
+                ServicePropName.live_status.name: [
                     "green",
                     "blue",
                 ]

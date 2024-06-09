@@ -6,7 +6,7 @@ from argrelay.schema_config_interp.SearchControlSchema import search_control_des
 func_id_ = "func_id"
 """
 An id (unique string) used by `AbstractDelegator` to distinguish one of many functions it can potentially support.
-See also `ReservedArgType.FuncId`.
+See also `ReservedPropName.func_id`.
 """
 
 delegator_plugin_instance_id_ = "delegator_plugin_instance_id"

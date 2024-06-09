@@ -3,9 +3,9 @@ from io import StringIO
 
 import pandas as pd
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import scalar_to_list_values
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
@@ -86,22 +86,22 @@ class ThisTestClass(BaseTestClass):
 
                 if str(is_populated).strip() == "Y":
 
-                    code_maturity = table_row[f"`{ServiceArgType.code_maturity}`"].strip().strip("`")
-                    geo_region = table_row[f"`{ServiceArgType.geo_region}`"].strip().strip("`")
-                    flow_stage = table_row[f"`{ServiceArgType.flow_stage}`"].strip().strip("`")
+                    code_maturity = table_row[f"`{ServicePropName.code_maturity}`"].strip().strip("`")
+                    geo_region = table_row[f"`{ServicePropName.geo_region}`"].strip().strip("`")
+                    flow_stage = table_row[f"`{ServicePropName.flow_stage}`"].strip().strip("`")
 
-                    cluster_name = table_row[f"`{ServiceArgType.cluster_name}`"].strip().strip("`")
+                    cluster_name = table_row[f"`{ServicePropName.cluster_name}`"].strip().strip("`")
 
                     self.assertEqual(cluster_name, f"{code_maturity}-{geo_region}-{flow_stage}")
 
-                    host_name = table_row[f"`{ServiceArgType.host_name}`"].strip().strip("`")
-                    service_name = table_row[f"`{ServiceArgType.service_name}`"].strip().strip("`")
-                    run_mode = table_row[f"`{ServiceArgType.run_mode}`"].strip().strip("`")
+                    host_name = table_row[f"`{ServicePropName.host_name}`"].strip().strip("`")
+                    service_name = table_row[f"`{ServicePropName.service_name}`"].strip().strip("`")
+                    run_mode = table_row[f"`{ServicePropName.run_mode}`"].strip().strip("`")
 
-                    ip_address = table_row[f"`{ServiceArgType.ip_address}`"].strip().strip("`")
-                    data_center = table_row[f"`{ServiceArgType.data_center}`"].strip().strip("`")
+                    ip_address = table_row[f"`{ServicePropName.ip_address}`"].strip().strip("`")
+                    data_center = table_row[f"`{ServicePropName.data_center}`"].strip().strip("`")
 
-                    group_label: str = table_row[f"`{ServiceArgType.group_label}`"].strip().strip("`")
+                    group_label: str = table_row[f"`{ServicePropName.group_label}`"].strip().strip("`")
 
                     # Whether `service_name` specified:
                     is_cluster = host_name == ""
@@ -110,14 +110,14 @@ class ThisTestClass(BaseTestClass):
 
                     query_dict = {
                         test_data_: "TD_63_37_05_36",  # demo
-                        ServiceArgType.code_maturity.name: code_maturity,
-                        ServiceArgType.geo_region.name: geo_region,
-                        ServiceArgType.flow_stage.name: flow_stage,
-                        ServiceArgType.cluster_name.name: cluster_name,
+                        ServicePropName.code_maturity.name: code_maturity,
+                        ServicePropName.geo_region.name: geo_region,
+                        ServicePropName.flow_stage.name: flow_stage,
+                        ServicePropName.cluster_name.name: cluster_name,
                     }
                     if is_cluster:
                         query_dict.update({
-                            ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassCluster.name,
+                            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
                         })
                         mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassCluster.name]
                         self.find_single_data_envelope(mongo_col, query_dict)
@@ -136,11 +136,11 @@ class ThisTestClass(BaseTestClass):
                         #                       immediately selects cluster implicitly.
 
                         query_dict.update({
-                            ServiceArgType.host_name.name: host_name,
+                            ServicePropName.host_name.name: host_name,
                         })
                         if is_host:
                             query_dict.update({
-                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
                             })
                             mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassHost.name]
                             # Ensure `host_name` contains abbreviation of (`code_maturity`, `flow_stage`) as its suffix:
@@ -150,52 +150,52 @@ class ThisTestClass(BaseTestClass):
                                 +
                                 flow_stage[0]
                                 in
-                                host_data_envelope[ServiceArgType.host_name.name]
+                                host_data_envelope[ServicePropName.host_name.name]
                             )
                         else:
                             query_dict.update({
-                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassHost.name,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
                             })
                             mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassHost.name]
                             host_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             query_dict.update({
-                                ReservedArgType.EnvelopeClass.name: ServiceEnvelopeClass.ClassService.name,
-                                ServiceArgType.service_name.name: service_name,
-                                ServiceArgType.run_mode.name: run_mode,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                                ServicePropName.service_name.name: service_name,
+                                ServicePropName.run_mode.name: run_mode,
                             })
                             mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassService.name]
                             service_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             # Both host and service should have same host name:
                             self.assertEqual(
-                                host_data_envelope[ServiceArgType.host_name.name],
-                                service_data_envelope[ServiceArgType.host_name.name],
+                                host_data_envelope[ServicePropName.host_name.name],
+                                service_data_envelope[ServicePropName.host_name.name],
                             )
 
                             # IP address should match:
                             self.assertEqual(
-                                host_data_envelope[ServiceArgType.ip_address.name],
-                                service_data_envelope[ServiceArgType.ip_address.name],
+                                host_data_envelope[ServicePropName.ip_address.name],
+                                service_data_envelope[ServicePropName.ip_address.name],
                             )
                             self.assertEqual(
                                 ip_address,
-                                service_data_envelope[ServiceArgType.ip_address.name],
+                                service_data_envelope[ServicePropName.ip_address.name],
                             )
 
                             # Data centers should match:
                             self.assertEqual(
-                                host_data_envelope[ServiceArgType.data_center.name],
-                                service_data_envelope[ServiceArgType.data_center.name],
+                                host_data_envelope[ServicePropName.data_center.name],
+                                service_data_envelope[ServicePropName.data_center.name],
                             )
                             self.assertEqual(
                                 data_center,
-                                service_data_envelope[ServiceArgType.data_center.name],
+                                service_data_envelope[ServicePropName.data_center.name],
                             )
 
                             # group_label is specified in doc as CSV:
                             group_label_values = group_label.split(",")
-                            actual_values = service_data_envelope[ServiceArgType.group_label.name]
+                            actual_values = service_data_envelope[ServicePropName.group_label.name]
                             actual_values = scalar_to_list_values(actual_values)
                             self.assertEqual(
                                 group_label_values,

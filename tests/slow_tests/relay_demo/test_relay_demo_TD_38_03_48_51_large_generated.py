@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
@@ -26,9 +26,9 @@ class ThisTestClass(LocalTestClass):
                 [f"hs{host_number}" for host_number in range(0, ServiceLoader.object_multiplier)],
                 {
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
-                        ServiceArgType.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("gr3", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
+                        ServicePropName.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("gr3", ArgSource.ExplicitPosArg),
                     },
                 },
                 "Ensure it suggests relevant hosts.",
@@ -40,9 +40,9 @@ class ThisTestClass(LocalTestClass):
                 ],
                 {
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
-                        ServiceArgType.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: None,
+                        ServicePropName.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
+                        ServicePropName.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: None,
                     },
                 },
                 "Ensure it suggests the only `geo_region` matching the current prefix.",

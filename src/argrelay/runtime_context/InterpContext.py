@@ -195,7 +195,7 @@ class InterpContext:
             and
             self.curr_container.search_control.envelope_class
         ):
-            # If `ReservedArgType.EnvelopeClass` is not specified, nothing to search:
+            # If `ReservedPropName.envelope_class` is not specified, nothing to search:
             return
 
         ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")

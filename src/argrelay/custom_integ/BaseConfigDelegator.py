@@ -4,7 +4,7 @@ from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import BaseConfigDele
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import func_configs_
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_, fill_control_list_
 from argrelay.custom_integ.ServiceDelegator import set_default_to
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_interp_ctx
@@ -68,15 +68,15 @@ class BaseConfigDelegator(AbstractDelegator):
 
             func_envelope = func_config[func_envelope_]
 
-            if ReservedArgType.EnvelopeClass.name in func_envelope:
-                assert func_envelope[ReservedArgType.EnvelopeClass.name] == ReservedEnvelopeClass.ClassFunction.name
+            if ReservedPropName.envelope_class.name in func_envelope:
+                assert func_envelope[ReservedPropName.envelope_class.name] == ReservedEnvelopeClass.ClassFunction.name
             else:
-                func_envelope[ReservedArgType.EnvelopeClass.name] = ReservedEnvelopeClass.ClassFunction.name
+                func_envelope[ReservedPropName.envelope_class.name] = ReservedEnvelopeClass.ClassFunction.name
 
-            if ReservedArgType.FuncId.name in func_envelope:
-                assert func_envelope[ReservedArgType.FuncId.name] == func_id
+            if ReservedPropName.func_id.name in func_envelope:
+                assert func_envelope[ReservedPropName.func_id.name] == func_id
             else:
-                func_envelope[ReservedArgType.FuncId.name] = func_id
+                func_envelope[ReservedPropName.func_id.name] = func_id
 
             instance_data = func_envelope[instance_data_]
 

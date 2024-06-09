@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, validates_schema, INCLUDE, post_dump
 
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
@@ -74,7 +74,7 @@ class DataEnvelopeSchema(Schema):
         input_dict: dict,
         **kwargs,
     ):
-        if input_dict.get(ReservedArgType.EnvelopeClass.name, None) == ReservedEnvelopeClass.ClassFunction.name:
+        if input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.ClassFunction.name:
             function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
     @post_dump(pass_original = True)
@@ -117,7 +117,7 @@ data_envelope_desc = TypeDesc(
         envelope_id_: "some_unique_id",
         instance_data_: function_envelope_instance_data_desc.dict_example,
         envelope_payload_: {},
-        ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
+        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
         sample_field_type_A_: "A_value_1",
         sample_field_type_B_: "B_value_1",
         sample_field_type_C_: "C_value_1",

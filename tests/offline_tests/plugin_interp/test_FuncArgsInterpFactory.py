@@ -4,7 +4,7 @@ import unittest
 
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_interp.FuncTreeInterp import func_search_control_
@@ -98,9 +98,9 @@ class ThisTestClass(BaseTestClass):
                 delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                 search_control_list_: [],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.FuncState.name: FuncState.demo.name,
-            ReservedArgType.FuncId.name: "func_1",
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.func_state.name: FuncState.demo.name,
+            ReservedPropName.func_id.name: "func_1",
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
         }
@@ -111,9 +111,9 @@ class ThisTestClass(BaseTestClass):
                 delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                 search_control_list_: [],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.FuncState.name: FuncState.demo.name,
-            ReservedArgType.FuncId.name: "func_2",
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.func_state.name: FuncState.demo.name,
+            ReservedPropName.func_id.name: "func_2",
             type_1: "type_1_value_2",
             type_2: "type_2_value_2",
         }
@@ -139,9 +139,9 @@ class ThisTestClass(BaseTestClass):
                 delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                 search_control_list_: [],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.FuncState.name: FuncState.demo.name,
-            ReservedArgType.FuncId.name: "func_3",
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.func_state.name: FuncState.demo.name,
+            ReservedPropName.func_id.name: "func_3",
             type_1: "type_1_value_1",
             type_2: "type_2_value_1",
         }

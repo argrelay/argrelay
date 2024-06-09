@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from argrelay.custom_integ.ServiceDelegator import redirect_to_no_func_error
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
@@ -35,10 +35,10 @@ class HelpDelegator(AbstractJumpDelegator):
                 search_control_list_: [
                 ],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "List defined function matching search criteria with their help hints",
-            ReservedArgType.FuncState.name: FuncState.gamma.name,
-            ReservedArgType.FuncId.name: SpecialFunc.help_hint_func.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.help_hint.name: "List defined function matching search criteria with their help hints",
+            ReservedPropName.func_state.name: FuncState.gamma.name,
+            ReservedPropName.func_id.name: SpecialFunc.help_hint_func.name,
         }]
         return func_envelopes
 
@@ -112,16 +112,16 @@ class HelpDelegator(AbstractJumpDelegator):
                 print("#", end = " ")
                 print(TermColor.reset_style.value, end = "")
 
-                if ReservedArgType.HelpHint.name in data_envelope:
+                if ReservedPropName.help_hint.name in data_envelope:
                     print(TermColor.help_hint.value, end = "")
                     print(
-                        f"{data_envelope[ReservedArgType.HelpHint.name]}",
+                        f"{data_envelope[ReservedPropName.help_hint.name]}",
                         end = " ",
                     )
                     print(TermColor.reset_style.value, end = "")
                 else:
                     print(TermColor.no_help_hint.value, end = "")
-                    print(f"[no `{ReservedArgType.HelpHint.name}`]", end = " ")
+                    print(f"[no `{ReservedPropName.help_hint.name}`]", end = " ")
                     print(TermColor.reset_style.value, end = "")
 
                 print()

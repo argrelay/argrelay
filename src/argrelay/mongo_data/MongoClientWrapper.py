@@ -111,6 +111,17 @@ def log_index_progress(
             f"collection: {mongo_collection}: indexed envelopes: {envelope_per_col_i}/{curr_envelope_i}/{total_envelope_n}..."
         )
 
+def log_validation_progress(
+    mongo_collection: str,
+    curr_envelope_i: int,
+    total_envelope_n: int,
+):
+    try:
+        assert curr_envelope_i <= total_envelope_n
+    finally:
+        eprint(
+            f"collection: {mongo_collection}: validated envelopes: {curr_envelope_i}/{total_envelope_n}..."
+        )
 
 def create_index(
     mongo_db: Database,
