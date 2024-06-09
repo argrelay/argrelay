@@ -1,4 +1,4 @@
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, mongo_id_
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass, object_name_
 
@@ -13,42 +13,42 @@ class ThisTestClass(MongoClientTestClass):
         """
 
         index_fields = [
-            ServiceArgType.access_type.name,
-            ServiceArgType.live_status.name,
-            ServiceArgType.code_maturity.name,
+            ServicePropName.access_type.name,
+            ServicePropName.live_status.name,
+            ServicePropName.code_maturity.name,
         ]
 
         envelope_001 = {
             envelope_payload_: {
                 object_name_: "envelope_001",
             },
-            ServiceArgType.access_type.name: "ro",
-            ServiceArgType.code_maturity.name: "prod",
+            ServicePropName.access_type.name: "ro",
+            ServicePropName.code_maturity.name: "prod",
         }
 
         envelope_002 = {
             envelope_payload_: {
                 object_name_: "envelope_002",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: "red",
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: "red",
         }
 
         envelope_003 = {
             envelope_payload_: {
                 object_name_: "envelope_003",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: "blue",
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: "blue",
         }
 
         envelope_004 = {
             envelope_payload_: {
                 object_name_: "envelope_004",
             },
-            ServiceArgType.access_type.name: "rw",
-            ServiceArgType.live_status.name: "red",
-            ServiceArgType.code_maturity.name: "prod",
+            ServicePropName.access_type.name: "rw",
+            ServicePropName.live_status.name: "red",
+            ServicePropName.code_maturity.name: "prod",
         }
 
         self.col_proxy.insert_many([
@@ -65,14 +65,14 @@ class ThisTestClass(MongoClientTestClass):
             {
                 "$group": {
                     mongo_id_: None,
-                    ServiceArgType.access_type.name: {
-                        "$addToSet": f"${ServiceArgType.access_type.name}"
+                    ServicePropName.access_type.name: {
+                        "$addToSet": f"${ServicePropName.access_type.name}"
                     },
-                    ServiceArgType.live_status.name: {
-                        "$addToSet": f"${ServiceArgType.live_status.name}"
+                    ServicePropName.live_status.name: {
+                        "$addToSet": f"${ServicePropName.live_status.name}"
                     },
-                    ServiceArgType.code_maturity.name: {
-                        "$addToSet": f"${ServiceArgType.code_maturity.name}"
+                    ServicePropName.code_maturity.name: {
+                        "$addToSet": f"${ServicePropName.code_maturity.name}"
                     },
                 },
             },

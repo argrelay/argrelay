@@ -17,9 +17,9 @@ class SearchControl:
 
     envelope_class: str = field(default_factory = lambda: None)
     """
-    Specifies `ReservedArgType.EnvelopeClass` to search.
+    Specifies `ReservedPropName.envelope_class` to search.
 
-    Provides key-value pair (`ReservedArgType.EnvelopeClass`, `envelope_class`) to be fixed in query.
+    Provides key-value pair (`ReservedPropName.envelope_class`, `envelope_class`) to be fixed in query.
     If this field was not here, it would potentially become an issue because
     user would need to be interrogated on command line to disambiguate `data_envelope`-s with same properties.
     """

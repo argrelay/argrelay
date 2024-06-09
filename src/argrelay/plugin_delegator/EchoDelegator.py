@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -31,12 +31,12 @@ class EchoDelegator(AbstractDelegator):
                 search_control_list_: [
                 ],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: (
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.help_hint.name: (
                 f"Print command line args `{InvocationInput.__name__}`"
             ),
-            ReservedArgType.FuncState.name: FuncState.beta.name,
-            ReservedArgType.FuncId.name: SpecialFunc.echo_args_func.name,
+            ReservedPropName.func_state.name: FuncState.beta.name,
+            ReservedPropName.func_id.name: SpecialFunc.echo_args_func.name,
         }]
         return func_envelopes
 

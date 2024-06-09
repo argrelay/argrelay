@@ -1,5 +1,6 @@
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
@@ -28,6 +29,8 @@ class ThisTestClass(End2EndTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ost{TermColor.reset_style.value} repo service 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} beta demo 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} goto_git_repo_func goto_host_func goto_service_func 
 """,
                 "Test sample 1",
             ),
@@ -39,6 +42,8 @@ class ThisTestClass(End2EndTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} host repo {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ervice{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} beta demo 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} goto_git_repo_func goto_host_func goto_service_func 
 """,
                 "Test sample 2",
             ),

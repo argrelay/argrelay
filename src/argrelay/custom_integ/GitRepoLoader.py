@@ -6,7 +6,7 @@ from datetime import timezone, datetime, timedelta
 
 from git import Repo
 
-from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoDelegator import repo_root_abs_path_
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
@@ -25,7 +25,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_git_tags_default_,
 )
 from argrelay.custom_integ.git_utils import is_git_repo
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.runtime_data.StaticData import StaticData
@@ -102,7 +102,7 @@ class GitRepoLoader(AbstractLoader):
             self.server_config,
             class_names,
             # Same index fields for all collections (can be fine-tuned later):
-            lambda collection_name, class_name: [enum_item.name for enum_item in GitRepoArgType]
+            lambda collection_name, class_name: [enum_item.name for enum_item in GitRepoPropName]
         )
 
         repo_envelopes = static_data.envelope_collections[
@@ -169,10 +169,10 @@ class GitRepoLoader(AbstractLoader):
                     envelope_payload_: {
                         repo_root_abs_path_: repo_root_abs_path,
                     },
-                    ReservedArgType.EnvelopeClass.name: GitRepoEnvelopeClass.ClassGitRepo.name,
-                    GitRepoArgType.git_repo_root_rel_path.name: repo_root_rel_path,
-                    GitRepoArgType.git_repo_root_abs_path.name: repo_root_abs_path,
-                    GitRepoArgType.git_repo_root_base_name.name: repo_root_base_name,
+                    ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitRepo.name,
+                    GitRepoPropName.git_repo_root_rel_path.name: repo_root_rel_path,
+                    GitRepoPropName.git_repo_root_abs_path.name: repo_root_abs_path,
+                    GitRepoPropName.git_repo_root_base_name.name: repo_root_base_name,
                 })
                 self.enrich_git_repo_object(repo_envelope)
                 repo_envelopes.append(repo_envelope)
@@ -208,24 +208,24 @@ class GitRepoLoader(AbstractLoader):
                             envelope_id_: f"{repo_root_abs_path}:{GitRepoEnvelopeClass.ClassGitTag.name}:{git_tag.name}",
                             envelope_payload_: {
                             },
-                            ReservedArgType.EnvelopeClass.name: GitRepoEnvelopeClass.ClassGitTag.name,
-                            GitRepoArgType.git_repo_root_rel_path.name: repo_root_rel_path,
-                            GitRepoArgType.git_repo_root_abs_path.name: repo_root_abs_path,
-                            GitRepoArgType.git_repo_root_base_name.name: repo_root_base_name,
+                            ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitTag.name,
+                            GitRepoPropName.git_repo_root_rel_path.name: repo_root_rel_path,
+                            GitRepoPropName.git_repo_root_abs_path.name: repo_root_abs_path,
+                            GitRepoPropName.git_repo_root_base_name.name: repo_root_base_name,
                             #
-                            GitRepoArgType.git_repo_tag_name.name: git_tag.name,
+                            GitRepoPropName.git_repo_tag_name.name: git_tag.name,
                             #
-                            GitRepoArgType.git_repo_commit_id.name: git_commit.hexsha,
-                            GitRepoArgType.git_repo_short_commit_id.name: git_commit.hexsha[:7],
-                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(
+                            GitRepoPropName.git_repo_commit_id.name: git_commit.hexsha,
+                            GitRepoPropName.git_repo_short_commit_id.name: git_commit.hexsha[:7],
+                            GitRepoPropName.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(
                                 git_commit.author.name,
                             ),
-                            GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email.lower(),
-                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(
+                            GitRepoPropName.git_repo_commit_author_email.name: git_commit.author.email.lower(),
+                            GitRepoPropName.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(
                                 git_commit.message,
                             ),
-                            GitRepoArgType.git_repo_commit_date.name: commit_date_utc,
-                            GitRepoArgType.git_repo_commit_time.name: commit_time_utc,
+                            GitRepoPropName.git_repo_commit_date.name: commit_date_utc,
+                            GitRepoPropName.git_repo_commit_time.name: commit_time_utc,
                         })
                         self.enrich_git_repo_object(tag_envelope)
                         tag_envelopes.append(tag_envelope)
@@ -252,22 +252,22 @@ class GitRepoLoader(AbstractLoader):
                             envelope_id_: f"{repo_root_abs_path}:{GitRepoEnvelopeClass.ClassGitCommit.name}:{git_commit.hexsha}",
                             envelope_payload_: {
                             },
-                            ReservedArgType.EnvelopeClass.name: GitRepoEnvelopeClass.ClassGitCommit.name,
-                            GitRepoArgType.git_repo_root_rel_path.name: repo_root_rel_path,
-                            GitRepoArgType.git_repo_root_abs_path.name: repo_root_abs_path,
-                            GitRepoArgType.git_repo_root_base_name.name: repo_root_base_name,
+                            ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitCommit.name,
+                            GitRepoPropName.git_repo_root_rel_path.name: repo_root_rel_path,
+                            GitRepoPropName.git_repo_root_abs_path.name: repo_root_abs_path,
+                            GitRepoPropName.git_repo_root_base_name.name: repo_root_base_name,
                             #
-                            GitRepoArgType.git_repo_commit_id.name: git_commit.hexsha,
-                            GitRepoArgType.git_repo_short_commit_id.name: git_commit.hexsha[:7],
-                            GitRepoArgType.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(
+                            GitRepoPropName.git_repo_commit_id.name: git_commit.hexsha,
+                            GitRepoPropName.git_repo_short_commit_id.name: git_commit.hexsha[:7],
+                            GitRepoPropName.git_repo_commit_author_name.name: normalize_single_line_to_black_spaces(
                                 git_commit.author.name,
                             ),
-                            GitRepoArgType.git_repo_commit_author_email.name: git_commit.author.email,
-                            GitRepoArgType.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(
+                            GitRepoPropName.git_repo_commit_author_email.name: git_commit.author.email,
+                            GitRepoPropName.git_repo_commit_message.name: normalize_multiple_lines_to_black_spaces(
                                 git_commit.message,
                             ),
-                            GitRepoArgType.git_repo_commit_date.name: commit_date_utc,
-                            GitRepoArgType.git_repo_commit_time.name: commit_time_utc,
+                            GitRepoPropName.git_repo_commit_date.name: commit_date_utc,
+                            GitRepoPropName.git_repo_commit_time.name: commit_time_utc,
                         })
                         self.enrich_git_repo_object(commit_envelope)
                         commit_envelopes.append(commit_envelope)
@@ -298,14 +298,14 @@ class GitRepoLoader(AbstractLoader):
             object_categories.append("UNKNOWN_category")
 
         data_envelope.update({
-            GitRepoArgType.git_repo_object_category.name: object_categories,
+            GitRepoPropName.git_repo_object_category.name: object_categories,
         })
 
     def categorize_git_object(
         self,
         data_envelope: dict,
     ) -> list[str]:
-        object_class = data_envelope[ReservedArgType.EnvelopeClass.name]
+        object_class = data_envelope[ReservedPropName.envelope_class.name]
         if object_class == GitRepoEnvelopeClass.ClassGitTag.name:
             return self.categorize_git_tag(data_envelope)
         return []
@@ -315,7 +315,7 @@ class GitRepoLoader(AbstractLoader):
         data_envelope: dict,
     ) -> list[str]:
         tag_categories = []
-        tag_name = data_envelope[GitRepoArgType.git_repo_tag_name.name]
+        tag_name = data_envelope[GitRepoPropName.git_repo_tag_name.name]
 
         if ".dev" in tag_name:
             tag_categories.append("pre-release")

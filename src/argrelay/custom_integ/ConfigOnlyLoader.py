@@ -5,7 +5,7 @@ from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
     data_envelopes_,
     collection_name_to_index_fields_map_,
 )
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
@@ -70,7 +70,7 @@ class ConfigOnlyLoader(AbstractLoader):
         ]
 
         class_names: list[str] = [
-            data_envelope.get(ReservedArgType.EnvelopeClass.name, ReservedEnvelopeClass.ClassUnknown.name)
+            data_envelope.get(ReservedPropName.envelope_class.name, ReservedEnvelopeClass.ClassUnknown.name)
             for data_envelope in data_envelopes
         ]
 
@@ -89,7 +89,7 @@ class ConfigOnlyLoader(AbstractLoader):
             # Keep removing `data_envelope`-s after inserting them into specific collections based on class:
             filtered_data_envelopes = list([
                 data_envelope for data_envelope in data_envelopes
-                if data_envelope.get(ReservedArgType.EnvelopeClass.name, None) == class_name
+                if data_envelope.get(ReservedPropName.envelope_class.name, None) == class_name
             ])
             class_data_envelopes.extend(filtered_data_envelopes)
             for data_envelope in filtered_data_envelopes:

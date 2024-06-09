@@ -1,25 +1,25 @@
 
 # TODO_84_71_86_21: change to realistic example:
 -
-    EnvelopeClass: ConfigOnlyClass
+    envelope_class: ConfigOnlyClass
     severity_level: INFO
     exit_code: 0
     envelope_payload:
         text_message: text message A
 -
-    EnvelopeClass: ConfigOnlyClass
+    envelope_class: ConfigOnlyClass
     severity_level: WARN
     exit_code: 0
     envelope_payload:
         text_message: text message B
 -
-    EnvelopeClass: ConfigOnlyClass
+    envelope_class: ConfigOnlyClass
     severity_level: ERROR
     exit_code: 1
     envelope_payload:
         text_message: text message C
 -
-    EnvelopeClass: ConfigOnlyClass
+    envelope_class: ConfigOnlyClass
     severity_level: ERROR
     exit_code: 2
     envelope_payload:
@@ -27,14 +27,14 @@
 
 # Used by `InterceptDelegator` to select output format.
 -
-    EnvelopeClass: OutputFormat
+    envelope_class: OutputFormat
     output_format: json_format
 -
-    EnvelopeClass: OutputFormat
+    envelope_class: OutputFormat
     output_format: repr_format
 -
-    EnvelopeClass: OutputFormat
+    envelope_class: OutputFormat
     output_format: text_format
 -
-    EnvelopeClass: OutputFormat
+    envelope_class: OutputFormat
     output_format: table_format

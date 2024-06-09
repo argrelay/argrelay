@@ -10,21 +10,21 @@ class TopDir(Enum):
     See also FS_29_54_67_86 project `dir_structure`.
     """
 
-    BinDir = "bin"
+    bin_dir = "bin"
 
-    ConfDir = "conf"
+    conf_dir = "conf"
 
-    DataDir = "data"
+    data_dir = "data"
 
-    DocsDir = "docs"
+    docs_dir = "docs"
 
-    DstDir = "dst"
+    dst_dir = "dst"
 
-    ExeDir = "exe"
+    exe_dir = "exe"
 
-    SrcDir = "src"
+    src_dir = "src"
 
-    TestDir = "test"
+    test_dir = "test"
 
     def __str__(self):
         return self.name

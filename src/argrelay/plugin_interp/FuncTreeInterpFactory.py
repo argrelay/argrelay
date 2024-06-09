@@ -5,7 +5,7 @@ from copy import deepcopy
 from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
 from argrelay.composite_tree.CompositeTreeWalker import extract_jump_tree, extract_func_tree
 from argrelay.composite_tree.DictTreeWalker import DictTreeWalker, normalize_tree
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
@@ -177,7 +177,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             class_names,
             lambda collection_name, class_name: (
                 [
-                    ReservedArgType.EnvelopeClass.name,
+                    ReservedPropName.envelope_class.name,
                 ] + prop_names
             )
         )
@@ -242,10 +242,10 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
         # Include other fields:
         keys_to_types_list.append({
-            "state": ReservedArgType.FuncState.name
+            "state": ReservedPropName.func_state.name
         })
         keys_to_types_list.append({
-            "id": ReservedArgType.FuncId.name
+            "id": ReservedPropName.func_id.name
         })
 
     def populate_func_tree_props(

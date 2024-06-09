@@ -1,4 +1,4 @@
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.relay_server.QueryEngine import QueryEngine
 
@@ -20,14 +20,14 @@ class HelpHintCache:
         help_hint_envelopes = self.query_engine.query_data_envelopes(
             ReservedEnvelopeClass.ClassHelp.name,
             {
-                f"{ReservedArgType.EnvelopeClass.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
+                f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
             },
         )
 
         for help_hint_envelope in help_hint_envelopes:
-            arg_type = help_hint_envelope[ReservedArgType.ArgType.name]
-            arg_value = help_hint_envelope[ReservedArgType.ArgValue.name]
-            help_hint = help_hint_envelope[ReservedArgType.HelpHint.name]
+            arg_type = help_hint_envelope[ReservedPropName.arg_type.name]
+            arg_value = help_hint_envelope[ReservedPropName.arg_value.name]
+            help_hint = help_hint_envelope[ReservedPropName.help_hint.name]
             if arg_type not in self.help_hint_dict:
                 self.help_hint_dict[arg_type] = {}
             self.help_hint_dict[arg_type][arg_value] = help_hint

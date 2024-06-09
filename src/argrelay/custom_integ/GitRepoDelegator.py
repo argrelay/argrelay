@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import subprocess
 
-from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.value_constants import (
     goto_git_repo_func_,
@@ -10,7 +10,7 @@ from argrelay.custom_integ.value_constants import (
     desc_git_tag_func_,
 )
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_invocation_input
@@ -59,12 +59,12 @@ class GitRepoDelegator(AbstractDelegator):
             class_to_collection_map,
             GitRepoEnvelopeClass.ClassGitRepo.name,
             [
-                {"category": GitRepoArgType.git_repo_object_category.name},
-                {"alias": GitRepoArgType.git_repo_alias.name},
-                {"content": GitRepoArgType.git_repo_content_type.name},
-                {"name": GitRepoArgType.git_repo_root_base_name.name},
-                {"path": GitRepoArgType.git_repo_root_rel_path.name},
-                {"base": GitRepoArgType.git_repo_root_abs_path.name},
+                {"category": GitRepoPropName.git_repo_object_category.name},
+                {"alias": GitRepoPropName.git_repo_alias.name},
+                {"content": GitRepoPropName.git_repo_content_type.name},
+                {"name": GitRepoPropName.git_repo_root_base_name.name},
+                {"path": GitRepoPropName.git_repo_root_rel_path.name},
+                {"base": GitRepoPropName.git_repo_root_abs_path.name},
             ],
         )
 
@@ -72,18 +72,18 @@ class GitRepoDelegator(AbstractDelegator):
             class_to_collection_map,
             GitRepoEnvelopeClass.ClassGitTag.name,
             [
-                {"category": GitRepoArgType.git_repo_object_category.name},
+                {"category": GitRepoPropName.git_repo_object_category.name},
 
-                {"alias": GitRepoArgType.git_repo_alias.name},
-                {"content": GitRepoArgType.git_repo_content_type.name},
-                {"name": GitRepoArgType.git_repo_root_base_name.name},
-                {"path": GitRepoArgType.git_repo_root_rel_path.name},
-                {"base": GitRepoArgType.git_repo_root_abs_path.name},
+                {"alias": GitRepoPropName.git_repo_alias.name},
+                {"content": GitRepoPropName.git_repo_content_type.name},
+                {"name": GitRepoPropName.git_repo_root_base_name.name},
+                {"path": GitRepoPropName.git_repo_root_rel_path.name},
+                {"base": GitRepoPropName.git_repo_root_abs_path.name},
 
-                {"date": GitRepoArgType.git_repo_commit_date.name},
-                {"tag": GitRepoArgType.git_repo_tag_name.name},
-                {"time": GitRepoArgType.git_repo_commit_time.name},
-                {"hex": GitRepoArgType.git_repo_short_commit_id.name},
+                {"date": GitRepoPropName.git_repo_commit_date.name},
+                {"tag": GitRepoPropName.git_repo_tag_name.name},
+                {"time": GitRepoPropName.git_repo_commit_time.name},
+                {"hex": GitRepoPropName.git_repo_short_commit_id.name},
             ],
         )
 
@@ -91,18 +91,18 @@ class GitRepoDelegator(AbstractDelegator):
             class_to_collection_map,
             GitRepoEnvelopeClass.ClassGitCommit.name,
             [
-                {"category": GitRepoArgType.git_repo_object_category.name},
+                {"category": GitRepoPropName.git_repo_object_category.name},
 
-                {"alias": GitRepoArgType.git_repo_alias.name},
-                {"content": GitRepoArgType.git_repo_content_type.name},
-                {"name": GitRepoArgType.git_repo_root_base_name.name},
-                {"path": GitRepoArgType.git_repo_root_rel_path.name},
-                {"base": GitRepoArgType.git_repo_root_abs_path.name},
+                {"alias": GitRepoPropName.git_repo_alias.name},
+                {"content": GitRepoPropName.git_repo_content_type.name},
+                {"name": GitRepoPropName.git_repo_root_base_name.name},
+                {"path": GitRepoPropName.git_repo_root_rel_path.name},
+                {"base": GitRepoPropName.git_repo_root_abs_path.name},
 
-                {"date": GitRepoArgType.git_repo_commit_date.name},
-                {"email": GitRepoArgType.git_repo_commit_author_email.name},
-                {"time": GitRepoArgType.git_repo_commit_time.name},
-                {"hex": GitRepoArgType.git_repo_short_commit_id.name},
+                {"date": GitRepoPropName.git_repo_commit_date.name},
+                {"email": GitRepoPropName.git_repo_commit_author_email.name},
+                {"time": GitRepoPropName.git_repo_commit_time.name},
+                {"hex": GitRepoPropName.git_repo_short_commit_id.name},
             ],
         )
 
@@ -116,10 +116,10 @@ class GitRepoDelegator(AbstractDelegator):
                     repo_search_control,
                 ],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "Goto Git repository (`cd` to its path)",
-            ReservedArgType.FuncState.name: FuncState.beta.name,
-            ReservedArgType.FuncId.name: goto_git_repo_func_,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.help_hint.name: "Goto Git repository (`cd` to its path)",
+            ReservedPropName.func_state.name: FuncState.beta.name,
+            ReservedPropName.func_id.name: goto_git_repo_func_,
         }
         func_envelopes.append(given_function_envelope)
 
@@ -131,10 +131,10 @@ class GitRepoDelegator(AbstractDelegator):
                     tag_search_control,
                 ],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "Describe Git tag",
-            ReservedArgType.FuncState.name: FuncState.demo.name,
-            ReservedArgType.FuncId.name: desc_git_tag_func_,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.help_hint.name: "Describe Git tag",
+            ReservedPropName.func_state.name: FuncState.demo.name,
+            ReservedPropName.func_id.name: desc_git_tag_func_,
         }
         func_envelopes.append(given_function_envelope)
 
@@ -146,10 +146,10 @@ class GitRepoDelegator(AbstractDelegator):
                     commit_search_control,
                 ],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "Describe Git commit",
-            ReservedArgType.FuncState.name: FuncState.demo.name,
-            ReservedArgType.FuncId.name: desc_git_commit_func_,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.help_hint.name: "Describe Git commit",
+            ReservedPropName.func_state.name: FuncState.demo.name,
+            ReservedPropName.func_id.name: desc_git_commit_func_,
         }
         func_envelopes.append(given_function_envelope)
 

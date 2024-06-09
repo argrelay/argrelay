@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -26,9 +26,9 @@ class ThisTestClass(LocalTestClass):
                 ],
                 1,
                 {
-                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                    ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
                 },
-                "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServiceArgType.code_maturity`",
+                "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServicePropName.code_maturity`",
             ),
             (
                 line_no(), "some_command host goto dev |", CompType.PrefixShown,
@@ -38,9 +38,9 @@ class ThisTestClass(LocalTestClass):
                 ],
                 1,
                 {
-                    ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                    ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                 },
-                "Even if all `data_envelope`-s has the same `dev` `ServiceArgType.code_maturity`, "
+                "Even if all `data_envelope`-s has the same `dev` `ServicePropName.code_maturity`, "
                 "if it is provided, the value `dev` is still consumed."
             ),
         ]

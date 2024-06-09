@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -33,7 +33,7 @@ class ThisTestClass(LocalTestClass):
                 ["host-a-1", "host-a-2"],
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ReservedEnvelopeClass.ClassFunction.name,
                             ArgSource.InitValue,
                         ),
@@ -42,14 +42,14 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassHost.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.code_maturity.name: AssignedValue("qa", ArgSource.ImplicitValue),
-                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ExplicitPosArg),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("qa", ArgSource.ImplicitValue),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ExplicitPosArg),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -65,7 +65,7 @@ class ThisTestClass(LocalTestClass):
                 ["host-a-1", "host-a-2"],
                 {
                     0: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ReservedEnvelopeClass.ClassFunction.name,
                             ArgSource.InitValue,
                         ),
@@ -74,14 +74,14 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ReservedArgType.EnvelopeClass.name: AssignedValue(
+                        ReservedPropName.envelope_class.name: AssignedValue(
                             ServiceEnvelopeClass.ClassHost.name,
                             ArgSource.InitValue,
                         ),
-                        ServiceArgType.code_maturity.name: AssignedValue("qa", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("qa", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -102,10 +102,10 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
-                        ServiceArgType.geo_region.name: AssignedValue("emea", ArgSource.ExplicitPosArg),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                        ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ExplicitPosArg),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -126,10 +126,10 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -150,10 +150,10 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
-                        ServiceArgType.geo_region.name: AssignedValue("emea", ArgSource.ExplicitPosArg),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                        ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ExplicitPosArg),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -178,10 +178,10 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("qa", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("qa", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -206,10 +206,10 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("qa", ArgSource.ImplicitValue),
-                        ServiceArgType.geo_region.name: AssignedValue("apac", ArgSource.ExplicitPosArg),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("qa", ArgSource.ImplicitValue),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ExplicitPosArg),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("qa-apac-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -234,10 +234,10 @@ class ThisTestClass(LocalTestClass):
                         f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
                     },
                     1: {
-                        ServiceArgType.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
-                        ServiceArgType.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
-                        ServiceArgType.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServiceArgType.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
+                        ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name

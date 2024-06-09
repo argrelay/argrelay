@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from marshmallow import Schema, RAISE, fields
 
-from argrelay.custom_integ.GitRepoArgType import GitRepoArgType
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
 repo_rel_path_ = "repo_rel_path"
@@ -67,7 +67,7 @@ git_repo_entry_config_desc = TypeDesc(
         load_tags_last_days_: 1,
         load_commits_max_count_: 10,
         envelope_properties_: {
-            GitRepoArgType.git_repo_alias.name: "ar",
+            GitRepoPropName.git_repo_alias.name: "ar",
         }
     },
     default_file_path = "",

@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum, auto
 
 
-class GitRepoArgType(Enum):
+class GitRepoPropName(Enum):
     """
     Envelope arg types (properties) used by `GitRepoLoader`.
     """

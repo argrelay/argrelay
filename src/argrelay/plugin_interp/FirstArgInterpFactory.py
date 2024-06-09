@@ -1,5 +1,5 @@
 from argrelay.composite_tree.CompositeTreeWalker import extract_zero_arg_interp_tree
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
@@ -66,7 +66,7 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
         for delegator_plugin_id, action_delegator in self.server_config.action_delegators.items():
             func_envelopes = action_delegator.get_supported_func_envelopes()
             for func_envelope in func_envelopes:
-                func_id = func_envelope[ReservedArgType.FuncId.name]
+                func_id = func_envelope[ReservedPropName.func_id.name]
                 if func_id in func_ids_to_func_envelopes:
                     raise RuntimeError(
                         f"plugin_instance_id='{self.plugin_instance_id}': func_id='{func_id}' is published more than once by delegator_plugin_id='{delegator_plugin_id}'"

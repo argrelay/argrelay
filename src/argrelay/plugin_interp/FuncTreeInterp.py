@@ -5,7 +5,7 @@ from typing import Union
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.InterpStep import InterpStep
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
@@ -74,7 +74,7 @@ class FuncTreeInterp(AbstractInterp):
 
     def _apply_func_init_control(self):
         self.interp_ctx.curr_container.assigned_types_to_values[
-            ReservedArgType.EnvelopeClass.name
+            ReservedPropName.envelope_class.name
         ] = AssignedValue(
             ReservedEnvelopeClass.ClassFunction.name,
             ArgSource.InitValue,

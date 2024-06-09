@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedArgType import ReservedArgType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import DescribeLineArgsClientResponseHandler
@@ -33,10 +33,10 @@ class QueryEnumDelegator(AbstractJumpDelegator):
                 search_control_list_: [
                 ],
             },
-            ReservedArgType.EnvelopeClass.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedArgType.HelpHint.name: "Enumerate available arg options (based on existing arg values)",
-            ReservedArgType.FuncState.name: FuncState.alpha.name,
-            ReservedArgType.FuncId.name: SpecialFunc.query_enum_items_func.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.help_hint.name: "Enumerate available arg options (based on existing arg values)",
+            ReservedPropName.func_state.name: FuncState.alpha.name,
+            ReservedPropName.func_id.name: SpecialFunc.query_enum_items_func.name,
         }]
         return func_envelopes
 

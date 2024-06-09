@@ -320,7 +320,7 @@ plugin_instance_entries:
             func_configs:
                 funct_id_print_with_severity_level:
                     func_envelope:
-                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
+                        help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
                         instance_data:
                             search_control_list:
                                 -
@@ -334,7 +334,7 @@ plugin_instance_entries:
                             echo_command_on_stderr: True
                 funct_id_print_with_exit_code:
                     func_envelope:
-                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
+                        help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
                         instance_data:
                             search_control_list:
                                 -
@@ -349,7 +349,7 @@ plugin_instance_entries:
                                 exit {envelope_containers[1].data_envelopes[0]['exit_code']}
                 funct_id_print_with_io_redirect:
                     func_envelope:
-                        HelpHint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` on stdout or stderr based on exit code"
+                        help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` on stdout or stderr based on exit code"
                         instance_data:
                             search_control_list:
                                 -
@@ -378,7 +378,7 @@ plugin_instance_entries:
                             severity_level: "{envelope_containers[1].data_envelopes[0]['severity_level']}"
                             exit_code: "{envelope_containers[1].data_envelopes[0]['exit_code']}"
                     func_envelope:
-                        HelpHint: "Example: take two command templates and execute them: print `text_message` prefixed with `severity_level` and print exit code (without using it for exit)"
+                        help_hint: "Example: take two command templates and execute them: print `text_message` prefixed with `severity_level` and print exit code (without using it for exit)"
                         instance_data:
                             search_control_list:
                                 -

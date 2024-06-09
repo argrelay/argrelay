@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceArgType import ServiceArgType
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -35,32 +35,32 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     1: {
-                        ServiceArgType.geo_region.name: [
+                        ServicePropName.geo_region.name: [
                             "emea"
                         ],
-                        ServiceArgType.cluster_name.name: [
+                        ServicePropName.cluster_name.name: [
                             "dev-emea-downstream",
                         ],
-                        ServiceArgType.host_name.name: AssignedValue("zxcv", ArgSource.ExplicitPosArg),
-                        ServiceArgType.live_status.name: AssignedValue("red", ArgSource.ImplicitValue),
+                        ServicePropName.host_name.name: AssignedValue("zxcv", ArgSource.ExplicitPosArg),
+                        ServicePropName.live_status.name: AssignedValue("red", ArgSource.ImplicitValue),
                     },
                     2: {
-                        ServiceArgType.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
                     },
                     3: None,
                 },
                 "Step 1: "
                 "TD_39_25_11_76: `data_envelope`-s with missing props: "
                 "there are two `zxcv` hosts: one in `apac` and another in `emea`, "
-                "but there is no suggestions because `apac` host does not have `ServiceArgType.live_status` property "
+                "but there is no suggestions because `apac` host does not have `ServicePropName.live_status` property "
                 "which is assigned as `ArgSource.ImplicitValue` now from the single value available in `emea` - "
                 "this hides existence of the host in `apac`. "
 
-                "Also, `ServiceArgType.geo_region` and `ServiceArgType.cluster_name` are not singled out "
+                "Also, `ServicePropName.geo_region` and `ServicePropName.cluster_name` are not singled out "
                 "even though there is only single value - this happens because "
-                "`EnvelopeContainer.populate_implicit_arg_values` is sets `ServiceArgType.live_status` to "
+                "`EnvelopeContainer.populate_implicit_arg_values` is sets `ServicePropName.live_status` to "
                 "`ArgSource.ImplicitValue` but still sees multiple `data_envelope`-s with different values"
-                "for `ServiceArgType.geo_region` and `ServiceArgType.cluster_name`.",
+                "for `ServicePropName.geo_region` and `ServicePropName.cluster_name`.",
             ),
             (
                 line_no(), "relay_demo goto host asdf |", CompType.PrefixShown,
@@ -79,26 +79,26 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     1: {
-                        ServiceArgType.geo_region.name: [
+                        ServicePropName.geo_region.name: [
                             "apac",
                             "emea",
                         ],
-                        ServiceArgType.cluster_name.name: [
+                        ServicePropName.cluster_name.name: [
                             "dev-apac-downstream",
                             "dev-emea-downstream",
                         ],
-                        ServiceArgType.host_name.name: AssignedValue("asdf", ArgSource.ExplicitPosArg),
-                        ServiceArgType.live_status.name: AssignedValue("yellow", ArgSource.ImplicitValue),
+                        ServicePropName.host_name.name: AssignedValue("asdf", ArgSource.ExplicitPosArg),
+                        ServicePropName.live_status.name: AssignedValue("yellow", ArgSource.ImplicitValue),
                     },
                     2: {
-                        ServiceArgType.access_type.name: None,
+                        ServicePropName.access_type.name: None,
                     },
                     3: None,
                 },
                 "Step 2: "
                 "TD_39_25_11_76: `data_envelope`-s with missing props: "
                 "unlike Step 1, here hosts are suggested from both `emea` and `apac` because "
-                "host `asdf` has `ServiceArgType.live_status` property everywhere.",
+                "host `asdf` has `ServicePropName.live_status` property everywhere.",
             ),
         ]
 
