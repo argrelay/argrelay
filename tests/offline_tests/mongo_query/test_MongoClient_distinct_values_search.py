@@ -12,7 +12,7 @@ class ThisTestClass(MongoClientTestClass):
         https://stackoverflow.com/a/63595331/441652
         """
 
-        index_fields = [
+        index_props = [
             ServicePropName.access_type.name,
             ServicePropName.live_status.name,
             ServicePropName.code_maturity.name,
@@ -58,7 +58,7 @@ class ThisTestClass(MongoClientTestClass):
             envelope_004,
         ])
 
-        self.index_fields(self.col_proxy, index_fields)
+        self.index_props(self.col_proxy, index_props)
 
         print("query 1:")
         for result_item in self.col_proxy.aggregate([

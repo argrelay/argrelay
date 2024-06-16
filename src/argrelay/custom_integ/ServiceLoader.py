@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServiceLoaderConfigSchema import (
     service_loader_config_desc,
     test_data_ids_to_load_,
 )
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
@@ -180,23 +180,23 @@ class ServiceLoader(AbstractLoader):
         help_hint_envelope_collection = static_data.envelope_collections.setdefault(
             class_to_collection_map[ReservedEnvelopeClass.ClassHelp.name],
             EnvelopeCollection(
-                index_fields = [],
+                index_props = [],
                 data_envelopes = [],
             ),
         )
-        help_hint_index_fields = help_hint_envelope_collection.index_fields
+        help_hint_index_props = help_hint_envelope_collection.index_props
         help_hint_envelopes = help_hint_envelope_collection.data_envelopes
 
         # Init index fields (if they do not exist):
-        for help_hint_index_field in [
+        for help_hint_index_prop in [
             ReservedPropName.envelope_class.name,
             ReservedPropName.arg_type.name,
             ReservedPropName.arg_value.name,
             # `ReservedPropName.help_hint` is not indexed (and uses as search param) - instead, it is a search result:
             # ReservedPropName.help_hint.name,
         ]:
-            if help_hint_index_field not in help_hint_index_fields:
-                help_hint_index_fields.append(help_hint_index_field)
+            if help_hint_index_prop not in help_hint_index_props:
+                help_hint_index_props.append(help_hint_index_prop)
 
         # Generating
         host_envelopes = static_data.envelope_collections[

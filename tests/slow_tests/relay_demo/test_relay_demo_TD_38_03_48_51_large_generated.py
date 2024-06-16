@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.runtime_data.AssignedValue import AssignedValue

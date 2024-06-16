@@ -22,6 +22,7 @@ class NoopInterpFactory(AbstractInterpFactory):
         self,
         interp_ctx: InterpContext,
     ) -> NoopInterp:
+        # TODO: TODO_48_38_59_64: remove `interp_tree_abs_paths_to_node_configs`:
         # `NoopInterpFactory` is not normally attached to any tree and
         # `load_func_envelopes` is not invoked to clone/populate separate configs
         # (which makes it use `plugin_config_dict` directly instead of `interp_tree_node_config_dict`) -

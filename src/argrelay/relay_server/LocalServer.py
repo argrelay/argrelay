@@ -8,6 +8,7 @@ from argrelay.composite_tree.DictTreeWalker import contains_whitespace
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoClientWrapper import log_validation_progress
@@ -172,7 +173,7 @@ class LocalServer:
         self,
     ):
         """
-        This validation ensures there is no blank values (`None`, whitespace, etc.) in `index_field`-s.
+        This validation ensures there is no blank values (`None`, whitespace, etc.) in `index_prop`-s.
 
         See also FS_99_81_19_25 no space in options.
         """
@@ -187,47 +188,47 @@ class LocalServer:
                 +
                 len(envelope_collection.data_envelopes)
             )
-            for index_field in envelope_collection.index_fields:
+            for index_prop in envelope_collection.index_props:
                 for data_envelope in envelope_collection.data_envelopes:
                     envelope_class = data_envelope[ReservedPropName.envelope_class.name]
 
-                    if index_field not in data_envelope:
+                    if index_prop not in data_envelope:
                         # TODO_39_25_11_76: `data_envelope`-s with missing props:
-                        # Let the `data_envelope` load without some `prop_name`-s from `index_field`-s -
+                        # Let the `data_envelope` load without some `prop_name`-s from `index_prop`-s -
                         # if any of `data_envelope`-s have that `prop_name`, it will fail validation.
                         # It is allowed to have no `prop_name` for all `data_envelope` until one has it.
                         continue
                     else:
-                        prop_names_per_class.setdefault(envelope_class, set()).add(index_field)
+                        prop_names_per_class.setdefault(envelope_class, set()).add(index_prop)
 
-                    prop_value = data_envelope[index_field]
+                    prop_value = data_envelope[index_prop]
                     self._validate_string_prop_value(
                         envelope_class,
-                        index_field,
+                        index_prop,
                         prop_value,
                     )
 
     def _validate_string_prop_value(
         self,
         envelope_class,
-        index_field,
+        index_prop,
         prop_value,
     ):
         if isinstance(prop_value, str):
             if not prop_value and prop_value.strip():
-                raise ValueError(f"`{envelope_class}.{index_field}` [{prop_value}] has to be non-blank string")
+                raise ValueError(f"`{envelope_class}.{index_prop}` [{prop_value}] has to be non-blank string")
             if contains_whitespace(prop_value):
-                raise ValueError(f"`{envelope_class}.{index_field}` [{prop_value}] cannot contain whitespace")
+                raise ValueError(f"`{envelope_class}.{index_prop}` [{prop_value}] cannot contain whitespace")
         elif isinstance(prop_value, list):
             for prop_value_item in prop_value:
                 self._validate_string_prop_value(
                     envelope_class,
-                    index_field,
+                    index_prop,
                     prop_value_item,
                 )
         else:
             # FS_06_99_43_60: list arg value:
-            raise ValueError(f"`{envelope_class}.{index_field}` has to be a `list` of `str` or `str`")
+            raise ValueError(f"`{envelope_class}.{index_prop}` has to be a `list` of `str` or `str`")
 
     def _post_validate_loaded_data(
         self,
@@ -259,10 +260,6 @@ class LocalServer:
                 if curr_envelope_i % 1_000 == 0:
                     log_validation_progress(collection_name, curr_envelope_i, total_envelope_n)
 
-                # TODO: TODO_39_25_11_76 missing props: skip funcs for now - they have to be fixed generically:
-                if envelope_class == ReservedEnvelopeClass.ClassFunction.name:
-                    continue
-
                 for prop_name in prop_names_per_class[envelope_class]:
                     if prop_name not in data_envelope:
                         raise ValueError(
@@ -287,6 +284,42 @@ class LocalServer:
     ):
         self.mongo_server.stop_mongo_server()
 
+    def _populate_func_missing_props(
+        self,
+    ):
+        """
+        TODO: TODO_39_25_11_76 missing props: populate missing props supported by funcs.
+
+        This function only targets `ReservedEnvelopeClass.ClassFunction` (because loading funcs is special).
+        There is no decision (yet) to populate missing `prop_value`-s for any `data_envelope`.
+        Instead, there is a validation to prevent missing `prop_name`-s - each loader has to be fixed
+        to provide seme set of `prop_name`-s for all `data_envelope`.
+        """
+
+        # Collect `prop_name`-s used by all funcs:
+        func_prop_names: set[str] = set()
+        for mongo_collection in self.server_config.static_data.envelope_collections:
+            envelope_collection: EnvelopeCollection = self.server_config.static_data.envelope_collections[
+                mongo_collection
+            ]
+            for data_envelope in envelope_collection.data_envelopes:
+                envelope_class = data_envelope[ReservedPropName.envelope_class.name]
+                if envelope_class == ReservedEnvelopeClass.ClassFunction.name:
+                    for prop_name in envelope_collection.index_props:
+                        func_prop_names.add(prop_name)
+
+        # Populate missing `prop_name`-s with special value:
+        for mongo_collection in self.server_config.static_data.envelope_collections:
+            envelope_collection: EnvelopeCollection = self.server_config.static_data.envelope_collections[
+                mongo_collection
+            ]
+            for data_envelope in envelope_collection.data_envelopes:
+                envelope_class = data_envelope[ReservedPropName.envelope_class.name]
+                if envelope_class == ReservedEnvelopeClass.ClassFunction.name:
+                    for prop_name in func_prop_names:
+                        if prop_name not in data_envelope:
+                            data_envelope[prop_name] = SpecialChar.NoPropValue.value
+
     def _load_mongo_data(
         self,
     ):
@@ -294,8 +327,11 @@ class LocalServer:
         total_envelope_n: int = 0
         curr_envelope_i: int = 0
 
+        # At this moment, funcs have already been loaded on `AbstractPlugin.activate_plugin`.
+        self._populate_func_missing_props()
+
         # TODO_00_79_72_55: Remove `static_data` from `server_config`:
-        # Initial step: load any data from config:
+        # Initial step: load funcs and any data from config:
         self._load_mongo_data_step(
             "config_data",
             total_envelope_n,
@@ -352,12 +388,12 @@ class LocalServer:
                 collection_name
             ]
             # Include `envelope_class` field into index by default:
-            index_fields: list[str] = deepcopy(envelope_collection.index_fields)
-            index_fields.append(ReservedPropName.envelope_class.name)
+            index_props: list[str] = deepcopy(envelope_collection.index_props)
+            index_props.append(ReservedPropName.envelope_class.name)
             MongoClientWrapper.create_index(
                 mongo_db,
                 collection_name,
-                envelope_collection.index_fields,
+                envelope_collection.index_props,
             )
 
     def _populate_help_hint_cache(

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
@@ -177,8 +178,8 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                     # any arg value assigned to such arg type would return no results.
                     print(" " * indent_size, end = "")
                     print(TermColor.no_option_to_suggest.value, end = "")
-                    print(f"{arg_type}:", end = "")
-                    print(" [none]", end = "")
+                    print(f"{arg_type}: ", end = "")
+                    print(SpecialChar.NoPropValue.value, end = "")
                     print(TermColor.reset_style.value, end = "")
 
                 print()

@@ -4,8 +4,8 @@ from enum import Enum, auto
 
 from argrelay.custom_integ.ServiceDelegator import set_default_to
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input, get_func_id_from_interp_ctx
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator

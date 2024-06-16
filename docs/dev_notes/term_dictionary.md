@@ -69,7 +69,7 @@ See also FS_37_57_36_29 (containers, envelopes, payloads).
 ### `envelope_collection`
 
 A wrapper providing data for a MongoDB collection:
-*   list of `index_field`-s
+*   list of `index_prop`-s
 *   set of `data_envelope`-s
 
 See also:
@@ -85,12 +85,12 @@ See also FS_37_57_36_29 (containers, envelopes, payloads).
 
 # I
 
-### `index_field`
+### `index_prop`
 
-MongoDB allows declaring `index_field`-s per collection to make `data_envelope` search faster.
+MongoDB allows declaring `index_prop`-s per collection to make `data_envelope` search faster.
 There are some limits - see FS_56_43_05_79 search in different collection.
 
-List of `index_field`-s per collection is defined in `EnvelopeCollection`.
+List of `index_prop`-s per collection is defined in `EnvelopeCollection`.
 
 ### `interp`
 

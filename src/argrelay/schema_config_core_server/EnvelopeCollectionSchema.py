@@ -11,7 +11,7 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
-index_fields_ = "index_fields"
+index_props_ = "index_props"
 
 
 class EnvelopeCollectionSchema(ObjectSchema):
@@ -21,7 +21,7 @@ class EnvelopeCollectionSchema(ObjectSchema):
 
     model_class = EnvelopeCollection
 
-    index_fields = fields.List(
+    index_props = fields.List(
         fields.String(),
         required = False,
         load_default = [],
@@ -39,7 +39,7 @@ envelope_collection_desc = TypeDesc(
     dict_schema = EnvelopeCollectionSchema(),
     ref_name = EnvelopeCollectionSchema.__name__,
     dict_example = {
-        index_fields_: [
+        index_props_: [
             "SomeTypeA",
             "SomeTypeB",
         ],
@@ -54,7 +54,7 @@ envelope_collection_desc = TypeDesc(
 def init_envelop_collections(
     server_config: ServerConfig,
     class_names: Collection[str],
-    get_index_fields: Callable[[str, str], list[str]],
+    get_index_props: Callable[[str, str], list[str]],
 ):
     """
     FS_56_43_05_79: Part of "search diff collection" implementation.
@@ -62,7 +62,7 @@ def init_envelop_collections(
     Init:
     *   mapping from `class_name` to `collection_name`
     *   association of `collection_name` with its data as `EnvelopeCollection` (default = new and empty)
-    *   list of `index_field`-s for each `EnvelopeCollection` via `get_index_fields`
+    *   list of `index_prop`-s for each `EnvelopeCollection` via `get_index_props`
 
     By default, class_name is mapped into collection_name which matches as string that class_name.
     """
@@ -78,12 +78,12 @@ def init_envelop_collections(
         envelope_collection = server_config.static_data.envelope_collections.setdefault(
             collection_name,
             EnvelopeCollection(
-                index_fields = [],
+                index_props = [],
                 data_envelopes = [],
             ),
         )
 
-        index_fields = envelope_collection.index_fields
-        for index_field in get_index_fields(collection_name, class_name):
-            if index_field not in index_fields:
-                index_fields.append(index_field)
+        index_props = envelope_collection.index_props
+        for index_prop in get_index_props(collection_name, class_name):
+            if index_prop not in index_props:
+                index_props.append(index_prop)

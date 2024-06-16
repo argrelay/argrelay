@@ -8,11 +8,12 @@ class EnvelopeCollection:
     """
     Allows distributing `data_envelope`-s across FS_56_43_05_79 different collections.
 
-    Specifies collection of `data_envelope`-s to load and associated `index_fields` to create.
+    Specifies collection of `data_envelope`-s to load and associated `index_props` to create.
 
     See also `EnvelopeCollectionSchema`.
     """
-    index_fields: list = field()
+
+    index_props: list = field()
     """
     Lists fields of `data_envelop` which are to be indexed by MongoDB for given collection.
     """

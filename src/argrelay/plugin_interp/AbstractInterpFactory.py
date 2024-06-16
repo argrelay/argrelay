@@ -22,6 +22,15 @@ class AbstractInterpFactory(AbstractPlugin):
             plugin_instance_id,
             plugin_config_dict,
         )
+
+        self.interp_tree_abs_paths: list[tuple[str, ...]] = []
+        """
+        All tree paths this plugin is plugged into.
+
+        It is populated via `load_interp_tree_abs_paths`.
+        """
+
+        # TODO: TODO_48_38_59_64: remove `interp_tree_abs_paths_to_node_configs`:
         # Takes part in implementation of FS_01_89_09_24 interp tree:
         self.interp_tree_abs_paths_to_node_configs: dict[tuple[str, ...], dict] = {}
         """
@@ -37,6 +46,16 @@ class AbstractInterpFactory(AbstractPlugin):
     ) -> PluginType:
         return PluginType.InterpFactoryPlugin
 
+    def load_interp_tree_abs_paths(
+        self,
+        this_plugin_instance_interp_tree_abs_paths: list[tuple[str, ...]],
+    ):
+        """
+        This function is meant to be called prior to `load_func_envelopes` to
+        let plugins know about all paths in the FS_01_89_09_24 `interp_tree` where they are plugged into.
+        """
+        pass
+
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
@@ -49,6 +68,7 @@ class AbstractInterpFactory(AbstractPlugin):
 
         Returns list of mapped `func_id`-s.
         """
+        # TODO: TODO_48_38_59_64: remove `interp_tree_abs_paths_to_node_configs`:
         if interp_tree_abs_path in self.interp_tree_abs_paths_to_node_configs:
             raise RuntimeError(f"`{interp_tree_abs_path}` has already been loaded")
         else:

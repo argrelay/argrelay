@@ -1,5 +1,4 @@
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
     envelope_properties_,
@@ -13,6 +12,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     repo_entries_,
     load_git_tags_default_,
 )
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.enum_desc.CompType import CompType
 from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.relay_client import __main__
@@ -318,7 +318,7 @@ class ThisTestClass(LocalTestClass):
                         envelope_collection = static_data.envelope_collections.setdefault(
                             class_name,
                             EnvelopeCollection(
-                                index_fields = [],
+                                index_props = [],
                                 data_envelopes = [],
                             ),
                         )
@@ -327,12 +327,12 @@ class ThisTestClass(LocalTestClass):
 
                             is_empty = False
                             if prop_name_existence:
-                                assert prop_name in static_data.envelope_collections[class_name].index_fields
+                                assert prop_name in static_data.envelope_collections[class_name].index_props
                             else:
                                 # Do not assert it as loader over-specifies index fields at the moment:
                                 # noinspection PyUnreachableCode
                                 if False:
-                                    assert prop_name not in static_data.envelope_collections[class_name].index_fields
+                                    assert prop_name not in static_data.envelope_collections[class_name].index_props
 
                             # Find list of all values in `data_envelope`-s per `prop_name`:
                             prop_values = []

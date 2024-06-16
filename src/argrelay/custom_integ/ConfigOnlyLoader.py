@@ -3,10 +3,10 @@ from copy import deepcopy
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
     config_only_loader_config_desc,
     data_envelopes_,
-    collection_name_to_index_fields_map_,
+    collection_name_to_index_props_map_,
 )
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -59,9 +59,9 @@ class ConfigOnlyLoader(AbstractLoader):
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
         # FS_49_96_50_77 config_only_loader plugin:
-        # *   `collection_name_to_index_fields_map`:
-        collection_name_to_index_fields_map: dict[str, list[str]] = self.plugin_config_dict[
-            collection_name_to_index_fields_map_
+        # *   `collection_name_to_index_props_map`:
+        collection_name_to_index_props_map: dict[str, list[str]] = self.plugin_config_dict[
+            collection_name_to_index_props_map_
         ]
         # *   list of `data_envelope`-s (actual data):
         data_envelopes = [
@@ -77,7 +77,7 @@ class ConfigOnlyLoader(AbstractLoader):
         init_envelop_collections(
             self.server_config,
             class_names,
-            lambda _collection_name, _class_name: collection_name_to_index_fields_map[_collection_name],
+            lambda _collection_name, _class_name: collection_name_to_index_props_map[_collection_name],
         )
 
         for class_name in class_names:

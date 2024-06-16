@@ -111,6 +111,7 @@ def log_index_progress(
             f"collection: {mongo_collection}: indexed envelopes: {envelope_per_col_i}/{curr_envelope_i}/{total_envelope_n}..."
         )
 
+
 def log_validation_progress(
     mongo_collection: str,
     curr_envelope_i: int,
@@ -123,12 +124,13 @@ def log_validation_progress(
             f"collection: {mongo_collection}: validated envelopes: {curr_envelope_i}/{total_envelope_n}..."
         )
 
+
 def create_index(
     mongo_db: Database,
     collection_name: str,
-    index_fields: list[str],
+    index_props: list[str],
 ):
     col_proxy: Collection = mongo_db[collection_name]
 
-    for index_field in index_fields:
-        col_proxy.create_index(index_field)
+    for index_prop in index_props:
+        col_proxy.create_index(index_prop)

@@ -5,8 +5,8 @@ from typing import Union
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.InterpStep import InterpStep
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -52,7 +52,7 @@ class FuncTreeInterp(AbstractInterp):
         interp_factory_id,
         interp_tree_node_config_dict: dict,
         interp_ctx: InterpContext,
-        func_ids_to_func_rel_paths: dict[str, list[list[str]]],
+        func_ids_to_func_abs_paths: dict[str, list[list[str]]],
         paths_to_jump: dict[tuple[str, ...], tuple[str, ...]],
     ):
         super().__init__(
@@ -70,7 +70,7 @@ class FuncTreeInterp(AbstractInterp):
         self._apply_func_init_control()
         self._apply_func_search_control()
 
-        self.func_ids_to_func_rel_paths: dict[str, list[list[str]]] = func_ids_to_func_rel_paths
+        self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = func_ids_to_func_abs_paths
 
     def _apply_func_init_control(self):
         self.interp_ctx.curr_container.assigned_types_to_values[

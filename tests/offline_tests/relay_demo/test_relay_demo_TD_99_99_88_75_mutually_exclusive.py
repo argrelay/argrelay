@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
@@ -105,7 +105,10 @@ class ThisTestClass(LocalTestClass):
                         ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
                         ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ExplicitPosArg),
                         ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue(
+                            "dev-emea-downstream",
+                            ArgSource.ImplicitValue,
+                        ),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -129,7 +132,10 @@ class ThisTestClass(LocalTestClass):
                         ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                         ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
                         ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue(
+                            "dev-emea-downstream",
+                            ArgSource.ImplicitValue,
+                        ),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -153,7 +159,10 @@ class ThisTestClass(LocalTestClass):
                         ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
                         ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ExplicitPosArg),
                         ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue(
+                            "dev-emea-downstream",
+                            ArgSource.ImplicitValue,
+                        ),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name
@@ -237,7 +246,10 @@ class ThisTestClass(LocalTestClass):
                         ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
                         ServicePropName.geo_region.name: AssignedValue("emea", ArgSource.ImplicitValue),
                         ServicePropName.flow_stage.name: AssignedValue("downstream", ArgSource.ImplicitValue),
-                        ServicePropName.cluster_name.name: AssignedValue("dev-emea-downstream", ArgSource.ImplicitValue),
+                        ServicePropName.cluster_name.name: AssignedValue(
+                            "dev-emea-downstream",
+                            ArgSource.ImplicitValue,
+                        ),
                     },
                     2: {
                         # ServiceEnvelopeClass.ClassAccessType.name

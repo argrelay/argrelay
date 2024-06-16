@@ -40,9 +40,9 @@ class AbstractJumpDelegator(AbstractDelegator):
 
         # Reverse temporary path per id map into id per path map:
         self.tree_path_to_next_interp_plugin_instance_id: dict[tuple[str, ...], str] = {}
-        for interp_plugin_id, tree_abs_paths in temporary_id_to_paths.items():
+        for interp_factory_instance_id, tree_abs_paths in temporary_id_to_paths.items():
             for tree_abs_path in tree_abs_paths:
-                self.tree_path_to_next_interp_plugin_instance_id[tuple(tree_abs_path)] = interp_plugin_id
+                self.tree_path_to_next_interp_plugin_instance_id[tuple(tree_abs_path)] = interp_factory_instance_id
 
     # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
     def _compare_config_with_composite_tree(

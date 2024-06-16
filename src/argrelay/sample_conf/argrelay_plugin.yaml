@@ -47,6 +47,99 @@ reusable_config_data:
             "":
                 -   "service_relay_demo"
 
+    # Full func_tree, but not used in this form (saved for copying-and-pasting):
+    func_tree: &func_tree
+        "relay_demo":
+            "intercept": intercept_invocation_func
+            "help": help_hint_func
+            "enum": query_enum_items_func
+            "duplicates":
+                "intercept": intercept_invocation_func
+                "help": help_hint_func
+                "": &func_tree_main
+                    "echo": echo_args_func
+                    "goto":
+                        "repo": goto_git_repo_func
+                        "host": goto_host_func
+                        "service": goto_service_func
+                    "list":
+                        "host": list_host_func
+                        "service": list_service_func
+                    "diff":
+                        "service": diff_service_func
+                    "desc":
+                        "tag": desc_git_tag_func
+                        "commit": desc_git_commit_func
+                        "host": desc_host_func
+                        "service": desc_service_func
+                    "config":
+                        "print_with_level": funct_id_print_with_severity_level
+                        "print_with_exit": funct_id_print_with_exit_code
+                        "print_with_io_redirect": funct_id_print_with_io_redirect
+                        "double_execution": funct_id_double_execution
+            "": *func_tree_main
+        "some_command":
+            "intercept": intercept_invocation_func
+            "help": help_hint_func
+            "enum": query_enum_items_func
+            "duplicates":
+                "intercept": intercept_invocation_func
+                "help": help_hint_func
+                "": *func_tree_main
+            "": *func_tree_main
+        "service_relay_demo":
+            "help": help_hint_func
+            "":
+                "goto": goto_service_func
+                "list": list_service_func
+                "diff": diff_service_func
+                "desc": desc_service_func
+
+    func_tree_intercept_invocation_func: &func_tree_intercept_invocation_func
+        "relay_demo":
+            "intercept": intercept_invocation_func
+            "duplicates":
+                "intercept": intercept_invocation_func
+        "some_command":
+            "intercept": intercept_invocation_func
+            "duplicates":
+                "intercept": intercept_invocation_func
+
+    func_tree_help_hint_func: &func_tree_help_hint_func
+        "relay_demo":
+            "help": help_hint_func
+            "duplicates":
+                "help": help_hint_func
+        "some_command":
+            "help": help_hint_func
+            "duplicates":
+                "help": help_hint_func
+        "service_relay_demo":
+            "help": help_hint_func
+
+    func_tree_query_enum_items_func: &func_tree_query_enum_items_func
+        "relay_demo":
+            "enum": query_enum_items_func
+        "some_command":
+            "enum": query_enum_items_func
+
+    func_tree_default: &func_tree_default
+        "relay_demo":
+            "duplicates":
+                "": *func_tree_main
+            "": *func_tree_main
+        "some_command":
+            "duplicates":
+                "": *func_tree_main
+            "": *func_tree_main
+
+    func_tree_service: &func_tree_service
+        "service_relay_demo":
+            "goto": goto_service_func
+            "list": list_service_func
+            "diff": diff_service_func
+            "desc": desc_service_func
+
 plugin_instance_entries:
 
     FirstArgInterpFactory.default:
@@ -71,6 +164,8 @@ plugin_instance_entries:
             -   FuncTreeInterpFactory.help_hint_func
             -   FuncTreeInterpFactory.query_enum_items_func
         plugin_config:
+            # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
+            #       `first_arg_vals_to_next_interp_factory_ids` should be selecting line processors.
             first_arg_vals_to_next_interp_factory_ids:
                 # This binding uses existing file system name `relay_demo`:
                 "relay_demo": InterpTreeInterpFactory.default
@@ -115,59 +210,35 @@ plugin_instance_entries:
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree: intercept_invocation_func
+            func_selector_tree: *func_tree_intercept_invocation_func
 
     FuncTreeInterpFactory.help_hint_func:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree: help_hint_func
+            func_selector_tree: *func_tree_help_hint_func
 
     FuncTreeInterpFactory.query_enum_items_func:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree: query_enum_items_func
+            func_selector_tree: *func_tree_query_enum_items_func
 
     FuncTreeInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree:
-                "echo": echo_args_func
-                "goto":
-                    "repo": goto_git_repo_func
-                    "host": goto_host_func
-                    "service": goto_service_func
-                "list":
-                    "host": list_host_func
-                    "service": list_service_func
-                "diff":
-                    "service": diff_service_func
-                "desc":
-                    "tag": desc_git_tag_func
-                    "commit": desc_git_commit_func
-                    "host": desc_host_func
-                    "service": desc_service_func
-                "config":
-                    "print_with_level": funct_id_print_with_severity_level
-                    "print_with_exit": funct_id_print_with_exit_code
-                    "print_with_io_redirect": funct_id_print_with_io_redirect
-                    "double_execution": funct_id_double_execution
+            func_selector_tree: *func_tree_default
 
     FuncTreeInterpFactory.service:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree:
-                "goto": goto_service_func
-                "list": list_service_func
-                "diff": diff_service_func
-                "desc": desc_service_func
+            func_selector_tree: *func_tree_service
 
     NoopInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.NoopInterpFactory
@@ -238,7 +309,7 @@ plugin_instance_entries:
         plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
         plugin_class_name: ConfigOnlyLoader
         plugin_config:
-            collection_name_to_index_fields_map:
+            collection_name_to_index_props_map:
                 ConfigOnlyClass:
                     -   severity_level
                     -   exit_code
