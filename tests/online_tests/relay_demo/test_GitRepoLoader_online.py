@@ -3,7 +3,6 @@ import subprocess
 import tempfile
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
     is_repo_enabled_,
@@ -15,6 +14,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_git_commits_default_,
     repo_entries_,
 )
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir

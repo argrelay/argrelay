@@ -56,12 +56,43 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
     ) -> dict:
         return tree_path_interp_factory_config_desc.dict_from_input_dict(plugin_config_dict)
 
+    def load_interp_tree_abs_paths(
+        self,
+        this_plugin_instance_interp_tree_abs_paths: list[tuple[str, ...]],
+    ):
+        # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
+        #       At the moment, `InterpTreeInterpFactory` is not plugged into main interp tree -
+        #       it is plugged into `first_arg_vals_to_next_interp_factory_ids` of `FirstArgInterpFactory`.
+        #
+        #       When this func is called for `InterpTreeInterpFactory`, it cannot be found plugged inside
+        #       `interp_selector_tree` - instead, it walks the `interp_selector_tree` and
+        #       invokes this func for other interps in there.
+
+        dict_tree_walker: DictTreeWalker = DictTreeWalker(
+            CompositeInfoType.interp_tree,
+            self.plugin_config_dict[interp_selector_tree_],
+        )
+        # Walk configured interp tree and call `load_interp_tree_abs_paths` with `interp_tree_abs_path` for each interp.
+        all_interp_tree_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
+        for interp_factory_instance_id in all_interp_tree_abs_paths:
+            assert_plugin_instance_id(
+                self.server_config,
+                interp_factory_instance_id,
+                PluginType.InterpFactoryPlugin,
+            )
+            interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_factory_instance_id]
+            interp_factory.load_interp_tree_abs_paths([
+                tuple(list_abs_path)
+                for list_abs_path in all_interp_tree_abs_paths[interp_factory_instance_id]
+            ])
+
     def load_func_envelopes(
         self,
         interp_tree_abs_path: tuple[str, ...],
         func_ids_to_func_envelopes: dict[str, dict],
     ) -> list[str]:
         with self._is_recursive_load() as is_recursive_load:
+            # TODO: FS_33_76_82_84 composite tree: add validation that same interp tree interp is not loaded twice - is it required (given that plugin instances can be reused)?
             if is_recursive_load:
                 return []
             return self._load_func_envelopes(
@@ -98,18 +129,18 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             self.plugin_config_dict[interp_selector_tree_],
         )
         # Walk configured interp tree and call `load_func_envelopes` with `interp_tree_abs_path` for each interp.
-        interp_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
-        for interp_plugin_id in interp_abs_paths:
-            for sub_interp_tree_abs_path in interp_abs_paths[interp_plugin_id]:
+        all_interp_tree_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
+        for interp_factory_instance_id in all_interp_tree_abs_paths:
+            for sub_interp_tree_abs_path in all_interp_tree_abs_paths[interp_factory_instance_id]:
                 if not sequence_starts_with(sub_interp_tree_abs_path, interp_tree_abs_path):
                     # skip: other `interp_tree_abs_path`-s are going to be separate calls to this func:
                     continue
                 assert_plugin_instance_id(
                     self.server_config,
-                    interp_plugin_id,
+                    interp_factory_instance_id,
                     PluginType.InterpFactoryPlugin,
                 )
-                interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_plugin_id]
+                interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_factory_instance_id]
 
                 mapped_func_ids.extend(interp_factory.load_func_envelopes(
                     tuple(sub_interp_tree_abs_path),

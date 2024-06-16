@@ -28,6 +28,8 @@ class AbstractInterp:
         self.__class__.instance_counter += 1
         self.instance_number: int = self.instance_counter
 
+        self.interp_tree_abs_path = list(interp_ctx.interp_tree_abs_path)
+
         self.interp_tree_node_config_dict: dict = interp_tree_node_config_dict
         """
         The configs for individual `AbstractInterp` are called `interp_tree_node_config_dict` and cloned/populated by

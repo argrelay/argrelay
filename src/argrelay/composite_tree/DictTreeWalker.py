@@ -71,7 +71,7 @@ def _normalize_tree(
     input_tree: Union[dict, str],
     tree_depth: int,
 ) -> Union[dict, str]:
-    output_tree: dict = {}
+    output_tree: Union[dict, str] = {}
 
     if isinstance(input_tree, str):
         if input_tree == surrogate_tree_leaf_:
@@ -86,7 +86,8 @@ def _normalize_tree(
                 output_tree[surrogate_node_id_] = input_tree
     elif isinstance(input_tree, dict):
         if len(input_tree) == 1 and surrogate_node_id_ in input_tree:
-            output_tree.update(_normalize_tree(input_tree[surrogate_node_id_], tree_depth + 1))
+            # collapse `dict` to `str`:
+            output_tree = input_tree[surrogate_node_id_]
         else:
             for node_id in input_tree:
                 output_tree[node_id] = _normalize_tree(input_tree[node_id], tree_depth + 1)

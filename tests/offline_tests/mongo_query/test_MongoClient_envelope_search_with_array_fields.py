@@ -19,7 +19,7 @@ class ThisTestClass(MongoClientTestClass):
         """
 
         # Fields which will be indexed:
-        index_fields = [
+        index_props = [
             ServicePropName.access_type.name,
             ServicePropName.live_status.name,
             ServicePropName.code_maturity.name,
@@ -110,7 +110,7 @@ class ThisTestClass(MongoClientTestClass):
             envelope_007,
         ])
 
-        self.index_fields(self.col_proxy, index_fields)
+        self.index_props(self.col_proxy, index_props)
 
         self.find_and_assert(
             self.col_proxy,

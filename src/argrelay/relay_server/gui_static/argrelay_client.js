@@ -786,7 +786,8 @@ function populate_envelope_containers(
                 remaining_values_elem.classList.add("suggested_arg_value");
             } else {
                 arg_type_elem.textContent = arg_type + ": ";
-                arg_value_elem.textContent = "[none]";
+                // See: SpecialChar.NoPropValue:
+                arg_value_elem.textContent = "~";
                 arg_container_elem.classList.add("no_data");
             }
 

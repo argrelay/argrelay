@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from argrelay.custom_integ.ServiceDelegator import redirect_to_no_func_error
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input

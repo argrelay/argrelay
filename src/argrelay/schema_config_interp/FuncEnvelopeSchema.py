@@ -1,8 +1,8 @@
 from marshmallow import fields, validates_schema, INCLUDE
 
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     DataEnvelopeSchema,

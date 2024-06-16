@@ -70,7 +70,7 @@ class QueryEngine:
         collection_name: str,
         query_dict: dict,
     ) -> Cursor:
-         return self.mongo_db[collection_name].find(query_dict)
+        return self.mongo_db[collection_name].find(query_dict)
 
     def query_prop_values(
         self,

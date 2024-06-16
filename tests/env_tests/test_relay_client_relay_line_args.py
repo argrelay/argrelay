@@ -1,5 +1,5 @@
-from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator

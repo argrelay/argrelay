@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from argrelay.composite_tree.CompositeTreeWalker import extract_zero_arg_interp_tree
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
@@ -73,6 +75,8 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
                     )
                 func_ids_to_func_envelopes[func_id] = func_envelope
 
+        self.load_interp_tree_abs_paths([])
+
         interp_tree_abs_path: tuple[str, ...] = tuple([])
         mapped_func_ids: list[str] = self.load_func_envelopes(
             interp_tree_abs_path,
@@ -89,6 +93,19 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
                 else:
                     # Func is ignored - skip:
                     continue
+
+    def load_interp_tree_abs_paths(
+        self,
+        this_plugin_instance_interp_tree_abs_paths: list[tuple[str, ...]],
+    ):
+        # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
+        #       At the moment, `FirstArgInterpFactory` is not plugged into any tree
+        #       (while it should be part of composite tree likely as `CompositeNodeType.zero_arg_node`).
+        #       Instead, it is selected via `first_interp_factory_id` in server config.
+        #
+        #       When this func is called for `FirstArgInterpFactory`, it cannot be found plugged anywhere
+        #       within interp tree - instead, it walks the tree and invokes this func for other interps.
+        super().load_interp_tree_abs_paths([])
 
     def create_interp(
         self,

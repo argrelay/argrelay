@@ -14,7 +14,7 @@ class ThisTestClass(MongoClientTestClass):
         """
 
         # Fields which will be indexed:
-        index_fields = [
+        index_props = [
             ServicePropName.access_type.name,
             ServicePropName.live_status.name,
             ServicePropName.code_maturity.name,
@@ -59,7 +59,7 @@ class ThisTestClass(MongoClientTestClass):
             envelope_004,
         ])
 
-        self.index_fields(self.col_proxy, index_fields)
+        self.index_props(self.col_proxy, index_props)
 
         print("query 1:")
         for data_envelope in self.col_proxy.find(

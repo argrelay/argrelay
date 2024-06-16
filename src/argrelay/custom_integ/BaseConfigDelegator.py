@@ -4,8 +4,8 @@ from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import BaseConfigDele
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import func_configs_
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_, fill_control_list_
 from argrelay.custom_integ.ServiceDelegator import set_default_to
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_interp_ctx
 from argrelay.relay_server.LocalServer import LocalServer

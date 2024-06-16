@@ -12,6 +12,8 @@ class CompositeNodeType(Enum):
 
     It is also related to FS_15_79_76_85 line processor
     (which may potentially be merged with FS_42_76_93_51 zero arg interp).
+
+    TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
     """
 
     interp_tree_node = auto()

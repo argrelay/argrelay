@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.relay_server.LocalServer import LocalServer

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import json
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.value_constants import (
     goto_host_func_,
     goto_service_func_,
@@ -15,8 +15,8 @@ from argrelay.custom_integ.value_constants import (
 )
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_delegator.AbstractDelegator import (
     AbstractDelegator,
     get_func_id_from_interp_ctx,

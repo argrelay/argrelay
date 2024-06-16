@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
-from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.value_constants import goto_service_func_, goto_host_func_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.DescribeLineArgsClientResponseHandler import (
     indent_size,
@@ -540,7 +541,8 @@ class ThisTestClass(LocalTestClass):
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}35{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc diff duplicates echo enum goto help intercept list 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc diff double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc diff double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag {SpecialChar.NoPropValue.value} 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(3)}: ?{TermColor.reset_style.value} commit double_execution host print_with_exit print_with_io_redirect print_with_level repo service tag {SpecialChar.NoPropValue.value} 
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} alpha beta demo gamma 
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} desc_git_commit_func desc_git_tag_func desc_host_func desc_service_func diff_service_func echo_args_func funct_id_double_execution funct_id_print_with_exit_code funct_id_print_with_io_redirect funct_id_print_with_severity_level goto_git_repo_func goto_host_func goto_service_func help_hint_func intercept_invocation_func list_host_func list_service_func query_enum_items_func 
 """,
@@ -555,6 +557,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
@@ -566,23 +569,24 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}service_name: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}a{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}b{TermColor.reset_style.value} 
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}run_mode: active {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}host_name: asdf-du {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.22 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.172.16.2.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
             ),
             (
                 line_no(), "some_command goto host upstream |", CompType.DescribeArgs,
                 "Regular description with some props specified (flow_stage) and many still to be narrowed down.",
-                # TODO: show differently `[none]` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
+                # TODO: show differently `{SpecialChar.NoPropValue.value}` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: host {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_host_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassHost.name}: {TermColor.found_count_n.value}10{TermColor.reset_style.value}
@@ -591,10 +595,10 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}geo_region: ?{TermColor.reset_style.value} amer apac emea 
 {" " * indent_size}{TermColor.remaining_value.value}cluster_name: ?{TermColor.reset_style.value} dev-amer-upstream dev-apac-upstream dev-emea-upstream prod-apac-upstream qa-amer-upstream qa-apac-upstream 
 {" " * indent_size}{TermColor.remaining_value.value}host_name: ?{TermColor.reset_style.value} asdf-du hjkl-qu poiu-qu qwer-du qwer-pd-1 qwer-pd-2 qwer-pd-3 rt-qu rtyu-qu zxcv-du 
-{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}ip_address: ?{TermColor.reset_style.value} ip.172.16.2.1 ip.172.16.4.2 ip.172.16.7.2 ip.192.168.1.1 ip.192.168.3.1 ip.192.168.4.1 ip.192.168.6.1 ip.192.168.6.2 ip.192.168.7.1 ip.192.168.7.2 
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
             ),
             (
@@ -606,6 +610,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
@@ -617,11 +622,11 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}service_name: ?{TermColor.reset_style.value} s_a s_b 
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}run_mode: active {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}host_name: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.07 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.7.1 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
             ),
         ]
@@ -1068,6 +1073,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1079,7 +1085,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}service_name: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}run_mode: active {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}host_name: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1095,6 +1101,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}elay_demo{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1106,7 +1113,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}service_name: xx {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}run_mode: active {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}host_name: poiu-dd {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1122,6 +1129,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}3{TermColor.reset_style.value}
@@ -1133,11 +1141,11 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}*service_name: ?{TermColor.reset_style.value} tt1 tt2 xx 
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}run_mode: active {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}overrides:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}active{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}passive{TermColor.reset_style.value} 
 {" " * indent_size}{TermColor.remaining_value.value}host_name: ?{TermColor.reset_style.value} wert-pd-1 wert-pd-2 
-{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.07 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}ip_address: ?{TermColor.reset_style.value} ip.192.168.7.3 ip.192.168.7.4 
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
             ),
         ]

@@ -77,9 +77,9 @@ class MongoClientTestClass(BaseTestClass):
         col_proxy.drop_indexes()
 
     @staticmethod
-    def index_fields(
+    def index_props(
         col_proxy: Collection,
-        index_fields: list[str],
+        index_props: list[str],
     ):
-        for index_field in index_fields:
-            col_proxy.create_index(index_field)
+        for index_prop in index_props:
+            col_proxy.create_index(index_prop)

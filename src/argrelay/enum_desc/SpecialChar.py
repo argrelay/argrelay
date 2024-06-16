@@ -20,3 +20,12 @@ class SpecialChar(Enum):
     """
     See FS_20_88_05_60 named args.
     """
+
+    NoPropValue = "~"
+    """
+    The choice of `~` was dictated by the two facts:
+    *   `~` is not supposed to be typed (and it expands into user name in Bash which also hides plain `~`)
+    *   `~` sorts last among alphanumeric characters
+
+    See: TODO_39_25_11_76: `data_envelope`-s with missing props.
+    """

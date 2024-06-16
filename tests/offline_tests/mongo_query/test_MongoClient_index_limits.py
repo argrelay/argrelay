@@ -111,15 +111,15 @@ class ThisTestClass(MongoClientTestClass):
         """
 
         # Fields which will be indexed:
-        index_fields = self.generate_field_names()
+        index_props = self.generate_field_names()
 
-        array_field_names = self.decide_array_field_names(index_fields)
+        array_field_names = self.decide_array_field_names(index_props)
 
-        data_envelopes = self.generate_data_envelopes(index_fields, array_field_names)
+        data_envelopes = self.generate_data_envelopes(index_props, array_field_names)
 
         self.col_proxy.insert_many(data_envelopes)
 
-        self.index_fields(self.col_proxy, index_fields)
+        self.index_props(self.col_proxy, index_props)
 
         # noinspection PyUnreachableCode
         if False:

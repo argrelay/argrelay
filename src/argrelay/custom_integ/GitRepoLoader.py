@@ -6,7 +6,6 @@ from datetime import timezone, datetime, timedelta
 
 from git import Repo
 
-from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoDelegator import repo_root_abs_path_
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
@@ -24,6 +23,7 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     repo_entries_,
     load_git_tags_default_,
 )
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.git_utils import is_git_repo
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir

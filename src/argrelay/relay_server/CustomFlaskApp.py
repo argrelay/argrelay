@@ -46,7 +46,7 @@ class CustomFlaskApp(Flask):
         )
 
     def run_with_config(self):
-        # Use custom logging at DEBUG level - see: `log_request` and `log_response:
+        # Use custom logging at DEBUG level - see: `log_request` and `log_response`:
         self.logger.setLevel(logging.DEBUG)
         # Log only at ERROR level by default logger:
         # https://stackoverflow.com/a/18379764/441652

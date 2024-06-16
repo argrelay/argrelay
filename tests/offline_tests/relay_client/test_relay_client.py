@@ -105,8 +105,8 @@ class ThisTestClass(BaseTestClass):
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}unrecognized_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}token{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}prod{TermColor.reset_style.value} {TermColor.excluded_token.value}{SpecialChar.ArgBucketDelimiter.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}TypeA: [none]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.no_option_to_suggest.value}TypeB: [none]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}TypeA: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}TypeB: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
 
                 ic(env_mock_builder.actual_stdout.getvalue()),

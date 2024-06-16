@@ -3,8 +3,8 @@ from io import StringIO
 
 import pandas as pd
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.QueryEngine import scalar_to_list_values

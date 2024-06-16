@@ -385,60 +385,113 @@ class ThisTestClass(LocalTestClass):
         as specified per plugin manually (not via `composite_tree`).
         """
 
+        func_tree_main = {
+            "echo": "echo_args_func",
+            "goto": {
+                "repo": "goto_git_repo_func",
+                "host": "goto_host_func",
+                "service": "goto_service_func",
+            },
+            "list": {
+                "host": "list_host_func",
+                "service": "list_service_func",
+            },
+            "diff": {
+                "service": "diff_service_func",
+            },
+            "desc": {
+                "tag": "desc_git_tag_func",
+                "commit": "desc_git_commit_func",
+                "host": "desc_host_func",
+                "service": "desc_service_func",
+            },
+            "config": {
+                "print_with_level": "funct_id_print_with_severity_level",
+                "print_with_exit": "funct_id_print_with_exit_code",
+                "print_with_io_redirect": "funct_id_print_with_io_redirect",
+                "double_execution": "funct_id_double_execution",
+            },
+        }
+
         test_cases = [
             (
                 line_no(),
-                SpecialFunc.intercept_invocation_func.name,
+                {
+                    "relay_demo": {
+                        "intercept": SpecialFunc.intercept_invocation_func.name,
+                        "duplicates": {
+                            "intercept": SpecialFunc.intercept_invocation_func.name,
+                        },
+                    },
+                    "some_command": {
+                        "intercept": SpecialFunc.intercept_invocation_func.name,
+                        "duplicates": {
+                            "intercept": SpecialFunc.intercept_invocation_func.name,
+                        }
+                    },
+                },
                 f"{FuncTreeInterpFactory.__name__}.intercept_invocation_func",
             ),
             (
                 line_no(),
-                SpecialFunc.help_hint_func.name,
+                {
+                    "relay_demo": {
+                        "help": SpecialFunc.help_hint_func.name,
+                        "duplicates": {
+                            "help": SpecialFunc.help_hint_func.name,
+                        },
+                    },
+                    "some_command": {
+                        "help": SpecialFunc.help_hint_func.name,
+                        "duplicates": {
+                            "help": SpecialFunc.help_hint_func.name,
+                        }
+                    },
+                    "service_relay_demo": {
+                        "help": SpecialFunc.help_hint_func.name,
+                    },
+                },
                 f"{FuncTreeInterpFactory.__name__}.help_hint_func",
             ),
             (
                 line_no(),
-                SpecialFunc.query_enum_items_func.name,
+                {
+                    "relay_demo": {
+                        "enum": SpecialFunc.query_enum_items_func.name,
+                    },
+                    "some_command": {
+                        "enum": SpecialFunc.query_enum_items_func.name,
+                    },
+                },
                 f"{FuncTreeInterpFactory.__name__}.query_enum_items_func",
             ),
             (
                 line_no(),
                 {
-                    "echo": "echo_args_func",
-                    "goto": {
-                        "repo": "goto_git_repo_func",
-                        "host": "goto_host_func",
-                        "service": "goto_service_func",
+                    "relay_demo": {
+                        "duplicates": {
+                            "": func_tree_main,
+                        },
+                        "": func_tree_main,
                     },
-                    "list": {
-                        "host": "list_host_func",
-                        "service": "list_service_func",
+                    "some_command": {
+                        "duplicates": {
+                            "": func_tree_main,
+                        },
+                        "": func_tree_main,
                     },
-                    "diff": {
-                        "service": "diff_service_func",
-                    },
-                    "desc": {
-                        "tag": "desc_git_tag_func",
-                        "commit": "desc_git_commit_func",
-                        "host": "desc_host_func",
-                        "service": "desc_service_func",
-                    },
-                    "config": {
-                        "print_with_level": "funct_id_print_with_severity_level",
-                        "print_with_exit": "funct_id_print_with_exit_code",
-                        "print_with_io_redirect": "funct_id_print_with_io_redirect",
-                        "double_execution": "funct_id_double_execution",
-                    }
                 },
                 f"{FuncTreeInterpFactory.__name__}.default",
             ),
             (
                 line_no(),
                 {
-                    "goto": "goto_service_func",
-                    "list": "list_service_func",
-                    "diff": "diff_service_func",
-                    "desc": "desc_service_func",
+                    "service_relay_demo": {
+                        "goto": "goto_service_func",
+                        "list": "list_service_func",
+                        "diff": "diff_service_func",
+                        "desc": "desc_service_func",
+                    },
                 },
                 f"{FuncTreeInterpFactory.__name__}.service",
             ),
@@ -457,10 +510,10 @@ class ThisTestClass(LocalTestClass):
                 # No need to normalize extracted `actual_dict`
                 # because `composite_tree` is constructed to maintain `dict` structure
                 # without `surrogate_node_id_`-s and `surrogate_tree_leaf_`-s.
-                actual_dict = extract_func_tree(
+                actual_dict = normalize_tree(extract_func_tree(
                     self.load_composite_tree(),
                     plugin_instance_id,
-                )
+                ))
 
                 self.assertEqual(
                     normalized_expected_dict,

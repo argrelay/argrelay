@@ -12,7 +12,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
 )
 from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
-collection_name_to_index_fields_map_ = "collection_name_to_index_fields_map"
+collection_name_to_index_props_map_ = "collection_name_to_index_props_map"
 
 
 class ConfigOnlyLoaderConfigSchema(Schema):
@@ -24,7 +24,7 @@ class ConfigOnlyLoaderConfigSchema(Schema):
         unknown = RAISE
         strict = True
 
-    collection_name_to_index_fields_map = fields.Dict(
+    collection_name_to_index_props_map = fields.Dict(
         keys = fields.String(),
         values = fields.List(
             fields.String(),
@@ -43,7 +43,7 @@ config_only_loader_config_desc = TypeDesc(
     dict_schema = ConfigOnlyLoaderConfigSchema(),
     ref_name = ConfigOnlyLoaderConfigSchema.__name__,
     dict_example = {
-        collection_name_to_index_fields_map_: {
+        collection_name_to_index_props_map_: {
             ReservedEnvelopeClass.ClassFunction.name: [
                 sample_field_type_A_,
                 sample_field_type_B_,

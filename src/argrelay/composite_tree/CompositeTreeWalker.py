@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from copy import deepcopy
 from enum import Enum, auto
 from typing import Union
 
@@ -188,7 +187,8 @@ class _CompositeTreeWalker_zero_arg_interp_tree(AbstractCompositeTreeWalker):
         if self.curr_node.node_type is CompositeNodeType.zero_arg_node:
             assert len(self.curr_path) == 1
             _put_value_into_dict_path(
-                # TODO: There could be multiple `zero_arg_node`-s each with its own interp,
+                # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
+                #       There could be multiple `zero_arg_node`-s each with its own interp,
                 #       but now, there is only one interp selected by `first_interp_factory_id`.
                 #       In fact, `first_interp_factory_id` must be per zero arg - see FS_15_79_76_85 line processor.
                 self.curr_node.plugin_instance_id,
@@ -262,7 +262,7 @@ class _CompositeTreeWalker_interp_tree(AbstractCompositeTreeWalker):
         self.plugin_instance_id: Union[str, None] = plugin_instance_id
 
         # internal trackers:
-        self.curr_parent_plugin_instance_id: Union[InterpTreeNode.NextInterp, None] = None
+        self.curr_parent_plugin_instance_id: Union[str, None] = None
 
         # results:
         self.interp_tree: dict = {}
@@ -311,8 +311,7 @@ class _CompositeTreeWalker_func_tree(AbstractCompositeTreeWalker):
         self.plugin_instance_id: Union[str, None] = plugin_instance_id
 
         # internal trackers:
-        self.curr_parent_plugin_instance_id: Union[InterpTreeNode.NextInterp, None] = None
-        self.curr_parent_plugin_instance_path: Union[list[str], None] = None
+        self.curr_parent_plugin_instance_id: Union[str, None] = None
 
         # results:
         self.func_tree: dict = {}
@@ -326,7 +325,6 @@ class _CompositeTreeWalker_func_tree(AbstractCompositeTreeWalker):
         elif self.curr_node.node_type is CompositeNodeType.interp_tree_node:
             if self.curr_node.plugin_instance_id == self.plugin_instance_id:
                 self.curr_parent_plugin_instance_id = self.plugin_instance_id
-                self.curr_parent_plugin_instance_path = deepcopy(self.curr_path)
                 return TraverseDecision.walk_sub_tree
             else:
                 return TraverseDecision.skip_sub_tree
@@ -336,8 +334,7 @@ class _CompositeTreeWalker_func_tree(AbstractCompositeTreeWalker):
             if self.curr_parent_plugin_instance_id == self.plugin_instance_id:
                 _put_value_into_dict_path(
                     self.curr_node.func_id,
-                    # skip head path steps leading to `curr_parent_plugin_instance_id`:
-                    self.curr_path[len(self.curr_parent_plugin_instance_path):],
+                    self.curr_path,
                     self.func_tree,
                 )
             return TraverseDecision.skip_sub_tree

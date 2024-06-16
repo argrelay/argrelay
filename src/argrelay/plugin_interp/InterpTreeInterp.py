@@ -30,7 +30,6 @@ class InterpTreeInterp(AbstractInterp):
         )
         self.interp_selector_tree: dict = interp_tree_node_config_dict[interp_selector_tree_]
         self.next_interp_factory_id: Union[str, None] = None
-        self.interp_tree_abs_path = list(interp_ctx.interp_tree_abs_path)
 
         # TODO: Why hard-coded? Isn't it possible for this plugin to be plugged into any depth of the tree?
         # Token with ipos = 0 is the command name eaten by `FirstArgInterp` (FS_42_76_93_51 first interp):

@@ -4,8 +4,8 @@ import unittest
 
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_interp.FuncTreeInterp import func_search_control_
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
@@ -14,7 +14,7 @@ from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
 )
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.schema_config_core_server.EnvelopeCollectionSchema import index_fields_, data_envelopes_
+from argrelay.schema_config_core_server.EnvelopeCollectionSchema import index_props_, data_envelopes_
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     static_data_,
     server_config_desc,
@@ -60,7 +60,7 @@ class ThisTestClass(BaseTestClass):
         envelope_collection = server_config_dict[static_data_][envelope_collections_].setdefault(
             ReservedEnvelopeClass.ClassFunction.name,
             {
-                index_fields_: [],
+                index_props_: [],
                 data_envelopes_: [],
             },
         )

@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import subprocess
 
-from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.value_constants import (
     goto_git_repo_func_,
     desc_git_commit_func_,
     desc_git_tag_func_,
 )
 from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_invocation_input
 from argrelay.relay_server.LocalServer import LocalServer
