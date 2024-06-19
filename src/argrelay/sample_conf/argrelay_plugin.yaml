@@ -50,14 +50,14 @@ reusable_config_data:
     # Full func_tree, but not used in this form (saved for copying-and-pasting):
     func_tree: &func_tree
         "relay_demo":
-            "intercept": intercept_invocation_func
-            "help": help_hint_func
-            "enum": query_enum_items_func
+            "intercept": func_id_intercept_invocation
+            "help": func_id_help_hint
+            "enum": func_id_query_enum_items
             "duplicates":
-                "intercept": intercept_invocation_func
-                "help": help_hint_func
+                "intercept": func_id_intercept_invocation
+                "help": func_id_help_hint
                 "": &func_tree_main
-                    "echo": echo_args_func
+                    "echo": func_id_echo_args
                     "goto":
                         "repo": goto_git_repo_func
                         "host": goto_host_func
@@ -79,49 +79,49 @@ reusable_config_data:
                         "double_execution": funct_id_double_execution
             "": *func_tree_main
         "some_command":
-            "intercept": intercept_invocation_func
-            "help": help_hint_func
-            "enum": query_enum_items_func
+            "intercept": func_id_intercept_invocation
+            "help": func_id_help_hint
+            "enum": func_id_query_enum_items
             "duplicates":
-                "intercept": intercept_invocation_func
-                "help": help_hint_func
+                "intercept": func_id_intercept_invocation
+                "help": func_id_help_hint
                 "": *func_tree_main
             "": *func_tree_main
         "service_relay_demo":
-            "help": help_hint_func
+            "help": func_id_help_hint
             "":
                 "goto": goto_service_func
                 "list": list_service_func
                 "diff": diff_service_func
                 "desc": desc_service_func
 
-    func_tree_intercept_invocation_func: &func_tree_intercept_invocation_func
+    func_tree_func_id_intercept_invocation: &func_tree_func_id_intercept_invocation
         "relay_demo":
-            "intercept": intercept_invocation_func
+            "intercept": func_id_intercept_invocation
             "duplicates":
-                "intercept": intercept_invocation_func
+                "intercept": func_id_intercept_invocation
         "some_command":
-            "intercept": intercept_invocation_func
+            "intercept": func_id_intercept_invocation
             "duplicates":
-                "intercept": intercept_invocation_func
+                "intercept": func_id_intercept_invocation
 
-    func_tree_help_hint_func: &func_tree_help_hint_func
+    func_tree_func_id_help_hint: &func_tree_func_id_help_hint
         "relay_demo":
-            "help": help_hint_func
+            "help": func_id_help_hint
             "duplicates":
-                "help": help_hint_func
+                "help": func_id_help_hint
         "some_command":
-            "help": help_hint_func
+            "help": func_id_help_hint
             "duplicates":
-                "help": help_hint_func
+                "help": func_id_help_hint
         "service_relay_demo":
-            "help": help_hint_func
+            "help": func_id_help_hint
 
-    func_tree_query_enum_items_func: &func_tree_query_enum_items_func
+    func_tree_func_id_query_enum_items: &func_tree_func_id_query_enum_items
         "relay_demo":
-            "enum": query_enum_items_func
+            "enum": func_id_query_enum_items
         "some_command":
-            "enum": query_enum_items_func
+            "enum": func_id_query_enum_items
 
     func_tree_default: &func_tree_default
         "relay_demo":
@@ -160,9 +160,9 @@ plugin_instance_entries:
             #   Interps for normal funcs:
             -   FuncTreeInterpFactory.default
             #   Interps for special funcs:
-            -   FuncTreeInterpFactory.intercept_invocation_func
-            -   FuncTreeInterpFactory.help_hint_func
-            -   FuncTreeInterpFactory.query_enum_items_func
+            -   FuncTreeInterpFactory.func_id_intercept_invocation
+            -   FuncTreeInterpFactory.func_id_help_hint
+            -   FuncTreeInterpFactory.func_id_query_enum_items
         plugin_config:
             # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
             #       `first_arg_vals_to_next_interp_factory_ids` should be selecting line processors.
@@ -174,57 +174,56 @@ plugin_instance_entries:
                 "some_command": InterpTreeInterpFactory.default
                 "service_relay_demo": InterpTreeInterpFactory.default
             ignored_func_ids_list:
-                -   desc_git_tag_func
-                -   desc_git_commit_func
+                -   func_id_unplugged
 
     InterpTreeInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
         plugin_class_name: InterpTreeInterpFactory
         plugin_dependencies:
-            -   FuncTreeInterpFactory.intercept_invocation_func
-            -   FuncTreeInterpFactory.help_hint_func
-            -   FuncTreeInterpFactory.query_enum_items_func
+            -   FuncTreeInterpFactory.func_id_intercept_invocation
+            -   FuncTreeInterpFactory.func_id_help_hint
+            -   FuncTreeInterpFactory.func_id_query_enum_items
             -   FuncTreeInterpFactory.default
             -   FuncTreeInterpFactory.service
         plugin_config:
             interp_selector_tree:
                 "relay_demo": &default_interp_selector_tree
-                    "intercept": FuncTreeInterpFactory.intercept_invocation_func
-                    "help": FuncTreeInterpFactory.help_hint_func
-                    "enum": FuncTreeInterpFactory.query_enum_items_func
+                    "intercept": FuncTreeInterpFactory.func_id_intercept_invocation
+                    "help": FuncTreeInterpFactory.func_id_help_hint
+                    "enum": FuncTreeInterpFactory.func_id_query_enum_items
                     "": FuncTreeInterpFactory.default
                     # child "duplicates" re-plug some of the interps:
                     "duplicates":
-                        "intercept": FuncTreeInterpFactory.intercept_invocation_func
-                        "help": FuncTreeInterpFactory.help_hint_func
+                        "intercept": FuncTreeInterpFactory.func_id_intercept_invocation
+                        "help": FuncTreeInterpFactory.func_id_help_hint
                         "": FuncTreeInterpFactory.default
                 "some_command": *default_interp_selector_tree
                 "service_relay_demo":
-                    "help": FuncTreeInterpFactory.help_hint_func
+                    "help": FuncTreeInterpFactory.func_id_help_hint
                     "": FuncTreeInterpFactory.service
 
     # TODO: FS_33_76_82_84 `composite_tree`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
-    #       See extended comment for `FuncTreeInterpFactory.help_hint_func`.
-    FuncTreeInterpFactory.intercept_invocation_func:
+    #       See extended comment for `FuncTreeInterpFactory.func_id_help_hint`.
+    FuncTreeInterpFactory.func_id_intercept_invocation:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree: *func_tree_intercept_invocation_func
+            func_selector_tree: *func_tree_func_id_intercept_invocation
 
-    FuncTreeInterpFactory.help_hint_func:
+    FuncTreeInterpFactory.func_id_help_hint:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree: *func_tree_help_hint_func
+            func_selector_tree: *func_tree_func_id_help_hint
 
-    FuncTreeInterpFactory.query_enum_items_func:
+    FuncTreeInterpFactory.func_id_query_enum_items:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
         plugin_config:
             jump_tree: *jump_tree
-            func_selector_tree: *func_tree_query_enum_items_func
+            func_selector_tree: *func_tree_func_id_query_enum_items
 
     FuncTreeInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
@@ -332,7 +331,7 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory.default
         plugin_config:
-            single_func_id: intercept_invocation_func
+            single_func_id: func_id_intercept_invocation
             tree_abs_path_to_interp_id:
                 "relay_demo":
                     "intercept": InterpTreeInterpFactory.default
@@ -349,7 +348,7 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory.default
         plugin_config:
-            single_func_id: help_hint_func
+            single_func_id: func_id_help_hint
             tree_abs_path_to_interp_id:
                 "relay_demo":
                     "help": InterpTreeInterpFactory.default
@@ -368,7 +367,7 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory.default
         plugin_config:
-            single_func_id: query_enum_items_func
+            single_func_id: func_id_query_enum_items
             tree_abs_path_to_interp_id:
                 "relay_demo":
                     "enum": InterpTreeInterpFactory.default

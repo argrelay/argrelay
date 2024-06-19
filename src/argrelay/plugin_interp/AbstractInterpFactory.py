@@ -30,7 +30,6 @@ class AbstractInterpFactory(AbstractPlugin):
         It is populated via `load_interp_tree_abs_paths`.
         """
 
-        # TODO: TODO_48_38_59_64: remove `interp_tree_abs_paths_to_node_configs`:
         # Takes part in implementation of FS_01_89_09_24 interp tree:
         self.interp_tree_abs_paths_to_node_configs: dict[tuple[str, ...], dict] = {}
         """
@@ -68,7 +67,6 @@ class AbstractInterpFactory(AbstractPlugin):
 
         Returns list of mapped `func_id`-s.
         """
-        # TODO: TODO_48_38_59_64: remove `interp_tree_abs_paths_to_node_configs`:
         if interp_tree_abs_path in self.interp_tree_abs_paths_to_node_configs:
             raise RuntimeError(f"`{interp_tree_abs_path}` has already been loaded")
         else:

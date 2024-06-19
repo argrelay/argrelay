@@ -118,7 +118,7 @@ class GitRepoDelegator(AbstractDelegator):
             },
             ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedPropName.help_hint.name: "Goto Git repository (`cd` to its path)",
-            ReservedPropName.func_state.name: FuncState.beta.name,
+            ReservedPropName.func_state.name: FuncState.fs_beta.name,
             ReservedPropName.func_id.name: goto_git_repo_func_,
         }
         func_envelopes.append(given_function_envelope)
@@ -133,7 +133,7 @@ class GitRepoDelegator(AbstractDelegator):
             },
             ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedPropName.help_hint.name: "Describe Git tag",
-            ReservedPropName.func_state.name: FuncState.demo.name,
+            ReservedPropName.func_state.name: FuncState.fs_demo.name,
             ReservedPropName.func_id.name: desc_git_tag_func_,
         }
         func_envelopes.append(given_function_envelope)
@@ -148,7 +148,7 @@ class GitRepoDelegator(AbstractDelegator):
             },
             ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedPropName.help_hint.name: "Describe Git commit",
-            ReservedPropName.func_state.name: FuncState.demo.name,
+            ReservedPropName.func_state.name: FuncState.fs_demo.name,
             ReservedPropName.func_id.name: desc_git_commit_func_,
         }
         func_envelopes.append(given_function_envelope)

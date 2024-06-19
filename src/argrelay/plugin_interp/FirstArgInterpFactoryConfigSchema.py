@@ -31,7 +31,7 @@ first_arg_interp_factory_config_example = {
         "some_command": InterpTreeInterpFactory.__name__,
     },
     ignored_func_ids_list_: [
-        "some_ignored_func",
+        "func_id_some_ignored",
     ],
 }
 first_arg_interp_factory_config_desc = TypeDesc(

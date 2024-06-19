@@ -20,7 +20,7 @@ subsequent_function_container_ipos_ = function_container_ipos_ + 1
 
 class QueryEnumDelegator(AbstractJumpDelegator):
     """
-    FS_02_25_41_81: Implements `query_enum_items_func`.
+    FS_02_25_41_81: Implements `func_id_query_enum_items`.
     """
 
     def get_supported_func_envelopes(
@@ -28,15 +28,15 @@ class QueryEnumDelegator(AbstractJumpDelegator):
     ) -> list[dict]:
         func_envelopes = [{
             instance_data_: {
-                func_id_: SpecialFunc.query_enum_items_func.name,
+                func_id_: SpecialFunc.func_id_query_enum_items.name,
                 delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                 ],
             },
             ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedPropName.help_hint.name: "Enumerate available arg options (based on existing arg values)",
-            ReservedPropName.func_state.name: FuncState.alpha.name,
-            ReservedPropName.func_id.name: SpecialFunc.query_enum_items_func.name,
+            ReservedPropName.func_state.name: FuncState.fs_alpha.name,
+            ReservedPropName.func_id.name: SpecialFunc.func_id_query_enum_items.name,
         }]
         return func_envelopes
 

@@ -16,8 +16,8 @@ class ThisTestClass(LocalTestClass):
         """
         NOTE: These test cases do not work at the level of details originally specified for them.
               Now, there is a validation to prevent TODO_39_25_11_76 missing props
-              Therefore, they are failed with exception on server start and the test cases were changed to
-              simply assert that.
+              Therefore, they are failed with exception on server start and the test cases were changed
+              to assert that exception.
         """
 
         test_cases = [

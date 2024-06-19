@@ -37,7 +37,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
         interp_result: InterpResult,
     ):
         """
-        FS_02_25_41_81: Renders results `query_enum_items_func` (Alt+Shift+Q)
+        FS_02_25_41_81: Renders results `func_id_query_enum_items` (Alt+Shift+Q)
         """
 
         # TODO_11_77_28_50: print suggestions in `InterpResult.arg_values`

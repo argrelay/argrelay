@@ -30,15 +30,15 @@ class HelpDelegator(AbstractJumpDelegator):
     ) -> list[dict]:
         func_envelopes = [{
             instance_data_: {
-                func_id_: SpecialFunc.help_hint_func.name,
+                func_id_: SpecialFunc.func_id_help_hint.name,
                 delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                 ],
             },
             ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
             ReservedPropName.help_hint.name: "List defined function matching search criteria with their help hints",
-            ReservedPropName.func_state.name: FuncState.gamma.name,
-            ReservedPropName.func_id.name: SpecialFunc.help_hint_func.name,
+            ReservedPropName.func_state.name: FuncState.fs_gamma.name,
+            ReservedPropName.func_id.name: SpecialFunc.func_id_help_hint.name,
         }]
         return func_envelopes
 
@@ -79,7 +79,7 @@ class HelpDelegator(AbstractJumpDelegator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        if get_func_id_from_invocation_input(invocation_input) == SpecialFunc.help_hint_func.name:
+        if get_func_id_from_invocation_input(invocation_input) == SpecialFunc.func_id_help_hint.name:
             for data_envelope in (
                 invocation_input
                     .envelope_containers[subsequent_function_container_ipos_]
@@ -98,7 +98,7 @@ class HelpDelegator(AbstractJumpDelegator):
                 for tree_path_selector_prop_name in tree_path_selector_prop_names:
                     print(f"{data_envelope[tree_path_selector_prop_name]}", end = " ")
 
-                # TODO: FS_02_25_41_81 (query_enum_items_func): perform color control only if the output is a terminal:
+                # TODO: FS_02_25_41_81 (func_id_query_enum_items): perform color control only if the output is a terminal:
 
                 print(TermColor.known_envelope_id.value, end = "")
                 print("#", end = " ")

@@ -51,7 +51,7 @@ func_envelope_desc = TypeDesc(
         sample_field_type_C_: "C_value_1",
         ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
         ReservedPropName.help_hint.name: f"Some help hint",
-        ReservedPropName.func_state.name: FuncState.demo.name,
+        ReservedPropName.func_state.name: FuncState.fs_demo.name,
         ReservedPropName.func_id.name: func_id_some_func_,
     },
     default_file_path = "",

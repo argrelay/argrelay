@@ -99,9 +99,9 @@ server_plugin_control:
                 node_type: zero_arg_node
                 plugin_instance_id: InterpTreeInterpFactory.default
                 sub_tree:
-                    "intercept": &intercept_invocation_func_interp_tree_node
+                    "intercept": &interp_tree_node_func_id_intercept_invocation
                         node_type: interp_tree_node
-                        plugin_instance_id: FuncTreeInterpFactory.intercept_invocation_func
+                        plugin_instance_id: FuncTreeInterpFactory.func_id_intercept_invocation
                         next_interp:
                             jump_path:
                                 -   "relay_demo"
@@ -109,10 +109,10 @@ server_plugin_control:
                         sub_tree:
                             "":
                                 node_type: func_tree_node
-                                func_id: intercept_invocation_func
-                    "help": &help_hint_func_interp_tree_node
+                                func_id: func_id_intercept_invocation
+                    "help": &interp_tree_node_func_id_help_hint
                         node_type: interp_tree_node
-                        plugin_instance_id: FuncTreeInterpFactory.help_hint_func
+                        plugin_instance_id: FuncTreeInterpFactory.func_id_help_hint
                         next_interp:
                             jump_path:
                                 -   "relay_demo"
@@ -120,10 +120,10 @@ server_plugin_control:
                         sub_tree:
                             "":
                                 node_type: func_tree_node
-                                func_id: help_hint_func
-                    "enum": &query_enum_items_func_interp_tree_node
+                                func_id: func_id_help_hint
+                    "enum": &interp_tree_node_func_id_query_enum_items
                         node_type: interp_tree_node
-                        plugin_instance_id: FuncTreeInterpFactory.query_enum_items_func
+                        plugin_instance_id: FuncTreeInterpFactory.func_id_query_enum_items
                         next_interp:
                             jump_path:
                                 -   "relay_demo"
@@ -131,8 +131,8 @@ server_plugin_control:
                         sub_tree:
                             "":
                                 node_type: func_tree_node
-                                func_id: query_enum_items_func
-                    "": &default_func_interp_tree_node
+                                func_id: func_id_query_enum_items
+                    "": &interp_tree_node_default_func
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.default
                         next_interp:
@@ -142,7 +142,7 @@ server_plugin_control:
                         sub_tree:
                             "echo":
                                 node_type: func_tree_node
-                                func_id: echo_args_func
+                                func_id: func_id_echo_args
                             "list":
                                 node_type: tree_path_node
                                 sub_tree:
@@ -204,21 +204,21 @@ server_plugin_control:
                         node_type: tree_path_node
                         sub_tree:
                             "intercept":
-                                <<: *intercept_invocation_func_interp_tree_node
+                                <<: *interp_tree_node_func_id_intercept_invocation
                                 next_interp:
                                     jump_path:
                                         -   "relay_demo"
                                         -   "duplicates"
                                     plugin_instance_id: InterpTreeInterpFactory.default
                             "help":
-                                <<: *help_hint_func_interp_tree_node
+                                <<: *interp_tree_node_func_id_help_hint
                                 next_interp:
                                     jump_path:
                                         -   "relay_demo"
                                         -   "duplicates"
                                     plugin_instance_id: InterpTreeInterpFactory.default
                             "":
-                                <<: *default_func_interp_tree_node
+                                <<: *interp_tree_node_default_func
                                 next_interp:
                                     jump_path:
                                         - "relay_demo"
@@ -229,25 +229,25 @@ server_plugin_control:
                 plugin_instance_id: InterpTreeInterpFactory.default
                 sub_tree:
                     "intercept":
-                        <<: *intercept_invocation_func_interp_tree_node
+                        <<: *interp_tree_node_func_id_intercept_invocation
                         next_interp:
                             jump_path:
                                 -   "some_command"
                             plugin_instance_id: InterpTreeInterpFactory.default
                     "help":
-                        <<: *help_hint_func_interp_tree_node
+                        <<: *interp_tree_node_func_id_help_hint
                         next_interp:
                             jump_path:
                                 -   "some_command"
                             plugin_instance_id: InterpTreeInterpFactory.default
                     "enum":
-                        <<: *query_enum_items_func_interp_tree_node
+                        <<: *interp_tree_node_func_id_query_enum_items
                         next_interp:
                             jump_path:
                                 -   "some_command"
                             plugin_instance_id: InterpTreeInterpFactory.default
                     "":
-                        <<: *default_func_interp_tree_node
+                        <<: *interp_tree_node_default_func
                         next_interp:
                             jump_path:
                                 -   "some_command"
@@ -256,21 +256,21 @@ server_plugin_control:
                         node_type: tree_path_node
                         sub_tree:
                             "intercept":
-                                <<: *intercept_invocation_func_interp_tree_node
+                                <<: *interp_tree_node_func_id_intercept_invocation
                                 next_interp:
                                     jump_path:
                                         -   "some_command"
                                         -   "duplicates"
                                     plugin_instance_id: InterpTreeInterpFactory.default
                             "help":
-                                <<: *help_hint_func_interp_tree_node
+                                <<: *interp_tree_node_func_id_help_hint
                                 next_interp:
                                     jump_path:
                                         -   "some_command"
                                         -   "duplicates"
                                     plugin_instance_id: InterpTreeInterpFactory.default
                             "":
-                                <<: *default_func_interp_tree_node
+                                <<: *interp_tree_node_default_func
                                 next_interp:
                                     jump_path:
                                         -   "some_command"
@@ -281,7 +281,7 @@ server_plugin_control:
                 plugin_instance_id: InterpTreeInterpFactory.default
                 sub_tree:
                     "help":
-                        <<: *help_hint_func_interp_tree_node
+                        <<: *interp_tree_node_func_id_help_hint
                         next_interp:
                             jump_path:
                                 -   "service_relay_demo"

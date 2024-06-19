@@ -6,36 +6,36 @@ class FuncState(Enum):
     State of the func (its readiness).
     """
 
-    unplugged = auto()
+    fs_unplugged = auto()
     """
     Used for func that are not plugged anywhere in the tree (but they are published).
 
     See `AbstractDelegator.get_supported_func_envelopes`.
     """
 
-    ignorable = auto()
+    fs_ignorable = auto()
     """
-    Not `unplugged`, but still not very useful.
+    Not `fs_unplugged`, but still not very useful.
     """
 
-    demo = auto()
+    fs_demo = auto()
     """
     Not meant to work - for `argrelay` demo only.
     """
 
-    alpha = auto()
+    fs_alpha = auto()
     """
-    In alpha testing.
-    """
-
-    beta = auto()
-    """
-    In beta testing.
+    In "alpha" testing.
     """
 
-    gamma = auto()
+    fs_beta = auto()
     """
-    GA (general availability)
+    In "beta" testing.
+    """
+
+    fs_gamma = auto()
+    """
+    In GA (general availability).
     """
 
     def __str__(self):

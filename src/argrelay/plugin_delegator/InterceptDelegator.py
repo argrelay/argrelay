@@ -56,7 +56,7 @@ class InterceptDelegator(AbstractJumpDelegator):
 
         func_envelopes = [{
             instance_data_: {
-                func_id_: SpecialFunc.intercept_invocation_func.name,
+                func_id_: SpecialFunc.func_id_intercept_invocation.name,
                 delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                     output_format_search_control,
@@ -67,8 +67,8 @@ class InterceptDelegator(AbstractJumpDelegator):
                 f"Intercept and print `{InvocationInput.__name__}` "
                 "for specified function and its args"
             ),
-            ReservedPropName.func_state.name: FuncState.alpha.name,
-            ReservedPropName.func_id.name: SpecialFunc.intercept_invocation_func.name,
+            ReservedPropName.func_state.name: FuncState.fs_alpha.name,
+            ReservedPropName.func_id.name: SpecialFunc.func_id_intercept_invocation.name,
         }]
         return func_envelopes
 
@@ -84,7 +84,7 @@ class InterceptDelegator(AbstractJumpDelegator):
         func_id = get_func_id_from_interp_ctx(interp_ctx)
         any_assignment = False
         if func_id in [
-            SpecialFunc.intercept_invocation_func.name,
+            SpecialFunc.func_id_intercept_invocation.name,
         ]:
             # If we need to specify `output_format_class_name` `data_envelope`:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + format_output_container_ipos_:
@@ -122,7 +122,7 @@ class InterceptDelegator(AbstractJumpDelegator):
     def invoke_action(invocation_input: InvocationInput):
         # TODO: Print without first function `data_envelope` belonging to `intercept` function:
         func_id = get_func_id_from_invocation_input(invocation_input)
-        if func_id == SpecialFunc.intercept_invocation_func.name:
+        if func_id == SpecialFunc.func_id_intercept_invocation.name:
             output_format: OutputFormat = OutputFormat[invocation_input.envelope_containers[
                 format_output_container_ipos_
             ].data_envelopes[0][output_format_prop_name]]

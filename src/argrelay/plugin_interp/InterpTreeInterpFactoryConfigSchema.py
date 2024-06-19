@@ -27,7 +27,7 @@ class InterpTreeInterpFactoryConfigSchema(Schema):
 
     interp_selector_tree = fields.Dict(
         keys = fields.String(),
-        # TODO_79_67_28_83: Express recursive dict schema:
+        # TODO: TODO_79_67_28_83: Express recursive dict schema:
         # This is a tree (`dict`) of arbitrary depth with `str` leaves.
         # Ideally, this should be defined as nested `dict`,
         # but it is unknown how to do it in marshmallow.
@@ -39,8 +39,9 @@ class InterpTreeInterpFactoryConfigSchema(Schema):
     #                       This `ignored_func_ids_list` field is propagated down from
     #                       the first zero arg interp (needed for its logic as root plugin instance in the composite tree)
     #                       and it also needs to pass validation of this schema (which it converts its config to):
+    # TODO: TODO_19_67_22_89: remove `ignored_func_ids_list` - load as `FuncState.fs_unplugged`:
     # It is an error if `func_id` is published by enabled delegator but missing in `func_selector_tree`.
-    # To avoid the error, list such func id in `ignored_func_ids_list`.
+    # To avoid the error, list such `func_id` in `ignored_func_ids_list`.
     ignored_func_ids_list = fields.List(
         fields.String(),
         required = False,
@@ -65,7 +66,7 @@ tree_path_interp_factory_config_example = {
         surrogate_node_id_: f"{FuncTreeInterpFactory.__name__}.default",
     },
     ignored_func_ids_list_: [
-        "some_ignored_func",
+        "func_id_some_ignored",
     ],
 }
 tree_path_interp_factory_config_desc = TypeDesc(
