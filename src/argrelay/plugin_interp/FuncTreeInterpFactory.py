@@ -24,6 +24,7 @@ from argrelay.schema_config_interp.SearchControlSchema import (
     keys_to_types_list_,
     populate_search_control,
 )
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_enabled_, plugin_dependencies_
 
 tree_path_selector_prefix_ = "tree_path_selector_"
 tree_path_selector_key_prefix_ = "s"
@@ -124,7 +125,6 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         )
         interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
 
-        # TODO: TODO_48_38_59_64: remove `interp_tree_abs_paths_to_node_configs`: verify config directly:
         self._compare_config_with_composite_tree_func_tree(
             interp_tree_node_config_dict[func_selector_tree_],
         )
@@ -136,53 +136,67 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
 
         # `func_envelope` (2-level map) per `func_id` per `func_abs_path`
-        func_envelopes_index: dict[str, dict[tuple[str, ...], dict]] = {}
+        func_id_to_func_abs_path_to_func_envelope: dict[str, dict[tuple[str, ...], dict]] = {}
         # Loop through func `data_envelope`-s from all delegators:
         for func_id, func_envelope in func_ids_to_func_envelopes.items():
             if func_id not in self.func_ids_to_func_abs_paths:
-                # TODO: Where do we load such potentially unplugged `func_id`?
+                # TODO: TODO_19_67_22_89: remove `ignored_func_ids_list` - load as `FuncState.fs_unplugged`:
+                # This `func_id` is not plugged into given tree.
+                # It will be loaded as `FuncState.fs_unplugged`.
                 continue
             func_abs_paths = self.func_ids_to_func_abs_paths[func_id]
             for func_abs_path in func_abs_paths:
                 assert (
-                    func_id not in func_envelopes_index
+                    func_id not in func_id_to_func_abs_path_to_func_envelope
                     or
-                    tuple(func_abs_path) not in func_envelopes_index[func_id]
+                    tuple(func_abs_path) not in func_id_to_func_abs_path_to_func_envelope[func_id]
                 )
                 if self._is_best_matching_abs_tree_path(func_abs_path, interp_tree_abs_path):
-                    # This func is under this plugin:
-                    func_envelopes_index.setdefault(func_id, {})[tuple(func_abs_path)] = deepcopy(func_envelope)
+                    # This `func_id` is mapped into the `func_tree` under this plugin:
+                    func_id_to_func_abs_path_to_func_envelope.setdefault(
+                        func_id,
+                        {},
+                    )[tuple(func_abs_path)] = deepcopy(func_envelope)
                     mapped_func_ids.append(func_id)
 
-        # TODO: Review what can be done useful with this code after moving to absolute func tre:
-        # # Ensure every `func_id` mapped into the tree is part of `func_envelope`-s loaded from delegators:
-        # for func_id in self.func_ids_to_func_abs_paths.keys():
-        #     if func_id not in mapped_func_ids:
-        #         raise RuntimeError(
-        #             f"plugin_instance_id='{self.plugin_instance_id}': func_id='{func_id}' is not published by any enabled delegator activated so far - please check '{plugin_enabled_}' and '{plugin_dependencies_}'"
-        #         )
+        # Ensure every `func_id` mapped into the tree is part of `func_envelope`-s loaded from delegators:
+        for func_id in self.func_ids_to_func_abs_paths.keys():
+            if func_id not in mapped_func_ids:
+                raise RuntimeError(
+                    f"plugin_instance_id=`{self.plugin_instance_id}`: func_id=`{func_id}` is not published by any enabled delegator activated so far - please check `{plugin_enabled_}` and `{plugin_dependencies_}`"
+                )
 
+        self.populate_func_envelope_collection(
+            func_id_to_func_abs_path_to_func_envelope,
+            interp_tree_abs_path,
+            interp_tree_node_config_dict,
+        )
+
+        return mapped_func_ids
+
+    def populate_func_envelope_collection(
+        self,
+        func_id_to_func_abs_path_to_func_envelope: dict[str, dict[tuple[str, ...], dict]],
+        interp_tree_abs_path: tuple[str, ...],
+        interp_tree_node_config_dict,
+    ):
         self.populate_init_control(
             interp_tree_abs_path,
             interp_tree_node_config_dict,
         )
-
         self.populate_search_control(
             interp_tree_abs_path,
             interp_tree_node_config_dict,
         )
-
         (
             interp_tree_abs_path_func_envelopes,
             prop_names,
         ) = self.populate_func_tree_props(
             interp_tree_abs_path,
             interp_tree_node_config_dict,
-            func_envelopes_index,
+            func_id_to_func_abs_path_to_func_envelope,
         )
-
         class_to_collection_map: dict = self.server_config.class_to_collection_map
-
         class_names = [
             ReservedEnvelopeClass.ClassFunction.name,
         ]
@@ -200,8 +214,6 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         ]
         # Write func envelopes into `StaticData` (as if it is a loader plugin):
         envelope_collection.data_envelopes.extend(interp_tree_abs_path_func_envelopes)
-
-        return mapped_func_ids
 
     def _is_best_matching_abs_tree_path(
         self,

@@ -85,13 +85,22 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
 
         ignored_func_ids_list = self.plugin_config_dict.get(ignored_func_ids_list_, [])
         for func_id in func_ids_to_func_envelopes.keys():
+            # TODO: TODO_19_67_22_89: remove `ignored_func_ids_list` - load as `FuncState.fs_unplugged`:
             if func_id not in mapped_func_ids:
                 if func_id not in ignored_func_ids_list:
                     raise RuntimeError(
-                        f"plugin_instance_id='{self.plugin_instance_id}': func_id='{func_id}' is neither mapped anywhere nor is in `{ignored_func_ids_list_}`"
+                        f"plugin_instance_id=`{self.plugin_instance_id}`: func_id=`{func_id}` is neither mapped anywhere nor is in `{ignored_func_ids_list_}`"
                     )
                 else:
-                    # Func is ignored - skip:
+                    # This `func_id` is ignored - skip:
+                    continue
+            else:
+                if func_id in ignored_func_ids_list:
+                    raise RuntimeError(
+                        f"plugin_instance_id=`{self.plugin_instance_id}`: func_id=`{func_id}` is already mapped but still listed in `{ignored_func_ids_list_}`"
+                    )
+                else:
+                    # This `func_id` is mapped - skip:
                     continue
 
     def load_interp_tree_abs_paths(

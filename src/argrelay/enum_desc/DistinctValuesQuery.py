@@ -3,7 +3,7 @@ from enum import auto, Enum
 
 class DistinctValuesQuery(Enum):
     """
-    Selects implementation for FS_02_25_41_81 `query_enum_items_func`.
+    Selects implementation for FS_02_25_41_81 `func_id_query_enum_items`.
 
     See `test_QueryEngine_perf.py` for perf test used to produce these tables:
 

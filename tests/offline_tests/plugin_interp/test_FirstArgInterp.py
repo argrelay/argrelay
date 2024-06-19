@@ -5,6 +5,7 @@ from argrelay.composite_tree.CompositeForestSchema import tree_roots_
 from argrelay.composite_tree.CompositeNodeSchema import node_type_, plugin_instance_id_, sub_tree_
 from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
@@ -64,28 +65,7 @@ class ThisTestClass(LocalTestClass):
 
         # List all known `func_id`-s (without using them by this plugin) to keep validation happy:
         plugin_entry[plugin_config_][ignored_func_ids_list_] = [
-            "goto_service_func",
-            "list_service_func",
-            "diff_service_func",
-            "desc_service_func",
-
-            "goto_host_func",
-            "list_host_func",
-            "desc_host_func",
-
-            "goto_git_repo_func",
-            "desc_git_tag_func",
-            "desc_git_commit_func",
-
-            "funct_id_print_with_severity_level",
-            "funct_id_print_with_exit_code",
-            "funct_id_print_with_io_redirect",
-            "funct_id_double_execution",
-
-            "intercept_invocation_func",
-            "help_hint_func",
-            "query_enum_items_func",
-            "echo_args_func",
+            SpecialFunc.func_id_unplugged.name,
         ]
 
         # Patch server config to add NoopInterpFactory (2 plugin instances):

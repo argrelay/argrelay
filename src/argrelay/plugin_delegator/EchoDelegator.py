@@ -26,7 +26,7 @@ class EchoDelegator(AbstractDelegator):
     ) -> list[dict]:
         func_envelopes = [{
             instance_data_: {
-                func_id_: SpecialFunc.echo_args_func.name,
+                func_id_: SpecialFunc.func_id_echo_args.name,
                 delegator_plugin_instance_id_: self.plugin_instance_id,
                 search_control_list_: [
                 ],
@@ -35,8 +35,8 @@ class EchoDelegator(AbstractDelegator):
             ReservedPropName.help_hint.name: (
                 f"Print command line args `{InvocationInput.__name__}`"
             ),
-            ReservedPropName.func_state.name: FuncState.beta.name,
-            ReservedPropName.func_id.name: SpecialFunc.echo_args_func.name,
+            ReservedPropName.func_state.name: FuncState.fs_beta.name,
+            ReservedPropName.func_id.name: SpecialFunc.func_id_echo_args.name,
         }]
         return func_envelopes
 

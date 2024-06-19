@@ -32,6 +32,13 @@ class ZeroArgNode(BaseNode):
 
 
 @dataclass
+class TreePathNode(BaseNode):
+    """
+    See `CompositeNodeType.tree_path_node`.
+    """
+
+
+@dataclass
 class InterpTreeNode(BaseNode):
     """
     See FS_01_89_09_24 interp tree.
@@ -53,10 +60,3 @@ class FuncTreeNode(BaseNode):
     """
 
     func_id: str = field()
-
-
-@dataclass
-class TreePathNode(BaseNode):
-    """
-    See `CompositeNodeType.tree_path_node`.
-    """

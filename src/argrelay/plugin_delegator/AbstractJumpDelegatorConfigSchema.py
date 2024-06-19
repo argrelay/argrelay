@@ -29,7 +29,7 @@ class AbstractJumpDelegatorConfigSchema(Schema):
 
 
 abstract_jump_delegator_config_example = {
-    single_func_id_: "intercept_invocation_func",
+    single_func_id_: "func_id_intercept_invocation",
     tree_abs_path_to_interp_id_: {
         "relay_demo": {
             "intercept": "InterpTreeInterpFactory.default",

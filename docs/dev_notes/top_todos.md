@@ -224,6 +224,6 @@ Extra:
     REGISTER
 
 *   Split `intercept` into: `intercept_json`, `intercept_str` (Python __str__ output), `intercept_table`.
-    See also: FS_88_66_66_73.intercept_invocation_func.md, FS_80_45_89_81 / intercept_invocation_func
+    See also: FS_88_66_66_73.func_id_intercept_invocation.md, FS_80_45_89_81 / func_id_intercept_invocation
     REGISTER
 

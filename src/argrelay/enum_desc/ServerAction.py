@@ -12,7 +12,7 @@ class ServerAction(Enum):
 
     DescribeLineArgs = "/describe_line_args/"
     """
-    This action is closely related to FS_02_25_41_81 `query_enum_items_func`.
+    This action is closely related to FS_02_25_41_81 `func_id_query_enum_items`.
     """
 
     RelayLineArgs = "/relay_line_args/"

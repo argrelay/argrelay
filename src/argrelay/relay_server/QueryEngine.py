@@ -121,7 +121,7 @@ class QueryEngine:
         search_control,
     ) -> QueryResult:
         """
-        Implements query for FS_02_25_41_81 `query_enum_items_func`.
+        Implements query for FS_02_25_41_81 `func_id_query_enum_items`.
         """
         if self.distinct_values_query is DistinctValuesQuery.original_find_and_loop:
             return self._query_prop_values_original_find_and_loop(

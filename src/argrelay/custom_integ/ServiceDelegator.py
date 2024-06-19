@@ -197,7 +197,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Go (log in) to remote host",
-                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: goto_host_func_,
             },
             {
@@ -211,7 +211,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Go (log in) to remote host and dir path with specified service",
-                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: goto_service_func_,
             },
             {
@@ -225,7 +225,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Describe remote host",
-                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: desc_host_func_,
             },
             {
@@ -239,7 +239,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Describe service instance",
-                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: desc_service_func_,
             },
             {
@@ -252,7 +252,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "List remote hosts matching search query",
-                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: list_host_func_,
             },
             {
@@ -265,7 +265,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "List service instances matching search query",
-                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: list_service_func_,
             },
             {
@@ -281,7 +281,7 @@ class ServiceDelegator(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Diff two service instances",
-                ReservedPropName.func_state.name: FuncState.demo.name,
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: diff_service_func_,
             },
         ]
