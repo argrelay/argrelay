@@ -1,13 +1,13 @@
-from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
+from argrelay.server_spec.CallContext import CallContext
 
 
 class AbstractClientCommand:
 
     def __init__(
         self,
-        response_handler: AbstractClientResponseHandler,
+        call_ctx: CallContext,
     ):
-        self.response_handler: AbstractClientResponseHandler = response_handler
+        self.call_ctx: CallContext = call_ctx
 
     def execute_command(
         self,

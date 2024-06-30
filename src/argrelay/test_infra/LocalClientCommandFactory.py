@@ -44,7 +44,6 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
             )
             return ProposeArgValuesLocalClientCommand(
                 call_ctx,
-                self.server_config,
                 self.local_server,
             )
         if call_ctx.server_action is ServerAction.DescribeLineArgs:
@@ -53,7 +52,6 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
             )
             return DescribeLineArgsLocalClientCommand(
                 call_ctx,
-                self.server_config,
                 self.local_server,
             )
         if call_ctx.server_action is ServerAction.RelayLineArgs:
@@ -62,7 +60,6 @@ class LocalClientCommandFactory(AbstractClientCommandFactory):
             )
             return RelayLineArgsLocalClientCommand(
                 call_ctx,
-                self.server_config,
                 self.local_server,
             )
         raise RuntimeError

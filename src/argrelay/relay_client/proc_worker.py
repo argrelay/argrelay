@@ -1,6 +1,5 @@
 import signal
 
-from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 
@@ -18,7 +17,10 @@ def _signal_handler(signal_number, signal_frame):
 def worker_main(
     call_ctx,
     client_config,
-    shell_ctx
+    shell_ctx,
+    child_pipe_src,
+    is_split_mode,
+    is_optimized_completion,
 ) -> "AbstractClientCommand":
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
@@ -30,17 +32,30 @@ def worker_main(
             call_ctx,
         )
     else:
-        if (
-            call_ctx.server_action is ServerAction.ProposeArgValues
-            and
-            client_config.optimize_completion_request
-        ):
+        if is_optimized_completion:
             from argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand import (
-                ProposeArgValuesRemoteOptimizedClientCommand
+                ProposeArgValuesRemoteOptimizedClientCommand,
             )
+            if is_split_mode:
+                assert child_pipe_src is not None
+                from argrelay.client_pipeline.PipeSrcSender import PipeSrcSender
+                pipe_src = PipeSrcSender(
+                    child_pipe_src,
+                )
+            else:
+                assert child_pipe_src is None
+                from argrelay.client_pipeline.PipeSrcLocal import PipeSrcLocal
+                from argrelay.client_pipeline.BytesHandlerTextProposeArgValuesRemoteOptimized import (
+                    PipeDstReceiverTextProposeArgValuesRemoteOptimized,
+                )
+                pipe_src = PipeSrcLocal(
+                    PipeDstReceiverTextProposeArgValuesRemoteOptimized(),
+                )
+
             command_obj = ProposeArgValuesRemoteOptimizedClientCommand(
-                call_ctx = call_ctx,
-                connection_config = client_config.connection_config,
+                call_ctx,
+                pipe_src,
+                client_config.connection_config,
             )
             make_request(
                 command_obj,
@@ -58,7 +73,11 @@ def worker_main(
             if has_error_happened:
                 eprint("INFO: `import` passed")
             command_obj = make_request_via_abstract_client(
-                RemoteClient(client_config),
+                RemoteClient(
+                    client_config,
+                    is_split_mode,
+                    child_pipe_src,
+                ),
                 call_ctx,
             )
     ElapsedTime.measure("on_exit")

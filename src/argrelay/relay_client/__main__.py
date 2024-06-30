@@ -3,6 +3,7 @@ import sys
 
 from argrelay.client_spec.ShellContext import ShellContext
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import get_config_path
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ClientConfig import ClientConfig
@@ -22,27 +23,52 @@ def main():
     shell_ctx.print_debug()
     call_ctx = shell_ctx.create_call_context()
 
-    if (
+    # TODO: Init all client pipeline components via single logic - avoid splitting across files if reused.
+    is_split_mode: bool = (
         # FS_14_59_14_06 pending requests: at the moment the process is split only to provide spinner:
         client_config.show_pending_spinner
         and
         shell_ctx.comp_type is not CompType.InvokeAction
-    ):
+    )
+
+    is_optimized_completion = (
+        call_ctx.server_action is ServerAction.ProposeArgValues
+        and
+        client_config.optimize_completion_request
+    )
+
+    pipe_end = None
+    if is_split_mode:
         from argrelay.relay_client.proc_split import split_process
         (
             is_parent,
             child_pid,
-            child_stdout,
+            pipe_end,
         ) = split_process()
 
         if is_parent:
-            from argrelay.relay_client.proc_spinner import spinner_main
-            spinner_main(
+            from argrelay.client_pipeline.PipeDstReceiver import PipeDstReceiver
+            if is_optimized_completion:
+                from argrelay.client_pipeline.BytesHandlerTextProposeArgValuesRemoteOptimized import (
+                    PipeDstReceiverTextProposeArgValuesRemoteOptimized,
+                )
+                bytes_handler = PipeDstReceiverTextProposeArgValuesRemoteOptimized()
+            else:
+                from argrelay.client_pipeline.BytesHandlerJson import BytesHandlerJson
+                from argrelay.relay_client.RemoteClientCommandFactory import RemoteClientCommandFactory
+                bytes_handler = BytesHandlerJson(
+                    # TODO: this is ugly - why what is already encapsulated in the factory has to be used outside?
+                    RemoteClientCommandFactory.select_response_handler(
+                        call_ctx.server_action,
+                    ),
+                )
+            PipeDstReceiver(
+                bytes_handler,
                 child_pid,
-                child_stdout,
+                pipe_end,
                 client_config,
                 shell_ctx,
-            )
+            ).receive_bytes()
             return
 
     from argrelay.relay_client.proc_worker import worker_main
@@ -50,6 +76,9 @@ def main():
         call_ctx,
         client_config,
         shell_ctx,
+        pipe_end,
+        is_split_mode,
+        is_optimized_completion,
     )
     return command_obj
 

@@ -1,10 +1,8 @@
-import json
 from dataclasses import asdict
 
 import requests
-from marshmallow import Schema
 
-from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
+from argrelay.client_pipeline.PipeSrcAbstract import PipeSrcAbstract
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_client.AbstractClientCommand import AbstractClientCommand
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
@@ -13,23 +11,22 @@ from argrelay.server_spec.CallContext import CallContext
 from argrelay.server_spec.const_int import BASE_URL_FORMAT
 
 
+# TODO: remove Abstract:
 class AbstractRemoteClientCommand(AbstractClientCommand):
 
     def __init__(
         self,
+        # TODO: reorder args:
         call_ctx: CallContext,
+        pipe_src: PipeSrcAbstract,
         connection_config: ConnectionConfig,
-        response_handler: AbstractClientResponseHandler,
-        response_schema: Schema,
-        request_schema: Schema = call_context_desc.dict_schema,
     ):
+        # TODO: reorder assignments:
         super().__init__(
-            response_handler,
+            call_ctx,
         )
-        self.call_ctx: CallContext = call_ctx
+        self.pipe_src: PipeSrcAbstract = pipe_src
         self.connection_config: ConnectionConfig = connection_config
-        self.response_schema: Schema = response_schema
-        self.request_schema: Schema = request_schema
 
     def execute_command(
         self,
@@ -39,7 +36,8 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
             "Content-Type": "application/json",
             "Accept": "application/json",
         }
-        request_json = self.request_schema.dumps(self.call_ctx)
+        # NOTE: So far, single `CallContextSchema` is reused for all client requests:
+        request_json = call_context_desc.dict_schema.dumps(self.call_ctx)
         ElapsedTime.measure("before_request")
         response_obj = requests.post(
             server_url,
@@ -49,11 +47,7 @@ class AbstractRemoteClientCommand(AbstractClientCommand):
         ElapsedTime.measure("after_request")
         try:
             if response_obj.ok:
-                # Leave both object creation and validation via schemas to `response_handler`.
-                # Just deserialize into dict here:
-                response_dict = json.loads(response_obj.text)
-                ElapsedTime.measure("after_deserialization")
-                self.response_handler.handle_response(response_dict)
+                self.pipe_src.accept_bytes(response_obj.content)
             else:
                 raise RuntimeError
         finally:

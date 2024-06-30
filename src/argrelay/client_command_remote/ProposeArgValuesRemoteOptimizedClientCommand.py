@@ -2,6 +2,7 @@ import json
 import os
 import socket
 
+from argrelay.client_pipeline.PipeSrcAbstract import PipeSrcAbstract
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
@@ -30,9 +31,11 @@ class ProposeArgValuesRemoteOptimizedClientCommand:
     def __init__(
         self,
         call_ctx: CallContext,
+        pipe_src: PipeSrcAbstract,
         connection_config: ConnectionConfig,
     ):
         self.call_ctx: CallContext = call_ctx
+        self.pipe_src: PipeSrcAbstract = pipe_src
         self.connection_config: ConnectionConfig = connection_config
         self.server_path: str = ServerAction.ProposeArgValues.value
 
@@ -100,8 +103,7 @@ Connection: close\r
 
         try:
             if response_status_code == 200:
-                # For (default) "text/plain" response, proposed (new-line-separated) values are directly in the body:
-                print(response_body_str)
+                self.pipe_src.accept_bytes(response_body_str.encode())
             else:
                 raise RuntimeError
         finally:
