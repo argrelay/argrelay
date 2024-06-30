@@ -12,9 +12,18 @@ class RemoteClient(AbstractClient):
     See also `LocalClient` and `LocalServer`.
     """
 
-    def __init__(self, client_config: ClientConfig):
+    def __init__(
+        self,
+        client_config: ClientConfig,
+        is_split_mode: bool,
+        child_pipe_src,
+    ):
         super().__init__(
             client_config,
-            RemoteClientCommandFactory(client_config),
+            RemoteClientCommandFactory(
+                client_config,
+                is_split_mode,
+                child_pipe_src,
+            ),
         )
         assert not client_config.use_local_requests

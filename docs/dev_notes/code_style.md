@@ -25,7 +25,7 @@ preferring (not immediately obvious) practical properties.
 
     Until number of dirs in the list is excessively large, it is just simpler.
 
-    Where should "one of the response handlers" be placed anyway?
+    Where should "one of the client response handlers" be placed anyway?
     *   `./handler/response/`
     *   `./response/handler/`
 

@@ -17,6 +17,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import (
     __main__,
     proc_worker,
+    proc_split,
 )
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.test_infra import change_to_known_repo_path
@@ -36,6 +37,7 @@ class ThisTestClass(BaseTestClass):
     # Otherwise, select the imports on the required execution path manually here:
     entry_module_names = [
         __main__.__name__,
+        proc_split.__name__,
         proc_worker.__name__,
         ProposeArgValuesRemoteOptimizedClientCommand.__name__,
     ]
@@ -44,6 +46,7 @@ class ThisTestClass(BaseTestClass):
     expected_imports = {
         "__future__": [],
         "argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand": [
+            "argrelay.client_pipeline.PipeSrcAbstract",
             "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ConnectionConfig",
@@ -52,6 +55,7 @@ class ThisTestClass(BaseTestClass):
             "os",
             "socket"
         ],
+        "argrelay.client_pipeline.PipeSrcAbstract": [],
         "argrelay.client_spec.ShellContext": [
             "__future__",
             "argrelay.enum_desc.CompScope",
@@ -89,14 +93,18 @@ class ThisTestClass(BaseTestClass):
         "argrelay.relay_client.__main__": [
             "argrelay.client_spec.ShellContext",
             "argrelay.enum_desc.CompType",
+            "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common",
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ClientConfig",
             "argrelay.runtime_data.ConnectionConfig",
             "sys"
         ],
+        "argrelay.relay_client.proc_split": [
+            "os",
+            "signal"
+        ],
         "argrelay.relay_client.proc_worker": [
-            "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common",
             "argrelay.misc_helper_common.ElapsedTime",
             "signal",

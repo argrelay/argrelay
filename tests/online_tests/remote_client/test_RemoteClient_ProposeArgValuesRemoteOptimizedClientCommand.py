@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.client_command_remote.ProposeArgValuesRemoteClientCommand import ProposeArgValuesRemoteClientCommand
+from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractRemoteClientCommand
 from argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand import (
     ProposeArgValuesRemoteOptimizedClientCommand,
 )
@@ -77,8 +77,8 @@ apac
                             ProposeArgValuesRemoteOptimizedClientCommand.execute_command,
                         ) as optimized_method_wrap_mock:
                             with wrap_instance_method_on_class(
-                                ProposeArgValuesRemoteClientCommand,
-                                ProposeArgValuesRemoteClientCommand.execute_command,
+                                AbstractRemoteClientCommand,
+                                AbstractRemoteClientCommand.execute_command,
                             ) as non_optimized_method_wrap_mock:
 
                                 # when:
