@@ -40,8 +40,8 @@ The numbers are approximate - whatever seem to show up most of the time.
 # Trying optimized and non-optimized command for `ServerAction.ProposeArgValues`
 
 There are two implementations for `ServerAction.ProposeArgValues`:
-*   `ProposeArgValuesRemoteOptimizedClientCommand`
-*   `ProposeArgValuesRemoteClientCommand`
+*   `ClientCommandRemoteWorkerTextProposeArgValuesOptimized`
+*   `ClientCommandRemoteWorkerJson`
 
 It is possible to select between the two by setting `ClientConfig.optimize_completion_request` to true or false.
 
@@ -89,10 +89,10 @@ therefore, `*.json` was chosen as a more conventional config format.
 
 # See also
 
-Module imports done by `ProposeArgValuesRemoteOptimizedClientCommand` are constrained by this test:
+Module imports done by `ClientCommandRemoteWorkerTextProposeArgValuesOptimized` are constrained by this test:
 
 ```
-tests/offline_tests/relay_client/test_ProposeArgValuesRemoteOptimizedClientCommand.py
+tests/offline_tests/relay_client/test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized.py
 ```
 
 # Raw data

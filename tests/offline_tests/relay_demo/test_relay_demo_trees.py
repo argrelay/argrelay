@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.enum_desc.CompType import CompType
-from argrelay.handler_response.DescribeLineArgsClientResponseHandler import DescribeLineArgsClientResponseHandler
+from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import ClientResponseHandlerDescribeLineArgs
 from argrelay.relay_client import __main__
 from argrelay.schema_response.InterpResult import InterpResult
 from argrelay.test_infra import line_no, parse_line_and_cpos
@@ -158,7 +158,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                 )
                 with outer_env_mock_builder.build():
                     command_obj = __main__.main()
-                    assert isinstance(command_obj, AbstractLocalClientCommand)
+                    assert isinstance(command_obj, ClientCommandLocal)
                     interp_ctx = command_obj.interp_ctx
 
                     if not stdout_str:
@@ -172,7 +172,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
                     #       and printing it separately (when no other logic with extra output can intervene)
                     #       to assert the output.
-                    #       Alternatively, run this test via `RemoteClient` (see `RemoteTestClass`) where output
+                    #       Alternatively, run this test via `ClientRemote` (see `RemoteTestClass`) where output
                     #       of the server is not captured (as it is a separate process).
                     inner_env_mock_builder = (
                         EmptyEnvMockBuilder()
@@ -181,7 +181,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     )
                     with inner_env_mock_builder.build():
                         interp_result: InterpResult = InterpResult.from_interp_context(interp_ctx)
-                        DescribeLineArgsClientResponseHandler.render_result(interp_result)
+                        ClientResponseHandlerDescribeLineArgs.render_result(interp_result)
 
                         self.assertEqual(
                             stdout_str,

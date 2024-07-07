@@ -57,6 +57,15 @@ then
     exit 1
 fi
 
+# Ensure all changes are committed (before boostrap):
+# https://stackoverflow.com/a/3879077/441652
+git update-index --refresh
+if ! git diff-index --quiet HEAD --
+then
+    echo "ERROR: uncommitted changes" 1>&2
+    exit 1
+fi
+
 # TODO_64_79_28_85: switch to `dst/release_env`
 # TODO_64_79_28_85: use upgrade_env_packages.bash
 
@@ -72,7 +81,7 @@ pip install -r "${argrelay_dir}/conf/env_packages.txt"
 # *  restores missing transitive dependencies
 "${argrelay_dir}/exe/bootstrap_env.bash"
 
-# Ensure all changes are committed:
+# Ensure all changes are committed (after boostrap):
 # https://stackoverflow.com/a/3879077/441652
 git update-index --refresh
 if ! git diff-index --quiet HEAD --
@@ -109,15 +118,20 @@ echo "INFO: is_dev_version: ${is_dev_version}" 1>&2
 # Clean up previously built packages:
 rm -rf "${argrelay_dir}/dist/"
 
-# Run max tests with `ARGRELAY_DEV_SHELL` defined:
-"${argrelay_dir}/exe/run_max_tests.bash"
+# Do not run tests with dev version
+# (can still be run manually on demand):
+if [[ "${is_dev_version}" != "true" ]]
+then
+    # Run max tests with `ARGRELAY_DEV_SHELL` defined:
+    "${argrelay_dir}/exe/run_max_tests.bash"
 
-# Now prepare to run without `ARGRELAY_DEV_SHELL`.
-# Ensure any "privileges" of `@/exe/dev_shell.bash` are disabled:
-unset ARGRELAY_DEV_SHELL
+    # Now prepare to run without `ARGRELAY_DEV_SHELL`.
+    # Ensure any "privileges" of `@/exe/dev_shell.bash` are disabled:
+    unset ARGRELAY_DEV_SHELL
 
-# Build and test via `tox`:
-python -m tox
+    # Build and test via `tox`:
+    python -m tox
+fi
 
 # Fetch from upstream:
 git_main_remote="origin"

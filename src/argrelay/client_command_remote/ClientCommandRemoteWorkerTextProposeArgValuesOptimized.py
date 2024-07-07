@@ -2,19 +2,21 @@ import json
 import os
 import socket
 
+from argrelay.client_command_remote.ClientCommandRemoteAbstract import ClientCommandRemoteAbstract
+from argrelay.client_pipeline.BytesSrcAbstract import BytesSrcAbstract
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.server_spec.CallContext import CallContext
 
 
-class ProposeArgValuesRemoteOptimizedClientCommand:
+class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemoteAbstract):
     """
-    This class is supposed to derive from :class:`AbstractRemoteClientCommand`, but it avoids it for perf reasons.
+    This class optimizes what can otherwise be done via generic `ClientCommandRemoteWorkerJson`.
 
     See `completion_perf_notes.md`.
 
-    Importing everything from `AbstractRemoteClientCommand` slows down startup and responses on `Tab` requests.
+    Importing many packages including `marshmallow` slows down startup and responses on `Tab` requests.
 
     Performance is not critical for other client commands
     (e.g. `ServerAction.DescribeLineArgs` or `ServerAction.RelayLineArgs`),
@@ -31,9 +33,13 @@ class ProposeArgValuesRemoteOptimizedClientCommand:
         self,
         call_ctx: CallContext,
         connection_config: ConnectionConfig,
+        bytes_src: BytesSrcAbstract,
     ):
-        self.call_ctx: CallContext = call_ctx
+        super().__init__(
+            call_ctx,
+        )
         self.connection_config: ConnectionConfig = connection_config
+        self.bytes_src: BytesSrcAbstract = bytes_src
         self.server_path: str = ServerAction.ProposeArgValues.value
 
     def execute_command(
@@ -100,10 +106,9 @@ Connection: close\r
 
         try:
             if response_status_code == 200:
-                # For (default) "text/plain" response, proposed (new-line-separated) values are directly in the body:
-                print(response_body_str)
+                self.bytes_src.accept_bytes(response_body_str.encode())
             else:
-                raise RuntimeError
+                self.raise_error(response_status_code)
         finally:
             ElapsedTime.measure("after_handle_response")
 

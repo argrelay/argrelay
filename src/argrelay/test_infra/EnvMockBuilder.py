@@ -61,7 +61,7 @@ from argrelay.schema_config_plugin.PluginConfigSchema import (
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_, plugin_enabled_
 from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.server_spec.CallContext import CallContext
-from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
+from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 from argrelay.test_infra.OpenFileMock import OpenFileMock
 from argrelay.test_infra.PopenMock import PopenMock
 
@@ -90,7 +90,7 @@ class EnvMockBuilder:
         *   `set_capture_stdout`
         *   `set_capture_stderr`
 
-    *   Whether client uses `LocalClient`/`LocalServer` or `RemoteClient` with `CustomFlaskApp` - see usage of:
+    *   Whether client uses `ClientLocal`/`LocalServer` or `ClientRemote` with `CustomFlaskApp` - see usage of:
 
         *   `set_client_config_with_local_server`
 
@@ -98,8 +98,8 @@ class EnvMockBuilder:
 
     *   Simple selection of test data - see usage of: `set_test_data_ids_to_load`
 
-    *   TODO_42_81_01_90: Verify `ArgValues` on `ServerAction.DescribeLineArgs` (without verifying printed output) by intercepting call to `ProposeArgValuesClientResponseHandler.render_values`.
-    *   TODO_42_81_01_90: Verify `InterpResult` on `ServerAction.ProposeArgValues` (without verifying printed output) by intercepting call to `DescribeLineArgsClientResponseHandler.render_result`.
+    *   TODO_42_81_01_90: Verify `ArgValues` on `ServerAction.DescribeLineArgs` (without verifying printed output) by intercepting call to `ClientResponseHandlerProposeArgValues.render_values`.
+    *   TODO_42_81_01_90: Verify `InterpResult` on `ServerAction.ProposeArgValues` (without verifying printed output) by intercepting call to `ClientResponseHandlerDescribeLineArgs.render_result`.
     *   Verifying `InvocationInput` on `ServerAction.RelayLineArgs` - see usage of:
 
         *   `invoke_action_func_full_name`
@@ -201,14 +201,14 @@ class EnvMockBuilder:
 
     reset_local_server: bool = field(default = True)
     """
-    If true, (after build() context is over) next invocation via `LocalClient` will trigger `LocalServer` restart (re-creation and re-load).
+    If true, (after build() context is over) next invocation via `ClientLocal` will trigger `LocalServer` restart (re-creation and re-load).
     Default is true because it is confusing to hold `test_data_ids_to_load` while not re-loading server by default.
     """
 
     was_server_started_on_build: bool = field(default = False)
     """
     Avoids triggering verification of file access mock usage for server config
-    when `LocalClient` reuses already running server.
+    when `ClientLocal` reuses already running server.
     See FS_66_17_43_42 test infra for server-`out` test modes.
     """
 
@@ -438,7 +438,7 @@ class EnvMockBuilder:
         ################################################################################################################
         # Initial validation
 
-        self.was_server_started_on_build = LocalClientCommandFactory.local_server is not None
+        self.was_server_started_on_build = ClientCommandFactoryLocal.local_server is not None
 
         # Ensure there are no false expectations if conflicting setup is done:
         assert self.command_line is None or self.command_args is None, "both cannot be set, at most one"
@@ -821,7 +821,7 @@ class LocalClientEnvMockBuilder(EnvMockBuilder):
 
     Use case:
     Used in tests where both server and client code is verified but without code for data marshalling via HTTP.
-    Runs client and server code in the same test process via `LocalClient` (see for more details).
+    Runs client and server code in the same test process via `ClientLocal` (see for more details).
     """
 
     def __init__(
@@ -845,7 +845,7 @@ class LocalClientEnvMockBuilder(EnvMockBuilder):
         self.set_plugin_config_dict()
 
         # For local client (with local server) tests,
-        # ensure client uses `LocalClient` without marshalling data via HTTP:
+        # ensure client uses `ClientLocal` without marshalling data via HTTP:
         self.set_client_config_with_local_server(True)
         # Also, ensure non-optimized completion is used
         # (optimized directly uses network socket which will not give access to `LocalServer`):
@@ -931,7 +931,7 @@ class LiveServerEnvMockBuilder(EnvMockBuilder):
 
         # For live server test, running local server contradicts with the live server - disable:
         self.set_client_config_with_local_server(False)
-        # Optimized client prevents accessing internal server state via `LocalClient` and `LocalServer`,
+        # Optimized client prevents accessing internal server state via `ClientLocal` and `LocalServer`,
         # but it is impossible with live server anyway.
         # Therefore, default is unspecified here = None
         # (whatever is set in the client config or dictated by its defaults):
@@ -1046,7 +1046,7 @@ def do_reset_local_server():
     try:
         yield
     finally:
-        LocalClientCommandFactory.local_server = None
+        ClientCommandFactoryLocal.local_server = None
 
 
 ########################################################################################################################

@@ -3,6 +3,8 @@ import sys
 
 from argrelay.client_spec.ShellContext import ShellContext
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ProcRole import ProcRole
+from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import get_config_path
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ClientConfig import ClientConfig
@@ -22,33 +24,52 @@ def main():
     shell_ctx.print_debug()
     call_ctx = shell_ctx.create_call_context()
 
-    if (
+    is_split_mode: bool = (
         # FS_14_59_14_06 pending requests: at the moment the process is split only to provide spinner:
         client_config.show_pending_spinner
         and
         shell_ctx.comp_type is not CompType.InvokeAction
-    ):
-        from argrelay.relay_client.proc_split import split_process
+    )
+
+    is_optimized_completion = (
+        call_ctx.server_action is ServerAction.ProposeArgValues
+        and
+        client_config.optimize_completion_request
+    )
+
+    w_pipe_end = None
+    if is_split_mode:
+        from argrelay.relay_client.proc_splitter import split_process
         (
             is_parent,
             child_pid,
-            child_stdout,
+            r_pipe_end,
+            w_pipe_end,
         ) = split_process()
 
         if is_parent:
+            proc_role: ProcRole = ProcRole.ParentProcSpinner
             from argrelay.relay_client.proc_spinner import spinner_main
             spinner_main(
-                child_pid,
-                child_stdout,
+                call_ctx,
                 client_config,
-                shell_ctx,
+                proc_role,
+                is_optimized_completion,
+                r_pipe_end,
             )
-            return
+            return None
+        else:
+            proc_role: ProcRole = ProcRole.ChildProcWorker
+    else:
+        proc_role: ProcRole = ProcRole.SoleProcWorker
 
     from argrelay.relay_client.proc_worker import worker_main
     command_obj = worker_main(
         call_ctx,
         client_config,
+        proc_role,
+        is_optimized_completion,
+        w_pipe_end,
         shell_ctx,
     )
     return command_obj

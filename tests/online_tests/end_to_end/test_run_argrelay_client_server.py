@@ -5,7 +5,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
+from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.test_infra import change_to_known_repo_path, line_no
 from argrelay.test_infra.End2EndTestClass import (

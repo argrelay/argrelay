@@ -52,7 +52,7 @@ def create_blueprint_api(local_server: LocalServer):
             response_dict = propose_arg_values_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["text/plain"] or len(request.accept_mimetypes) == 0:
-                # Required for `ProposeArgValuesRemoteOptimizedClientCommand`:
+                # Required for `ClientCommandRemoteWorkerTextProposeArgValuesOptimized`:
                 # Sending "text/plain" (default) for stripped down clients (who may not even specify headers)
                 # also serving perf reasons on client side (trivial parsing, no lib required, minimal imports):
                 return Response(

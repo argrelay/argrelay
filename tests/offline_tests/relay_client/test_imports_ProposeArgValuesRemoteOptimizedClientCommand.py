@@ -11,12 +11,13 @@ import os.path
 import time
 import unittest
 
-from argrelay.client_command_remote import ProposeArgValuesRemoteOptimizedClientCommand
+from argrelay.client_command_remote import ClientCommandRemoteWorkerTextProposeArgValuesOptimized
 from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
 from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import (
     __main__,
     proc_worker,
+    proc_splitter,
 )
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.test_infra import change_to_known_repo_path
@@ -36,14 +37,21 @@ class ThisTestClass(BaseTestClass):
     # Otherwise, select the imports on the required execution path manually here:
     entry_module_names = [
         __main__.__name__,
+        proc_splitter.__name__,
         proc_worker.__name__,
-        ProposeArgValuesRemoteOptimizedClientCommand.__name__,
+        ClientCommandRemoteWorkerTextProposeArgValuesOptimized.__name__,
     ]
 
     # To generate `expected_imports`, run `test_print_grouped_imports`.
     expected_imports = {
         "__future__": [],
-        "argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand": [
+        "argrelay.client_command_remote.ClientCommandRemoteAbstract": [
+            "argrelay.relay_client.ClientCommandAbstract",
+            "argrelay.server_spec.CallContext"
+        ],
+        "argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
+            "argrelay.client_command_remote.ClientCommandRemoteAbstract",
+            "argrelay.client_pipeline.BytesSrcAbstract",
             "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ConnectionConfig",
@@ -52,6 +60,7 @@ class ThisTestClass(BaseTestClass):
             "os",
             "socket"
         ],
+        "argrelay.client_pipeline.BytesSrcAbstract": [],
         "argrelay.client_spec.ShellContext": [
             "__future__",
             "argrelay.enum_desc.CompScope",
@@ -71,6 +80,9 @@ class ThisTestClass(BaseTestClass):
         "argrelay.enum_desc.CompType": [
             "enum"
         ],
+        "argrelay.enum_desc.ProcRole": [
+            "enum"
+        ],
         "argrelay.enum_desc.ServerAction": [
             "enum"
         ],
@@ -86,17 +98,25 @@ class ThisTestClass(BaseTestClass):
             "argrelay.misc_helper_common",
             "time"
         ],
+        "argrelay.relay_client.ClientCommandAbstract": [
+            "argrelay.server_spec.CallContext"
+        ],
         "argrelay.relay_client.__main__": [
             "argrelay.client_spec.ShellContext",
             "argrelay.enum_desc.CompType",
+            "argrelay.enum_desc.ProcRole",
+            "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common",
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ClientConfig",
             "argrelay.runtime_data.ConnectionConfig",
             "sys"
         ],
+        "argrelay.relay_client.proc_splitter": [
+            "os",
+            "signal"
+        ],
         "argrelay.relay_client.proc_worker": [
-            "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common",
             "argrelay.misc_helper_common.ElapsedTime",
             "signal",
@@ -285,7 +305,7 @@ class ThisTestClass(BaseTestClass):
             print("-" * 40)
             print_row(total_time_ms, total_size_bytes, "TOTAL")
 
-    def test_ProposeArgValuesRemoteOptimizedClientCommand_imports_minimum(self):
+    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_imports_minimum(self):
         """
         Scan imported modules on the way from client entry point to sending data.
 
@@ -297,7 +317,7 @@ class ThisTestClass(BaseTestClass):
         Extrapolate the numbers from the commit at which this note was written based on test with debug output.
 
         See also:
-        *  `ProposeArgValuesRemoteOptimizedClientCommand`
+        *  `ClientCommandRemoteWorkerTextProposeArgValuesOptimized`
         *  `completion_perf_notes.md`
         """
         with change_to_known_repo_path("."):

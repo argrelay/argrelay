@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
@@ -119,7 +119,7 @@ class ThisTestClass(LocalTestClass):
                 )
                 with env_mock_builder.build():
                     command_obj = __main__.main()
-                    assert isinstance(command_obj, AbstractLocalClientCommand)
+                    assert isinstance(command_obj, ClientCommandLocal)
 
                     test_case.sever_action_verifier.verify_all(call_context_desc.dict_schema.dumps(
                         command_obj.interp_ctx.parsed_ctx,
@@ -173,7 +173,7 @@ some_command list service {SpecialChar.NoPropValue.value} {TermColor.known_envel
                 )
                 with outer_env_mock_builder.build():
                     command_obj = __main__.main()
-                    assert isinstance(command_obj, AbstractLocalClientCommand)
+                    assert isinstance(command_obj, ClientCommandLocal)
                     interp_ctx = command_obj.interp_ctx
 
                     invocation_input: InvocationInput = EnvMockBuilder.invocation_input
@@ -185,7 +185,7 @@ some_command list service {SpecialChar.NoPropValue.value} {TermColor.known_envel
                 #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
                 #       and printing it separately (when no other logic with extra output can intervene)
                 #       to assert the output.
-                #       Alternatively, run this test via `RemoteClient` (see `RemoteTestClass`) where output
+                #       Alternatively, run this test via `ClientRemote` (see `RemoteTestClass`) where output
                 #       of the server is not captured (as it is a separate process).
                 inner_env_mock_builder = (
                     EmptyEnvMockBuilder()

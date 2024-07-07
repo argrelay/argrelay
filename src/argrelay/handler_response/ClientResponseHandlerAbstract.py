@@ -1,4 +1,4 @@
-class AbstractClientResponseHandler:
+class ClientResponseHandlerAbstract:
 
     def __init__(
         self,

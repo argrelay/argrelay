@@ -3,7 +3,7 @@ from __future__ import annotations
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
+from argrelay.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.schema_response.InterpResult import InterpResult
@@ -12,7 +12,7 @@ from argrelay.schema_response.InterpResultSchema import interp_result_desc
 indent_size = 2
 
 
-class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
+class ClientResponseHandlerDescribeLineArgs(ClientResponseHandlerAbstract):
     default_overrides_caption: str = "overrides"
     """
     FS_72_53_55_13: Caption for options hidden by defaults.
@@ -47,7 +47,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
         # Print command line:
         for i in range(len(interp_result.all_tokens)):
             if i == interp_result.tan_token_ipos:
-                DescribeLineArgsClientResponseHandler.render_tangent_token(interp_result, interp_result.all_tokens[i])
+                ClientResponseHandlerDescribeLineArgs.render_tangent_token(interp_result, interp_result.all_tokens[i])
             elif i in interp_result.consumed_token_ipos_list():
                 print(
                     f"{TermColor.consumed_token.value}{interp_result.all_tokens[i]}{TermColor.reset_style.value}",
@@ -64,7 +64,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                     end = " ",
                 )
 
-        DescribeLineArgsClientResponseHandler.render_envelope_containers(
+        ClientResponseHandlerDescribeLineArgs.render_envelope_containers(
             interp_result.envelope_containers,
             interp_result.tan_token_l_part,
         )
@@ -78,7 +78,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
         Implements FS_11_87_76_73 (highlight tangent prefix).
         """
 
-        DescribeLineArgsClientResponseHandler.highlight_prefix(
+        ClientResponseHandlerDescribeLineArgs.highlight_prefix(
             [tan_token],
             interp_result.tan_token_l_part,
             TermColor.tangent_token_r_part,
@@ -112,7 +112,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
 
                     # Set color based on `ArgSource`:
                     arg_source_color: TermColor
-                    arg_source_color = DescribeLineArgsClientResponseHandler.select_arg_source_color(
+                    arg_source_color = ClientResponseHandlerDescribeLineArgs.select_arg_source_color(
                         envelope_container,
                         arg_type,
                     )
@@ -122,7 +122,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                     print(f"{arg_type}:", end = " ")
 
                     # Single value = `arg_value` (with prefix highlight):
-                    DescribeLineArgsClientResponseHandler.highlight_prefix(
+                    ClientResponseHandlerDescribeLineArgs.highlight_prefix(
                         [envelope_container.assigned_types_to_values[arg_type].arg_value],
                         value_prefix,
                     )
@@ -140,13 +140,13 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                         if arg_type in envelope_container.filled_types_to_values_hidden_by_defaults:
                             print(" ", end = "")
                             print(TermColor.caption_hidden_by_default.value, end = "")
-                            print(f"{DescribeLineArgsClientResponseHandler.default_overrides_caption}:", end = "")
+                            print(f"{ClientResponseHandlerDescribeLineArgs.default_overrides_caption}:", end = "")
                             print(TermColor.reset_style.value, end = " ")
 
                             values_hidden_by_defaults = envelope_container.filled_types_to_values_hidden_by_defaults[
                                 arg_type
                             ]
-                            DescribeLineArgsClientResponseHandler.highlight_prefix(
+                            ClientResponseHandlerDescribeLineArgs.highlight_prefix(
                                 values_hidden_by_defaults,
                                 value_prefix,
                                 TermColor.value_hidden_by_default,
@@ -166,7 +166,7 @@ class DescribeLineArgsClientResponseHandler(AbstractClientResponseHandler):
                     print(TermColor.reset_style.value, end = " ")
 
                     # Multiple values = `arg_value` (with prefix highlight):
-                    DescribeLineArgsClientResponseHandler.highlight_prefix(
+                    ClientResponseHandlerDescribeLineArgs.highlight_prefix(
                         envelope_container.remaining_types_to_values[arg_type],
                         value_prefix,
                     )
