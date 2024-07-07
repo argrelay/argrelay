@@ -1,4 +1,4 @@
-from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
     envelope_properties_,
@@ -307,9 +307,9 @@ class ThisTestClass(LocalTestClass):
                 with env_mock_builder.build():
                     # The test simply triggers server data load and verifies its loaded.
 
-                    # Populate static data by plugin via `LocalClient` who starts `LocalServer`:
-                    command_obj: AbstractLocalClientCommand = __main__.main()
-                    assert isinstance(command_obj, AbstractLocalClientCommand)
+                    # Populate static data by plugin via `ClientLocal` who starts `LocalServer`:
+                    command_obj: ClientCommandLocal = __main__.main()
+                    assert isinstance(command_obj, ClientCommandLocal)
                     static_data = command_obj.local_server.server_config.static_data
 
                     # Verify:

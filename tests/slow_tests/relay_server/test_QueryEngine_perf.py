@@ -23,7 +23,7 @@ from argrelay.test_infra.EnvMockBuilder import (
     ServerOnlyEnvMockBuilder,
     wrap_instance_method_on_instance,
 )
-from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
+from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
@@ -178,8 +178,8 @@ class ThisTestClass(LocalTestClass):
                     .set_test_data_ids_to_load(["TD_38_03_48_51"])  # large generated
                 )
                 with env_mock_builder.build():
-                    # Force restart of the server for `LocalClient` before tests:
-                    LocalClientCommandFactory.local_server = None
+                    # Force restart of the server for `ClientLocal` before tests:
+                    ClientCommandFactoryLocal.local_server = None
                     # Start `LocalServer` with data:
                     server_config = server_config_desc.obj_from_default_file()
                     plugin_config = plugin_config_desc.obj_from_default_file()

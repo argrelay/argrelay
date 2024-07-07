@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Union, Type
 
-from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.relay_client import __main__
@@ -13,27 +13,27 @@ from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder, LocalClientEnvMockBuilder
 from argrelay.test_infra.InOutTestClass import InOutTestClass
-from argrelay.test_infra.LocalClientCommandFactory import LocalClientCommandFactory
+from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 
 
 class LocalTestClass(InOutTestClass):
     """
     Supports FS_66_17_43_42 test_infra / special test mode #1.
 
-    Tests which rely on `LocalClient` to inspect internal-to-server `InterpContext`.
+    Tests which rely on `ClientLocal` to inspect internal-to-server `InterpContext`.
     """
 
     @classmethod
     def setUpClass(cls):
         InOutTestClass.setUpClass()
-        # Force restart of the server for `LocalClient` before tests:
-        LocalClientCommandFactory.local_server = None
+        # Force restart of the server for `ClientLocal` before tests:
+        ClientCommandFactoryLocal.local_server = None
 
     @classmethod
     def tearDownClass(cls):
         InOutTestClass.tearDownClass()
-        # Force restart of the server for `LocalClient` after tests:
-        LocalClientCommandFactory.local_server = None
+        # Force restart of the server for `ClientLocal` after tests:
+        ClientCommandFactoryLocal.local_server = None
 
     def verify_output_with_new_server_via_local_client(
         self,
@@ -90,10 +90,10 @@ class LocalTestClass(InOutTestClass):
         )
         with env_mock_builder.build():
             command_obj = __main__.main()
-            assert isinstance(command_obj, AbstractLocalClientCommand)
+            assert isinstance(command_obj, ClientCommandLocal)
 
             # This server-side internal data `InterpContext` is only available in tests
-            # when `LocalClient` and `LocalServer` are used.
+            # when `ClientLocal` and `LocalServer` are used.
             interp_ctx: InterpContext = command_obj.interp_ctx
             call_ctx: CallContext = command_obj.call_ctx
 

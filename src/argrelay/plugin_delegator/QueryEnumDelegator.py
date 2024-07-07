@@ -4,7 +4,7 @@ from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
-from argrelay.handler_response.DescribeLineArgsClientResponseHandler import DescribeLineArgsClientResponseHandler
+from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import ClientResponseHandlerDescribeLineArgs
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
@@ -42,4 +42,4 @@ class QueryEnumDelegator(AbstractJumpDelegator):
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
-        DescribeLineArgsClientResponseHandler.render_result(invocation_input)
+        ClientResponseHandlerDescribeLineArgs.render_result(invocation_input)

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from argrelay.client_command_remote.ProposeArgValuesRemoteClientCommand import ProposeArgValuesRemoteClientCommand
-from argrelay.client_command_remote.ProposeArgValuesRemoteOptimizedClientCommand import (
-    ProposeArgValuesRemoteOptimizedClientCommand,
+from argrelay.client_command_remote.ClientCommandRemoteWorkerJson import ClientCommandRemoteWorkerJson
+from argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized import (
+    ClientCommandRemoteWorkerTextProposeArgValuesOptimized,
 )
 from argrelay.enum_desc.CompType import CompType
 from argrelay.relay_client import __main__
@@ -16,11 +16,11 @@ from argrelay.test_infra.RemoteTestClass import RemoteTestClass
 
 class ThisTestClass(RemoteTestClass):
 
-    def test_ProposeArgValuesRemoteOptimizedClientCommand_is_functionally_equivalent_to_non_optimized(self):
+    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_is_functionally_equivalent_to_non_optimized(self):
         """
         Makes sure these two classes work the same way:
-        *   ProposeArgValuesRemoteOptimizedClientCommand
-        *   ProposeArgValuesRemoteClientCommand
+        *   ClientCommandRemoteWorkerTextProposeArgValuesOptimized
+        *   ClientCommandRemoteWorkerJson
         """
 
         # @formatter:off
@@ -73,12 +73,12 @@ apac
                     )
                     with env_mock_builder.build():
                         with wrap_instance_method_on_class(
-                            ProposeArgValuesRemoteOptimizedClientCommand,
-                            ProposeArgValuesRemoteOptimizedClientCommand.execute_command,
+                            ClientCommandRemoteWorkerTextProposeArgValuesOptimized,
+                            ClientCommandRemoteWorkerTextProposeArgValuesOptimized.execute_command,
                         ) as optimized_method_wrap_mock:
                             with wrap_instance_method_on_class(
-                                ProposeArgValuesRemoteClientCommand,
-                                ProposeArgValuesRemoteClientCommand.execute_command,
+                                ClientCommandRemoteWorkerJson,
+                                ClientCommandRemoteWorkerJson.execute_command,
                             ) as non_optimized_method_wrap_mock:
 
                                 # when:

@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import Type, Union
 
-from icecream import ic
-
-from argrelay.client_command_remote.AbstractRemoteClientCommand import AbstractRemoteClientCommand
+from argrelay.client_command_remote.ClientCommandRemoteWorkerJson import ClientCommandRemoteWorkerJson
 from argrelay.enum_desc.CompType import CompType
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.relay_client import __main__
@@ -62,13 +60,12 @@ class RemoteTestClass(ClientServerTestClass):
             __main__.main()
 
             command_obj = __main__.main()
-            assert isinstance(command_obj, AbstractRemoteClientCommand)
+            assert isinstance(command_obj, ClientCommandRemoteWorkerJson)
 
             call_ctx = command_obj.call_ctx
-            ic(command_obj.response_handler)
 
             # TODO_32_99_70_35: (JSONPath?) Currently, this verifier ensures what things exists.
-            #       Add a way to ensure what things do not exists.
+            #       Add a way to ensure what things do not exist.
             #       For example,
             #       * no `data_envelope` number N.
             #       * `data_envelope` does not have field A.
@@ -76,6 +73,7 @@ class RemoteTestClass(ClientServerTestClass):
 
             actual_suggestions = None
             if expected_suggestions is not None:
+                # TODO: This if-branch is unused - see if it is useful or clean up:
                 # TODO: Consider intercepting `*ClientResponseHandler.handle_response`.
                 #       At the moment, only intercepts for `ServerAction.RelayLineArgs` are supported
                 #       (via `invoke_action` on target `delegator_class`) which make this access to

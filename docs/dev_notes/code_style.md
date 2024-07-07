@@ -25,11 +25,12 @@ preferring (not immediately obvious) practical properties.
 
     Until number of dirs in the list is excessively large, it is just simpler.
 
-    Where should "one of the response handlers" be placed anyway?
+    Where should "one of the client response handlers" be placed?
     *   `./handler/response/`
     *   `./response/handler/`
 
-    Yet, "sub-categories" can still be represented by a dir with extra suffix:
+    Yet, "sub-categories" can still be represented by a dir with extra suffix
+    (to consistently survive renames and refactoring):
     *   `./handler_request/`
     *   `./handler_response/`
     Instead of:

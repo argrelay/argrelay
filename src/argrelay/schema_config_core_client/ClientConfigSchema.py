@@ -31,15 +31,15 @@ class ClientConfigSchema(ObjectSchema):
     )
 
     # Serve requests from local data or send to server
-    # (used in test only - see `LocalClient` and FS_66_17_43_42 test infra):
+    # (used in test only - see `ClientLocal` and FS_66_17_43_42 test infra):
     use_local_requests = fields.Boolean(
         required = False,
         load_default = False,
     )
 
     # Use one of these (default = True):
-    # *   if True: ProposeArgValuesRemoteOptimizedClientCommand
-    # *   if False: ProposeArgValuesRemoteClientCommand
+    # *   if True: ClientCommandRemoteWorkerTextProposeArgValuesOptimized
+    # *   if False: ClientCommandRemoteWorkerJson
     optimize_completion_request = fields.Boolean(
         required = False,
         load_default = True,

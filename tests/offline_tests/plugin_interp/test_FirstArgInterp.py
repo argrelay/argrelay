@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.composite_tree.CompositeForestSchema import tree_roots_
 from argrelay.composite_tree.CompositeNodeSchema import node_type_, plugin_instance_id_, sub_tree_
 from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
@@ -99,7 +99,7 @@ class ThisTestClass(LocalTestClass):
         )
         with env_mock_builder.build():
             command_obj = __main__.main()
-            assert isinstance(command_obj, AbstractLocalClientCommand)
+            assert isinstance(command_obj, ClientCommandLocal)
             interp_ctx = command_obj.interp_ctx
 
             if not expected_consumed_first_token:

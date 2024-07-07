@@ -1,16 +1,16 @@
-from argrelay.handler_response.AbstractClientResponseHandler import AbstractClientResponseHandler
+from argrelay.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.schema_response.ArgValues import ArgValues
 from argrelay.schema_response.ArgValuesSchema import arg_values_desc
 
 
-class ProposeArgValuesClientResponseHandler(AbstractClientResponseHandler):
+class ClientResponseHandlerProposeArgValues(ClientResponseHandlerAbstract):
     """
     This handler is supposed to be used by non-optimized implementations like:
-    *   `ProposeArgValuesLocalClientCommand`
-    *   `ProposeArgValuesRemoteClientCommand`
+    *   `ClientCommandLocal`
+    *   `ClientCommandRemoteWorkerJson`
 
-    Optimized `ProposeArgValuesRemoteOptimizedClientCommand` prints suggestion without using marshmallow `Schema`-s.
+    Optimized `ClientCommandRemoteWorkerTextProposeArgValuesOptimized` prints suggestion without using marshmallow `Schema`-s.
     """
 
     def __init__(

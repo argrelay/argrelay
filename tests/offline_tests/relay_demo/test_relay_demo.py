@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.client_command_local.AbstractLocalClientCommand import AbstractLocalClientCommand
+from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
@@ -12,9 +12,9 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.handler_response.DescribeLineArgsClientResponseHandler import (
+from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import (
     indent_size,
-    DescribeLineArgsClientResponseHandler,
+    ClientResponseHandlerDescribeLineArgs,
 )
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
@@ -1089,7 +1089,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: rw {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{ClientResponseHandlerDescribeLineArgs.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
 """,
             ),
             (
@@ -1117,12 +1117,12 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.01 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}ip_address: ip.192.168.1.3 {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassAccessType.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{DescribeLineArgsClientResponseHandler.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.DefaultValue.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{ClientResponseHandlerDescribeLineArgs.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
 """,
             ),
             (
                 line_no(), "some_command goto service prod downstream rrr |", CompType.DescribeArgs,
-                f"FS_72_53_55_13: non-default options with `{DescribeLineArgsClientResponseHandler.default_overrides_caption}` is only specified for {ArgSource.DefaultValue}.",
+                f"FS_72_53_55_13: non-default options with `{ClientResponseHandlerDescribeLineArgs.default_overrides_caption}` is only specified for {ArgSource.DefaultValue}.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}prod{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}rrr{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1179,7 +1179,7 @@ class ThisTestClass(LocalTestClass):
         )
         with outer_env_mock_builder.build():
             command_obj = __main__.main()
-            assert isinstance(command_obj, AbstractLocalClientCommand)
+            assert isinstance(command_obj, ClientCommandLocal)
             interp_ctx = command_obj.interp_ctx
 
             if not stdout_str:
@@ -1193,7 +1193,7 @@ class ThisTestClass(LocalTestClass):
             #       A proper implementation would probably be intercepting `DescribeArgs`'s response_dict
             #       and printing it separately (when no other logic with extra output can intervene)
             #       to assert the output.
-            #       Alternatively, run this test via `RemoteClient` (see `RemoteTestClass`) where output
+            #       Alternatively, run this test via `ClientRemote` (see `RemoteTestClass`) where output
             #       of the server is not captured (as it is a separate process).
             inner_env_mock_builder = (
                 EmptyEnvMockBuilder()
@@ -1202,7 +1202,7 @@ class ThisTestClass(LocalTestClass):
             )
             with inner_env_mock_builder.build():
                 interp_result: InterpResult = InterpResult.from_interp_context(interp_ctx)
-                DescribeLineArgsClientResponseHandler.render_result(interp_result)
+                ClientResponseHandlerDescribeLineArgs.render_result(interp_result)
 
                 self.assertEqual(
                     stdout_str,

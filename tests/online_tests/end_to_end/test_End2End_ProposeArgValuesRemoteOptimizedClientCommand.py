@@ -7,7 +7,7 @@ from argrelay.test_infra.End2EndTestClass import (
 
 class ThisTestClass(End2EndTestClass):
 
-    def test_ProposeArgValuesRemoteOptimizedClientCommand_sends_valid_JSON_for_commands_with_quotes(self):
+    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_sends_valid_JSON_for_commands_with_quotes(self):
         """
         Invokes client via generated `@/exe/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
         """

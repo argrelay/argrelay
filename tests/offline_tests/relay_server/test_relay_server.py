@@ -113,7 +113,7 @@ class ThisTestClass(ServerOnlyTestClass):
 
     def test_propose_arg_values_via_send_json_recv_none(self):
         """
-        Default response is "text/plain" - required for `ProposeArgValuesRemoteOptimizedClientCommand`.
+        Default response is "text/plain" - required for `ClientCommandRemoteWorkerTextProposeArgValuesOptimized`.
         """
         server_response = self.make_post_request(
             server_action = ServerAction.ProposeArgValues,
@@ -131,7 +131,7 @@ class ThisTestClass(ServerOnlyTestClass):
 
     def test_propose_arg_values_via_send_json_recv_text(self):
         """
-        Support "text/plain" response - required for `ProposeArgValuesRemoteOptimizedClientCommand`.
+        Support "text/plain" response - required for `ClientCommandRemoteWorkerTextProposeArgValuesOptimized`.
         """
         server_response = self.make_post_request(
             server_action = ServerAction.ProposeArgValues,

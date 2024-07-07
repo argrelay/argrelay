@@ -8,7 +8,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.handler_response.DescribeLineArgsClientResponseHandler import indent_size
+from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
