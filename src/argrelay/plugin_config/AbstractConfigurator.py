@@ -1,10 +1,10 @@
 from typing import Union
 
 from argrelay.enum_desc.PluginType import PluginType
-from argrelay.runtime_context.AbstractPlugin import AbstractPlugin
+from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 
 
-class AbstractConfigurator(AbstractPlugin):
+class AbstractConfigurator(AbstractPluginServer):
     """
     `PluginType.ConfiguratorPlugin` implements logic to configure `argrelay` server
     when static config is not good enough.

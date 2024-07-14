@@ -11,8 +11,8 @@ from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder, wrap_instance_method_on_instance
 from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
+from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder, wrap_instance_method_on_instance
 
 
 class ThisTestClass(BaseTestClass):

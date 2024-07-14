@@ -31,17 +31,21 @@ def _signal_handler(signal_number, ignored_signal_frame):
         else:
             raise RuntimeError(f"unrecognized child_status: {_child_status}")
 
+
 def has_child_exited() -> bool:
     global _child_exited
     return _child_exited
 
+
 def is_child_successful() -> bool:
     return get_child_exit_code() == 0
+
 
 def get_child_exit_code() -> int:
     global _child_exit_code
     assert has_child_exited()
     return _child_exit_code
+
 
 def split_process() -> (
     bool,

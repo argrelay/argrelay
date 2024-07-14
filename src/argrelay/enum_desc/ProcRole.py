@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import Enum
 
 
 class ProcRole(Enum):
@@ -21,6 +21,11 @@ class ProcRole(Enum):
     ChildProcWorker = True, True
     """
     A child (background) process which makes request to the server and sends data to `ParentProcSpinner`.
+    """
+
+    CheckEnvWorker = False, True
+    """
+    Similar to `SoleProcWorker` but used exclusively for FS_36_17_84_44 `check_env` implementation.
     """
 
     def __new__(

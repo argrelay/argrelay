@@ -182,6 +182,11 @@ class GitRepoDelegator(AbstractDelegator):
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
         if get_func_id_from_invocation_input(invocation_input) == goto_git_repo_func_:
+            # TODO: TODO_86_57_50_38: make this behavior (require singled-out `data_envelope`) configure-able for all plugins:
+            if len(invocation_input.envelope_containers[repo_container_ipos_].data_envelopes) != 1:
+                eprint(f"ERROR: single repo is not selected (not disambiguated from multiple candidates)")
+                exit(1)
+
             repo_envelope = invocation_input.envelope_containers[repo_container_ipos_].data_envelopes[0]
             repo_root_abs_path = repo_envelope[envelope_payload_][repo_root_abs_path_]
             eprint(f"INFO: starting subshell in: {repo_root_abs_path}")

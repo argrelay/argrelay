@@ -4,12 +4,12 @@ from copy import deepcopy
 
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.runtime_context.AbstractPlugin import AbstractPlugin
+from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
-class AbstractInterpFactory(AbstractPlugin):
+class AbstractInterpFactory(AbstractPluginServer):
 
     def __init__(
         self,

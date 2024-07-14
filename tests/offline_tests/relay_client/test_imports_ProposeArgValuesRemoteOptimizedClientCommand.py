@@ -117,9 +117,7 @@ class ThisTestClass(BaseTestClass):
             "signal"
         ],
         "argrelay.relay_client.proc_worker": [
-            "argrelay.misc_helper_common",
-            "argrelay.misc_helper_common.ElapsedTime",
-            "signal",
+            "argrelay.misc_helper_common.ElapsedTime"
         ],
         "argrelay.runtime_data.ClientConfig": [
             "argrelay.runtime_data.ConnectionConfig",

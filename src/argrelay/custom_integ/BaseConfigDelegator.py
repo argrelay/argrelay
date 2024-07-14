@@ -3,11 +3,11 @@ from __future__ import annotations
 from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import BaseConfigDelegatorConfigSchema
 from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import func_configs_
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_, fill_control_list_
-from argrelay.custom_integ.ServiceDelegator import set_default_to
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_interp_ctx
+from argrelay.plugin_delegator.delegator_utils import set_default_to
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
 from argrelay.runtime_data.ServerConfig import ServerConfig
