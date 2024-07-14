@@ -5,6 +5,7 @@ from copy import deepcopy
 from pymongo import MongoClient
 
 from argrelay.composite_tree.DictTreeWalker import contains_whitespace
+from argrelay.enum_desc.PluginSide import PluginSide
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
@@ -18,7 +19,7 @@ from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_context.AbstractPlugin import instantiate_plugin, AbstractPlugin
+from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer, instantiate_server_plugin
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
@@ -109,12 +110,21 @@ class LocalServer:
             if not plugin_entry.plugin_enabled:
                 continue
 
-            plugin_instance: AbstractPlugin = instantiate_plugin(
+            if (
+                plugin_entry.plugin_side != PluginSide.PluginServerSideOnly
+                and
+                plugin_entry.plugin_side != PluginSide.PluginAnySide
+            ):
+                continue
+
+            plugin_instance: AbstractPluginServer = instantiate_server_plugin(
                 self.server_config,
                 plugin_instance_id,
                 plugin_entry,
             )
             plugin_type = plugin_instance.get_plugin_type()
+
+            assert plugin_type.plugin_side is plugin_entry.plugin_side
 
             if plugin_type is PluginType.LoaderPlugin:
                 plugin_instance: AbstractLoader

@@ -1,4 +1,5 @@
 from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_client.ClientCommandFactoryAbstract import (
@@ -44,6 +45,7 @@ class ClientCommandFactoryLocal(ClientCommandFactoryAbstract):
         return ClientCommandLocal(
             call_ctx = call_ctx,
             client_response_handler = select_client_response_handler(
+                ProcRole.SoleProcWorker,
                 call_ctx.server_action,
             ),
             local_server = self.local_server,
@@ -52,6 +54,7 @@ class ClientCommandFactoryLocal(ClientCommandFactoryAbstract):
                 self.local_server,
             ),
         )
+
 
 def select_local_server_request_handler(
     server_action: ServerAction,

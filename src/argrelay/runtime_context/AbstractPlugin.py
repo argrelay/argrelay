@@ -4,18 +4,15 @@ from typing import Type
 
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.runtime_data.PluginEntry import PluginEntry
-from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
 class AbstractPlugin:
 
     def __init__(
         self,
-        server_config: ServerConfig,
         plugin_instance_id: str,
         plugin_config_dict: dict,
     ):
-        self.server_config: ServerConfig = server_config
         self.plugin_instance_id: str = plugin_instance_id
         self.plugin_config_dict: dict = self.load_config(plugin_config_dict)
 
@@ -36,7 +33,7 @@ class AbstractPlugin:
         plugin_config_dict,
     ) -> dict:
         """
-        Pre-proces the given config on load (e.g. populate default values).
+        Pre-process the given config on load (e.g. populate default values).
 
         The default implementation is to return `plugin_config_dict` as is.
 
@@ -70,7 +67,7 @@ class AbstractPlugin:
         self,
     ) -> None:
         """
-        One-time plugin activation callback during server startup.
+        One-time plugin activation callback during startup.
 
         This is a chance to initialize (once) any resources plugin requires.
         """
@@ -97,17 +94,3 @@ def import_plugin_class(
         plugin_entry.plugin_class_name,
     )
     return plugin_class
-
-
-def instantiate_plugin(
-    server_config: ServerConfig,
-    plugin_instance_id: str,
-    plugin_entry,
-):
-    plugin_class = import_plugin_class(plugin_entry)
-    plugin_object: AbstractPlugin = plugin_class(
-        server_config,
-        plugin_instance_id,
-        plugin_entry.plugin_config,
-    )
-    return plugin_object

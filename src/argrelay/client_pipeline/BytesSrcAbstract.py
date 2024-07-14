@@ -1,4 +1,3 @@
-
 class BytesSrcAbstract:
 
     def __init__(

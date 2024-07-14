@@ -1,17 +1,4 @@
-import signal
-
-from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
-
-has_error_happened = False
-
-
-def _signal_handler(signal_number, signal_frame):
-    if signal_number == signal.SIGALRM:
-        # Import hanged:
-        eprint("ERROR: `import` hanged - see: https://github.com/argrelay/argrelay/issues/89")
-        global has_error_happened
-        has_error_happened = True
 
 
 def worker_main(
@@ -22,7 +9,6 @@ def worker_main(
     w_pipe_end,
     shell_ctx,
 ) -> "ClientCommandAbstract":
-
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
         # (to inspect internal server data via `ClientLocal` and `LocalServer`):
@@ -31,17 +17,7 @@ def worker_main(
             client_config,
         )
     else:
-        # TODO: TODO_30_69_19_14: infinite spinner:
-        #     There is a bug - if a child is used, it deadlocks occasionally while importing `requests`:
-        #     https://github.com/argrelay/argrelay/issues/89
-        #     The workaround is to abort (Ctrl+C) and retry - but this is annoying.
-        # Attempt to detect hanging import by setting an alarm at least (not resolving it yet):
-        signal.signal(signal.SIGALRM, _signal_handler)
-        signal.alarm(1)
         from argrelay.relay_client.ClientRemote import ClientRemote
-        signal.alarm(0)
-        if has_error_happened:
-            eprint("INFO: `import` passed")
         abstract_client = ClientRemote(
             client_config,
             proc_role,

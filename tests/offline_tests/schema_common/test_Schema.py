@@ -18,6 +18,9 @@ from argrelay.custom_integ.ConfigOnlyDelegatorConfigSchema import (
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import config_only_loader_config_desc
 from argrelay.custom_integ.FuncConfigSchema import func_config_desc
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import git_repo_loader_config_desc
+from argrelay.custom_integ.SchemaPluginCheckEvnServerResponseValueAbstract import (
+    schema_plugin_check_evn_server_response_abstract_desc,
+)
 from argrelay.misc_helper_common.ObjectSchema import object_desc
 from argrelay.plugin_config.DefaultConfiguratorConfigSchema import default_configurator_config_desc
 from argrelay.plugin_delegator.AbstractJumpDelegatorConfigSchema import abstract_jump_delegator_config_desc
@@ -92,6 +95,7 @@ class ThisTestClass(BaseTestClass):
         (line_no(), config_only_delegator_envelope_payload_desc),
         (line_no(), config_only_delegator_config_desc),
         (line_no(), func_config_desc),
+        (line_no(), schema_plugin_check_evn_server_response_abstract_desc),
 
         # FS_33_76_82_84 composite tree and its nodes:
         (line_no(), composite_forest_desc),

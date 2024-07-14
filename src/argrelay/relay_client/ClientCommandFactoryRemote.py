@@ -72,6 +72,7 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
                     bytes_src = BytesSrcLocal(
                         BytesHandlerJson(
                             select_client_response_handler(
+                                self.proc_role,
                                 call_ctx.server_action,
                             ),
                         ),
@@ -92,6 +93,7 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
                 from argrelay.client_pipeline.BytesHandlerJson import BytesHandlerJson
                 bytes_handler = BytesHandlerJson(
                     select_client_response_handler(
+                        self.proc_role,
                         call_ctx.server_action,
                     ),
                 )

@@ -144,6 +144,7 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(), "|", CompType.PrefixHidden,
                 [
+                    "argrelay.check_env",
                     "relay_demo",
                     "service_relay_demo",
                     "some_command",

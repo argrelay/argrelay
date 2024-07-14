@@ -46,6 +46,9 @@ reusable_config_data:
                 -   "service_relay_demo"
             "":
                 -   "service_relay_demo"
+        "argrelay.check_env":
+            "":
+                -   "argrelay.check_env"
 
     # Full func_tree, but not used in this form (saved for copying-and-pasting):
     func_tree: &func_tree
@@ -140,6 +143,11 @@ reusable_config_data:
             "diff": diff_service_func
             "desc": desc_service_func
 
+    func_tree_check_env: &func_tree_check_env
+        "argrelay.check_env":
+            "server_commit": func_id_get_server_project_git_commit_id
+            "server_start_time": func_id_get_server_start_time
+
 plugin_instance_entries:
 
     FirstArgInterpFactory.default:
@@ -148,6 +156,7 @@ plugin_instance_entries:
         plugin_dependencies:
             #   Delegators for `func_tree`:
             -   NoopDelegator.default
+            -   DelegatorCheckEnv.default
             -   EchoDelegator.default
             -   InterceptDelegator.default
             -   HelpDelegator.default
@@ -157,6 +166,7 @@ plugin_instance_entries:
             -   ConfigOnlyDelegator.default
             #   Interps for `interp_tree` per command (zero-arg):
             -   InterpTreeInterpFactory.default
+            -   InterpTreeInterpFactory.check_env
             #   Interps for normal funcs:
             -   FuncTreeInterpFactory.default
             #   Interps for special funcs:
@@ -173,6 +183,7 @@ plugin_instance_entries:
                 # (if `some_command` is configured, it will behave as `relay_demo` above):
                 "some_command": InterpTreeInterpFactory.default
                 "service_relay_demo": InterpTreeInterpFactory.default
+                "argrelay.check_env": InterpTreeInterpFactory.check_env
             ignored_func_ids_list:
                 -   func_id_unplugged
 
@@ -201,6 +212,16 @@ plugin_instance_entries:
                 "service_relay_demo":
                     "help": FuncTreeInterpFactory.func_id_help_hint
                     "": FuncTreeInterpFactory.service
+
+    InterpTreeInterpFactory.check_env:
+        plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
+        plugin_class_name: InterpTreeInterpFactory
+        plugin_dependencies:
+            -   FuncTreeInterpFactory.check_env
+        plugin_config:
+            interp_selector_tree:
+                "argrelay.check_env":
+                    "": FuncTreeInterpFactory.check_env
 
     # TODO: FS_33_76_82_84 `composite_tree`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
     #       See extended comment for `FuncTreeInterpFactory.func_id_help_hint`.
@@ -231,6 +252,13 @@ plugin_instance_entries:
         plugin_config:
             jump_tree: *jump_tree
             func_selector_tree: *func_tree_default
+
+    FuncTreeInterpFactory.check_env:
+        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
+        plugin_class_name: FuncTreeInterpFactory
+        plugin_config:
+            jump_tree: *jump_tree
+            func_selector_tree: *func_tree_check_env
 
     FuncTreeInterpFactory.service:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
@@ -320,6 +348,10 @@ plugin_instance_entries:
     NoopDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.NoopDelegator
         plugin_class_name: NoopDelegator
+
+    DelegatorCheckEnv.default:
+        plugin_module_name: argrelay.plugin_delegator.DelegatorCheckEnv
+        plugin_class_name: DelegatorCheckEnv
 
     EchoDelegator.default:
         plugin_module_name: argrelay.plugin_delegator.EchoDelegator
@@ -482,3 +514,16 @@ plugin_instance_entries:
             project_page_url: "https://argrelay.org"
             git_files_by_commit_id_url_prefix: "https://github.com/argrelay/argrelay/tree/"
             commit_id_url_prefix: "https://github.com/argrelay/argrelay/commit/"
+
+    ####################################################################################################################
+    # List of client-side plugins for FS_36_17_84_44 `check_env`
+
+    PluginCheckEnvServerResponseValueCommitId.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay.check_env.PluginCheckEnvServerResponseValueCommitId
+        plugin_class_name: PluginCheckEnvServerResponseValueCommitId
+
+    PluginCheckEnvServerResponseValueStartTime.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay.check_env.PluginCheckEnvServerResponseValueStartTime
+        plugin_class_name: PluginCheckEnvServerResponseValueStartTime

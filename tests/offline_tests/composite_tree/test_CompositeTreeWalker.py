@@ -205,6 +205,7 @@ class ThisTestClass(LocalTestClass):
                     "relay_demo": "InterpTreeInterpFactory.default",
                     "some_command": "InterpTreeInterpFactory.default",
                     "service_relay_demo": "InterpTreeInterpFactory.default",
+                    "argrelay.check_env": "InterpTreeInterpFactory.check_env",
                 },
             ),
         ]
@@ -298,6 +299,11 @@ class ThisTestClass(LocalTestClass):
                         ],
                         "": [
                             "service_relay_demo",
+                        ],
+                    },
+                    "argrelay.check_env": {
+                        "": [
+                            "argrelay.check_env",
                         ],
                     },
                 },

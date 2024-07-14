@@ -1,5 +1,3 @@
-import typing
-
 from argrelay.client_pipeline.BytesHandlerAbstract import BytesHandlerAbstract
 from argrelay.relay_client.proc_spinner import child_data_chunks
 from argrelay.relay_client.proc_splitter import is_child_successful, get_child_exit_code

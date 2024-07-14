@@ -5,7 +5,7 @@ from typing import Union
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.runtime_context.AbstractPlugin import AbstractPlugin
+from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.runtime_context.SearchControl import SearchControl
@@ -47,7 +47,7 @@ def get_func_id_from_invocation_input(
     return func_data_envelope[instance_data_][func_id_]
 
 
-class AbstractDelegator(AbstractPlugin):
+class AbstractDelegator(AbstractPluginServer):
     """
     `DelegatorPlugin` implements two sides:
     *   server-side `invoke_control` prepares data in :class:`InvocationInput` (whatever is necessary)

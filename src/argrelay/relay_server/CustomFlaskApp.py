@@ -1,6 +1,6 @@
 import logging
 import os.path
-from typing import Union, Callable, Any
+from typing import Union
 
 import pkg_resources
 from flasgger import Swagger
@@ -9,7 +9,7 @@ from flask import Flask, request, redirect
 from argrelay import relay_server
 from argrelay.custom_integ.git_utils import get_git_repo_root_path
 from argrelay.misc_helper_common import get_argrelay_dir
-from argrelay.plugin_config.AbstractConfigurator import AbstractConfigurator
+from argrelay.plugin_delegator.delegator_utils import get_config_value_once
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.route_api import create_blueprint_api
 from argrelay.relay_server.route_gui import create_blueprint_gui
@@ -294,24 +294,3 @@ def configure_project_git_conf_dir_display_string(
         return project_current_config_path
     else:
         return "[unknown]"
-
-
-def get_config_value_once(
-    server_configurators,
-    value_getter: Callable[[AbstractConfigurator], Any],
-    default_value: Any,
-) -> Any:
-    config_value: Union[Any, None] = None
-    server_configurator: AbstractConfigurator
-    for server_configurator in server_configurators.values():
-        if config_value is None:
-            config_value = value_getter(server_configurator)
-        else:
-            if value_getter(server_configurator) is not None:
-                # Only one `PluginType.ConfiguratorPlugin` providing
-                # same type of value is supported to avoid confusion:
-                raise RuntimeError
-
-    if config_value is None:
-        config_value = default_value
-    return config_value

@@ -1,10 +1,10 @@
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_context.AbstractPlugin import AbstractPlugin
+from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_data.StaticData import StaticData
 
 
-class AbstractLoader(AbstractPlugin):
+class AbstractLoader(AbstractPluginServer):
 
     def get_plugin_type(
         self,

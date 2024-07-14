@@ -1,7 +1,7 @@
-from offline_tests.mongo_query import test_MongoClient_distinc_values_search
+from offline_tests.mongo_query import test_MongoClient_distinct_values_search
 
 
-class ThisTestClass(test_MongoClient_distinc_values_search.ThisTestClass):
+class ThisTestClass(test_MongoClient_distinct_values_search.ThisTestClass):
     """
     Reconfigures existing tests to run against real MongoDB.
     """

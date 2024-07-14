@@ -8,5 +8,6 @@ argrelay_bind_command_basenames=(
     relay_demo
     some_command
     service_relay_demo
+    argrelay.check_env
 )
 ########################################################################################################################

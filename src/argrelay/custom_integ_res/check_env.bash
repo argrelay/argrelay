@@ -35,11 +35,15 @@ argrelay_dir="$( dirname "${script_dir}" )"
 
 ########################################################################################################################
 
+# Color scheme has to be synced with `python -m argrelay.check_env`:
 success_color="\e[42m"
 warning_color="\e[43m"
 failure_color="\e[41m"
 field_color="\e[96m"
-reset_color="\e[0m"
+failure_message="\e[31m"
+warning_message="\e[93m"
+success_message="\e[92m"
+reset_style="\e[0m"
 
 # Indicate success|failure by color:
 function color_failure_and_success_check_env {
@@ -49,10 +53,10 @@ function color_failure_and_success_check_env {
         # Only if this script is NOT sourced by another:
         if [[ "${0}" == "${BASH_SOURCE[0]}" ]]
         then
-            echo -e "${success_color}SUCCESS:${reset_color} ${BASH_SOURCE[0]}" 1>&2
+            echo -e "${success_color}SUCCESS:${reset_style} ${BASH_SOURCE[0]}" 1>&2
         fi
     else
-        echo -e "${failure_color}FAILURE:${reset_color} ${BASH_SOURCE[0]}: exit_code: ${exit_code}" 1>&2
+        echo -e "${failure_color}FAILURE:${reset_style} ${BASH_SOURCE[0]}: exit_code: ${exit_code}" 1>&2
         exit "${exit_code}"
     fi
 }
@@ -80,16 +84,16 @@ function activate_venv {
 
 ########################################################################################################################
 # Report `script_dir`:
-echo -e "${success_color}INFO:${reset_color} ${field_color}script_dir:${reset_color} ${script_dir}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}script_dir:${reset_style} ${script_dir}"
 
 ########################################################################################################################
 # Report `argrelay_dir` by verifying that `argrelay_dir` contains `@/exe/bootstrap_env.bash`:
 if [[ ! -f "${argrelay_dir}/exe/bootstrap_env.bash" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_color} \`argrelay_dir\` must have \`@/exe/bootstrap_env.bash\` script, but it is missing: ${argrelay_dir}/exe/bootstrap_env.bash"
+    echo -e "${failure_color}ERROR:${reset_style} ${failure_message}# \`argrelay_dir\` must have \`@/exe/bootstrap_env.bash\` script, but it is missing: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
     exit 1
 fi
-echo -e "${success_color}INFO:${reset_color} ${field_color}argrelay_dir:${reset_color} ${argrelay_dir}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}argrelay_dir:${reset_style} ${argrelay_dir}"
 
 ########################################################################################################################
 # Report `@/conf/` target:
@@ -98,35 +102,35 @@ then
     conf_target="$( readlink -- "${argrelay_dir}/conf" )"
     if [[ ! -d "${conf_target}" ]]
     then
-        echo -e "${failure_color}ERROR:${reset_color} \`@/conf\` symlink target is not a directory: ${conf_target}"
+        echo -e "${failure_color}ERROR:${reset_style} ${failure_message}# \`@/conf\` symlink target is not a directory: ${conf_target}${reset_style}"
         exit 1
     fi
 elif [[ -d "${argrelay_dir}/conf" ]]
 then
     conf_target="${argrelay_dir}/conf"
-    echo -e "${warning_color}WARN:${reset_color} \`@/conf\` is a directory (not a symlink to a directory): ${conf_target}"
+    echo -e "${warning_color}WARN:${reset_style} ${warning_message}# \`@/conf\` is a directory (not a symlink to a directory): ${conf_target}${reset_style}"
     # Warn only - do not fail.
 else
     conf_target="${argrelay_dir}/conf"
-    echo -e "${failure_color}ERROR:${reset_color} \`@/conf\` does not lead to a directory: ${conf_target}"
+    echo -e "${failure_color}ERROR:${reset_style} ${failure_message}# \`@/conf\` does not lead to a directory: ${conf_target}${reset_style}"
     exit 1
 fi
-echo -e "${success_color}INFO:${reset_color} ${field_color}@/conf:${reset_color} ${conf_target}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}@/conf:${reset_style} ${conf_target} ${success_message}# \`@/conf\` symlink is a directory${reset_style}"
 
 ########################################################################################################################
 # Report `venv_path`:
 if ! activate_venv
 then
-    echo -e "${failure_color}ERROR:${reset_color} \`venv\` activation via \`@/exe/bootstrap_env.bash\` script failed - re-run bootstrap manually and inspect the reason why it fails via its extensive debug output: ${argrelay_dir}/exe/bootstrap_env.bash"
+    echo -e "${failure_color}ERROR:${reset_style} ${failure_message}# \`venv\` activation via \`@/exe/bootstrap_env.bash\` script failed - re-run bootstrap manually and inspect the reason why it fails via its extensive debug output: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
     exit 1
 fi
-echo -e "${success_color}INFO:${reset_color} ${field_color}venv_path:${reset_color} ${VIRTUAL_ENV}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}venv_path:${reset_style} ${VIRTUAL_ENV}"
 
 ########################################################################################################################
 # Report `python_version`:
 # shellcheck disable=SC2154 # `path_to_pythonX` is assigned by bootstrap:
 curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
-echo -e "${success_color}INFO:${reset_color} ${field_color}python_version:${reset_color} ${curr_python_version}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}python_version:${reset_style} ${curr_python_version}"
 
 ########################################################################################################################
 # Source it after ensuring that bootstrap was finished:
@@ -140,7 +144,7 @@ exit_code="${?}"
 set -e
 if [[ "${exit_code}" != "0" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_color} unable to detect version of \`argrelay\` package via \`pip show argrelay\`"
+    echo -e "${failure_color}ERROR:${reset_style} ${failure_message}# unable to detect version of \`argrelay\` package via \`pip show argrelay\`${reset_style}"
     exit 1
 fi
 # Check if `argrelay_version` string matches semver version format:
@@ -149,13 +153,17 @@ fi
 # Using simplified regex to see if version looks like version:
 if [[ ! "${argrelay_version}" =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$ ]]
 then
-    echo -e "${failure_color}ERROR:${reset_color} \`argrelay_version\` does not match version format: ${argrelay_version}"
+    echo -e "${failure_color}ERROR:${reset_style} ${failure_message}# \`argrelay_version\` does not match version format: ${argrelay_version}${reset_style}"
     exit 1
 fi
-echo -e "${success_color}INFO:${reset_color} ${field_color}argrelay_version:${reset_color} ${argrelay_version}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}argrelay_version:${reset_style} ${argrelay_version}"
 
 ########################################################################################################################
 # Report server URL:
 server_host_name="$( jq --raw-output ".connection_config.server_host_name" "${argrelay_dir}/conf/argrelay_client.json" )"
 server_port_number="$( jq --raw-output ".connection_config.server_port_number" "${argrelay_dir}/conf/argrelay_client.json" )"
-echo -e "${success_color}INFO:${reset_color} ${field_color}server_url:${reset_color} http://${server_host_name}:${server_port_number}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}server_url:${reset_style} http://${server_host_name}:${server_port_number}"
+
+########################################################################################################################
+# Switch to Python:
+python -m argrelay.check_env "${argrelay_dir}"

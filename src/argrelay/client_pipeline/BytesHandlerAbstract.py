@@ -1,5 +1,3 @@
-
-
 class BytesHandlerAbstract:
 
     def __init__(

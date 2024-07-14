@@ -1,3 +1,4 @@
+from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_client import ClientCommandAbstract
 from argrelay.server_spec.CallContext import CallContext
@@ -13,6 +14,7 @@ class ClientCommandFactoryAbstract:
 
 
 def select_client_response_handler(
+    proc_role: ProcRole,
     server_action: ServerAction,
 ):
     if server_action is ServerAction.ProposeArgValues:
@@ -39,8 +41,14 @@ def select_client_response_handler(
         )
         return ClientResponseHandlerDescribeLineArgs()
     if server_action is ServerAction.RelayLineArgs:
-        from argrelay.handler_response.ClientResponseHandlerRelayLineArgs import (
-            ClientResponseHandlerRelayLineArgs
-        )
-        return ClientResponseHandlerRelayLineArgs()
+        if proc_role == ProcRole.CheckEnvWorker:
+            from argrelay.handler_response.ClientResponseHandlerCheckEnv import (
+                ClientResponseHandlerCheckEnv
+            )
+            return ClientResponseHandlerCheckEnv()
+        else:
+            from argrelay.handler_response.ClientResponseHandlerRelayLineArgs import (
+                ClientResponseHandlerRelayLineArgs
+            )
+            return ClientResponseHandlerRelayLineArgs()
     raise RuntimeError

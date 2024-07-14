@@ -19,11 +19,11 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_infra import parse_line_and_cpos, line_no
+from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 from argrelay.test_infra.EnvMockBuilder import (
     ServerOnlyEnvMockBuilder,
     wrap_instance_method_on_instance,
 )
-from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 

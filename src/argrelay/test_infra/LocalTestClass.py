@@ -11,9 +11,9 @@ from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra import parse_line_and_cpos
+from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder, LocalClientEnvMockBuilder
 from argrelay.test_infra.InOutTestClass import InOutTestClass
-from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 
 
 class LocalTestClass(InOutTestClass):

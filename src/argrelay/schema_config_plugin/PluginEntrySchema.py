@@ -1,10 +1,12 @@
 from marshmallow import fields, RAISE
 
+from argrelay.enum_desc.PluginSide import PluginSide
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.PluginEntry import PluginEntry
 
 plugin_enabled_ = "plugin_enabled"
+plugin_side_ = "plugin_side"
 plugin_config_ = "plugin_config"
 plugin_module_name_ = "plugin_module_name"
 plugin_class_name_ = "plugin_class_name"
@@ -21,6 +23,12 @@ class PluginEntrySchema(ObjectSchema):
     plugin_enabled = fields.Boolean(
         required = False,
         load_default = True,
+    )
+
+    plugin_side = fields.Enum(
+        PluginSide,
+        required = False,
+        load_default = PluginSide.PluginServerSideOnly,
     )
 
     plugin_module_name = fields.String(
@@ -46,6 +54,7 @@ class PluginEntrySchema(ObjectSchema):
 
 _plugin_entry_example = {
     plugin_enabled_: True,
+    plugin_side_: PluginSide.PluginClientSideOnly.name,
     plugin_module_name_: "SomePluginModule",
     plugin_class_name_: "SomePluginClass",
     plugin_dependencies_: [],

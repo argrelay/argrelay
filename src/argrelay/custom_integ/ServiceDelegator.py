@@ -13,7 +13,6 @@ from argrelay.custom_integ.value_constants import (
     desc_host_func_,
     desc_service_func_,
 )
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
@@ -30,9 +29,9 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_delegator_stub_custom_data_example,
 )
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
+from argrelay.plugin_delegator.delegator_utils import set_default_to
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -54,23 +53,6 @@ access_container_ipos_ = 2
 
 diff_service_container_left_ipos_ = 1
 diff_service_container_right_ipos_ = 2
-
-
-def set_default_to(arg_type, arg_val, envelope_container) -> bool:
-    if arg_type in envelope_container.search_control.types_to_keys_dict:
-        if arg_type not in envelope_container.assigned_types_to_values:
-            if arg_type in envelope_container.remaining_types_to_values:
-                if arg_val in envelope_container.remaining_types_to_values[arg_type]:
-                    del envelope_container.remaining_types_to_values[arg_type]
-                    envelope_container.assigned_types_to_values[arg_type] = AssignedValue(
-                        arg_val,
-                        ArgSource.DefaultValue,
-                    )
-                    return True
-        else:
-            # Setting `ArgSource.DefaultValue`: it cannot override any, right? No point to handle assigned case:
-            pass
-    return False
 
 
 def redirect_to_no_func_error(
