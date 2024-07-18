@@ -62,30 +62,40 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
                 call_ctx = shell_ctx.create_call_context()
 
                 proc_role: ProcRole = ProcRole.CheckEnvWorker
-                command_obj: ClientCommandRemoteWorkerJson = worker_main(
-                    call_ctx,
-                    client_config,
-                    proc_role,
-                    False,
-                    None,
-                    shell_ctx,
-                )
 
-                invocation_input: InvocationInput = cast(
-                    ClientResponseHandlerCheckEnv,
-                    cast(
-                        BytesHandlerJson,
+                try:
+                    command_obj: ClientCommandRemoteWorkerJson = worker_main(
+                        call_ctx,
+                        client_config,
+                        proc_role,
+                        False,
+                        None,
+                        shell_ctx,
+                    )
+                    is_offline = False
+                except ConnectionError as e:
+                    is_offline = True
+
+                if is_offline:
+                    check_env_results.append(self.verify_offline(
+                        field_name,
+                    ))
+                else:
+                    invocation_input: InvocationInput = cast(
+                        ClientResponseHandlerCheckEnv,
                         cast(
-                            BytesSrcLocal,
-                            command_obj.bytes_src,
-                        ).bytes_handler,
-                    ).client_response_handler,
-                ).invocation_input
+                            BytesHandlerJson,
+                            cast(
+                                BytesSrcLocal,
+                                command_obj.bytes_src,
+                            ).bytes_handler,
+                        ).client_response_handler,
+                    ).invocation_input
 
-                check_env_results.append(self.verify_value(
-                    field_name,
-                    invocation_input.custom_plugin_data[field_name],
-                ))
+                    check_env_results.append(self.verify_online_value(
+                        field_name,
+                        invocation_input.custom_plugin_data[field_name],
+                    ))
 
             except Exception as e:
                 eprint(traceback.format_exc())
@@ -97,7 +107,7 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
                 ))
         return check_env_results
 
-    def verify_value(
+    def verify_online_value(
         self,
         field_name,
         field_value,
@@ -110,4 +120,19 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
             result_key = field_name,
             result_value = field_value,
             result_message = None,
+        )
+
+    # noinspection PyMethodMayBeStatic
+    def verify_offline(
+        self,
+        field_name,
+    ) -> CheckEnvResult:
+        """
+        Default implementation verifies nothing.
+        """
+        return CheckEnvResult(
+            result_category = ResultCategory.ServerOffline,
+            result_key = field_name,
+            result_value = None,
+            result_message = "server is offline",
         )

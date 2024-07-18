@@ -4,6 +4,7 @@ Python part of FS_36_17_84_44 `check_env` implementation.
 
 import os
 import sys
+from enum import Enum, auto
 
 from argrelay import misc_helper_common
 from argrelay.check_env.CheckEnvResult import CheckEnvResult
@@ -18,16 +19,20 @@ from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 
-# Color scheme has to be synced with `@/exe/check_env.bash`:
-success_color = TermColor.back_dark_green.value
-warning_color = TermColor.back_dark_yellow.value
-failure_color = TermColor.back_dark_red.value
+# TODO: sync with shell scripts:
+# Standard color scheme has to be synced with `@/exe/check_env.bash`:
+success_color = f"{TermColor.back_dark_green.value}{TermColor.fore_dark_black.value}"
+warning_color = f"{TermColor.back_dark_yellow.value}{TermColor.fore_dark_black.value}"
+failure_color = f"{TermColor.back_dark_red.value}{TermColor.fore_bright_white.value}"
 field_color = TermColor.fore_bright_cyan.value
 failure_message = TermColor.fore_dark_red.value
 warning_message = TermColor.fore_bright_yellow.value
 success_message = TermColor.fore_bright_green.value
 reset_style = TermColor.reset_style.value
 
+# Extra color scheme (available via Python code only):
+offline_color = f"{TermColor.back_light_gray.value}{TermColor.fore_dark_black.value}"
+offline_message = TermColor.fore_bright_blue.value
 
 # TODO: TODO_67_33_03_53.add_check_env_test_support.md
 def main():
@@ -61,25 +66,45 @@ def main():
             plugin_instance: PluginCheckEnvAbstract
             plugin_instance.activate_plugin()
 
+        class OutputCategory(Enum):
+            is_failure = auto()
+            is_warning = auto()
+            is_offline = auto()
+            is_success = auto()
+
         check_env_results: list[CheckEnvResult] = plugin_instance.execute_check()
         for check_env_result in check_env_results:
-            is_failure: bool = (
+            if (
                 check_env_result.result_category is ResultCategory.ExecutionFailure
                 or
                 check_env_result.result_category is ResultCategory.VerificationFailure
-            )
-            is_warning: bool = check_env_result.result_category is ResultCategory.VerificationWarning
+            ):
+                output_category = OutputCategory.is_failure
+            elif check_env_result.result_category is ResultCategory.ServerOffline:
+                output_category = OutputCategory.is_offline
+            elif check_env_result.result_category is ResultCategory.VerificationWarning:
+                output_category = OutputCategory.is_warning
+            elif check_env_result.result_category is ResultCategory.VerificationSuccess:
+                output_category = OutputCategory.is_success
+            else:
+                raise RuntimeError(check_env_result)
 
-            total_success = total_success and not is_failure
+            total_success = total_success and not (output_category is OutputCategory.is_failure)
 
             # Print level:
-            if is_failure:
-                eprint(f"{failure_color}ERROR:{reset_style}", end = " ")
+            if output_category is OutputCategory.is_failure:
+                level_color = failure_color
+                level_name = "ERROR"
+            elif output_category is OutputCategory.is_offline:
+                level_color = offline_color
+                level_name = "SKIP"
+            elif output_category is OutputCategory.is_warning:
+                level_color = warning_color
+                level_name = "WARN"
             else:
-                if is_warning:
-                    eprint(f"{warning_color}WARN:{reset_style}", end = " ")
-                else:
-                    eprint(f"{success_color}INFO:{reset_style}", end = " ")
+                level_color = success_color
+                level_name = "INFO"
+            eprint(f"{level_color}{level_name}:{reset_style}", end = " ")
 
             # Print field:
             if check_env_result.result_key is not None:
@@ -95,23 +120,24 @@ def main():
 
             # Print message:
             if check_env_result.result_message is not None:
-                if is_failure:
-                    eprint(f"{failure_message}# {check_env_result.result_message}{reset_style}", end = " ")
+                if output_category is OutputCategory.is_failure:
+                    message_color = failure_message
+                elif output_category is OutputCategory.is_offline:
+                    message_color = offline_message
+                elif output_category is OutputCategory.is_warning:
+                    message_color = warning_message
                 else:
-                    if is_warning:
-                        eprint(f"{warning_message}# {check_env_result.result_message}{reset_style}", end = " ")
-                    else:
-                        eprint(f"{success_message}# {check_env_result.result_message}{reset_style}", end = " ")
+                    message_color = success_message
+                eprint(f"{message_color}# {check_env_result.result_message}{reset_style}", end = " ")
             else:
                 pass
 
             # Terminate line:
             eprint()
 
-    if total_success:
-        exit(0)
-    else:
-        exit(1)
+    if not total_success:
+        from argrelay.enum_desc.ClientExitCode import ClientExitCode
+        exit(ClientExitCode.GeneralError.value)
 
 
 if __name__ == "__main__":

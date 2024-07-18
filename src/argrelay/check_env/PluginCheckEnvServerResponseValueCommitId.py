@@ -24,7 +24,7 @@ class PluginCheckEnvServerResponseValueCommitId(PluginCheckEnvServerResponseValu
             },
         )
 
-    def verify_value(
+    def verify_online_value(
         self,
         field_name,
         field_value,
@@ -64,7 +64,7 @@ class PluginCheckEnvServerResponseValueCommitId(PluginCheckEnvServerResponseValu
                         result_message = f"client commit id [{client_commit_id}] does not match server commit id [{field_value}]",
                     )
         else:
-            return super().verify_value(
+            return super().verify_online_value(
                 field_name,
                 field_value,
             )

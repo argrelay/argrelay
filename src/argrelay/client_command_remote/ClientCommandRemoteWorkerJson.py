@@ -3,6 +3,7 @@ from dataclasses import asdict
 
 from argrelay.client_command_remote.ClientCommandRemoteAbstract import ClientCommandRemoteAbstract
 from argrelay.client_pipeline.BytesSrcAbstract import BytesSrcAbstract
+from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
@@ -26,16 +27,18 @@ class ClientCommandRemoteWorkerJson(ClientCommandRemoteAbstract):
     def __init__(
         self,
         call_ctx: CallContext,
+        proc_role: ProcRole,
         connection_config: ConnectionConfig,
         bytes_src: BytesSrcAbstract,
     ):
         super().__init__(
             call_ctx,
+            proc_role,
         )
         self.connection_config: ConnectionConfig = connection_config
         self.bytes_src: BytesSrcAbstract = bytes_src
 
-    def execute_command(
+    def _execute_remotely(
         self,
     ):
         server_url = BASE_URL_FORMAT.format(**asdict(self.connection_config)) + f"{self.call_ctx.server_action.value}"
@@ -57,11 +60,16 @@ class ClientCommandRemoteWorkerJson(ClientCommandRemoteAbstract):
         import requests
         signal.alarm(0)
 
-        response_obj = requests.post(
-            server_url,
-            headers = headers_dict,
-            data = request_json,
-        )
+        try:
+            response_obj = requests.post(
+                server_url,
+                headers = headers_dict,
+                data = request_json,
+            )
+        except requests.exceptions.ConnectionError as e:
+            # translate to builtin:
+            raise ConnectionError(e)
+
         ElapsedTime.measure("after_request")
         try:
             if response_obj.ok:

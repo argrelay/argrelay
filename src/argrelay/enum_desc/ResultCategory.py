@@ -21,6 +21,11 @@ class ResultCategory(Enum):
     Able to retrieve data to check, but the result of the check is not successful.
     """
 
+    ServerOffline = auto()
+    """
+    Unable to retrieve data to check for the check which required server online.
+    """
+
     ExecutionFailure = auto()
     """
     Unable to retrieve data to check.

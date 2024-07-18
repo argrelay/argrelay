@@ -46,12 +46,15 @@ class ThisTestClass(BaseTestClass):
     expected_imports = {
         "__future__": [],
         "argrelay.client_command_remote.ClientCommandRemoteAbstract": [
+            "argrelay.enum_desc.ClientExitCode",
+            "argrelay.enum_desc.ProcRole",
             "argrelay.relay_client.ClientCommandAbstract",
             "argrelay.server_spec.CallContext"
         ],
         "argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
             "argrelay.client_command_remote.ClientCommandRemoteAbstract",
             "argrelay.client_pipeline.BytesSrcAbstract",
+            "argrelay.enum_desc.ProcRole",
             "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ConnectionConfig",
@@ -71,6 +74,9 @@ class ThisTestClass(BaseTestClass):
             "argrelay.server_spec.CallContext",
             "dataclasses",
             "os"
+        ],
+        "argrelay.enum_desc.ClientExitCode": [
+            "enum"
         ],
         "argrelay.enum_desc.CompScope": [
             "__future__",
