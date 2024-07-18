@@ -25,12 +25,12 @@ class PluginCheckEnvServerResponseValueStartTime(PluginCheckEnvServerResponseVal
             },
         )
 
-    def verify_value(
+    def verify_online_value(
         self,
         field_name,
         field_value,
     ) -> CheckEnvResult:
-        check_env_result: CheckEnvResult = super().verify_value(
+        check_env_result: CheckEnvResult = super().verify_online_value(
             field_name,
             field_value,
         )

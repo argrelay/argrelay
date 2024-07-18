@@ -9,6 +9,7 @@ from argrelay.custom_integ.value_constants import (
     desc_git_commit_func_,
     desc_git_tag_func_,
 )
+from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
@@ -185,7 +186,7 @@ class GitRepoDelegator(AbstractDelegator):
             # TODO: TODO_86_57_50_38: make this behavior (require singled-out `data_envelope`) configure-able for all plugins:
             if len(invocation_input.envelope_containers[repo_container_ipos_].data_envelopes) != 1:
                 eprint(f"ERROR: single repo is not selected (not disambiguated from multiple candidates)")
-                exit(1)
+                exit(ClientExitCode.GeneralError.value)
 
             repo_envelope = invocation_input.envelope_containers[repo_container_ipos_].data_envelopes[0]
             repo_root_abs_path = repo_envelope[envelope_payload_][repo_root_abs_path_]

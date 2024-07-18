@@ -79,6 +79,7 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
                     )
             return command_cls(
                 call_ctx,
+                self.proc_role,
                 self.client_config.connection_config,
                 bytes_src,
             )
@@ -99,5 +100,6 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
                 )
             return ClientCommandRemoteSpinner(
                 call_ctx,
+                self.proc_role,
                 bytes_handler,
             )

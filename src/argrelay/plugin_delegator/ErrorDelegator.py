@@ -1,5 +1,6 @@
 import sys
 
+from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_message_, error_code_
@@ -28,7 +29,7 @@ class ErrorDelegator(AbstractDelegator):
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
         error_message = "ERROR: unknown error"
-        error_code = 1
+        error_code = ClientExitCode.GeneralError.value
         if invocation_input.custom_plugin_data:
             if error_message_ in invocation_input.custom_plugin_data:
                 error_message = invocation_input.custom_plugin_data[error_message_]

@@ -18,11 +18,13 @@ class TermColor(Enum):
     back_dark_green = "\033[42m"
     back_dark_yellow = "\033[43m"
     back_dark_blue = "\033[44m"
+    back_light_gray = "\033[47m"
 
     back_bright_red = "\033[101m"
     back_bright_green = "\033[102m"
     back_bright_yellow = "\033[103m"
 
+    fore_dark_black = "\033[30m"
     fore_dark_red = "\033[31m"
     fore_dark_green = "\033[32m"
     fore_dark_yellow = "\033[33m"
