@@ -6,7 +6,7 @@ from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 
 __comment___ = "__comment__"
-connection_config_ = "connection_config"
+redundant_servers_ = "redundant_servers"
 use_local_requests_ = "use_local_requests"
 optimize_completion_request_ = "optimize_completion_request"
 show_pending_spinner_ = "show_pending_spinner"
@@ -45,7 +45,10 @@ class ClientConfigSchema(ObjectSchema):
         load_default = True,
     )
 
-    connection_config = fields.Nested(connection_config_desc.dict_schema)
+    redundant_servers = fields.List(
+        fields.Nested(connection_config_desc.dict_schema),
+        required = True,
+    )
 
     # Enables spinner for FS_14_59_14_06: pending requests.
     show_pending_spinner = fields.Boolean(
@@ -64,7 +67,9 @@ client_config_desc = TypeDesc(
     dict_schema = ClientConfigSchema(),
     ref_name = ClientConfigSchema.__name__,
     dict_example = {
-        connection_config_: connection_config_desc.dict_example,
+        redundant_servers_: [
+            connection_config_desc.dict_example,
+        ]
     },
     default_file_path = "argrelay_client.json",
 )

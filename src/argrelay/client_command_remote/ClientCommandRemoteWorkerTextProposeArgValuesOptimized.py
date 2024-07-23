@@ -2,16 +2,13 @@ import json
 import os
 import socket
 
-from argrelay.client_command_remote.ClientCommandRemoteAbstract import ClientCommandRemoteAbstract
-from argrelay.client_pipeline.BytesSrcAbstract import BytesSrcAbstract
-from argrelay.enum_desc.ProcRole import ProcRole
+from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import ClientCommandRemoteWorkerAbstract
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
-from argrelay.server_spec.CallContext import CallContext
 
 
-class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemoteAbstract):
+class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemoteWorkerAbstract):
     """
     This class optimizes what can otherwise be done via generic `ClientCommandRemoteWorkerJson`.
 
@@ -27,23 +24,8 @@ class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemote
     The drawback is that it also requires special maintenance/testing.
     """
 
-    # TODO: Provide test coverage for this special implementation.
+    # TODO: TODO_72_51_13_18: test optimized requests:
     #       Write mocked test to cover internal logic like function `recvall` below.
-
-    def __init__(
-        self,
-        call_ctx: CallContext,
-        proc_role: ProcRole,
-        connection_config: ConnectionConfig,
-        bytes_src: BytesSrcAbstract,
-    ):
-        super().__init__(
-            call_ctx,
-            proc_role,
-        )
-        self.connection_config: ConnectionConfig = connection_config
-        self.bytes_src: BytesSrcAbstract = bytes_src
-        self.server_path: str = ServerAction.ProposeArgValues.value
 
     def _execute_remotely(
         self,
@@ -53,15 +35,19 @@ class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemote
             socket.AF_INET,
             socket.SOCK_STREAM,
         ) as s:
-            self.execute_command_with_socket(s)
+            self.execute_command_with_socket(
+                s,
+                self.curr_connection_config,
+            )
 
     def execute_command_with_socket(
         self,
         s,
+        connection_config: ConnectionConfig,
     ):
         s.connect((
-            self.connection_config.server_host_name,
-            self.connection_config.server_port_number,
+            connection_config.server_host_name,
+            connection_config.server_port_number,
         ))
 
         request_body_str = (f"""\
@@ -77,7 +63,7 @@ class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemote
         request_body_len = len(request_body_str.encode())
 
         request_str = (f"""\
-POST {self.server_path} HTTP/1.1\r
+POST {ServerAction.ProposeArgValues.value} HTTP/1.1\r
 Content-Type: application/json\r
 Content-Length: {request_body_len}\r
 Connection: close\r

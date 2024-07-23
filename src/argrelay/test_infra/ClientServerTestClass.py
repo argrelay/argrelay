@@ -56,14 +56,17 @@ class ClientServerTestClass(InOutTestClass):
     def wait_for_connection_to_server():
         client_config: ClientConfig = client_config_desc.obj_from_default_file()
 
+        # Checking only one server index:
+        server_index = 0
+
         delay_s = 1
         # 10 mins should be enough, right?
         timeout_ts = datetime.now() + timedelta(minutes = 10.0)
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             while True:
                 result = sock.connect_ex((
-                    client_config.connection_config.server_host_name,
-                    client_config.connection_config.server_port_number,
+                    client_config.redundant_servers[server_index].server_host_name,
+                    client_config.redundant_servers[server_index].server_port_number,
                 ))
                 if result == 0:
                     print("connected to server")

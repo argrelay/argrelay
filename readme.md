@@ -161,6 +161,12 @@ Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the 
 ./exe/relay_demo.bash
 ```
 
+Optionally, review env state (any time):
+
+```sh
+./exe/check_env.bash
+```
+
 This sub-shell configures request hotkeys to bind `relay_demo` command with `@/exe/run_argrelay_client`:
 
 *   Interact with `relay_demo` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
@@ -278,6 +284,8 @@ There are two options at the moment - both using [MongoDB][MongoDB] API:
 
 Quantitative comparison tables between the two can be seen in docstring for `DistinctValuesQuery` enum.
 
+<!--
+
 `pymongo` connects to a running MongoDB instance which has to be configured in<br/>
 `argrelay_server.yaml` under `mongo_config` and `mongomock` should be disabled:
 
@@ -285,6 +293,8 @@ Quantitative comparison tables between the two can be seen in docstring for `Dis
 -    use_mongomock: True
 +    use_mongomock: False
 ```
+
+-->
 
 <a name="argrelay-full-picture"></a>
 # Full picture

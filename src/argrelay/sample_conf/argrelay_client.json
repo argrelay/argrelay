@@ -1,9 +1,14 @@
-
 {
     "__comment__": "This is an `argrelay` client config.",
-    "connection_config": {
-        "server_host_name": "localhost",
-        "server_port_number": 8787
-    },
+    "redundant_servers": [
+        {
+            "server_host_name": "localhost",
+            "server_port_number": 8787
+        },
+        {
+            "server_host_name": "localhost",
+            "server_port_number": 7878
+        }
+    ],
     "show_pending_spinner": true
 }

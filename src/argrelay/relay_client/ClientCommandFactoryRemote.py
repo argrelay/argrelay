@@ -21,11 +21,13 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
         proc_role: ProcRole,
         w_pipe_end,
         is_optimized_completion: bool,
+        server_index: int,
     ):
         self.client_config: ClientConfig = client_config
         self.proc_role: ProcRole = proc_role
         self.w_pipe_end = w_pipe_end
         self.is_optimized_completion = is_optimized_completion
+        self.server_index = server_index
         if proc_role.is_worker_proc and proc_role.is_split_mode:
             assert self.w_pipe_end is not None
         else:
@@ -80,7 +82,8 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
             return command_cls(
                 call_ctx,
                 self.proc_role,
-                self.client_config.connection_config,
+                self.client_config.redundant_servers,
+                self.server_index,
                 bytes_src,
             )
         else:

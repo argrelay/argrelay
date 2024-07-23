@@ -2,3 +2,6 @@
 # Used by `@/exe/relay_demo.bash`:
 /relay_demo.bash.pid
 
+# See FS_93_18_57_91 client fail over to redundant servers:
+/argrelay_client.server_index
+

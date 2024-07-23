@@ -26,5 +26,7 @@ class TopDir(Enum):
 
     test_dir = "test"
 
+    var_dir = "var"
+
     def __str__(self):
         return self.name

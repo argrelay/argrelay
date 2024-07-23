@@ -130,6 +130,7 @@ def spinner_main(
         proc_role,
         None,
         is_optimized_completion,
+        -1,
     )
     # TODO: Rethink/Rename: spinner does not make any request:
     #       Maybe remove *Client altogether and move its functionality into *ClientCommandFactory?

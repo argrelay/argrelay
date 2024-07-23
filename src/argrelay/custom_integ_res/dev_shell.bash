@@ -52,7 +52,7 @@ set -E
 # Error on undefined variables:
 set -u
 
-failure_color="\e[41m"
+failure_color="\e[41m\e[97m"
 reset_color="\e[0m"
 banner_color="\e[94m"
 

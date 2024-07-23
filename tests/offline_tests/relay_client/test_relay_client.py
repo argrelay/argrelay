@@ -38,11 +38,11 @@ class ThisTestClass(BaseTestClass):
         response_body: dict,
     ):
         return responses.Response(
-            method = "POST",
+            method = responses.POST,
             url = self.base_URL + server_action.value,
             json = response_body,
             status = 200,
-            content_type = "application/json"
+            content_type = "application/json",
         )
 
     # noinspection PyMethodMayBeStatic
