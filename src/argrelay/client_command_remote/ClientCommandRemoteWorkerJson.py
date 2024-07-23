@@ -1,14 +1,10 @@
 import signal
 from dataclasses import asdict
 
-from argrelay.client_command_remote.ClientCommandRemoteAbstract import ClientCommandRemoteAbstract
-from argrelay.client_pipeline.BytesSrcAbstract import BytesSrcAbstract
-from argrelay.enum_desc.ProcRole import ProcRole
+from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import ClientCommandRemoteWorkerAbstract
 from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
-from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.server_spec.CallContext import CallContext
 from argrelay.server_spec.const_int import BASE_URL_FORMAT
 
 has_error_happened = False
@@ -22,26 +18,14 @@ def _signal_handler(signal_number, signal_frame):
         has_error_happened = True
 
 
-class ClientCommandRemoteWorkerJson(ClientCommandRemoteAbstract):
-
-    def __init__(
-        self,
-        call_ctx: CallContext,
-        proc_role: ProcRole,
-        connection_config: ConnectionConfig,
-        bytes_src: BytesSrcAbstract,
-    ):
-        super().__init__(
-            call_ctx,
-            proc_role,
-        )
-        self.connection_config: ConnectionConfig = connection_config
-        self.bytes_src: BytesSrcAbstract = bytes_src
+class ClientCommandRemoteWorkerJson(ClientCommandRemoteWorkerAbstract):
 
     def _execute_remotely(
         self,
     ):
-        server_url = BASE_URL_FORMAT.format(**asdict(self.connection_config)) + f"{self.call_ctx.server_action.value}"
+        server_url = BASE_URL_FORMAT.format(
+            **asdict(self.curr_connection_config)
+        ) + f"{self.call_ctx.server_action.value}"
         headers_dict = {
             "Content-Type": "application/json",
             "Accept": "application/json",

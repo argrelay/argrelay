@@ -25,6 +25,11 @@ class ClientCommandRemoteAbstract(ClientCommandAbstract):
     def execute_command(
         self,
     ):
+        """
+        Basic implementation of connection with single server.
+
+        FS_93_18_57_91 client fail over is implemented in derived `ClientCommandRemoteWorkerAbstract` class.
+        """
         try:
             self._execute_remotely()
         except (

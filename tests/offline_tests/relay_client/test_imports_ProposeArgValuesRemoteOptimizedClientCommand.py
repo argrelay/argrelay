@@ -51,19 +51,28 @@ class ThisTestClass(BaseTestClass):
             "argrelay.relay_client.ClientCommandAbstract",
             "argrelay.server_spec.CallContext"
         ],
-        "argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
+        "argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract": [
+            "__future__",
             "argrelay.client_command_remote.ClientCommandRemoteAbstract",
-            "argrelay.client_pipeline.BytesSrcAbstract",
+            "argrelay.client_pipeline",
+            "argrelay.enum_desc.ClientExitCode",
             "argrelay.enum_desc.ProcRole",
+            "argrelay.enum_desc.TopDir",
+            "argrelay.misc_helper_common",
+            "argrelay.runtime_data.ConnectionConfig",
+            "argrelay.server_spec.CallContext",
+            "os"
+        ],
+        "argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
+            "argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract",
             "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ConnectionConfig",
-            "argrelay.server_spec.CallContext",
             "json",
             "os",
             "socket"
         ],
-        "argrelay.client_pipeline.BytesSrcAbstract": [],
+        "argrelay.client_pipeline": [],
         "argrelay.client_spec.ShellContext": [
             "__future__",
             "argrelay.enum_desc.CompScope",
@@ -93,6 +102,10 @@ class ThisTestClass(BaseTestClass):
             "enum"
         ],
         "argrelay.enum_desc.TermColor": [
+            "enum"
+        ],
+        "argrelay.enum_desc.TopDir": [
+            "__future__",
             "enum"
         ],
         "argrelay.misc_helper_common": [
@@ -126,6 +139,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.misc_helper_common.ElapsedTime"
         ],
         "argrelay.runtime_data.ClientConfig": [
+            "__future__",
             "argrelay.runtime_data.ConnectionConfig",
             "dataclasses"
         ],

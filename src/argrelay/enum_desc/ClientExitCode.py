@@ -11,6 +11,11 @@ class ClientExitCode(IntEnum):
     GeneralError = 1
 
     ConnectionError = 2
+    """
+    Used to communicate specifically connection issues between client `ProcRole`-s.
+
+    Provides a mechanism to implement FS_93_18_57_91 client fail over.
+    """
 
     # maximum exit code:
     # https://stackoverflow.com/a/67219932/441652

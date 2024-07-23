@@ -10,7 +10,7 @@ from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 
 reusable_config_data_ = "reusable_config_data"
 plugin_instance_entries_ = "plugin_instance_entries"
-
+check_env_plugin_instance_entries_ = "check_env_plugin_instance_entries"
 
 class PluginConfigSchema(ObjectSchema):
     class Meta:
@@ -40,6 +40,13 @@ class PluginConfigSchema(ObjectSchema):
         required = True,
     )
 
+    # TODO: Move it into separate file/schema:
+    check_env_plugin_instance_entries = fields.Dict(
+        keys = fields.String(),
+        values = fields.Nested(plugin_entry_desc.dict_schema),
+        required = True,
+    )
+
     @post_load
     def make_object(
         self,
@@ -53,10 +60,19 @@ class PluginConfigSchema(ObjectSchema):
             plugin_entry: PluginEntry = input_dict[plugin_instance_entries_][plugin_instance_id]
             plugin_instance_id_activate_order_dag[plugin_instance_id] = plugin_entry.plugin_dependencies
 
+        # TODO: Move it into separate file/schema:
+        check_env_plugin_instance_id_activate_order_dag = {}
+        for plugin_instance_id in input_dict[check_env_plugin_instance_entries_]:
+            plugin_entry: PluginEntry = input_dict[check_env_plugin_instance_entries_][plugin_instance_id]
+            check_env_plugin_instance_id_activate_order_dag[plugin_instance_id] = plugin_entry.plugin_dependencies
+
         return type(self).model_class(
             **input_dict,
             plugin_instance_id_activate_list = serialize_dag_to_list(
                 plugin_instance_id_activate_order_dag,
+            ),
+            check_env_plugin_instance_id_activate_list = serialize_dag_to_list(
+                check_env_plugin_instance_id_activate_order_dag,
             ),
         )
 
@@ -69,6 +85,11 @@ plugin_config_desc = TypeDesc(
             "some_plugin_instance_id": plugin_entry_desc.dict_example,
             "some_plugin_instance_id1": plugin_entry_desc.dict_example,
             "some_plugin_instance_id2": plugin_entry_desc.dict_example,
+        },
+        check_env_plugin_instance_entries_: {
+            "some_check_env_plugin_instance_id": plugin_entry_desc.dict_example,
+            "some_check_env_plugin_instance_id1": plugin_entry_desc.dict_example,
+            "some_check_env_plugin_instance_id2": plugin_entry_desc.dict_example,
         },
     },
     default_file_path = "argrelay_plugin.yaml",

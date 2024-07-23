@@ -19,6 +19,7 @@ class ClientRemote(ClientAbstract):
         proc_role: ProcRole,
         w_pipe_end,
         is_optimized_completion: bool,
+        server_index: int,
     ):
         super().__init__(
             client_config,
@@ -27,6 +28,7 @@ class ClientRemote(ClientAbstract):
                 proc_role,
                 w_pipe_end,
                 is_optimized_completion,
+                server_index,
             ),
         )
         assert not client_config.use_local_requests

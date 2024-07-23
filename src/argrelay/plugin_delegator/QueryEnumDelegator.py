@@ -6,7 +6,8 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import ClientResponseHandlerDescribeLineArgs
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
-from argrelay.runtime_context.InterpContext import function_container_ipos_
+from argrelay.relay_server.LocalServer import LocalServer
+from argrelay.runtime_context.InterpContext import function_container_ipos_, InterpContext
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
@@ -39,6 +40,25 @@ class QueryEnumDelegator(AbstractJumpDelegator):
             ReservedPropName.func_id.name: SpecialFunc.func_id_query_enum_items.name,
         }]
         return func_envelopes
+
+    def run_invoke_control(
+        self,
+        interp_ctx: InterpContext,
+        local_server: LocalServer,
+    ) -> InvocationInput:
+        assert interp_ctx.is_func_found(), "the (first) function envelope must be found"
+
+        # TODO: Fail (send to ErrorDelegator) if next function is not specified -
+        #       showing the payload in this case is misleading.
+        delegator_plugin_instance_id = self.plugin_instance_id
+        invocation_input = InvocationInput.with_interp_context(
+            interp_ctx,
+            delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
+                delegator_plugin_instance_id
+            ],
+            custom_plugin_data = {},
+        )
+        return invocation_input
 
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):

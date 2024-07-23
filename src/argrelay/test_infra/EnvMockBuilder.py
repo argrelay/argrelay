@@ -1026,16 +1026,16 @@ def wrap_instance_method_on_instance(
 @contextlib.contextmanager
 def wrap_instance_method_on_class(
     any_class,
-    callable_on_instance: Callable,
+    callable_on_class: Callable,
 ):
     """
-    Wraps `callable_on_instance` by a mock which still calls original method.
+    Wraps `callable_on_class` by a mock which still calls original method.
     Use case: test whether original method is called.
     See also: `wrap_instance_method_on_instance` - similar purpose but requires completely different mocking call.
     """
     with mock.patch(
-        f"{any_class.__module__}.{any_class.__name__}.{callable_on_instance.__name__}",
-        side_effect = callable_on_instance,
+        f"{any_class.__module__}.{any_class.__name__}.{callable_on_class.__name__}",
+        side_effect = callable_on_class,
         autospec = True,
     ) as method_wrap_mock:
         yield method_wrap_mock

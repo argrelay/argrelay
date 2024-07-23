@@ -18,7 +18,6 @@ class PluginCheckEnvServerResponseValueStartTime(PluginCheckEnvServerResponseVal
         super().__init__(
             plugin_instance_id,
             plugin_config_dict = plugin_config_dict or {
-                # TODO: Maybe remove this class and simply rely on config?
                 field_values_to_command_lines_: {
                     CheckEnvField.server_start_time.name: "argrelay.check_env server_start_time",
                 },

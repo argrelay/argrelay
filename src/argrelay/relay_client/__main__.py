@@ -71,6 +71,7 @@ def main():
         is_optimized_completion,
         w_pipe_end,
         shell_ctx,
+        -1,
     )
     return command_obj
 
@@ -87,14 +88,17 @@ def client_config_dict_to_object(client_config_dict):
     """
     Optimized dict -> object conversion avoiding import of `*Schema` for performance:
     """
+    redundant_servers: list[ConnectionConfig] = []
+    for redundant_server in client_config_dict["redundant_servers"]:
+        redundant_servers.append(ConnectionConfig(
+            server_host_name = redundant_server["server_host_name"],
+            server_port_number = redundant_server["server_port_number"],
+        ))
     client_config = ClientConfig(
         __comment__ = client_config_dict.get("use_local_requests", None),
         use_local_requests = client_config_dict.get("use_local_requests", False),
         optimize_completion_request = client_config_dict.get("optimize_completion_request", True),
-        connection_config = ConnectionConfig(
-            server_host_name = client_config_dict["connection_config"]["server_host_name"],
-            server_port_number = client_config_dict["connection_config"]["server_port_number"],
-        ),
+        redundant_servers = redundant_servers,
         show_pending_spinner = client_config_dict.get("show_pending_spinner", True),
         spinless_sleep_sec = client_config_dict.get("spinless_sleep_sec", 0.0),
     )

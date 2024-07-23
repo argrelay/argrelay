@@ -5,7 +5,7 @@ class DistinctValuesQuery(Enum):
     """
     Selects implementation for FS_02_25_41_81 `func_id_query_enum_items`.
 
-    See `test_QueryEngine_perf.py` for perf test used to produce these tables:
+    See `test_QueryEngine_perf.py` for perf test used to produce these tables (time is in seconds):
 
     Numbers for "use_single_collection: True" are more evident as `object_count` directly affects the query.
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import traceback
-from typing import cast
+from typing import cast, Union
 
 from argrelay.check_env.CheckEnvResult import CheckEnvResult
 from argrelay.check_env.PluginCheckEnvAbstract import PluginCheckEnvAbstract
@@ -44,67 +44,78 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
 
     def execute_check(
         self,
+        online_mode: Union[bool, None],
     ) -> list[CheckEnvResult]:
 
         check_env_results: list[CheckEnvResult] = []
         for field_name, command_line in self.plugin_config_dict[field_values_to_command_lines_].items():
-            # noinspection PyBroadException
-            try:
-                shell_ctx = ShellContext(
-                    command_line = command_line,
-                    cursor_cpos = len(command_line),
-                    comp_type = CompType.InvokeAction,
-                    comp_key = UNKNOWN_COMP_KEY,
-                    is_debug_enabled = False,
-                )
-                client_config: ClientConfig = client_config_desc.obj_from_default_file()
+            client_config: ClientConfig = client_config_desc.obj_from_default_file()
 
-                call_ctx = shell_ctx.create_call_context()
+            for server_index in range(len(client_config.redundant_servers)):
 
-                proc_role: ProcRole = ProcRole.CheckEnvWorker
+                indexed_field_name = f"{field_name}[{server_index}]"
 
+                # noinspection PyBroadException
                 try:
-                    command_obj: ClientCommandRemoteWorkerJson = worker_main(
-                        call_ctx,
-                        client_config,
-                        proc_role,
-                        False,
-                        None,
-                        shell_ctx,
+                    shell_ctx = ShellContext(
+                        command_line = command_line,
+                        cursor_cpos = len(command_line),
+                        comp_type = CompType.InvokeAction,
+                        comp_key = UNKNOWN_COMP_KEY,
+                        is_debug_enabled = False,
                     )
-                    is_offline = False
-                except ConnectionError as e:
-                    is_offline = True
 
-                if is_offline:
-                    check_env_results.append(self.verify_offline(
-                        field_name,
-                    ))
-                else:
-                    invocation_input: InvocationInput = cast(
-                        ClientResponseHandlerCheckEnv,
-                        cast(
-                            BytesHandlerJson,
+                    call_ctx = shell_ctx.create_call_context()
+
+                    proc_role: ProcRole = ProcRole.CheckEnvWorker
+
+                    try:
+                        command_obj: ClientCommandRemoteWorkerJson = worker_main(
+                            call_ctx,
+                            client_config,
+                            proc_role,
+                            False,
+                            None,
+                            shell_ctx,
+                            server_index,
+                        )
+                        is_offline = False
+                    except ConnectionError as e:
+                        # noinspection PySimplifyBooleanCheck
+                        if online_mode == True:
+                            raise e
+                        else:
+                            is_offline = True
+
+                    if is_offline:
+                        check_env_results.append(self.verify_offline(
+                            indexed_field_name,
+                        ))
+                    else:
+                        invocation_input: InvocationInput = cast(
+                            ClientResponseHandlerCheckEnv,
                             cast(
-                                BytesSrcLocal,
-                                command_obj.bytes_src,
-                            ).bytes_handler,
-                        ).client_response_handler,
-                    ).invocation_input
+                                BytesHandlerJson,
+                                cast(
+                                    BytesSrcLocal,
+                                    command_obj.bytes_src,
+                                ).bytes_handler,
+                            ).client_response_handler,
+                        ).invocation_input
 
-                    check_env_results.append(self.verify_online_value(
-                        field_name,
-                        invocation_input.custom_plugin_data[field_name],
+                        check_env_results.append(self.verify_online_value(
+                            indexed_field_name,
+                            invocation_input.custom_plugin_data[field_name],
+                        ))
+
+                except Exception as e:
+                    eprint(traceback.format_exc())
+                    check_env_results.append(CheckEnvResult(
+                        result_category = ResultCategory.ExecutionFailure,
+                        result_key = indexed_field_name,
+                        result_value = None,
+                        result_message = f"{str(type(e))}: {str(e)}",
                     ))
-
-            except Exception as e:
-                eprint(traceback.format_exc())
-                check_env_results.append(CheckEnvResult(
-                    result_category = ResultCategory.ExecutionFailure,
-                    result_key = field_name,
-                    result_value = None,
-                    result_message = f"{str(type(e))}: {str(e)}",
-                ))
         return check_env_results
 
     def verify_online_value(

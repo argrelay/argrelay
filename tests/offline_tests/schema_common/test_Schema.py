@@ -28,7 +28,7 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_deleg
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import func_tree_interp_config_desc
 from argrelay.runtime_data.ClientConfig import ClientConfig
-from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc, connection_config_
+from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc, redundant_servers_
 from argrelay.schema_config_core_client.ConnectionConfigSchema import (
     connection_config_desc,
     server_host_name_,
@@ -212,13 +212,17 @@ class ThisTestClass(BaseTestClass):
         client_config: ClientConfig = client_config_desc.obj_from_yaml_str(
             f"""
             {{
-                "{connection_config_}": {{
-                    "{server_host_name_}": "localhost",
-                    "{server_port_number_}": 8787,
-                }}
+                "{redundant_servers_}": [
+                    {{
+                        "{server_host_name_}": "localhost",
+                        "{server_port_number_}": 8787,
+                    }}
+                ]
             }}
             """
         )
+        # Checking only one server index:
+        server_index = 0
         self.assertEqual(
             client_config.use_local_requests,
             False,
@@ -228,11 +232,11 @@ class ThisTestClass(BaseTestClass):
             True,
         )
         self.assertEqual(
-            client_config.connection_config.server_host_name,
+            client_config.redundant_servers[server_index].server_host_name,
             DEFAULT_IP_ADDRESS,
         )
         self.assertEqual(
-            client_config.connection_config.server_port_number,
+            client_config.redundant_servers[server_index].server_port_number,
             DEFAULT_PORT_NUMBER,
         )
         self.assertEqual(

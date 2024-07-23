@@ -83,8 +83,8 @@ fi
 
 ########################################################################################################################
 
-success_color="\e[42m"
-failure_color="\e[41m"
+success_color="\e[42m\e[30m"
+failure_color="\e[41m\e[97m"
 reset_color="\e[0m"
 
 # Indicate success|failure by color:
@@ -188,13 +188,11 @@ then
         # Load Python config to reset its `venv`:
         source "${argrelay_dir}/conf/python_env.conf.bash"
 
-        # Careful: instead of `rm -rf` (in case of misconfig), move `venv` to `/tmp/`:
-        run_timestamp="$( date -u "+%Y-%m-%dT%H-%M-%SZ" )"
         # shellcheck disable=SC2154
         if [[ -e "${path_to_venvX}" ]]
         then
-            backup_dst_path="/tmp/$( basename "${path_to_venvX}" ).backup.${run_timestamp}"
-            mv "${path_to_venvX}" "${backup_dst_path}"
+            # It must be a dir, if exists:
+            test -d "${path_to_venvX}"
         fi
 
         # Next: continue with bootstrap...

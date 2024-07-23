@@ -8,6 +8,7 @@ def worker_main(
     is_optimized_completion,
     w_pipe_end,
     shell_ctx,
+    server_index: int,
 ) -> "ClientCommandAbstract":
     if client_config.use_local_requests:
         # This branch with `use_local_requests` is used only for testing
@@ -23,6 +24,7 @@ def worker_main(
             proc_role,
             w_pipe_end,
             is_optimized_completion,
+            server_index,
         )
 
     ElapsedTime.measure("before_client_invocation")

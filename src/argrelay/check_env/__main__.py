@@ -19,7 +19,6 @@ from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 
-# TODO: sync with shell scripts:
 # Standard color scheme has to be synced with `@/exe/check_env.bash`:
 success_color = f"{TermColor.back_dark_green.value}{TermColor.fore_dark_black.value}"
 warning_color = f"{TermColor.back_dark_yellow.value}{TermColor.fore_dark_black.value}"
@@ -34,17 +33,31 @@ reset_style = TermColor.reset_style.value
 offline_color = f"{TermColor.back_light_gray.value}{TermColor.fore_dark_black.value}"
 offline_message = TermColor.fore_bright_blue.value
 
+
 # TODO: TODO_67_33_03_53.add_check_env_test_support.md
 def main():
     argrelay_dir: str = os.path.realpath(os.path.abspath(sys.argv[1]))
     misc_helper_common.set_argrelay_dir(argrelay_dir)
 
+    if len(sys.argv) > 3:
+        raise ValueError(f"too many arguments: {' '.join(sys.argv[1:])}")
+    elif len(sys.argv) == 3:
+        second_arg = sys.argv[2].strip()
+        if second_arg == "offline":
+            online_mode = False
+        elif second_arg == "online":
+            online_mode = True
+        else:
+            raise ValueError(f"unrecognized argument: {second_arg}")
+    else:
+        online_mode = None
+
     plugin_config: PluginConfig = plugin_config_desc.obj_from_default_file()
 
     total_success: bool = True
 
-    for plugin_instance_id in plugin_config.plugin_instance_id_activate_list:
-        plugin_entry: PluginEntry = plugin_config.plugin_instance_entries[plugin_instance_id]
+    for plugin_instance_id in plugin_config.check_env_plugin_instance_id_activate_list:
+        plugin_entry: PluginEntry = plugin_config.check_env_plugin_instance_entries[plugin_instance_id]
 
         if not plugin_entry.plugin_enabled:
             continue
@@ -72,7 +85,9 @@ def main():
             is_offline = auto()
             is_success = auto()
 
-        check_env_results: list[CheckEnvResult] = plugin_instance.execute_check()
+        check_env_results: list[CheckEnvResult] = plugin_instance.execute_check(
+            online_mode,
+        )
         for check_env_result in check_env_results:
             if (
                 check_env_result.result_category is ResultCategory.ExecutionFailure
