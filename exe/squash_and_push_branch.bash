@@ -84,11 +84,14 @@ git reset --soft "${git_base_commit}"
 # Use branch name as the commit message:
 git commit -m "${source_branch_name}"
 
-# Set remote target branch named after the source branch:
-git branch --set-upstream-to="origin/${source_branch_name}"
+# Fetch before force-push:
+git fetch
 
 # Push:
 git push -f origin "HEAD:${source_branch_name}"
+
+# Set remote target branch named after the source branch:
+git branch --set-upstream-to="origin/${source_branch_name}"
 
 # Clean up:
 git checkout -

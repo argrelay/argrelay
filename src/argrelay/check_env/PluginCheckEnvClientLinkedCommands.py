@@ -63,4 +63,3 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
                     result_message = None,
                 ))
             return check_env_results
-

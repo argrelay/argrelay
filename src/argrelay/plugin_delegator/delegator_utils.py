@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Callable, Any, Union
 
 from argrelay.enum_desc.ArgSource import ArgSource
-from argrelay.plugin_config.AbstractConfigurator import AbstractConfigurator
+from argrelay.plugin_config.ConfiguratorAbstract import ConfiguratorAbstract
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
 
@@ -38,11 +38,11 @@ def set_default_to(
 
 def get_config_value_once(
     server_configurators,
-    value_getter: Callable[[AbstractConfigurator], Any],
+    value_getter: Callable[[ConfiguratorAbstract], Any],
     default_value: Any,
 ) -> Any:
     config_value: Union[Any, None] = None
-    server_configurator: AbstractConfigurator
+    server_configurator: ConfiguratorAbstract
     for server_configurator in server_configurators.values():
         if config_value is None:
             config_value = value_getter(server_configurator)

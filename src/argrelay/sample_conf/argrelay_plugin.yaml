@@ -507,8 +507,8 @@ plugin_instance_entries:
         plugin_class_name: ErrorDelegator
 
     DefaultConfigurator.default:
-        plugin_module_name: argrelay.plugin_config.DefaultConfigurator
-        plugin_class_name: DefaultConfigurator
+        plugin_module_name: argrelay.plugin_config.ConfiguratorDefault
+        plugin_class_name: ConfiguratorDefault
         plugin_config:
             project_title: "relay_demo"
             project_page_url: "https://argrelay.org"

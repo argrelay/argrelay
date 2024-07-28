@@ -8,6 +8,7 @@ from argrelay.misc_helper_common import get_argrelay_dir
 
 _commit_id_display_length = 8
 
+
 class PluginCheckEnvServerResponseValueCommitId(PluginCheckEnvServerResponseValueAbstract):
 
     def __init__(

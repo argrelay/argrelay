@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Union
 
 from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
-from argrelay.composite_tree.CompositeTreeWalker import extract_tree_abs_path_to_interp_id
+from argrelay.composite_tree.CompositeTreeExtractor import extract_tree_abs_path_to_interp_id
 from argrelay.composite_tree.DictTreeWalker import DictTreeWalker
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator

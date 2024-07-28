@@ -2,10 +2,10 @@ from marshmallow import RAISE, fields
 
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.plugin_config.DefaultConfiguratorConfig import DefaultConfiguratorConfig
+from argrelay.plugin_config.ConfiguratorDefaultConfig import ConfiguratorDefaultConfig
 
 """
-Schema for :class:`DefaultConfiguratorConfig`
+Schema for :class:`ConfiguratorDefaultConfig`
 """
 
 project_title_ = "project_title"
@@ -17,12 +17,12 @@ git_files_by_commit_id_url_prefix_ = "git_files_by_commit_id_url_prefix"
 commit_id_url_prefix_ = "commit_id_url_prefix"
 
 
-class DefaultConfiguratorConfigSchema(ObjectSchema):
+class ConfiguratorDefaultConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE
         ordered = True
 
-    model_class = DefaultConfiguratorConfig
+    model_class = ConfiguratorDefaultConfig
 
     project_title = fields.String(
         required = False,
@@ -45,9 +45,9 @@ class DefaultConfiguratorConfigSchema(ObjectSchema):
     )
 
 
-default_configurator_config_desc = TypeDesc(
-    dict_schema = DefaultConfiguratorConfigSchema(),
-    ref_name = DefaultConfiguratorConfigSchema.__name__,
+configurator_default_config_desc = TypeDesc(
+    dict_schema = ConfiguratorDefaultConfigSchema(),
+    ref_name = ConfiguratorDefaultConfigSchema.__name__,
     dict_example = {
         project_title_: "relay_demo",
         project_page_url_: "https://argrelay.org",

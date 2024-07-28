@@ -39,4 +39,3 @@ class PluginConfig:
     """
     Same as `plugin_instance_id_activate_list` but for FS_36_17_84_44 `check_env` only.
     """
-

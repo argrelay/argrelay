@@ -3,7 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 
 from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
-from argrelay.composite_tree.CompositeTreeWalker import extract_jump_tree, extract_func_tree
+from argrelay.composite_tree.CompositeTreeExtractor import extract_jump_tree, extract_func_tree
 from argrelay.composite_tree.DictTreeWalker import DictTreeWalker, normalize_tree, sequence_starts_with
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName

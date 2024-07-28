@@ -34,25 +34,10 @@ Top:
     Maybe there should be a way to indicate it for client side (that the last envelope search had no criteria to search)?
     REGISTER
 
-*   Print best-effort stable command line at invocation to share (strict mode, no room for mis-interpretation).
-    This should ensure any dynamic values are translated into more fully-qualified ones.
-    See: https://github.com/argrelay/argrelay/issues/22
-    CLOSED
-
 Integration:
 
 *   Review all locations where `.argrelay.conf.d` is mentioned - it is likely that `@/conf` has to be used there instead.
     FINALIZE
-
-*   FS_61_67_08_53: arbitrary text args.
-    Tracked via FS_61_67_08_53 and https://github.com/argrelay/argrelay/issues/46
-    CLOSED
-
-*   Live status / live updates.
-    Design support for online data updates.
-    It should be an API to {get, set} envelope.
-    Tracked via issue: https://github.com/argrelay/argrelay/issues/20Live
-    CLOSED
 
 GUI bits:
 
@@ -171,9 +156,6 @@ Ease integration into external project:
     Use `help_hint` (FS_71_87_33_52) for selection of the repo.
     FINALIZE
 
-*   Use `ssh` on selected service (a useful case).
-    REGISTER
-
 *   Think of integration with `tmux` specifically, or other ways to open new shell windows in general.
     Use `tmux` integration (built-in optional feature).
     REGISTER
@@ -186,19 +168,6 @@ Extra:
 
 *   Add version arg type to the test data.
     See `TD_63_37_05_36.demo_services_data.md` - it does not have source version or source tag.
-    REGISTER
-
-*   Make describe output take into account current prefix (incomplete and not yet consumed) arg
-    which matches several options (which are suggested on Tab, but describe should reduce output from all to just
-    data which pertain to options matching that prefix).
-    Already tracked under `FS_80_82_13_35.option_list_on_describe_with_prefix.md`.
-    REGISTER
-
-*   Consider adding options to be able to limit possible values for some selected tree leaf (FS_01_89_09_24 interp tree).
-    Currently, we can specify `ArgSource.InitValue` to one value which will reduce search results (and limit values).
-    But that requires introduction of special field on `data_envlope`-s
-    (which gets assigned a value with `ArgSource.InitValue`) which looks very surrogate.
-    Maybe it should be possible to exclude certain values from suggestions for specific arg type at selected tree leaves?
     REGISTER
 
 *   Add test coverage reporting.
@@ -221,9 +190,5 @@ Extra:
     Simply allow to configure command to check for mongo db status
     (it could be different commands based on target system).
     Use return code: 0 = server started, 1 = wait, anything else = failure (stop).
-    REGISTER
-
-*   Split `intercept` into: `intercept_json`, `intercept_str` (Python __str__ output), `intercept_table`.
-    See also: FS_88_66_66_73.func_id_intercept_invocation.md, FS_80_45_89_81 / func_id_intercept_invocation
     REGISTER
 

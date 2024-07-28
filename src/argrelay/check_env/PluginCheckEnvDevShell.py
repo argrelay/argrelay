@@ -31,4 +31,3 @@ class PluginCheckEnvDevShell(PluginCheckEnvAbstract):
             result_value = str(env_var_value),
             result_message = result_message,
         )]
-

@@ -13,7 +13,6 @@ from argrelay.enum_desc.PluginSide import PluginSide
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ResultCategory import ResultCategory
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper_common import eprint
 from argrelay.runtime_context.PluginClientAbstract import instantiate_client_plugin
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
@@ -119,17 +118,17 @@ def main():
             else:
                 level_color = success_color
                 level_name = "INFO"
-            eprint(f"{level_color}{level_name}:{reset_style}", end = " ")
+            print(f"{level_color}{level_name}:{reset_style}", end = " ")
 
             # Print field:
             if check_env_result.result_key is not None:
-                eprint(f"{field_color}{check_env_result.result_key}:{reset_style}", end = " ")
+                print(f"{field_color}{check_env_result.result_key}:{reset_style}", end = " ")
             else:
                 pass
 
             # Print value:
             if check_env_result.result_value is not None:
-                eprint(f"{check_env_result.result_value}", end = " ")
+                print(f"{check_env_result.result_value}", end = " ")
             else:
                 pass
 
@@ -143,12 +142,12 @@ def main():
                     message_color = warning_message
                 else:
                     message_color = success_message
-                eprint(f"{message_color}# {check_env_result.result_message}{reset_style}", end = " ")
+                print(f"{message_color}# {check_env_result.result_message}{reset_style}", end = " ")
             else:
                 pass
 
             # Terminate line:
-            eprint()
+            print()
 
     if not total_success:
         from argrelay.enum_desc.ClientExitCode import ClientExitCode

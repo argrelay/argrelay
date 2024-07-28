@@ -46,7 +46,7 @@ class ServerConfig:
     """
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
-    server_configurators: dict[str, "AbstractConfigurator"] = field(default_factory = lambda: {})
+    server_configurators: dict[str, "ConfiguratorAbstract"] = field(default_factory = lambda: {})
 
 
 # TODO: move to PluginConfig:
