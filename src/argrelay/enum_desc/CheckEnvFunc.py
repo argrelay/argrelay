@@ -8,12 +8,10 @@ class CheckEnvFunc(Enum):
 
     func_id_get_server_project_git_commit_id = auto()
     """
-    TODO
+    Query server git commit id.
     """
 
     func_id_get_server_start_time = auto()
     """
-    TODO
+    Query server start time (millis since epoch).
     """
-
-    # TODO: add func to get server version

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.composite_tree.CompositeTreeWalker import extract_zero_arg_interp_tree
+from argrelay.composite_tree.CompositeTreeExtractor import extract_zero_arg_interp_tree
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp

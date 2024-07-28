@@ -5,6 +5,13 @@ from argrelay.runtime_data.StaticData import StaticData
 
 
 class AbstractLoader(AbstractPluginServer):
+    """
+    `LoaderPlugin` implements loading of `data_envelope` (which are later selected on the CLI via args).
+
+    This is a way to load data once on server start.
+
+    The source of data can be anything (hence, it is a plugin).
+    """
 
     def get_plugin_type(
         self,

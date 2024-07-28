@@ -4,7 +4,7 @@ from argrelay.enum_desc.PluginType import PluginType
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 
 
-class AbstractConfigurator(AbstractPluginServer):
+class ConfiguratorAbstract(AbstractPluginServer):
     """
     `PluginType.ConfiguratorPlugin` implements logic to configure `argrelay` server
     when static config is not good enough.
@@ -60,6 +60,7 @@ class AbstractConfigurator(AbstractPluginServer):
         to be used for:
         https://github.com/argrelay/argrelay/tree/ba1e6c684c476558181a8e127d9c34f1feaf5cde/dst/.github
         """
+        return None
 
     def provide_project_commit_id_url_prefix(
         self,

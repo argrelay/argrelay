@@ -3,7 +3,7 @@ from __future__ import annotations
 import contextlib
 
 from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
-from argrelay.composite_tree.CompositeTreeWalker import extract_interp_tree
+from argrelay.composite_tree.CompositeTreeExtractor import extract_interp_tree
 from argrelay.composite_tree.DictTreeWalker import DictTreeWalker, sequence_starts_with
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper_common import eprint

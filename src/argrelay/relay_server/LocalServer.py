@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from pymongo import MongoClient
 
+from argrelay.composite_tree.CompositeTreeValidator import validate_composite_tree
 from argrelay.composite_tree.DictTreeWalker import contains_whitespace
 from argrelay.enum_desc.PluginSide import PluginSide
 from argrelay.enum_desc.PluginType import PluginType
@@ -75,6 +76,7 @@ class LocalServer:
     def start_local_server(
         self,
     ):
+        self._validate_composite_forest()
         self._activate_plugins()
         self._start_mongo_server()
         self._load_mongo_data()
@@ -96,6 +98,13 @@ class LocalServer:
         self,
     ):
         return self.query_engine
+
+    def _validate_composite_forest(
+        self,
+    ):
+        validate_composite_tree(
+            self.server_config.server_plugin_control.composite_forest,
+        )
 
     def _activate_plugins(
         self,
@@ -150,7 +159,7 @@ class LocalServer:
             if plugin_type is PluginType.ConfiguratorPlugin:
                 plugin_instance: AbstractDelegator
                 plugin_instance.activate_plugin()
-                # Store instance of `AbstractConfigurator` under specified id for future use:
+                # Store instance of `ConfiguratorAbstract` under specified id for future use:
                 self.server_config.server_configurators[plugin_instance_id] = plugin_instance
                 continue
 

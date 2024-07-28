@@ -142,7 +142,7 @@ def create_app() -> CustomFlaskApp:
         server_version,
         flask_app.local_server.server_config.gui_banner_config,
         flask_app.local_server.server_start_time,
-        # TODO: make AbstractConfiguration expose only these final methods (and any concatenation of strings, validation, should be hidden inside DefaultConfigurator):
+        # TODO: make AbstractConfiguration expose only these final methods (and any concatenation of strings, validation, should be hidden inside ConfiguratorDefault):
         configure_project_git_commit_time(flask_app.local_server.server_config.server_configurators),
         configure_project_git_commit_url(flask_app.local_server.server_config.server_configurators),
         configure_project_git_commit_display_string(flask_app.local_server.server_config.server_configurators),

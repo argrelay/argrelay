@@ -14,6 +14,7 @@ from argrelay.enum_desc.TopDir import TopDir
 
 _server_index_field_name = "server_index"
 
+
 class PluginCheckEnvServerIndex(PluginCheckEnvAbstract):
     """
     Simple plugin to report server index for FS_93_18_57_91 client fail over.

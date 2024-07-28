@@ -29,7 +29,7 @@ class PluginType(Enum):
 
     ConfiguratorPlugin = PluginSide.PluginServerSideOnly
     """
-    See `AbstractConfigurator`.
+    See `ConfiguratorAbstract`.
     """
 
     CheckEnvPlugin = PluginSide.PluginClientSideOnly

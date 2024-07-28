@@ -43,6 +43,7 @@ def store_server_index(
     with open(server_index_file_path, "w") as open_file:
         open_file.write(str(curr_server_index))
 
+
 class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
 
     def __init__(
@@ -101,4 +102,3 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
             exit(ClientExitCode.ConnectionError.value)
         else:
             raise ConnectionError(f"Unable to connect to any of [{connections_count}] configured connections")
-

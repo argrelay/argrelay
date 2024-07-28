@@ -40,7 +40,7 @@ class DelegatorCheckEnv(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: (
-                    f"TODO"
+                    CheckEnvFunc.func_id_get_server_project_git_commit_id.name
                 ),
                 ReservedPropName.func_state.name: FuncState.fs_alpha.name,
                 ReservedPropName.func_id.name: CheckEnvFunc.func_id_get_server_project_git_commit_id.name,
@@ -54,7 +54,7 @@ class DelegatorCheckEnv(AbstractDelegator):
                 },
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: (
-                    f"TODO"
+                    CheckEnvFunc.func_id_get_server_start_time.name
                 ),
                 ReservedPropName.func_state.name: FuncState.fs_alpha.name,
                 ReservedPropName.func_id.name: CheckEnvFunc.func_id_get_server_start_time.name,

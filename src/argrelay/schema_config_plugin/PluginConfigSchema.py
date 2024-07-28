@@ -12,6 +12,7 @@ reusable_config_data_ = "reusable_config_data"
 plugin_instance_entries_ = "plugin_instance_entries"
 check_env_plugin_instance_entries_ = "check_env_plugin_instance_entries"
 
+
 class PluginConfigSchema(ObjectSchema):
     class Meta:
         unknown = RAISE

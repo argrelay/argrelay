@@ -22,7 +22,7 @@ from argrelay.custom_integ.SchemaPluginCheckEvnServerResponseValueAbstract impor
     schema_plugin_check_evn_server_response_abstract_desc,
 )
 from argrelay.misc_helper_common.ObjectSchema import object_desc
-from argrelay.plugin_config.DefaultConfiguratorConfigSchema import default_configurator_config_desc
+from argrelay.plugin_config.ConfiguratorDefaultConfigSchema import configurator_default_config_desc
 from argrelay.plugin_delegator.AbstractJumpDelegatorConfigSchema import abstract_jump_delegator_config_desc
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
@@ -89,7 +89,7 @@ class ThisTestClass(BaseTestClass):
         (line_no(), abstract_jump_delegator_config_desc),
         (line_no(), server_plugin_control_desc),
         (line_no(), envelope_collection_desc),
-        (line_no(), default_configurator_config_desc),
+        (line_no(), configurator_default_config_desc),
         (line_no(), config_only_loader_config_desc),
         (line_no(), base_config_delegator_config_desc),
         (line_no(), config_only_delegator_envelope_payload_desc),
@@ -119,7 +119,7 @@ class ThisTestClass(BaseTestClass):
                 #       (by trying to remove any field and reload - it should fail).
                 # TODO: Load minimal dict per schema (to test defaults are loaded):
                 #       Currently, only test selected dict to load their minimal dict:
-                if type_desc is default_configurator_config_desc:
+                if type_desc is configurator_default_config_desc:
                     type_desc.dict_schema.load({})
 
     def test_type_desc_example_is_loadable_and_dumpable(self):
