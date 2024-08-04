@@ -113,6 +113,7 @@ def log_index_progress(
 
 
 def log_validation_progress(
+    validation_step: str,
     mongo_collection: str,
     curr_envelope_i: int,
     total_envelope_n: int,
@@ -121,7 +122,7 @@ def log_validation_progress(
         assert curr_envelope_i <= total_envelope_n
     finally:
         eprint(
-            f"collection: {mongo_collection}: validated envelopes: {curr_envelope_i}/{total_envelope_n}..."
+            f"validation step: {validation_step}: collection: {mongo_collection}: validated envelopes: {curr_envelope_i}/{total_envelope_n}..."
         )
 
 

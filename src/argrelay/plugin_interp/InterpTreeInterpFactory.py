@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import contextlib
 
-from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
-from argrelay.composite_tree.CompositeTreeExtractor import extract_interp_tree
-from argrelay.composite_tree.DictTreeWalker import DictTreeWalker, sequence_starts_with
+from argrelay.composite_forest.CompositeForestExtractor import extract_interp_tree
+from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
+from argrelay.composite_forest.DictTreeWalker import DictTreeWalker, sequence_starts_with
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
@@ -35,10 +35,10 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         )
         self.is_recursive_func_load = False
 
-        self._compare_config_with_composite_tree()
+        self._compare_config_with_composite_forest()
 
-    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
-    def _compare_config_with_composite_tree(
+    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
+    def _compare_config_with_composite_forest(
         self,
     ):
         expected_dict = self.plugin_config_dict[interp_selector_tree_]
@@ -92,7 +92,7 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         func_ids_to_func_envelopes: dict[str, dict],
     ) -> list[str]:
         with self._is_recursive_load() as is_recursive_load:
-            # TODO: FS_33_76_82_84 composite tree: add validation that same interp tree interp is not loaded twice - is it required (given that plugin instances can be reused)?
+            # TODO: FS_33_76_82_84 composite forest: add validation that same interp tree interp is not loaded twice - is it required (given that plugin instances can be reused)?
             if is_recursive_load:
                 return []
             return self._load_func_envelopes(

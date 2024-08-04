@@ -4,7 +4,7 @@ from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.custom_integ.value_constants import goto_service_func_, goto_host_func_
+from argrelay.custom_integ.value_constants import func_id_goto_service_, func_id_goto_host
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
@@ -544,7 +544,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc diff double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag {SpecialChar.NoPropValue.value} 
 {" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(3)}: ?{TermColor.reset_style.value} commit double_execution host print_with_exit print_with_io_redirect print_with_level repo service tag {SpecialChar.NoPropValue.value} 
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} {FuncState.fs_alpha} {FuncState.fs_beta} {FuncState.fs_demo} {FuncState.fs_gamma} 
-{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} desc_git_commit_func desc_git_tag_func desc_host_func desc_service_func diff_service_func func_id_echo_args func_id_help_hint func_id_intercept_invocation func_id_query_enum_items funct_id_double_execution funct_id_print_with_exit_code funct_id_print_with_io_redirect funct_id_print_with_severity_level goto_git_repo_func goto_host_func goto_service_func list_host_func list_service_func 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_desc_git_commit func_id_desc_git_tag func_id_desc_host func_id_desc_service func_id_diff_service func_id_double_execution func_id_echo_args func_id_goto_git_repo func_id_goto_host func_id_goto_service func_id_help_hint func_id_intercept_invocation func_id_list_host func_id_list_service func_id_print_with_exit_code func_id_print_with_io_redirect func_id_print_with_severity_level func_id_query_enum_items 
 """,
             ),
             (
@@ -559,7 +559,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.fs_demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {func_id_goto_service_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -588,7 +588,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: host {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.fs_demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_host_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {func_id_goto_host} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassHost.name}: {TermColor.found_count_n.value}10{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*code_maturity: ?{TermColor.reset_style.value} dev prod qa 
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: upstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -612,7 +612,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.fs_demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {func_id_goto_service_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}code_maturity: prod {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}flow_stage: upstream {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
@@ -1075,7 +1075,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.fs_demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {func_id_goto_service_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -1103,7 +1103,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.fs_demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {func_id_goto_service_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: dev {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
@@ -1131,7 +1131,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.fs_demo.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {goto_service_func_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {func_id_goto_service_} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.ClassService.name}: {TermColor.found_count_n.value}3{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}code_maturity: prod {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}flow_stage: downstream {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}

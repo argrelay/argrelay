@@ -1,12 +1,20 @@
 from __future__ import annotations
 
+from argrelay.custom_integ.ConfigOnlyLoader import ConfigOnlyLoader
+from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import collection_name_to_index_props_map_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
+from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
+from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
     mock_subprocess_popen,
+    EnvMockBuilder,
 )
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 
@@ -17,6 +25,11 @@ class ThisTestClass(LocalTestClass):
     """
 
     same_test_data_per_class = "TD_63_37_05_36"  # demo
+
+    def test_init_server(self):
+        self._init_local_server(
+            LocalClientEnvMockBuilder().set_reset_local_server(False),
+        )
 
     def test_config_only_suggestions(self):
 
@@ -188,6 +201,10 @@ exit 1
             ),
         ]
 
+        self._init_local_server(
+            LocalClientEnvMockBuilder().set_reset_local_server(False),
+        )
+
         for test_case in test_cases:
             with self.subTest(test_case):
                 (
@@ -214,3 +231,76 @@ exit 1
                         )
                     expected_exit_code = next(iter(popen_mock_config.values()))[0]
                     self.assertEqual(cm.exception.code, expected_exit_code)
+
+    def test_validation_for_unused_data_envelope(self):
+        """
+        This test relies on `ConfigOnlyLoader` to load `data_envelope` with a class unused by anything.
+
+        The validation should prevent starting server `data_envelope` (unless it is used by some of
+        `search_control`-s anywhere which should not be the case).
+        """
+
+        env_mock_builder = LocalClientEnvMockBuilder().set_reset_local_server(True)
+
+        for add_unused_data_envelope in [
+            False,
+            True,
+        ]:
+            with self.subTest(add_unused_data_envelope):
+                if add_unused_data_envelope:
+                    class_name = "THIS_CLASS_IS_UNUSED"
+
+                    # Change config to cause validation error:
+                    plugin_config_dict = plugin_config_desc.dict_from_default_file()
+                    instance_config_dict: dict = plugin_config_dict[
+                        plugin_instance_entries_
+                    ][
+                        # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
+                        f"{ConfigOnlyLoader.__name__}.default"
+                    ][
+                        plugin_config_
+                    ]
+
+                    instance_config_dict[
+                        data_envelopes_
+                    ].append({
+                        envelope_payload_: {
+                        },
+                        ReservedPropName.envelope_class.name: class_name,
+                    })
+
+                    instance_config_dict[collection_name_to_index_props_map_][class_name] = []
+
+                    env_mock_builder.set_plugin_config_dict(plugin_config_dict)
+
+                    with self.assertRaises(ValueError) as cm:
+                        self._init_local_server(env_mock_builder)
+                    self.assertTrue(
+                        cm.exception.args[0].startswith(
+                            f"data_envelope of (collection_name: `{class_name}`, envelope_class: `{class_name}`) is not used by any `search_control`:",
+                        ),
+                    )
+                else:
+                    # Should start successfully by default:
+                    self._init_local_server(env_mock_builder)
+
+    def _init_local_server(
+        self,
+        env_mock_builder: EnvMockBuilder,
+    ):
+        """
+        Init `LocalServer` (for one or all subsequent `test_cases`).
+        """
+
+        self.verify_output_via_local_client(
+            self.__class__.same_test_data_per_class,
+            "some_command |",
+            CompType.PrefixShown,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            env_mock_builder,
+        )

@@ -62,24 +62,24 @@ reusable_config_data:
                 "": &func_tree_main
                     "echo": func_id_echo_args
                     "goto":
-                        "repo": goto_git_repo_func
-                        "host": goto_host_func
-                        "service": goto_service_func
+                        "repo": func_id_goto_git_repo
+                        "host": func_id_goto_host
+                        "service": func_id_goto_service
                     "list":
-                        "host": list_host_func
-                        "service": list_service_func
+                        "host": func_id_list_host
+                        "service": func_id_list_service
                     "diff":
-                        "service": diff_service_func
+                        "service": func_id_diff_service
                     "desc":
-                        "tag": desc_git_tag_func
-                        "commit": desc_git_commit_func
-                        "host": desc_host_func
-                        "service": desc_service_func
+                        "tag": func_id_desc_git_tag
+                        "commit": func_id_desc_git_commit
+                        "host": func_id_desc_host
+                        "service": func_id_desc_service
                     "config":
-                        "print_with_level": funct_id_print_with_severity_level
-                        "print_with_exit": funct_id_print_with_exit_code
-                        "print_with_io_redirect": funct_id_print_with_io_redirect
-                        "double_execution": funct_id_double_execution
+                        "print_with_level": func_id_print_with_severity_level
+                        "print_with_exit": func_id_print_with_exit_code
+                        "print_with_io_redirect": func_id_print_with_io_redirect
+                        "double_execution": func_id_double_execution
             "": *func_tree_main
         "some_command":
             "intercept": func_id_intercept_invocation
@@ -93,10 +93,10 @@ reusable_config_data:
         "service_relay_demo":
             "help": func_id_help_hint
             "":
-                "goto": goto_service_func
-                "list": list_service_func
-                "diff": diff_service_func
-                "desc": desc_service_func
+                "goto": func_id_goto_service
+                "list": func_id_list_service
+                "diff": func_id_diff_service
+                "desc": func_id_desc_service
 
     func_tree_func_id_intercept_invocation: &func_tree_func_id_intercept_invocation
         "relay_demo":
@@ -138,10 +138,10 @@ reusable_config_data:
 
     func_tree_service: &func_tree_service
         "service_relay_demo":
-            "goto": goto_service_func
-            "list": list_service_func
-            "diff": diff_service_func
-            "desc": desc_service_func
+            "goto": func_id_goto_service
+            "list": func_id_list_service
+            "diff": func_id_diff_service
+            "desc": func_id_desc_service
 
     func_tree_check_env: &func_tree_check_env
         "argrelay.check_env":
@@ -223,7 +223,7 @@ plugin_instance_entries:
                 "argrelay.check_env":
                     "": FuncTreeInterpFactory.check_env
 
-    # TODO: FS_33_76_82_84 `composite_tree`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
+    # TODO: FS_33_76_82_84 `composite_forest`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
     #       See extended comment for `FuncTreeInterpFactory.func_id_help_hint`.
     FuncTreeInterpFactory.func_id_intercept_invocation:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
@@ -420,9 +420,10 @@ plugin_instance_entries:
         plugin_config:
             # TODO_84_71_86_21: change to realistic examples:
             func_configs:
-                funct_id_print_with_severity_level:
+                func_id_print_with_severity_level:
                     func_envelope:
                         help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
+                        func_state: fs_demo
                         instance_data:
                             search_control_list:
                                 -
@@ -434,9 +435,10 @@ plugin_instance_entries:
                         envelope_payload:
                             command_template: "echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\""
                             echo_command_on_stderr: True
-                funct_id_print_with_exit_code:
+                func_id_print_with_exit_code:
                     func_envelope:
                         help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
+                        func_state: fs_demo
                         instance_data:
                             search_control_list:
                                 -
@@ -449,9 +451,10 @@ plugin_instance_entries:
                             command_template: |
                                 echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
                                 exit {envelope_containers[1].data_envelopes[0]['exit_code']}
-                funct_id_print_with_io_redirect:
+                func_id_print_with_io_redirect:
                     func_envelope:
                         help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` on stdout or stderr based on exit code"
+                        func_state: fs_demo
                         instance_data:
                             search_control_list:
                                 -
@@ -469,7 +472,7 @@ plugin_instance_entries:
                                     echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&2
                                 fi
                                 exit {envelope_containers[1].data_envelopes[0]['exit_code']}
-                funct_id_double_execution:
+                func_id_double_execution:
                     fill_control_list:
                         # 0th = func container:
                         -   { }
@@ -481,6 +484,7 @@ plugin_instance_entries:
                             exit_code: "{envelope_containers[1].data_envelopes[0]['exit_code']}"
                     func_envelope:
                         help_hint: "Example: take two command templates and execute them: print `text_message` prefixed with `severity_level` and print exit code (without using it for exit)"
+                        func_state: fs_demo
                         instance_data:
                             search_control_list:
                                 -

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from copy import deepcopy
+
 from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.composite_tree.CompositeForestSchema import tree_roots_
-from argrelay.composite_tree.CompositeNodeSchema import node_type_, plugin_instance_id_, sub_tree_
-from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
+from argrelay.composite_forest.CompositeForestSchema import tree_roots_
+from argrelay.composite_forest.CompositeNodeSchema import sub_tree_
+from argrelay.composite_forest.DictTreeWalker import surrogate_node_id_
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_interp.FirstArgInterpFactory import (
@@ -13,20 +15,24 @@ from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
     first_arg_vals_to_next_interp_factory_ids_,
     ignored_func_ids_list_,
 )
-from argrelay.plugin_interp.NoopInterp import NoopInterp
-from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
+from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
+from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import jump_tree_, func_selector_tree_
+from argrelay.plugin_interp.InterpTreeInterp import InterpTreeInterp
+from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
+from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
     server_plugin_control_,
 )
 from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_instance_entries_, plugin_config_desc
+from argrelay.schema_config_plugin.PluginConfigSchema import (
+    plugin_instance_entries_,
+    plugin_config_desc,
+    reusable_config_data_,
+)
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
-    plugin_module_name_,
-    plugin_class_name_,
-    plugin_dependencies_,
 )
 from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.EnvMockBuilder import (
@@ -49,12 +55,13 @@ class ThisTestClass(LocalTestClass):
         server_config_dict = server_config_desc.dict_from_default_file()
         plugin_config_dict = plugin_config_desc.dict_from_default_file()
 
-        # Patch server config for `FirstArgInterpFactory` - bind all `first_command_names` to `NoopInterpFactory`:
+        # Patch server config for `FirstArgInterpFactory`:
+        # bind all `first_command_name`-s to `InterpTreeInterpFactory.default`:
         dependent_plugin_id = f"{FirstArgInterpFactory.__name__}.default"
         plugin_entry = plugin_config_dict[plugin_instance_entries_][dependent_plugin_id]
         for first_command_name in first_command_names:
             # Compose same plugin id (as below):
-            plugin_instance_id = f"{NoopInterpFactory.__name__}.{first_command_name}"
+            plugin_instance_id = f"{InterpTreeInterpFactory.__name__}.default"
             plugin_entry[plugin_config_][first_arg_vals_to_next_interp_factory_ids_][
                 first_command_name
             ] = plugin_instance_id
@@ -68,26 +75,137 @@ class ThisTestClass(LocalTestClass):
             SpecialFunc.func_id_unplugged.name,
         ]
 
-        # Patch server config to add NoopInterpFactory (2 plugin instances):
+        # Patch server config to plug given command with the same config as `some_command`:
         for first_command_name in first_command_names:
-            # Compose same plugin id (as above):
-            plugin_instance_id = f"{NoopInterpFactory.__name__}.{first_command_name}"
-            plugin_entry = {
-                plugin_module_name_: NoopInterpFactory.__module__,
-                plugin_class_name_: NoopInterpFactory.__name__,
+
+            ############################################################################################################
+
+            composite_tree_root = deepcopy(
+                server_config_dict[
+                    server_plugin_control_
+                ][
+                    composite_forest_
+                ][
+                    tree_roots_
+                ][
+                    "some_command"
+                ]
+            )
+            # Remove unnecessary:
+            del composite_tree_root[sub_tree_]["intercept"]
+            del composite_tree_root[sub_tree_]["help"]
+            del composite_tree_root[sub_tree_]["enum"]
+            del composite_tree_root[sub_tree_]["duplicates"]
+
+            server_config_dict[
+                server_plugin_control_
+            ][
+                composite_forest_
+            ][
+                tree_roots_
+            ][
+                first_command_name
+            ] = composite_tree_root
+
+            ############################################################################################################
+
+            jump_sub_tree = {
+                surrogate_node_id_: [
+                    first_command_name,
+                ]
             }
-            assert plugin_instance_id not in plugin_config_dict[plugin_instance_entries_]
-            plugin_config_dict[plugin_instance_entries_][plugin_instance_id] = plugin_entry
+            plugin_config_dict[
+                reusable_config_data_
+            ][
+                jump_tree_
+            ][
+                first_command_name
+            ] = jump_sub_tree
+            # Replace in all plugin instances using `jump_tree`:
+            for plugin_instance_id in [
+                f"{FuncTreeInterpFactory.__name__}.func_id_intercept_invocation",
+                f"{FuncTreeInterpFactory.__name__}.func_id_help_hint",
+                f"{FuncTreeInterpFactory.__name__}.func_id_query_enum_items",
+                f"{FuncTreeInterpFactory.__name__}.default",
+                f"{FuncTreeInterpFactory.__name__}.check_env",
+                f"{FuncTreeInterpFactory.__name__}.service",
+            ]:
+                plugin_config_dict[
+                    plugin_instance_entries_
+                ][
+                    plugin_instance_id
+                ][
+                    plugin_config_
+                ][
+                    jump_tree_
+                ][
+                    first_command_name
+                ] = jump_sub_tree
+
+            ############################################################################################################
+
+            interp_selector_tree = deepcopy(
+                plugin_config_dict[
+                    plugin_instance_entries_
+                ][
+                    f"{InterpTreeInterpFactory.__name__}.default"
+                ][
+                    plugin_config_
+                ][
+                    interp_selector_tree_
+                ][
+                    "some_command"
+                ]
+            )
+            # Remove unnecessary:
+            del interp_selector_tree["intercept"]
+            del interp_selector_tree["help"]
+            del interp_selector_tree["enum"]
+            del interp_selector_tree["duplicates"]
 
             plugin_config_dict[
                 plugin_instance_entries_
-            ][dependent_plugin_id][plugin_dependencies_].append(plugin_instance_id)
+            ][
+                f"{InterpTreeInterpFactory.__name__}.default"
+            ][
+                plugin_config_
+            ][
+                interp_selector_tree_
+            ][
+                first_command_name
+            ] = interp_selector_tree
 
-            server_config_dict[server_plugin_control_][composite_forest_][tree_roots_][first_command_name] = {
-                node_type_: CompositeNodeType.zero_arg_node.name,
-                plugin_instance_id_: plugin_instance_id,
-                sub_tree_: None,
-            }
+            ############################################################################################################
+
+            func_selector_tree = deepcopy(
+                plugin_config_dict[
+                    plugin_instance_entries_
+                ][
+                    f"{FuncTreeInterpFactory.__name__}.default"
+                ][
+                    plugin_config_
+                ][
+                    func_selector_tree_
+                ][
+                    "some_command"
+                ]
+            )
+            # Remove unnecessary:
+            del func_selector_tree["duplicates"]
+
+            plugin_config_dict[
+                plugin_instance_entries_
+            ][
+                f"{FuncTreeInterpFactory.__name__}.default"
+            ][
+                plugin_config_
+            ][
+                func_selector_tree_
+            ][
+                first_command_name
+            ] = func_selector_tree
+
+            ############################################################################################################
 
         env_mock_builder = (
             LocalClientEnvMockBuilder()
@@ -111,8 +229,8 @@ class ThisTestClass(LocalTestClass):
             first_token_value = interp_ctx.parsed_ctx.all_tokens[0]
 
             interp_factory_id = first_arg_vals_to_next_interp_factory_ids[first_token_value]
-            interp_factory_instance: NoopInterpFactory = interp_ctx.interp_factories[interp_factory_id]
-            prev_interp: NoopInterp = interp_ctx.prev_interp
+            interp_factory_instance: InterpTreeInterpFactory = interp_ctx.interp_factories[interp_factory_id]
+            prev_interp: InterpTreeInterp = interp_ctx.prev_interp
 
             self.assertTrue(
                 (
@@ -120,7 +238,7 @@ class ThisTestClass(LocalTestClass):
                     ==
                     interp_factory_instance.plugin_instance_id
                     ==
-                    f"{NoopInterpFactory.__name__}.{first_token_value}"
+                    f"{InterpTreeInterpFactory.__name__}.default"
                 ),
                 "config instructs to name interp instance as the first token it binds to",
             )

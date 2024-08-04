@@ -35,15 +35,15 @@ class FuncTreeInterpFactoryConfigSchema(Schema):
 func_tree_interp_config_example = {
     func_selector_tree_: {
         "list": {
-            "repo": "list_repo_func",
-            "service": "list_service_func",
+            "repo": "func_id_list_repo",
+            "service": "func_id_list_service",
         },
         "diff": {
-            "service": "diff_service_func",
+            "service": "func_id_diff_service",
         },
         "goto": {
-            "repo": "goto_git_repo_func",
-            "service": "goto_service_func",
+            "repo": "func_id_goto_git_repo",
+            "service": "func_id_goto_service",
         },
     },
     jump_tree_: [

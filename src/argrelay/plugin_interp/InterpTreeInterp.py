@@ -3,7 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Union
 
-from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_, fetch_subtree_node
+from argrelay.composite_forest.DictTreeWalker import surrogate_node_id_, fetch_subtree_node
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
-from argrelay.composite_tree.CompositeTreeExtractor import extract_tree_abs_path_to_interp_id
-from argrelay.composite_tree.DictTreeWalker import DictTreeWalker
+from argrelay.composite_forest.CompositeForestExtractor import extract_tree_abs_path_to_interp_id
+from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
+from argrelay.composite_forest.DictTreeWalker import DictTreeWalker
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_delegator.AbstractJumpDelegatorConfigSchema import (
@@ -29,7 +29,7 @@ class AbstractJumpDelegator(AbstractDelegator):
             plugin_config_dict,
         )
 
-        self._compare_config_with_composite_tree()
+        self._compare_config_with_composite_forest()
 
         dict_tree_walker = DictTreeWalker(
             CompositeInfoType.tree_abs_path_to_interp_id,
@@ -44,8 +44,8 @@ class AbstractJumpDelegator(AbstractDelegator):
             for tree_abs_path in tree_abs_paths:
                 self.tree_path_to_next_interp_plugin_instance_id[tuple(tree_abs_path)] = interp_factory_instance_id
 
-    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
-    def _compare_config_with_composite_tree(
+    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
+    def _compare_config_with_composite_forest(
         self,
     ):
         expected_dict = self.plugin_config_dict[tree_abs_path_to_interp_id_]

@@ -44,7 +44,7 @@ class ThisTestClass(LocalTestClass):
                     3: None,
                 },
                 "Step 1: FS_44_36_84_88: both `tag` and `desc` are assigned `ArgSource.ExplicitPosArg` regardless of the order "
-                "FS_26_43_73_72 interp tree: the ordered path to func `desc_git_tag_func` is `desc tag` ",
+                "FS_26_43_73_72 interp tree: the ordered path to func `func_id_desc_git_tag` is `desc tag` ",
             ),
             (
                 line_no(),
@@ -71,7 +71,7 @@ class ThisTestClass(LocalTestClass):
                     3: None,
                 },
                 "Step 2: FS_44_36_84_88: both `tag` and `desc` are assigned `ArgSource.ExplicitPosArg` regardless of the order "
-                "FS_26_43_73_72 interp tree: the ordered path to func `desc_git_tag_func` is `desc tag` ",
+                "FS_26_43_73_72 interp tree: the ordered path to func `func_id_desc_git_tag` is `desc tag` ",
             ),
         ]
 

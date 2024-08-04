@@ -69,7 +69,7 @@ def init_envelop_collections(
     class_to_collection_map: dict = server_config.class_to_collection_map
 
     for class_name in class_names:
-        # Default collection_name == class_name (unless overriden = specified in config explicitly):
+        # Default collection_name == class_name (unless overridden = specified in config explicitly):
         class_to_collection_map.setdefault(
             class_name,
             class_name,

@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from argrelay.composite_tree.CompositeForest import CompositeForest
-from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
-from argrelay.composite_tree.CompositeTreeExtractor import (
+from argrelay.composite_forest.CompositeForest import CompositeForest
+from argrelay.composite_forest.CompositeForestExtractor import (
     extract_tree_abs_path_to_interp_id,
     extract_zero_arg_interp_tree,
     extract_jump_tree,
     extract_interp_tree,
     extract_func_tree,
 )
-from argrelay.composite_tree.DictTreeWalker import normalize_tree
+from argrelay.composite_forest.CompositeForestSchema import composite_forest_desc
+from argrelay.composite_forest.DictTreeWalker import normalize_tree
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
 from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
@@ -24,13 +24,13 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 class ThisTestClass(LocalTestClass):
     """
-    Tests FS_33_76_82_84 composite tree (classes derived from `CompositeTreeExtractorAbstract`).
+    Tests FS_33_76_82_84 composite forest (classes derived from `CompositeForestExtractorAbstract`).
     """
 
     def test_extract_tree_abs_path_to_interp_id(self):
         """
         Test that extracted `CompositeInfoType.tree_abs_path_to_interp_id` is the same
-        as specified per plugin manually (not via `composite_tree`).
+        as specified per plugin manually (not via `composite_forest`).
         """
 
         test_cases = [
@@ -96,7 +96,7 @@ class ThisTestClass(LocalTestClass):
                 ) = test_case
 
                 actual_dict = extract_tree_abs_path_to_interp_id(
-                    self.load_composite_tree(),
+                    self.load_composite_forest(),
                     func_id,
                 )
 
@@ -108,7 +108,7 @@ class ThisTestClass(LocalTestClass):
     def test_extract_zero_arg_interp_tree(self):
         """
         Test that extracted `CompositeInfoType.zero_arg_interp_tree` is the same
-        as specified per plugin manually (not via `composite_tree`).
+        as specified per plugin manually (not via `composite_forest`).
         """
 
         test_cases = [
@@ -131,7 +131,7 @@ class ThisTestClass(LocalTestClass):
                 ) = test_case
 
                 actual_dict = extract_zero_arg_interp_tree(
-                    self.load_composite_tree(),
+                    self.load_composite_forest(),
                 )
 
                 self.assertEqual(
@@ -142,7 +142,7 @@ class ThisTestClass(LocalTestClass):
     def test_extract_jump_tree(self):
         """
         Test that extracted `CompositeInfoType.jump_tree` is the same
-        as specified per plugin manually (not via `composite_tree`).
+        as specified per plugin manually (not via `composite_forest`).
         """
 
         test_cases = [
@@ -231,7 +231,7 @@ class ThisTestClass(LocalTestClass):
                 ) = test_case
 
                 actual_dict = extract_jump_tree(
-                    self.load_composite_tree(),
+                    self.load_composite_forest(),
                 )
 
                 self.assertEqual(
@@ -242,7 +242,7 @@ class ThisTestClass(LocalTestClass):
     def test_extract_interp_tree(self):
         """
         Test that extracted `CompositeInfoType.interp_tree` is the same
-        as specified per plugin manually (not via `composite_tree`).
+        as specified per plugin manually (not via `composite_forest`).
         """
 
         test_cases = [
@@ -289,7 +289,7 @@ class ThisTestClass(LocalTestClass):
                 ) = test_case
 
                 actual_dict = extract_interp_tree(
-                    self.load_composite_tree(),
+                    self.load_composite_forest(),
                     plugin_instance_id,
                 )
 
@@ -301,34 +301,34 @@ class ThisTestClass(LocalTestClass):
     def test_extract_func_tree(self):
         """
         Test that extracted `CompositeInfoType.func_tree` is the same
-        as specified per plugin manually (not via `composite_tree`).
+        as specified per plugin manually (not via `composite_forest`).
         """
 
         func_tree_main = {
             "echo": "func_id_echo_args",
             "goto": {
-                "repo": "goto_git_repo_func",
-                "host": "goto_host_func",
-                "service": "goto_service_func",
+                "repo": "func_id_goto_git_repo",
+                "host": "func_id_goto_host",
+                "service": "func_id_goto_service",
             },
             "list": {
-                "host": "list_host_func",
-                "service": "list_service_func",
+                "host": "func_id_list_host",
+                "service": "func_id_list_service",
             },
             "diff": {
-                "service": "diff_service_func",
+                "service": "func_id_diff_service",
             },
             "desc": {
-                "tag": "desc_git_tag_func",
-                "commit": "desc_git_commit_func",
-                "host": "desc_host_func",
-                "service": "desc_service_func",
+                "tag": "func_id_desc_git_tag",
+                "commit": "func_id_desc_git_commit",
+                "host": "func_id_desc_host",
+                "service": "func_id_desc_service",
             },
             "config": {
-                "print_with_level": "funct_id_print_with_severity_level",
-                "print_with_exit": "funct_id_print_with_exit_code",
-                "print_with_io_redirect": "funct_id_print_with_io_redirect",
-                "double_execution": "funct_id_double_execution",
+                "print_with_level": "func_id_print_with_severity_level",
+                "print_with_exit": "func_id_print_with_exit_code",
+                "print_with_io_redirect": "func_id_print_with_io_redirect",
+                "double_execution": "func_id_double_execution",
             },
         }
 
@@ -406,10 +406,10 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 {
                     "service_relay_demo": {
-                        "goto": "goto_service_func",
-                        "list": "list_service_func",
-                        "diff": "diff_service_func",
-                        "desc": "desc_service_func",
+                        "goto": "func_id_goto_service",
+                        "list": "func_id_list_service",
+                        "diff": "func_id_diff_service",
+                        "desc": "func_id_desc_service",
                     },
                 },
                 f"{FuncTreeInterpFactory.__name__}.service",
@@ -427,10 +427,10 @@ class ThisTestClass(LocalTestClass):
                 normalized_expected_dict = normalize_tree(expected_func_tree)
 
                 # No need to normalize extracted `actual_dict`
-                # because `composite_tree` is constructed to maintain `dict` structure
+                # because `composite_forest` is constructed to maintain `dict` structure
                 # without `surrogate_node_id_`-s and `surrogate_tree_leaf_`-s.
                 actual_dict = normalize_tree(extract_func_tree(
-                    self.load_composite_tree(),
+                    self.load_composite_forest(),
                     plugin_instance_id,
                 ))
 
@@ -440,7 +440,7 @@ class ThisTestClass(LocalTestClass):
                 )
 
     @staticmethod
-    def load_composite_tree(
+    def load_composite_forest(
     ) -> CompositeForest:
         return composite_forest_desc.obj_from_input_dict(
             server_config_desc.dict_from_default_file()[server_plugin_control_][composite_forest_]

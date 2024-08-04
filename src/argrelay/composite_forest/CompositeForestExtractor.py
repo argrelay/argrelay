@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay.composite_tree.CompositeForest import CompositeForest
-from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
-from argrelay.composite_tree.CompositeNode import InterpTreeNode, ZeroArgNode, TreePathNode, FuncTreeNode
-from argrelay.composite_tree.CompositeTreeWalker import CompositeTreeWalkerAbstract, TraverseDecision
-from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_
+from argrelay.composite_forest.CompositeForest import CompositeForest
+from argrelay.composite_forest.CompositeForestWalker import CompositeForestWalkerAbstract, TraverseDecision
+from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
+from argrelay.composite_forest.CompositeNode import InterpTreeNode, ZeroArgNode, TreePathNode, FuncTreeNode
+from argrelay.composite_forest.DictTreeWalker import surrogate_node_id_
 
 
 def extract_tree_abs_path_to_interp_id(
@@ -17,7 +17,7 @@ def extract_tree_abs_path_to_interp_id(
     Extracts `CompositeInfoType.tree_abs_path_to_interp_id`.
     """
 
-    tree_walker = _CompositeTreeWalker_tree_abs_path_to_interp_id(
+    tree_walker = _CompositeForestWalker_tree_abs_path_to_interp_id(
         composite_forest,
         CompositeInfoType.tree_abs_path_to_interp_id,
         func_id,
@@ -34,7 +34,7 @@ def extract_zero_arg_interp_tree(
     Extracts `CompositeInfoType.zero_arg_interp_tree`.
     """
 
-    tree_walker = _CompositeTreeWalker_zero_arg_interp_tree(
+    tree_walker = _CompositeForestWalker_zero_arg_interp_tree(
         composite_forest,
         CompositeInfoType.zero_arg_interp_tree,
     )
@@ -50,7 +50,7 @@ def extract_jump_tree(
     Extracts `CompositeInfoType.jump_tree`.
     """
 
-    tree_walker = _CompositeTreeWalker_jump_tree(
+    tree_walker = _CompositeForestWalker_jump_tree(
         composite_forest,
         CompositeInfoType.jump_tree,
     )
@@ -67,7 +67,7 @@ def extract_interp_tree(
     Extracts `CompositeInfoType.interp_tree`.
     """
 
-    tree_walker = _CompositeTreeWalker_interp_tree(
+    tree_walker = _CompositeForestWalker_interp_tree(
         composite_forest,
         CompositeInfoType.interp_tree,
         plugin_instance_id,
@@ -85,7 +85,7 @@ def extract_func_tree(
     Extracts `CompositeInfoType.func_tree`.
     """
 
-    tree_walker = _CompositeTreeWalker_func_tree(
+    tree_walker = _CompositeForestWalker_func_tree(
         composite_forest,
         CompositeInfoType.func_tree,
         plugin_instance_id,
@@ -114,9 +114,9 @@ def _put_value_into_dict_path(
     curr_sub_dict[given_path[-1]] = given_value
 
 
-class CompositeTreeExtractorAbstract(CompositeTreeWalkerAbstract):
+class CompositeForestExtractorAbstract(CompositeForestWalkerAbstract):
     """
-    Base class for extractor which takes specific `CompositeInfoType` from the FS_33_76_82_84 composite tree.
+    Base class for extractor which takes specific `CompositeInfoType` from the FS_33_76_82_84 composite forest.
     """
 
     def __init__(
@@ -133,7 +133,7 @@ class CompositeTreeExtractorAbstract(CompositeTreeWalkerAbstract):
 
 
 # noinspection PyPep8Naming
-class _CompositeTreeWalker_tree_abs_path_to_interp_id(CompositeTreeExtractorAbstract):
+class _CompositeForestWalker_tree_abs_path_to_interp_id(CompositeForestExtractorAbstract):
 
     def __init__(
         self,
@@ -150,33 +150,28 @@ class _CompositeTreeWalker_tree_abs_path_to_interp_id(CompositeTreeExtractorAbst
         # `info_type`-specific input:
         self.func_id: Union[str, None] = func_id
 
-        # internal trackers:
-        self.last_next_interp: Union[InterpTreeNode.NextInterp, None] = None
-
         # results:
         self.tree_abs_path_to_interp_id: dict = {}
 
-    # noinspection PyPep8Naming
-    def _visit_ZeroArgNode(self, node: ZeroArgNode) -> None:
+    def _visit_zero_arg_node(self, node: ZeroArgNode) -> None:
+        self.visitor_decision = TraverseDecision.walk_sub_tree
+        # FS_91_88_07_23: jump tree:
+        # Similar to `jump_path`-s, next `plugin_instance_id` configuration was drop in favour of
+        # deriving such plugin automatically:
+        self.next_jump_plugin_instance_id = self.curr_node.plugin_instance_id
+
+    def _visit_tree_path_node(self, node: TreePathNode) -> None:
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_TreePathNode(self, node: TreePathNode) -> None:
+    def _visit_interp_tree_node(self, node: InterpTreeNode) -> None:
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_InterpTreeNode(self, node: InterpTreeNode) -> None:
-        self.last_next_interp = self.curr_node.next_interp
-        self.visitor_decision = TraverseDecision.walk_sub_tree
-
-    # noinspection PyPep8Naming
-    def _visit_FuncTreeNode(self, node: FuncTreeNode) -> None:
+    def _visit_func_tree_node(self, node: FuncTreeNode) -> None:
         if self.curr_node.func_id == self.func_id:
-            assert self.last_next_interp is not None
             assert self.curr_path[-1] == surrogate_node_id_
             assert self.curr_node.sub_tree is None
             _put_value_into_dict_path(
-                self.last_next_interp.plugin_instance_id,
+                self.next_jump_plugin_instance_id,
                 self.curr_path[:-1],
                 self.tree_abs_path_to_interp_id,
             )
@@ -184,7 +179,7 @@ class _CompositeTreeWalker_tree_abs_path_to_interp_id(CompositeTreeExtractorAbst
 
 
 # noinspection PyPep8Naming
-class _CompositeTreeWalker_zero_arg_interp_tree(CompositeTreeExtractorAbstract):
+class _CompositeForestWalker_zero_arg_interp_tree(CompositeForestExtractorAbstract):
 
     def __init__(
         self,
@@ -200,8 +195,7 @@ class _CompositeTreeWalker_zero_arg_interp_tree(CompositeTreeExtractorAbstract):
         # results:
         self.zero_arg_interp_tree: dict = {}
 
-    # noinspection PyPep8Naming
-    def _visit_ZeroArgNode(self, node: ZeroArgNode) -> None:
+    def _visit_zero_arg_node(self, node: ZeroArgNode) -> None:
         assert len(self.curr_path) == 1
         _put_value_into_dict_path(
             # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
@@ -214,21 +208,18 @@ class _CompositeTreeWalker_zero_arg_interp_tree(CompositeTreeExtractorAbstract):
         )
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_TreePathNode(self, node: TreePathNode) -> None:
+    def _visit_tree_path_node(self, node: TreePathNode) -> None:
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_InterpTreeNode(self, node: InterpTreeNode) -> None:
+    def _visit_interp_tree_node(self, node: InterpTreeNode) -> None:
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_FuncTreeNode(self, node: FuncTreeNode) -> None:
+    def _visit_func_tree_node(self, node: FuncTreeNode) -> None:
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
 
 # noinspection PyPep8Naming
-class _CompositeTreeWalker_jump_tree(CompositeTreeExtractorAbstract):
+class _CompositeForestWalker_jump_tree(CompositeForestExtractorAbstract):
 
     def __init__(
         self,
@@ -244,31 +235,31 @@ class _CompositeTreeWalker_jump_tree(CompositeTreeExtractorAbstract):
         # results:
         self.jump_tree: dict = {}
 
-    # noinspection PyPep8Naming
-    def _visit_ZeroArgNode(self, node: ZeroArgNode) -> None:
+    def _visit_zero_arg_node(self, node: ZeroArgNode) -> None:
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_TreePathNode(self, node: TreePathNode) -> None:
+    def _visit_tree_path_node(self, node: TreePathNode) -> None:
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_InterpTreeNode(self, node: InterpTreeNode) -> None:
+    def _visit_interp_tree_node(self, node: InterpTreeNode) -> None:
         assert len(self.curr_path) > 0
+        # FS_91_88_07_23: jump tree:
+        # So far, all `jump_path`-s are the paths leading to `curr_node` excluding that last `curr_node` step.
+        # Therefore, their configuration was drop in favour of deriving `jump_path` automatically:
+        jump_path = self.curr_path[:-1]
         _put_value_into_dict_path(
-            self.curr_node.next_interp.jump_path,
+            jump_path,
             self.curr_path,
             self.jump_tree,
         )
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_FuncTreeNode(self, node: FuncTreeNode) -> None:
+    def _visit_func_tree_node(self, node: FuncTreeNode) -> None:
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
 
 # noinspection PyPep8Naming
-class _CompositeTreeWalker_interp_tree(CompositeTreeExtractorAbstract):
+class _CompositeForestWalker_interp_tree(CompositeForestExtractorAbstract):
 
     def __init__(
         self,
@@ -291,20 +282,17 @@ class _CompositeTreeWalker_interp_tree(CompositeTreeExtractorAbstract):
         # results:
         self.interp_tree: dict = {}
 
-    # noinspection PyPep8Naming
-    def _visit_ZeroArgNode(self, node: ZeroArgNode) -> None:
+    def _visit_zero_arg_node(self, node: ZeroArgNode) -> None:
         if self.curr_node.plugin_instance_id == self.plugin_instance_id:
             self.curr_parent_plugin_instance_id = self.plugin_instance_id
             self.visitor_decision = TraverseDecision.walk_sub_tree
         else:
             self.visitor_decision = TraverseDecision.skip_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_TreePathNode(self, node: TreePathNode) -> None:
+    def _visit_tree_path_node(self, node: TreePathNode) -> None:
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_InterpTreeNode(self, node: InterpTreeNode) -> None:
+    def _visit_interp_tree_node(self, node: InterpTreeNode) -> None:
         if self.curr_parent_plugin_instance_id == self.plugin_instance_id:
             _put_value_into_dict_path(
                 self.curr_node.plugin_instance_id,
@@ -313,13 +301,12 @@ class _CompositeTreeWalker_interp_tree(CompositeTreeExtractorAbstract):
             )
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_FuncTreeNode(self, node: FuncTreeNode) -> None:
+    def _visit_func_tree_node(self, node: FuncTreeNode) -> None:
         self.visitor_decision = TraverseDecision.skip_sub_tree
 
 
 # noinspection PyPep8Naming
-class _CompositeTreeWalker_func_tree(CompositeTreeExtractorAbstract):
+class _CompositeForestWalker_func_tree(CompositeForestExtractorAbstract):
 
     def __init__(
         self,
@@ -342,24 +329,20 @@ class _CompositeTreeWalker_func_tree(CompositeTreeExtractorAbstract):
         # results:
         self.func_tree: dict = {}
 
-    # noinspection PyPep8Naming
-    def _visit_ZeroArgNode(self, node: ZeroArgNode) -> None:
+    def _visit_zero_arg_node(self, node: ZeroArgNode) -> None:
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_TreePathNode(self, node: TreePathNode) -> None:
+    def _visit_tree_path_node(self, node: TreePathNode) -> None:
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_InterpTreeNode(self, node: InterpTreeNode) -> None:
+    def _visit_interp_tree_node(self, node: InterpTreeNode) -> None:
         if self.curr_node.plugin_instance_id == self.plugin_instance_id:
             self.curr_parent_plugin_instance_id = self.plugin_instance_id
             self.visitor_decision = TraverseDecision.walk_sub_tree
         else:
             self.visitor_decision = TraverseDecision.skip_sub_tree
 
-    # noinspection PyPep8Naming
-    def _visit_FuncTreeNode(self, node: FuncTreeNode) -> None:
+    def _visit_func_tree_node(self, node: FuncTreeNode) -> None:
         if self.curr_parent_plugin_instance_id == self.plugin_instance_id:
             _put_value_into_dict_path(
                 self.curr_node.func_id,

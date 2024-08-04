@@ -13,7 +13,7 @@ has_error_happened = False
 def _signal_handler(signal_number, signal_frame):
     if signal_number == signal.SIGALRM:
         # Import hanged:
-        eprint("ERROR: `import` hanged - see: https://github.com/argrelay/argrelay/issues/89")
+        eprint("ERROR: `import` hanged, `Ctrl + C` and retry, details: https://github.com/argrelay/argrelay/issues/89")
         global has_error_happened
         has_error_happened = True
 

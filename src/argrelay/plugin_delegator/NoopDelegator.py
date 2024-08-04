@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.composite_tree.CompositeNodeSchema import func_id_
+from argrelay.composite_forest.CompositeNodeSchema import func_id_
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName

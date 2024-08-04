@@ -24,6 +24,11 @@ class ServerConfig:
     # TODO_00_79_72_55: remove in the future:
     static_data: StaticData = field()
 
+    plugin_instances: dict[str, "AbstractPluginServer"] = field(default_factory = lambda: {})
+    """
+    All plugin instances by their plugin instance id.
+    """
+
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
     data_loaders: dict[str, "AbstractLoader"] = field(default_factory = lambda: {})
     """

@@ -3,7 +3,7 @@ from enum import Enum, auto
 
 class CompositeNodeType(Enum):
     """
-    FS_33_76_82_84 composite tree node types.
+    FS_33_76_82_84 composite forest node types.
     """
 
     zero_arg_node = auto()

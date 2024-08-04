@@ -5,13 +5,13 @@ import json
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.value_constants import (
-    goto_host_func_,
-    goto_service_func_,
-    list_host_func_,
-    list_service_func_,
-    diff_service_func_,
-    desc_host_func_,
-    desc_service_func_,
+    func_id_goto_host,
+    func_id_goto_service_,
+    func_id_list_host_,
+    func_id_list_service_,
+    func_id_diff_service_,
+    func_id_desc_host,
+    func_id_desc_service,
 )
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -170,7 +170,7 @@ class ServiceDelegator(AbstractDelegator):
         func_envelopes = [
             {
                 instance_data_: {
-                    func_id_: goto_host_func_,
+                    func_id_: func_id_goto_host,
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         host_search_control,
@@ -180,11 +180,11 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Go (log in) to remote host",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: goto_host_func_,
+                ReservedPropName.func_id.name: func_id_goto_host,
             },
             {
                 instance_data_: {
-                    func_id_: goto_service_func_,
+                    func_id_: func_id_goto_service_,
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         service_search_control,
@@ -194,12 +194,12 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Go (log in) to remote host and dir path with specified service",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: goto_service_func_,
+                ReservedPropName.func_id.name: func_id_goto_service_,
             },
             {
                 instance_data_: {
-                    func_id_: desc_host_func_,
-                    # TODO: DTODO_62_75_33_41: Do not hardcode plugin instance id (instance of `NoopDelegator`):
+                    func_id_: func_id_desc_host,
+                    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `NoopDelegator`):
                     delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                     search_control_list_: [
                         host_search_control,
@@ -208,11 +208,11 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Describe remote host",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: desc_host_func_,
+                ReservedPropName.func_id.name: func_id_desc_host,
             },
             {
                 instance_data_: {
-                    func_id_: desc_service_func_,
+                    func_id_: func_id_desc_service,
                     # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `NoopDelegator`):
                     delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
                     search_control_list_: [
@@ -222,11 +222,11 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Describe service instance",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: desc_service_func_,
+                ReservedPropName.func_id.name: func_id_desc_service,
             },
             {
                 instance_data_: {
-                    func_id_: list_host_func_,
+                    func_id_: func_id_list_host_,
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         host_search_control,
@@ -235,11 +235,11 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "List remote hosts matching search query",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: list_host_func_,
+                ReservedPropName.func_id.name: func_id_list_host_,
             },
             {
                 instance_data_: {
-                    func_id_: list_service_func_,
+                    func_id_: func_id_list_service_,
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         service_search_control,
@@ -248,11 +248,11 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "List service instances matching search query",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: list_service_func_,
+                ReservedPropName.func_id.name: func_id_list_service_,
             },
             {
                 instance_data_: {
-                    func_id_: diff_service_func_,
+                    func_id_: func_id_diff_service_,
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         # This function was created to demo FS_97_64_39_94 `arg_bucket`-s:
@@ -264,7 +264,7 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Diff two service instances",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: diff_service_func_,
+                ReservedPropName.func_id.name: func_id_diff_service_,
             },
         ]
         return func_envelopes
@@ -282,13 +282,13 @@ class ServiceDelegator(AbstractDelegator):
         any_assignment = False
 
         if func_id in [
-            goto_host_func_,
-            goto_service_func_,
+            func_id_goto_host,
+            func_id_goto_service_,
         ]:
             assert host_container_ipos_ == service_container_ipos_
             object_container_ipos = host_container_ipos_
 
-            if func_id == goto_service_func_:
+            if func_id == func_id_goto_service_:
                 any_assignment = self._fill_service_container(
                     any_assignment,
                     interp_ctx,
@@ -323,7 +323,7 @@ class ServiceDelegator(AbstractDelegator):
                             any_assignment
                         )
         elif func_id in [
-            diff_service_func_,
+            func_id_diff_service_,
         ]:
             any_assignment = self._fill_service_container(
                 any_assignment,
@@ -336,8 +336,8 @@ class ServiceDelegator(AbstractDelegator):
                 diff_service_container_right_ipos_,
             )
         elif func_id in [
-            list_host_func_,
-            list_service_func_,
+            func_id_list_host_,
+            func_id_list_service_,
         ]:
             pass
         else:
@@ -377,8 +377,8 @@ class ServiceDelegator(AbstractDelegator):
         assert vararg_container_ipos == host_container_ipos_ == service_container_ipos_
 
         if func_id in [
-            goto_host_func_,
-            goto_service_func_,
+            func_id_goto_host,
+            func_id_goto_service_,
         ]:
             # Even if these functions do not support varargs, when `redirect_to_error`, query all:
             vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
@@ -396,7 +396,7 @@ class ServiceDelegator(AbstractDelegator):
                 error_delegator_stub_custom_data_example[error_code_],
             )
         elif func_id in [
-            diff_service_func_,
+            func_id_diff_service_,
         ]:
             # TODO_75_52_01_67: `arg_bucket`-s to support multiple var args:
             #                   query both service lists and compare them.
@@ -409,8 +409,8 @@ class ServiceDelegator(AbstractDelegator):
                 error_delegator_stub_custom_data_example[error_code_],
             )
         elif func_id in [
-            list_host_func_,
-            list_service_func_,
+            func_id_list_host_,
+            func_id_list_service_,
         ]:
             # Verify that func is selected and all what is left to do is to query 0...N objects:
             if interp_ctx.curr_container_ipos >= vararg_container_ipos:
@@ -449,10 +449,10 @@ class ServiceDelegator(AbstractDelegator):
         """
 
         func_id = get_func_id_from_invocation_input(invocation_input)
-        if func_id == list_host_func_:
+        if func_id == func_id_list_host_:
             for data_envelope in invocation_input.envelope_containers[host_container_ipos_].data_envelopes:
                 print(json.dumps(data_envelope))
-        elif func_id == list_service_func_:
+        elif func_id == func_id_list_service_:
             for data_envelope in invocation_input.envelope_containers[service_container_ipos_].data_envelopes:
                 print(json.dumps(data_envelope))
         else:

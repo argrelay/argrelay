@@ -5,7 +5,7 @@ from collections.abc import Callable
 from copy import deepcopy
 from typing import Union, Sequence
 
-from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
+from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
 
 surrogate_node_id_ = ""
 """
@@ -145,11 +145,11 @@ class DictTreeWalker:
     *   FS_26_43_73_72 func tree
     *   FS_91_88_07_23 jump tree
 
-    As opposed to (complex) FS_33_76_82_84 `composite_tree` (with node types),
+    As opposed to (complex) FS_33_76_82_84 `composite_forest (with node types),
     the `dict` trees are specified in config via `dict` without node types -
     only node id names (as `dict` keys) and tree leaves (as `str` or `list`).
 
-    These simple trees can also be extracted from FS_33_76_82_84 `composite_tree` via `CompositeWalker`
+    These simple trees can also be extracted from FS_33_76_82_84 `composite_forest` via `CompositeWalker`
     (where each node has its type and additional info, not just path step name and value at tree leaves).
     """
 

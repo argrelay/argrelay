@@ -1,6 +1,6 @@
 from marshmallow import Schema, RAISE, fields, validates_schema, ValidationError
 
-from argrelay.composite_tree.DictTreeWalker import surrogate_node_id_
+from argrelay.composite_forest.DictTreeWalker import surrogate_node_id_
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
 
@@ -36,9 +36,9 @@ class InterpTreeInterpFactoryConfigSchema(Schema):
     )
 
     # TODO: FS_42_76_93_51: Decide already whether first zero arg interp deserves its future life.
-    #                       This `ignored_func_ids_list` field is propagated down from
-    #                       the first zero arg interp (needed for its logic as root plugin instance in the composite tree)
-    #                       and it also needs to pass validation of this schema (which it converts its config to):
+    #       This `ignored_func_ids_list` field is propagated down from
+    #       the first zero arg interp (needed for its logic as root plugin instance in the composite forest)
+    #       and it also needs to pass validation of this schema (which it converts its config to):
     # TODO: TODO_19_67_22_89: remove `ignored_func_ids_list` - load as `FuncState.fs_unplugged`:
     # It is an error if `func_id` is published by enabled delegator but missing in `func_selector_tree`.
     # To avoid the error, list such `func_id` in `ignored_func_ids_list`.
