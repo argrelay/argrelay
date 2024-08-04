@@ -75,7 +75,7 @@ class_to_collection_map:
 server_plugin_control:
     first_interp_factory_id: FirstArgInterpFactory.default
 
-    # TODO: TODO_10_72_28_05: FS_33_76_82_84: composite tree (non functional yet).
+    # TODO: TODO_10_72_28_05: FS_33_76_82_84: composite forest (non functional yet).
     # TODO: Create schemas for each `node_type` with translator code from this tree to "legacy" structures:
     #       *   TODO: add tests of their equivalence first
     #       *   TODO: then, switch plugins to use it instead
@@ -102,10 +102,6 @@ server_plugin_control:
                     "intercept": &interp_tree_node_func_id_intercept_invocation
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.func_id_intercept_invocation
-                        next_interp:
-                            jump_path:
-                                -   "relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                         sub_tree:
                             "":
                                 node_type: func_tree_node
@@ -113,10 +109,6 @@ server_plugin_control:
                     "help": &interp_tree_node_func_id_help_hint
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.func_id_help_hint
-                        next_interp:
-                            jump_path:
-                                -   "relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                         sub_tree:
                             "":
                                 node_type: func_tree_node
@@ -124,10 +116,6 @@ server_plugin_control:
                     "enum": &interp_tree_node_func_id_query_enum_items
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.func_id_query_enum_items
-                        next_interp:
-                            jump_path:
-                                -   "relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                         sub_tree:
                             "":
                                 node_type: func_tree_node
@@ -135,10 +123,6 @@ server_plugin_control:
                     "": &interp_tree_node_default_func
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.default
-                        next_interp:
-                            jump_path:
-                                -   "relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                         sub_tree:
                             "echo":
                                 node_type: func_tree_node
@@ -148,164 +132,110 @@ server_plugin_control:
                                 sub_tree:
                                     "host":
                                         node_type: func_tree_node
-                                        func_id: list_host_func
+                                        func_id: func_id_list_host
                                     "service":
                                         node_type: func_tree_node
-                                        func_id: list_service_func
+                                        func_id: func_id_list_service
                             "diff":
                                 node_type: tree_path_node
                                 sub_tree:
                                     "service":
                                         node_type: func_tree_node
-                                        func_id: diff_service_func
+                                        func_id: func_id_diff_service
                             "goto":
                                 node_type: tree_path_node
                                 sub_tree:
                                     "repo":
                                         node_type: func_tree_node
-                                        func_id: goto_git_repo_func
+                                        func_id: func_id_goto_git_repo
                                     "host":
                                         node_type: func_tree_node
-                                        func_id: goto_host_func
+                                        func_id: func_id_goto_host
                                     "service":
                                         node_type: func_tree_node
-                                        func_id: goto_service_func
+                                        func_id: func_id_goto_service
                             "desc":
                                 node_type: tree_path_node
                                 sub_tree:
                                     "tag":
                                         node_type: func_tree_node
-                                        func_id: desc_git_tag_func
+                                        func_id: func_id_desc_git_tag
                                     "commit":
                                         node_type: func_tree_node
-                                        func_id: desc_git_commit_func
+                                        func_id: func_id_desc_git_commit
                                     "host":
                                         node_type: func_tree_node
-                                        func_id: desc_host_func
+                                        func_id: func_id_desc_host
                                     "service":
                                         node_type: func_tree_node
-                                        func_id: desc_service_func
+                                        func_id: func_id_desc_service
                             "config":
                                 node_type: tree_path_node
                                 sub_tree:
                                     "print_with_level":
                                         node_type: func_tree_node
-                                        func_id: funct_id_print_with_severity_level
+                                        func_id: func_id_print_with_severity_level
                                     "print_with_exit":
                                         node_type: func_tree_node
-                                        func_id: funct_id_print_with_exit_code
+                                        func_id: func_id_print_with_exit_code
                                     "print_with_io_redirect":
                                         node_type: func_tree_node
-                                        func_id: funct_id_print_with_io_redirect
+                                        func_id: func_id_print_with_io_redirect
                                     "double_execution":
                                         node_type: func_tree_node
-                                        func_id: funct_id_double_execution
+                                        func_id: func_id_double_execution
                     "duplicates":
                         node_type: tree_path_node
                         sub_tree:
                             "intercept":
                                 <<: *interp_tree_node_func_id_intercept_invocation
-                                next_interp:
-                                    jump_path:
-                                        -   "relay_demo"
-                                        -   "duplicates"
-                                    plugin_instance_id: InterpTreeInterpFactory.default
                             "help":
                                 <<: *interp_tree_node_func_id_help_hint
-                                next_interp:
-                                    jump_path:
-                                        -   "relay_demo"
-                                        -   "duplicates"
-                                    plugin_instance_id: InterpTreeInterpFactory.default
                             "":
                                 <<: *interp_tree_node_default_func
-                                next_interp:
-                                    jump_path:
-                                        - "relay_demo"
-                                        - "duplicates"
-                                    plugin_instance_id: InterpTreeInterpFactory.default
             "some_command":
                 node_type: zero_arg_node
                 plugin_instance_id: InterpTreeInterpFactory.default
                 sub_tree:
                     "intercept":
                         <<: *interp_tree_node_func_id_intercept_invocation
-                        next_interp:
-                            jump_path:
-                                -   "some_command"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                     "help":
                         <<: *interp_tree_node_func_id_help_hint
-                        next_interp:
-                            jump_path:
-                                -   "some_command"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                     "enum":
                         <<: *interp_tree_node_func_id_query_enum_items
-                        next_interp:
-                            jump_path:
-                                -   "some_command"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                     "":
                         <<: *interp_tree_node_default_func
-                        next_interp:
-                            jump_path:
-                                -   "some_command"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                     "duplicates":
                         node_type: tree_path_node
                         sub_tree:
                             "intercept":
                                 <<: *interp_tree_node_func_id_intercept_invocation
-                                next_interp:
-                                    jump_path:
-                                        -   "some_command"
-                                        -   "duplicates"
-                                    plugin_instance_id: InterpTreeInterpFactory.default
                             "help":
                                 <<: *interp_tree_node_func_id_help_hint
-                                next_interp:
-                                    jump_path:
-                                        -   "some_command"
-                                        -   "duplicates"
-                                    plugin_instance_id: InterpTreeInterpFactory.default
                             "":
                                 <<: *interp_tree_node_default_func
-                                next_interp:
-                                    jump_path:
-                                        -   "some_command"
-                                        -   "duplicates"
-                                    plugin_instance_id: InterpTreeInterpFactory.default
             "service_relay_demo":
                 node_type: zero_arg_node
                 plugin_instance_id: InterpTreeInterpFactory.default
                 sub_tree:
                     "help":
                         <<: *interp_tree_node_func_id_help_hint
-                        next_interp:
-                            jump_path:
-                                -   "service_relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                     "":
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.service
-                        next_interp:
-                            jump_path:
-                                -   "service_relay_demo"
-                            plugin_instance_id: InterpTreeInterpFactory.default
                         sub_tree:
                             "goto":
                                 node_type: func_tree_node
-                                func_id: goto_service_func
+                                func_id: func_id_goto_service
                             "list":
                                 node_type: func_tree_node
-                                func_id: list_service_func
+                                func_id: func_id_list_service
                             "diff":
                                 node_type: func_tree_node
-                                func_id: diff_service_func
+                                func_id: func_id_diff_service
                             "desc":
                                 node_type: func_tree_node
-                                func_id: desc_service_func
+                                func_id: func_id_desc_service
             "argrelay.check_env":
                 node_type: zero_arg_node
                 plugin_instance_id: InterpTreeInterpFactory.check_env
@@ -313,10 +243,6 @@ server_plugin_control:
                     "":
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.check_env
-                        next_interp:
-                            jump_path:
-                                -   "argrelay.check_env"
-                            plugin_instance_id: InterpTreeInterpFactory.check_env
                         sub_tree:
                             "server_commit":
                                 node_type: func_tree_node

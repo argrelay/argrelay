@@ -4,6 +4,7 @@ from io import StringIO
 import pandas as pd
 
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.relay_server.LocalServer import LocalServer
@@ -116,6 +117,8 @@ class ThisTestClass(BaseTestClass):
                         ServicePropName.cluster_name.name: cluster_name,
                     }
                     if is_cluster:
+                        if not ServiceLoader.load_class_cluster:
+                            continue
                         query_dict.update({
                             ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
                         })

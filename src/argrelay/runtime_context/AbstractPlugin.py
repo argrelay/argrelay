@@ -18,12 +18,12 @@ class AbstractPlugin:
 
         self.validate_config()
 
-    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
-    def _compare_config_with_composite_tree(
+    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
+    def _compare_config_with_composite_forest(
         self,
     ):
         """
-        Compares `CompositeInfoType` extracted from `composite_tree` with
+        Compares `CompositeInfoType` extracted from `composite_forest` with
         data manually specified in `plugin_config_dict`.
         """
         pass
@@ -70,17 +70,6 @@ class AbstractPlugin:
         One-time plugin activation callback during startup.
 
         This is a chance to initialize (once) any resources plugin requires.
-        """
-        pass
-
-    def validate_loaded_data(
-        self,
-        static_data: "StaticData"
-    ) -> None:
-        """
-        Callback to validate data after all :class:`AbstractLoader`-s completed loading data.
-
-        This is a chance for any plugin to verify that the data still matches its expectation.
         """
         pass
 

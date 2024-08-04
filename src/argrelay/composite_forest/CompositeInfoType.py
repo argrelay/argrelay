@@ -3,7 +3,7 @@ from enum import Enum, auto
 
 class CompositeInfoType(Enum):
     """
-    Specifies info type extract-able from FS_33_76_82_84 the composite tree.
+    Specifies info type extract-able from FS_33_76_82_84 the composite forest.
     """
 
     # TODO_10_72_28_05: This enum item should likely be factored out in the future.
@@ -16,7 +16,6 @@ class CompositeInfoType(Enum):
         NOTE: `tree_abs_path_to_interp_id` is used for special funcs
                with single `func_id` in the `sub_tree` (empty node name) of `func_tree_node`.
     *   Transform path to func back to path to dict entry.
-    *   The value of dict entry is the `next_interp.plugin_instance_id` of the last `interp_tree_node`.
     """
 
     # TODO_10_72_28_05: This enum item should likely be factored out in the future.
@@ -34,7 +33,7 @@ class CompositeInfoType(Enum):
     See FS_91_88_07_23 jump tree.
 
     A tree of `CompositeNodeType.interp_tree_node` under `CompositeNodeType.zero_arg_node`
-    with leaves set to absolute jump path within `composite_tree`.
+    with leaves set to absolute jump path within `composite_forest`.
     """
 
     interp_tree = auto()

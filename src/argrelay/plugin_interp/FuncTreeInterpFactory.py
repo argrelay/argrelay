@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from typing import Union
 
-from argrelay.composite_tree.CompositeInfoType import CompositeInfoType
-from argrelay.composite_tree.CompositeTreeExtractor import extract_jump_tree, extract_func_tree
-from argrelay.composite_tree.DictTreeWalker import DictTreeWalker, normalize_tree, sequence_starts_with
+from argrelay.composite_forest.CompositeForestExtractor import extract_jump_tree, extract_func_tree
+from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
+from argrelay.composite_forest.DictTreeWalker import DictTreeWalker, normalize_tree, sequence_starts_with
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
@@ -17,12 +18,14 @@ from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     jump_tree_,
 )
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_
 from argrelay.schema_config_interp.SearchControlSchema import (
     keys_to_types_list_,
     populate_search_control,
+    search_control_desc,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_enabled_, plugin_dependencies_
 
@@ -48,10 +51,10 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             plugin_config_dict,
         )
 
-        self._compare_config_with_composite_tree()
+        self._compare_config_with_composite_forest()
 
         # FS_26_43_73_72 func tree: func id to list of its absolute paths populated by `load_func_envelopes`.
-        # These func tree paths are absolute within FS_33_76_82_84 composite tree.
+        # These func tree paths are absolute within FS_33_76_82_84 composite forest.
         # Each func id can be attached to more than one leaf (hence, there is a list of paths to that func id).
         self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = {}
 
@@ -67,8 +70,10 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         for given `interp_tree_abs_path` (FS_01_89_09_24) selects next `interp_tree_abs_path`.
         """
 
-    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
-    def _compare_config_with_composite_tree(
+        self.plugin_search_control: Union[SearchControl, None] = None
+
+    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
+    def _compare_config_with_composite_forest(
         self,
     ):
         expected_dict = self.plugin_config_dict[jump_tree_]
@@ -79,8 +84,8 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         eprint(f"actual_dict: {actual_dict}")
         assert expected_dict == actual_dict
 
-    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
-    def _compare_config_with_composite_tree_func_tree(
+    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
+    def _compare_config_with_composite_forest_func_tree(
         self,
         expected_func_selector_tree_dict: dict,
     ):
@@ -98,6 +103,14 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         plugin_config_dict,
     ) -> dict:
         return func_tree_interp_config_desc.dict_from_input_dict(plugin_config_dict)
+
+    def provide_plugin_search_control(
+        self,
+    ) -> list[SearchControl]:
+        if self.plugin_search_control:
+            return [self.plugin_search_control]
+        else:
+            return []
 
     def load_interp_tree_abs_paths(
         self,
@@ -125,7 +138,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         )
         interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
 
-        self._compare_config_with_composite_tree_func_tree(
+        self._compare_config_with_composite_forest_func_tree(
             interp_tree_node_config_dict[func_selector_tree_],
         )
 
@@ -265,14 +278,14 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
-        interp_tree_node_config_dict[func_search_control_] = populate_search_control(
+        plugin_search_control_dict: dict = populate_search_control(
             class_to_collection_map,
             ReservedEnvelopeClass.ClassFunction.name,
             [],
         )
 
         # `func_search_control` should include keys from the interp tree abs path:
-        keys_to_types_list = interp_tree_node_config_dict[func_search_control_][keys_to_types_list_]
+        keys_to_types_list = plugin_search_control_dict[keys_to_types_list_]
 
         # Include func tree path:
         max_len = max_path_len(self.func_ids_to_func_abs_paths)
@@ -288,6 +301,9 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         keys_to_types_list.append({
             "id": ReservedPropName.func_id.name
         })
+
+        interp_tree_node_config_dict[func_search_control_] = plugin_search_control_dict
+        self.plugin_search_control = search_control_desc.obj_from_input_dict(plugin_search_control_dict)
 
     def populate_func_tree_props(
         self,

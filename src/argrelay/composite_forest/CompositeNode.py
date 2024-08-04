@@ -3,13 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Union
 
-from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
+from argrelay.composite_forest.CompositeNodeType import CompositeNodeType
 
 
 @dataclass
 class BaseNode:
     """
-    Base class for all FS_33_76_82_84 composite tree node types.
+    Base class for all FS_33_76_82_84 composite forest node types.
 
     See also :class:`BaseNodeSchema`.
     """
@@ -44,13 +44,7 @@ class InterpTreeNode(BaseNode):
     See FS_01_89_09_24 interp tree.
     """
 
-    @dataclass
-    class NextInterp:
-        jump_path: list[str] = field()
-        plugin_instance_id: str = field()
-
     plugin_instance_id: str = field()
-    next_interp: NextInterp = field()
 
 
 @dataclass

@@ -3,29 +3,28 @@ from copy import deepcopy
 from marshmallow import fields, RAISE, post_load
 from marshmallow_oneofschema import OneOfSchema
 
-from argrelay.composite_tree.CompositeNode import (
+from argrelay.composite_forest.CompositeNode import (
     BaseNode,
     InterpTreeNode,
     ZeroArgNode,
     FuncTreeNode,
     TreePathNode,
 )
-from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
+from argrelay.composite_forest.CompositeNodeType import CompositeNodeType
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
+from argrelay.schema_config_interp.FuncEnvelopeSchema import func_id_some_func_
 
 node_type_ = "node_type"
 sub_tree_ = "sub_tree"
 
 plugin_instance_id_ = "plugin_instance_id"
 func_id_ = "func_id"
-next_interp_ = "next_interp"
-jump_path_ = "jump_path"
 
 
 class BaseNodeSchema(ObjectSchema):
     """
-    Schema for (base) FS_33_76_82_84 composite tree node.
+    Schema for (base) FS_33_76_82_84 composite forest node.
     """
 
     class Meta:
@@ -105,23 +104,11 @@ class InterpTreeNodeSchema(BaseNodeSchema):
             unknown = RAISE
             strict = True
 
-        model_class = InterpTreeNode.NextInterp
-
-        jump_path = fields.List(
-            fields.String(),
-            required = True,
-        )
-
         plugin_instance_id = fields.String(
             required = True,
         )
 
     plugin_instance_id = fields.String(
-        required = True,
-    )
-
-    next_interp = fields.Nested(
-        NextInterpSchema(),
         required = True,
     )
 
@@ -160,7 +147,7 @@ class TreePathNodeSchema(BaseNodeSchema):
 
 class CompositeNodeSchema(OneOfSchema):
     """
-    Polymorphic schema for composite tree node - see:
+    Polymorphic schema for composite tree node (part of composite forest) - see:
     *   https://github.com/marshmallow-code/marshmallow-oneofschema
     *   https://stackoverflow.com/q/55092906/441652
     """
@@ -217,12 +204,6 @@ zero_arg_node_desc = TypeDesc(
 _interp_tree_node_example = deepcopy(base_node_desc.dict_example)
 _interp_tree_node_example.update({
     plugin_instance_id_: "some_plugin_instance_id",
-    next_interp_: {
-        jump_path_: [
-            "some_command",
-        ],
-        plugin_instance_id_: "some_plugin_instance_id",
-    },
 })
 
 interp_tree_node_desc = TypeDesc(
@@ -234,7 +215,7 @@ interp_tree_node_desc = TypeDesc(
 
 _func_tree_node_example = deepcopy(base_node_desc.dict_example)
 _func_tree_node_example.update({
-    func_id_: "some_func_id",
+    func_id_: func_id_some_func_,
 })
 
 func_tree_node_desc = TypeDesc(

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from marshmallow import RAISE, fields
 
-from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
+from argrelay.composite_forest.CompositeForestSchema import composite_forest_desc
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.ServerPluginControl import ServerPluginControl

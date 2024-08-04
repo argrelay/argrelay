@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from argrelay.composite_tree.CompositeNode import ZeroArgNode
+from argrelay.composite_forest.CompositeNode import ZeroArgNode
 
 
 @dataclass
 class CompositeForest:
     """
-    FS_33_76_82_84 composite tree combined into forest.
+    Top-level entry object to traverse FS_33_76_82_84 composite forest.
 
     See also :class:`CompositeForestSchema`.
     """

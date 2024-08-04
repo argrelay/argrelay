@@ -1,4 +1,4 @@
-from argrelay.composite_tree.DictTreeWalker import fetch_subtree_node
+from argrelay.composite_forest.DictTreeWalker import fetch_subtree_node
 from argrelay.enum_desc.CompType import CompType
 from argrelay.test_infra import line_no
 from argrelay.test_infra.LocalTestClass import LocalTestClass

@@ -3,9 +3,9 @@ from __future__ import annotations
 from enum import Enum, auto
 from typing import Union
 
-from argrelay.composite_tree.AbstractNodeVisitor import AbstractNodeVisitor
-from argrelay.composite_tree.CompositeForest import CompositeForest
-from argrelay.composite_tree.CompositeNode import (
+from argrelay.composite_forest.AbstractNodeVisitor import AbstractNodeVisitor
+from argrelay.composite_forest.CompositeForest import CompositeForest
+from argrelay.composite_forest.CompositeNode import (
     InterpTreeNode,
     TreePathNode,
     FuncTreeNode,
@@ -19,15 +19,15 @@ class TraverseDecision(Enum):
     skip_sub_tree = auto()
 
 
-class CompositeTreeWalkerAbstract(AbstractNodeVisitor):
+class CompositeForestWalkerAbstract(AbstractNodeVisitor):
     """
-    FS_33_76_82_84 composite tree walker
+    FS_33_76_82_84 composite forest walker
 
     It implements traversal algorithms which extract various `CompositeInfoType`-s
     (info in a form simplified for specific purpose).
 
     The original intention is to extract info in the form which `DictTreeWalker` can consume -
-    an intermediate phase to migrate to composite tree config while still using existing code
+    an intermediate phase to migrate to composite forest config while still using existing code
     (existing code relied on data structures processed via `DictTreeWalker`).
     """
 
@@ -56,11 +56,12 @@ class CompositeTreeWalkerAbstract(AbstractNodeVisitor):
     def _walk_tree_node(
         self,
     ) -> None:
-        traverse_decision = self._process_tree_node()
-        if traverse_decision is TraverseDecision.walk_sub_tree:
+        self.visit_node(self.curr_node)
+        if self.visitor_decision is TraverseDecision.walk_sub_tree:
             self._walk_sub_tree()
-        elif traverse_decision is TraverseDecision.skip_sub_tree:
+        elif self.visitor_decision is TraverseDecision.skip_sub_tree:
             pass
+        self.leave_node(self.curr_node)
 
     def _walk_sub_tree(
         self,
@@ -78,7 +79,7 @@ class CompositeTreeWalkerAbstract(AbstractNodeVisitor):
         node_id: str,
     ) -> None:
         """
-        Recursive DFS traversal of `composite_tree`.
+        Recursive DFS traversal of `composite_forest`.
         """
         # prepare:
         self.curr_path.append(node_id)
@@ -93,14 +94,8 @@ class CompositeTreeWalkerAbstract(AbstractNodeVisitor):
         self.curr_node = prev_node
         self.curr_node_id = prev_node_id
 
-    def _process_tree_node(
-        self,
-    ) -> TraverseDecision:
-        self.visit_node(self.curr_node)
-        return self.visitor_decision
 
-
-class CompositeTreeWalkerPrinter(CompositeTreeWalkerAbstract):
+class CompositeForestWalkerPrinter(CompositeForestWalkerAbstract):
     """
     Basic composite forest walker which prints node path and node type.
     """
@@ -114,20 +109,16 @@ class CompositeTreeWalkerPrinter(CompositeTreeWalkerAbstract):
             composite_forest,
         )
 
-    # noinspection PyPep8Naming
-    def _visit_ZeroArgNode(self, node: ZeroArgNode) -> None:
+    def _visit_zero_arg_node(self, node: ZeroArgNode) -> None:
         self._print_info()
 
-    # noinspection PyPep8Naming
-    def _visit_TreePathNode(self, node: TreePathNode) -> None:
+    def _visit_tree_path_node(self, node: TreePathNode) -> None:
         self._print_info()
 
-    # noinspection PyPep8Naming
-    def _visit_InterpTreeNode(self, node: InterpTreeNode) -> None:
+    def _visit_interp_tree_node(self, node: InterpTreeNode) -> None:
         self._print_info()
 
-    # noinspection PyPep8Naming
-    def _visit_FuncTreeNode(self, node: FuncTreeNode) -> None:
+    def _visit_func_tree_node(self, node: FuncTreeNode) -> None:
         self._print_info()
 
     def _print_info(self):

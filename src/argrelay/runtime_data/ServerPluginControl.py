@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from argrelay.composite_tree.CompositeForest import CompositeForest
+from argrelay.composite_forest.CompositeForest import CompositeForest
 
 
 @dataclass(frozen = True)

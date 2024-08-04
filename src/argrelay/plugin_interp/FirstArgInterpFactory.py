@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.composite_tree.CompositeTreeExtractor import extract_zero_arg_interp_tree
+from argrelay.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp
@@ -39,8 +39,8 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
             converted_config,
         )
 
-    # TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite tree config:
-    def _compare_config_with_composite_tree(
+    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
+    def _compare_config_with_composite_forest(
         self,
     ):
         expected_dict = self.plugin_config_dict[interp_selector_tree_]
@@ -109,7 +109,7 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
     ):
         # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
         #       At the moment, `FirstArgInterpFactory` is not plugged into any tree
-        #       (while it should be part of composite tree likely as `CompositeNodeType.zero_arg_node`).
+        #       (while it should be part of composite forest likely as `CompositeNodeType.zero_arg_node`).
         #       Instead, it is selected via `first_interp_factory_id` in server config.
         #
         #       When this func is called for `FirstArgInterpFactory`, it cannot be found plugged anywhere

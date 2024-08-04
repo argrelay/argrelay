@@ -1,7 +1,7 @@
 from marshmallow import fields, RAISE
 
-from argrelay.composite_tree.CompositeForest import CompositeForest
-from argrelay.composite_tree.CompositeNodeSchema import CompositeNodeSchema, zero_arg_node_desc
+from argrelay.composite_forest.CompositeForest import CompositeForest
+from argrelay.composite_forest.CompositeNodeSchema import CompositeNodeSchema, zero_arg_node_desc
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
@@ -10,7 +10,7 @@ tree_roots_ = "tree_roots"
 
 class CompositeForestSchema(ObjectSchema):
     """
-    Schema FS_33_76_82_84 composite trees combined into forest.
+    Schema FS_33_76_82_84 composite forest (collection of composite tree roots).
     """
 
     class Meta:

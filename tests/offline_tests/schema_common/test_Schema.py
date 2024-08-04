@@ -2,8 +2,8 @@ import copy
 
 from marshmallow import ValidationError
 
-from argrelay.composite_tree.CompositeForestSchema import composite_forest_desc
-from argrelay.composite_tree.CompositeNodeSchema import (
+from argrelay.composite_forest.CompositeForestSchema import composite_forest_desc
+from argrelay.composite_forest.CompositeNodeSchema import (
     base_node_desc,
     interp_tree_node_desc,
     zero_arg_node_desc,
@@ -97,7 +97,7 @@ class ThisTestClass(BaseTestClass):
         (line_no(), func_config_desc),
         (line_no(), schema_plugin_check_evn_server_response_abstract_desc),
 
-        # FS_33_76_82_84 composite tree and its nodes:
+        # FS_33_76_82_84 composite forest and its nodes:
         (line_no(), composite_forest_desc),
         (line_no(), base_node_desc),
         (line_no(), zero_arg_node_desc),

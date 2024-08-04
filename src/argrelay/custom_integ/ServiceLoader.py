@@ -22,12 +22,15 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
 from argrelay.test_infra import test_data_
 
 
-# noinspection PyPep8Naming
 class ServiceLoader(AbstractLoader):
     object_multiplier: int = 10
     """
     Used by TD_38_03_48_51 to generate large data set.
     """
+
+    # Quick flag to load (or not) `ServiceEnvelopeClass.ClassCluster` (currently not used by anything).
+    # Alternatively, a dummy function with `search_list` using it will make validation pass:
+    load_class_cluster: bool = False
 
     def __init__(
         self,
@@ -248,6 +251,12 @@ class ServiceLoader(AbstractLoader):
             },
         ])
 
+    def switch_loading_class_cluster(self, cluster_envelopes):
+        if not self.load_class_cluster:
+            # Substitute given collection by idle instance to avoid loading:
+            cluster_envelopes = []
+        return cluster_envelopes
+
     def populate_TD_63_37_05_36_default(
         self,
         cluster_envelopes: list[dict],
@@ -259,6 +268,8 @@ class ServiceLoader(AbstractLoader):
         """
         if not self.is_test_data_allowed("TD_63_37_05_36"):
             return
+
+        cluster_envelopes = self.switch_loading_class_cluster(cluster_envelopes)
 
         cluster_envelopes.extend([
 
@@ -1142,6 +1153,8 @@ class ServiceLoader(AbstractLoader):
         if not self.is_test_data_allowed("TD_76_09_29_31"):
             return
 
+        cluster_envelopes = self.switch_loading_class_cluster(cluster_envelopes)
+
         cluster_envelopes.extend([
 
             ############################################################################################################
@@ -1265,6 +1278,8 @@ class ServiceLoader(AbstractLoader):
         if not self.is_test_data_allowed("TD_99_99_88_75"):
             return
 
+        cluster_envelopes = self.switch_loading_class_cluster(cluster_envelopes)
+
         cluster_envelopes.extend([
 
             ############################################################################################################
@@ -1368,6 +1383,8 @@ class ServiceLoader(AbstractLoader):
                     #####################################################################################################
                     # clusters
 
+                    cluster_envelopes = self.switch_loading_class_cluster(cluster_envelopes)
+
                     generated_cluster = {
                         envelope_payload_: {
                         },
@@ -1436,6 +1453,8 @@ class ServiceLoader(AbstractLoader):
     ):
         if not self.is_test_data_allowed("TD_43_24_76_58"):
             return
+
+        cluster_envelopes = self.switch_loading_class_cluster(cluster_envelopes)
 
         cluster_envelopes.extend([
 
@@ -1527,6 +1546,8 @@ class ServiceLoader(AbstractLoader):
     ):
         if not self.is_test_data_allowed("TD_39_25_11_76"):
             return
+
+        cluster_envelopes = self.switch_loading_class_cluster(cluster_envelopes)
 
         cluster_envelopes.extend([
 

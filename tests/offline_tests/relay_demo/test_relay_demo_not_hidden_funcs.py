@@ -3,10 +3,13 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 
-from argrelay.composite_tree.CompositeForestSchema import tree_roots_
-from argrelay.composite_tree.CompositeNodeSchema import sub_tree_, node_type_, func_id_
-from argrelay.composite_tree.CompositeNodeType import CompositeNodeType
-from argrelay.custom_integ.value_constants import desc_git_tag_func_
+from argrelay.composite_forest.CompositeForestSchema import tree_roots_
+from argrelay.composite_forest.CompositeNodeSchema import sub_tree_, node_type_, func_id_
+from argrelay.composite_forest.CompositeNodeType import CompositeNodeType
+from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import func_configs_
+from argrelay.custom_integ.ConfigOnlyDelegator import ConfigOnlyDelegator
+from argrelay.custom_integ.FuncConfigSchema import func_envelope_
+from argrelay.custom_integ.value_constants import func_id_desc_git_tag_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
@@ -18,7 +21,10 @@ from argrelay.schema_config_core_server.ServerPluginControlSchema import composi
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
-from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
+from argrelay.test_infra.EnvMockBuilder import (
+    LocalClientEnvMockBuilder,
+    EnvMockBuilder,
+)
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
@@ -124,7 +130,7 @@ class ThisTestClass(LocalTestClass):
                         sub_tree_: {
                             "qwer": {
                                 node_type_: CompositeNodeType.func_tree_node.name,
-                                func_id_: desc_git_tag_func_,
+                                func_id_: func_id_desc_git_tag_,
                             },
                         },
                     }
@@ -132,7 +138,7 @@ class ThisTestClass(LocalTestClass):
                     plugin_config_dict[plugin_instance_entries_][
                         f"{FuncTreeInterpFactory.__name__}.default"
                     ][plugin_config_][func_selector_tree_]["relay_demo"][""]["desc"]["retag"] = {
-                        "qwer": desc_git_tag_func_,
+                        "qwer": func_id_desc_git_tag_,
                     }
 
                 self.verify_output_via_local_client(
@@ -150,3 +156,69 @@ class ThisTestClass(LocalTestClass):
                     .set_server_config_dict(server_config_dict)
                     .set_plugin_config_dict(plugin_config_dict),
                 )
+
+    def test_validation_for_plugin_search_control_with_func_envelope_having_missing_props(self):
+        """
+        This test relies on `ConfigOnlyDelegator` to remove some `prop_name`-s in its `func_envelope`.
+
+        TODO_39_25_11_76: `data_envelope`-s with missing props.
+
+        The validation should prevent using any `func_envelope` which does not contain `prop_name`-s
+        used by some of `search_control`-s anywhere (e.g. by `search_control` used by some plugin).
+        """
+
+        env_mock_builder = LocalClientEnvMockBuilder().set_reset_local_server(True)
+
+        for is_missing_prop in [
+            False,
+            True,
+        ]:
+            with self.subTest(is_missing_prop):
+                if is_missing_prop:
+                    # Change config to cause validation error:
+                    plugin_config_dict = plugin_config_desc.dict_from_default_file()
+                    func_envelope = plugin_config_dict[
+                        plugin_instance_entries_
+                    ][
+                        # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
+                        f"{ConfigOnlyDelegator.__name__}.default"
+                    ][
+                        plugin_config_
+                    ][
+                        func_configs_
+                    ][
+                        # Any `func_id` from the config:
+                        "func_id_print_with_severity_level"
+                    ][
+                        func_envelope_
+                    ]
+                    del func_envelope["func_state"]
+                    env_mock_builder.set_plugin_config_dict(plugin_config_dict)
+
+                    with self.assertRaises(ValueError) as cm:
+                        self._start_server(env_mock_builder)
+                    self.assertTrue(
+                        cm.exception.args[0].startswith(
+                            "data_envelope of (collection_name: `ClassFunction`, envelope_class: `ClassFunction`) does not have (prop_name: `func_state`) while another one had:",
+                        ),
+                    )
+                else:
+                    # Should start successfully by default:
+                    self._start_server(env_mock_builder)
+
+    def _start_server(
+        self,
+        env_mock_builder: EnvMockBuilder,
+    ):
+        self.verify_output_via_local_client(
+            self.__class__.same_test_data_per_class,
+            "some_command |",
+            CompType.PrefixShown,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            env_mock_builder,
+        )
