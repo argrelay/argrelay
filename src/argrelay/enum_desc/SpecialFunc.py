@@ -11,6 +11,11 @@ class SpecialFunc(Enum):
     Function which is not plugged anywhere.
     """
 
+    func_id_no_data = auto()
+    """
+    Function which has no data it searches for via FS_31_70_49_15 `search_control`.
+    """
+
     func_id_intercept_invocation = auto()
     """
     Implements FS_88_66_66_73 intercept func.
