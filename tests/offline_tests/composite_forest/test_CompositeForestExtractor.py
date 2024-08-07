@@ -306,6 +306,7 @@ class ThisTestClass(LocalTestClass):
 
         func_tree_main = {
             "echo": "func_id_echo_args",
+            "no_data": "func_id_no_data",
             "goto": {
                 "repo": "func_id_goto_git_repo",
                 "host": "func_id_goto_host",

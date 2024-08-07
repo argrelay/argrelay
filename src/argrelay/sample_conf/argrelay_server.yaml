@@ -127,6 +127,9 @@ server_plugin_control:
                             "echo":
                                 node_type: func_tree_node
                                 func_id: func_id_echo_args
+                            "no_data":
+                                node_type: func_tree_node
+                                func_id: func_id_no_data
                             "list":
                                 node_type: tree_path_node
                                 sub_tree:

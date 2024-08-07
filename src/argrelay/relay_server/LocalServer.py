@@ -374,7 +374,7 @@ class LocalServer:
         # exists in all corresponding `data_envelope`-s loaded:
         for collection_name, prop_names_per_class in prop_names_per_collection_per_class.items():
             eprint(f"collection to validate: {collection_name}")
-            total_envelope_n = self.count_per_collection[collection_name]
+            total_envelope_n = self.count_per_collection.get(collection_name, 0)
             curr_envelope_i = 0
             log_validation_progress(
                 validation_step,

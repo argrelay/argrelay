@@ -54,6 +54,7 @@ class ThisTestClass(LocalTestClass):
                     "help",
                     "intercept",
                     "list",
+                    "no_data",
                 ],
                 # TODO: Maybe we should suggest selection for `internal` func like `intercept` as well?
                 "Suggest from the set of values for the first unassigned arg type.",
@@ -538,13 +539,13 @@ class ThisTestClass(LocalTestClass):
                 "FS_41_40_39_44: TODO: suggest from interp tree.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}35{TermColor.reset_style.value}
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}37{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc diff duplicates echo enum goto help intercept list 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc diff double_execution echo goto help host intercept list print_with_exit print_with_io_redirect print_with_level repo service tag {SpecialChar.NoPropValue.value} 
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config desc diff duplicates echo enum goto help intercept list no_data 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config desc diff double_execution echo goto help host intercept list no_data print_with_exit print_with_io_redirect print_with_level repo service tag {SpecialChar.NoPropValue.value} 
 {" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(3)}: ?{TermColor.reset_style.value} commit double_execution host print_with_exit print_with_io_redirect print_with_level repo service tag {SpecialChar.NoPropValue.value} 
-{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} {FuncState.fs_alpha} {FuncState.fs_beta} {FuncState.fs_demo} {FuncState.fs_gamma} 
-{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_desc_git_commit func_id_desc_git_tag func_id_desc_host func_id_desc_service func_id_diff_service func_id_double_execution func_id_echo_args func_id_goto_git_repo func_id_goto_host func_id_goto_service func_id_help_hint func_id_intercept_invocation func_id_list_host func_id_list_service func_id_print_with_exit_code func_id_print_with_io_redirect func_id_print_with_severity_level func_id_query_enum_items 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} {FuncState.fs_alpha} {FuncState.fs_beta} {FuncState.fs_demo} {FuncState.fs_gamma} {FuncState.fs_ignorable} 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_desc_git_commit func_id_desc_git_tag func_id_desc_host func_id_desc_service func_id_diff_service func_id_double_execution func_id_echo_args func_id_goto_git_repo func_id_goto_host func_id_goto_service func_id_help_hint func_id_intercept_invocation func_id_list_host func_id_list_service func_id_no_data func_id_print_with_exit_code func_id_print_with_io_redirect func_id_print_with_severity_level func_id_query_enum_items 
 """,
             ),
             (
