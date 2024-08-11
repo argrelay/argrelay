@@ -8,6 +8,7 @@ import requests
 import responses
 
 from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import get_server_index_file_path
+from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_client import __main__
@@ -233,8 +234,12 @@ class ThisTestClass(BaseTestClass):
             if is_connection_successful:
                 __main__.main()
             else:
-                with self.assertRaises(ConnectionError) as exc_context:
+                with self.assertRaises(SystemExit) as cm:
                     __main__.main()
+                self.assertEqual(
+                    cm.exception.code,
+                    ClientExitCode.ConnectionError.value,
+                )
 
         # then:
 

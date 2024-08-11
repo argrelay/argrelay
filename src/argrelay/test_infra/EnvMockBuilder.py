@@ -35,6 +35,7 @@ from argrelay.enum_desc.CallConv import CallConv
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
 from argrelay.enum_desc.SpecialChar import SpecialChar
+from argrelay.enum_desc.TopDir import TopDir
 from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.runtime_context.ParsedContext import ParsedContext
@@ -169,6 +170,7 @@ class EnvMockBuilder:
     mock_client_config_file_read: bool = field(default = False)
     mock_server_config_file_read: bool = field(default = False)
     mock_plugin_config_file_read: bool = field(default = False)
+    mock_usage_stats_file_write: bool = field(default = False)
 
     # Implement FS_62_25_92_06 generated config for `out`-processes to read it (see FS_66_17_43_42 test infra):
     generate_client_config_file: bool = field(default = False)
@@ -388,6 +390,21 @@ class EnvMockBuilder:
         return self
 
     ####################################################################################################################
+    # FS_87_02_77_34: usage stats
+
+    @staticmethod
+    def get_usage_stats_path():
+        # TODO: TODO_69_59_78_78: register known files as enum with metadata:
+        return f"{get_argrelay_dir()}/{TopDir.var_dir.value}/usage_stats"
+
+    def set_mock_usage_stats_file_write(self, given_val: bool):
+        self.mock_usage_stats_file_write = given_val
+        return self
+
+    def get_usage_stats_mock(self):
+        return self.file_mock.path_to_mock[self.get_usage_stats_path()]
+
+    ####################################################################################################################
     # General mocking
 
     @contextlib.contextmanager
@@ -557,6 +574,10 @@ class EnvMockBuilder:
                     self.plugin_config_dict
                 )
 
+        if self.mock_usage_stats_file_write:
+            # set mocked file content:
+            self.file_mock.path_to_data[self.get_usage_stats_path()] = ""
+
         with ExitStack() as exit_stack:
 
             # noinspection PyListCreation
@@ -721,7 +742,7 @@ class EnvMockBuilder:
     def generate_configs(
         self,
     ):
-        base_tmp_dir = f"{get_argrelay_dir()}/tmp"
+        base_tmp_dir = f"{get_argrelay_dir()}/{TopDir.tmp_dir.value}"
         assert os.path.isdir(base_tmp_dir)
 
         test_configs_dir = f"{base_tmp_dir}/test_configs"

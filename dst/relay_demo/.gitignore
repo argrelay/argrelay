@@ -4,3 +4,6 @@
 /argrelay_client.json
 /argrelay_server.yaml
 /argrelay_plugin.yaml
+/check_env_plugin.conf.bash
+/check_env_plugin.conf.yaml
+

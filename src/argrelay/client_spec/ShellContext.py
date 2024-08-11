@@ -3,11 +3,12 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 
+import argrelay
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper_common import eprint
+from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.server_spec.CallContext import CallContext
 
 UNKNOWN_COMP_KEY: str = str(0)
@@ -93,22 +94,38 @@ class ShellContext:
     def create_call_context(
         self,
     ) -> CallContext:
-        server_action: ServerAction = self.select_server_action()
+        server_action: ServerAction = select_server_action(self.comp_type)
         return CallContext(
+            client_version = argrelay.__version__,
+            client_conf_target = get_client_conf_target(),
             server_action = server_action,
             command_line = self.command_line,
             cursor_cpos = self.cursor_cpos,
             comp_scope = CompScope.from_comp_type(self.comp_type),
+            client_uid = get_user_name(),
             client_pid = os.getpid(),
             is_debug_enabled = self.is_debug_enabled,
         )
 
-    def select_server_action(
-        self,
-    ) -> ServerAction:
-        if self.comp_type is CompType.DescribeArgs:
-            return ServerAction.DescribeLineArgs
-        if self.comp_type is CompType.InvokeAction:
-            return ServerAction.RelayLineArgs
+def select_server_action(
+    comp_type,
+) -> ServerAction:
+    if comp_type is CompType.DescribeArgs:
+        return ServerAction.DescribeLineArgs
+    if comp_type is CompType.InvokeAction:
+        return ServerAction.RelayLineArgs
 
-        return ServerAction.ProposeArgValues
+    return ServerAction.ProposeArgValues
+
+def get_user_name():
+    try:
+        return os.getlogin()
+    except OSError:
+        return ""
+
+def get_client_conf_target():
+    conf_path = f"{get_argrelay_dir()}/conf"
+    if os.path.islink(conf_path):
+        return os.readlink(conf_path)
+    else:
+        return ""

@@ -14,6 +14,23 @@ ElapsedTime.measure("after_program_entry")
 
 
 def main():
+    # noinspection PyBroadException
+    try:
+        return run_client()
+    except BaseException as e1:
+        # noinspection PyBroadException
+        try:
+            # Avoid leaving terminal in unexpected state.
+            # For example, due to some terminal control chars printed by client partially,
+            # the terminal may be left in mode which does not echo back chars typed by the user.
+            import os
+            os.system("stty sane")
+        except BaseException as e2:
+            pass
+        raise e1
+
+
+def run_client():
     ElapsedTime.measure("after_initial_imports")
 
     file_path = get_config_path("argrelay_client.json")

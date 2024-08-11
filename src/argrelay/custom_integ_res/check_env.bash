@@ -137,27 +137,32 @@ echo -e "${success_color}INFO:${reset_style} ${field_color}python_version:${rese
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 
 ########################################################################################################################
-# TODO: Rename this to `argrelay_pip_version` and add `argrelay_module_version` which is obtained via Python part from internal module variable.
-# Report `argrelay_version`:
+# TODO: Add `argrelay_module_version` which is obtained via Python part from internal module variable.
+# Report `argrelay_pip_version`:
 set +e
-argrelay_version="$( pip show argrelay | grep '^Version:' | cut -f2 -d' ' )"
+argrelay_pip_version="$( pip show argrelay | grep '^Version:' | cut -f2 -d' ' )"
 exit_code="${?}"
 set -e
 if [[ "${exit_code}" != "0" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_version:${reset_style} ${failure_message}# unable to detect version of \`argrelay\` package via \`pip show argrelay\`${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_pip_version:${reset_style} ${failure_message}# unable to detect version of \`argrelay\` package via \`pip show argrelay\`${reset_style}"
     exit 1
 fi
-# Check if `argrelay_version` string matches semver version format:
+# Check if `argrelay_pip_version` string matches semver version format:
 # https://stackoverflow.com/a/72900791/441652
 # But semver version format is not compatible (conflicts) with - see: `docs/dev_notes/version_format.md`.
 # Using simplified regex to see if version looks like version:
-if [[ ! "${argrelay_version}" =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$ ]]
+if [[ ! "${argrelay_pip_version}" =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$ ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_version:${reset_style} ${failure_message}# \`argrelay_version\` does not match version format: ${argrelay_version}${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_pip_version:${reset_style} ${failure_message}# \`argrelay_pip_version\` does not match version format: ${argrelay_pip_version}${reset_style}"
     exit 1
 fi
-echo -e "${success_color}INFO:${reset_style} ${field_color}argrelay_version:${reset_style} ${argrelay_version}"
+echo -e "${success_color}INFO:${reset_style} ${field_color}argrelay_pip_version:${reset_style} ${argrelay_pip_version}"
+
+########################################################################################################################
+# Run all `check_env_plugin.*`:
+
+source "${argrelay_dir}/conf/check_env_plugin.conf.bash"
 
 ########################################################################################################################
 # Switch to Python:

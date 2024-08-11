@@ -80,18 +80,17 @@ cd "${argrelay_dir}" || exit 1
 ARGRELAY_DEV_SHELL="$(date)"
 export ARGRELAY_DEV_SHELL
 
-echo -e "${banner_color}INFO: keep starting nested \`@/exe/dev_shell.bash\` on demand or \`source\` this config by default in \`~/.bashrc\`: ${argrelay_dir}/exe/shell_env.bash${reset_color}" 1>&2
-
 # The new shell executes `@/exe/init_shell_env.bash` script as its init file:
 # https://serverfault.com/questions/368054
 # Use `exec` to replace current process:
 if [[ "$#" -eq "0" ]]
 then
     # Interactive:
+    echo -e "${banner_color}INFO: keep starting nested \`@/exe/dev_shell.bash\` on demand or \`source\` this config by default in \`~/.bashrc\`: ${argrelay_dir}/exe/shell_env.bash${reset_color}" 1>&2
     exec bash --init-file <( echo "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash" )
 else
     # Non-interactive:
     # All args passed to `@/exe/dev_shell.bash` are executed as command line:
-    exec bash --init-file <( echo "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash" ) -i -c "${*}"
+    exec bash -c "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash && ( ${*} )"
 fi
 

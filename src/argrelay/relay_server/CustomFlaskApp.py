@@ -6,6 +6,7 @@ import pkg_resources
 from flasgger import Swagger
 from flask import Flask, request, redirect
 
+import argrelay
 from argrelay import relay_server
 from argrelay.custom_integ.git_utils import get_git_repo_root_path
 from argrelay.misc_helper_common import get_argrelay_dir
@@ -17,8 +18,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import server_config_
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.server_spec.const_int import API_SPEC_PATH, API_DOCS_PATH, ARGRELAY_GUI_PATH
 
-# Set this here (because `require` function may fail in other contexts):
-server_version = pkg_resources.require("argrelay")[0].version
+server_version = argrelay.__version__
 server_title = relay_server.__name__
 
 

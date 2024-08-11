@@ -24,7 +24,7 @@ def create_blueprint_api(local_server: LocalServer):
     propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
     relay_line_args_handler = RelayLineArgsServerRequestHandler(local_server)
 
-    def create_call_ctx() -> CallContext:
+    def _create_call_ctx() -> CallContext:
         ElapsedTime.clear_measurements()
         ElapsedTime.measure("before_request_payload_load")
 
@@ -48,7 +48,7 @@ def create_blueprint_api(local_server: LocalServer):
     @swag_from(ProposeArgValuesSpec.spec_data)
     def propose_arg_values():
         try:
-            call_ctx = create_call_ctx()
+            call_ctx = _create_call_ctx()
             response_dict = propose_arg_values_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["text/plain"] or len(request.accept_mimetypes) == 0:
@@ -79,7 +79,7 @@ def create_blueprint_api(local_server: LocalServer):
     @swag_from(DescribeLineArgsSpec.spec_data)
     def describe_line_args():
         try:
-            call_ctx = create_call_ctx()
+            call_ctx = _create_call_ctx()
             response_dict = describe_line_args_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:
@@ -101,7 +101,7 @@ def create_blueprint_api(local_server: LocalServer):
     @swag_from(RelayLineArgsSpec.spec_data)
     def relay_line_args():
         try:
-            call_ctx = create_call_ctx()
+            call_ctx = _create_call_ctx()
             response_dict = relay_line_args_handler.handle_request(call_ctx)
 
             if request.accept_mimetypes["application/json"] or len(request.accept_mimetypes) == 0:

@@ -5,3 +5,6 @@
 # See FS_93_18_57_91 client fail over to redundant servers:
 /argrelay_client.server_index
 
+# See FS_87_02_77_34 usage stats:
+/usage_stats
+

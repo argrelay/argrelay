@@ -104,6 +104,8 @@ class ThisTestClass(BaseTestClass):
         *   `~/.argrelay.conf.d/argrelay_client.json`
         *   `~/.argrelay.conf.d/argrelay_server.yaml`
         *   `~/.argrelay.conf.d/argrelay_plugin.yaml`
+        *   `~/.argrelay.conf.d/check_env_plugin.conf.bash`
+        *   `~/.argrelay.conf.d/check_env_plugin.conf.yaml`
 
         Move them under different name to preserve or delete them completely.
 
@@ -116,6 +118,8 @@ class ThisTestClass(BaseTestClass):
             os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_client.json",
             os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_server.yaml",
             os.path.expanduser("~") + "/.argrelay.conf.d/argrelay_plugin.yaml",
+            os.path.expanduser("~") + "/.argrelay.conf.d/check_env_plugin.conf.bash",
+            os.path.expanduser("~") + "/.argrelay.conf.d/check_env_plugin.conf.yaml",
         ]:
             self.assertFalse(os.path.exists(file_path))
 

@@ -32,6 +32,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         call_ctx: CallContext,
     ) -> dict:
         assert call_ctx.server_action is ServerAction.RelayLineArgs
+        self._store_usage_stats_entry(call_ctx)
 
         self.interpret_command(self.local_server, call_ctx)
         ElapsedTime.measure("after_interpret_command")

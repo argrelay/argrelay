@@ -14,8 +14,10 @@ from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ResultCategory import ResultCategory
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.runtime_context.PluginClientAbstract import instantiate_client_plugin
+from argrelay.runtime_data.CheckEnvPluginConfig import CheckEnvPluginConfig
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
+from argrelay.schema_config_plugin.CheckEnvPluginConfigSchema import check_env_plugin_config_desc
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 
 # Standard color scheme has to be synced with `@/exe/check_env.bash`:
@@ -51,7 +53,7 @@ def main():
     else:
         online_mode = None
 
-    plugin_config: PluginConfig = plugin_config_desc.obj_from_default_file()
+    plugin_config: CheckEnvPluginConfig = check_env_plugin_config_desc.obj_from_default_file()
 
     total_success: bool = True
 

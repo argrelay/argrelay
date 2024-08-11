@@ -146,6 +146,7 @@ reusable_config_data:
 
     func_tree_check_env: &func_tree_check_env
         "argrelay.check_env":
+            "server_version": func_id_get_server_argrelay_version
             "server_commit": func_id_get_server_project_git_commit_id
             "server_start_time": func_id_get_server_start_time
 
@@ -519,43 +520,3 @@ plugin_instance_entries:
             project_page_url: "https://argrelay.org"
             git_files_by_commit_id_url_prefix: "https://github.com/argrelay/argrelay/tree/"
             commit_id_url_prefix: "https://github.com/argrelay/argrelay/commit/"
-
-check_env_plugin_instance_entries:
-
-    ####################################################################################################################
-    # List of client-side plugins for FS_36_17_84_44 `check_env`
-
-    PluginCheckEnvDevShell.default:
-        plugin_side: PluginClientSideOnly
-        plugin_module_name: argrelay.check_env.PluginCheckEnvDevShell
-        plugin_class_name: PluginCheckEnvDevShell
-
-    PluginCheckEnvClientLinkedCommands.default:
-        plugin_side: PluginClientSideOnly
-        plugin_module_name: argrelay.check_env.PluginCheckEnvClientLinkedCommands
-        plugin_class_name: PluginCheckEnvClientLinkedCommands
-
-    PluginCheckEnvOnlineMode.default:
-        plugin_side: PluginClientSideOnly
-        plugin_module_name: argrelay.check_env.PluginCheckEnvOnlineMode
-        plugin_class_name: PluginCheckEnvOnlineMode
-
-    PluginCheckEnvServerIndex.default:
-        plugin_side: PluginClientSideOnly
-        plugin_module_name: argrelay.check_env.PluginCheckEnvServerIndex
-        plugin_class_name: PluginCheckEnvServerIndex
-
-    PluginCheckEnvServerUrl.default:
-        plugin_side: PluginClientSideOnly
-        plugin_module_name: argrelay.check_env.PluginCheckEnvServerUrl
-        plugin_class_name: PluginCheckEnvServerUrl
-
-    PluginCheckEnvServerResponseValueCommitId.default:
-        plugin_side: PluginClientSideOnly
-        plugin_module_name: argrelay.check_env.PluginCheckEnvServerResponseValueCommitId
-        plugin_class_name: PluginCheckEnvServerResponseValueCommitId
-
-    PluginCheckEnvServerResponseValueStartTime.default:
-        plugin_side: PluginClientSideOnly
-        plugin_module_name: argrelay.check_env.PluginCheckEnvServerResponseValueStartTime
-        plugin_class_name: PluginCheckEnvServerResponseValueStartTime
