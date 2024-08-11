@@ -27,6 +27,7 @@ from argrelay.plugin_delegator.AbstractJumpDelegatorConfigSchema import abstract
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import first_arg_interp_factory_config_desc
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import func_tree_interp_config_desc
+from argrelay.relay_server.UsageStatsEntrySchema import usage_stats_entry_desc
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc, redundant_servers_
 from argrelay.schema_config_core_client.ConnectionConfigSchema import (
@@ -46,6 +47,7 @@ from argrelay.schema_config_interp.FuncEnvelopeSchema import func_envelope_desc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
 from argrelay.schema_config_interp.InitControlSchema import init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
+from argrelay.schema_config_plugin.CheckEnvPluginConfigSchema import check_env_plugin_config_desc
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
@@ -96,6 +98,8 @@ class ThisTestClass(BaseTestClass):
         (line_no(), config_only_delegator_config_desc),
         (line_no(), func_config_desc),
         (line_no(), schema_plugin_check_evn_server_response_abstract_desc),
+        (line_no(), usage_stats_entry_desc),
+        (line_no(), check_env_plugin_config_desc),
 
         # FS_33_76_82_84 composite forest and its nodes:
         (line_no(), composite_forest_desc),

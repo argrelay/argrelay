@@ -58,6 +58,9 @@ do
 
             "${argrelay_dir}/exe/bootstrap_env.bash"
 
+            # Run selected set of tests:
+            "${argrelay_dir}/dst/.github/run_build_tests.bash"
+
             # Script `check_env` should succeed after bootstrap:
             "${argrelay_dir}/exe/check_env.bash" "offline"
 
@@ -66,6 +69,9 @@ do
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
                 ":(exclude)dst/.github/argrelay_plugin.yaml" \
+                ":(exclude)dst/.github/check_env_plugin.conf.bash" \
+                ":(exclude)dst/.github/check_env_plugin.conf.yaml" \
+
 
         ;;
         "fail_on_conf_mismatch")
@@ -81,6 +87,8 @@ do
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
                 ":(exclude)dst/.github/argrelay_plugin.yaml" \
+                ":(exclude)dst/.github/check_env_plugin.conf.bash" \
+                ":(exclude)dst/.github/check_env_plugin.conf.yaml" \
 
         ;;
         "reset_conf")
@@ -93,6 +101,8 @@ do
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
                 ":(exclude)dst/.github/argrelay_plugin.yaml" \
+                ":(exclude)dst/.github/check_env_plugin.conf.bash" \
+                ":(exclude)dst/.github/check_env_plugin.conf.yaml" \
 
         ;;
         "succeed_on_conf_match")
@@ -104,6 +114,8 @@ do
                 ":(exclude)dst/.github/argrelay_client.json" \
                 ":(exclude)dst/.github/argrelay_server.yaml" \
                 ":(exclude)dst/.github/argrelay_plugin.yaml" \
+                ":(exclude)dst/.github/check_env_plugin.conf.bash" \
+                ":(exclude)dst/.github/check_env_plugin.conf.yaml" \
 
         ;;
         *)

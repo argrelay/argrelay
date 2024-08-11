@@ -49,14 +49,6 @@ cd "${argrelay_dir}" || exit 1
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ensure_inside_dev_shell
 
-# Ensure debug is disabled
-# (it causes tests matching output to fail confusingly):
-if [[ -n "${ARGRELAY_DEBUG+x}" ]]
-then
-    echo "ERROR: ARGRELAY_DEBUG is set" 1>&2
-    exit 1
-fi
-
 # Ensure all changes are committed (before boostrap):
 # https://stackoverflow.com/a/3879077/441652
 git update-index --refresh
@@ -92,12 +84,7 @@ fi
 
 # See also: `docs/dev_notes/version_format.md`.
 # Get version of `argrelay` distribution:
-argrelay_version="$(
-python << 'python_get_package_version_EOF'
-from pkg_resources import get_distribution
-print(get_distribution("argrelay").version)
-python_get_package_version_EOF
-)"
+argrelay_version="$( sed -n "s/^__version__ = ['\"]\([^'\"]*\)['\"]/\1/p" "${argrelay_dir}/src/argrelay/_version.py" )"
 echo "INFO: argrelay version: ${argrelay_version}" 1>&2
 
 # Determine if it is a dev version (which relaxes many checks):
@@ -118,10 +105,19 @@ echo "INFO: is_dev_version: ${is_dev_version}" 1>&2
 # Clean up previously built packages:
 rm -rf "${argrelay_dir}/dist/"
 
-# Do not run tests with dev version
-# (can still be run manually on demand):
-if [[ "${is_dev_version}" != "true" ]]
+# Do not run tests:
+# *   for dev version, it might be required to pre-release without passing all tests
+# *   for release version, it must be in main branch which means it is merged which means it passes all tests
+if false
 then
+    # Ensure debug is disabled
+    # (it causes tests matching output to fail confusingly):
+    if [[ -n "${ARGRELAY_DEBUG+x}" ]]
+    then
+        echo "ERROR: ARGRELAY_DEBUG is set" 1>&2
+        exit 1
+    fi
+
     # Run max tests with `ARGRELAY_DEV_SHELL` defined:
     "${argrelay_dir}/exe/run_max_tests.bash"
 
@@ -209,4 +205,6 @@ pip install twine
 twine upload "dist/argrelay-${argrelay_version}.tar.gz"
 
 # Change version to non-release-able to force user to change it later:
-sed --in-place "s/${argrelay_version}/change-from-intentionally-wrong.${argrelay_version}/g" "setup.py"
+sed --in-place \
+"s/${argrelay_version}/intentionally-wrong.${argrelay_version}/g" \
+"${argrelay_dir}/src/argrelay/_version.py" \

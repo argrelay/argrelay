@@ -439,11 +439,10 @@ function install_files_procedure {
 
     install_files_conf_path="${1}"
     install_mode="${2}"
-    target_dir="${3}"
     # Whether override should be used or not depends on whether the file is a config or it is a resource:
     # *   config files are specific to target environment and are kept untouched (manually updated if needed)
     # *   resource files are common for all installs - they represent the latest update and should be overriden
-    override_target_file="${4}"
+    override_target_file="${3}"
 
     # Load user config for env vars:
     # *   module_path_file_tuples
@@ -481,8 +480,8 @@ function install_files_procedure {
         if [[ "$((i%3))" == "0" ]]
         then
             module_name="${module_path_file_tuples[i+0]}"
-            relative_dir_path="${module_path_file_tuples[i+1]}"
-            file_name="${module_path_file_tuples[i+2]}"
+            module_dir_src_path="${module_path_file_tuples[i+1]}"
+            argrelay_dir_dst_path="${module_path_file_tuples[i+2]}"
 
             # Python `venv` has to be activated.
             # Get path of `argrelay` module:
@@ -499,18 +498,22 @@ python_module_path_EOF
             fi
 
             # Test existence of the source file:
-            config_file_path="${module_path}/${relative_dir_path}/${file_name}"
+            config_file_path="${module_path}/${module_dir_src_path}"
             test -f "${config_file_path}"
 
+            target_file_path="${argrelay_dir}/${argrelay_dir_dst_path}"
+            # Create target parent dirs:
+            mkdir --parents "$( dirname "${target_file_path}" )"
+
             # Install file to the target:
-            if [[ ! -e "${target_dir}/${file_name}" ]] && [[ ! -L "${target_dir}/${file_name}" ]]
+            if [[ ! -e "${target_file_path}" ]] && [[ ! -L "${target_file_path}" ]]
             then
-                eval "${file_install_command}" "${config_file_path}" "${target_dir}/${file_name}"
+                eval "${file_install_command}" "${config_file_path}" "${target_file_path}"
             else
                 if [[ "${override_target_file}" == "override_target_file" ]]
                 then
-                    rm "${target_dir}/${file_name}"
-                    eval "${file_install_command}" "${config_file_path}" "${target_dir}/${file_name}"
+                    rm "${target_file_path}"
+                    eval "${file_install_command}" "${config_file_path}" "${target_file_path}"
                 fi
             fi
         fi
@@ -536,22 +539,25 @@ then
 # It is *sourced* by `@/exe/bootstrap_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying config files, format:
-# module_name relative_dir_path config_file_name
+# module_name module_dir_src_path argrelay_dir_dst_path
 module_path_file_tuples=(
     # Note: a project integrating `argrelay` must provide its own set of
     #       customized `argrelay` config files instead (from its own module).
     #       Integration assumes different plugins, their configs, etc.
 
     # For example:
-    # project_module sample_conf argrelay_client.json
-    # project_module sample_conf argrelay_server.yaml
-    # project_module sample_conf argrelay_plugin.yaml
+    # project_module sample_conf/argrelay_client.json conf/argrelay_client.json
+    # project_module sample_conf/argrelay_server.yaml conf/argrelay_server.yaml
+    # project_module sample_conf/argrelay_plugin.yaml conf/argrelay_plugin.yaml
+    # project_module sample_conf/check_env_plugin.conf.bash conf/check_env_plugin.conf.bash
+    # project_module sample_conf/check_env_plugin.conf.yaml conf/check_env_plugin.conf.yaml
 )
 ########################################################################################################################
 config_files_conf_EOF
     "${ret_command}" 1
 fi
 
+# TODO: clean up obsolete logic:
 # See `FS_16_07_78_84.conf_dir_priority.md`:
 if [[ -n "${ARGRELAY_CONF_BASE_DIR+x}" ]]
 then
@@ -576,7 +582,10 @@ then
     fi
 fi
 
-install_files_procedure "${install_files_conf_path}" "detect_method" "${argrelay_conf_base_dir}" "do_not_override"
+# NOTE: `FS_16_07_78_84.conf_dir_priority.md` is obsolete:
+test "${argrelay_conf_base_dir}" == "${argrelay_dir}/conf/"
+
+install_files_procedure "${install_files_conf_path}" "detect_method" "do_not_override"
 
 ########################################################################################################################
 # Prepare artifacts: install resources (symlinks).
@@ -597,21 +606,23 @@ then
 # It is *sourced* by `@/exe/bootstrap_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying resource files, format:
-# module_name relative_dir_path resource_file_name
+# module_name module_dir_src_path argrelay_dir_dst_path
 module_path_file_tuples=(
-    argrelay custom_integ_res argrelay_common_lib.bash
-    argrelay custom_integ_res shell_env.bash
-    argrelay custom_integ_res check_env.bash
-    argrelay custom_integ_res dev_shell.bash
-    argrelay custom_integ_res init_shell_env.bash
-    argrelay custom_integ_res upgrade_env_packages.bash
+    argrelay custom_integ_res/argrelay_common_lib.bash exe/argrelay_common_lib.bash
+    argrelay custom_integ_res/shell_env.bash exe/shell_env.bash
+    argrelay custom_integ_res/check_env.bash exe/check_env.bash
+    argrelay custom_integ_res/dev_shell.bash exe/dev_shell.bash
+    argrelay custom_integ_res/init_shell_env.bash exe/init_shell_env.bash
+    argrelay custom_integ_res/upgrade_env_packages.bash exe/upgrade_env_packages.bash
+    argrelay custom_integ_res/script_plugin.d/check_env_plugin.all_plugins.bash exe/script_plugin.d/check_env_plugin.all_plugins.bash
+    argrelay custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash exe/script_plugin.d/check_env_plugin.bash_version.bash
 )
 ########################################################################################################################
 resource_files_conf_EOF
     "${ret_command}" 1
 fi
 
-install_files_procedure "${install_files_conf_path}" "symlink_method" "${argrelay_dir}/exe/" "override_target_file"
+install_files_procedure "${install_files_conf_path}" "symlink_method" "override_target_file"
 
 ########################################################################################################################
 # Prepare artifacts: generate resources.

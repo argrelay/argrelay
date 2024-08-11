@@ -6,20 +6,26 @@ from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.server_spec.CallContext import CallContext
 
+client_version_ = "client_version"
+client_conf_target_ = "client_conf_target"
 server_action_ = "server_action"
 command_line_ = "command_line"
 cursor_cpos_ = "cursor_cpos"
 comp_scope_ = "comp_scope"
+client_uid_ = "client_uid"
 client_pid_ = "client_pid"
 is_debug_enabled_ = "is_debug_enabled"
 
 _sample_command_line = "some_command goto service "
 
 _call_context_example = {
+    client_version_: "",
+    client_conf_target_: "",
     server_action_: ServerAction.DescribeLineArgs.name,
     command_line_: _sample_command_line,
     cursor_cpos_: len(_sample_command_line),
     comp_scope_: CompScope.ScopeInitial.name,
+    client_uid_: "",
     client_pid_: 0,
     is_debug_enabled_: False,
 }
@@ -32,6 +38,22 @@ class CallContextSchema(ObjectSchema):
 
     model_class = CallContext
 
+    client_version = fields.String(
+        required = False,
+        metadata = {
+            "description": "client version of `argrelay` package (empty = not set)",
+            "example": _call_context_example[client_version_],
+        },
+        load_default = "",
+    )
+    client_conf_target = fields.String(
+        required = False,
+        metadata = {
+            "description": "target path of `@/conf` symlink (empty = not set)",
+            "example": _call_context_example[client_conf_target_],
+        },
+        load_default = "",
+    )
     server_action = fields.Enum(
         ServerAction,
         required = True,
@@ -62,6 +84,14 @@ class CallContextSchema(ObjectSchema):
             "description": "Name for a completion scope - see " + CompScope.__name__ + " enum",
             "example": _call_context_example[comp_scope_],
         },
+    )
+    client_uid = fields.String(
+        required = False,
+        metadata = {
+            "description": "UID (user name) of the client user according to OS (empty = not set)",
+            "example": _call_context_example[client_uid_],
+        },
+        load_default = "",
     )
     client_pid = fields.Integer(
         required = False,

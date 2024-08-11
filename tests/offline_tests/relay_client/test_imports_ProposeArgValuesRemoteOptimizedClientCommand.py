@@ -45,7 +45,12 @@ class ThisTestClass(BaseTestClass):
     # To generate `expected_imports`, run `test_print_grouped_imports`.
     expected_imports = {
         "__future__": [],
+        "argrelay": [
+            "argrelay._version"
+        ],
+        "argrelay._version": [],
         "argrelay.client_command_remote.ClientCommandRemoteAbstract": [
+            "argrelay.client_command_remote.exception_utils",
             "argrelay.enum_desc.ClientExitCode",
             "argrelay.enum_desc.ProcRole",
             "argrelay.relay_client.ClientCommandAbstract",
@@ -54,6 +59,7 @@ class ThisTestClass(BaseTestClass):
         "argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract": [
             "__future__",
             "argrelay.client_command_remote.ClientCommandRemoteAbstract",
+            "argrelay.client_command_remote.exception_utils",
             "argrelay.client_pipeline",
             "argrelay.enum_desc.ClientExitCode",
             "argrelay.enum_desc.ProcRole",
@@ -69,12 +75,13 @@ class ThisTestClass(BaseTestClass):
             "argrelay.misc_helper_common.ElapsedTime",
             "argrelay.runtime_data.ConnectionConfig",
             "json",
-            "os",
             "socket"
         ],
+        "argrelay.client_command_remote.exception_utils": [],
         "argrelay.client_pipeline": [],
         "argrelay.client_spec.ShellContext": [
             "__future__",
+            "argrelay",
             "argrelay.enum_desc.CompScope",
             "argrelay.enum_desc.CompType",
             "argrelay.enum_desc.ServerAction",

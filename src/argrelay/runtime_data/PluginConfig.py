@@ -27,15 +27,3 @@ class PluginConfig:
     walking through a DAG described by `plugin_dependencies`.
     Each `plugin_instance_id` is a key into `plugin_instance_entries`.
     """
-
-    # TODO: Move it into separate file/object:
-    check_env_plugin_instance_entries: dict[str, PluginEntry] = field()
-    """
-    Same as `plugin_instance_entries` but for FS_36_17_84_44 `check_env` only.
-    """
-
-    # TODO: Move it into separate file/object:
-    check_env_plugin_instance_id_activate_list: list[str] = field()
-    """
-    Same as `plugin_instance_id_activate_list` but for FS_36_17_84_44 `check_env` only.
-    """

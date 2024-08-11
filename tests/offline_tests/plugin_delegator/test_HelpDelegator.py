@@ -18,37 +18,6 @@ from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder, EmptyE
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 
 
-class ThisTestCase(ShellInputTestCase):
-
-    def __init__(
-        self,
-        case_comment: str,
-        test_line: str,
-        comp_type: CompType,
-        container_ipos_to_expected_assignments: dict[int, dict[str, AssignedValue]],
-        sever_action_verifier: ServerActionVerifier,
-    ):
-        super().__init__(
-            line_no = line_no_from_ctor(),
-            case_comment = case_comment,
-        )
-        self.set_test_line(test_line)
-        self.set_comp_type(comp_type)
-
-        self.container_ipos_to_expected_assignments = container_ipos_to_expected_assignments
-        self.sever_action_verifier = sever_action_verifier
-
-        self.expected_suggestions: Union[list[str], None] = None
-
-    def set_expected_suggestions(
-        self,
-        given_expected_suggestions: list[str],
-    ):
-        assert self.expected_suggestions is None
-        self.expected_suggestions = given_expected_suggestions
-        return self
-
-
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
@@ -106,7 +75,7 @@ class ThisTestClass(LocalTestClass):
                 )
 
                 ########################################################################################################
-                # TODO_32_99_70_35: Instead of keeping JSON sample here, create TestCaseBuilder which integrates JSON verifier and convert the entire test class to use that.
+                # TODO: TODO_32_99_70_35: Instead of keeping JSON sample here, create TestCaseBuilder which integrates JSON verifier and convert the entire test class to use that.
 
                 env_mock_builder = (
                     LocalClientEnvMockBuilder()
@@ -204,3 +173,34 @@ some_command list service {SpecialChar.NoPropValue.value} {TermColor.known_envel
                         "",
                         inner_env_mock_builder.actual_stderr.getvalue(),
                     )
+
+
+class ThisTestCase(ShellInputTestCase):
+
+    def __init__(
+        self,
+        case_comment: str,
+        test_line: str,
+        comp_type: CompType,
+        container_ipos_to_expected_assignments: dict[int, dict[str, AssignedValue]],
+        sever_action_verifier: ServerActionVerifier,
+    ):
+        super().__init__(
+            line_no = line_no_from_ctor(),
+            case_comment = case_comment,
+        )
+        self.set_test_line(test_line)
+        self.set_comp_type(comp_type)
+
+        self.container_ipos_to_expected_assignments = container_ipos_to_expected_assignments
+        self.sever_action_verifier = sever_action_verifier
+
+        self.expected_suggestions: Union[list[str], None] = None
+
+    def set_expected_suggestions(
+        self,
+        given_expected_suggestions: list[str],
+    ):
+        assert self.expected_suggestions is None
+        self.expected_suggestions = given_expected_suggestions
+        return self

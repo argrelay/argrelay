@@ -82,17 +82,6 @@ fi
 # Enable auto-completion:
 source "${argrelay_dir}/exe/shell_env.bash"
 
-if [[ -f "${argrelay_dir}/var/argrelay_client.server_index" ]]
-then
-    server_index="$( cat "${argrelay_dir}/var/argrelay_client.server_index" )"
-else
-    server_index="0"
-fi
-
-# TODO: FS_16_07_78_84: respect conf dir priority:
-server_host_name="$( jq --raw-output ".redundant_servers[${server_index}].server_host_name" "${argrelay_dir}/conf/argrelay_client.json" )"
-server_port_number="$( jq --raw-output ".redundant_servers[${server_index}].server_port_number" "${argrelay_dir}/conf/argrelay_client.json" )"
-
 eval "${init_shell_env_old_opts}"
 unset init_shell_env_old_opts
 
@@ -100,11 +89,27 @@ unset init_shell_env_old_opts
 # shellcheck disable=SC2154
 eval "${ARGRELAY_USER_SHELL_OPTS}"
 
-# This is a basic info normally reported by FS_36_17_84_44 `check_env` script:
-echo -e "\
+if [[ $- == *i* ]]
+then
+    # Interactive shell.
+
+    if [[ -f "${argrelay_dir}/var/argrelay_client.server_index" ]]
+    then
+        server_index="$( cat "${argrelay_dir}/var/argrelay_client.server_index" )"
+    else
+        server_index="0"
+    fi
+
+    # TODO: FS_16_07_78_84: respect conf dir priority:
+    server_host_name="$( jq --raw-output ".redundant_servers[${server_index}].server_host_name" "${argrelay_dir}/conf/argrelay_client.json" )"
+    server_port_number="$( jq --raw-output ".redundant_servers[${server_index}].server_port_number" "${argrelay_dir}/conf/argrelay_client.json" )"
+
+    # This is a basic info normally reported by FS_36_17_84_44 `check_env` script:
+    echo -e "\
 ${field_color}nested shell level:${reset_color} ${SHLVL} ${delimiter_color}|${reset_color} \
 ${field_color}argrelay:${reset_color} $( pip show argrelay | grep '^Version:' | cut -f2 -d' ' || true ) ${delimiter_color}|${reset_color} \
 ${field_color}@/conf:${reset_color} ${conf_status} ${delimiter_color}|${reset_color} \
 ${field_color}venv:${reset_color} ${VIRTUAL_ENV} ${delimiter_color}|${reset_color} \
 ${field_color}server[${server_index}]:${reset_color} http://${server_host_name}:${server_port_number}" \
-1>&2
+    1>&2
+fi

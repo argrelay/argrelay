@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 
 from argrelay.client_command_remote.ClientCommandRemoteAbstract import ClientCommandRemoteAbstract
+from argrelay.client_command_remote.exception_utils import ServerResponseError, print_full_stack_trace
 from argrelay.client_pipeline import BytesSrcAbstract
 from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.ProcRole import ProcRole
@@ -96,9 +97,15 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
                 ConnectionRefusedError,
             ):
                 continue
+            except ServerResponseError as e:
+                self._handle_exception_with_exit_code(
+                    True,
+                    e,
+                    ClientExitCode.ServerError.value,
+                )
 
-        if self.proc_role is ProcRole.ChildProcWorker:
-            # Tell parent what happened (let parent talk the rest):
-            exit(ClientExitCode.ConnectionError.value)
-        else:
-            raise ConnectionError(f"Unable to connect to any of [{connections_count}] configured connections")
+        self._handle_exception_with_exit_code(
+            False,
+            ConnectionError(f"Unable to connect to any of [{connections_count}] configured connections"),
+            ClientExitCode.ConnectionError.value,
+        )

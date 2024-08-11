@@ -16,4 +16,7 @@
 /dev_shell.bash
 /init_shell_env.bash
 /upgrade_env_packages.bash
+/script_plugin.d/check_env_plugin.all_plugins.bash
+/script_plugin.d/check_env_plugin.bash_version.bash
+
 

@@ -247,6 +247,9 @@ server_plugin_control:
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.check_env
                         sub_tree:
+                            "server_version":
+                                node_type: func_tree_node
+                                func_id: func_id_get_server_argrelay_version
                             "server_commit":
                                 node_type: func_tree_node
                                 func_id: func_id_get_server_project_git_commit_id

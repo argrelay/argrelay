@@ -4,7 +4,7 @@
 # It is *sourced* by `@/exe/bootstrap_env.bash` to configure `module_path_file_tuples` below.
 
 # Tuples specifying config files, format:
-# module_name relative_dir_path config_file_name
+# module_name module_dir_src_path argrelay_dir_dst_path
 # shellcheck disable=SC2034
 module_path_file_tuples=(
     # Note: a project integrating `argrelay` must provide its own set of
@@ -12,9 +12,11 @@ module_path_file_tuples=(
     #       Integration assumes different plugins, their configs, etc.
 
     # For example:
-    argrelay sample_conf argrelay_client.json
-    argrelay sample_conf argrelay_server.yaml
-    argrelay sample_conf argrelay_plugin.yaml
+    argrelay sample_conf/argrelay_client.json conf/argrelay_client.json
+    argrelay sample_conf/argrelay_server.yaml conf/argrelay_server.yaml
+    argrelay sample_conf/argrelay_plugin.yaml conf/argrelay_plugin.yaml
+    argrelay sample_conf/check_env_plugin.conf.bash conf/check_env_plugin.conf.bash
+    argrelay sample_conf/check_env_plugin.conf.yaml conf/check_env_plugin.conf.yaml
 )
 ########################################################################################################################
 

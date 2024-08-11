@@ -1,5 +1,18 @@
 import os
 
+import re
+
+# Implements this:
+# https://stackoverflow.com/a/7071358/441652
+version_file = "src/argrelay/_version.py"
+version_content = open(version_file, "rt").read()
+version_regex = r"^__version__ = ['\"]([^'\"]*)['\"]"
+regex_match = re.search(version_regex, version_content, re.M)
+if regex_match:
+    version_string = regex_match.group(1)
+else:
+    raise RuntimeError(f"Unable to find version string: ${version_file}")
+
 import setuptools
 
 tests_require = [
@@ -35,8 +48,7 @@ def list_dir(
 
 setuptools.setup(
     name = "argrelay",
-    # See `docs/dev_notes/version_format.md`:
-    version = "0.7.10",
+    version = version_string,
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
     description = "Tab-completion & data search server = total recall for Bash shell",
@@ -94,10 +106,12 @@ See: https://github.com/argrelay/argrelay
     package_data = {
         "argrelay": [
 
-            # config files:
+            # Config files:
             "sample_conf/argrelay_client.json",
             "sample_conf/argrelay_server.yaml",
             "sample_conf/argrelay_plugin.yaml",
+            "sample_conf/check_env_plugin.conf.bash",
+            "sample_conf/check_env_plugin.conf.yaml",
 
             # GUI client:
             "relay_server/gui_static/argrelay_client.js",
@@ -106,7 +120,7 @@ See: https://github.com/argrelay/argrelay
             "relay_server/gui_static/external_link.svg",
             "relay_server/gui_templates/argrelay_main.html",
 
-            # other resource files:
+            # Other resource files:
             "custom_integ_res/argrelay_common_lib.bash",
             "custom_integ_res/shell_env.bash",
             "custom_integ_res/bootstrap_env.bash",
@@ -114,6 +128,10 @@ See: https://github.com/argrelay/argrelay
             "custom_integ_res/dev_shell.bash",
             "custom_integ_res/init_shell_env.bash",
             "custom_integ_res/upgrade_env_packages.bash",
+
+            # Files in `script_plugin.d`:
+            "custom_integ_res/script_plugin.d/check_env_plugin.all_plugins.bash",
+            "custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash",
 
         ],
         "argrelay_docs": list_dir("./docs/") + [

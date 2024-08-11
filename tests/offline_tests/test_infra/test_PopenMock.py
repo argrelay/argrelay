@@ -75,6 +75,7 @@ resource_files.conf.bash
 run_argrelay_client
 run_argrelay_server
 run_max_tests.bash
+script_plugin.d
 shell_env.bash
 squash_and_push_branch.bash
 upgrade_env_packages.bash

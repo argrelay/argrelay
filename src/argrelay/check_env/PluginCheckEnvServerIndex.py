@@ -7,7 +7,8 @@ from argrelay.check_env.CheckEnvResult import CheckEnvResult
 from argrelay.check_env.PluginCheckEnvAbstract import PluginCheckEnvAbstract
 from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import (
     get_server_index_file_path,
-    load_server_index, server_index_file_name,
+    load_server_index,
+    server_index_file_name,
 )
 from argrelay.enum_desc.ResultCategory import ResultCategory
 from argrelay.enum_desc.TopDir import TopDir

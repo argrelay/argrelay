@@ -53,12 +53,12 @@ class PluginCheckEnvServerResponseValueCommitId(PluginCheckEnvServerResponseValu
                     result_category = ResultCategory.VerificationSuccess,
                     result_key = field_name,
                     result_value = field_value[:_commit_id_display_length],
-                    result_message = f"server commit id matches client one [{client_commit_id[:_commit_id_display_length]}]",
+                    result_message = f"runtime server commit id matches client one [{client_commit_id[:_commit_id_display_length]}]",
                 )
             else:
                 return CheckEnvResult(
                     result_category = ResultCategory.VerificationWarning,
                     result_key = field_name,
                     result_value = field_value[:_commit_id_display_length],
-                    result_message = f"server commit id does not match client one [{client_commit_id[:_commit_id_display_length]}]",
+                    result_message = f"runtime server commit id does not match client one [{client_commit_id[:_commit_id_display_length]}]",
                 )

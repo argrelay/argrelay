@@ -22,6 +22,7 @@ from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine
+from argrelay.relay_server.UsageStatsStore import UsageStatsStore
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer, instantiate_server_plugin
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
@@ -57,6 +58,7 @@ class LocalServer:
         self.plugin_config: PluginConfig = plugin_config
         self.mongo_server: MongoServerWrapper = MongoServerWrapper()
         self.mongo_client: MongoClient = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
+        self.usage_stats_store = UsageStatsStore()
         self.query_engine: QueryEngine = QueryEngine(
             self.server_config.query_cache_config,
             self.get_mongo_database(),

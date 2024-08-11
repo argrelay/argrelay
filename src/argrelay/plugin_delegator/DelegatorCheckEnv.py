@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argrelay
 from argrelay.enum_desc.CheckEnvField import CheckEnvField
 from argrelay.enum_desc.CheckEnvFunc import CheckEnvFunc
 from argrelay.enum_desc.FuncState import FuncState
@@ -31,6 +32,20 @@ class DelegatorCheckEnv(AbstractDelegator):
         self,
     ) -> list[dict]:
         func_envelopes = [
+            {
+                instance_data_: {
+                    func_id_: CheckEnvFunc.func_id_get_server_argrelay_version.name,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
+                    search_control_list_: [
+                    ],
+                },
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.help_hint.name: (
+                    CheckEnvFunc.func_id_get_server_argrelay_version.name
+                ),
+                ReservedPropName.func_state.name: FuncState.fs_alpha.name,
+                ReservedPropName.func_id.name: CheckEnvFunc.func_id_get_server_argrelay_version.name,
+            },
             {
                 instance_data_: {
                     func_id_: CheckEnvFunc.func_id_get_server_project_git_commit_id.name,
@@ -70,6 +85,12 @@ class DelegatorCheckEnv(AbstractDelegator):
 
         func_id = get_func_id_from_interp_ctx(interp_ctx)
         custom_plugin_data = {}
+
+        if func_id == CheckEnvFunc.func_id_get_server_argrelay_version.name:
+            server_version = argrelay.__version__
+            custom_plugin_data = {
+                CheckEnvField.server_version.name: server_version,
+            }
 
         if func_id == CheckEnvFunc.func_id_get_server_project_git_commit_id.name:
             project_git_commit_id: str = get_config_value_once(

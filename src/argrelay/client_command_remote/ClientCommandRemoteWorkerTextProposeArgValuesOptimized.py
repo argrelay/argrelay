@@ -1,5 +1,4 @@
 import json
-import os
 import socket
 
 from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import ClientCommandRemoteWorkerAbstract
@@ -52,12 +51,15 @@ class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemote
 
         request_body_str = (f"""\
 {{
+    "client_version": {json.dumps(self.call_ctx.client_version)},
+    "client_conf_target": {json.dumps(self.call_ctx.client_conf_target)},
     "server_action": "{self.call_ctx.server_action.name}",
     "command_line": {json.dumps(self.call_ctx.command_line)},
     "cursor_cpos": {self.call_ctx.cursor_cpos},
     "comp_scope": "{self.call_ctx.comp_scope.name}",
-    "client_pid": "{os.getpid()}",
-    "is_debug_enabled": "{'true' if self.call_ctx.is_debug_enabled else 'false'}"
+    "client_uid": {json.dumps(self.call_ctx.client_uid)},
+    "client_pid": {self.call_ctx.client_pid},
+    "is_debug_enabled": {'true' if self.call_ctx.is_debug_enabled else 'false'}
 }}
 """)
         request_body_len = len(request_body_str.encode())
