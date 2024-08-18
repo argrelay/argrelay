@@ -77,7 +77,7 @@ do
         "fail_on_conf_mismatch")
             # Ensure bootstrap fails with `path/to/config` mismatch when `@/conf/` already exits:
             set +e
-            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
+            "${argrelay_dir}/exe/relay_demo.bash" lay help
             exit_code="${?}"
             set -e
             test "${exit_code}" != "0"
@@ -94,7 +94,7 @@ do
         "reset_conf")
             # Remove `@/conf/` and re-start `@/exe/relay_demo.bash` in non-interactive mode:
             rm conf
-            "${argrelay_dir}/exe/relay_demo.bash" relay_demo help
+            "${argrelay_dir}/exe/relay_demo.bash" lay help
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/env_packages.txt" \
@@ -107,7 +107,7 @@ do
         ;;
         "succeed_on_conf_match")
             # Run with the same `@/conf/` left by `reset_conf`:
-            "${argrelay_dir}/exe/relay_demo.bash" relay_demo list service aaa
+            "${argrelay_dir}/exe/relay_demo.bash" lay list service aaa
 
             ensure_no_uncommitted_changes_except \
                 ":(exclude)dst/.github/env_packages.txt" \

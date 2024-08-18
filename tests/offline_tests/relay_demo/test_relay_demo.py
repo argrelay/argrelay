@@ -817,7 +817,7 @@ class ThisTestClass(LocalTestClass):
                 "Implicit assignment even for tangent token (token pointed by cursor)",
             ),
             (
-                line_no(), "relay_demo goto service tt|", CompType.DescribeArgs,
+                line_no(), "some_command goto service tt|", CompType.DescribeArgs,
                 {
                     1: {
                         ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
@@ -835,7 +835,7 @@ class ThisTestClass(LocalTestClass):
                 "on Alt+Shift+Q as on Tab (see next test).",
             ),
             (
-                line_no(), "relay_demo goto service tt|", CompType.PrefixShown,
+                line_no(), "some_command goto service tt|", CompType.PrefixShown,
                 None,
                 [
                     "tt",
@@ -938,7 +938,7 @@ class ThisTestClass(LocalTestClass):
         """
         test_cases = [
             (
-                line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
+                line_no(), "some_command goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
                 {
                     1: {
                         ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
@@ -967,7 +967,7 @@ class ThisTestClass(LocalTestClass):
                 "and `EnvelopeContainer.used_arg_bucket` stays None.",
             ),
             (
-                line_no(), "relay_demo diff prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,
+                line_no(), "some_command diff prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,
                 {
                     1: {
                         ServicePropName.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
@@ -1003,7 +1003,7 @@ class ThisTestClass(LocalTestClass):
                 "while 2nd/right service `envelope_container` accepts that override, not using default.",
             ),
             (
-                line_no(), "relay_demo diff prod downstream rrr tt1 % tt1 % passive |", CompType.DescribeArgs,
+                line_no(), "some_command diff prod downstream rrr tt1 % tt1 % passive |", CompType.DescribeArgs,
                 {
                     1: {
                         ServicePropName.run_mode.name: AssignedValue("active", ArgSource.DefaultValue),
@@ -1066,12 +1066,12 @@ class ThisTestClass(LocalTestClass):
     def test_FS_72_53_55_13_show_non_default_options_print_out_only(self):
         test_cases = [
             (
-                line_no(), "relay_demo goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
+                line_no(), "some_command goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
                 "FS_72_53_55_13: shows options hidden by default.",
                 f"""
-{TermColor.consumed_token.value}relay_demo{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} 
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: relay_demo {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
@@ -1094,12 +1094,12 @@ class ThisTestClass(LocalTestClass):
 """,
             ),
             (
-                line_no(), "relay_demo goto service dev downstream apac poiu-dd r|", CompType.DescribeArgs,
+                line_no(), "some_command goto service dev downstream apac poiu-dd r|", CompType.DescribeArgs,
                 "FS_72_53_55_13: shows `ro` option hidden by default and FS_11_87_76_73 highlights them by prefix.",
                 f"""
-{TermColor.consumed_token.value}relay_demo{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}elay_demo{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: ~ {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}

@@ -40,26 +40,26 @@ class PluginCheckEnvServerIndex(PluginCheckEnvAbstract):
                     result_category = ResultCategory.VerificationFailure,
                     result_key = _server_index_field_name,
                     result_value = str(None),
-                    result_message = f"remove this file as its content cannot be read as a int: {at_path}",
+                    result_message = f"Remove this file as its content cannot be read as a int: {at_path}",
                 )]
             else:
                 return [CheckEnvResult(
                     result_category = ResultCategory.VerificationSuccess,
                     result_key = _server_index_field_name,
                     result_value = str(server_index),
-                    result_message = f"see: {at_path}",
+                    result_message = f"See: {at_path}",
                 )]
         elif os.path.exists(get_server_index_file_path()):
             return [CheckEnvResult(
                 result_category = ResultCategory.VerificationFailure,
                 result_key = _server_index_field_name,
                 result_value = str(None),
-                result_message = f"not a file: {at_path}",
+                result_message = f"It is not a file: {at_path}",
             )]
         else:
             return [CheckEnvResult(
                 result_category = ResultCategory.VerificationWarning,
                 result_key = _server_index_field_name,
                 result_value = str(None),
-                result_message = f"client has not been used to create this file yet: {at_path}",
+                result_message = f"The client has not been used to create this file yet: {at_path}",
             )]

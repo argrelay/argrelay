@@ -22,7 +22,6 @@ class NoopDelegator(AbstractDelegator):
     def get_supported_func_envelopes(
         self,
     ) -> list[dict]:
-
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
         no_data_search_control = populate_search_control(

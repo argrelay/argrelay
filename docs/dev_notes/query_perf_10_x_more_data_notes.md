@@ -2,7 +2,7 @@
 Test command line with `TD_38_03_48_51`:
 
 ```sh
-relay_demo goto host cm1 fs0 gr0 hs1 ro
+lay goto host cm1 fs0 gr0 hs1 ro
 ```
 
 This compares `mongomock` and `pymongo` handling 10 x times more data to see

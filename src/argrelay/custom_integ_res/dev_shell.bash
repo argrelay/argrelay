@@ -77,7 +77,7 @@ argrelay_dir="$( dirname "${script_dir}" )"
 cd "${argrelay_dir}" || exit 1
 
 # Let some code know that it runs under `@/exe/dev_shell.bash` (e.g to run some tests conditionally):
-ARGRELAY_DEV_SHELL="$(date)"
+ARGRELAY_DEV_SHELL="$( date +"%Y-%m-%dT%H:%M:%S%z" )"
 export ARGRELAY_DEV_SHELL
 
 # The new shell executes `@/exe/init_shell_env.bash` script as its init file:

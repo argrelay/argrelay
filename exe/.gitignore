@@ -6,17 +6,20 @@
 # DO NOT IGNORE: see FS_85_33_46_53 `bootstrap_env` for explanation:
 !/bootstrap_env.bash
 
+# Installed unconditionally using `symlink_method` by `bootstrap_env.bash`:
+/argrelay_common_lib.bash
+
 # These files (see `@exe/resource_files.conf.bash`)
 # are installed as resources using `symlink_method`
 # (see `install_files_procedure` in `bootstrap_env.bash`).
 # They should simply point to the latest in configured `venv` (no version control is required):
-/argrelay_common_lib.bash
 /shell_env.bash
-/check_env.bash
 /dev_shell.bash
 /init_shell_env.bash
 /upgrade_env_packages.bash
-/script_plugin.d/check_env_plugin.all_plugins.bash
+/script_plugin.d/
+/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash
 /script_plugin.d/check_env_plugin.bash_version.bash
+/script_plugin.d/check_env_plugin.git_version.bash
 
 

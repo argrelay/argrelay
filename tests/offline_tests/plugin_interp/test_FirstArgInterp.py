@@ -3,23 +3,19 @@ from __future__ import annotations
 from copy import deepcopy
 
 from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
 from argrelay.composite_forest.CompositeForestSchema import tree_roots_
 from argrelay.composite_forest.CompositeNodeSchema import sub_tree_
-from argrelay.composite_forest.DictTreeWalker import surrogate_node_id_
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
-    first_arg_vals_to_next_interp_factory_ids_,
     ignored_func_ids_list_,
 )
-from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
-from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import jump_tree_, func_selector_tree_
 from argrelay.plugin_interp.InterpTreeInterp import InterpTreeInterp
 from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
-from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
@@ -29,7 +25,6 @@ from argrelay.schema_config_core_server.ServerPluginControlSchema import composi
 from argrelay.schema_config_plugin.PluginConfigSchema import (
     plugin_instance_entries_,
     plugin_config_desc,
-    reusable_config_data_,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
@@ -59,16 +54,6 @@ class ThisTestClass(LocalTestClass):
         # bind all `first_command_name`-s to `InterpTreeInterpFactory.default`:
         dependent_plugin_id = f"{FirstArgInterpFactory.__name__}.default"
         plugin_entry = plugin_config_dict[plugin_instance_entries_][dependent_plugin_id]
-        for first_command_name in first_command_names:
-            # Compose same plugin id (as below):
-            plugin_instance_id = f"{InterpTreeInterpFactory.__name__}.default"
-            plugin_entry[plugin_config_][first_arg_vals_to_next_interp_factory_ids_][
-                first_command_name
-            ] = plugin_instance_id
-
-        first_arg_vals_to_next_interp_factory_ids = plugin_entry[plugin_config_][
-            first_arg_vals_to_next_interp_factory_ids_
-        ]
 
         # List all known `func_id`-s (without using them by this plugin) to keep validation happy:
         plugin_entry[plugin_config_][ignored_func_ids_list_] = [
@@ -77,8 +62,6 @@ class ThisTestClass(LocalTestClass):
 
         # Patch server config to plug given command with the same config as `some_command`:
         for first_command_name in first_command_names:
-
-            ############################################################################################################
 
             composite_tree_root = deepcopy(
                 server_config_dict[
@@ -107,106 +90,6 @@ class ThisTestClass(LocalTestClass):
                 first_command_name
             ] = composite_tree_root
 
-            ############################################################################################################
-
-            jump_sub_tree = {
-                surrogate_node_id_: [
-                    first_command_name,
-                ]
-            }
-            plugin_config_dict[
-                reusable_config_data_
-            ][
-                jump_tree_
-            ][
-                first_command_name
-            ] = jump_sub_tree
-            # Replace in all plugin instances using `jump_tree`:
-            for plugin_instance_id in [
-                f"{FuncTreeInterpFactory.__name__}.func_id_intercept_invocation",
-                f"{FuncTreeInterpFactory.__name__}.func_id_help_hint",
-                f"{FuncTreeInterpFactory.__name__}.func_id_query_enum_items",
-                f"{FuncTreeInterpFactory.__name__}.default",
-                f"{FuncTreeInterpFactory.__name__}.check_env",
-                f"{FuncTreeInterpFactory.__name__}.service",
-            ]:
-                plugin_config_dict[
-                    plugin_instance_entries_
-                ][
-                    plugin_instance_id
-                ][
-                    plugin_config_
-                ][
-                    jump_tree_
-                ][
-                    first_command_name
-                ] = jump_sub_tree
-
-            ############################################################################################################
-
-            interp_selector_tree = deepcopy(
-                plugin_config_dict[
-                    plugin_instance_entries_
-                ][
-                    f"{InterpTreeInterpFactory.__name__}.default"
-                ][
-                    plugin_config_
-                ][
-                    interp_selector_tree_
-                ][
-                    "some_command"
-                ]
-            )
-            # Remove unnecessary:
-            del interp_selector_tree["intercept"]
-            del interp_selector_tree["help"]
-            del interp_selector_tree["enum"]
-            del interp_selector_tree["duplicates"]
-
-            plugin_config_dict[
-                plugin_instance_entries_
-            ][
-                f"{InterpTreeInterpFactory.__name__}.default"
-            ][
-                plugin_config_
-            ][
-                interp_selector_tree_
-            ][
-                first_command_name
-            ] = interp_selector_tree
-
-            ############################################################################################################
-
-            func_selector_tree = deepcopy(
-                plugin_config_dict[
-                    plugin_instance_entries_
-                ][
-                    f"{FuncTreeInterpFactory.__name__}.default"
-                ][
-                    plugin_config_
-                ][
-                    func_selector_tree_
-                ][
-                    "some_command"
-                ]
-            )
-            # Remove unnecessary:
-            del func_selector_tree["duplicates"]
-
-            plugin_config_dict[
-                plugin_instance_entries_
-            ][
-                f"{FuncTreeInterpFactory.__name__}.default"
-            ][
-                plugin_config_
-            ][
-                func_selector_tree_
-            ][
-                first_command_name
-            ] = func_selector_tree
-
-            ############################################################################################################
-
         env_mock_builder = (
             LocalClientEnvMockBuilder()
             .set_command_line(command_line)
@@ -228,7 +111,11 @@ class ThisTestClass(LocalTestClass):
             self.assertEqual([0], interp_ctx.consumed_token_ipos_list())
             first_token_value = interp_ctx.parsed_ctx.all_tokens[0]
 
-            interp_factory_id = first_arg_vals_to_next_interp_factory_ids[first_token_value]
+            server_config = server_config_desc.obj_from_default_file()
+            zero_arg_interp_tree = extract_zero_arg_interp_tree(
+                server_config.server_plugin_control.composite_forest,
+            )
+            interp_factory_id = zero_arg_interp_tree[first_token_value]
             interp_factory_instance: InterpTreeInterpFactory = interp_ctx.interp_factories[interp_factory_id]
             prev_interp: InterpTreeInterp = interp_ctx.prev_interp
 
@@ -263,6 +150,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "|", CompType.PrefixHidden,
                 [
                     "argrelay.check_env",
+                    "lay",
                     "relay_demo",
                     "service_relay_demo",
                     "some_command",
@@ -271,9 +159,9 @@ class ThisTestClass(LocalTestClass):
                 "Suggest registered command_id-s.",
             ),
             (
-                line_no(), "r|", CompType.PrefixHidden,
+                line_no(), "so|", CompType.PrefixHidden,
                 [
-                    "relay_demo",
+                    "some_command",
                 ],
                 "This will not be called from shell - shell will suggest when command_id is already selected. "
                 "Suggest registered command_id-s.",

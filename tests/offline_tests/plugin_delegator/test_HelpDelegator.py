@@ -101,12 +101,12 @@ class ThisTestClass(LocalTestClass):
         """
         test_cases = [
             (
-                line_no(), "relay_demo help goto |",
+                line_no(), "some_command help goto |",
                 "FS_71_87_33_52 ensure ordered list of args in help output "
                 "(command name first, then function spec args)",
-                f"""relay_demo goto host ~ {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_goto_host {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}Go (log in) to remote host {TermColor.reset_style.value}
-relay_demo goto repo {SpecialChar.NoPropValue.value} {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_goto_git_repo {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}Goto Git repository (`cd` to its path) {TermColor.reset_style.value}
-relay_demo goto service {SpecialChar.NoPropValue.value} {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_goto_service {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}Go (log in) to remote host and dir path with specified service {TermColor.reset_style.value}
+                f"""some_command goto host ~ {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_goto_host {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}Go (log in) to remote host {TermColor.reset_style.value}
+some_command goto repo {SpecialChar.NoPropValue.value} {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_goto_git_repo {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}Goto Git repository (`cd` to its path) {TermColor.reset_style.value}
+some_command goto service {SpecialChar.NoPropValue.value} {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_goto_service {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}Go (log in) to remote host and dir path with specified service {TermColor.reset_style.value}
 """,
             ),
             (

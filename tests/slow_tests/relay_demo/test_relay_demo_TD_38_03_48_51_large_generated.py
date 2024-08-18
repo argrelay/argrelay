@@ -22,7 +22,7 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "relay_demo goto host cm1 fs2 gr3 hs|", CompType.PrefixShown,
+                line_no(), "lay goto host cm1 fs2 gr3 hs|", CompType.PrefixShown,
                 [f"hs{host_number}" for host_number in range(0, ServiceLoader.object_multiplier)],
                 {
                     1: {
@@ -34,7 +34,7 @@ class ThisTestClass(LocalTestClass):
                 "Ensure it suggests relevant hosts.",
             ),
             (
-                line_no(), "relay_demo goto host cm1 fs2 gr3|", CompType.PrefixShown,
+                line_no(), "lay goto host cm1 fs2 gr3|", CompType.PrefixShown,
                 [
                     "gr3",
                 ],

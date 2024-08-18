@@ -29,14 +29,19 @@ class ThisTestClass(LocalTestClass):
 
     def test_extract_tree_abs_path_to_interp_id(self):
         """
-        Test that extracted `CompositeInfoType.tree_abs_path_to_interp_id` is the same
-        as specified per plugin manually (not via `composite_forest`).
+        Test that extracted `CompositeInfoType.tree_abs_path_to_interp_id` is expected.
         """
 
         test_cases = [
             (
                 line_no(),
                 {
+                    "lay": {
+                        "intercept": f"{InterpTreeInterpFactory.__name__}.default",
+                        "duplicates": {
+                            "intercept": f"{InterpTreeInterpFactory.__name__}.default",
+                        },
+                    },
                     "relay_demo": {
                         "intercept": f"{InterpTreeInterpFactory.__name__}.default",
                         "duplicates": {
@@ -55,6 +60,12 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "help": f"{InterpTreeInterpFactory.__name__}.default",
+                        "duplicates": {
+                            "help": f"{InterpTreeInterpFactory.__name__}.default",
+                        },
+                    },
                     "relay_demo": {
                         "help": f"{InterpTreeInterpFactory.__name__}.default",
                         "duplicates": {
@@ -76,6 +87,9 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "enum": f"{InterpTreeInterpFactory.__name__}.default",
+                    },
                     "relay_demo": {
                         "enum": f"{InterpTreeInterpFactory.__name__}.default",
                     },
@@ -107,14 +121,14 @@ class ThisTestClass(LocalTestClass):
 
     def test_extract_zero_arg_interp_tree(self):
         """
-        Test that extracted `CompositeInfoType.zero_arg_interp_tree` is the same
-        as specified per plugin manually (not via `composite_forest`).
+        Test that extracted `CompositeInfoType.zero_arg_interp_tree` is expected.
         """
 
         test_cases = [
             (
                 line_no(),
                 {
+                    "lay": "InterpTreeInterpFactory.default",
                     "relay_demo": "InterpTreeInterpFactory.default",
                     "some_command": "InterpTreeInterpFactory.default",
                     "service_relay_demo": "InterpTreeInterpFactory.default",
@@ -150,6 +164,34 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "intercept": [
+                            "lay",
+                        ],
+                        "help": [
+                            "lay",
+                        ],
+                        "enum": [
+                            "lay",
+                        ],
+                        "duplicates": {
+                            "intercept": [
+                                "lay",
+                                "duplicates",
+                            ],
+                            "help": [
+                                "lay",
+                                "duplicates",
+                            ],
+                            "": [
+                                "lay",
+                                "duplicates",
+                            ],
+                        },
+                        "": [
+                            "lay",
+                        ],
+                    },
                     "relay_demo": {
                         "intercept": [
                             "relay_demo",
@@ -249,6 +291,17 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
+                        "help": "FuncTreeInterpFactory.func_id_help_hint",
+                        "enum": "FuncTreeInterpFactory.func_id_query_enum_items",
+                        "": "FuncTreeInterpFactory.default",
+                        "duplicates": {
+                            "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
+                            "help": "FuncTreeInterpFactory.func_id_help_hint",
+                            "": "FuncTreeInterpFactory.default",
+                        },
+                    },
                     "relay_demo": {
                         "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
                         "help": "FuncTreeInterpFactory.func_id_help_hint",
@@ -337,6 +390,12 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "intercept": SpecialFunc.func_id_intercept_invocation.name,
+                        "duplicates": {
+                            "intercept": SpecialFunc.func_id_intercept_invocation.name,
+                        },
+                    },
                     "relay_demo": {
                         "intercept": SpecialFunc.func_id_intercept_invocation.name,
                         "duplicates": {
@@ -355,6 +414,12 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "help": SpecialFunc.func_id_help_hint.name,
+                        "duplicates": {
+                            "help": SpecialFunc.func_id_help_hint.name,
+                        },
+                    },
                     "relay_demo": {
                         "help": SpecialFunc.func_id_help_hint.name,
                         "duplicates": {
@@ -376,6 +441,9 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "enum": SpecialFunc.func_id_query_enum_items.name,
+                    },
                     "relay_demo": {
                         "enum": SpecialFunc.func_id_query_enum_items.name,
                     },
@@ -388,6 +456,12 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "lay": {
+                        "duplicates": {
+                            "": func_tree_main,
+                        },
+                        "": func_tree_main,
+                    },
                     "relay_demo": {
                         "duplicates": {
                             "": func_tree_main,

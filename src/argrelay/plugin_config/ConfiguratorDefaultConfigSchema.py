@@ -49,7 +49,7 @@ configurator_default_config_desc = TypeDesc(
     dict_schema = ConfiguratorDefaultConfigSchema(),
     ref_name = ConfiguratorDefaultConfigSchema.__name__,
     dict_example = {
-        project_title_: "relay_demo",
+        project_title_: "argrelay",
         project_page_url_: "https://argrelay.org",
         git_files_by_commit_id_url_prefix_: "https://github.com/argrelay/argrelay/tree/",
         commit_id_url_prefix_: "https://github.com/argrelay/argrelay/commit/",

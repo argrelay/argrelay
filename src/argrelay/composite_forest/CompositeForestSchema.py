@@ -28,7 +28,7 @@ class CompositeForestSchema(ObjectSchema):
 
 _composite_forest_example = {
     tree_roots_: {
-        "relay_demo": zero_arg_node_desc.dict_example,
+        "lay": zero_arg_node_desc.dict_example,
     },
 }
 

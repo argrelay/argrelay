@@ -1,4 +1,3 @@
-
 class ServerResponseError(Exception):
     """
     Exception for failed server responses.
@@ -9,6 +8,7 @@ class ServerResponseError(Exception):
     """
 
     pass
+
 
 def print_full_stack_trace():
     """

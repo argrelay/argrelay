@@ -6,12 +6,10 @@ from argrelay.composite_forest.CompositeForestExtractor import extract_interp_tr
 from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
 from argrelay.composite_forest.DictTreeWalker import DictTreeWalker, sequence_starts_with
 from argrelay.enum_desc.PluginType import PluginType
-from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_interp.InterpTreeInterp import InterpTreeInterp
 from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import (
     tree_path_interp_factory_config_desc,
-    interp_selector_tree_,
 )
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig, assert_plugin_instance_id
@@ -34,21 +32,10 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             plugin_config_dict,
         )
         self.is_recursive_func_load = False
-
-        self._compare_config_with_composite_forest()
-
-    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
-    def _compare_config_with_composite_forest(
-        self,
-    ):
-        expected_dict = self.plugin_config_dict[interp_selector_tree_]
-        actual_dict = extract_interp_tree(
+        self.interp_selector_tree = extract_interp_tree(
             self.server_config.server_plugin_control.composite_forest,
             self.plugin_instance_id,
         )
-        eprint(f"expected_dict: {expected_dict}")
-        eprint(f"actual_dict: {actual_dict}")
-        assert expected_dict == actual_dict
 
     def load_config(
         self,
@@ -62,15 +49,11 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
     ):
         # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
         #       At the moment, `InterpTreeInterpFactory` is not plugged into main interp tree -
-        #       it is plugged into `first_arg_vals_to_next_interp_factory_ids` of `FirstArgInterpFactory`.
-        #
-        #       When this func is called for `InterpTreeInterpFactory`, it cannot be found plugged inside
-        #       `interp_selector_tree` - instead, it walks the `interp_selector_tree` and
-        #       invokes this func for other interps in there.
+        #       instead, it is plugged by `FirstArgInterpFactory`.
 
         dict_tree_walker: DictTreeWalker = DictTreeWalker(
             CompositeInfoType.interp_tree,
-            self.plugin_config_dict[interp_selector_tree_],
+            self.interp_selector_tree,
         )
         # Walk configured interp tree and call `load_interp_tree_abs_paths` with `interp_tree_abs_path` for each interp.
         all_interp_tree_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
@@ -126,7 +109,7 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         )
         dict_tree_walker: DictTreeWalker = DictTreeWalker(
             CompositeInfoType.interp_tree,
-            self.plugin_config_dict[interp_selector_tree_],
+            self.interp_selector_tree,
         )
         # Walk configured interp tree and call `load_func_envelopes` with `interp_tree_abs_path` for each interp.
         all_interp_tree_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
@@ -186,4 +169,5 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             self.plugin_instance_id,
             self.interp_tree_abs_paths_to_node_configs[curr_subtree_abs_path],
             interp_ctx,
+            self.interp_selector_tree,
         )

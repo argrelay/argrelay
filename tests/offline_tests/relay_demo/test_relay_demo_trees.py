@@ -30,20 +30,20 @@ class ThisTestClass(LocalTestClass):
         TODO
         """
 
-        # TODO: Test why `relay_demo` on query shows `some_command`?
+        # TODO: Test why `lay` on query shows `some_command`?
         """
-relay_demo 
+lay 
 ClassFunction: 20
 tree_path_selector_0: some_command [InitValue]
 *tree_path_selector_1: ? intercept help subtree goto desc list 
 tree_path_selector_2: ? intercept help goto desc list host service repo commit 
         """
 
-        # TODO: Add test to run both `some_command` and `relay_demo` and compare output is identical for identical requests.
+        # TODO: Add test to run both `lay` and `some_command` and compare output is identical for identical requests.
 
         test_cases = [
             (
-                line_no(), "relay_demo |", CompType.PrefixHidden,
+                line_no(), "some_command |", CompType.PrefixHidden,
                 [
                     "config",
                     "desc",
@@ -87,8 +87,8 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
     def test_describe_args(self):
         test_cases = [
             (
-                line_no(), "relay_demo |", CompType.DescribeArgs,
-                "Ensure it provides `relay_demo` as first `InitValue` prop.",
+                line_no(), "some_command |", CompType.DescribeArgs,
+                "Ensure it provides `some_command` as first `InitValue` prop.",
                 # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
@@ -99,37 +99,37 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                 None,
             ),
             (
-                line_no(), "relay_demo intercept |", CompType.DescribeArgs,
+                line_no(), "some_command intercept |", CompType.DescribeArgs,
                 "Ensure `intercept` works for `CompType.DescribeArgs`.",
                 # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "relay_demo intercept help |", CompType.DescribeArgs,
+                line_no(), "some_command intercept help |", CompType.DescribeArgs,
                 "Ensure `intercept` of `help` works for `CompType.DescribeArgs`.",
                 # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "relay_demo intercept help |", CompType.DescribeArgs,
+                line_no(), "some_command intercept help |", CompType.DescribeArgs,
                 "Ensure `help` of `intercept` works for `CompType.DescribeArgs`.",
                 # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "# relay_demo intercept help |", CompType.DescribeArgs,
+                line_no(), "# some_command intercept help |", CompType.DescribeArgs,
                 "Commented line: selecting `NoopInterpFactory` by default should not fail.",
                 # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "relay_demo intercept intercept help |", CompType.DescribeArgs,
+                line_no(), "some_command intercept intercept help |", CompType.DescribeArgs,
                 "Doubling of `intercept` should work.",
                 # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "relay_demo subtree help |", CompType.DescribeArgs,
+                line_no(), "some_command subtree help |", CompType.DescribeArgs,
                 "Help for `subtree` should work.",
                 # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,

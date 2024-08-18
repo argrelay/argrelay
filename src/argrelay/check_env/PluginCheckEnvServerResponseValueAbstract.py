@@ -114,7 +114,7 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
                         result_category = ResultCategory.ExecutionFailure,
                         result_key = indexed_field_name,
                         result_value = None,
-                        result_message = f"{str(type(e))}: {str(e)}",
+                        result_message = f"Failed: {str(type(e))}: {str(e)}",
                     ))
         return check_env_results
 
@@ -145,5 +145,5 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
             result_category = ResultCategory.ServerOffline,
             result_key = field_name,
             result_value = None,
-            result_message = "server is offline",
+            result_message = "The server is offline",
         )
