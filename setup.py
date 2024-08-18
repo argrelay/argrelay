@@ -130,8 +130,9 @@ See: https://github.com/argrelay/argrelay
             "custom_integ_res/upgrade_env_packages.bash",
 
             # Files in `script_plugin.d`:
-            "custom_integ_res/script_plugin.d/check_env_plugin.all_plugins.bash",
+            "custom_integ_res/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash",
             "custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash",
+            "custom_integ_res/script_plugin.d/check_env_plugin.git_version.bash",
 
         ],
         "argrelay_docs": list_dir("./docs/") + [

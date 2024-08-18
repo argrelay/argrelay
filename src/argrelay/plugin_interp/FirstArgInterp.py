@@ -16,9 +16,11 @@ class FirstArgInterp(InterpTreeInterp):
         interp_factory_id: str,
         interp_tree_node_config_dict: dict,
         interp_ctx: InterpContext,
+        interp_selector_tree: dict,
     ):
         super().__init__(
             interp_factory_id,
             interp_tree_node_config_dict,
             interp_ctx,
+            interp_selector_tree,
         )

@@ -15,7 +15,7 @@ The query was against `mongomock`
 Tested with `TD_38_03_48_51` and this command line:
 
 ```sh
-relay_demo goto host cm1 fs3 gr5 hs7 rw |
+lay goto host cm1 fs3 gr5 hs7 rw |
 ```
 
 1st Tab:

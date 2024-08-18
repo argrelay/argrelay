@@ -9,7 +9,7 @@ describe('argrelay GUI', () => {
         // If cache is disabled and TD_38_03_48_51 large generated data set is used, it takes a while:
         defaultCommandTimeout: 30_000
     }, () => {
-        const input_command = 'relay_demo goto host'
+        const input_command = 'lay goto host'
         const extra_arg = 'qwer'
         cy
             .get('[data-cy=command_history]')

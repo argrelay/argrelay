@@ -5,6 +5,7 @@
 # Bash array of command names (names of symlinks to `@/exe/run_argrelay_client`):
 # shellcheck disable=SC2034
 argrelay_bind_command_basenames=(
+    lay
     relay_demo
     some_command
     service_relay_demo

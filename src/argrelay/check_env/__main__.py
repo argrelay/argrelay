@@ -15,10 +15,8 @@ from argrelay.enum_desc.ResultCategory import ResultCategory
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.runtime_context.PluginClientAbstract import instantiate_client_plugin
 from argrelay.runtime_data.CheckEnvPluginConfig import CheckEnvPluginConfig
-from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.schema_config_plugin.CheckEnvPluginConfigSchema import check_env_plugin_config_desc
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 
 # Standard color scheme has to be synced with `@/exe/check_env.bash`:
 success_color = f"{TermColor.back_dark_green.value}{TermColor.fore_dark_black.value}"

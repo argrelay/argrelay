@@ -34,7 +34,7 @@ class PluginCheckEnvArgrelayLocalVersionMismatch(PluginCheckEnvAbstract):
                 result_category = ResultCategory.VerificationWarning,
                 result_key = self.result_key,
                 result_value = env_packages_version,
-                result_message = f"file `@/{self.file_rel_path}` does not contain `argrelay` package => is it installed in editable mode?",
+                result_message = f"File `@/{self.file_rel_path}` does not contain `argrelay` package => is `argrelay` installed in editable mode?",
             )]
         else:
             if env_packages_version == module_version:
@@ -42,14 +42,14 @@ class PluginCheckEnvArgrelayLocalVersionMismatch(PluginCheckEnvAbstract):
                     result_category = ResultCategory.VerificationSuccess,
                     result_key = self.result_key,
                     result_value = env_packages_version,
-                    result_message = f"matches `argrelay_module_version`",
+                    result_message = f"It matches `argrelay_module_version`",
                 )]
             else:
                 return [CheckEnvResult(
                     result_category = ResultCategory.VerificationFailure,
                     result_key = self.result_key,
                     result_value = env_packages_version,
-                    result_message = f"does not match `argrelay_module_version` => re-base and re-run `@/{self.bootstrap_rel_path}`",
+                    result_message = f"It does not match `argrelay_module_version` => re-base and re-run `@/{self.bootstrap_rel_path}`",
                 )]
 
     def get_env_packages_version(

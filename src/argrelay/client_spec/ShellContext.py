@@ -37,7 +37,9 @@ class ShellContext:
     is_debug_enabled: bool = field()
 
     def __post_init__(self):
-        assert 0 <= self.cursor_cpos <= len(self.command_line)
+        assert 0 <= self.cursor_cpos <= len(self.command_line), (
+            "Is this complex command line? See: https://github.com/argrelay/argrelay/issues/108"
+        )
 
     @classmethod
     def from_env(
@@ -107,6 +109,7 @@ class ShellContext:
             is_debug_enabled = self.is_debug_enabled,
         )
 
+
 def select_server_action(
     comp_type,
 ) -> ServerAction:
@@ -117,11 +120,13 @@ def select_server_action(
 
     return ServerAction.ProposeArgValues
 
+
 def get_user_name():
     try:
         return os.getlogin()
     except OSError:
         return ""
+
 
 def get_client_conf_target():
     conf_path = f"{get_argrelay_dir()}/conf"

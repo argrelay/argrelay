@@ -1,5 +1,7 @@
 """
 """
+from __future__ import annotations
+
 import os
 import subprocess
 from typing import Union
@@ -110,6 +112,28 @@ def get_commit_time(
 
     if exit_code == 0:
         return int(sub_proc.stdout.decode("utf-8").strip())
+    else:
+        # If `is_git_repo` returns `True`, this should not happen:
+        raise RuntimeError
+
+
+def get_unversioned_file_list(
+    base_dir: str,
+) -> list[str]:
+    sub_proc = subprocess.run(
+        [
+            "git",
+            "ls-files",
+            "--others",
+            "--exclude-standard",
+        ],
+        cwd = base_dir,
+        capture_output = True,
+    )
+    exit_code = sub_proc.returncode
+
+    if exit_code == 0:
+        return sub_proc.stdout.decode("utf-8").splitlines()
     else:
         # If `is_git_repo` returns `True`, this should not happen:
         raise RuntimeError

@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 
 from argrelay.client_command_remote.ClientCommandRemoteAbstract import ClientCommandRemoteAbstract
-from argrelay.client_command_remote.exception_utils import ServerResponseError, print_full_stack_trace
+from argrelay.client_command_remote.exception_utils import ServerResponseError
 from argrelay.client_pipeline import BytesSrcAbstract
 from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.ProcRole import ProcRole

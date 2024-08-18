@@ -278,6 +278,7 @@ class suggest_state_class extends prototype_state_class {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    "client_conf_target": "_embedded_web_",
                     "server_action": "ProposeArgValues",
                     "command_line": this.request_input_line,
                     "cursor_cpos": this.request_cursor_cpos.toString(),
@@ -353,6 +354,7 @@ class search_state_class extends prototype_state_class {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    "client_conf_target": "_embedded_web_",
                     "server_action": "DescribeLineArgs",
                     "command_line": this.request_input_line,
                     "cursor_cpos": this.request_cursor_cpos.toString(),
@@ -428,6 +430,7 @@ function fetch_invocation_response(
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                "client_conf_target": "_embedded_web_",
                 "server_action": "RelayLineArgs",
                 "command_line": input_line,
                 "cursor_cpos": cursor_cpos.toString(),

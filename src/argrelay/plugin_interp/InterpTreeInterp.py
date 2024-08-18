@@ -7,7 +7,6 @@ from argrelay.composite_forest.DictTreeWalker import surrogate_node_id_, fetch_s
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
-from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import interp_selector_tree_
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
 from argrelay.runtime_context.InterpContext import InterpContext
 
@@ -22,13 +21,14 @@ class InterpTreeInterp(AbstractInterp):
         interp_factory_id: str,
         interp_tree_node_config_dict: dict,
         interp_ctx: InterpContext,
+        interp_selector_tree: dict,
     ):
         super().__init__(
             interp_factory_id,
             interp_tree_node_config_dict,
             interp_ctx,
         )
-        self.interp_selector_tree: dict = interp_tree_node_config_dict[interp_selector_tree_]
+        self.interp_selector_tree: dict = interp_selector_tree
         self.next_interp_factory_id: Union[str, None] = None
 
         # TODO: Why hard-coded? Isn't it possible for this plugin to be plugged into any depth of the tree?

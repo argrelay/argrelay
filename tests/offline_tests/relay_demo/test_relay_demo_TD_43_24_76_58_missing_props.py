@@ -22,14 +22,14 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "relay_demo goto host zxcv |", CompType.PrefixShown,
+                line_no(), "lay goto host zxcv |", CompType.PrefixShown,
                 ValueError,
                 [],
                 None,
                 "See Step 1 in the next test case."
             ),
             (
-                line_no(), "relay_demo goto host zxcv |", CompType.DescribeArgs,
+                line_no(), "lay goto host zxcv |", CompType.DescribeArgs,
                 ValueError,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
@@ -63,7 +63,7 @@ class ThisTestClass(LocalTestClass):
                 "for `ServicePropName.geo_region` and `ServicePropName.cluster_name`.",
             ),
             (
-                line_no(), "relay_demo goto host asdf |", CompType.PrefixShown,
+                line_no(), "lay goto host asdf |", CompType.PrefixShown,
                 ValueError,
                 [
                     "apac",
@@ -73,7 +73,7 @@ class ThisTestClass(LocalTestClass):
                 "See Step 2 in the next test case."
             ),
             (
-                line_no(), "relay_demo goto host asdf |", CompType.DescribeArgs,
+                line_no(), "lay goto host asdf |", CompType.DescribeArgs,
                 ValueError,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,

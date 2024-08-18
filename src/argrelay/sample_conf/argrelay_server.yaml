@@ -32,8 +32,8 @@ gui_banner_config:
         <br/>
         To try auto-completion, type either|or:
         <ul>
-            <li>relay_demo goto host</li>
-            <li>relay_demo goto service</li>
+            <li>lay goto host</li>
+            <li>lay goto service</li>
         </ul>
         Then, narrow down search by... IP, region, etc.
 
@@ -75,27 +75,9 @@ class_to_collection_map:
 server_plugin_control:
     first_interp_factory_id: FirstArgInterpFactory.default
 
-    # TODO: TODO_10_72_28_05: FS_33_76_82_84: composite forest (non functional yet).
-    # TODO: Create schemas for each `node_type` with translator code from this tree to "legacy" structures:
-    #       *   TODO: add tests of their equivalence first
-    #       *   TODO: then, switch plugins to use it instead
-    #
-    #       This config is not function (not used yet) - it is a scratch board to see how this mess can be:
-    #       *   put into single global view (without composing it via recursive references to plugins)
-    #       *   simplified (without intermediate plugin instances performing single function but hard to follow in composition)
-    #
-    # `:`-delimited table (rows):
-    #           `tree_node_type`-s: their "legacy" tree name: some explanation
-    #
-    #       *   zero_arg_node: first_arg_vals_to_next_interp_factory_ids:
-    #       *   interp_tree_node: interp_selector_tree:
-    #       *   func_tree_node: func_selector_tree:
-    #       *   tree_path_node: [no equivalent]: add extra tree level (but does nothing as the other types)
-    #       *   [no equivalent]: jump_tree: `jump_path` simply becomes config of a node (no need to have separate `jump_tree`)
-    #       *   [no equivalent]: tree_abs_path_to_interp_id: selecting which interp id to use simply becomes config of a node
     composite_forest:
         tree_roots:
-            "relay_demo":
+            "lay":
                 node_type: zero_arg_node
                 plugin_instance_id: InterpTreeInterpFactory.default
                 sub_tree:
@@ -187,6 +169,27 @@ server_plugin_control:
                                     "double_execution":
                                         node_type: func_tree_node
                                         func_id: func_id_double_execution
+                    "duplicates":
+                        node_type: tree_path_node
+                        sub_tree:
+                            "intercept":
+                                <<: *interp_tree_node_func_id_intercept_invocation
+                            "help":
+                                <<: *interp_tree_node_func_id_help_hint
+                            "":
+                                <<: *interp_tree_node_default_func
+            "relay_demo":
+                node_type: zero_arg_node
+                plugin_instance_id: InterpTreeInterpFactory.default
+                sub_tree:
+                    "intercept":
+                        <<: *interp_tree_node_func_id_intercept_invocation
+                    "help":
+                        <<: *interp_tree_node_func_id_help_hint
+                    "enum":
+                        <<: *interp_tree_node_func_id_query_enum_items
+                    "":
+                        <<: *interp_tree_node_default_func
                     "duplicates":
                         node_type: tree_path_node
                         sub_tree:

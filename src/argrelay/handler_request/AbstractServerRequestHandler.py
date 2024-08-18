@@ -39,7 +39,6 @@ class AbstractServerRequestHandler:
         self.interp_ctx.interpret_command(local_server.server_config.server_plugin_control.first_interp_factory_id)
         self.interp_ctx.print_debug()
 
-
     @staticmethod
     def _create_usage_stats_entry(
         call_ctx: CallContext,

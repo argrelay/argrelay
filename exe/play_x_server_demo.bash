@@ -136,17 +136,17 @@ press_enter
 if false
 then
     xdotool sleep "${attention_pause}"
-    type_string "rel"
+    type_string "l"
     press_tab
-    # curr line: relay_demo |
+    # curr line: lay |
 
     type_string "h"
     press_tab
-    # curr line: relay_demo h|
+    # curr line: lay h|
 
     type_string "e"
     press_tab
-    # curr line: relay_demo help |
+    # curr line: lay help |
 
     press_enter
 fi
@@ -154,24 +154,24 @@ fi
 # Select function:
 if true
 then
-    # `relay_demo`:
-    type_string "rel"
+    # `lay`:
+    type_string "l"
     press_tab
-    # curr line: relay_demo |
+    # curr line: lay |
 
     press_alt_shift_q
 
     # `goto`:
     type_string "g"
     press_tab
-    # curr line: relay_demo goto |
+    # curr line: lay goto |
 
     press_alt_shift_q
 
     # `service`:
     type_string "s"
     press_tab
-    # curr line: relay_demo goto service |
+    # curr line: lay goto service |
 
     flash_comment_and_remove "# This fully qualifies one specific function."
     flash_comment_and_remove "# Functions require input which follows now..."
@@ -188,36 +188,36 @@ then
     press_tab
     type_string "p"
     press_tab
-    # curr line: relay_demo goto service apac |
+    # curr line: lay goto service apac |
 
     # `dev`:
     press_tab
     type_string "d"
     press_tab
-    # curr line: relay_demo goto service apac dev |
+    # curr line: lay goto service apac dev |
 
     # `downstream`:
     press_tab
     type_string "u"
     press_tab
-    # curr line: relay_demo goto service apac dev upstream |
+    # curr line: lay goto service apac dev upstream |
 
     flash_comment_and_remove "# Suggestions are based on the context."
 
     # Show service options:
     press_tab
-    # curr line: relay_demo goto service apac dev upstream s_|
+    # curr line: lay goto service apac dev upstream s_|
     # Remove service prefix:
     press_backspace_times 2
     xdotool sleep "${attention_pause}"
-    # curr line: relay_demo goto service apac dev upstream |
+    # curr line: lay goto service apac dev upstream |
 
     # Replace `upstream` by `downstream`:
     press_backspace_times 9
     xdotool sleep "${attention_pause}"
     type_string "d"
     press_tab
-    # curr line: relay_demo goto service apac dev downstream |
+    # curr line: lay goto service apac dev downstream |
 
     # Show service options:
     press_tab
@@ -231,13 +231,13 @@ then
     type_string "p"
     press_tab
     # TODO: instead of modifying `dev`->`prod` in-place, remove `dev`, add `prod` to the tail.
-    # curr line: relay_demo goto service apac prod| downstream
+    # curr line: lay goto service apac prod| downstream
 
     # Move cursor to EOL:
     xdotool key End
-    # curr line: relay_demo goto service apac prod downstream |
+    # curr line: lay goto service apac prod downstream |
     press_tab
-    # curr line: relay_demo goto service apac prod downstream |
+    # curr line: lay goto service apac prod downstream |
 
     flash_comment_and_remove "# Wait a sec..."
 fi
@@ -259,31 +259,31 @@ then
     press_enter "${keystroke_pause}"
 
     press_enter
-    type_string "relay_demo goto service "
-    # curr line: relay_demo goto service |
+    type_string "lay goto service "
+    # curr line: lay goto service |
     next_comment="# = All possible services."
     type_comment "${next_comment}"
-    # curr line: relay_demo goto service # = All possible services.|
+    # curr line: lay goto service # = All possible services.|
 
     press_alt_shift_q
 
     press_backspace_times "${#next_comment}"
-    # curr line: relay_demo goto service |
+    # curr line: lay goto service |
     flash_comment_and_remove "# Alt+Shift+Q was pressed."
 
     type_string "prod upstream apac "
-    # curr line: relay_demo goto service prod upstream apac |
+    # curr line: lay goto service prod upstream apac |
 
     next_comment="# = Limit by \"prod upstream apac\"."
     type_comment "${next_comment}"
-    # curr line: relay_demo goto service prod upstream apac # Limit by "prod upstream apac".|
+    # curr line: lay goto service prod upstream apac # Limit by "prod upstream apac".|
 
     press_alt_shift_q
 
     press_backspace_times "${#next_comment}"
     flash_comment_and_remove "# Alt+Shift+Q was pressed again."
 
-    # curr line: relay_demo goto service prod upstream apac |
+    # curr line: lay goto service prod upstream apac |
     xdotool sleep "${attention_pause}"
     press_backspace_times 55
     type_comment "# Alt+Shift+Q (producing the output above) lists options based on:"
@@ -312,8 +312,8 @@ then
     press_enter
 
     press_enter
-    type_string "relay_demo goto service "
-    # curr line: relay_demo goto service |
+    type_string "lay goto service "
+    # curr line: lay goto service |
 
     press_alt_shift_q
 
@@ -321,7 +321,7 @@ then
     press_tab
     type_string "2"
     press_tab
-    # curr line: relay_demo goto service ip.192.168.7.2 |
+    # curr line: lay goto service ip.192.168.7.2 |
 
     press_alt_shift_q
 
@@ -362,13 +362,13 @@ then
 
     press_enter "${keystroke_pause}"
     press_enter
-    type_string "relay_demo list service | grep dc.22"
+    type_string "lay list service | grep dc.22"
     press_enter
 
     press_enter
     xdotool sleep "${step_pause}"
     xdotool key Up
-    # curr line: relay_demo list service | grep dc.22|
+    # curr line: lay list service | grep dc.22|
     xdotool sleep "${step_pause}"
     press_backspace_times 10
     xdotool sleep "${step_pause}"
@@ -378,13 +378,13 @@ then
     press_enter
     xdotool sleep "${step_pause}"
     xdotool key Up
-    # curr line: relay_demo list service | wc -l|
+    # curr line: lay list service | wc -l|
     xdotool sleep "${step_pause}"
     press_left_arrow_times 8
     xdotool sleep "${step_pause}"
     type_string " d"
     press_tab
-    # curr line: relay_demo list service dev | wc -l
+    # curr line: lay list service dev | wc -l
     press_enter
 fi
 

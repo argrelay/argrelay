@@ -17,9 +17,15 @@ class PluginCheckEnvOnlineMode(PluginCheckEnvAbstract):
         self,
         online_mode: Union[bool, None],
     ) -> list[CheckEnvResult]:
+        if online_mode is None:
+            result_message = "Use `offline` or `online` arg to force specific mode."
+        elif online_mode:
+            result_message = "Enforced `online` mode to report errors on server connection failure."
+        else:
+            result_message = "Enforced `offline` mode to avoid connection to server."
         return [CheckEnvResult(
             result_category = ResultCategory.VerificationSuccess,
             result_key = "online_mode",
             result_value = str(online_mode),
-            result_message = None,
+            result_message = result_message,
         )]

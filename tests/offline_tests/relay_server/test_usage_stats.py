@@ -120,7 +120,6 @@ class ThisTestClass(LocalTestClass):
                             )
 
 
-
 class ThisTestCase(ShellInputTestCase):
 
     def __init__(

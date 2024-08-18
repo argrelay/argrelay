@@ -55,7 +55,7 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
                 result_category = ResultCategory.ExecutionFailure,
                 result_key = "client_linked_command",
                 result_value = str(shell_var_value),
-                result_message = f"unable to retrieve keys of `argrelay_bind_command_basenames` under started: {dev_shell_path}",
+                result_message = f"Unable to retrieve keys of `argrelay_bind_command_basenames` under started: {dev_shell_path}",
             )]
         else:
             linked_commands: list[str] = shell_var_value.split()

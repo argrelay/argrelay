@@ -2,7 +2,7 @@
 Test command line with `TD_38_03_48_51`:
 
 ```sh
-relay_demo goto host cm1 fs0 gr0 hs1 ro
+lay goto host cm1 fs0 gr0 hs1 ro
 ```
 
 Note that the `total` row below in all snapshots is not sum of mearement captured in snapshots,

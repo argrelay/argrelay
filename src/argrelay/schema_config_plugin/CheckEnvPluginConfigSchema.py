@@ -30,7 +30,6 @@ class CheckEnvPluginConfigSchema(BasePluginConfigSchema):
         input_dict,
         **kwargs,
     ):
-
         # Build DAG:
         check_env_plugin_instance_id_activate_order_dag = {}
         for plugin_instance_id in input_dict[check_env_plugin_instance_entries_]:

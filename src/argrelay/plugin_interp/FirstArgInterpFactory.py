@@ -2,18 +2,11 @@ from __future__ import annotations
 
 from argrelay.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
-    first_arg_interp_factory_config_desc,
-    first_arg_vals_to_next_interp_factory_ids_,
     ignored_func_ids_list_,
 )
 from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
-from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import (
-    tree_path_interp_factory_config_desc,
-    interp_selector_tree_,
-)
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
@@ -31,25 +24,17 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
         plugin_instance_id: str,
         plugin_config_dict: dict,
     ):
-        first_arg_interp_factory_config_desc.validate_dict(plugin_config_dict)
-        converted_config = convert_FirstArgInterpConfig_to_InterpTreeInterpFactoryConfig(plugin_config_dict)
         super().__init__(
             server_config,
             plugin_instance_id,
-            converted_config,
+            plugin_config_dict,
         )
-
-    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
-    def _compare_config_with_composite_forest(
-        self,
-    ):
-        expected_dict = self.plugin_config_dict[interp_selector_tree_]
-        actual_dict = extract_zero_arg_interp_tree(
-            self.server_config.server_plugin_control.composite_forest,
+        # Unlike base `InterpTreeInterpFactory` which uses `CompositeInfoType.interp_tree` for `interp_selector_tree`,
+        # `interp_selector_tree` for `FirstArgInterpFactory` is `CompositeInfoType.zero_arg_interp_tree`:
+        assert self.interp_selector_tree == {}, "`InterpTreeInterpFactory` is supposed to extract nothing by `plugin_instance_id` for `FirstArgInterpFactory`."
+        self.interp_selector_tree = extract_zero_arg_interp_tree(
+            server_config.server_plugin_control.composite_forest,
         )
-        eprint(f"expected_dict: {expected_dict}")
-        eprint(f"actual_dict: {actual_dict}")
-        assert expected_dict == actual_dict
 
     def activate_plugin(
         self,
@@ -131,24 +116,5 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
             # Instead of using `interp_tree_node_config_dict`, use `plugin_config_dict` directly:
             self.plugin_config_dict,
             interp_ctx,
+            self.interp_selector_tree,
         )
-
-
-def convert_FirstArgInterpConfig_to_InterpTreeInterpFactoryConfig(
-    plugin_config_dict: dict,
-) -> dict:
-    """
-    `FirstArgInterp` was re-implemented in terms of `InterpTreeInterp` (FS_01_89_09_24).
-    """
-    interp_selector_tree = {}
-    for command_id, plugin_instance_id in plugin_config_dict[first_arg_vals_to_next_interp_factory_ids_].items():
-        interp_selector_tree[command_id] = plugin_instance_id
-
-    output_dict = {
-        interp_selector_tree_: interp_selector_tree,
-        ignored_func_ids_list_: plugin_config_dict.get(ignored_func_ids_list_, []),
-    }
-
-    tree_path_interp_factory_config_desc.validate_dict(output_dict)
-
-    return output_dict

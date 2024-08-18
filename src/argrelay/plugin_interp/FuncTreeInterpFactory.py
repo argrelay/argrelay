@@ -8,14 +8,11 @@ from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
 from argrelay.composite_forest.DictTreeWalker import DictTreeWalker, normalize_tree, sequence_starts_with
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.misc_helper_common import eprint
 from argrelay.plugin_interp.AbstractInterp import AbstractInterp
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_interp.FuncTreeInterp import FuncTreeInterp, func_init_control_, func_search_control_
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
-    func_selector_tree_,
     func_tree_interp_config_desc,
-    jump_tree_,
 )
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_context.SearchControl import SearchControl
@@ -51,18 +48,17 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             plugin_config_dict,
         )
 
-        self._compare_config_with_composite_forest()
-
         # FS_26_43_73_72 func tree: func id to list of its absolute paths populated by `load_func_envelopes`.
         # These func tree paths are absolute within FS_33_76_82_84 composite forest.
         # Each func id can be attached to more than one leaf (hence, there is a list of paths to that func id).
         self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = {}
 
         # FS_91_88_07_23 jump tree
-        self.plugin_config_dict.setdefault(jump_tree_, {})
         dict_tree_walker: DictTreeWalker = DictTreeWalker(
             CompositeInfoType.jump_tree,
-            self.plugin_config_dict[jump_tree_],
+            extract_jump_tree(
+                self.server_config.server_plugin_control.composite_forest,
+            ),
         )
         self.paths_to_jump: dict[tuple[str, ...], tuple[str, ...]] = dict_tree_walker.build_paths_to_paths()
         """
@@ -71,32 +67,6 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         """
 
         self.plugin_search_control: Union[SearchControl, None] = None
-
-    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
-    def _compare_config_with_composite_forest(
-        self,
-    ):
-        expected_dict = self.plugin_config_dict[jump_tree_]
-        actual_dict = extract_jump_tree(
-            self.server_config.server_plugin_control.composite_forest,
-        )
-        eprint(f"expected_dict: {expected_dict}")
-        eprint(f"actual_dict: {actual_dict}")
-        assert expected_dict == actual_dict
-
-    # TODO: TODO_10_72_28_05: This will go away together with switch to FS_33_76_82_84 composite forest config:
-    def _compare_config_with_composite_forest_func_tree(
-        self,
-        expected_func_selector_tree_dict: dict,
-    ):
-        expected_dict = normalize_tree(expected_func_selector_tree_dict)
-        actual_dict = normalize_tree(extract_func_tree(
-            self.server_config.server_plugin_control.composite_forest,
-            self.plugin_instance_id,
-        ))
-        eprint(f"expected_dict: {expected_dict}")
-        eprint(f"actual_dict: {actual_dict}")
-        assert expected_dict == actual_dict
 
     def load_config(
         self,
@@ -129,7 +99,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         To implement FS_26_43_73_72 func tree, this plugin loads func `data_envelope`-s automatically.
 
         It loops through func `data_envelope`-s and populates their tree path search props
-        according to configured `func_selector_tree` where each function is plugged into.
+        according to extracted `func_tree` where each function is plugged into.
         """
 
         mapped_func_ids: list[str] = super().load_func_envelopes(
@@ -138,13 +108,14 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         )
         interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
 
-        self._compare_config_with_composite_forest_func_tree(
-            interp_tree_node_config_dict[func_selector_tree_],
-        )
+        func_selector_tree = normalize_tree(extract_func_tree(
+            self.server_config.server_plugin_control.composite_forest,
+            self.plugin_instance_id,
+        ))
 
         dict_tree_walker = DictTreeWalker(
             CompositeInfoType.func_tree,
-            interp_tree_node_config_dict[func_selector_tree_],
+            func_selector_tree,
         )
         self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
 

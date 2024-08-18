@@ -29,6 +29,11 @@ check_env_plugin_instance_entries:
         plugin_module_name: argrelay.check_env.PluginCheckEnvClientLinkedCommands
         plugin_class_name: PluginCheckEnvClientLinkedCommands
 
+    PluginCheckEnvArgrelayUnversionedSymlinks.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay.check_env.PluginCheckEnvArgrelayUnversionedSymlinks
+        plugin_class_name: PluginCheckEnvArgrelayUnversionedSymlinks
+
     PluginCheckEnvOnlineMode.default:
         plugin_side: PluginClientSideOnly
         plugin_module_name: argrelay.check_env.PluginCheckEnvOnlineMode

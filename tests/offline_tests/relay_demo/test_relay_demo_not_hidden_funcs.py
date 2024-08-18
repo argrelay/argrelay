@@ -14,7 +14,6 @@ from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory, tree_path_selector_prefix_
-from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import func_selector_tree_
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc, server_plugin_control_
 from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
@@ -34,12 +33,12 @@ class ThisTestClass(LocalTestClass):
     def test_arg_assignments_does_not_hide_funcs(self):
         test_cases = [
             (
-                line_no(), "relay_demo desc |", CompType.DescribeArgs,
+                line_no(), "some_command desc |", CompType.DescribeArgs,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
                 {
                     0: {
-                        f"{tree_path_selector_prefix_}{0}": AssignedValue("relay_demo", ArgSource.InitValue),
+                        f"{tree_path_selector_prefix_}{0}": AssignedValue("some_command", ArgSource.InitValue),
                         f"{tree_path_selector_prefix_}{1}": AssignedValue("desc", ArgSource.ExplicitPosArg),
                         f"{tree_path_selector_prefix_}{2}": [
                             "commit",
@@ -54,12 +53,12 @@ class ThisTestClass(LocalTestClass):
                 "TODO_39_25_11_76: Step 1: funcs are not hidden",
             ),
             (
-                line_no(), "relay_demo desc |", CompType.DescribeArgs,
+                line_no(), "some_command desc |", CompType.DescribeArgs,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
                 {
                     0: {
-                        f"{tree_path_selector_prefix_}{0}": AssignedValue("relay_demo", ArgSource.InitValue),
+                        f"{tree_path_selector_prefix_}{0}": AssignedValue("some_command", ArgSource.InitValue),
                         f"{tree_path_selector_prefix_}{1}": AssignedValue("desc", ArgSource.ExplicitPosArg),
                         f"{tree_path_selector_prefix_}{2}": [
                             "commit",
@@ -96,13 +95,14 @@ class ThisTestClass(LocalTestClass):
                 plugin_config_dict = deepcopy(plugin_config_desc.dict_from_default_file())
 
                 # TODO: clean this up after investigation:
-                if True:
+                if False:
+                    func_selector_tree_ = "func_selector_tree"
                     val_a = plugin_config_dict[plugin_instance_entries_][
                         f"{FuncTreeInterpFactory.__name__}.default"
-                    ][plugin_config_][func_selector_tree_]["relay_demo"][""]
+                    ][plugin_config_][func_selector_tree_]["some_command"][""]
                     val_b = plugin_config_dict[plugin_instance_entries_][
                         f"{FuncTreeInterpFactory.__name__}.default"
-                    ][plugin_config_][func_selector_tree_]["relay_demo"]["duplicates"][""]
+                    ][plugin_config_][func_selector_tree_]["some_command"]["duplicates"][""]
                     print("1:", id(val_a))
                     print("2:", id(val_b))
                     # TODO: this is impossible (after deepcopy):
@@ -111,10 +111,10 @@ class ThisTestClass(LocalTestClass):
                     plugin_config_dict = json.loads(json.dumps(plugin_config_dict))
                     val_a = plugin_config_dict[plugin_instance_entries_][
                         f"{FuncTreeInterpFactory.__name__}.default"
-                    ][plugin_config_][func_selector_tree_]["relay_demo"][""]
+                    ][plugin_config_][func_selector_tree_]["some_command"][""]
                     val_b = plugin_config_dict[plugin_instance_entries_][
                         f"{FuncTreeInterpFactory.__name__}.default"
-                    ][plugin_config_][func_selector_tree_]["relay_demo"]["duplicates"][""]
+                    ][plugin_config_][func_selector_tree_]["some_command"]["duplicates"][""]
                     print("1:", id(val_a))
                     print("2:", id(val_b))
                     assert id(val_a) != id(val_b), "this should not happen but it does"
@@ -123,7 +123,7 @@ class ThisTestClass(LocalTestClass):
                     # Patch existing config with extra level:
                     server_config_dict[
                         server_plugin_control_
-                    ][composite_forest_][tree_roots_]["relay_demo"][sub_tree_][""][sub_tree_][
+                    ][composite_forest_][tree_roots_]["some_command"][sub_tree_][""][sub_tree_][
                         "desc"
                     ][sub_tree_]["retag"] = {
                         node_type_: CompositeNodeType.tree_path_node.name,
@@ -133,12 +133,6 @@ class ThisTestClass(LocalTestClass):
                                 func_id_: func_id_desc_git_tag_,
                             },
                         },
-                    }
-
-                    plugin_config_dict[plugin_instance_entries_][
-                        f"{FuncTreeInterpFactory.__name__}.default"
-                    ][plugin_config_][func_selector_tree_]["relay_demo"][""]["desc"]["retag"] = {
-                        "qwer": func_id_desc_git_tag_,
                     }
 
                 self.verify_output_via_local_client(

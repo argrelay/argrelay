@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
-from argrelay.composite_forest.DictTreeWalker import DictTreeWalker, surrogate_tree_leaf_, normalize_tree
-from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import surrogate_node_id_
+from argrelay.composite_forest.DictTreeWalker import (
+    DictTreeWalker,
+    surrogate_tree_leaf_,
+    normalize_tree,
+    surrogate_node_id_,
+)
 from argrelay.test_infra import line_no
 from argrelay.test_infra.LocalTestClass import LocalTestClass
 

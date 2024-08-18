@@ -9,9 +9,6 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_interp.FuncTreeInterp import func_search_control_
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
-from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
-    func_selector_tree_,
-)
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import index_props_, data_envelopes_
@@ -78,8 +75,6 @@ class ThisTestClass(BaseTestClass):
             plugin_class_name_: FuncTreeInterpFactory.__name__,
             plugin_dependencies_: [],
             plugin_config_: {
-                func_selector_tree_: {
-                },
                 func_search_control_: {
                     collection_name_: ReservedEnvelopeClass.ClassFunction.name,
                     envelope_class_: ReservedEnvelopeClass.ClassFunction.name,

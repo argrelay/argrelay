@@ -167,20 +167,20 @@ Optionally, review env state (any time):
 ./exe/check_env.bash
 ```
 
-This sub-shell configures request hotkeys to bind `relay_demo` command with `@/exe/run_argrelay_client`:
+This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`:
 
-*   Interact with `relay_demo` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
+*   Interact with `lay` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
 
     ```sh
-    relay_demo goto                 # press `Alt+Shift+Q` to describe available options
+    lay goto                 # press `Alt+Shift+Q` to describe available options
     ```
 
     ```sh
-    relay_demo goto host            # press `Tab` one or multiple times
+    lay goto host            # press `Tab` one or multiple times
     ```
 
     ```sh
-    relay_demo goto host dev        # press Alt+Shift+Q to observe changes in the output
+    lay goto host dev        # press Alt+Shift+Q to observe changes in the output
     ```
 
 *   To clean up, exit the sub-shell:
@@ -194,7 +194,7 @@ This sub-shell configures request hotkeys to bind `relay_demo` command with `@/e
 *   While inside the sub-shell, inspect how auto-completion is configured for `relay_demo`:
 
     ```sh
-    complete -p relay_demo
+    complete -p lay
     ```
 
 *   See `@/logs/relay_demo.bash.log` of the background server:

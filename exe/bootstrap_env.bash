@@ -118,7 +118,7 @@ script_dir="$( cd -- "$( dirname -- "${script_source}" )" &> /dev/null && pwd )"
 # Note: In case of `bootstrap_env.bash`, `argrelay_dir` is not `script_dir`, but always the current directory
 # (it is supposed to be started from the dir where project is being set up).
 # FS_29_54_67_86 dir_structure: current dir = `@/`:
-argrelay_dir="$( dirname "." )"
+argrelay_dir="$( realpath "$( dirname "." )" )"
 
 # There are several cases this script is called:
 # *   (initial bootstrap) directly: in that case `script_dir` is inside orig `argrelay` distrib package
@@ -403,6 +403,30 @@ then
 fi
 
 ########################################################################################################################
+# Update copy of `@/exe/check_env.bash`:
+check_env_src="${argrelay_module_dir_path}/custom_integ_res/check_env.bash"
+check_env_dst="${argrelay_dir}/exe/check_env.bash"
+if [[ ! -L "${check_env_dst}" ]]
+then
+    if [[ -f "${check_env_dst}" ]]
+    then
+        cp -p "${check_env_src}" "${check_env_dst}"
+    else
+        echo "ERROR: This target path is not a file - review and remove manually: ${check_env_dst}" 1>&2
+        exit 1
+    fi
+else
+    if [[ "$( readlink "${check_env_dst}" )" == "${check_env_src}" ]]
+    then
+        rm "${check_env_dst}"
+        cp -p "${check_env_src}" "${check_env_dst}"
+    else
+        echo "ERROR: This target path is a symlink but does not match expected path within \`argrelay\` - review and remove manually: ${check_env_dst}" 1>&2
+        exit 1
+    fi
+fi
+
+########################################################################################################################
 # Define common install functions.
 
 function detect_file_install_command {
@@ -441,13 +465,19 @@ function install_files_procedure {
     install_mode="${2}"
     # Whether override should be used or not depends on whether the file is a config or it is a resource:
     # *   config files are specific to target environment and are kept untouched (manually updated if needed)
-    # *   resource files are common for all installs - they represent the latest update and should be overriden
+    # *   resource files are common for all installs - they represent the latest update and should be overridden
     override_target_file="${3}"
 
     # Load user config for env vars:
     # *   module_path_file_tuples
     # shellcheck disable=SC1090
     source "${install_files_conf_path}"
+
+    run_install_procedure
+}
+
+function run_install_procedure {
+    # This function is normally called by `install_files_procedure` (which does initialization of variables).
 
     case "${install_mode}" in
         "symlink_method")
@@ -519,6 +549,16 @@ python_module_path_EOF
         fi
     done
 }
+
+########################################################################################################################
+# Install `@/exe/argrelay_common_lib.bash` as a symlink:
+
+module_path_file_tuples=(
+    argrelay custom_integ_res/argrelay_common_lib.bash exe/argrelay_common_lib.bash
+)
+install_mode="symlink_method"
+override_target_file="override_target_file"
+run_install_procedure
 
 ########################################################################################################################
 # Prepare artifacts: install configs (conditionally copies or symlinks).
@@ -608,14 +648,13 @@ then
 # Tuples specifying resource files, format:
 # module_name module_dir_src_path argrelay_dir_dst_path
 module_path_file_tuples=(
-    argrelay custom_integ_res/argrelay_common_lib.bash exe/argrelay_common_lib.bash
     argrelay custom_integ_res/shell_env.bash exe/shell_env.bash
-    argrelay custom_integ_res/check_env.bash exe/check_env.bash
     argrelay custom_integ_res/dev_shell.bash exe/dev_shell.bash
     argrelay custom_integ_res/init_shell_env.bash exe/init_shell_env.bash
     argrelay custom_integ_res/upgrade_env_packages.bash exe/upgrade_env_packages.bash
-    argrelay custom_integ_res/script_plugin.d/check_env_plugin.all_plugins.bash exe/script_plugin.d/check_env_plugin.all_plugins.bash
+    argrelay custom_integ_res/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash exe/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash
     argrelay custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash exe/script_plugin.d/check_env_plugin.bash_version.bash
+    argrelay custom_integ_res/script_plugin.d/check_env_plugin.git_version.bash exe/script_plugin.d/check_env_plugin.git_version.bash
 )
 ########################################################################################################################
 resource_files_conf_EOF
@@ -692,6 +731,7 @@ then
 # Bash array of command names (names of symlinks to `@/exe/run_argrelay_client`):
 # shellcheck disable=SC2034
 argrelay_bind_command_basenames=(
+    lay
     relay_demo
     some_command
     service_relay_demo
