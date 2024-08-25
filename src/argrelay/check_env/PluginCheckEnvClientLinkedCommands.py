@@ -13,7 +13,7 @@ from argrelay.misc_helper_common import get_argrelay_dir
 
 class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
     """
-    This plugin checks which `argrelay_dir` client each command is linked.
+    This plugin checks which `argrelay_dir` each command is linked to.
 
     This is related to FS_57_36_37_48 multiple clients coexistence.
 

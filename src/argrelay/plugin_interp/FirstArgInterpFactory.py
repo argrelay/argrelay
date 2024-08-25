@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from argrelay.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.plugin_interp.FirstArgInterp import FirstArgInterp
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
     ignored_func_ids_list_,
 )
-from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
+from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory, InterpTreeInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
@@ -117,4 +116,28 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
             self.plugin_config_dict,
             interp_ctx,
             self.interp_selector_tree,
+        )
+
+
+class FirstArgInterp(InterpTreeInterp):
+    """
+    Dispatch command line interpretation to the next interpreter based on the command_id.
+
+    `FirstArgInterp` was re-implemented in terms of `InterpTreeInterp` (FS_01_89_09_24).
+
+    Implements FS_42_76_93_51 first interp.
+    """
+
+    def __init__(
+        self,
+        interp_factory_id: str,
+        interp_tree_node_config_dict: dict,
+        interp_ctx: InterpContext,
+        interp_selector_tree: dict,
+    ):
+        super().__init__(
+            interp_factory_id,
+            interp_tree_node_config_dict,
+            interp_ctx,
+            interp_selector_tree,
         )

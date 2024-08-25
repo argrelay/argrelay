@@ -26,13 +26,18 @@ class ClientCommandRemoteAbstract(ClientCommandAbstract):
     def execute_command(
         self,
     ):
-        """
-        Basic implementation of connection with single server.
+        self._execute_single_call()
 
-        FS_93_18_57_91 client fail over is implemented in derived `ClientCommandRemoteWorkerAbstract` class.
+    def _execute_single_call(
+        self,
+    ):
+        """
+        Basic implementation of remote call to a single server.
+
+        See `ClientCommandRemoteWorkerAbstract._execute_multiple_calls` for alternative.
         """
         try:
-            self._execute_remotely()
+            self._execute_remote_call()
         except (
             ConnectionError,
             ConnectionRefusedError,
@@ -55,19 +60,23 @@ class ClientCommandRemoteAbstract(ClientCommandAbstract):
         exception_obj,
         exit_code,
     ):
+        """
+        Raise exception or exit with exit code depending on `ProcRole`.
+        """
         if (
             self.proc_role.is_worker_proc
             and
+            # FS_36_17_84_44 check_env: do not exit:
             self.proc_role is not ProcRole.CheckEnvWorker
         ):
             if print_stack_trace_on_exit:
-                print_full_stack_trace()
+                print_full_stack_trace(exception_obj)
             # Tell parent what happened (let parent talk the rest):
             exit(exit_code)
         else:
             raise exception_obj
 
-    def _execute_remotely(
+    def _execute_remote_call(
         self,
     ):
         pass

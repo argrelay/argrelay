@@ -21,10 +21,11 @@ class BytesDstReceiver:
             self.handle_bytes(b"".join(child_data_chunks))
         else:
             client_exit_code = ClientExitCode(get_child_exit_code())
+            exc_message = f"child exit_code: {client_exit_code} = {client_exit_code.name}"
             if client_exit_code is ClientExitCode.ConnectionError:
-                raise ConnectionError()
+                raise ConnectionError(exc_message)
             else:
-                raise RuntimeError(f"child exit_code: {client_exit_code}: {client_exit_code.name}")
+                raise RuntimeError(exc_message)
 
     def handle_bytes(
         self,

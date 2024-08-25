@@ -10,7 +10,7 @@ class ServerResponseError(Exception):
     pass
 
 
-def print_full_stack_trace():
+def print_full_stack_trace(given_exception):
     """
     Print full stack trace equivalent to not catching exception.
 
@@ -32,5 +32,6 @@ def print_full_stack_trace():
         exception_stack_str = traceback.format_exc().lstrip(head_message)
         full_stack_str = caller_stack_str + exception_stack_str
     else:
-        full_stack_str = caller_stack_str
+        exc_line = f"{type(given_exception).__name__}: {str(given_exception)}"
+        full_stack_str = caller_stack_str + exc_line
     print(full_stack_str, file = sys.stderr)

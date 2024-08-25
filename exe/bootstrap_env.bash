@@ -338,6 +338,12 @@ then
     "${ret_command}" 0
 fi
 
+if ! ( python -m pip --version 2> /dev/null )
+then
+    echo "ERROR: Module \`pip\` is missing in \`venv\`. Try rerunning boostrap after removing \`venv\`: ${VIRTUAL_ENV}" 1>&2
+    exit 1
+fi
+
 # Continue with Python from `"${path_to_pythonX}"`:
 # - Use latest `pip`:
 python -m pip install --upgrade pip
@@ -783,6 +789,14 @@ done
 # Ensure (non-interactive) `@/exe/dev_shell.bash` starts and exits.
 
 "${argrelay_dir}/exe/dev_shell.bash" "exit"
+
+########################################################################################################################
+# Remove `@/var/argrelay_client.server_index` to select random available server next.
+
+if [[ -e "${argrelay_dir}/var/argrelay_client.server_index" ]]
+then
+    rm "${argrelay_dir}/var/argrelay_client.server_index"
+fi
 
 ########################################################################################################################
 # Build and test project.

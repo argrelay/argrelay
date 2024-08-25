@@ -13,9 +13,16 @@ class OpenFileMock:
     """
     builtin_open = open
 
-    def __init__(self, path_to_data: dict[str, str]):
-        self.path_to_data: dict[str, str] = path_to_data
+    def __init__(self, path_to_data: dict[str, any]):
+        self.path_to_data: dict[str, any] = path_to_data
         self.path_to_mock: dict = {}
+
+    def add_path_data(
+        self,
+        file_path: str,
+        file_data: any,
+    ) -> None:
+        self.path_to_data[file_path] = file_data
 
     def open(self, *args, **kwargs):
         file_path = args[0]

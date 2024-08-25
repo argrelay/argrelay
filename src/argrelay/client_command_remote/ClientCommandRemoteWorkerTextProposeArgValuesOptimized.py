@@ -26,7 +26,7 @@ class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemote
     # TODO: TODO_72_51_13_18: test optimized requests:
     #       Write mocked test to cover internal logic like function `recvall` below.
 
-    def _execute_remotely(
+    def _execute_remote_call(
         self,
     ):
 

@@ -7,7 +7,7 @@ from typing import Union
 import requests
 import responses
 
-from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import get_server_index_file_path
+from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import get_server_index_file_path, random_file
 from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
@@ -20,6 +20,8 @@ from argrelay.server_spec.const_int import BASE_URL_FORMAT
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
+
+random_byte_value = b"\x07"
 
 
 class ThisTestClass(BaseTestClass):
@@ -40,10 +42,15 @@ class ThisTestClass(BaseTestClass):
 
     @responses.activate
     def test_client_leaves_server_index_file_on_successful_connection(self):
+        residual_file_content = str(
+            int.from_bytes(random_byte_value, "little")
+            %
+            len(self.get_test_server_connection_configs())
+        )
         self.verify_client_fail_over_scenario(
             initial_file_content = None,
             failed_server_indexes = [],
-            residual_file_content = "0",
+            residual_file_content = residual_file_content,
         )
 
     @responses.activate
@@ -230,6 +237,12 @@ class ThisTestClass(BaseTestClass):
         # when:
 
         env_mock_builder = self.get_env_mock_builder(comp_type)
+        if initial_file_content is None:
+            # If there is no initial file content, bytes from random file are used:
+            env_mock_builder.file_mock.add_path_data(
+                random_file,
+                random_byte_value,
+            )
         with env_mock_builder.build():
             if is_connection_successful:
                 __main__.main()

@@ -13,6 +13,7 @@ from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.server_spec.CallContext import CallContext
 
 server_index_file_name = "argrelay_client.server_index"
+random_file = "/dev/random"
 
 
 def get_var_dir_path() -> str:
@@ -30,7 +31,8 @@ def load_server_index(
         with open(server_index_file_path, "r") as open_file:
             return int(open_file.read())
     else:
-        return 0
+        with open(random_file, "rb") as open_file:
+            return int.from_bytes(open_file.read(1), "little")
 
 
 def store_server_index(
@@ -73,15 +75,19 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
     def execute_command(
         self,
     ):
+        if not self.use_round_robin:
+            self._execute_single_call()
+        else:
+            self._execute_multiple_calls()
+
+    def _execute_multiple_calls(
+        self,
+    ):
         """
         Implements FS_93_18_57_91 client fail over.
 
         For basic implementation (no round-robin) see base `ClientCommandRemoteAbstract` class.
         """
-        if not self.use_round_robin:
-            super().execute_command()
-            return
-
         connections_count = len(self.redundant_servers)
         init_server_index = load_server_index()
         for curr_connection_offset in range(connections_count):
@@ -89,7 +95,7 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
             self.curr_connection_config = self.redundant_servers[curr_server_index]
 
             try:
-                self._execute_remotely()
+                self._execute_remote_call()
                 store_server_index(curr_server_index)
                 return
             except (
@@ -105,7 +111,7 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
                 )
 
         self._handle_exception_with_exit_code(
-            False,
+            True,
             ConnectionError(f"Unable to connect to any of [{connections_count}] configured connections"),
             ClientExitCode.ConnectionError.value,
         )

@@ -3,7 +3,7 @@ from __future__ import annotations
 from marshmallow import ValidationError
 
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
-from argrelay.plugin_interp.NoopInterp import NoopInterp
+from argrelay.plugin_interp.NoopInterpFactory import NoopInterp
 from argrelay.schema_config_plugin.PluginConfigSchema import (
     plugin_instance_entries_,
     plugin_config_desc,

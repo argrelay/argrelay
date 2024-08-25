@@ -9,6 +9,7 @@ from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input, get_func_id_from_interp_ctx
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
 from argrelay.plugin_delegator.delegator_utils import set_default_to
+from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
@@ -123,6 +124,9 @@ class InterceptDelegator(AbstractJumpDelegator):
         # TODO: Print without first function `data_envelope` belonging to `intercept` function:
         func_id = get_func_id_from_invocation_input(invocation_input)
         if func_id == SpecialFunc.func_id_intercept_invocation.name:
+
+            prohibit_unconsumed_args(invocation_input)
+
             output_format: OutputFormat = OutputFormat[invocation_input.envelope_containers[
                 format_output_container_ipos_
             ].data_envelopes[0][output_format_prop_name]]

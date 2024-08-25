@@ -127,10 +127,29 @@ fi
 echo -e "${success_color}INFO:${reset_style} ${field_color}venv_path:${reset_style} ${VIRTUAL_ENV}"
 
 ########################################################################################################################
+# Report whether `PYTHON_PATH` is set:
+if [[ -n "${PYTHON_PATH+x}" ]]
+then
+    echo -e "${warning_color}WARN:${reset_style} ${field_color}PYTHON_PATH:${reset_style} ${PYTHON_PATH} ${warning_message}# \`PYTHON_PATH\` is set which may load modules outside of \`venv\` - to avoid issues make sure it is intentional.${reset_style}"
+else
+    echo -e "${success_color}INFO:${reset_style} ${field_color}PYTHON_PATH:${reset_style} ${success_message}# \`PYTHON_PATH\` is not set = no overrides for \`venv\` modules (good).${reset_style}"
+fi
+
+########################################################################################################################
 # Report `python_version`:
 # shellcheck disable=SC2154 # `path_to_pythonX` is assigned by bootstrap:
 curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
 echo -e "${success_color}INFO:${reset_style} ${field_color}python_version:${reset_style} ${curr_python_version}"
+
+########################################################################################################################
+# Report `is_pip_installed`:
+if ( python -m pip --version 1> /dev/null )
+then
+    echo -e "${success_color}INFO:${reset_style} ${field_color}is_pip_installed:${reset_style} True ${success_message}# Module \`pip\` is present."
+else
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}is_pip_installed:${reset_style} False ${failure_message}# Module \`pip\` is missing - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    exit 1
+fi
 
 ########################################################################################################################
 # Report `argrelay_pip_version`:
@@ -140,7 +159,7 @@ exit_code="${?}"
 set -e
 if [[ "${exit_code}" != "0" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_pip_version:${reset_style} ${failure_message}# Unable to detect version of \`argrelay\` package via \`pip show argrelay\`${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_pip_version:${reset_style} ${failure_message}# Unable to detect version of \`argrelay\` package via \`pip show argrelay\` - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
     exit 1
 fi
 # Check if `argrelay_pip_version` string matches semver version format:
@@ -189,8 +208,21 @@ source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ########################################################################################################################
 # Run all `check_env_plugin.*`:
 
+if [[ ! -e "${argrelay_dir}/conf/check_env_plugin.conf.bash" ]]
+then
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/conf/check_env_plugin.conf.bash:${reset_style} ${argrelay_dir}/conf/check_env_plugin.conf.bash ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    exit 1
+fi
+
 source "${argrelay_dir}/conf/check_env_plugin.conf.bash"
 
 ########################################################################################################################
 # Switch to Python:
+
+if [[ ! -e "${argrelay_dir}/conf/check_env_plugin.conf.yaml" ]]
+then
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/conf/check_env_plugin.conf.yaml:${reset_style} ${argrelay_dir}/conf/check_env_plugin.conf.yaml ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    exit 1
+fi
+
 python -m argrelay.check_env "${argrelay_dir}" "${@}"

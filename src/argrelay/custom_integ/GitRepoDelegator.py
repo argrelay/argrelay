@@ -15,6 +15,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator, get_func_id_from_invocation_input
+from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext, function_container_ipos_
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -183,6 +184,7 @@ class GitRepoDelegator(AbstractDelegator):
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
         if get_func_id_from_invocation_input(invocation_input) == func_id_goto_git_repo_:
+            prohibit_unconsumed_args(invocation_input)
             # TODO: TODO_86_57_50_38: make this behavior (require singled-out `data_envelope`) configure-able for all plugins:
             if len(invocation_input.envelope_containers[repo_container_ipos_].data_envelopes) != 1:
                 eprint(f"ERROR: single repo is not selected (not disambiguated from multiple candidates)")
@@ -203,9 +205,9 @@ class GitRepoDelegator(AbstractDelegator):
             if exit_code != 0:
                 raise RuntimeError
         if get_func_id_from_invocation_input(invocation_input) == func_id_desc_git_tag_:
-            raise RuntimeError("not implemented")
+            raise RuntimeError("ERROR: not implemented for demo")
         if get_func_id_from_invocation_input(invocation_input) == func_id_desc_git_commit_:
-            raise RuntimeError("not implemented")
+            raise RuntimeError("ERROR: not implemented for demo")
 
 
 repo_root_abs_path_: str = "repo_root_abs_path"

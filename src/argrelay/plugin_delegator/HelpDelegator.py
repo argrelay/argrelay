@@ -9,6 +9,7 @@ from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import tree_path_selector_prefix_
+from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import function_container_ipos_, InterpContext
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
@@ -80,6 +81,9 @@ class HelpDelegator(AbstractJumpDelegator):
     @staticmethod
     def invoke_action(invocation_input: InvocationInput):
         if get_func_id_from_invocation_input(invocation_input) == SpecialFunc.func_id_help_hint.name:
+
+            prohibit_unconsumed_args(invocation_input)
+
             for data_envelope in (
                 invocation_input
                     .envelope_containers[subsequent_function_container_ipos_]

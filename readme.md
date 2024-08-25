@@ -14,24 +14,51 @@ See: docs/dev_notes/screencast_notes.md
 
 A framework to "ergonomically" select **custom data** input for command line interface (CLI) tools.
 
-The aim is to enrich two-way &#10231; interaction by **prepared** reference data:
-*   &#10230; Human inputs args he **remembers** (via `Tab`-auto-completion) in **relaxed order**.
-*   &#10229; Machine feeds back (via `Alt+Shift+Q` query):
-    *   What args it **matched** to server data within command schema.
-    *   What **else** it needs to populate remaining command args.
+The aim is to augment two-way &#10231; interaction by **prepared** reference data:
+*   &#10230; Human inputs args that (s)he **remembers** (via `Tab`-auto-completion) in **relaxed order**.
+*   &#10229; Machine provides feedback (via `Alt+Shift+Q` query) on current state:
+    *   What args it already **matched** with server data according to **command schema**.
+    *   What **else** it needs to fill remaining command args.
 
 This broadens applicability of CLI input as a slim alternative to graphical user interface (GUI)
 competing in **convenience** for apps especially for developers = "doing more with less".
 
 *   When your data is instantly and directly queryable, try [`argcomplete`][argcomplete_github].
-*   When your data is sizeable, user needs performance (indexing), relaxed syntax, keyword-based search, try `argrelay`.
+*   When your data is sizeable, users need perf (indexing), relaxed syntax, keyword search, try [`argrelay`][argrelay_org].
+
+<a name="argrelay-focus"></a>
+# `argrelay` focus
+
+> Data-assisted CLI with search and completion
+
+GUI-s are targeted secondarily as they not have the restrictions vs the benefits CLI-s have:
+*   To leverage minimal syntax queries, API requests can be handled from anything (including GUI).
+*   But API-s are purposefully feature-tailored to support (both challenging and rewarding) CLI.
+
+<details>
+<summary>show example</summary>
+For example, in GUI-s, typing a query into a search bar may easily be accompanied by<br/>
+(1) a separate (from the search bar) window area<br/>
+(2) with individually selectable<br/>
+(3) full-text-search results<br/>
+(4) populated async-ly with typing...<br/>
+
+In CLI-s, `grep` does (3) full-text-search, but slow and completely misses the rest (1), (2), (4).
+
+Simple full-text-search is imprecise - facilitating selection in CLI requires:<br/>
+a catalogue-like navigation via structured search with auto-completion.
+</details>
+
+<!-- TODO: update the doc first before publishing its link
+Learn more about [how search works][how_search_works.md].
+-->
 
 <a name="argrelay-overview"></a>
 # Interaction overview
 
-User is interrogated based on:
-*  command **input schema**
-*  data matching already given input
+User is interrogated for each next input arg based on:
+*  custom command **input schema**
+*  custom data which matches already given input
 
 Each command resembles "enum language":
 *   Tokens are tags | labels | keywords from one of the `enum` sets.
@@ -41,8 +68,8 @@ Each command resembles "enum language":
     *   allowing unordered args (using priorities to resolve arg type in case `enum` sets intersect)
 
 Wrapping any command by `argrelay`:
-*   naturally enables contextual auto-completion in Bash shell (see `Tab` hotkey below)
 *   provides generic help and navigation (see `Alt+Shift+Q` hotkey below)
+*   naturally enables contextual auto-completion in Bash shell (see `Tab` hotkey below)
 *   reduces cognitive load with minimalistic enum-based query syntax (matching target executable command line)
 *   maintains small client-side footprint (suitable for resource-constrained terminals)
 *   exposes conveniently browsable data inventory (generic CLI builder)
@@ -226,6 +253,22 @@ This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_
     ./exe/relay_demo.bash
     ```
 
+<a name="primary-executables"></a>
+# Primary executables
+
+This table summarizes all executables most users ever need to know:
+
+| Executable from `@/exe/` dir                            | Purpose                                                                     |
+|:--------------------------------------------------------|:----------------------------------------------------------------------------|
+| [`check_env.bash`][FS_36_17_84_44.check_env.md]         | checks Bash/Python environments for any issues                              |
+| [`bootstrap_env.bash`][FS_85_33_46_53.bootstrap_env.md] | bootstraps the environment (installs or upgrades `argrelay`)                |
+| [`dev_shell.bash`][FS_58_61_77_69.dev_shell.md]         | starts shell session with activated `venv` and `argrelay`-linked commands   |
+| `shell_env.bash`                                        | `source`-able by `~/.bashrc` to avoid starting `dev_shell.bash`             |
+| `run_argrelay_server`                                   | runs `argrelay` server (in foreground)                                      |
+| `run_argrelay_client`                                   | **not** used directly (invoked by `Alt+Shift+Q`-query and `Tab`-completion) |
+
+See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for details.
+
 <a name="argrelay-includes"></a>
 # What's in the package?
 
@@ -241,35 +284,6 @@ This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_
 *   **Bootstrap** process to init the environment and maintain it.
 *   **Demo** example to start from.
 *   **Testing** support and coverage.
-
-<a name="argrelay-focus"></a>
-# Focus: CLI search and data-assisted completion
-
-GUI-s are secondary for `argrelay`'s purpose because<br/>
-GUI-s do not have the restrictions CLI-s have:
-*   Technically, the server can handle requests from anywhere (GUI).
-*   But primary API-s are feature-tailored to support CLI (because everyone does GUI).
-
-<details>
-<summary>show example</summary>
-For example, in GUI-s, typing a query into a search bar may easily be accompanied by<br/>
-(1) a separate (from the search bar) window area<br/>
-(2) with individually selectable<br/>
-(3) full-text-search results<br/>
-(4) populated **async-ly** with typing.<br/>
-
-In CLI-s, `grep` does (3) full-text-search, but slow and what about the rest (1), (2), (4)?
-
-To facilitate selection of results,<br/>
-catalogue-like navigation via structured search (rather than full-text-search) with auto-completion<br/>
-seems the answer.
-</details>
-
-Nevertheless, GUI can also benefit from minimalist single line structured search queries.
-
-<!-- TODO: update the doc first before publishing its link
-Learn more about [how search works][how_search_works.md].
--->
 
 <a name="argrelay-backend"></a>
 # Data backend
@@ -344,6 +358,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
 [argcomplete_github]: https://github.com/kislyuk/argcomplete
+[argrelay_org]: https://argrelay.org/
 [Warp_site]: https://warp.dev/
 [IDEA_terminal]: https://www.jetbrains.com/help/idea/terminal-emulator.html
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
@@ -356,3 +371,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/
 [mongomock_github]: https://github.com/mongomock/mongomock
 [pymongo_github]: https://github.com/mongodb/mongo-python-driver
+[FS_29_54_67_86.dir_structure.md]: docs/feature_stories/FS_29_54_67_86.dir_structure.md
+[FS_36_17_84_44.check_env.md]: docs/feature_stories/FS_36_17_84_44.check_env.md
+[FS_85_33_46_53.bootstrap_env.md]: docs/feature_stories/FS_85_33_46_53.bootstrap_env.md
+[FS_58_61_77_69.dev_shell.md]: docs/feature_stories/FS_58_61_77_69.dev_shell.md

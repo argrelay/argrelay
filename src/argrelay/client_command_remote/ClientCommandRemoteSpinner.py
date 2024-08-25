@@ -26,7 +26,10 @@ class ClientCommandRemoteSpinner(ClientCommandRemoteAbstract):
             bytes_handler,
         )
 
-    def _execute_remotely(
+    def _execute_remote_call(
         self,
     ):
+        """
+        `ProcRole.ParentProcSpinner` receives data via pipe from `ProcRole.ChildProcWorker` or its exit code.
+        """
         self.bytes_dst.receive_bytes()

@@ -22,7 +22,7 @@ class ErrorDelegatorCustomDataSchema(Schema):
 
 
 error_delegator_stub_custom_data_example = {
-    error_message_: "INFO: command executed successfully: implementation is a stub",
+    error_message_: "INFO: command executed successfully: demo implementation is a stub",
     error_code_: 0,
 }
 error_delegator_custom_data_desc = TypeDesc(
