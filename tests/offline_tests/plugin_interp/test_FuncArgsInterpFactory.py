@@ -7,8 +7,7 @@ from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
-from argrelay.plugin_interp.FuncTreeInterp import func_search_control_
-from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
+from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory, func_search_control_
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import index_props_, data_envelopes_

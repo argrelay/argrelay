@@ -14,8 +14,7 @@ from argrelay.plugin_interp.FirstArgInterpFactory import (
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
     ignored_func_ids_list_,
 )
-from argrelay.plugin_interp.InterpTreeInterp import InterpTreeInterp
-from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
+from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory, InterpTreeInterp
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
@@ -62,7 +61,6 @@ class ThisTestClass(LocalTestClass):
 
         # Patch server config to plug given command with the same config as `some_command`:
         for first_command_name in first_command_names:
-
             composite_tree_root = deepcopy(
                 server_config_dict[
                     server_plugin_control_

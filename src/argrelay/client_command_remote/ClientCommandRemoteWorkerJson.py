@@ -20,7 +20,7 @@ def _signal_handler(signal_number, signal_frame):
 
 class ClientCommandRemoteWorkerJson(ClientCommandRemoteWorkerAbstract):
 
-    def _execute_remotely(
+    def _execute_remote_call(
         self,
     ):
         server_url = BASE_URL_FORMAT.format(

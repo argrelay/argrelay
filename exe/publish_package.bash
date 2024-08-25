@@ -195,6 +195,7 @@ fi
 rm -rf         "${argrelay_dir}/tmp/venv.twine"
 python -m venv "${argrelay_dir}/tmp/venv.twine"
 source         "${argrelay_dir}/tmp/venv.twine/bin/activate"
+pip install setuptools
 
 # Apparently, `tox` already builds `sdist`, for example:
 # @/.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz

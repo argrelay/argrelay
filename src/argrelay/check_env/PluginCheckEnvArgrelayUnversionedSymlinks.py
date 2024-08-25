@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import os.path
-import re
 from typing import Union
 
-import argrelay
 from argrelay.check_env.CheckEnvResult import CheckEnvResult
 from argrelay.check_env.PluginCheckEnvAbstract import PluginCheckEnvAbstract
-from argrelay.custom_integ.git_utils import is_git_repo, get_full_commit_id, get_unversioned_file_list
+from argrelay.custom_integ.git_utils import is_git_repo, get_unversioned_file_list
 from argrelay.enum_desc.ResultCategory import ResultCategory
 from argrelay.misc_helper_common import get_argrelay_dir
 
@@ -69,4 +67,3 @@ class PluginCheckEnvArgrelayUnversionedSymlinks(PluginCheckEnvAbstract):
                     result_value = None,
                     result_message = "Clean: no unversioned unignored symlinks.",
                 )]
-

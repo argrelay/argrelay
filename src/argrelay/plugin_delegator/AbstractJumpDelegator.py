@@ -10,7 +10,7 @@ from argrelay.plugin_delegator.AbstractJumpDelegatorConfigSchema import (
     abstract_jump_delegator_config_desc,
     single_func_id_,
 )
-from argrelay.plugin_interp.AbstractInterp import AbstractInterp
+from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterp
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 

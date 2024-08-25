@@ -1,4 +1,6 @@
+from argrelay.custom_integ.value_constants import func_id_goto_git_repo_, func_id_desc_host_
 from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -124,8 +126,8 @@ apac
                 line_no(), f"{self.default_bound_command} desc host dev upstream amer".split(" "),
                 0,
                 "",
-                "",
-                "`NoopDelegator.default` executes successfully without any output.",
+                "INFO: command executed successfully: demo implementation is a stub" + "\n",
+                f"{func_id_desc_host_} is a stub",
             ),
             (
                 line_no(), f"{self.default_bound_command} echo one two three four five".split(" "),
@@ -138,8 +140,57 @@ apac
                 line_no(), f"{self.default_bound_command} goto host dev upstream amer".split(" "),
                 0,
                 "",
-                "INFO: command executed successfully: implementation is a stub" + "\n",
+                "INFO: command executed successfully: demo implementation is a stub" + "\n",
                 "`ErrorDelegator` executes successfully with output on STDERR.",
+            ),
+        ]
+        # @formatter:on
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    command_line_args,
+                    expected_exit_code,
+                    expected_stdout_str,
+                    expected_stderr_str,
+                    case_comment,
+                ) = test_case
+                with change_to_known_repo_path("."):
+                    self.assert_RelayLineArgs(
+                        command_line_args,
+                        expected_stdout_str,
+                        expected_stderr_str,
+                        expected_exit_code,
+                    )
+
+    def test_prohibit_unconsumed_args(self):
+        """
+        These cases test that `prohibit_unconsumed_args` works for selected funcs.
+        """
+
+        # @formatter:off
+        test_cases = [
+            (
+                line_no(), f"{self.default_bound_command} help this_arg_is_unknown_and_unconsumed".split(" "),
+                ClientExitCode.GeneralError.value,
+                "",
+                f"ERROR: this function prohibits unrecognized args (see {TermColor.remaining_token.value}highlighted{TermColor.reset_style.value} on Alt+Shift+Q results): {TermColor.remaining_token.value}this_arg_is_unknown_and_unconsumed{TermColor.reset_style.value}" + "\n",
+                "FS_71_87_33_52 help prohibits unconsumed args",
+            ),
+            (
+                line_no(), f"{self.default_bound_command} intercept this_arg_is_unknown_and_unconsumed".split(" "),
+                ClientExitCode.GeneralError.value,
+                "",
+                f"ERROR: this function prohibits unrecognized args (see {TermColor.remaining_token.value}highlighted{TermColor.reset_style.value} on Alt+Shift+Q results): {TermColor.remaining_token.value}this_arg_is_unknown_and_unconsumed{TermColor.reset_style.value}" + "\n",
+                "FS_88_66_66_73 intercept prohibits unconsumed args",
+            ),
+            (
+                line_no(), f"{self.default_bound_command} goto repo this_arg_is_unknown_and_unconsumed".split(" "),
+                ClientExitCode.GeneralError.value,
+                "",
+                f"ERROR: this function prohibits unrecognized args (see {TermColor.remaining_token.value}highlighted{TermColor.reset_style.value} on Alt+Shift+Q results): {TermColor.remaining_token.value}this_arg_is_unknown_and_unconsumed{TermColor.reset_style.value}" + "\n",
+                f"FS_67_16_61_97 git_plugin: {func_id_goto_git_repo_} prohibits unconsumed args",
             ),
         ]
         # @formatter:on

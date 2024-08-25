@@ -1,6 +1,7 @@
 """
 """
 
+
 def format_time_to_relative(
     curr_time_ms,
     prev_time_ms,

@@ -5,6 +5,8 @@
 
 # DO NOT IGNORE: see FS_85_33_46_53 `bootstrap_env` for explanation:
 !/bootstrap_env.bash
+# DO NOT IGNORE: see FS_36_17_84_44 `check_env` for explanation:
+!/check_env.bash
 
 # Installed unconditionally using `symlink_method` by `bootstrap_env.bash`:
 /argrelay_common_lib.bash

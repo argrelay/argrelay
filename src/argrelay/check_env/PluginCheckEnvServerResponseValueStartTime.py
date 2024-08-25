@@ -52,5 +52,3 @@ class PluginCheckEnvServerResponseValueStartTime(PluginCheckEnvServerResponseVal
 
             check_env_result.result_message = f"{abs_time_str} ~ {rel_time_str}"
         return check_env_result
-
-

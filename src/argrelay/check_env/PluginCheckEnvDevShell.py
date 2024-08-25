@@ -13,7 +13,7 @@ from argrelay.enum_desc.ResultCategory import ResultCategory
 
 class PluginCheckEnvDevShell(PluginCheckEnvAbstract):
     """
-    Trivial plugin to report value of `ARGRELAY_DEV_SHELL` env var.
+    This plugin reports value of `ARGRELAY_DEV_SHELL` env var.
     """
 
     env_var_name: str = "ARGRELAY_DEV_SHELL"
@@ -45,6 +45,7 @@ class PluginCheckEnvDevShell(PluginCheckEnvAbstract):
             result_value = str(env_var_value),
             result_message = result_message,
         )]
+
 
 def convert_iso_str_date_to_ms(
     date_str: str,

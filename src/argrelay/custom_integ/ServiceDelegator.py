@@ -5,13 +5,13 @@ import json
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.custom_integ.value_constants import (
-    func_id_goto_host,
+    func_id_goto_host_,
     func_id_goto_service_,
     func_id_list_host_,
     func_id_list_service_,
     func_id_diff_service_,
-    func_id_desc_host,
-    func_id_desc_service,
+    func_id_desc_host_,
+    func_id_desc_service_,
 )
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -28,8 +28,8 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_delegator_custom_data_desc,
     error_delegator_stub_custom_data_example,
 )
-from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_delegator.delegator_utils import set_default_to
+from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.PluginConfig import PluginConfig
@@ -170,7 +170,7 @@ class ServiceDelegator(AbstractDelegator):
         func_envelopes = [
             {
                 instance_data_: {
-                    func_id_: func_id_goto_host,
+                    func_id_: func_id_goto_host_,
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         host_search_control,
@@ -180,7 +180,7 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Go (log in) to remote host",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: func_id_goto_host,
+                ReservedPropName.func_id.name: func_id_goto_host_,
             },
             {
                 instance_data_: {
@@ -198,9 +198,8 @@ class ServiceDelegator(AbstractDelegator):
             },
             {
                 instance_data_: {
-                    func_id_: func_id_desc_host,
-                    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `NoopDelegator`):
-                    delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
+                    func_id_: func_id_desc_host_,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         host_search_control,
                     ],
@@ -208,13 +207,12 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Describe remote host",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: func_id_desc_host,
+                ReservedPropName.func_id.name: func_id_desc_host_,
             },
             {
                 instance_data_: {
-                    func_id_: func_id_desc_service,
-                    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `NoopDelegator`):
-                    delegator_plugin_instance_id_: f"{NoopDelegator.__name__}.default",
+                    func_id_: func_id_desc_service_,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         service_search_control,
                     ],
@@ -222,7 +220,7 @@ class ServiceDelegator(AbstractDelegator):
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
                 ReservedPropName.help_hint.name: "Describe service instance",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
-                ReservedPropName.func_id.name: func_id_desc_service,
+                ReservedPropName.func_id.name: func_id_desc_service_,
             },
             {
                 instance_data_: {
@@ -282,7 +280,7 @@ class ServiceDelegator(AbstractDelegator):
         any_assignment = False
 
         if func_id in [
-            func_id_goto_host,
+            func_id_goto_host_,
             func_id_goto_service_,
         ]:
             assert host_container_ipos_ == service_container_ipos_
@@ -340,6 +338,11 @@ class ServiceDelegator(AbstractDelegator):
             func_id_list_service_,
         ]:
             pass
+        elif func_id in [
+            func_id_desc_host_,
+            func_id_desc_service_,
+        ]:
+            pass
         else:
             raise RuntimeError
 
@@ -377,7 +380,7 @@ class ServiceDelegator(AbstractDelegator):
         assert vararg_container_ipos == host_container_ipos_ == service_container_ipos_
 
         if func_id in [
-            func_id_goto_host,
+            func_id_goto_host_,
             func_id_goto_service_,
         ]:
             # Even if these functions do not support varargs, when `redirect_to_error`, query all:
@@ -438,6 +441,17 @@ class ServiceDelegator(AbstractDelegator):
                     interp_ctx,
                     local_server.server_config,
                 )
+        elif func_id in [
+            func_id_desc_host_,
+            func_id_desc_service_,
+        ]:
+            # Actual implementation is not defined for demo:
+            return redirect_to_error(
+                interp_ctx,
+                local_server.plugin_config,
+                error_delegator_stub_custom_data_example[error_message_],
+                error_delegator_stub_custom_data_example[error_code_],
+            )
         else:
             # Plugin is given a function name it does not know:
             raise RuntimeError
@@ -450,10 +464,12 @@ class ServiceDelegator(AbstractDelegator):
 
         func_id = get_func_id_from_invocation_input(invocation_input)
         if func_id == func_id_list_host_:
+            prohibit_unconsumed_args(invocation_input)
             for data_envelope in invocation_input.envelope_containers[host_container_ipos_].data_envelopes:
                 print(json.dumps(data_envelope))
         elif func_id == func_id_list_service_:
+            prohibit_unconsumed_args(invocation_input)
             for data_envelope in invocation_input.envelope_containers[service_container_ipos_].data_envelopes:
                 print(json.dumps(data_envelope))
         else:
-            raise RuntimeError
+            raise RuntimeError("ERROR: not implemented for demo")

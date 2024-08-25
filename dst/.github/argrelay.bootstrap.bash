@@ -72,7 +72,6 @@ do
                 ":(exclude)dst/.github/check_env_plugin.conf.bash" \
                 ":(exclude)dst/.github/check_env_plugin.conf.yaml" \
 
-
         ;;
         "fail_on_conf_mismatch")
             # Ensure bootstrap fails with `path/to/config` mismatch when `@/conf/` already exits:

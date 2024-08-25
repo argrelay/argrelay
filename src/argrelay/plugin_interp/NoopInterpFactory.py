@@ -1,5 +1,5 @@
-from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
-from argrelay.plugin_interp.NoopInterp import NoopInterp
+from argrelay.enum_desc.InterpStep import InterpStep
+from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory, AbstractInterp
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
@@ -21,7 +21,7 @@ class NoopInterpFactory(AbstractInterpFactory):
     def create_interp(
         self,
         interp_ctx: InterpContext,
-    ) -> NoopInterp:
+    ) -> "NoopInterp":
         # `NoopInterpFactory` is not normally attached to any tree and
         # `load_func_envelopes` is not invoked to clone/populate separate configs
         # (which makes it use `plugin_config_dict` directly instead of `interp_tree_node_config_dict`) -
@@ -35,3 +35,14 @@ class NoopInterpFactory(AbstractInterpFactory):
             plugin_config_dict,
             interp_ctx,
         )
+
+
+class NoopInterp(AbstractInterp):
+    """
+    Interpreter which does nothing
+
+    It stops processing of the command line on itself (as `next_interp` returns `None` by default)
+    """
+
+    def try_iterate(self) -> InterpStep:
+        return InterpStep.NextInterp
