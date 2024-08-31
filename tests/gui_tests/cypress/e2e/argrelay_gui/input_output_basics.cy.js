@@ -3,13 +3,20 @@
 describe('argrelay GUI', () => {
     beforeEach(() => {
         cy.visit('http://localhost:8787/argrelay_gui/')
+
+        cy
+            .get('[data-cy=command_line_input]')
+            .should('have.value', 'lay ')
     })
 
     it('suggestions get listed on command input', {
         // If cache is disabled and TD_38_03_48_51 large generated data set is used, it takes a while:
         defaultCommandTimeout: 30_000
     }, () => {
-        const input_command = 'lay '
+
+        // Use `some_command` instead of `lay` (because `lay` is default and LRU-cached with quick response):
+        const input_command = 'some_command '
+
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_client_synced_input')
@@ -18,6 +25,8 @@ describe('argrelay GUI', () => {
             .focus()
             .clear()
             .type(`${input_command}`)
+
+        // A series of state transitions while talking to server:
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_pending_request_input')
@@ -27,6 +36,8 @@ describe('argrelay GUI', () => {
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_client_synced_input')
+
+        // Final (stable) output:
         cy
             .get('[data-cy=suggestion_output]')
             .children()

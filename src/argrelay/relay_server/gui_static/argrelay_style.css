@@ -174,11 +174,40 @@ Output elements
 }
 
 /***********************************************************************************************************************
+Copy buttons
+***********************************************************************************************************************/
+
+.copy_buttons_container {
+    margin-top: 0;
+    display: flex;
+    justify-content: right;
+}
+
+.copy_button {
+    white-space: nowrap;
+    width: fit-content;
+    margin: 0 0 2px 0;
+    padding: 2px;
+    border-style: solid;
+    border-color: lightskyblue;
+    color: grey;
+    cursor: pointer;
+}
+
+.copy_command_button {
+    border-width: 0 0 1px 1px;
+}
+
+.copy_link_button {
+    border-width: 0 1px 1px 1px;
+}
+
+/***********************************************************************************************************************
 Legend
 ***********************************************************************************************************************/
 
 .legend_container {
-    margin-top: 0px;
+    margin-top: 0;
     display: flex;
     justify-content: right;
 }
@@ -212,6 +241,7 @@ Suggestion details
     border-style: solid;
     border-width: 1px;
     border-color: lightskyblue;
+    cursor: crosshair;
 }
 
 .input_part {

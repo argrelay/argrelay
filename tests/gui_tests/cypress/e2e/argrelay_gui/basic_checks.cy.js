@@ -3,6 +3,10 @@
 describe('argrelay GUI', () => {
     beforeEach(() => {
         cy.visit('http://localhost:8787/argrelay_gui/')
+
+        cy
+            .get('[data-cy=command_line_input]')
+            .should('have.value', 'lay ')
     })
 
     it('has command line input ready', () => {
@@ -11,10 +15,13 @@ describe('argrelay GUI', () => {
             .should('have.class', 'io_state_client_synced_input')
         cy
             .get('#command_line_input')
-            .should('have.length', 1)
+            .invoke('val')
+            .should('have.length', 4)
         cy
             .get('#command_line_input')
-            .first()
-            .should('have.text', '')
+            .invoke('val')
+            .then((input_value) => {
+                expect(input_value).to.be.equal('lay ')
+            })
     })
 })

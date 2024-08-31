@@ -1,4 +1,20 @@
 
+# TL;DR
+
+Starting `cypress` (and running all commands) has to be done from this dir - the dir with all GUI tests:
+
+```sh
+cd argrelay.git/tests/gui_tests
+npx cypress open
+```
+
+Before running tests (manually), a server instance has to be started first
+(e.g. in foreground, in a separate terminal):
+
+```sh
+argrelay.git/exe/run_argrelay_server
+```
+
 # Install Cypress
 
 https://docs.cypress.io/guides/getting-started/installing-cypress

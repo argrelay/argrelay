@@ -18,6 +18,7 @@ connection_config_ = "connection_config"
 mongo_config_ = "mongo_config"
 query_cache_config_ = "query_cache_config"
 gui_banner_config_ = "gui_banner_config"
+default_gui_command_ = "default_gui_command"
 class_to_collection_map_ = "class_to_collection_map"
 server_plugin_control_ = "server_plugin_control"
 static_data_ = "static_data"
@@ -48,6 +49,11 @@ class ServerConfigSchema(ObjectSchema):
     gui_banner_config = fields.Nested(
         gui_banner_config_desc.dict_schema,
         required = True,
+    )
+
+    default_gui_command = fields.String(
+        required = False,
+        load_default = None,
     )
 
     # Related to FS_56_43_05_79 search diff collection:
