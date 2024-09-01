@@ -225,6 +225,21 @@ Legend
 }
 
 /***********************************************************************************************************************
+Click-able arg
+***********************************************************************************************************************/
+
+.selectable_item {
+    white-space: nowrap;
+    width: fit-content;
+    margin: 0 2px 2px 0;
+    padding: 2px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightskyblue;
+    cursor: crosshair;
+}
+
+/***********************************************************************************************************************
 Suggestion details
 ***********************************************************************************************************************/
 
@@ -234,14 +249,6 @@ Suggestion details
 }
 
 .suggested_item {
-    white-space: nowrap;
-    width: fit-content;
-    margin: 0 2px 2px 0;
-    padding: 2px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: lightskyblue;
-    cursor: crosshair;
 }
 
 .input_part {
@@ -282,7 +289,12 @@ Search outline details
     color: darkorange;
 }
 
-.suggested_arg_value {
+.remaining_values {
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+
+.remaining_item {
     color: blue;
 }
 

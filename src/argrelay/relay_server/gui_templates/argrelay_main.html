@@ -162,6 +162,7 @@
        <div
            id="describe_output"
            class="output_box"
+           data-cy="remaining_output"
        >
        </div>
     </div>
@@ -210,7 +211,11 @@
     </template>
 
     <template id="suggested_item_temp">
-        <div class="suggested_item"><span class="input_part"></span><span class="incomplete_part"></span><span class="unique_part"></span><span class="comment_part"></span></div>
+        <div class="selectable_item suggested_item"><span class="input_part"></span><span class="incomplete_part"></span><span class="unique_part"></span><span class="comment_part"></span></div>
+    </template>
+
+    <template id="remaining_item_temp">
+        <span class="selectable_item remaining_item"></span>
     </template>
 
 </body>

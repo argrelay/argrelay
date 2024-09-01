@@ -7,6 +7,7 @@ from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import get_config_path
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
+from argrelay.relay_client.client_utils import handle_main_exception
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 
@@ -18,17 +19,7 @@ def main():
     try:
         return run_client()
     except BaseException as e1:
-        # noinspection PyBroadException
-        try:
-            # Avoid leaving terminal in unexpected state.
-            # For example, due to some terminal control chars printed by client partially,
-            # the terminal may be left in mode which does not echo back chars typed by the user.
-            if sys.stdout.isatty() or sys.stderr.isatty():
-                import os
-                os.system("stty sane")
-        except BaseException as e2:
-            pass
-        raise e1
+        handle_main_exception(e1)
 
 
 def run_client():

@@ -15,6 +15,8 @@ const suggested_item_temp = document.querySelector("#suggested_item_temp");
 const envelope_container_temp = document.querySelector("#envelope_container_temp")
 const arg_container_temp = document.querySelector("#arg_container_temp")
 
+const remaining_item_temp = document.querySelector("#remaining_item_temp");
+
 const copy_command_elem = document.querySelector("#id_copy_command_button")
 const copy_link_elem = document.querySelector("#id_copy_link_button")
 
@@ -600,6 +602,13 @@ function on_suggestion_click(
     use_selected_suggestion(suggested_item_elem);
 }
 
+function on_remaining_click(
+    input_event,
+) {
+    const remaining_item_elem = input_event.target;
+    use_selected_remaining(remaining_item_elem);
+}
+
 function use_selected_suggestion(suggested_item_elem) {
     if (!suggested_item_elem.classList.contains("suggested_item")) {
         // handle by parent:
@@ -607,7 +616,7 @@ function use_selected_suggestion(suggested_item_elem) {
         return
     }
 
-    // Concatenate inner text of all span elements without outter formatting whitespaces:
+    // Concatenate inner text of all span elements without outer formatting whitespaces:
     let suggested_text = "";
     for (const span_child of suggested_item_elem.children) {
         suggested_text += span_child.textContent;
@@ -623,6 +632,16 @@ function use_selected_suggestion(suggested_item_elem) {
 
     // Selecting exact suggestions always completes token - append space to suggest next:
     const replacement_string = suggestion_only + " ";
+    complete_curr_token(command_line_input_elem, replacement_string);
+}
+
+function use_selected_remaining(remaining_item_elem) {
+
+    // Concatenate inner text of all span elements without outer formatting whitespaces:
+    const remaining_only = remaining_item_elem.textContent;
+
+    // Selecting exact suggestions always completes token - append space to suggest next:
+    const replacement_string = remaining_only + " ";
     complete_curr_token(command_line_input_elem, replacement_string);
 }
 
@@ -835,11 +854,17 @@ function populate_envelope_containers(
                 }
                 arg_value_elem.textContent = "?";
                 arg_source_elem.textContent = "";
-                remaining_values_elem.textContent = envelope_container.remaining_types_to_values[arg_type].join(" ")
+                for (const remaining_value of envelope_container.remaining_types_to_values[arg_type]) {
+                    const remaining_item_elem = remaining_item_temp.content.cloneNode(true).children[0];
+                    remaining_item_elem.addEventListener(
+                        "click",
+                        on_remaining_click,
+                    );
+                    remaining_item_elem.textContent = remaining_value;
+                    remaining_values_elem.append(remaining_item_elem);
+                }
 
                 arg_type_elem.classList.add("unknown_arg_value");
-                arg_type_elem.classList.add("unknown_arg_value");
-                remaining_values_elem.classList.add("suggested_arg_value");
             } else {
                 arg_type_elem.textContent = arg_type + ": ";
                 // See: SpecialChar.NoPropValue:
