@@ -13,6 +13,7 @@ from argrelay.enum_desc.PluginSide import PluginSide
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.ResultCategory import ResultCategory
 from argrelay.enum_desc.TermColor import TermColor
+from argrelay.relay_client.client_utils import handle_main_exception
 from argrelay.runtime_context.PluginClientAbstract import instantiate_client_plugin
 from argrelay.runtime_data.CheckEnvPluginConfig import CheckEnvPluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
@@ -35,6 +36,13 @@ offline_message = TermColor.fore_bright_blue.value
 
 # TODO: TODO_67_33_03_53.add_check_env_test_support.md
 def main():
+    # noinspection PyBroadException
+    try:
+        return check_env_logic()
+    except BaseException as e1:
+        handle_main_exception(e1)
+
+def check_env_logic():
     argrelay_dir: str = os.path.realpath(os.path.abspath(sys.argv[1]))
     misc_helper_common.set_argrelay_dir(argrelay_dir)
 

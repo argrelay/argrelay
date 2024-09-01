@@ -134,8 +134,12 @@ class ThisTestClass(BaseTestClass):
             "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common",
             "argrelay.misc_helper_common.ElapsedTime",
+            "argrelay.relay_client.client_utils",
             "argrelay.runtime_data.ClientConfig",
             "argrelay.runtime_data.ConnectionConfig",
+            "sys"
+        ],
+        "argrelay.relay_client.client_utils": [
             "sys"
         ],
         "argrelay.relay_client.proc_splitter": [

@@ -3,6 +3,7 @@ from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.InterceptDelegator import output_format_class_name, OutputFormat, output_format_prop_name
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -67,6 +68,7 @@ class ThisTestClass(LocalTestClass):
                 None,
                 "Completion continues to be driven by function selected via `goto` and `service`.",
             ),
+            # TODO: TODO_10_06_46_37: list arg value consumption stop options
             # (
             #     line_no(),
             #     "some_command intercept goto service s_b prod dc.77 |",
@@ -77,7 +79,6 @@ class ThisTestClass(LocalTestClass):
             #     ],
             #     None,
             #     None,
-            #     # TODO: FS_13_51_07_97 list arg value: the `data_envelope` is singled out, but list arg values should still be suggested (or not?):
             #     "FS_13_51_07_97 list arg value: singled out `data_envelope` with list arg value "
             #     "will still show all options of the list "
             #     "because explicit selection of one of these values from singled out `data_envelop` "
@@ -267,6 +268,38 @@ class ThisTestClass(LocalTestClass):
                 },
                 None,
                 "Prepend `intercept` by another `intercept` multiple times.",
+            ),
+            (
+                line_no(),
+                "some_command func_id_intercept_invocation intercept |",
+                CompType.PrefixShown,
+                [
+                    # TODO: TODO_80_99_84_41 `intercept` has no suggestions if selected via `func_id`
+                ],
+                {
+                    0: {
+                        ReservedPropName.envelope_class.name: AssignedValue(
+                            ReservedEnvelopeClass.ClassFunction.name,
+                            ArgSource.InitValue,
+                        ),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.ExplicitPosArg),
+                        ReservedPropName.func_id.name: AssignedValue(
+                            SpecialFunc.func_id_intercept_invocation.name,
+                            ArgSource.ExplicitPosArg
+                        )
+                    },
+                    1: {
+                        ReservedPropName.envelope_class.name: AssignedValue(
+                            output_format_class_name,
+                            ArgSource.InitValue,
+                        ),
+                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                    },
+                    2: None,
+                },
+                None,
+                "TODO: TODO_80_99_84_41 `intercept` has no suggestions if selected via `func_id`",
             ),
         ]
 
