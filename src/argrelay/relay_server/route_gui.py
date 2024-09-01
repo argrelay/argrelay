@@ -16,6 +16,7 @@ def create_blueprint_gui(
     project_page_url: str,
     argrelay_version: str,
     gui_banner_config: GuiBannerConfig,
+    default_gui_command: str,
     server_start_time: int,
     project_git_commit_time: int,
     project_git_commit_url: str,
@@ -23,14 +24,25 @@ def create_blueprint_gui(
     project_git_conf_dir_url: str,
     project_git_conf_dir_display_string: str,
 ):
+    if default_gui_command is None or len(default_gui_command.strip()) == 0:
+        default_gui_command = "lay"
+    else:
+        default_gui_command = default_gui_command.strip()
+
     blueprint_gui = Blueprint(
         name = "blueprint_gui",
         import_name = __name__,
     )
 
-    # TODO: test and think if it is the right place
-    @blueprint_gui.route(ARGRELAY_GUI_PATH)
-    def basic_ui():
+    @blueprint_gui.route(f"{ARGRELAY_GUI_PATH}")
+    @blueprint_gui.route(f"{ARGRELAY_GUI_PATH}<path:command_line>")
+    def basic_ui(
+        command_line: str = "",
+    ):
+        if len(command_line) == 0:
+            command_line = default_gui_command
+        if len(command_line) > 0 and not command_line.endswith(" "):
+            command_line += " "
         return render_template(
             "argrelay_main.html",
             project_title = project_title,
@@ -46,6 +58,7 @@ def create_blueprint_gui(
             project_git_conf_dir_display_string = project_git_conf_dir_display_string,
             header_html = gui_banner_config.header_html,
             footer_html = gui_banner_config.footer_html,
+            command_line = command_line,
         )
 
     return blueprint_gui

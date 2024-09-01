@@ -15,6 +15,9 @@ const suggested_item_temp = document.querySelector("#suggested_item_temp");
 const envelope_container_temp = document.querySelector("#envelope_container_temp")
 const arg_container_temp = document.querySelector("#arg_container_temp")
 
+const copy_command_elem = document.querySelector("#id_copy_command_button")
+const copy_link_elem = document.querySelector("#id_copy_link_button")
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // API URL-s
 
@@ -25,7 +28,9 @@ const relay_line_args_url = document.currentScript.getAttribute("relay_line_args
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc script params
 
+const argrelay_gui_url = document.currentScript.getAttribute("argrelay_gui_url");
 const server_start_time = new Date(document.currentScript.getAttribute("server_start_time"));
+const command_line = document.currentScript.getAttribute("command_line");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Params from `PluginType.ConfiguratorPlugin`
@@ -35,6 +40,11 @@ const project_git_commit_time = new Date(document.currentScript.getAttribute("pr
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global state
+
+const generated_client_uid_key = "generated_client_uid";
+let generated_client_uid_value = null;
+
+const static_client_conf_target = "_embedded_web_";
 
 const command_history_key = "command_history";
 const command_history_max_size = 10;
@@ -47,8 +57,7 @@ let last_search_response_json = null;
 
 let common_token_prefix = "";
 
-// TODO: rename to abstract:
-class prototype_state_class {
+class abstract_state_class {
 
     // TODO: rename from state_name to something else (or rename io_state):
     state_name = null
@@ -265,7 +274,7 @@ class prototype_state_class {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // suggest_state
 
-class suggest_state_class extends prototype_state_class {
+class suggest_state_class extends abstract_state_class {
 
     create_fetch_promise() {
         return fetch(
@@ -278,7 +287,8 @@ class suggest_state_class extends prototype_state_class {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    "client_conf_target": "_embedded_web_",
+                    "client_uid": generated_client_uid_value,
+                    "client_conf_target": static_client_conf_target,
                     "server_action": "ProposeArgValues",
                     "command_line": this.request_input_line,
                     "cursor_cpos": this.request_cursor_cpos.toString(),
@@ -341,7 +351,7 @@ class suggest_state_class extends prototype_state_class {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // search_state
 
-class search_state_class extends prototype_state_class {
+class search_state_class extends abstract_state_class {
 
     create_fetch_promise() {
         return fetch(
@@ -354,7 +364,8 @@ class search_state_class extends prototype_state_class {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    "client_conf_target": "_embedded_web_",
+                    "client_uid": generated_client_uid_value,
+                    "client_conf_target": static_client_conf_target,
                     "server_action": "DescribeLineArgs",
                     "command_line": this.request_input_line,
                     "cursor_cpos": this.request_cursor_cpos.toString(),
@@ -414,6 +425,16 @@ command_history_elem.addEventListener(
     handle_select_history,
 )
 
+copy_command_elem.addEventListener(
+    "click",
+    handle_copy_command,
+)
+
+copy_link_elem.addEventListener(
+    "click",
+    handle_link_command,
+)
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Server requests
 
@@ -430,7 +451,8 @@ function fetch_invocation_response(
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "client_conf_target": "_embedded_web_",
+                "client_uid": generated_client_uid_value,
+                "client_conf_target": static_client_conf_target,
                 "server_action": "RelayLineArgs",
                 "command_line": input_line,
                 "cursor_cpos": cursor_cpos.toString(),
@@ -449,6 +471,38 @@ function fetch_invocation_response(
 
 let suggest_state = new suggest_state_class("search_state");
 let search_state = new search_state_class("search_state");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// client_uid
+
+function generate_client_uid() {
+    generated_client_uid_value = localStorage.getItem(generated_client_uid_key);
+    if (generated_client_uid_value == null) {
+        const random_suffix = Math.floor(Math.random() * 1_000_000_000_000).toString().padStart(12, "0");
+        generated_client_uid_value = `client_uid_${random_suffix}`;
+        localStorage.setItem(generated_client_uid_key, JSON.stringify(generated_client_uid_value));
+    } else {
+        generated_client_uid_value = JSON.parse(generated_client_uid_value);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Copy buttons
+
+function handle_copy_command(
+    input_event,
+) {
+    navigator.clipboard.writeText(command_line_input_elem.value);
+}
+
+function handle_link_command(
+    input_event,
+) {
+    const next_path = argrelay_gui_url + encodeURI(command_line_input_elem.value.trim());
+    const next_link = location.origin + next_path;
+    navigator.clipboard.writeText(next_link);
+    history.replaceState(null, "", next_path);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Command history
@@ -481,12 +535,11 @@ function load_command_history() {
 function store_command_line_history(
     command_line_text,
 ) {
-    // Skip if existing:
     command_line_text = command_line_text.trim()
-    for (const command_history_item of command_history_list) {
-        if (command_history_item === command_line_text) {
-            return;
-        }
+    // Remove if existing (to be inserted as head instead):
+    const line_index = command_history_list.indexOf(command_line_text);
+    if (line_index >= 0) {
+        command_history_list.splice(line_index, 1);
     }
     // Insert head:
     command_history_list = [command_line_text].concat(command_history_list)
@@ -869,6 +922,10 @@ function display_project_git_commit_time() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main
 
+// Set `command_line` to the initial value:
+command_line_input_elem.value = command_line
+
+generate_client_uid();
 display_server_start_time();
 display_project_git_commit_time();
 load_command_history();

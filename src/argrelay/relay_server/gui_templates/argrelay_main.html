@@ -15,6 +15,7 @@
     <script
         type="text/javascript"
         src="{{ url_for("static", filename = "argrelay_client.js") }}"
+        argrelay_gui_url="{{ url_for("blueprint_gui.basic_ui") }}"
         propose_arg_values_url="{{ url_for("blueprint_api.propose_arg_values") }}"
         describe_line_args_url="{{ url_for("blueprint_api.describe_line_args") }}"
         relay_line_args_url="{{ url_for("blueprint_api.relay_line_args") }}"
@@ -27,6 +28,8 @@
         project_git_commit_display_string="{{ project_git_commit_display_string }}"
         project_git_conf_dir_url="{{ project_git_conf_dir_url }}"
         project_git_conf_dir_display_string="{{ project_git_conf_dir_display_string }}"
+        command_line = "{{ command_line }}"
+
         defer
     ></script>
     <title>{{ project_title }}</title>
@@ -73,6 +76,7 @@
         <select
             id="command_history"
             data-cy="command_history"
+            title="commands are saved into the top of the history on Enter"
         >
         </select>
     </div>
@@ -89,8 +93,26 @@
             contenteditable="true"
             spellcheck="false"
             type="text"
-            placeholder="... type command selecting suggested args via Tab-auto-completion"
+            title=
+                "type command selecting suggested args via clicks or Tab-auto-completion"
+            placeholder=
+                "type command selecting suggested args via clicks or Tab-auto-completion"
         />
+    </div>
+
+    <div class="copy_buttons_container">
+        <div
+            id="id_copy_command_button"
+            class="copy_button copy_command_button"
+        >
+            copy command
+        </div>
+        <div
+            id="id_copy_link_button"
+            class="copy_button copy_link_button"
+        >
+            copy link
+        </div>
     </div>
 
     <div class="legend_container">
