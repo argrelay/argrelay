@@ -17,6 +17,8 @@ const arg_container_temp = document.querySelector("#arg_container_temp")
 
 const remaining_item_temp = document.querySelector("#remaining_item_temp");
 
+const reset_all_elem = document.querySelector("#id_reset_all_button")
+
 const copy_command_elem = document.querySelector("#id_copy_command_button")
 const copy_link_elem = document.querySelector("#id_copy_link_button")
 
@@ -51,6 +53,7 @@ const static_client_conf_target = "_embedded_web_";
 const command_history_key = "command_history";
 const command_history_max_size = 10;
 const request_delay_ms = 500;
+const clipboard_disabled = "clipboard disabled";
 let command_history_list = [];
 let input_version = 0;
 
@@ -427,14 +430,9 @@ command_history_elem.addEventListener(
     handle_select_history,
 )
 
-copy_command_elem.addEventListener(
+reset_all_elem.addEventListener(
     "click",
-    handle_copy_command,
-)
-
-copy_link_elem.addEventListener(
-    "click",
-    handle_link_command,
+    handle_reset_all,
 )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,6 +473,27 @@ let suggest_state = new suggest_state_class("search_state");
 let search_state = new search_state_class("search_state");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+function set_clipboard_state() {
+    if (typeof (navigator.clipboard) === "undefined") {
+        copy_command_elem.title = clipboard_disabled;
+        copy_link_elem.title = clipboard_disabled;
+        copy_command_elem.classList.add("button_disabled");
+        copy_link_elem.classList.add("button_disabled");
+    } else {
+        copy_command_elem.addEventListener(
+            "click",
+            handle_copy_command,
+        )
+        copy_link_elem.addEventListener(
+            "click",
+            handle_link_command,
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // client_uid
 
 function generate_client_uid() {
@@ -486,6 +505,16 @@ function generate_client_uid() {
     } else {
         generated_client_uid_value = JSON.parse(generated_client_uid_value);
     }
+}
+
+function handle_reset_all(
+    input_event,
+) {
+    history.replaceState(null, "", argrelay_gui_url);
+    command_line_input_elem.value = "";
+    invocation_output.textContent = "";
+    on_command_line_change();
+    command_line_input_elem.focus();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -950,6 +979,7 @@ function display_project_git_commit_time() {
 // Set `command_line` to the initial value:
 command_line_input_elem.value = command_line
 
+set_clipboard_state();
 generate_client_uid();
 display_server_start_time();
 display_project_git_commit_time();

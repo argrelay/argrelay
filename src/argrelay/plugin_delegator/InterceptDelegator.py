@@ -9,7 +9,6 @@ from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input, get_func_id_from_interp_ctx
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
 from argrelay.plugin_delegator.delegator_utils import set_default_to
-from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
@@ -21,9 +20,6 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
 from argrelay.schema_config_interp.SearchControlSchema import populate_search_control
 from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
-
-output_format_class_name = "OutputFormat"
-output_format_prop_name = "output_format"
 
 format_output_container_ipos_ = 1
 
@@ -38,6 +34,8 @@ class OutputFormat(Enum):
     text_format = auto()
     table_format = auto()
 
+output_format_class_name = OutputFormat.__name__
+output_format_prop_name = "output_format"
 
 class InterceptDelegator(AbstractJumpDelegator):
 
@@ -125,7 +123,7 @@ class InterceptDelegator(AbstractJumpDelegator):
         func_id = get_func_id_from_invocation_input(invocation_input)
         if func_id == SpecialFunc.func_id_intercept_invocation.name:
 
-            prohibit_unconsumed_args(invocation_input)
+            # NOTE: This function does not prohibit unrecognized args.
 
             output_format: OutputFormat = OutputFormat[invocation_input.envelope_containers[
                 format_output_container_ipos_
