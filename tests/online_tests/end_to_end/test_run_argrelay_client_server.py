@@ -180,10 +180,11 @@ apac
             ),
             (
                 line_no(), f"{self.default_bound_command} intercept this_arg_is_unknown_and_unconsumed".split(" "),
-                ClientExitCode.GeneralError.value,
+                ClientExitCode.ClientSuccess.value,
+                # There is output - ignore:
+                None,
                 "",
-                f"ERROR: this function prohibits unrecognized args (see {TermColor.remaining_token.value}highlighted{TermColor.reset_style.value} on Alt+Shift+Q results): {TermColor.remaining_token.value}this_arg_is_unknown_and_unconsumed{TermColor.reset_style.value}" + "\n",
-                "FS_88_66_66_73 intercept prohibits unconsumed args",
+                "FS_88_66_66_73 intercept does NOT prohibit unconsumed args",
             ),
             (
                 line_no(), f"{self.default_bound_command} goto repo this_arg_is_unknown_and_unconsumed".split(" "),
