@@ -3,6 +3,7 @@
 [![GitHub build](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml/badge.svg?branch=main)](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml)
 
 <a name="argrelay-secreencast"></a>
+
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
 
 <!--
@@ -10,11 +11,13 @@ See: docs/dev_notes/screencast_notes.md
 -->
 
 <a name="argrelay-about"></a>
+
 # What's this?
 
 A framework to "ergonomically" select **custom data** input for command line interface (CLI) tools.
 
 The aim is to augment two-way &#10231; interaction by **prepared** reference data:
+
 *   &#10230; Human inputs args that (s)he **remembers** (via `Tab`-auto-completion) in **relaxed order**.
 *   &#10229; Machine provides feedback (via `Alt+Shift+Q` query) on current state:
     *   What args it already **matched** with server data according to **command schema**.
@@ -27,6 +30,7 @@ competing in **convenience** for apps especially for developers = "doing more wi
 *   When your data is sizeable, users need perf (indexing), relaxed syntax, keyword search, try [`argrelay`][argrelay_org].
 
 <a name="argrelay-focus"></a>
+
 # `argrelay` focus
 
 > Data-assisted CLI with search and completion
@@ -54,11 +58,12 @@ Learn more about [how search works][how_search_works.md].
 -->
 
 <a name="argrelay-overview"></a>
+
 # Interaction overview
 
 User is interrogated for each next input arg based on:
-*  custom command **input schema**
-*  custom data which matches already given input
+*   custom command **input schema**
+*   custom data which matches already given input
 
 Each command resembles "enum language":
 *   Tokens are tags | labels | keywords from one of the `enum` sets.
@@ -75,6 +80,7 @@ Wrapping any command by `argrelay`:
 *   exposes conveniently browsable data inventory (generic CLI builder)
 
 <a name="argrelay-general-dilemma"></a>
+
 # General dilemma
 
 | GUI                                                                           | CLI                                                       |
@@ -113,6 +119,7 @@ the advantages of CLI tools over GUI can be summarized property-by-property:
 | :heavy_plus_sign: CLI    | adaptable | automate-able | light  | inclusive | composable  | hours | few       | same    | devs   | min       |
 
 <a name="argrelay-original-use-case"></a>
+
 # Original use case
 
 Auto-complete commands [based on arbitrary data sets][later_stack_question],<br/>
@@ -126,6 +133,7 @@ Flexible and [responsive lookup][completion_perf_notes.md] required data indexin
 which suggested a split...
 
 <a name="argrelay-client-server"></a>
+
 # Straightforward split: client & server
 
 The performance qualities were achieved by running a standby server with pre-loaded data<br/>
@@ -137,6 +145,7 @@ The performance qualities were achieved by running a standby server with pre-loa
 Unlike static | generated | offline index per client, standby server also naturally supports dynamic data updates.
 
 <a name="argrelay-request-hotkeys"></a>
+
 # Request hotkeys
 
 | Bash:             | Server:                            | Client:                                   |
@@ -146,6 +155,7 @@ Unlike static | generated | offline index per client, standby server also natura
 | **`Enter`**       | provides data to invoke a command  | executes the command                      |
 
 <a name="argrelay-name"></a>
+
 # What's in a name?
 
 CLI for any program is wrapped by `argrelay` interaction and invoked by the user indirectly.
@@ -176,6 +186,7 @@ sequenceDiagram
 ```
 
 <a name="argrelay-demo"></a>
+
 # Interactive demo
 
 This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
@@ -254,6 +265,7 @@ This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_
     ```
 
 <a name="primary-executables"></a>
+
 # Primary executables
 
 This table summarizes all executables most users ever need to know:
@@ -270,6 +282,7 @@ This table summarizes all executables most users ever need to know:
 See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for details.
 
 <a name="argrelay-includes"></a>
+
 # What's in the package?
 
 *   **Client** to be invoked by Bash hook on every Tab to<br/>
@@ -286,6 +299,7 @@ See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for detai
 *   **Testing** support and coverage.
 
 <a name="argrelay-backend"></a>
+
 # Data backend
 
 There are two options at the moment - both using [MongoDB][MongoDB] API:
@@ -311,6 +325,7 @@ Quantitative comparison tables between the two can be seen in docstring for `Dis
 -->
 
 <a name="argrelay-full-picture"></a>
+
 # Full picture
 
 ```mermaid
@@ -351,6 +366,7 @@ sequenceDiagram
 ```
 
 <a name="argrelay-feedback"></a>
+
 # Feedback
 
 Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
