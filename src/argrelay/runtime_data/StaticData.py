@@ -17,5 +17,7 @@ class StaticData:
     """
     MondoDB collection name to its `EnvelopeCollection`.
 
-    Collection name is normally (but not necessarily) matching one of the `ReservedPropName.envelope_class`.
+    TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
+    Collection name is normally (but not necessarily) matching
+    the value of `ReservedPropName.envelope_class` prop.
     """

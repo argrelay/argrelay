@@ -327,6 +327,9 @@ class ThisTestClass(LocalTestClass):
 
                             is_empty = False
                             if prop_name_existence:
+                                # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
+                                #       This test assumes that last loaded `static_data` can be inspected.
+                                #       Now, this requires a hack - see `_generate_and_load_meta_data`.
                                 assert prop_name in static_data.envelope_collections[class_name].index_props
                             else:
                                 # Do not assert it as loader over-specifies index fields at the moment:

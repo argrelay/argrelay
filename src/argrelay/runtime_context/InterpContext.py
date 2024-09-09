@@ -171,11 +171,13 @@ class InterpContext:
     ) -> list[int]:
         return arg_buckets_to_token_ipos_list(self.consumed_arg_buckets)
 
-    def alloc_searchable_containers(
+    def alloc_searchable_container(
         self,
-        search_control_list: list[SearchControl],
+        base_container_ipos: int,
+        func_param_container_offset: int,
+        search_control: SearchControl,
     ):
-        for search_control in search_control_list:
+        if (base_container_ipos + func_param_container_offset + 1) >= len(self.envelope_containers):
             envelope_container = EnvelopeContainer(search_control)
             self.envelope_containers.append(envelope_container)
 

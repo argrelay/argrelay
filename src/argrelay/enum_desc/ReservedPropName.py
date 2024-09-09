@@ -6,6 +6,8 @@ class ReservedPropName(Enum):
     Some of the `data_envelope` props used to implement various `argrelay` features.
     """
 
+    collection_name = auto()
+
     envelope_class = auto()
 
     func_id = auto()

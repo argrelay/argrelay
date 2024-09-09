@@ -15,6 +15,7 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
+from argrelay.mongo_data.LoadProgressState import LoadProgressState
 from argrelay.mongo_data.MongoClientWrapper import log_validation_progress
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -30,8 +31,9 @@ from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
+from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections, index_props_
 from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
-from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
+from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_, envelope_payload_, envelope_id_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
 from argrelay.schema_config_interp.SearchControlSchema import (
     keys_to_types_list_,
@@ -39,6 +41,7 @@ from argrelay.schema_config_interp.SearchControlSchema import (
     envelope_class_,
     search_control_desc,
 )
+from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
 
 class LocalServer:
@@ -271,12 +274,14 @@ class LocalServer:
 
     def _post_validate_loaded_data(
         self,
+        load_state: LoadProgressState,
     ):
-        self._post_validate_all_data_envelope_missing_search_prop_names()
-        self._post_validate_all_data_envelope_missing_index_prop_names()
+        self._post_validate_all_data_envelope_missing_search_prop_names(load_state)
+        self._post_validate_all_data_envelope_missing_index_prop_names(load_state)
 
     def _post_validate_all_data_envelope_missing_search_prop_names(
         self,
+        load_state: LoadProgressState,
     ):
         """
         See TODO_39_25_11_76 missing props based on `search_control`-s for all loaded functions.
@@ -327,9 +332,12 @@ class LocalServer:
                     search_props_per_collection_per_class,
                 )
 
+        # TODO: Why total count misses some (270-261) in this stage - what are those uncounted `data_envelope`-s?
+        #       4/4 261/279
         self._post_validate_all_data_envelope_missing_prop_names(
             "search_prop_names",
             search_props_per_collection_per_class,
+            load_state,
         )
 
     # noinspection PyMethodMayBeStatic
@@ -353,6 +361,7 @@ class LocalServer:
 
     def _post_validate_all_data_envelope_missing_index_prop_names(
         self,
+        load_state: LoadProgressState,
     ):
         """
         See TODO_39_25_11_76 missing props based on `index_prop`-s per `envelope_collection`.
@@ -365,24 +374,26 @@ class LocalServer:
         self._post_validate_all_data_envelope_missing_prop_names(
             "index_prop_names",
             self.index_props_per_collection_per_class,
+            load_state,
         )
 
     def _post_validate_all_data_envelope_missing_prop_names(
         self,
         validation_step: str,
-        prop_names_per_collection_per_class: dict[str, dict[str, set[str]]]
+        prop_names_per_collection_per_class: dict[str, dict[str, set[str]]],
+        load_state: LoadProgressState,
     ):
+        load_state.total_envelope_i = 0
         # Verify that all prop names per (2-level map) `collection_name` and `envelope_class`
         # exists in all corresponding `data_envelope`-s loaded:
         for collection_name, prop_names_per_class in prop_names_per_collection_per_class.items():
             eprint(f"collection to validate: {collection_name}")
-            total_envelope_n = self.count_per_collection.get(collection_name, 0)
-            curr_envelope_i = 0
+            load_state.envelope_per_col_n = self.count_per_collection.get(collection_name, 0)
+            load_state.envelope_per_col_i = 0
             log_validation_progress(
                 validation_step,
                 collection_name,
-                curr_envelope_i,
-                total_envelope_n,
+                load_state,
             )
 
             prev_found_missing_prop_names: dict[str, dict] = {}
@@ -391,15 +402,15 @@ class LocalServer:
                 collection_name,
                 {},
             ):
-                curr_envelope_i += 1
+                load_state.envelope_per_col_i += 1
+                load_state.total_envelope_i += 1
                 envelope_class = data_envelope[ReservedPropName.envelope_class.name]
 
-                if curr_envelope_i % 1_000 == 0:
+                if load_state.total_envelope_i > 0 and load_state.total_envelope_i % 1_000 == 0:
                     log_validation_progress(
                         validation_step,
                         collection_name,
-                        curr_envelope_i,
-                        total_envelope_n,
+                        load_state,
                     )
 
                 if envelope_class not in prop_names_per_class:
@@ -447,8 +458,7 @@ class LocalServer:
             log_validation_progress(
                 validation_step,
                 collection_name,
-                curr_envelope_i,
-                total_envelope_n,
+                load_state,
             )
 
     # noinspection PyMethodMayBeStatic
@@ -538,8 +548,7 @@ class LocalServer:
         self,
     ):
 
-        total_envelope_n: int = 0
-        curr_envelope_i: int = 0
+        load_state = LoadProgressState()
 
         # At this moment, funcs have already been loaded on `AbstractPlugin.activate_plugin`.
         self._populate_func_missing_props()
@@ -548,10 +557,10 @@ class LocalServer:
         # Initial step: load funcs and any data from config:
         self._load_mongo_data_step(
             "config_data",
-            total_envelope_n,
-            curr_envelope_i,
+            load_state,
         )
 
+        loaded_envelope_collections: dict[str, EnvelopeCollection] = {}
         for plugin_instance_id in self.plugin_config.plugin_instance_id_activate_list:
             if plugin_instance_id in self.server_config.data_loaders:
                 plugin_instance = self.server_config.data_loaders[plugin_instance_id]
@@ -564,19 +573,100 @@ class LocalServer:
                     self.server_config.static_data,
                     self.query_engine,
                 )
+                # Copy populated `envelope_collection`-s (without `data_envelope`-s) as metadata
+                # (otherwise this info is cleared together as part of `static_data`):
+                for collection_name, envelope_collection in self.server_config.static_data.envelope_collections.items():
+                    loaded_envelope_collections[collection_name] = EnvelopeCollection(
+                        index_props = deepcopy(envelope_collection.index_props),
+                        data_envelopes = [],
+                    )
+                # Load to backend:
                 self._load_mongo_data_step(
                     plugin_instance_id,
-                    total_envelope_n,
-                    curr_envelope_i,
+                    load_state,
                 )
 
-        self._post_validate_loaded_data()
+        # FS_74_69_61_79 get set data envelope: populate metadata based on loaded data:
+        self._generate_and_load_meta_data(
+            load_state,
+            loaded_envelope_collections,
+        )
+
+        self._post_validate_loaded_data(load_state)
+
+    def _generate_and_load_meta_data(
+        self,
+        load_state,
+        loaded_envelope_collections: dict[str, EnvelopeCollection],
+    ):
+        """
+        This method generates metadata for FS_74_69_61_79 get set data envelope.
+        """
+
+        # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
+        #       This is a hack - it restores test assumption that last loaded `static_data` can be inspected.
+        #       See `test_loader` in `test_GitRepoLoader_offline.py`.
+        prev_static_data = self.server_config.static_data
+
+        # Each step starts with empty `static_data`:
+        self.server_config.static_data = StaticData(
+            envelope_collections = {},
+        )
+
+        class_names = [
+            ReservedEnvelopeClass.ClassCollectionMeta.name,
+        ]
+        # Init index fields (if they do not exist):
+        collection_meta_index_props = [
+            ReservedPropName.collection_name.name,
+            ReservedPropName.envelope_class.name,
+        ]
+        init_envelop_collections(
+            self.server_config.class_to_collection_map,
+            self.server_config.static_data.envelope_collections,
+            class_names,
+            lambda collection_name, class_name: collection_meta_index_props,
+        )
+
+        collection_meta_envelopes = self.server_config.static_data.envelope_collections[
+            self.server_config.class_to_collection_map[ReservedEnvelopeClass.ClassCollectionMeta.name]
+        ].data_envelopes
+
+        # Add generated `envelope_collection` (itself) for consistency:
+        loaded_envelope_collections[
+            self.server_config.class_to_collection_map[ReservedEnvelopeClass.ClassCollectionMeta.name]
+        ] = EnvelopeCollection(
+            index_props = deepcopy(collection_meta_index_props),
+            data_envelopes = [],
+        )
+
+        for collection_name, envelope_collection in loaded_envelope_collections.items():
+            collection_meta_envelopes.append({
+                envelope_id_: f"{collection_name}",
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollectionMeta.name,
+                # TODO: May add loader plugin instance name as metadata:
+                ReservedPropName.collection_name.name: collection_name,
+                envelope_payload_: {
+                    index_props_: deepcopy(envelope_collection.index_props),
+                    data_envelopes_: [],
+                },
+            })
+
+        # Load to backend:
+        self._load_mongo_data_step(
+            self.__class__.__name__,
+            load_state,
+        )
+
+        # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
+        #       This is a hack - it restores test assumption that last loaded `static_data` can be inspected.
+        #       See `test_loader` in `test_GitRepoLoader_offline.py`.
+        self.server_config.static_data = prev_static_data
 
     def _load_mongo_data_step(
         self,
         step_name: str,
-        total_envelope_n: int,
-        curr_envelope_i: int,
+        load_state: LoadProgressState,
     ):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
 
@@ -589,8 +679,7 @@ class LocalServer:
             self.cleaned_mongo_collections,
             # TODO_00_79_72_55: Remove `static_data` from `server_config`:
             self.server_config.static_data,
-            total_envelope_n,
-            curr_envelope_i,
+            load_state,
         )
 
     def _create_mongo_index(

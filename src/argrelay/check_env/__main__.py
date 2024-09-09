@@ -42,6 +42,7 @@ def main():
     except BaseException as e1:
         handle_main_exception(e1)
 
+
 def check_env_logic():
     argrelay_dir: str = os.path.realpath(os.path.abspath(sys.argv[1]))
     misc_helper_common.set_argrelay_dir(argrelay_dir)

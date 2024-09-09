@@ -30,6 +30,10 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
+    def test_start_server(self):
+        env_mock_builder = LocalClientEnvMockBuilder().set_reset_local_server(True)
+        self._start_server(env_mock_builder)
+
     def test_arg_assignments_does_not_hide_funcs(self):
         test_cases = [
             (

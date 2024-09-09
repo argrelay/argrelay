@@ -13,7 +13,7 @@ class EnvelopeCollection:
     See also `EnvelopeCollectionSchema`.
     """
 
-    index_props: list = field()
+    index_props: list[str] = field()
     """
     Lists fields of `data_envelop` which are to be indexed by MongoDB for given collection.
     """

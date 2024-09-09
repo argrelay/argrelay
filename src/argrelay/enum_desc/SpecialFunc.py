@@ -35,3 +35,8 @@ class SpecialFunc(Enum):
     """
     Implements FS_02_25_41_81 `func_id_query_enum_items`.
     """
+
+    func_id_get_data_envelopes = auto()
+    """
+    Implements FS_74_69_61_79 get set data envelope.
+    """

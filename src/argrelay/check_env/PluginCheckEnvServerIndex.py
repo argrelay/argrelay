@@ -57,9 +57,17 @@ class PluginCheckEnvServerIndex(PluginCheckEnvAbstract):
                 result_message = f"It is not a file: {at_path}",
             )]
         else:
-            return [CheckEnvResult(
-                result_category = ResultCategory.VerificationWarning,
-                result_key = _server_index_field_name,
-                result_value = str(None),
-                result_message = f"The client has not been used to create this file yet: {at_path}",
-            )]
+            if os.getenv("ARGRELAY_BOOTSTRAP_ENV") is None:
+                return [CheckEnvResult(
+                    result_category = ResultCategory.VerificationWarning,
+                    result_key = _server_index_field_name,
+                    result_value = str(None),
+                    result_message = f"The client has not been used to create this file yet: {at_path}",
+                )]
+            else:
+                return [CheckEnvResult(
+                    result_category = ResultCategory.VerificationSuccess,
+                    result_key = _server_index_field_name,
+                    result_value = str(None),
+                    result_message = f"Running with `ARGRELAY_BOOTSTRAP_ENV` - ignoring missing file: {at_path}",
+                )]

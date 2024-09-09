@@ -75,7 +75,8 @@ class ConfigOnlyLoader(AbstractLoader):
         ]
 
         init_envelop_collections(
-            self.server_config,
+            self.server_config.class_to_collection_map,
+            self.server_config.static_data.envelope_collections,
             class_names,
             lambda _collection_name, _class_name: collection_name_to_index_props_map[_collection_name],
         )

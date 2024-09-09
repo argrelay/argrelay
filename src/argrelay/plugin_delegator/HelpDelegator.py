@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceDelegator import redirect_to_no_func_error
+from argrelay.plugin_delegator.delegator_utils import redirect_to_no_func_error
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
