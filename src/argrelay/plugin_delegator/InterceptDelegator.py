@@ -34,8 +34,10 @@ class OutputFormat(Enum):
     text_format = auto()
     table_format = auto()
 
+
 output_format_class_name = OutputFormat.__name__
 output_format_prop_name = "output_format"
+
 
 class InterceptDelegator(AbstractJumpDelegator):
 

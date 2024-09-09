@@ -73,12 +73,20 @@ class AbstractDelegator(AbstractPluginServer):
 
     def run_search_control(
         self,
+        interp_ctx: "InterpContext",
         function_data_envelope: dict,
-    ) -> list[SearchControl]:
+        func_param_container_offset: int,
+    ) -> Union[SearchControl, None]:
         """
         Implements FS_31_70_49_15 `search_control`.
         """
-        return self.extract_search_control_from_function_data_envelope(function_data_envelope)
+        search_control_list: list[SearchControl] = self.extract_search_control_from_function_data_envelope(
+            function_data_envelope,
+        )
+        if func_param_container_offset < len(search_control_list):
+            return search_control_list[func_param_container_offset]
+        else:
+            return None
 
     def run_init_control(
         self,

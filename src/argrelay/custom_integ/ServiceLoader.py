@@ -11,7 +11,6 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
@@ -79,10 +78,11 @@ class ServiceLoader(AbstractLoader):
         ]
 
         init_envelop_collections(
-            self.server_config,
+            self.server_config.class_to_collection_map,
+            self.server_config.static_data.envelope_collections,
             class_names,
             # Same index fields for all collections (can be fine-tuned later):
-            lambda collection_name, class_name: [enum_item.name for enum_item in ServicePropName]
+            lambda collection_name, class_name: [enum_item.name for enum_item in ServicePropName],
         )
 
         # Select `data_envelope` lists used by each collection name
@@ -176,36 +176,32 @@ class ServiceLoader(AbstractLoader):
         values of `ServicePropName.ip_address` equal to corresponding `ServicePropName.host_name`.
         """
 
-        class_to_collection_map.setdefault(
+        class_names = [
             ReservedEnvelopeClass.ClassHelp.name,
-            ReservedEnvelopeClass.ClassHelp.name,
-        )
-        help_hint_envelope_collection = static_data.envelope_collections.setdefault(
-            class_to_collection_map[ReservedEnvelopeClass.ClassHelp.name],
-            EnvelopeCollection(
-                index_props = [],
-                data_envelopes = [],
-            ),
-        )
-        help_hint_index_props = help_hint_envelope_collection.index_props
-        help_hint_envelopes = help_hint_envelope_collection.data_envelopes
-
+        ]
         # Init index fields (if they do not exist):
-        for help_hint_index_prop in [
+        help_hint_index_props = [
             ReservedPropName.envelope_class.name,
             ReservedPropName.arg_type.name,
             ReservedPropName.arg_value.name,
             # `ReservedPropName.help_hint` is not indexed (and uses as search param) - instead, it is a search result:
             # ReservedPropName.help_hint.name,
-        ]:
-            if help_hint_index_prop not in help_hint_index_props:
-                help_hint_index_props.append(help_hint_index_prop)
+        ]
+        init_envelop_collections(
+            class_to_collection_map,
+            static_data.envelope_collections,
+            class_names,
+            lambda collection_name, class_name: help_hint_index_props,
+        )
 
-        # Generating
+        help_hint_envelopes = static_data.envelope_collections[
+            class_to_collection_map[ReservedEnvelopeClass.ClassHelp.name]
+        ].data_envelopes
         host_envelopes = static_data.envelope_collections[
             class_to_collection_map[ServiceEnvelopeClass.ClassHost.name]
         ].data_envelopes
 
+        # Generating `help_hint` data:
         for host_envelope in host_envelopes:
             # This `if`-filter is not necessary until non-host-class-envelopes
             # get stored into the same collection:

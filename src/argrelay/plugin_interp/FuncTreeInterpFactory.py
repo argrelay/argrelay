@@ -204,13 +204,14 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             ReservedEnvelopeClass.ClassFunction.name,
         ]
         init_envelop_collections(
-            self.server_config,
+            self.server_config.class_to_collection_map,
+            self.server_config.static_data.envelope_collections,
             class_names,
             lambda collection_name, class_name: (
                 [
                     ReservedPropName.envelope_class.name,
                 ] + prop_names
-            )
+            ),
         )
         envelope_collection = self.server_config.static_data.envelope_collections[
             class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name]
@@ -548,11 +549,23 @@ class FuncTreeInterp(AbstractInterp):
             return InterpStep.StopAll
         elif self.interp_ctx.curr_container.found_count == 1:
 
-            if self.interp_ctx.curr_container_ipos == self.base_container_ipos:
-                # This is a function envelope:
-                search_control_list: list[SearchControl] = self.get_search_control_list()
-                # Create `EnvelopeContainer`-s for every `data_envelope` to find:
-                self.interp_ctx.alloc_searchable_containers(search_control_list)
+            # Func container or beyond:
+            if self.interp_ctx.curr_container_ipos >= self.base_container_ipos:
+                # Func param envelopes beyond func envelope: 0 for the first func param:
+                func_param_container_offset = self.interp_ctx.curr_container_ipos - self.base_container_ipos
+                # TODO: optimize it:
+                #       *   we request one `search_control` from a list of them (internally)
+                #       *   then, we give this item to allocate `searchable_container` but it may have already been allocated before:
+                search_control: SearchControl = self.get_search_control(func_param_container_offset)
+                while search_control is not None:
+                    # Create `EnvelopeContainer`-s for next `data_envelope`-s to find:
+                    self.interp_ctx.alloc_searchable_container(
+                        self.base_container_ipos,
+                        func_param_container_offset,
+                        search_control,
+                    )
+                    func_param_container_offset += 1
+                    search_control: SearchControl = self.get_search_control(func_param_container_offset)
 
             if self.interp_ctx.is_last_container():
                 # Function does not need any envelopes:
@@ -567,13 +580,18 @@ class FuncTreeInterp(AbstractInterp):
             # No `data_envelope` = nothing to do:
             return InterpStep.StopAll
 
-    def get_search_control_list(self) -> list[SearchControl]:
+    def get_search_control(
+        self,
+        func_param_container_offset: int,
+    ) -> Union[SearchControl, None]:
         delegator_plugin = self.get_func_delegator()
 
-        search_control_list: list[SearchControl] = delegator_plugin.run_search_control(
-            self.get_found_func_data_envelope()
+        search_control: SearchControl = delegator_plugin.run_search_control(
+            self.interp_ctx,
+            self.get_found_func_data_envelope(),
+            func_param_container_offset,
         )
-        return search_control_list
+        return search_control
 
     def delegate_init_control(self):
         delegator_plugin = self.get_func_delegator()

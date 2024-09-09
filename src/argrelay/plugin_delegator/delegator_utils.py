@@ -6,7 +6,15 @@ from typing import Callable, Any, Union
 
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.plugin_config.ConfiguratorAbstract import ConfiguratorAbstract
+from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
+    error_message_,
+    error_code_,
+    error_delegator_custom_data_desc,
+)
 from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay.runtime_data.PluginConfig import PluginConfig
+from argrelay.schema_response.InvocationInput import InvocationInput
 
 
 def set_default_to(
@@ -55,3 +63,37 @@ def get_config_value_once(
     if config_value is None:
         config_value = default_value
     return config_value
+
+
+def redirect_to_error(
+    interp_ctx,
+    plugin_config: PluginConfig,
+    error_message,
+    error_code,
+):
+    # Redirect to `ErrorDelegator`:
+    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ErrorDelegator`):
+    delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
+    custom_plugin_data = {
+        error_message_: error_message,
+        error_code_: error_code,
+    }
+    error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
+    invocation_input = InvocationInput.with_interp_context(
+        interp_ctx,
+        delegator_plugin_entry = plugin_config.plugin_instance_entries[delegator_plugin_instance_id],
+        custom_plugin_data = custom_plugin_data,
+    )
+    return invocation_input
+
+
+def redirect_to_no_func_error(
+    interp_ctx,
+    plugin_config,
+):
+    return redirect_to_error(
+        interp_ctx,
+        plugin_config,
+        "ERROR: objects cannot be searched until function is fully qualified",
+        1,
+    )

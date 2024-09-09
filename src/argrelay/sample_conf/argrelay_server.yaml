@@ -70,7 +70,6 @@ class_to_collection_map:
     ClassCluster: ClassCluster
     ClassHost: ClassHost
     ClassService: ClassService
-    access_type: access_type
 
 server_plugin_control:
     first_interp_factory_id: FirstArgInterpFactory.default
@@ -106,6 +105,12 @@ server_plugin_control:
                         node_type: interp_tree_node
                         plugin_instance_id: FuncTreeInterpFactory.default
                         sub_tree:
+                            "meta":
+                                node_type: tree_path_node
+                                sub_tree:
+                                    "get":
+                                        node_type: func_tree_node
+                                        func_id: func_id_get_data_envelopes
                             "echo":
                                 node_type: func_tree_node
                                 func_id: func_id_echo_args

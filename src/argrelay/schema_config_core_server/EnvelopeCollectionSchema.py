@@ -52,7 +52,8 @@ envelope_collection_desc = TypeDesc(
 
 
 def init_envelop_collections(
-    server_config: ServerConfig,
+    class_to_collection_map: dict[str, str],
+    envelope_collections: dict[str, EnvelopeCollection],
     class_names: Collection[str],
     get_index_props: Callable[[str, str], list[str]],
 ):
@@ -64,9 +65,10 @@ def init_envelop_collections(
     *   association of `collection_name` with its data as `EnvelopeCollection` (default = new and empty)
     *   list of `index_prop`-s for each `EnvelopeCollection` via `get_index_props`
 
+    # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
+
     By default, class_name is mapped into collection_name which matches as string that class_name.
     """
-    class_to_collection_map: dict = server_config.class_to_collection_map
 
     for class_name in class_names:
         # Default collection_name == class_name (unless overridden = specified in config explicitly):
@@ -75,7 +77,7 @@ def init_envelop_collections(
             class_name,
         )
         collection_name = class_to_collection_map[class_name]
-        envelope_collection = server_config.static_data.envelope_collections.setdefault(
+        envelope_collection = envelope_collections.setdefault(
             collection_name,
             EnvelopeCollection(
                 index_props = [],

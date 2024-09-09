@@ -35,6 +35,7 @@ class ThisTestClass(LocalTestClass):
                     "help",
                     "intercept",
                     "list",
+                    "meta",
                     "no_data",
                 ],
                 None,

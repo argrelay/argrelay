@@ -21,18 +21,15 @@ from argrelay.plugin_delegator.AbstractDelegator import (
     get_func_id_from_interp_ctx,
     get_func_id_from_invocation_input,
 )
-from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_message_,
     error_code_,
-    error_delegator_custom_data_desc,
     error_delegator_stub_custom_data_example,
 )
-from argrelay.plugin_delegator.delegator_utils import set_default_to
+from argrelay.plugin_delegator.delegator_utils import set_default_to, redirect_to_error, redirect_to_no_func_error
 from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
@@ -53,40 +50,6 @@ access_container_ipos_ = 2
 
 diff_service_container_left_ipos_ = 1
 diff_service_container_right_ipos_ = 2
-
-
-def redirect_to_no_func_error(
-    interp_ctx,
-    plugin_config,
-):
-    return redirect_to_error(
-        interp_ctx,
-        plugin_config,
-        "ERROR: objects cannot be searched until function is fully qualified",
-        1,
-    )
-
-
-def redirect_to_error(
-    interp_ctx,
-    plugin_config: PluginConfig,
-    error_message,
-    error_code,
-):
-    # Redirect to `ErrorDelegator`:
-    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ErrorDelegator`):
-    delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
-    custom_plugin_data = {
-        error_message_: error_message,
-        error_code_: error_code,
-    }
-    error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
-    invocation_input = InvocationInput.with_interp_context(
-        interp_ctx,
-        delegator_plugin_entry = plugin_config.plugin_instance_entries[delegator_plugin_instance_id],
-        custom_plugin_data = custom_plugin_data,
-    )
-    return invocation_input
 
 
 class ServiceDelegator(AbstractDelegator):

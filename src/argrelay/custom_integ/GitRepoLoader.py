@@ -99,10 +99,11 @@ class GitRepoLoader(AbstractLoader):
         ]
 
         init_envelop_collections(
-            self.server_config,
+            self.server_config.class_to_collection_map,
+            self.server_config.static_data.envelope_collections,
             class_names,
             # Same index fields for all collections (can be fine-tuned later):
-            lambda collection_name, class_name: [enum_item.name for enum_item in GitRepoPropName]
+            lambda collection_name, class_name: [enum_item.name for enum_item in GitRepoPropName],
         )
 
         repo_envelopes = static_data.envelope_collections[

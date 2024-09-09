@@ -106,8 +106,11 @@ function color_failure_and_success_bootstrap_env {
 trap color_failure_and_success_bootstrap_env EXIT
 
 # Let some code know that it runs under `@/exe/bootstrap_env.bash` (e.g to run some tests conditionally):
-ARGRELAY_BOOTSTRAP_ENV="$(date)"
-export ARGRELAY_BOOTSTRAP_ENV
+if [[ "${is_script_sourced}" != "true" ]]
+then
+    ARGRELAY_BOOTSTRAP_ENV="$(date)"
+    export ARGRELAY_BOOTSTRAP_ENV
+fi
 
 script_source="${BASH_SOURCE[0]}"
 # shellcheck disable=SC2034
@@ -152,6 +155,13 @@ do
 done
 
 ########################################################################################################################
+
+function run_disabled_check_env {
+    echo "INFO: Starting \`@/exe/check_env.bash\` but ignoring its exit code - FYI:" 1>&2
+    "${argrelay_dir}/exe/check_env.bash" || true
+}
+
+########################################################################################################################
 # Bootstrap with `path/to/config` arg (if any) triggers this special logic:
 # *   if `@/conf/` is missing:
 #     *   set `@/conf/` symlink to the specified config dir (e.g. one of `@/dst/*`)
@@ -176,6 +186,8 @@ then
 
         # The `@/conf/` has already been init-ed before:
         echo "INFO: \"${argrelay_dir}/conf\" with the same path exists - skip running bootstrap" 1>&2
+
+        run_disabled_check_env
 
         "${ret_command}" 0
     elif [[ ! -e "${argrelay_dir}/conf" ]]
@@ -847,6 +859,8 @@ pip freeze --exclude-editable >> "${argrelay_dir}/conf/env_packages.txt"
 
 eval "${bootstrap_env_old_opts}"
 unset bootstrap_env_old_opts
+
+run_disabled_check_env
 
 ########################################################################################################################
 # EOF
