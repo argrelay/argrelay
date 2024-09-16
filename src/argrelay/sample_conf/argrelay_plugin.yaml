@@ -24,12 +24,7 @@ plugin_instance_entries:
             #   Interps for `interp_tree` per command (zero-arg):
             -   InterpTreeInterpFactory.default
             -   InterpTreeInterpFactory.check_env
-            #   Interps for normal funcs:
             -   FuncTreeInterpFactory.default
-            #   Interps for special funcs:
-            -   FuncTreeInterpFactory.func_id_intercept_invocation
-            -   FuncTreeInterpFactory.func_id_help_hint
-            -   FuncTreeInterpFactory.func_id_query_enum_items
         plugin_config:
             ignored_func_ids_list:
                 -   func_id_unplugged
@@ -38,11 +33,7 @@ plugin_instance_entries:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
         plugin_class_name: InterpTreeInterpFactory
         plugin_dependencies:
-            -   FuncTreeInterpFactory.func_id_intercept_invocation
-            -   FuncTreeInterpFactory.func_id_help_hint
-            -   FuncTreeInterpFactory.func_id_query_enum_items
             -   FuncTreeInterpFactory.default
-            -   FuncTreeInterpFactory.service
 
     InterpTreeInterpFactory.check_env:
         plugin_module_name: argrelay.plugin_interp.InterpTreeInterpFactory
@@ -50,29 +41,11 @@ plugin_instance_entries:
         plugin_dependencies:
             -   FuncTreeInterpFactory.check_env
 
-    # TODO: FS_33_76_82_84 `composite_forest`: maintaining separate instance of `FuncTreeInterpFactory` plugin should be avoided.
-    #       See extended comment for `FuncTreeInterpFactory.func_id_help_hint`.
-    FuncTreeInterpFactory.func_id_intercept_invocation:
-        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
-        plugin_class_name: FuncTreeInterpFactory
-
-    FuncTreeInterpFactory.func_id_help_hint:
-        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
-        plugin_class_name: FuncTreeInterpFactory
-
-    FuncTreeInterpFactory.func_id_query_enum_items:
-        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
-        plugin_class_name: FuncTreeInterpFactory
-
     FuncTreeInterpFactory.default:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
 
     FuncTreeInterpFactory.check_env:
-        plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
-        plugin_class_name: FuncTreeInterpFactory
-
-    FuncTreeInterpFactory.service:
         plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
         plugin_class_name: FuncTreeInterpFactory
 

@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
-// TODO: Flaky test - fix it and unskip:
-describe.skip('argrelay GUI', () => {
+describe('argrelay GUI', () => {
     beforeEach(() => {
         cy.visit('http://localhost:8787/argrelay_gui/')
     })
@@ -10,7 +9,7 @@ describe.skip('argrelay GUI', () => {
         // If cache is disabled and TD_38_03_48_51 large generated data set is used, it takes a while:
         defaultCommandTimeout: 30_000
     }, () => {
-        const input_command = 'lay goto host dev '
+        const input_command_1 = 'lay goto host dev '
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_client_synced_input')
@@ -18,7 +17,7 @@ describe.skip('argrelay GUI', () => {
             .get('[data-cy=command_line_input]')
             .focus()
             .clear()
-            .type(input_command)
+            .type(input_command_1)
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_pending_response_input')
@@ -39,7 +38,9 @@ describe.skip('argrelay GUI', () => {
         // If cache is disabled and TD_38_03_48_51 large generated data set is used, it takes a while:
         defaultCommandTimeout: 30_000
     }, () => {
-        const input_command = 'lay '
+        // Use different input command from `input_command_1` (in previous test)
+        // otherwise, response is too quick and `io_state_pending_request_input` is not reached:
+        const input_command_2 = 'lay goto host '
         const extra_arg = 'qwer'
         cy
             .get('[data-cy=command_line_input]')
@@ -48,7 +49,7 @@ describe.skip('argrelay GUI', () => {
             .get('[data-cy=command_line_input]')
             .focus()
             .clear()
-            .type(input_command)
+            .type(input_command_2)
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_pending_request_input')
@@ -67,15 +68,17 @@ describe.skip('argrelay GUI', () => {
         cy
             .get('[data-cy=suggestion_output]')
             .children()
-            .should('have.length', 0)
+            .should('have.length', 4)
     })
 
     it('user modifies command line while pending response', {
         // If cache is disabled and TD_38_03_48_51 large generated data set is used, it takes a while:
         defaultCommandTimeout: 30_000
     }, () => {
-        const input_command = 'relay_demo '
+        const input_command_3 = 'lay meta '
+        const input_command_4 = 'lay '
         const extra_arg = 'qwer'
+        // Type command which has suggestion:
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_client_synced_input')
@@ -83,7 +86,7 @@ describe.skip('argrelay GUI', () => {
             .get('[data-cy=command_line_input]')
             .focus()
             .clear()
-            .type(input_command)
+            .type(input_command_3)
         cy
             .get('[data-cy=command_line_input]')
             .should('have.class', 'io_state_pending_request_input')
@@ -112,7 +115,7 @@ describe.skip('argrelay GUI', () => {
         cy
             .get('[data-cy=command_line_input]')
             .clear()
-            .type(input_command)
+            .type(input_command_4)
         // Wait for stability:
         cy
             .get('[data-cy=command_line_input]')
@@ -120,19 +123,23 @@ describe.skip('argrelay GUI', () => {
         cy
             .get('[data-cy=suggestion_output]')
             .children()
-            .should('have.length', 8)
+            .should('have.length', 12)
             .then(suggested_elems => {
                 const suggested_strings = [...suggested_elems]
                     .map(suggested_elem => suggested_elem.textContent)
-                expect(suggested_strings).to.have.length(8)
+                expect(suggested_strings).to.have.length(12)
                 expect(suggested_strings).to.include('desc')
+                expect(suggested_strings).to.include('duplicates')
+                expect(suggested_strings).to.include('config')
+                expect(suggested_strings).to.include('diff')
                 expect(suggested_strings).to.include('echo')
                 expect(suggested_strings).to.include('enum')
                 expect(suggested_strings).to.include('goto')
                 expect(suggested_strings).to.include('help')
                 expect(suggested_strings).to.include('intercept')
                 expect(suggested_strings).to.include('list')
-                expect(suggested_strings).to.include('subtree')
+                expect(suggested_strings).to.include('meta')
+                expect(suggested_strings).to.include('no_data')
             })
     })
 })

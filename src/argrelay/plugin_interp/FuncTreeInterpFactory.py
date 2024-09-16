@@ -162,13 +162,6 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
                     )[tuple(func_abs_path)] = deepcopy(func_envelope)
                     mapped_func_ids.append(func_id)
 
-        # Ensure every `func_id` mapped into the tree is part of `func_envelope`-s loaded from delegators:
-        for func_id in self.func_ids_to_func_abs_paths.keys():
-            if func_id not in mapped_func_ids:
-                raise RuntimeError(
-                    f"plugin_instance_id=`{self.plugin_instance_id}`: func_id=`{func_id}` is not published by any enabled delegator activated so far - please check `{plugin_enabled_}` and `{plugin_dependencies_}`"
-                )
-
         self.populate_func_envelope_collection(
             func_id_to_func_abs_path_to_func_envelope,
             interp_tree_abs_path,

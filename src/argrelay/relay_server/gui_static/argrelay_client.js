@@ -45,6 +45,8 @@ const project_git_commit_time = new Date(document.currentScript.getAttribute("pr
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Global state
 
+const abort_error_reason = "input invalidated";
+
 const generated_client_uid_key = "generated_client_uid";
 let generated_client_uid_value = null;
 
@@ -118,7 +120,7 @@ class abstract_state_class {
     }
 
     reset_request_controller() {
-        this.request_controller.abort("input invalidated");
+        this.request_controller.abort(abort_error_reason);
         this.request_controller = new AbortController();
         this.request_controller.signal.addEventListener("abort", () => {
             console.log(`[${this.state_name}] attempt to abort request if any`);
@@ -252,8 +254,12 @@ class abstract_state_class {
                 }
             })
             .catch(error_reason => {
-                console.log(`[${this.state_name}] error_reason: ${error_reason}`)
-                this.set_io_state_request_failed()
+                if (error_reason !== abort_error_reason) {
+                    console.log(`[${this.state_name}] failed with error_reason: ${error_reason}`)
+                    this.set_io_state_request_failed()
+                } else {
+                    console.log(`[${this.state_name}] ignored with error_reason: ${error_reason}`)
+                }
             })
             // Trigger check if input changed:
             .finally(() => {

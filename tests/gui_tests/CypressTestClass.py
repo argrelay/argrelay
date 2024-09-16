@@ -10,7 +10,7 @@ class CypressTestClass(ClientServerTestClass):
     """
     Base class to run GUI tests via Cypress.
 
-    See `gui_tests_notes.md` how to run this manually.
+    See `gui_cypress_tests_notes.md` how to run this manually.
     """
 
     @classmethod

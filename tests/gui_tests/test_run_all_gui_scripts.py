@@ -2,7 +2,6 @@ from gui_tests.CypressTestClass import CypressTestClass
 
 
 class ThisTestClass(CypressTestClass):
-    # same_test_data_per_class = "TD_38_03_48_51"  # large generated data set
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
     def test_run_all_scripts(self):

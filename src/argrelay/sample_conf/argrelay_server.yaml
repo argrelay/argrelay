@@ -82,21 +82,21 @@ server_plugin_control:
                 sub_tree:
                     "intercept": &interp_tree_node_func_id_intercept_invocation
                         node_type: interp_tree_node
-                        plugin_instance_id: FuncTreeInterpFactory.func_id_intercept_invocation
+                        plugin_instance_id: FuncTreeInterpFactory.default
                         sub_tree:
                             "":
                                 node_type: func_tree_node
                                 func_id: func_id_intercept_invocation
                     "help": &interp_tree_node_func_id_help_hint
                         node_type: interp_tree_node
-                        plugin_instance_id: FuncTreeInterpFactory.func_id_help_hint
+                        plugin_instance_id: FuncTreeInterpFactory.default
                         sub_tree:
                             "":
                                 node_type: func_tree_node
                                 func_id: func_id_help_hint
                     "enum": &interp_tree_node_func_id_query_enum_items
                         node_type: interp_tree_node
-                        plugin_instance_id: FuncTreeInterpFactory.func_id_query_enum_items
+                        plugin_instance_id: FuncTreeInterpFactory.default
                         sub_tree:
                             "":
                                 node_type: func_tree_node
@@ -233,7 +233,7 @@ server_plugin_control:
                         <<: *interp_tree_node_func_id_help_hint
                     "":
                         node_type: interp_tree_node
-                        plugin_instance_id: FuncTreeInterpFactory.service
+                        plugin_instance_id: FuncTreeInterpFactory.default
                         sub_tree:
                             "goto":
                                 node_type: func_tree_node
