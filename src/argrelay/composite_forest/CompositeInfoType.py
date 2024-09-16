@@ -6,26 +6,22 @@ class CompositeInfoType(Enum):
     Specifies info type extract-able from FS_33_76_82_84 the composite forest.
     """
 
-    # TODO_10_72_28_05: This enum item should likely be factored out in the future.
     tree_abs_path_to_interp_id = auto()
     """
-    Config for `tree_abs_path_to_interp_id` is used in delegator instances supporting single `func_id`.
+    Config for `tree_abs_path_to_interp_id` is used in delegator instances with `single_func_id` for special funcs.
 
-    TODO_10_72_28_05: It seems very bespoke - think of getting rid of `tree_abs_path_to_interp_id`.
-    *   Use current path to `func_tree_node`.
-        NOTE: `tree_abs_path_to_interp_id` is used for special funcs
-               with single `func_id` in the `sub_tree` (empty node name) of `func_tree_node`.
-    *   Transform path to func back to path to dict entry.
+    The `func_tree_node` is configured single `func_id` in the `sub_tree` (empty "" node name).
+
+    The current path to `func_tree_node` is transformed back to the path of `zero_arg_node` leading to it.
     """
 
-    # TODO_10_72_28_05: This enum item should likely be factored out in the future.
-    #                   Consider making `interp_tree` global (with full paths including zero arg interp) -
-    #                   this way there will be no need for separate extraction of `zero_arg_interp_tree`.
+    # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
+    #       It is identical to `interp_tree`, but `interp_tree` does not include zero arg components.
+    #       Consider making `interp_tree` global (with full paths including zero arg interp) -
+    #       this way there will be no need for separate extraction of `zero_arg_interp_tree`.
     zero_arg_interp_tree = auto()
     """
     See FS_42_76_93_51 very first zero arg mapping interp.
-
-    TODO: It is identical to `interp_tree`, but `interp_tree` does not include zero arg components.
     """
 
     jump_tree = auto()

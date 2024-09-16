@@ -236,7 +236,7 @@ then
 path_to_venvX="venv"
 # Path to specific Python interpreter (to override any default in the `PATH`):
 # shellcheck disable=SC2034
-path_to_pythonX="/usr/local/bin/python3.7"
+path_to_pythonX="/usr/local/bin/python3.8"
 # Custom prompt prefix - see:
 # https://docs.python.org/3/library/venv.html
 # --prompt PROMPT Provides an alternative prompt prefix for this environment.
@@ -256,7 +256,7 @@ source "${argrelay_dir}/conf/python_env.conf.bash"
 # shellcheck disable=SC2154
 curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
 # Ensure Python version is not old:
-min_required_version="3.7"
+min_required_version="3.8"
 if [[ "${curr_python_version}" != "${min_required_version}" ]]
 then
     if ( echo "${curr_python_version}"; echo "${min_required_version}"; ) | sort --version-sort --check 2> /dev/null

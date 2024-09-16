@@ -75,6 +75,9 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
                     raise RuntimeError(
                         f"plugin_instance_id=`{self.plugin_instance_id}`: func_id=`{func_id}` is neither mapped anywhere nor is in `{ignored_func_ids_list_}`"
                     )
+                    # TODO: Could it be this?
+                    if False:
+                        f"plugin_instance_id=`{self.plugin_instance_id}`: func_id=`{func_id}` is not published by any enabled delegator activated so far - please check `{plugin_enabled_}` and `{plugin_dependencies_}`"
                 else:
                     # This `func_id` is ignored - skip:
                     continue

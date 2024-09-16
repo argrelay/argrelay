@@ -147,7 +147,7 @@ Input states
 }
 
 .io_state_pending_response_input {
-    color: blue !important;
+    color: darkorange !important;
 }
 
 .io_state_request_failed_input {

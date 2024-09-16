@@ -292,44 +292,53 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 {
                     "lay": {
-                        "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
-                        "help": "FuncTreeInterpFactory.func_id_help_hint",
-                        "enum": "FuncTreeInterpFactory.func_id_query_enum_items",
+                        "intercept": "FuncTreeInterpFactory.default",
+                        "help": "FuncTreeInterpFactory.default",
+                        "enum": "FuncTreeInterpFactory.default",
                         "": "FuncTreeInterpFactory.default",
                         "duplicates": {
-                            "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
-                            "help": "FuncTreeInterpFactory.func_id_help_hint",
+                            "intercept": "FuncTreeInterpFactory.default",
+                            "help": "FuncTreeInterpFactory.default",
                             "": "FuncTreeInterpFactory.default",
                         },
                     },
                     "relay_demo": {
-                        "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
-                        "help": "FuncTreeInterpFactory.func_id_help_hint",
-                        "enum": "FuncTreeInterpFactory.func_id_query_enum_items",
+                        "intercept": "FuncTreeInterpFactory.default",
+                        "help": "FuncTreeInterpFactory.default",
+                        "enum": "FuncTreeInterpFactory.default",
                         "": "FuncTreeInterpFactory.default",
                         "duplicates": {
-                            "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
-                            "help": "FuncTreeInterpFactory.func_id_help_hint",
+                            "intercept": "FuncTreeInterpFactory.default",
+                            "help": "FuncTreeInterpFactory.default",
                             "": "FuncTreeInterpFactory.default",
                         },
                     },
                     "some_command": {
-                        "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
-                        "help": "FuncTreeInterpFactory.func_id_help_hint",
-                        "enum": "FuncTreeInterpFactory.func_id_query_enum_items",
+                        "intercept": "FuncTreeInterpFactory.default",
+                        "help": "FuncTreeInterpFactory.default",
+                        "enum": "FuncTreeInterpFactory.default",
                         "": "FuncTreeInterpFactory.default",
                         "duplicates": {
-                            "intercept": "FuncTreeInterpFactory.func_id_intercept_invocation",
-                            "help": "FuncTreeInterpFactory.func_id_help_hint",
+                            "intercept": "FuncTreeInterpFactory.default",
+                            "help": "FuncTreeInterpFactory.default",
                             "": "FuncTreeInterpFactory.default",
                         },
                     },
                     "service_relay_demo": {
-                        "help": "FuncTreeInterpFactory.func_id_help_hint",
-                        "": "FuncTreeInterpFactory.service",
+                        "help": "FuncTreeInterpFactory.default",
+                        "": "FuncTreeInterpFactory.default",
                     },
                 },
                 f"{InterpTreeInterpFactory.__name__}.default",
+            ),
+            (
+                line_no(),
+                {
+                    "argrelay.check_env": {
+                        "": f"{FuncTreeInterpFactory.__name__}.check_env",
+                    },
+                },
+                f"{InterpTreeInterpFactory.__name__}.check_env",
             ),
         ]
 
@@ -394,88 +403,46 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 {
                     "lay": {
-                        "intercept": SpecialFunc.func_id_intercept_invocation.name,
+                        "help": "func_id_help_hint",
+                        "intercept": "func_id_intercept_invocation",
+                        "enum": "func_id_query_enum_items",
                         "duplicates": {
-                            "intercept": SpecialFunc.func_id_intercept_invocation.name,
+                            "help": "func_id_help_hint",
+                            "intercept": "func_id_intercept_invocation",
+                            "": func_tree_main,
                         },
+                        "": func_tree_main,
                     },
                     "relay_demo": {
-                        "intercept": SpecialFunc.func_id_intercept_invocation.name,
+                        "help": "func_id_help_hint",
+                        "intercept": "func_id_intercept_invocation",
+                        "enum": "func_id_query_enum_items",
                         "duplicates": {
-                            "intercept": SpecialFunc.func_id_intercept_invocation.name,
+                            "help": "func_id_help_hint",
+                            "intercept": "func_id_intercept_invocation",
+                            "": func_tree_main,
                         },
+                        "": func_tree_main,
                     },
                     "some_command": {
-                        "intercept": SpecialFunc.func_id_intercept_invocation.name,
+                        "help": "func_id_help_hint",
+                        "intercept": "func_id_intercept_invocation",
+                        "enum": "func_id_query_enum_items",
                         "duplicates": {
-                            "intercept": SpecialFunc.func_id_intercept_invocation.name,
-                        }
-                    },
-                },
-                f"{FuncTreeInterpFactory.__name__}.func_id_intercept_invocation",
-            ),
-            (
-                line_no(),
-                {
-                    "lay": {
-                        "help": SpecialFunc.func_id_help_hint.name,
-                        "duplicates": {
-                            "help": SpecialFunc.func_id_help_hint.name,
+                            "help": "func_id_help_hint",
+                            "intercept": "func_id_intercept_invocation",
+                            "": func_tree_main,
                         },
-                    },
-                    "relay_demo": {
-                        "help": SpecialFunc.func_id_help_hint.name,
-                        "duplicates": {
-                            "help": SpecialFunc.func_id_help_hint.name,
-                        },
-                    },
-                    "some_command": {
-                        "help": SpecialFunc.func_id_help_hint.name,
-                        "duplicates": {
-                            "help": SpecialFunc.func_id_help_hint.name,
-                        }
+                        "": func_tree_main,
                     },
                     "service_relay_demo": {
-                        "help": SpecialFunc.func_id_help_hint.name,
-                    },
-                },
-                f"{FuncTreeInterpFactory.__name__}.func_id_help_hint",
-            ),
-            (
-                line_no(),
-                {
-                    "lay": {
-                        "enum": SpecialFunc.func_id_query_enum_items.name,
-                    },
-                    "relay_demo": {
-                        "enum": SpecialFunc.func_id_query_enum_items.name,
-                    },
-                    "some_command": {
-                        "enum": SpecialFunc.func_id_query_enum_items.name,
-                    },
-                },
-                f"{FuncTreeInterpFactory.__name__}.func_id_query_enum_items",
-            ),
-            (
-                line_no(),
-                {
-                    "lay": {
-                        "duplicates": {
-                            "": func_tree_main,
+                        "help": "func_id_help_hint",
+                        "": {
+                            "goto": "func_id_goto_service",
+                            "list": "func_id_list_service",
+                            "diff": "func_id_diff_service",
+                            "desc": "func_id_desc_service",
                         },
-                        "": func_tree_main,
-                    },
-                    "relay_demo": {
-                        "duplicates": {
-                            "": func_tree_main,
-                        },
-                        "": func_tree_main,
-                    },
-                    "some_command": {
-                        "duplicates": {
-                            "": func_tree_main,
-                        },
-                        "": func_tree_main,
                     },
                 },
                 f"{FuncTreeInterpFactory.__name__}.default",
@@ -483,15 +450,15 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "service_relay_demo": {
-                        "goto": "func_id_goto_service",
-                        "list": "func_id_list_service",
-                        "diff": "func_id_diff_service",
-                        "desc": "func_id_desc_service",
+                    "argrelay.check_env": {
+                        "server_version": "func_id_get_server_argrelay_version",
+                        "server_commit": "func_id_get_server_project_git_commit_id",
+                        "server_start_time": "func_id_get_server_start_time",
                     },
                 },
-                f"{FuncTreeInterpFactory.__name__}.service",
+                f"{FuncTreeInterpFactory.__name__}.check_env",
             ),
+
         ]
 
         for test_case in test_cases:

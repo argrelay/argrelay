@@ -28,6 +28,7 @@ class AbstractJumpDelegator(AbstractDelegator):
             plugin_config_dict,
         )
 
+        # Use configured `single_func_id` to extract all tree paths where it is used:
         extracted_dict = extract_tree_abs_path_to_interp_id(
             self.server_config.server_plugin_control.composite_forest,
             self.plugin_config_dict[single_func_id_],
@@ -36,13 +37,14 @@ class AbstractJumpDelegator(AbstractDelegator):
             CompositeInfoType.tree_abs_path_to_interp_id,
             extracted_dict,
         )
-        # Temporary (reversed) map which contains path per id (instead of id per path):
+        # Temporary (reversed) 1-to-N map of id to paths (instead of path to id):
         temporary_id_to_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
 
-        # Reverse temporary path per id map into id per path map:
+        # Reverse temporary 1-to-N map of id to paths into 1-to-1 map of path to id:
         self.tree_path_to_next_interp_plugin_instance_id: dict[tuple[str, ...], str] = {}
         for interp_factory_instance_id, tree_abs_paths in temporary_id_to_paths.items():
             for tree_abs_path in tree_abs_paths:
+                assert tuple(tree_abs_path) not in self.tree_path_to_next_interp_plugin_instance_id
                 self.tree_path_to_next_interp_plugin_instance_id[tuple(tree_abs_path)] = interp_factory_instance_id
 
     def load_config(
@@ -55,16 +57,20 @@ class AbstractJumpDelegator(AbstractDelegator):
         self,
         curr_interp: AbstractInterp,
     ) -> Union[None, str]:
-        # TODO_10_72_28_05: support special funcs for all commands:
-        #                   Delegator must select next `interp_factory_id` based on `interp_tree_abs_path` via `tree_abs_path_to_interp_id` (not based on single plugin id specified)
-        #                   because delegator can be accessible through multiple tree paths.
-        #                   Delegator should map specific tree path using the tree path they are accessed through to specific `interp_plugin_instance_id`.
-        #                   The next interp selection is a double jump:
-        #                   *   the first jump here (in delegator) is based on selected func via its delegator to interp,
-        #                   *   the second jump there (in jump tree interp) from jump interp via jump tree.
-        # TODO: This must be special interpreter which is configured only to search functions (without their args).
-        #       NEXT TODO: Why not support function args for special interp (e.g. `intercept` or `help` with format params)?
-        #                  The interp_control is only run when func and all its args are selected and there should be next interp to continue.
+        """
+        Select next interp for some of the `SpecialFunc`-s:
+        *   `SpecialFunc.func_id_intercept_invocation`
+        *   `SpecialFunc.func_id_help_hint`
+        *   ...
+
+        The next interp selection is a "double jump":
+        *   the first "plugin_id" jump here (in delegator) to interp via delegator of the selected func
+        *   the second "tree_path" jump there (in jump tree interp) from jump interp to new tree path via jump tree
+
+        This delegator (its `single_func_id`) can be accessed through multiple tree paths.
+        Therefore, it should map `interp_tree_abs_path` (how it is accessed) to
+        the next `interp_plugin_instance_id` (the single interp).
+        """
         if curr_interp.interp_ctx.interp_tree_abs_path in self.tree_path_to_next_interp_plugin_instance_id:
             return self.tree_path_to_next_interp_plugin_instance_id[curr_interp.interp_ctx.interp_tree_abs_path]
         else:
