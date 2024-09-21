@@ -32,6 +32,7 @@ class ClientCommandRemoteWorkerJson(ClientCommandRemoteWorkerAbstract):
         }
         # NOTE: So far, single `CallContextSchema` is reused for all client requests:
         request_json = call_context_desc.dict_schema.dumps(self.call_ctx)
+        request_bytes = request_json.encode()
         ElapsedTime.measure("before_request")
 
         # TODO: TODO_30_69_19_14: infinite spinner:
@@ -41,24 +42,29 @@ class ClientCommandRemoteWorkerJson(ClientCommandRemoteWorkerAbstract):
         # Attempt to detect hanging import by setting an alarm at least (not resolving it yet):
         signal.signal(signal.SIGALRM, _signal_handler)
         signal.alarm(1)
-        import requests
+        import urllib3
         signal.alarm(0)
 
         try:
-            response_obj = requests.post(
+            response_obj = urllib3.request(
+                "POST",
                 server_url,
                 headers = headers_dict,
-                data = request_json,
+                body = request_bytes,
+                timeout = urllib3.util.Timeout(
+                    connect = 5,
+                    read = 60,
+                ),
             )
-        except requests.exceptions.ConnectionError as e:
+        except urllib3.exceptions.MaxRetryError as e:
             # translate to builtin:
             raise ConnectionError(e)
 
         ElapsedTime.measure("after_request")
         try:
-            if response_obj.ok:
-                self.bytes_src.accept_bytes(response_obj.content)
+            if response_obj.status == 200:
+                self.bytes_src.accept_bytes(response_obj.data)
             else:
-                self.raise_error(response_obj.status_code)
+                self.raise_error(response_obj.status)
         finally:
             ElapsedTime.measure("after_handle_response")
