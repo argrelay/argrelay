@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import unittest
 from dataclasses import asdict, replace
 from typing import Union
 
@@ -23,7 +24,9 @@ from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
 
 random_byte_value = b"\x07"
 
-
+# TODO: TODO_30_69_19_14: client hangs with infinite spinner
+#       Rewrite test to avoid using `requests`.
+@unittest.skip
 class ThisTestClass(BaseTestClass):
     """
     Test FS_93_18_57_91 client fail over to redundant servers.
