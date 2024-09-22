@@ -49,9 +49,9 @@ def prohibit_unconsumed_args(
     ii: InvocationInput,
 ) -> None:
     """
-    TODO TODO_86_57_50_38: Common delegator behavior: consider using delegator/func config to cause this error.
-                           Also, it can be caused on the server-side with redirection to ErrorDelegator
-                           (so that clients do not call that explicitly).
+    TODO: TODO_86_57_50_38: Common delegator behavior: consider using delegator/func config to cause this error.
+          Also, it can be caused on the server-side with redirection to ErrorDelegator
+          (so that clients do not call that explicitly).
     """
 
     unconsumed_args = filter_remaining_args(ii)

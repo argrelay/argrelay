@@ -27,7 +27,7 @@ class EnvelopeCollectionSchema(ObjectSchema):
         load_default = [],
     )
 
-    # TODO_00_79_72_55: do not store `data_envelopes`
+    # TODO: TODO_00_79_72_55: do not store `data_envelopes`
     data_envelopes = fields.List(
         fields.Nested(data_envelope_desc.dict_schema),
         required = False,

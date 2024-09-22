@@ -73,6 +73,20 @@ else
     conf_status="[error]"
 fi
 
+# Set readline settings which are (arguably) more convenient.
+# These settings force-override those set by user,
+# but this is only for `@/exe/dev_shell.bash` (can be force-overridden again by `@/conf/dev_shell_env.bash`).
+# Official doc:
+# https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
+# *   See more: https://stackoverflow.com/a/42193784/441652
+bind "set show-all-if-ambiguous on"
+# *   See more: https://stackoverflow.com/a/42193784/441652
+bind "set show-all-if-unmodified on"
+# *   Deduplicate string on insertion of completed part in the middle of an arg:
+bind "set skip-completed-text on"
+# *   Highlight by color first chars matching current prefix:
+bind "set colored-completion-prefix on"
+
 # Source extra config:
 if [[ -f "${argrelay_dir}/conf/dev_shell_env.bash" ]]
 then

@@ -31,7 +31,7 @@ reset_style = TermColor.reset_style.value
 
 # Extra color scheme (available via Python code only):
 offline_color = f"{TermColor.back_light_gray.value}{TermColor.fore_dark_black.value}"
-offline_message = TermColor.fore_bright_blue.value
+offline_message = TermColor.fore_bright_magenta.value
 
 
 # TODO: TODO_67_33_03_53.add_check_env_test_support.md

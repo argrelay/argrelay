@@ -144,8 +144,8 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         for func_id, func_envelope in func_ids_to_func_envelopes.items():
             if func_id not in self.func_ids_to_func_abs_paths:
                 # TODO: TODO_19_67_22_89: remove `ignored_func_ids_list` - load as `FuncState.fs_unplugged`:
-                # This `func_id` is not plugged into given tree.
-                # It will be loaded as `FuncState.fs_unplugged`.
+                #       This `func_id` is not plugged into given tree.
+                #       It will be loaded as `FuncState.fs_unplugged`.
                 continue
             func_abs_paths = self.func_ids_to_func_abs_paths[func_id]
             for func_abs_path in func_abs_paths:

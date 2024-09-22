@@ -144,7 +144,8 @@ class BaseConfigDelegator(AbstractDelegator):
     ) -> bool:
         """
         FS_49_96_50_77: (part of implementation for config-only delegator) populates defaults
-        TODO_54_68_18_12: Support defaults for config-only delegator
+
+        TODO: TODO_54_68_18_12: Support defaults for config-only delegator
         """
         any_assignment = False
         if interp_ctx.curr_container_ipos > function_container_ipos_:

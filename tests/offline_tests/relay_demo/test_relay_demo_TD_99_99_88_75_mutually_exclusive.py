@@ -171,7 +171,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-b-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `emea` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                # TODO: TODO_70_48_96_29: be able to assert remaining arg vals:
                 "FS_44_36_84_88: `qa` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),
@@ -199,7 +199,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-a-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `qa` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                # TODO: TODO_70_48_96_29: be able to assert remaining arg vals:
                 "FS_44_36_84_88: `emea` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),
@@ -227,7 +227,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-a-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `apac` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                # TODO: TODO_70_48_96_29: be able to assert remaining arg vals:
                 "FS_44_36_84_88: `dev` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),
@@ -258,7 +258,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "TD_99_99_88_75: `host-b-*` are suggested as according to "
                 "FS_76_29_13_28: user input priority, `dev` is eaten first, and "
-                # TODO_70_48_96_29: be able to assert remaining arg vals:
+                # TODO: TODO_70_48_96_29: be able to assert remaining arg vals:
                 "FS_44_36_84_88: `apac` become remaining "
                 "(rather than becoming FS_51_67_38_37 impossible arg combination)",
             ),

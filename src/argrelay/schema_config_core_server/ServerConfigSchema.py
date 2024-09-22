@@ -74,7 +74,7 @@ class ServerConfigSchema(ObjectSchema):
         required = True,
     )
 
-    # TODO_00_79_72_55: remove in the future:
+    # TODO: TODO_00_79_72_55: remove in the future:
     static_data = fields.Nested(
         static_data_desc.dict_schema,
         required = False,

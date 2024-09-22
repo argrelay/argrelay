@@ -180,7 +180,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     3: None,
                 },
-                # TODO_70_48_96_29: add verification of consumed and remaining tokens
+                # TODO: TODO_70_48_96_29: add verification of consumed and remaining tokens
                 "TD_76_09_29_31 overlapped: "
                 "Both geo_region and host_name are correctly assigned. "
                 "All values assigned - no more suggestions. ",

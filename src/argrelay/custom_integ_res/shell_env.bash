@@ -53,7 +53,7 @@ set -u
 # TODO: This is a stop gap workaround (to allow FS_57_36_37_48 multiple clients coexistence):
 #       Prefix all shared vars (e.g. `argrelay_dir`) set here with `argrelay_rc` and unset them on exit.
 #       With multiple clients, sourcing the second `@/exe/shell_env.bash` reset shared env vars used by the first.
-#       TODO_27_61_22_18: Long term solution is to make these vars local (not shared).
+#       See TODO_27_61_22_18: Long term solution is to make these vars local (not shared).
 argrelay_rc_script_source="${BASH_SOURCE[0]}"
 # It is expected that `@/exe/shell_env.bash` is sourced from the project dir.
 # The dir of this script:
@@ -144,7 +144,7 @@ function invoke_completion {
     # https://superuser.com/a/135654/176657
     # It is often convenient to recall what command lines used in previous queries - if not stored,
     # queries are not stored in the history (unless the command was also subsequently invoked).
-    # TODO_24_22_11_49: avoid removing last history command:
+    # TODO: TODO_24_22_11_49: avoid removing last history command:
     #       The following command to append (commented out) command line to the history
     #       removes the last command in the history. Why?
     #       See output `history -p '!-1'` at this point - it is not equal the truly last command,

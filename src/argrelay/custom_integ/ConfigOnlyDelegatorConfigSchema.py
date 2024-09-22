@@ -69,16 +69,16 @@ class ConfigOnlyDelegatorEnvelopePayloadSchema(Schema):
 
     echo_command_on_stderr = fields.Boolean(
         required = False,
-        load_default = False,
+        load_default = True,
     )
 
-    # TODO_54_68_18_12: Support defaults for config-only delegator:
-    # Add a schema for this config but likely into _new_ `BaseConfigDelegatorEnvelopePayloadSchema`
-    # as it can be used with other configurable plugins even if they do not use
-    # `command_template` (as this `ConfigOnlyDelegatorEnvelopePayloadSchema` class does).
+    # TODO: TODO_54_68_18_12: Support defaults for config-only delegator:
+    #       Add a schema for this config but likely into _new_ `BaseConfigDelegatorEnvelopePayloadSchema`
+    #       as it can be used with other configurable plugins even if they do not use
+    #       `command_template` (as this `ConfigOnlyDelegatorEnvelopePayloadSchema` class does).
 
-    # TODO_74_73_60_93: Support expected envelope count in config-only delegator:
-    # Similar to TODO_54_68_18_12 (above), it should be part of _new_ `BaseConfigDelegatorEnvelopePayloadSchema`.
+    # TODO: TODO_74_73_60_93: Support expected envelope count in config-only delegator:
+    #       Similar to TODO_54_68_18_12 (above), it should be part of _new_ `BaseConfigDelegatorEnvelopePayloadSchema`.
 
 
 _config_only_func_config_dict_example = deepcopy(func_config_desc.dict_example)

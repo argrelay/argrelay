@@ -213,7 +213,7 @@ class LocalServer:
         """
         This validation ensures there is no blank values (`None`, whitespace, etc.) in `index_prop`-s.
 
-        TODO_39_25_11_76: `data_envelope`-s with missing props.
+        TODO: TODO_39_25_11_76: `data_envelope`-s with missing props.
 
         See also FS_99_81_19_25 no space in options.
 
@@ -235,7 +235,7 @@ class LocalServer:
                     envelope_class = data_envelope[ReservedPropName.envelope_class.name]
 
                     if index_prop not in data_envelope:
-                        # TODO_39_25_11_76: `data_envelope`-s with missing props:
+                        # TODO: TODO_39_25_11_76: `data_envelope`-s with missing props:
                         # Let the `data_envelope` load without some `prop_name`-s from `index_prop`-s -
                         # if any of `data_envelope`-s have that `prop_name`, it will fail validation.
                         # It is allowed to have no `prop_name` for all `data_envelope` until at least one has it.
@@ -499,7 +499,7 @@ class LocalServer:
 
         This function only targets `ReservedEnvelopeClass.ClassFunction` (because loading funcs is special).
         There is no decision (yet) to populate missing `prop_value`-s for any `data_envelope`.
-        Instead, there is a validation to prevent missing `prop_name`-s - if it it fails,
+        Instead, there is a validation to prevent missing `prop_name`-s for other `data_envelope`-s - if it fails,
         the corresponding loader has to be fixed to provide seme set of `prop_name`-s for all `data_envelope`.
         """
 
@@ -553,7 +553,7 @@ class LocalServer:
         # At this moment, funcs have already been loaded on `AbstractPlugin.activate_plugin`.
         self._populate_func_missing_props()
 
-        # TODO_00_79_72_55: Remove `static_data` from `server_config`:
+        # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
         # Initial step: load funcs and any data from config:
         self._load_mongo_data_step(
             "config_data",
@@ -677,7 +677,7 @@ class LocalServer:
         MongoClientWrapper.store_envelopes(
             mongo_db,
             self.cleaned_mongo_collections,
-            # TODO_00_79_72_55: Remove `static_data` from `server_config`:
+            # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
             self.server_config.static_data,
             load_state,
         )

@@ -41,8 +41,8 @@ class ConfigOnlyDelegator(BaseConfigDelegator):
     def invoke_action(
         invocation_input: InvocationInput,
     ):
-        # TODO_74_73_60_93: Support expected envelope count in config-only delegator:
-        # Use common static functions in `BaseConfigDelegator`.
+        # TODO: TODO_74_73_60_93: Support expected envelope count in config-only delegator:
+        #       Use common static functions in `BaseConfigDelegator`.
 
         # Keep this as it is supposed to be referenced in the `command_template`
         envelope_containers = invocation_input.envelope_containers

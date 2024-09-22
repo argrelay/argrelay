@@ -90,49 +90,49 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
             (
                 line_no(), "some_command |", CompType.DescribeArgs,
                 "Ensure it provides `some_command` as first `InitValue` prop.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command |", CompType.DescribeArgs,
                 "Ensure it provides `some_command` as first `InitValue` prop.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command intercept |", CompType.DescribeArgs,
                 "Ensure `intercept` works for `CompType.DescribeArgs`.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command intercept help |", CompType.DescribeArgs,
                 "Ensure `intercept` of `help` works for `CompType.DescribeArgs`.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command intercept help |", CompType.DescribeArgs,
                 "Ensure `help` of `intercept` works for `CompType.DescribeArgs`.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "# some_command intercept help |", CompType.DescribeArgs,
                 "Commented line: selecting `NoopInterpFactory` by default should not fail.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command intercept intercept help |", CompType.DescribeArgs,
                 "Doubling of `intercept` should work.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command subtree help |", CompType.DescribeArgs,
                 "Help for `subtree` should work.",
-                # TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
+                # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
         ]
@@ -167,7 +167,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                         # Output is not specified - not to be asserted:
                         continue
 
-                    # TODO_43_41_95_86: use server logger to disable stdout:
+                    # TODO: TODO_43_41_95_86: use server logger to disable stdout:
                     #       Running print again with capturing `stdout`.
                     #       Executing end-to-end above may generate
                     #       noise output on `stdout`/`stderr` by local server logic.

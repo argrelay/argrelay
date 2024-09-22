@@ -59,3 +59,17 @@ check_env_plugin_instance_entries:
         plugin_module_name: argrelay.check_env.PluginCheckEnvServerResponseValueStartTime
         plugin_class_name: PluginCheckEnvServerResponseValueStartTime
 
+    PluginCheckEnvReadlineShowAllIfAmbiguous.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay.check_env.PluginCheckEnvReadline
+        plugin_class_name: PluginCheckEnvReadlineShowAllIfAmbiguous
+
+    PluginCheckEnvReadlineShowAllIfUnmodified.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay.check_env.PluginCheckEnvReadline
+        plugin_class_name: PluginCheckEnvReadlineShowAllIfUnmodified
+
+    PluginCheckEnvReadlineSkipCompletedText.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay.check_env.PluginCheckEnvReadline
+        plugin_class_name: PluginCheckEnvReadlineSkipCompletedText

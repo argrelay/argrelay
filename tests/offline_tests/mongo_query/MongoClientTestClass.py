@@ -34,14 +34,14 @@ class MongoClientTestClass(BaseTestClass):
 
     def setUp(self):
         super().setUp()
-        self.col_proxy = self.create_collection_proxy(self.col_name)
+        self.col_proxy = self.select_collection_proxy(self.col_name)
         self.remove_all_data(self.col_proxy)
 
     def tearDown(self):
         super().tearDown()
         self.remove_all_data(self.col_proxy)
 
-    def create_collection_proxy(
+    def select_collection_proxy(
         self,
         col_name: str,
     ):
@@ -65,7 +65,7 @@ class MongoClientTestClass(BaseTestClass):
     def show_all_envelopes(
         col_proxy: Collection,
     ):
-        print("show_all_envelopes:")
+        print(f"show_all_envelopes [{col_proxy.name}]:")
         for data_envelope in col_proxy.find():
             print("data_envelope: ", data_envelope)
 
@@ -75,6 +75,7 @@ class MongoClientTestClass(BaseTestClass):
     ):
         col_proxy.delete_many({})
         col_proxy.drop_indexes()
+        col_proxy.drop()
 
     @staticmethod
     def index_props(

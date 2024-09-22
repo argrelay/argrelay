@@ -375,7 +375,9 @@ then
     echo "It is required to install packages to extract artifacts from them." 1>&2
     echo "Provide \`${argrelay_dir}/exe/install_project.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
+    # TODO: TODO_96_01_13_29: multiple bootstrap stages to instantiate configs
+    #       Installing extra files can be left to later bootstrap stages when packages are already installed.
+    #       This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'install_project_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
@@ -589,7 +591,9 @@ then
     echo "It is required to know list of configs to be installed." 1>&2
     echo "Provide \`${install_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
+    # TODO: TODO_96_01_13_29: multiple bootstrap stages to instantiate configs
+    #       Installing extra files can be left to later bootstrap stages when packages are already installed.
+    #       This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'config_files_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
@@ -656,7 +660,9 @@ then
     echo "It is required to know list of resources to be installed." 1>&2
     echo "Provide \`${install_files_conf_path}\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
+    # TODO: TODO_96_01_13_29: multiple bootstrap stages to instantiate configs
+    #       Installing extra files can be left to later bootstrap stages when packages are already installed.
+    #       This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'resource_files_conf_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
@@ -819,7 +825,9 @@ then
     echo "It is required as custom build step for integration project, but can do nothing." 1>&2
     echo "Provide \`${argrelay_dir}/exe/build_project.bash\`, for example (copy and paste and modify):" 1>&2
     echo "" 1>&2
-    # TODO: This matches content of default config stored in `argrelay` repo - try to deduplicate.
+    # TODO: TODO_96_01_13_29: multiple bootstrap stages to instantiate configs
+    #       Installing extra files can be left to later bootstrap stages when packages are already installed.
+    #       This matches content of default config stored in `argrelay` repo - try to deduplicate.
     cat << 'build_project_EOF'
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay

@@ -323,3 +323,47 @@ Search outline details
 .no_data {
     color: grey;
 }
+
+/***********************************************************************************************************************
+Pending spinner
+***********************************************************************************************************************/
+
+.sinner_paused {
+    animation-play-state: paused;
+}
+
+.forward_spin {
+    animation-direction: normal;
+    /* NOTE: Match it with `request_delay_ms` in `*.js` file: */
+    animation-duration: 0.8s;
+}
+
+.backward_spin {
+    animation-direction: reverse;
+    animation-duration: 0.4s;
+}
+
+.animated_spinner:before {
+    content: "\025E4";
+    animation-name: spinner_frames;
+    animation-iteration-count: infinite;
+    animation-duration: inherit;
+    animation-play-state: inherit;
+    animation-direction: inherit;
+}
+
+@keyframes spinner_frames {
+  0% {
+    content: "\025E4";
+  }
+  25% {
+    content: "\025E5";
+  }
+  50% {
+    content: "\025E2";
+  }
+  75% {
+    content: "\025E3";
+  }
+}
+

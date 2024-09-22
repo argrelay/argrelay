@@ -364,8 +364,8 @@ class ServiceDelegator(AbstractDelegator):
         elif func_id in [
             func_id_diff_service_,
         ]:
-            # TODO_75_52_01_67: `arg_bucket`-s to support multiple var args:
-            #                   query both service lists and compare them.
+            # TODO: TODO_75_52_01_67: `arg_bucket`-s to support multiple var args:
+            #       query both service lists and compare them.
 
             # Actual implementation is not defined for demo:
             return redirect_to_error(

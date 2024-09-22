@@ -54,7 +54,7 @@ set -u
 
 failure_color="\e[41m\e[97m"
 reset_color="\e[0m"
-banner_color="\e[94m"
+banner_color="\e[95m"
 
 # Indicate failure by color:
 function color_failure_only {
@@ -86,7 +86,7 @@ export ARGRELAY_DEV_SHELL
 if [[ "$#" -eq "0" ]]
 then
     # Interactive:
-    echo -e "${banner_color}INFO: keep starting nested \`@/exe/dev_shell.bash\` on demand or \`source\` this config by default in \`~/.bashrc\`: ${argrelay_dir}/exe/shell_env.bash${reset_color}" 1>&2
+    echo -e "${banner_color}INFO: avoid starting nested \`@/exe/dev_shell.bash\` on demand by \`source\`-ing this config in \`~/.bashrc\` by default: ${argrelay_dir}/exe/shell_env.bash${reset_color}" 1>&2
     exec bash --init-file <( echo "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash" )
 else
     # Non-interactive:

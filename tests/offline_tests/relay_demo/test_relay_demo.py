@@ -531,7 +531,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto service s_b prod qwer-pd-2 |", CompType.DescribeArgs,
                 "If current command search results in ambiguous results (more than one `data_envelope`), "
                 "it should still work.",
-                # TODO_32_99_70_35: Use generalized validator asserting payload (for this case it is fine) instead of entire stdout str - JSONPath?
+                # TODO: TODO_32_99_70_35: Use generalized validator asserting payload (for this case it is fine) instead of entire stdout str - JSONPath?
                 None,
             ),
             (
@@ -678,7 +678,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command goto|", CompType.PrefixShown,
                 0,
                 {
-                    # TODO_32_99_70_35: How to specify that some specific props are not assigned?
+                    # TODO: TODO_32_99_70_35: How to specify that some specific props are not assigned?
                 },
                 "No assignment for incomplete token (token pointed by the cursor) in completion mode",
             ),
@@ -721,7 +721,7 @@ class ThisTestClass(LocalTestClass):
                 {
                     f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
                     f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
-                    # TODO_32_99_70_35: How to specify that some specific props are not assigned?
+                    # TODO: TODO_32_99_70_35: How to specify that some specific props are not assigned?
                 },
                 # TODO: Fix this: "service" must be recognized even if in double quotes:
                 "FS_92_75_93_01: Register a bug that \"service\" token is not recognized while in double quotes.",
@@ -1188,7 +1188,7 @@ class ThisTestClass(LocalTestClass):
                 # Output is not specified - not to be asserted:
                 return
 
-            # TODO_43_41_95_86: use server logger to disable stdout:
+            # TODO: TODO_43_41_95_86: use server logger to disable stdout:
             #       Running print again with capturing `stdout`.
             #       Executing end-to-end above may generate
             #       noise output on `stdout`/`stderr` by local server logic.

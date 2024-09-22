@@ -46,7 +46,7 @@ then
     exact_argrelay_version="${1}"
 fi
 
-# TODO_64_79_28_85: deduplicate this file with publish_package.bash (move upgrade function here from there).
+# TODO: TODO_64_79_28_85: deduplicate this file with publish_package.bash (move upgrade function here from there).
 
 # Switch to `@/` to avoid creating temporary dirs somewhere else:
 cd "${argrelay_dir}" || exit 1

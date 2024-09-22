@@ -35,7 +35,7 @@ class ThisTestClass(LocalTestClass):
                     0: {},  # help func envelope itself
                     1: {
                         # (goto, desc, list) x (host, service) external functions:
-                        # TODO_32_99_70_35: (JSONPath?) Universal verifier: be able to verify arbitrary data on `EnvelopeContainer`, not only assigned types to values.
+                        # TODO: TODO_32_99_70_35: (JSONPath?) Universal verifier: be able to verify arbitrary data on `EnvelopeContainer`, not only assigned types to values.
                         # "found_count": 6
                     },
                 },
@@ -147,7 +147,7 @@ some_command list service {SpecialChar.NoPropValue.value} {TermColor.known_envel
 
                     invocation_input: InvocationInput = EnvMockBuilder.invocation_input
 
-                # TODO_43_41_95_86: use server logger to disable stdout:
+                # TODO: TODO_43_41_95_86: use server logger to disable stdout:
                 #       Running print again with capturing `stdout`.
                 #       Executing end-to-end above may generate
                 #       noise output on `stdout`/`stderr` by local server logic.

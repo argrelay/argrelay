@@ -10,6 +10,8 @@ class ThisTestClass(MongoClientTestClass):
         """
         Example to search distinct values for each field individually in single query:
         https://stackoverflow.com/a/63595331/441652
+
+        This query is used in by `QueryEngine` in case of `DistinctValuesQuery.native_aggregate`.
         """
 
         index_props = [
