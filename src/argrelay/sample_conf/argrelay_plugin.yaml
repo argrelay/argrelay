@@ -179,7 +179,7 @@ plugin_instance_entries:
         plugin_module_name: argrelay.custom_integ.ConfigOnlyDelegator
         plugin_class_name: ConfigOnlyDelegator
         plugin_config:
-            # TODO_84_71_86_21: change to realistic examples:
+            # TODO: TODO_84_71_86_21: change to realistic examples:
             func_configs:
                 func_id_print_with_severity_level:
                     func_envelope:

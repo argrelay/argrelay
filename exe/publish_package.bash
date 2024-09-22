@@ -58,8 +58,8 @@ then
     exit 1
 fi
 
-# TODO_64_79_28_85: switch to `dst/release_env`
-# TODO_64_79_28_85: use upgrade_env_packages.bash
+# TODO: TODO_64_79_28_85: switch to `dst/release_env`
+# TODO: TODO_64_79_28_85: use upgrade_env_packages.bash
 
 # Clear venv (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )

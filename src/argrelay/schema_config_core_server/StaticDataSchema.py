@@ -11,7 +11,7 @@ from argrelay.schema_config_core_server.EnvelopeCollectionSchema import envelope
 envelope_collections_ = "envelope_collections"
 
 
-# TODO_00_79_72_55: remove in the future:
+# TODO: TODO_00_79_72_55: remove in the future:
 class StaticDataSchema(ObjectSchema):
     class Meta:
         unknown = RAISE

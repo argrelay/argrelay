@@ -22,8 +22,6 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
     Then, it verifies `argrelay_dir` of the mapped client with the `argrelay_dir` of currently running process.
     """
 
-    shell_var_name: str = "argrelay_bind_command_basenames"
-
     # noinspection PyMethodMayBeStatic
     def execute_check(
         self,
@@ -39,7 +37,6 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
             bash_proc = subprocess.run(
                 args = [
                     dev_shell_path,
-                    # f"echo ${{argrelay_bind_command_basenames[@]}}",
                     f"echo ${{!argrelay_basename_to_client_path_map[@]}}",
                 ],
                 capture_output = True,
@@ -55,7 +52,7 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
                 result_category = ResultCategory.ExecutionFailure,
                 result_key = "client_linked_command",
                 result_value = str(shell_var_value),
-                result_message = f"Unable to retrieve keys of `argrelay_bind_command_basenames` under started: {dev_shell_path}",
+                result_message = f"Unable to retrieve keys of `argrelay_basename_to_client_path_map` under started: {dev_shell_path}",
             )]
         else:
             linked_commands: list[str] = shell_var_value.split()

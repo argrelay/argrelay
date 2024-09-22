@@ -14,7 +14,7 @@ from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder
 
 
 class InOutTestClass(BaseTestClass):
-    # TODO_32_99_70_35: Make generic validator be able to verify payload (not only `interp_ctx` passed from local client) - JSONPath?
+    # TODO: TODO_32_99_70_35: Make generic validator be able to verify payload (not only `interp_ctx` passed from local client) - JSONPath?
 
     # TODO: Wrap input into Dataclass which in turn can be created via builder (to have ability pre-build defaults for a set of tests).
     def verify_response_data(
@@ -73,7 +73,7 @@ class InOutTestClass(BaseTestClass):
                 )
 
             if expected_container_ipos_to_used_arg_bucket is not None:
-                # TODO_32_99_70_35: candidate for generic library of JSONPath verifiers:
+                # TODO: TODO_32_99_70_35: candidate for generic library of JSONPath verifiers:
                 for envelope_container_ipos, envelope_container in enumerate(envelope_containers):
                     expected_used_arg_bucket = expected_container_ipos_to_used_arg_bucket[envelope_container_ipos]
                     self.assertEqual(

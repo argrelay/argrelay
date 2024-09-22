@@ -5,7 +5,7 @@ from argrelay.misc_helper_common.TypeDesc import TypeDesc
 single_func_id_ = "single_func_id"
 
 
-# TODO_40_10_18_32: add custom base to all schemas:
+# TODO: TODO_40_10_18_32: add custom base to all schemas:
 class AbstractJumpDelegatorConfigSchema(Schema):
     class Meta:
         unknown = RAISE

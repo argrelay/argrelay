@@ -19,6 +19,7 @@ const remaining_item_temp = document.querySelector("#remaining_item_temp");
 
 const reset_all_elem = document.querySelector("#id_reset_all_button")
 
+const pending_spinner_elem = document.querySelector("#id_pending_spinner")
 const copy_command_elem = document.querySelector("#id_copy_command_button")
 const copy_link_elem = document.querySelector("#id_copy_link_button")
 
@@ -54,7 +55,8 @@ const static_client_conf_target = "_embedded_web_";
 
 const command_history_key = "command_history";
 const command_history_max_size = 10;
-const request_delay_ms = 500;
+// NOTE: Match it with `animation-duration` in `*.css` file:
+const request_delay_ms = 800;
 const clipboard_disabled = "clipboard disabled";
 let command_history_list = [];
 let input_version = 0;
@@ -273,7 +275,7 @@ class abstract_state_class {
         throw new Error("it must be overridden")
     }
 
-    map_io_state_to_elem_class(some_io_state) {
+    map_io_state_to_command_line_input_elem_class(some_io_state) {
         throw new Error("it must be overridden")
     }
 
@@ -312,21 +314,48 @@ class suggest_state_class extends abstract_state_class {
 
     map_io_state_to_gui_state() {
         super.map_io_state_to_gui_state()
+
+        // Set color:
         for (const some_io_state of [
             "client_synced",
             "pending_request",
             "pending_response",
             "request_failed",
         ]) {
-            if (some_io_state === this.io_state) {
-                command_line_input_elem.classList.add(this.map_io_state_to_elem_class(some_io_state));
-            } else {
-                command_line_input_elem.classList.remove(this.map_io_state_to_elem_class(some_io_state));
+            for (const elem_obj of [
+                command_line_input_elem,
+                pending_spinner_elem,
+            ]) {
+                if (some_io_state === this.io_state) {
+                    elem_obj.classList.add(this.map_io_state_to_command_line_input_elem_class(some_io_state));
+                } else {
+                    elem_obj.classList.remove(this.map_io_state_to_command_line_input_elem_class(some_io_state));
+                }
             }
+        }
+
+        // Set spinner animation:
+        if ([
+            "pending_request",
+            "pending_response",
+        ].includes(this.io_state)) {
+            pending_spinner_elem.classList.remove("sinner_paused");
+        } else {
+            pending_spinner_elem.classList.add("sinner_paused");
+        }
+
+        // Set animation direction:
+        if ("pending_request" === this.io_state) {
+            pending_spinner_elem.classList.add("forward_spin");
+            pending_spinner_elem.classList.remove("backward_spin");
+        }
+        if ("pending_response" === this.io_state) {
+            pending_spinner_elem.classList.add("backward_spin");
+            pending_spinner_elem.classList.remove("forward_spin");
         }
     }
 
-    map_io_state_to_elem_class(some_io_state) {
+    map_io_state_to_command_line_input_elem_class(some_io_state) {
         switch (some_io_state) {
             case "client_synced":
                 return "io_state_client_synced_input"

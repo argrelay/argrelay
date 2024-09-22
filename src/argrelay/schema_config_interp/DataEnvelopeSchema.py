@@ -19,7 +19,7 @@ Not required field with unique id for `data_envelope`.
 If provided, it is given to MongoDB as `mongo_id_` (otherwise, if not provided, MongoDB auto-generates one).
 """
 
-# TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
+# TODO: TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
 instance_data_ = "instance_data"
 """
 Data specific to `envelope_class`.
@@ -54,7 +54,7 @@ class DataEnvelopeSchema(Schema):
     Each envelope class may define its own schema for that data.
     For example, `ReservedEnvelopeClass.ClassFunction` defines `FunctionEnvelopeInstanceDataSchema`.
     """
-    # TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
+    # TODO: TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
     instance_data = fields.Dict(
         required = False,
     )
@@ -63,7 +63,7 @@ class DataEnvelopeSchema(Schema):
     Arbitrary schemaless data (payload) wrapped by `DataEnvelopeSchema`.
     It is not inspected by `argrelay` layer (unlike, `instance_data`) - instead, it is passed on custom app layer.
     """
-    # TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
+    # TODO: TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
     envelope_payload = fields.Dict(
         required = False,
     )

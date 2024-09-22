@@ -159,7 +159,7 @@ class ThisTestClass(LocalTestClass):
         """
         This test relies on `ConfigOnlyDelegator` to remove some `prop_name`-s in its `func_envelope`.
 
-        TODO_39_25_11_76: `data_envelope`-s with missing props.
+        TODO: TODO_39_25_11_76: `data_envelope`-s with missing props.
 
         The validation should prevent using any `func_envelope` which does not contain `prop_name`-s
         used by some of `search_control`-s anywhere (e.g. by `search_control` used by some plugin).

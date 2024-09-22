@@ -15,7 +15,7 @@ def validate_tree_node(interp_selector_sub_tree: dict):
         raise ValidationError(f"neither a str nor a dict: {interp_selector_sub_tree}")
 
 
-# TODO_40_10_18_32: add custom base to all schemas:
+# TODO: TODO_40_10_18_32: add custom base to all schemas:
 class InterpTreeInterpFactoryConfigSchema(Schema):
     class Meta:
         unknown = RAISE

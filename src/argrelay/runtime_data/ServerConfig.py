@@ -25,7 +25,7 @@ class ServerConfig:
 
     server_plugin_control: ServerPluginControl = field()
 
-    # TODO_00_79_72_55: remove in the future:
+    # TODO: TODO_00_79_72_55: remove in the future:
     static_data: StaticData = field()
 
     plugin_instances: dict[str, "AbstractPluginServer"] = field(default_factory = lambda: {})
