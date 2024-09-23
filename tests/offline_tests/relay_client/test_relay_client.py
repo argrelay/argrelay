@@ -1,4 +1,3 @@
-import unittest
 from copy import deepcopy
 
 import responses
@@ -23,9 +22,6 @@ from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
 
 
-# TODO: TODO_30_69_19_14: client hangs with infinite spinner
-#       Rewrite test to avoid using `requests`.
-@unittest.skip
 class ThisTestClass(BaseTestClass):
     """
     Client-only test via mocked `responses` lib (without spanning `argrelay` server).

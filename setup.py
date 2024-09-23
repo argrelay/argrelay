@@ -17,8 +17,6 @@ import setuptools
 
 tests_require = [
     "tox",
-    # TODO: TODO_30_69_19_14: client hangs with infinite spinner
-    #       Rewrite test to avoid using `requests` + `responses`.
     "responses",
     "mongomock",
     "pandas",
@@ -157,7 +155,7 @@ See: https://github.com/argrelay/argrelay
         "GitPython",
         # Use `mongomock` as replacement for Mongo DB in simple prod cases:
         "mongomock",
-        "urllib3",
+        "requests",
         "cachetools",
     ],
     tests_require = tests_require,
