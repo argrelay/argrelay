@@ -48,6 +48,13 @@ def run_client():
 
     w_pipe_end = None
     if is_split_mode:
+        # TODO: TODO_30_69_19_14: infinite spinner
+        #       Perform `import encodings.idna` explicitly ahead of fork.
+        #       Similar to this:
+        #       https://github.com/psf/requests/commit/d7227fbb7e07af35f23a0d370ab3b01661af9e40#commitcomment-146935826
+        # noinspection PyUnresolvedReferences
+        import encodings.idna
+
         from argrelay.relay_client.proc_splitter import split_process
         (
             is_parent,
