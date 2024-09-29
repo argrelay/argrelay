@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from argrelay.composite_forest.CompositeNodeSchema import func_id_
+from argrelay.custom_integ.NoDataPropName import NoDataPropName
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
@@ -26,10 +27,10 @@ class NoopDelegator(AbstractDelegator):
 
         no_data_search_control = populate_search_control(
             class_to_collection_map,
-            "no_data_class",
+            ReservedEnvelopeClass.ClassNoData.name,
             [
-                {"no_data_key_one": "no_data_prop_one"},
-                {"no_data_key_two": "no_data_prop_two"},
+                {"no_data_key_one": NoDataPropName.no_data_key_one.name},
+                {"no_data_key_two": NoDataPropName.no_data_key_two.name},
             ],
         )
 

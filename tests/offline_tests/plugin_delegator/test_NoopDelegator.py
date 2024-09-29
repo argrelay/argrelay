@@ -11,7 +11,7 @@ class ThisTestClass(LocalTestClass):
 
     def test_func_id_no_data(self):
         """
-        Test `func_id_no_data`.
+        Test `SpecialFunc.func_id_no_data`.
         """
 
         test_cases = [

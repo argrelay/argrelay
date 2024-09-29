@@ -33,7 +33,6 @@ from argrelay.schema_config_interp.SearchControlSchema import (
     populate_search_control,
     search_control_desc,
 )
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_enabled_, plugin_dependencies_
 
 func_search_control_ = "func_search_control"
 """
@@ -303,7 +302,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         *   Populate the path as envelope props with `tree_path_selector_prefix_`.
         """
         interp_tree_abs_path_func_envelopes: list[dict] = []
-        prop_names: list[str] = []
+        prop_names: set[str] = set()
         for func_id in self.func_ids_to_func_abs_paths:
             func_abs_paths: list[list[str]] = self.func_ids_to_func_abs_paths[func_id]
 
@@ -322,13 +321,13 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
                 for sel_ipos, path_step_id in enumerate(func_abs_path):
                     prop_name = func_envelope_path_step_prop_name(sel_ipos)
                     func_envelope[prop_name] = path_step_id
-                    prop_names.append(prop_name)
+                    prop_names.add(prop_name)
 
                 interp_tree_abs_path_func_envelopes.append(func_envelope)
 
         return (
             interp_tree_abs_path_func_envelopes,
-            prop_names,
+            list(prop_names),
         )
 
     def create_interp(

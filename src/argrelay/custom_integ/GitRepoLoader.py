@@ -28,6 +28,7 @@ from argrelay.custom_integ.git_utils import is_git_repo
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.runtime_data.DataModel import DataModel
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -68,6 +69,31 @@ class GitRepoLoader(AbstractLoader):
         plugin_config_dict,
     ) -> dict:
         return git_repo_loader_config_desc.dict_from_input_dict(plugin_config_dict)
+
+    def list_data_models(
+        self,
+    ) -> list[DataModel]:
+
+        return [
+            DataModel(
+                collection_name = GitRepoEnvelopeClass.ClassGitRepo.name,
+                class_name = GitRepoEnvelopeClass.ClassGitRepo.name,
+                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                index_props = [e.name for e in GitRepoPropName],
+            ),
+            DataModel(
+                collection_name = GitRepoEnvelopeClass.ClassGitTag.name,
+                class_name = GitRepoEnvelopeClass.ClassGitTag.name,
+                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                index_props = [e.name for e in GitRepoPropName],
+            ),
+            DataModel(
+                collection_name = GitRepoEnvelopeClass.ClassGitCommit.name,
+                class_name = GitRepoEnvelopeClass.ClassGitCommit.name,
+                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                index_props = [e.name for e in GitRepoPropName],
+            ),
+        ]
 
     def update_static_data(
         self,

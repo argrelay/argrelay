@@ -15,9 +15,9 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
-from argrelay.mongo_data.LoadProgressState import LoadProgressState
 from argrelay.mongo_data.MongoClientWrapper import log_validation_progress
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
+from argrelay.mongo_data.ProgressTracker import ProgressTracker
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
@@ -26,6 +26,7 @@ from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.relay_server.UsageStatsStore import UsageStatsStore
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer, instantiate_server_plugin
 from argrelay.runtime_context.SearchControl import SearchControl
+from argrelay.runtime_data.DataModel import DataModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
@@ -74,14 +75,14 @@ class LocalServer:
         self.cleaned_mongo_collections: set[str] = set()
         """
         *   On one hand, Mongo collections may have state and need to be cleaned.
-        *   On another hand, they can repeatedly loaded by more than one plugin (potentially adding more data).
+        *   On another hand, they can be repeatedly updated by more than one plugin (potentially adding more data).
 
         Server uses `cleaned_mongo_collections` to track what collection have been cleaned once and what have not.
         """
 
-        # TODO: TODO_39_25_11_76: missing props: index to validate missing props:
-        # Set of all prop names (2-level map) per `collection_name` and `envelope_class`:
-        self.index_props_per_collection_per_class: dict[str, dict[str, set[str]]] = {}
+        # FS_45_08_22_15 data model manipulation:
+        # This internal server state is a convenience cache for data model which is also stored in data backend.
+        self.data_model_per_class_per_collection: dict[str, dict[str, DataModel]] = {}
 
         # Number of envelopes loaded per `collection_name`:
         self.count_per_collection: dict[str, int] = {}
@@ -96,8 +97,7 @@ class LocalServer:
         self._validate_composite_forest()
         self._activate_plugins()
         self._start_mongo_server()
-        self._load_mongo_data()
-        self._create_mongo_index()
+        self._store_mongo_data()
         self._populate_help_hint_cache()
         self._log_connection_url()
 
@@ -221,10 +221,6 @@ class LocalServer:
         """
 
         for collection_name, envelope_collection in self.server_config.static_data.envelope_collections.items():
-            index_props_per_class: dict[str, set[str]] = self.index_props_per_collection_per_class.setdefault(
-                collection_name,
-                {},
-            )
             self.count_per_collection[collection_name] = (
                 self.count_per_collection.setdefault(collection_name, 0)
                 +
@@ -236,12 +232,13 @@ class LocalServer:
 
                     if index_prop not in data_envelope:
                         # TODO: TODO_39_25_11_76: `data_envelope`-s with missing props:
-                        # Let the `data_envelope` load without some `prop_name`-s from `index_prop`-s -
-                        # if any of `data_envelope`-s have that `prop_name`, it will fail validation.
-                        # It is allowed to have no `prop_name` for all `data_envelope` until at least one has it.
+                        # Let the `data_envelope` load without some `prop_name`-s from `index_prop`-s
+                        # in pre-validation - if any of `data_envelope`-s have that `prop_name`, it will fail
+                        # in post-validation (see where `_raise_validation_error_for_missing_prop_name` is used).
+                        # For now:
+                        #     It is allowed to have no `prop_name` for all `data_envelope`
+                        #     within given `collection_name` until at least one has it.
                         continue
-                    else:
-                        index_props_per_class.setdefault(envelope_class, set()).add(index_prop)
 
                     prop_value = data_envelope[index_prop]
                     self._validate_string_prop_value(
@@ -272,32 +269,61 @@ class LocalServer:
             # FS_06_99_43_60: list arg value:
             raise ValueError(f"`{envelope_class}.{index_prop}` has to be a `list` of `str` or `str`")
 
-    def _post_validate_loaded_data(
+    def _post_validate_stored_data(
         self,
-        load_state: LoadProgressState,
+        progress_tracker: ProgressTracker,
     ):
-        self._post_validate_all_data_envelope_missing_search_prop_names(load_state)
-        self._post_validate_all_data_envelope_missing_index_prop_names(load_state)
+        search_props_per_class_per_collection: dict[str, dict[str, set[str]]] = self._scan_for_all_search_props()
 
-    def _post_validate_all_data_envelope_missing_search_prop_names(
+        self._post_validate_all_data_envelope_for_missing_index_prop_names(
+            search_props_per_class_per_collection,
+            progress_tracker,
+        )
+        self._post_validate_all_data_envelope_for_missing_search_prop_names(
+            search_props_per_class_per_collection,
+        )
+
+    def _post_validate_all_data_envelope_for_missing_search_prop_names(
         self,
-        load_state: LoadProgressState,
+        search_props_per_class_per_collection: dict[str, dict[str, set[str]]],
     ):
         """
         See TODO_39_25_11_76 missing props based on `search_control`-s for all loaded functions.
 
-        See also:
-        *   `_post_validate_all_data_envelope_missing_index_prop_names`
+        This function relies on `_post_validate_all_data_envelope_missing_index_prop_names`
+        to guarantee that all listed `index_props` exists in every loaded `data_envelope`.
+        On top of that fact, this function ensures that every `search_control` used
+        specifies `search_props` which exists among `index_props`.
         """
 
+        # Ensure that every `search_prop` is among the `index_prop`-s in `data_model`:
+        for collection_name, search_props_per_class in search_props_per_class_per_collection.items():
+            assert collection_name in self.data_model_per_class_per_collection
+            for class_name, search_props in search_props_per_class.items():
+                assert class_name in self.data_model_per_class_per_collection[collection_name]
+                index_props = self.data_model_per_class_per_collection[collection_name][class_name].index_props
+                for search_prop in search_props:
+                    assert search_prop in index_props
+
+    def _scan_for_all_search_props(
+        self,
+    ) -> dict[str, dict[str, set[str]]]:
+        """
+        Build search prop names per (2-level map) `collection_name` and `envelope_class`
+        by scanning `search_control`-s for `prop_name`-s.
+        """
+
+        search_props_per_class_per_collection: dict[str, dict[str, set[str]]] = {}
+
+        # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
         # NOTE: Server config may not configure all mappings from `class_name`-s to `collection_name`-s.
         #       It only configures overrides (and, by default, `collection_name` matches `class_name`).
-        #       Instead, to have full picture, build mappings based on loaded data.
+        #       Instead, to have full picture, build mappings based on stored data.
         assert self.server_config.class_to_collection_map is not None
         # Build `full_class_to_collection_map`:
         full_class_to_collection_map: dict[str, str] = {}
-        for collection_name, index_props_per_class in self.index_props_per_collection_per_class.items():
-            for class_name in index_props_per_class:
+        for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
+            for class_name in data_model_per_class:
                 if class_name in full_class_to_collection_map:
                     # Each `class_name` should be mapped to the same `collection_name`:
                     assert full_class_to_collection_map[class_name] == collection_name
@@ -308,15 +334,11 @@ class LocalServer:
         for plugin_instance in self.server_config.plugin_instances.values():
             plugin_search_controls.extend(plugin_instance.provide_plugin_search_control())
 
-        # Build search prop names per (2-level map) `collection_name` and `envelope_class`
-        # by scanning `search_control`-s for `prop_name`-s:
-        search_props_per_collection_per_class: dict[str, dict[str, set[str]]] = {}
-
         # Scan `search_control`-s of all plugins:
         for search_control in plugin_search_controls:
-            self._populate_search_props_per_collection_per_class(
+            self._populate_search_props_per_class_per_collection(
                 search_control_desc.dict_from_input_obj(search_control),
-                search_props_per_collection_per_class,
+                search_props_per_class_per_collection,
             )
 
         # Scan `search_control`-s of all funcs:
@@ -327,41 +349,41 @@ class LocalServer:
             },
         ):
             for search_control in func_envelope[instance_data_][search_control_list_]:
-                self._populate_search_props_per_collection_per_class(
+                self._populate_search_props_per_class_per_collection(
                     search_control,
-                    search_props_per_collection_per_class,
+                    search_props_per_class_per_collection,
                 )
 
-        # TODO: Why total count misses some (270-261) in this stage - what are those uncounted `data_envelope`-s?
-        #       4/4 261/279
-        self._post_validate_all_data_envelope_missing_prop_names(
-            "search_prop_names",
-            search_props_per_collection_per_class,
-            load_state,
-        )
+        return search_props_per_class_per_collection
 
-    # noinspection PyMethodMayBeStatic
-    def _populate_search_props_per_collection_per_class(
+    def _populate_search_props_per_class_per_collection(
         self,
         search_control: dict,
-        search_props_per_collection_per_class,
+        search_props_per_class_per_collection,
     ):
         search_collection_name = search_control[collection_name_]
         search_class_name = search_control[envelope_class_]
+
+        search_props_name_per_class = search_props_per_class_per_collection.setdefault(
+            search_collection_name,
+            {},
+        )
+        search_props = search_props_name_per_class.setdefault(
+            search_class_name,
+            set()
+        )
+
         # TODO: TODO_66_66_75_78.split_arg_and_prop_concepts: Rename: `arg_type` to `prop_name`:
         for key_to_value_dict in search_control[keys_to_types_list_]:
             assert type(key_to_value_dict) is dict
             assert len(key_to_value_dict) == 1
             search_prop_name = next(iter(key_to_value_dict.values()))
-            search_props_name_per_class = search_props_per_collection_per_class.setdefault(
-                search_collection_name,
-                {},
-            )
-            search_props_name_per_class.setdefault(search_class_name, set()).add(search_prop_name)
+            search_props.add(search_prop_name)
 
-    def _post_validate_all_data_envelope_missing_index_prop_names(
+    def _post_validate_all_data_envelope_for_missing_index_prop_names(
         self,
-        load_state: LoadProgressState,
+        search_props_per_class_per_collection: dict[str, dict[str, set[str]]],
+        progress_tracker: ProgressTracker,
     ):
         """
         See TODO_39_25_11_76 missing props based on `index_prop`-s per `envelope_collection`.
@@ -371,29 +393,18 @@ class LocalServer:
         *   `_post_validate_all_data_envelope_missing_search_prop_names`
         """
 
-        self._post_validate_all_data_envelope_missing_prop_names(
-            "index_prop_names",
-            self.index_props_per_collection_per_class,
-            load_state,
-        )
-
-    def _post_validate_all_data_envelope_missing_prop_names(
-        self,
-        validation_step: str,
-        prop_names_per_collection_per_class: dict[str, dict[str, set[str]]],
-        load_state: LoadProgressState,
-    ):
-        load_state.total_envelope_i = 0
+        validation_step = "index_props"
+        progress_tracker.total_envelope_i = 0
         # Verify that all prop names per (2-level map) `collection_name` and `envelope_class`
-        # exists in all corresponding `data_envelope`-s loaded:
-        for collection_name, prop_names_per_class in prop_names_per_collection_per_class.items():
+        # exists in all corresponding `data_envelope`-s:
+        for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
             eprint(f"collection to validate: {collection_name}")
-            load_state.envelope_per_col_n = self.count_per_collection.get(collection_name, 0)
-            load_state.envelope_per_col_i = 0
+            progress_tracker.envelope_per_col_n = self.count_per_collection.get(collection_name, 0)
+            progress_tracker.envelope_per_col_i = 0
             log_validation_progress(
                 validation_step,
                 collection_name,
-                load_state,
+                progress_tracker,
             )
 
             prev_found_missing_prop_names: dict[str, dict] = {}
@@ -402,24 +413,39 @@ class LocalServer:
                 collection_name,
                 {},
             ):
-                load_state.envelope_per_col_i += 1
-                load_state.total_envelope_i += 1
+                progress_tracker.envelope_per_col_i += 1
+                progress_tracker.total_envelope_i += 1
                 envelope_class = data_envelope[ReservedPropName.envelope_class.name]
 
-                if load_state.total_envelope_i > 0 and load_state.total_envelope_i % 1_000 == 0:
+                if progress_tracker.total_envelope_i > 0 and progress_tracker.total_envelope_i % 1_000 == 0:
                     log_validation_progress(
                         validation_step,
                         collection_name,
-                        load_state,
+                        progress_tracker,
                     )
 
-                if envelope_class not in prop_names_per_class:
-                    # This is fine, but raising an issue will keep server data clean:
-                    raise ValueError(
-                        f"data_envelope of (collection_name: `{collection_name}`, envelope_class: `{envelope_class}`) is not used by any `search_control`: {data_envelope}"
-                    )
+                if envelope_class != ReservedEnvelopeClass.ClassHelp.name:
+                    # Except for special `ReservedEnvelopeClass.ClassHelp`,
+                    # all other classes are supposed to be specified in some `search_control`.
 
-                for prop_name in prop_names_per_class[envelope_class]:
+                    # Keep server clean of data which is not searched by anyone:
+                    if collection_name not in search_props_per_class_per_collection:
+                        raise ValueError(
+                            f"`collection_name` [{collection_name}] "
+                            f"of this `data_envelope` is not used by any any `search_control`: {data_envelope}"
+                        )
+                    elif envelope_class not in search_props_per_class_per_collection[collection_name]:
+                        raise ValueError(
+                            f"`collection_name` [{collection_name}] "
+                            f"`envelope_class` [{envelope_class}] "
+                            f"of this `data_envelope` is not used by any any `search_control`: {data_envelope}"
+                        )
+                    else:
+                        # Whether all `search_prop` can be seen in every `data_envelope` is ensured by
+                        # `_post_validate_all_data_envelope_for_missing_search_prop_names`.
+                        pass
+
+                for prop_name in data_model_per_class[envelope_class].index_props:
                     if prop_name not in data_envelope:
 
                         if prop_name not in prev_found_missing_prop_names:
@@ -458,8 +484,11 @@ class LocalServer:
             log_validation_progress(
                 validation_step,
                 collection_name,
-                load_state,
+                progress_tracker,
             )
+            progress_tracker.assert_collection_final_progress()
+
+        progress_tracker.assert_total_final_progress()
 
     # noinspection PyMethodMayBeStatic
     def _raise_validation_error_for_missing_prop_name(
@@ -471,6 +500,10 @@ class LocalServer:
         curr_sample: dict,
         prev_sample: dict,
     ):
+        """
+        Raise informative exception for cases of TODO_39_25_11_76: `data_envelope`-s with missing props.
+        """
+
         # It is allowed to have no `prop_name` for all `data_envelope` until at least one has it.
         if is_missing_otherwise_existing_prop_name:
             raise ValueError(
@@ -544,63 +577,65 @@ class LocalServer:
         else:
             return ReservedEnvelopeClass.ClassFunction.name
 
-    def _load_mongo_data(
+    def _store_mongo_data(
         self,
     ):
 
-        load_state = LoadProgressState()
+        progress_tracker = ProgressTracker()
 
         # At this moment, funcs have already been loaded on `AbstractPlugin.activate_plugin`.
         self._populate_func_missing_props()
+        self._define_func_data_model()
 
         # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
-        # Initial step: load funcs and any data from config:
-        self._load_mongo_data_step(
+        # Initial step: store funcs and any data from config:
+        self._store_mongo_data_step(
             "config_data",
-            load_state,
+            progress_tracker,
         )
 
-        loaded_envelope_collections: dict[str, EnvelopeCollection] = {}
         for plugin_instance_id in self.plugin_config.plugin_instance_id_activate_list:
             if plugin_instance_id in self.server_config.data_loaders:
                 plugin_instance = self.server_config.data_loaders[plugin_instance_id]
+
                 # Each step starts with empty `static_data`:
                 self.server_config.static_data = StaticData(
                     envelope_collections = {},
                 )
+
+                # Use loader to define required FS_45_08_22_15 data models.
+                data_models: list[DataModel] = plugin_instance.list_data_models()
+
                 # Use loader to update data:
                 self.server_config.static_data = plugin_instance.update_static_data(
                     self.server_config.static_data,
                     self.query_engine,
                 )
-                # Copy populated `envelope_collection`-s (without `data_envelope`-s) as metadata
-                # (otherwise this info is cleared together as part of `static_data`):
-                for collection_name, envelope_collection in self.server_config.static_data.envelope_collections.items():
-                    loaded_envelope_collections[collection_name] = EnvelopeCollection(
-                        index_props = deepcopy(envelope_collection.index_props),
-                        data_envelopes = [],
+
+                for data_model in data_models:
+                    self._define_data_model_step(
+                        data_model,
                     )
-                # Load to backend:
-                self._load_mongo_data_step(
+
+                self._store_mongo_data_step(
                     plugin_instance_id,
-                    load_state,
+                    progress_tracker,
                 )
 
-        # FS_74_69_61_79 get set data envelope: populate metadata based on loaded data:
-        self._generate_and_load_meta_data(
-            load_state,
-            loaded_envelope_collections,
+        self._store_data_model(
+            progress_tracker,
         )
 
-        self._post_validate_loaded_data(load_state)
+        self._post_validate_stored_data(progress_tracker)
 
-    def _generate_and_load_meta_data(
+    def _store_data_model(
         self,
         load_state,
-        loaded_envelope_collections: dict[str, EnvelopeCollection],
     ):
         """
-        This method generates metadata for FS_74_69_61_79 get set data envelope.
+        This method stores FS_45_08_22_15 data model into data backend.
+
+        The data model (metadata) is used for FS_74_69_61_79 get set data envelope.
         """
 
         # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
@@ -608,6 +643,9 @@ class LocalServer:
         #       See `test_loader` in `test_GitRepoLoader_offline.py`.
         prev_static_data = self.server_config.static_data
 
+        # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
+        # TODO: Instead of populating `static_data` (temporary approach to load all data),
+        #       the FS_45_08_22_15 data model manipulation API will have to update data backend itself.
         # Each step starts with empty `static_data`:
         self.server_config.static_data = StaticData(
             envelope_collections = {},
@@ -632,28 +670,30 @@ class LocalServer:
             self.server_config.class_to_collection_map[ReservedEnvelopeClass.ClassCollectionMeta.name]
         ].data_envelopes
 
-        # Add generated `envelope_collection` (itself) for consistency:
-        loaded_envelope_collections[
-            self.server_config.class_to_collection_map[ReservedEnvelopeClass.ClassCollectionMeta.name]
-        ] = EnvelopeCollection(
-            index_props = deepcopy(collection_meta_index_props),
-            data_envelopes = [],
+        # Add generated `envelope_collection` (itself) for completeness:
+        self._define_data_model_step(
+            DataModel(
+                collection_name = ReservedEnvelopeClass.ClassCollectionMeta.name,
+                class_name = ReservedEnvelopeClass.ClassCollectionMeta.name,
+                index_props = collection_meta_index_props,
+            ),
         )
 
-        for collection_name, envelope_collection in loaded_envelope_collections.items():
-            collection_meta_envelopes.append({
-                envelope_id_: f"{collection_name}",
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollectionMeta.name,
-                # TODO: May add loader plugin instance name as metadata:
-                ReservedPropName.collection_name.name: collection_name,
-                envelope_payload_: {
-                    index_props_: deepcopy(envelope_collection.index_props),
-                    data_envelopes_: [],
-                },
-            })
+        for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
+            for class_name, data_model in data_model_per_class.items():
+                assert ReservedPropName.envelope_class.name in data_model.index_props
+                collection_meta_envelopes.append({
+                    envelope_id_: f"{collection_name}:{class_name}",
+                    ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollectionMeta.name,
+                    # TODO: May add loader plugin instance name as metadata:
+                    ReservedPropName.collection_name.name: collection_name,
+                    envelope_payload_: {
+                        index_props_: list(data_model.index_props),
+                        data_envelopes_: [],
+                    },
+                })
 
-        # Load to backend:
-        self._load_mongo_data_step(
+        self._store_mongo_data_step(
             self.__class__.__name__,
             load_state,
         )
@@ -663,10 +703,86 @@ class LocalServer:
         #       See `test_loader` in `test_GitRepoLoader_offline.py`.
         self.server_config.static_data = prev_static_data
 
-    def _load_mongo_data_step(
+    def _define_func_data_model(
+        self,
+    ):
+        """
+        Implements FS_45_08_22_15 data model manipulation.
+
+        Unlike most of other data, func data is not loaded via loaders and its data model is defined here.
+        """
+
+        # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`
+        #       At the moment, this func has to be called after loading func data into `static_data`.
+        #       Specifically, we use `server_config.static_data.envelope_collections` for
+        #       `ReservedEnvelopeClass.ClassFunction.name` to get all `index_props`.
+        #       Later, it will be called internally while creating funcs data.
+
+        func_collection = self.server_config.static_data.envelope_collections[
+            # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
+            #       Using `DataModel` should eliminate the need for `class_to_collection_map`:
+            self.server_config.class_to_collection_map[ReservedEnvelopeClass.ClassFunction.name]
+        ]
+
+        # Extend `index_props` for funcs:
+        func_index_props = deepcopy(func_collection.index_props)
+        func_index_props.extend([
+            ReservedPropName.func_id.name,
+            ReservedPropName.func_state.name,
+        ])
+
+        func_data_model: DataModel = DataModel(
+            collection_name = ReservedEnvelopeClass.ClassFunction.name,
+            class_name = ReservedEnvelopeClass.ClassFunction.name,
+            index_props = func_index_props,
+        )
+
+        self._define_data_model_step(func_data_model)
+
+    def _define_data_model_step(
+        self,
+        given_data_model: DataModel,
+    ):
+        """
+        Implements internal API for FS_45_08_22_15 data model manipulation.
+
+        If there are already existing list of `index_props` per `class_name` per `collection_name`,
+        it is possible to call it again, but `index_props` must be exactly the same.
+        This is to allow multiple loaders define data they work with,
+        but that data definition must match across all loaders working with this type.
+
+        TODO: Limitation: this is append only at the moment
+              (you cannot remove added data model - you can only extend or restart server to start over).
+
+        TODO: Expose this via REST API.
+        """
+
+        known_data_models: dict[str, DataModel] = self.data_model_per_class_per_collection.setdefault(
+            given_data_model.collection_name,
+            {},
+        )
+
+        # It is fine not to list `ReservedPropName.envelope_class` as it is implied by `DataModel.class_name`.
+        # But it has to be present for search:
+        if ReservedPropName.envelope_class.name not in given_data_model.index_props:
+            given_data_model.index_props.append(ReservedPropName.envelope_class.name)
+
+        # Ensure `given_data_model` does not redefine `known_data_models` anyhow:
+        if given_data_model.class_name not in known_data_models:
+            known_data_models[given_data_model.class_name] = given_data_model
+        else:
+            known_data_model = known_data_models[given_data_model.class_name]
+            # Compare L to R:
+            for known_index_prop in known_data_model.index_props:
+                assert known_index_prop in given_data_model.index_props
+            # Compare R to L:
+            for given_index_prop in given_data_model.index_props:
+                assert given_index_prop in known_data_model.index_props
+
+    def _store_mongo_data_step(
         self,
         step_name: str,
-        load_state: LoadProgressState,
+        progress_tracker: ProgressTracker,
     ):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
 
@@ -679,10 +795,12 @@ class LocalServer:
             self.cleaned_mongo_collections,
             # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
             self.server_config.static_data,
-            load_state,
+            progress_tracker,
         )
 
-    def _create_mongo_index(
+        self._create_mongo_index_step()
+
+    def _create_mongo_index_step(
         self,
     ):
         mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]

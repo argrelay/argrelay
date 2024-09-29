@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from typing import Union
 
-from argrelay.plugin_delegator.delegator_utils import redirect_to_no_func_error
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
@@ -13,6 +12,7 @@ from argrelay.plugin_delegator.AbstractDelegator import (
     get_func_id_from_invocation_input,
     get_func_id_from_interp_ctx,
 )
+from argrelay.plugin_delegator.delegator_utils import redirect_to_no_func_error
 from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
