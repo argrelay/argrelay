@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import unittest
+
 from argrelay.custom_integ.ConfigOnlyLoader import ConfigOnlyLoader
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import collection_name_to_index_props_map_
 from argrelay.enum_desc.ArgSource import ArgSource
@@ -234,9 +236,15 @@ exit 1
 
     def test_validation_for_unused_data_envelope(self):
         """
+        Test that unused data is not loaded.
+        TODO: Why do we need that?
+              Loaded data at least allows browsing via FS_74_69_61_79 get set data envelope.
+        TODO: What we need is to ensure every `data_envelope` has `class_name` which is defined in `data_model`.
+        TODO: We may check if `data_model` is used against any `search_control` just to avoid unused data.
+
         This test relies on `ConfigOnlyLoader` to load `data_envelope` with a class unused by anything.
 
-        The validation should prevent starting server `data_envelope` (unless it is used by some of
+        The validation should prevent starting server (unless `data_envelope` is used by some of
         `search_control`-s anywhere which should not be the case).
         """
 
@@ -277,7 +285,8 @@ exit 1
                         self._init_local_server(env_mock_builder)
                     self.assertTrue(
                         cm.exception.args[0].startswith(
-                            f"data_envelope of (collection_name: `{class_name}`, envelope_class: `{class_name}`) is not used by any `search_control`:",
+                            f"`collection_name` [{class_name}] "
+                            f"of this `data_envelope` is not used by any any `search_control`:",
                         ),
                     )
                 else:

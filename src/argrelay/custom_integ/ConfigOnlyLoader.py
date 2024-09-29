@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from copy import deepcopy
 
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
@@ -9,6 +11,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
+from argrelay.runtime_data.DataModel import DataModel
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
@@ -48,6 +51,36 @@ class ConfigOnlyLoader(AbstractLoader):
             plugin_config_dict,
         )
         self.plugin_config_dict = config_only_loader_config_desc.obj_from_input_dict(self.plugin_config_dict)
+
+    def list_data_models(
+        self,
+    ) -> list[DataModel]:
+
+        collection_name_to_index_props_map: dict[str, list[str]] = self.plugin_config_dict[
+            collection_name_to_index_props_map_
+        ]
+        class_to_collection_map: dict = self.server_config.class_to_collection_map
+        data_models: list[DataModel] = []
+        for collection_name, index_props in collection_name_to_index_props_map.items():
+
+            # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
+            #       In the future, `ConfigOnlyLoader` will have to provide (in config)
+            #       both `collection_name` and `class_name` per list of `index_props` to be flexible.
+            #       As of now, we demand that `collection_name` with its `index_props` in config
+            #       actually matches `envelope_class` for `ConfigOnlyLoader` - in other words,
+            #       we validata that there is no other `class_name` mapped into that `collection_name`
+            #       (only named alike):
+            for mapped_class_name, mapped_collection_name in class_to_collection_map.items():
+                if mapped_collection_name == collection_name:
+                    assert mapped_class_name == collection_name
+
+            data_models.append(DataModel(
+                collection_name = collection_name,
+                class_name = collection_name,
+                index_props = index_props,
+            ))
+
+        return data_models
 
     def update_static_data(
         self,

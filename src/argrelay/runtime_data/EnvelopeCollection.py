@@ -11,8 +11,13 @@ class EnvelopeCollection:
     Specifies collection of `data_envelope`-s to load and associated `index_props` to create.
 
     See also `EnvelopeCollectionSchema`.
+
+    TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`.
+          This class should be remove together with `static_data`
+          (it seems it is the only place where is "attached" to).
     """
 
+    # TODO: FS_45_08_22_15 data model manipulation: remove to deduplicate with `DataModel`.
     index_props: list[str] = field()
     """
     Lists fields of `data_envelop` which are to be indexed by MongoDB for given collection.

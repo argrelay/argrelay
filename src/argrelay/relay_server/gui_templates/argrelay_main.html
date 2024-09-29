@@ -109,24 +109,34 @@
         />
     </div>
 
-    <div class="copy_buttons_container">
-        <div
-            id="id_pending_spinner"
-            class="animated_spinner"
-            title="Spinner for states `pending` IO"
-        >
+    <div class="sub_line_container">
+        <div class="indicators_container">
+            <div
+                id="outer_spinner"
+                class="animated_spinner"
+                title="Spinner for states `pending` IO"
+            >
+                <div
+                    id="inner_spinner"
+                    class="animated_spinner"
+                >
+                &#x25E4;
+                </div>
+            </div>
         </div>
-        <div
-            id="id_copy_command_button"
-            class="base_button copy_command_button"
-        >
-            copy command
-        </div>
-        <div
-            id="id_copy_link_button"
-            class="base_button copy_link_button"
-        >
-            copy link
+        <div class="copy_buttons_container">
+            <div
+                id="id_copy_command_button"
+                class="base_button copy_command_button"
+            >
+                copy command
+            </div>
+            <div
+                id="id_copy_link_button"
+                class="base_button copy_link_button"
+            >
+                copy link
+            </div>
         </div>
     </div>
 

@@ -19,7 +19,8 @@ const remaining_item_temp = document.querySelector("#remaining_item_temp");
 
 const reset_all_elem = document.querySelector("#id_reset_all_button")
 
-const pending_spinner_elem = document.querySelector("#id_pending_spinner")
+const outer_spinner_elem = document.querySelector("#outer_spinner")
+const inner_spinner_elem = document.querySelector("#inner_spinner")
 const copy_command_elem = document.querySelector("#id_copy_command_button")
 const copy_link_elem = document.querySelector("#id_copy_link_button")
 
@@ -324,7 +325,7 @@ class suggest_state_class extends abstract_state_class {
         ]) {
             for (const elem_obj of [
                 command_line_input_elem,
-                pending_spinner_elem,
+                outer_spinner_elem,
             ]) {
                 if (some_io_state === this.io_state) {
                     elem_obj.classList.add(this.map_io_state_to_command_line_input_elem_class(some_io_state));
@@ -334,24 +335,19 @@ class suggest_state_class extends abstract_state_class {
             }
         }
 
-        // Set spinner animation:
         if ([
             "pending_request",
+        ].includes(this.io_state)) {
+            outer_spinner_elem.classList.remove("spinner_paused");
+        } else {
+            outer_spinner_elem.classList.add("spinner_paused");
+        }
+        if ([
             "pending_response",
         ].includes(this.io_state)) {
-            pending_spinner_elem.classList.remove("sinner_paused");
+            inner_spinner_elem.classList.remove("spinner_paused");
         } else {
-            pending_spinner_elem.classList.add("sinner_paused");
-        }
-
-        // Set animation direction:
-        if ("pending_request" === this.io_state) {
-            pending_spinner_elem.classList.add("forward_spin");
-            pending_spinner_elem.classList.remove("backward_spin");
-        }
-        if ("pending_response" === this.io_state) {
-            pending_spinner_elem.classList.add("backward_spin");
-            pending_spinner_elem.classList.remove("forward_spin");
+            inner_spinner_elem.classList.add("spinner_paused");
         }
     }
 

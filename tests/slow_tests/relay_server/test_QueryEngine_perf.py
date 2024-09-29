@@ -54,9 +54,11 @@ class ThisTestClass(LocalTestClass):
         # These are the `ServiceEnvelopeClass`-es handled only by `ServiceLoader` or `ServiceDelegator`
         # (e.g. they exclude argrelay-managed `ReservedEnvelopeClass`-es).
         use_single_collection_values: list[bool] = [
-            True,
+            # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`
+            #       We can only use False now:
+            # True,
             # Uncomment to use multiple collections (less clean measurement but more realistic config):
-            # False,
+            False,
         ]
 
         # Report (multiple tables):
@@ -162,7 +164,7 @@ class ThisTestClass(LocalTestClass):
                         ServiceEnvelopeClass.ClassAccessType.name: ServiceEnvelopeClass.ClassAccessType.name,
                         # ---
                         GitRepoEnvelopeClass.ClassGitRepo.name: GitRepoEnvelopeClass.ClassGitRepo.name,
-                        GitRepoEnvelopeClass.ClassGitTag.name: GitRepoEnvelopeClass.ClassGitRepo.name,
+                        GitRepoEnvelopeClass.ClassGitTag.name: GitRepoEnvelopeClass.ClassGitTag.name,
                         GitRepoEnvelopeClass.ClassGitCommit.name: GitRepoEnvelopeClass.ClassGitCommit.name,
                         # ---
                         ReservedEnvelopeClass.ClassHelp.name: ReservedEnvelopeClass.ClassHelp.name,

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from argrelay.plugin_delegator.delegator_utils import redirect_to_no_func_error
 from argrelay.enum_desc.FuncState import FuncState
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
@@ -8,6 +7,7 @@ from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.AbstractDelegator import get_func_id_from_invocation_input
 from argrelay.plugin_delegator.AbstractJumpDelegator import AbstractJumpDelegator
+from argrelay.plugin_delegator.delegator_utils import redirect_to_no_func_error
 from argrelay.plugin_interp.FuncTreeInterpFactory import tree_path_selector_prefix_
 from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer

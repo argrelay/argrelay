@@ -14,6 +14,9 @@ class SpecialFunc(Enum):
     func_id_no_data = auto()
     """
     Function which has no data it searches for via FS_31_70_49_15 `search_control`.
+
+    Such func is required for testing.
+    This case allows defining funcs on start (statically) while adding data later (dynamically).
     """
 
     func_id_intercept_invocation = auto()
