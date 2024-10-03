@@ -15,7 +15,6 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
-from argrelay.mongo_data.MongoClientWrapper import log_validation_progress
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.mongo_data.ProgressTracker import ProgressTracker
 from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
@@ -83,9 +82,6 @@ class LocalServer:
         # FS_45_08_22_15 data model manipulation:
         # This internal server state is a convenience cache for data model which is also stored in data backend.
         self.data_model_per_class_per_collection: dict[str, dict[str, DataModel]] = {}
-
-        # Number of envelopes loaded per `collection_name`:
-        self.count_per_collection: dict[str, int] = {}
 
         # seconds since epoch:
         self.server_start_time: int = int(time.time())
@@ -189,10 +185,11 @@ class LocalServer:
 
     def _pre_validate_static_data_per_step(
         self,
+        progress_tracker: ProgressTracker,
     ):
         self._pre_validate_static_data_schema_per_step()
         self._pre_validata_static_data_by_plugins_per_step()
-        self._pre_validate_data_envelope_string_index_prop_values_per_step()
+        self._pre_validate_data_envelope_string_index_prop_values_per_step(progress_tracker)
 
     def _pre_validate_static_data_schema_per_step(
         self,
@@ -209,6 +206,7 @@ class LocalServer:
 
     def _pre_validate_data_envelope_string_index_prop_values_per_step(
         self,
+        progress_tracker: ProgressTracker,
     ):
         """
         This validation ensures there is no blank values (`None`, whitespace, etc.) in `index_prop`-s.
@@ -221,10 +219,9 @@ class LocalServer:
         """
 
         for collection_name, envelope_collection in self.server_config.static_data.envelope_collections.items():
-            self.count_per_collection[collection_name] = (
-                self.count_per_collection.setdefault(collection_name, 0)
-                +
-                len(envelope_collection.data_envelopes)
+            progress_tracker.track_collection_size_increment(
+                collection_name,
+                len(envelope_collection.data_envelopes),
             )
             for index_prop in envelope_collection.index_props:
                 for data_envelope in envelope_collection.data_envelopes:
@@ -281,11 +278,13 @@ class LocalServer:
         )
         self._post_validate_all_data_envelope_for_missing_search_prop_names(
             search_props_per_class_per_collection,
+            progress_tracker,
         )
 
     def _post_validate_all_data_envelope_for_missing_search_prop_names(
         self,
         search_props_per_class_per_collection: dict[str, dict[str, set[str]]],
+        progress_tracker: ProgressTracker,
     ):
         """
         See TODO_39_25_11_76 missing props based on `search_control`-s for all loaded functions.
@@ -296,14 +295,66 @@ class LocalServer:
         specifies `search_props` which exists among `index_props`.
         """
 
+        # TODO: Deduplicate with L <- R:
+        # Compare L -> R:
+        # Ensure that `data_model` references are used in  some`search_control`.
+        for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
+            for class_name, data_model in data_model_per_class.items():
+                if (
+                    collection_name not in search_props_per_class_per_collection
+                    or
+                    class_name not in search_props_per_class_per_collection[collection_name]
+                ):
+                    progress_tracker.track_unused_index_props_per_collection_unused_by_search_control(
+                        collection_name,
+                        class_name,
+                        # all are unused:
+                        data_model.index_props,
+                    )
+                else:
+                    search_props = search_props_per_class_per_collection[collection_name][class_name]
+                    unused_index_props = []
+                    for index_prop in data_model.index_props:
+                        if index_prop not in search_props:
+                            unused_index_props.append(index_prop)
+                    if len(unused_index_props) > 0:
+                        progress_tracker.track_unused_index_props_per_collection_unused_by_search_control(
+                            collection_name,
+                            class_name,
+                            # unused are selected only:
+                            unused_index_props,
+                        )
+
+        # TODO: Deduplicate with L -> R:
+        # Compare L <- R:
         # Ensure that every `search_prop` is among the `index_prop`-s in `data_model`:
         for collection_name, search_props_per_class in search_props_per_class_per_collection.items():
-            assert collection_name in self.data_model_per_class_per_collection
             for class_name, search_props in search_props_per_class.items():
-                assert class_name in self.data_model_per_class_per_collection[collection_name]
-                index_props = self.data_model_per_class_per_collection[collection_name][class_name].index_props
-                for search_prop in search_props:
-                    assert search_prop in index_props
+                if (
+                    collection_name not in self.data_model_per_class_per_collection
+                    or
+                    class_name not in self.data_model_per_class_per_collection[collection_name]
+                ):
+                    progress_tracker.track_dangling_search_props_per_collection_undefined_by_data_model(
+                        collection_name,
+                        class_name,
+                        # all are dangling:
+                        search_props,
+                    )
+                else:
+                    search_props = search_props_per_class_per_collection[collection_name][class_name]
+                    index_props = self.data_model_per_class_per_collection[collection_name][class_name].index_props
+                    dangling_search_props = []
+                    for search_prop in search_props:
+                        if search_prop not in index_props:
+                            dangling_search_props.append(search_prop)
+                    if len(dangling_search_props) > 0:
+                        progress_tracker.track_dangling_search_props_per_collection_undefined_by_data_model(
+                            collection_name,
+                            class_name,
+                            # dangling are selected only:
+                            dangling_search_props,
+                        )
 
     def _scan_for_all_search_props(
         self,
@@ -393,19 +444,12 @@ class LocalServer:
         *   `_post_validate_all_data_envelope_missing_search_prop_names`
         """
 
-        validation_step = "index_props"
-        progress_tracker.total_envelope_i = 0
+        progress_tracker.track_total_validation_start()
+
         # Verify that all prop names per (2-level map) `collection_name` and `envelope_class`
         # exists in all corresponding `data_envelope`-s:
         for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
-            eprint(f"collection to validate: {collection_name}")
-            progress_tracker.envelope_per_col_n = self.count_per_collection.get(collection_name, 0)
-            progress_tracker.envelope_per_col_i = 0
-            log_validation_progress(
-                validation_step,
-                collection_name,
-                progress_tracker,
-            )
+            progress_tracker.track_collection_validation_start(collection_name)
 
             prev_found_missing_prop_names: dict[str, dict] = {}
             prev_found_existing_prop_names: dict[str, dict] = {}
@@ -413,37 +457,10 @@ class LocalServer:
                 collection_name,
                 {},
             ):
-                progress_tracker.envelope_per_col_i += 1
-                progress_tracker.total_envelope_i += 1
+                progress_tracker.track_collection_validation_increment(collection_name)
+
                 envelope_class = data_envelope[ReservedPropName.envelope_class.name]
-
-                if progress_tracker.total_envelope_i > 0 and progress_tracker.total_envelope_i % 1_000 == 0:
-                    log_validation_progress(
-                        validation_step,
-                        collection_name,
-                        progress_tracker,
-                    )
-
-                if envelope_class != ReservedEnvelopeClass.ClassHelp.name:
-                    # Except for special `ReservedEnvelopeClass.ClassHelp`,
-                    # all other classes are supposed to be specified in some `search_control`.
-
-                    # Keep server clean of data which is not searched by anyone:
-                    if collection_name not in search_props_per_class_per_collection:
-                        raise ValueError(
-                            f"`collection_name` [{collection_name}] "
-                            f"of this `data_envelope` is not used by any any `search_control`: {data_envelope}"
-                        )
-                    elif envelope_class not in search_props_per_class_per_collection[collection_name]:
-                        raise ValueError(
-                            f"`collection_name` [{collection_name}] "
-                            f"`envelope_class` [{envelope_class}] "
-                            f"of this `data_envelope` is not used by any any `search_control`: {data_envelope}"
-                        )
-                    else:
-                        # Whether all `search_prop` can be seen in every `data_envelope` is ensured by
-                        # `_post_validate_all_data_envelope_for_missing_search_prop_names`.
-                        pass
+                assert envelope_class in data_model_per_class
 
                 for prop_name in data_model_per_class[envelope_class].index_props:
                     if prop_name not in data_envelope:
@@ -481,14 +498,9 @@ class LocalServer:
                             prop_value,
                         )
 
-            log_validation_progress(
-                validation_step,
-                collection_name,
-                progress_tracker,
-            )
-            progress_tracker.assert_collection_final_progress()
+            progress_tracker.track_collection_validation_stop(collection_name)
 
-        progress_tracker.assert_total_final_progress()
+        progress_tracker.track_total_validation_stop()
 
     # noinspection PyMethodMayBeStatic
     def _raise_validation_error_for_missing_prop_name(
@@ -788,7 +800,7 @@ class LocalServer:
 
         eprint(f"step name: {step_name}:")
 
-        self._pre_validate_static_data_per_step()
+        self._pre_validate_static_data_per_step(progress_tracker)
 
         MongoClientWrapper.store_envelopes(
             mongo_db,

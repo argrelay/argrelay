@@ -15,6 +15,7 @@ class SearchControl:
     MongoDB collection to search `data_envelope`-s in.
     """
 
+    # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`
     envelope_class: str = field(default_factory = lambda: None)
     """
     Specifies `ReservedPropName.envelope_class` to search.

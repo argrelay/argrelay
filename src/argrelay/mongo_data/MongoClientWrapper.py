@@ -68,15 +68,14 @@ def store_envelope_collection(
         col_proxy.drop_indexes()
         cleaned_mongo_collections.add(mongo_collection)
 
-    base_total_envelope_i: int = progress_tracker.total_envelope_i
-    progress_tracker.envelope_per_col_i = 0
-    progress_tracker.envelope_per_col_n = len(envelope_collection.data_envelopes)
-    log_index_progress(mongo_collection, progress_tracker)
+    progress_tracker.track_collection_indexing_start(
+        mongo_collection,
+        len(envelope_collection.data_envelopes),
+    )
+
     for data_envelope in envelope_collection.data_envelopes:
-        if progress_tracker.total_envelope_i > 0 and progress_tracker.total_envelope_i % 1_000 == 0:
-            log_index_progress(mongo_collection, progress_tracker)
-        progress_tracker.total_envelope_i += 1
-        progress_tracker.envelope_per_col_i += 1
+
+        progress_tracker.track_collection_indexing_increment(mongo_collection)
         envelope_to_store = deepcopy(data_envelope)
 
         try:
@@ -91,40 +90,7 @@ def store_envelope_collection(
             # Rethrow previous error:
             raise
 
-    log_index_progress(mongo_collection, progress_tracker)
-
-    assert progress_tracker.envelope_per_col_i == progress_tracker.total_envelope_i - base_total_envelope_i
-
-
-def log_index_progress(
-    mongo_collection: str,
-    progress_tracker: ProgressTracker,
-):
-    try:
-        progress_tracker.assert_intermediate_progress()
-    finally:
-        eprint(
-            f"collection: {mongo_collection}: indexed envelopes: "
-            f"{progress_tracker.envelope_per_col_i}/{progress_tracker.envelope_per_col_n} "
-            f"{progress_tracker.total_envelope_i}/{progress_tracker.total_envelope_n} "
-            "..."
-        )
-
-
-def log_validation_progress(
-    validation_step: str,
-    mongo_collection: str,
-    progress_tracker: ProgressTracker,
-):
-    try:
-        progress_tracker.assert_intermediate_progress()
-    finally:
-        eprint(
-            f"validation step: {validation_step}: collection: {mongo_collection}: validated envelopes: "
-            f"{progress_tracker.envelope_per_col_i}/{progress_tracker.envelope_per_col_n} "
-            f"{progress_tracker.total_envelope_i}/{progress_tracker.total_envelope_n} "
-            f"..."
-        )
+    progress_tracker.track_collection_indexing_stop(mongo_collection)
 
 
 def create_index(

@@ -2,13 +2,18 @@ from __future__ import annotations
 
 import unittest
 
+from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import func_configs_
+from argrelay.custom_integ.ConfigOnlyDelegator import ConfigOnlyDelegator
 from argrelay.custom_integ.ConfigOnlyLoader import ConfigOnlyLoader
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import collection_name_to_index_props_map_
+from argrelay.custom_integ.FuncConfigSchema import func_envelope_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, instance_data_
+from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
@@ -234,29 +239,24 @@ exit 1
                     expected_exit_code = next(iter(popen_mock_config.values()))[0]
                     self.assertEqual(cm.exception.code, expected_exit_code)
 
-    def test_validation_for_unused_data_envelope(self):
+    def test_validation_for_dangling_search_prop(self):
         """
-        Test that unused data is not loaded.
-        TODO: Why do we need that?
-              Loaded data at least allows browsing via FS_74_69_61_79 get set data envelope.
-        TODO: What we need is to ensure every `data_envelope` has `class_name` which is defined in `data_model`.
-        TODO: We may check if `data_model` is used against any `search_control` just to avoid unused data.
+        Test that validation preventing `search_control` referencing unknown `index_prop`-s works.
 
-        This test relies on `ConfigOnlyLoader` to load `data_envelope` with a class unused by anything.
+        This test relies on `ConfigOnlyDelegator` to specify `search_control`.
 
-        The validation should prevent starting server (unless `data_envelope` is used by some of
-        `search_control`-s anywhere which should not be the case).
+        Server should not start if `search_prop` does not exists in `index_prop`-s.
         """
 
         env_mock_builder = LocalClientEnvMockBuilder().set_reset_local_server(True)
 
-        for add_unused_data_envelope in [
+        for add_dangling_search_prop in [
             False,
             True,
         ]:
-            with self.subTest(add_unused_data_envelope):
-                if add_unused_data_envelope:
-                    class_name = "THIS_CLASS_IS_UNUSED"
+            with self.subTest(add_dangling_search_prop):
+                if add_dangling_search_prop:
+                    UNKNOWN_INDEX_PROP_NAME = "UNKNOWN_INDEX_PROP_NAME"
 
                     # Change config to cause validation error:
                     plugin_config_dict = plugin_config_desc.dict_from_default_file()
@@ -264,30 +264,42 @@ exit 1
                         plugin_instance_entries_
                     ][
                         # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
-                        f"{ConfigOnlyLoader.__name__}.default"
+                        f"{ConfigOnlyDelegator.__name__}.default"
                     ][
                         plugin_config_
                     ]
 
                     instance_config_dict[
-                        data_envelopes_
+                        func_configs_
+                    ][
+                        "func_id_print_with_severity_level"
+                    ][
+                        func_envelope_
+                    ][
+                        instance_data_
+                    ][
+                        search_control_list_
+                    ][
+                        0
+                    ][
+                        keys_to_types_list_
                     ].append({
-                        envelope_payload_: {
-                        },
-                        ReservedPropName.envelope_class.name: class_name,
+                        "some_key": UNKNOWN_INDEX_PROP_NAME,
                     })
-
-                    instance_config_dict[collection_name_to_index_props_map_][class_name] = []
 
                     env_mock_builder.set_plugin_config_dict(plugin_config_dict)
 
                     with self.assertRaises(ValueError) as cm:
                         self._init_local_server(env_mock_builder)
-                    self.assertTrue(
-                        cm.exception.args[0].startswith(
-                            f"`collection_name` [{class_name}] "
-                            f"of this `data_envelope` is not used by any any `search_control`:",
+                    self.assertEqual(
+                        (
+                            f"`search_control` components not in `data_model`: "
+                            f"`collection_name` [ConfigOnlyClass] "
+                            # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
+                            f"`class_name` [ConfigOnlyClass] "
+                            f"`search_props`: {UNKNOWN_INDEX_PROP_NAME} "
                         ),
+                        cm.exception.args[0],
                     )
                 else:
                     # Should start successfully by default:

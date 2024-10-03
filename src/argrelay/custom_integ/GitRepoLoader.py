@@ -22,6 +22,9 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_git_commits_default_,
     repo_entries_,
     load_git_tags_default_,
+    class_name_repo_,
+    class_name_tag_,
+    class_name_commit_,
 )
 from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.git_utils import is_git_repo
@@ -74,24 +77,62 @@ class GitRepoLoader(AbstractLoader):
         self,
     ) -> list[DataModel]:
 
+        class_name_repo = self.plugin_config_dict[class_name_repo_]
+        class_name_tag = self.plugin_config_dict[class_name_tag_]
+        class_name_commit = self.plugin_config_dict[class_name_commit_]
+
         return [
             DataModel(
-                collection_name = GitRepoEnvelopeClass.ClassGitRepo.name,
-                class_name = GitRepoEnvelopeClass.ClassGitRepo.name,
-                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
-                index_props = [e.name for e in GitRepoPropName],
+                collection_name = class_name_repo,
+                class_name = class_name_repo,
+                index_props = [
+                    GitRepoPropName.git_repo_alias.name,
+                    GitRepoPropName.git_repo_root_abs_path.name,
+                    GitRepoPropName.git_repo_root_rel_path.name,
+                    GitRepoPropName.git_repo_root_base_name.name,
+                    GitRepoPropName.git_repo_content_type.name,
+                    GitRepoPropName.git_repo_object_category.name,
+                ],
             ),
             DataModel(
-                collection_name = GitRepoEnvelopeClass.ClassGitTag.name,
-                class_name = GitRepoEnvelopeClass.ClassGitTag.name,
-                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
-                index_props = [e.name for e in GitRepoPropName],
+                collection_name = class_name_tag,
+                class_name = class_name_tag,
+                index_props = [
+                    GitRepoPropName.git_repo_alias.name,
+                    GitRepoPropName.git_repo_root_abs_path.name,
+                    GitRepoPropName.git_repo_root_rel_path.name,
+                    GitRepoPropName.git_repo_root_base_name.name,
+                    GitRepoPropName.git_repo_content_type.name,
+                    GitRepoPropName.git_repo_tag_name.name,
+                    GitRepoPropName.git_repo_commit_id.name,
+                    GitRepoPropName.git_repo_short_commit_id.name,
+                    GitRepoPropName.git_repo_commit_message.name,
+                    GitRepoPropName.git_repo_commit_author_name.name,
+                    GitRepoPropName.git_repo_commit_author_email.name,
+                    GitRepoPropName.git_repo_commit_date.name,
+                    GitRepoPropName.git_repo_commit_time.name,
+                    GitRepoPropName.git_repo_object_category.name,
+                ],
             ),
             DataModel(
-                collection_name = GitRepoEnvelopeClass.ClassGitCommit.name,
-                class_name = GitRepoEnvelopeClass.ClassGitCommit.name,
-                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
-                index_props = [e.name for e in GitRepoPropName],
+                collection_name = class_name_commit,
+                class_name = class_name_commit,
+                index_props = [
+                    GitRepoPropName.git_repo_alias.name,
+                    GitRepoPropName.git_repo_root_abs_path.name,
+                    GitRepoPropName.git_repo_root_rel_path.name,
+                    GitRepoPropName.git_repo_root_base_name.name,
+                    GitRepoPropName.git_repo_content_type.name,
+                    GitRepoPropName.git_repo_tag_name.name,
+                    GitRepoPropName.git_repo_commit_id.name,
+                    GitRepoPropName.git_repo_short_commit_id.name,
+                    GitRepoPropName.git_repo_commit_message.name,
+                    GitRepoPropName.git_repo_commit_author_name.name,
+                    GitRepoPropName.git_repo_commit_author_email.name,
+                    GitRepoPropName.git_repo_commit_date.name,
+                    GitRepoPropName.git_repo_commit_time.name,
+                    GitRepoPropName.git_repo_object_category.name,
+                ],
             ),
         ]
 
@@ -116,12 +157,16 @@ class GitRepoLoader(AbstractLoader):
         Scan `base_path` recursively and load metadata about all Git repos found.
         """
 
+        class_name_repo = self.plugin_config_dict[class_name_repo_]
+        class_name_tag = self.plugin_config_dict[class_name_tag_]
+        class_name_commit = self.plugin_config_dict[class_name_commit_]
+
         class_to_collection_map: dict = self.server_config.class_to_collection_map
 
         class_names = [
-            GitRepoEnvelopeClass.ClassGitRepo.name,
-            GitRepoEnvelopeClass.ClassGitTag.name,
-            GitRepoEnvelopeClass.ClassGitCommit.name,
+            class_name_repo,
+            class_name_tag,
+            class_name_commit,
         ]
 
         init_envelop_collections(
@@ -133,13 +178,13 @@ class GitRepoLoader(AbstractLoader):
         )
 
         repo_envelopes = static_data.envelope_collections[
-            class_to_collection_map[GitRepoEnvelopeClass.ClassGitRepo.name]
+            class_to_collection_map[class_name_repo]
         ].data_envelopes
         tag_envelopes = static_data.envelope_collections[
-            class_to_collection_map[GitRepoEnvelopeClass.ClassGitTag.name]
+            class_to_collection_map[class_name_tag]
         ].data_envelopes
         commit_envelopes = static_data.envelope_collections[
-            class_to_collection_map[GitRepoEnvelopeClass.ClassGitCommit.name]
+            class_to_collection_map[class_name_commit]
         ].data_envelopes
 
         load_git_commits_default = self.plugin_config_dict[load_git_commits_default_]
@@ -192,11 +237,11 @@ class GitRepoLoader(AbstractLoader):
                 repo_envelope: dict = copy.deepcopy(repo_entry[envelope_properties_])
 
                 repo_envelope.update({
-                    envelope_id_: f"{repo_root_abs_path}:{GitRepoEnvelopeClass.ClassGitRepo.name}",
+                    envelope_id_: f"{repo_root_abs_path}:{class_name_repo}",
                     envelope_payload_: {
                         repo_root_abs_path_: repo_root_abs_path,
                     },
-                    ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitRepo.name,
+                    ReservedPropName.envelope_class.name: class_name_repo,
                     GitRepoPropName.git_repo_root_rel_path.name: repo_root_rel_path,
                     GitRepoPropName.git_repo_root_abs_path.name: repo_root_abs_path,
                     GitRepoPropName.git_repo_root_base_name.name: repo_root_base_name,
@@ -232,10 +277,10 @@ class GitRepoLoader(AbstractLoader):
                         tag_envelope: dict = copy.deepcopy(repo_entry[envelope_properties_])
 
                         tag_envelope.update({
-                            envelope_id_: f"{repo_root_abs_path}:{GitRepoEnvelopeClass.ClassGitTag.name}:{git_tag.name}",
+                            envelope_id_: f"{repo_root_abs_path}:{class_name_tag}:{git_tag.name}",
                             envelope_payload_: {
                             },
-                            ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitTag.name,
+                            ReservedPropName.envelope_class.name: class_name_tag,
                             GitRepoPropName.git_repo_root_rel_path.name: repo_root_rel_path,
                             GitRepoPropName.git_repo_root_abs_path.name: repo_root_abs_path,
                             GitRepoPropName.git_repo_root_base_name.name: repo_root_base_name,
@@ -276,10 +321,10 @@ class GitRepoLoader(AbstractLoader):
                         commit_envelope: dict = copy.deepcopy(repo_entry[envelope_properties_])
 
                         commit_envelope.update({
-                            envelope_id_: f"{repo_root_abs_path}:{GitRepoEnvelopeClass.ClassGitCommit.name}:{git_commit.hexsha}",
+                            envelope_id_: f"{repo_root_abs_path}:{class_name_commit}:{git_commit.hexsha}",
                             envelope_payload_: {
                             },
-                            ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitCommit.name,
+                            ReservedPropName.envelope_class.name: class_name_commit,
                             GitRepoPropName.git_repo_root_rel_path.name: repo_root_rel_path,
                             GitRepoPropName.git_repo_root_abs_path.name: repo_root_abs_path,
                             GitRepoPropName.git_repo_root_base_name.name: repo_root_base_name,
@@ -333,7 +378,7 @@ class GitRepoLoader(AbstractLoader):
         data_envelope: dict,
     ) -> list[str]:
         object_class = data_envelope[ReservedPropName.envelope_class.name]
-        if object_class == GitRepoEnvelopeClass.ClassGitTag.name:
+        if object_class == self.plugin_config_dict[class_name_tag_]:
             return self.categorize_git_tag(data_envelope)
         return []
 
