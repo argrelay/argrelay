@@ -7,12 +7,12 @@ from argrelay.misc_helper_common.TypeDesc import TypeDesc
 
 repo_rel_path_ = "repo_rel_path"
 is_repo_enabled_ = "is_repo_enabled"
+# TODO: Add `load_repo_repos_` as well:
 load_repo_tags_ = "load_repo_tags"
 load_repo_commits_ = "load_repo_commits"
 load_tags_last_days_ = "load_tags_last_days"
 load_commits_max_count_ = "load_commits_max_count"
 envelope_properties_ = "envelope_properties"
-
 
 class GitRepoEntryConfigSchema(Schema):
     class Meta:

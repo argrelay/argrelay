@@ -17,7 +17,7 @@ plugin_instance_entries:
             -   InterceptDelegator.default
             -   HelpDelegator.default
             -   QueryEnumDelegator.default
-            -   MetadataDelegator.default
+            -   DataBackendDelegator.default
             -   ServiceDelegator.default
             -   GitRepoDelegator.default
             -   ConfigOnlyDelegator.default
@@ -163,9 +163,9 @@ plugin_instance_entries:
         plugin_config:
             single_func_id: func_id_query_enum_items
 
-    MetadataDelegator.default:
-        plugin_module_name: argrelay.plugin_delegator.MetadataDelegator
-        plugin_class_name: MetadataDelegator
+    DataBackendDelegator.default:
+        plugin_module_name: argrelay.plugin_delegator.DataBackendDelegator
+        plugin_class_name: DataBackendDelegator
 
     ServiceDelegator.default:
         plugin_module_name: argrelay.custom_integ.ServiceDelegator

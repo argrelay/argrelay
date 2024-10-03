@@ -35,7 +35,7 @@ collection_name_container_ipos_ = 1
 data_envelope_container_ipos_ = 2
 
 
-class MetadataDelegator(AbstractDelegator):
+class DataBackendDelegator(AbstractDelegator):
     """
     Implements FS_74_69_61_79 get set data envelope.
     """

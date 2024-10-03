@@ -15,6 +15,7 @@ class DataModel:
     collection_name: str
 
     # TODO: Maybe rename to `envelope_class` everywhere for consistency?
+    # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
     class_name: str
     """
     See also synonym `ReservedPropName.envelope_class`.
