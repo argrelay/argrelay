@@ -110,7 +110,7 @@ class DelegatorCheckEnv(AbstractDelegator):
 
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
+            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
                 self.plugin_instance_id
             ],
             custom_plugin_data = custom_plugin_data,

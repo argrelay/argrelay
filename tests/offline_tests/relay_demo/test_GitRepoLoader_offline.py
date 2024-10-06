@@ -4,6 +4,7 @@ from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     envelope_properties_,
     load_tags_last_days_,
     load_commits_max_count_,
+    load_repo_entries_,
 )
 from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
@@ -11,13 +12,14 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     load_git_commits_default_,
     repo_entries_,
     load_git_tags_default_,
+    load_git_repos_default_,
 )
 from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.relay_client import __main__
-from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_enabled_,
     plugin_dependencies_,
@@ -60,7 +62,9 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                }
+                },
+                {
+                },
             ),
             (
                 line_no(),
@@ -79,7 +83,9 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                }
+                },
+                {
+                },
             ),
             (
                 line_no(),
@@ -98,7 +104,122 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                }
+                },
+                {
+                },
+            ),
+            (
+                line_no(),
+                f"`{git_loader_plugin_instance_id}` Object load overrides scenario: "
+                f"[implicit `{load_git_repos_default_} True, implicit `{load_repo_entries_}` None]",
+                {
+                    load_git_tags_default_: False,
+                    load_git_commits_default_: False,
+                    repo_entries_: {
+                        "": [
+                            {
+                                repo_rel_path_: "",
+                                envelope_properties_: {
+                                    GitRepoPropName.git_repo_alias.name: "ar",
+                                    GitRepoPropName.git_repo_content_type.name: "self",
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
+                    GitRepoEnvelopeClass.ClassGitTag.name: False,
+                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                },
+                {
+                },
+            ),
+            (
+                line_no(),
+                f"`{git_loader_plugin_instance_id}` Object load overrides scenario: "
+                f"[explicit `{load_git_repos_default_} False, implicit `{load_repo_entries_}` None]",
+                {
+                    load_git_repos_default_: False,
+                    load_git_tags_default_: False,
+                    load_git_commits_default_: False,
+                    repo_entries_: {
+                        "": [
+                            {
+                                repo_rel_path_: "",
+                                envelope_properties_: {
+                                    GitRepoPropName.git_repo_alias.name: "ar",
+                                    GitRepoPropName.git_repo_content_type.name: "self",
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    GitRepoEnvelopeClass.ClassGitRepo.name: False,
+                    GitRepoEnvelopeClass.ClassGitTag.name: False,
+                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                },
+                {
+                },
+            ),
+            (
+                line_no(),
+                f"`{git_loader_plugin_instance_id}` Object load overrides scenario: "
+                f"[explicit `{load_git_repos_default_} False, explicit `{load_repo_entries_}` True]",
+                {
+                    load_git_repos_default_: False,
+                    load_git_tags_default_: False,
+                    load_git_commits_default_: False,
+                    repo_entries_: {
+                        "": [
+                            {
+                                repo_rel_path_: "",
+                                load_repo_entries_: True,
+                                envelope_properties_: {
+                                    GitRepoPropName.git_repo_alias.name: "ar",
+                                    GitRepoPropName.git_repo_content_type.name: "self",
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
+                    GitRepoEnvelopeClass.ClassGitTag.name: False,
+                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                },
+                {
+                },
+            ),
+            (
+                line_no(),
+                f"`{git_loader_plugin_instance_id}` Object load overrides scenario: "
+                f"[explicit `{load_git_repos_default_} True, explicit `{load_repo_entries_}` False]",
+                {
+                    load_git_repos_default_: True,
+                    load_git_tags_default_: False,
+                    load_git_commits_default_: False,
+                    repo_entries_: {
+                        "": [
+                            {
+                                repo_rel_path_: "",
+                                load_repo_entries_: False,
+                                envelope_properties_: {
+                                    GitRepoPropName.git_repo_alias.name: "ar",
+                                    GitRepoPropName.git_repo_content_type.name: "self",
+                                },
+                            },
+                        ],
+                    },
+                },
+                {
+                    GitRepoEnvelopeClass.ClassGitRepo.name: False,
+                    GitRepoEnvelopeClass.ClassGitTag.name: False,
+                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                },
+                {
+                },
             ),
             (
                 line_no(),
@@ -119,6 +240,11 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
+                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
+                    GitRepoEnvelopeClass.ClassGitTag.name: False,
+                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                },
+                {
                     GitRepoEnvelopeClass.ClassGitRepo.name: {
                         GitRepoPropName.git_repo_object_category.name: True,
                         # Expect all repo-related metadata for `GitRepoEnvelopeClass.ClassGitRepo`:
@@ -134,6 +260,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: False,
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
+                    # Not loaded:
                     GitRepoEnvelopeClass.ClassGitTag.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Tag-related metadata should not be as loading commits is disabled:
@@ -144,6 +271,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: False,
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
+                    # Not loaded:
                     GitRepoEnvelopeClass.ClassGitCommit.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Commit-related metadata should not be as loading commits is disabled:
@@ -153,7 +281,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: False,
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
-                }
+                },
             ),
             (
                 line_no(),
@@ -173,6 +301,11 @@ class ThisTestClass(LocalTestClass):
                             },
                         ],
                     },
+                },
+                {
+                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
+                    GitRepoEnvelopeClass.ClassGitTag.name: True,
+                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
                 },
                 {
                     GitRepoEnvelopeClass.ClassGitRepo.name: {
@@ -200,6 +333,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: True,
                         GitRepoPropName.git_repo_commit_author_email.name: True,
                     },
+                    # Not loaded:
                     GitRepoEnvelopeClass.ClassGitCommit.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Commit-related metadata should not be as loading commits is disabled:
@@ -209,7 +343,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: False,
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
-                }
+                },
             ),
             (
                 line_no(),
@@ -231,6 +365,11 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
+                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
+                    GitRepoEnvelopeClass.ClassGitTag.name: False,
+                    GitRepoEnvelopeClass.ClassGitCommit.name: True,
+                },
+                {
                     GitRepoEnvelopeClass.ClassGitRepo.name: {
                         GitRepoPropName.git_repo_object_category.name: True,
                         # Expect all repo-related metadata for `GitRepoEnvelopeClass.ClassGitRepo`:
@@ -246,6 +385,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: False,
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
+                    # Not loaded:
                     GitRepoEnvelopeClass.ClassGitTag.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Tag-related metadata should not be as loading commits is disabled:
@@ -271,7 +411,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: True,
                         GitRepoPropName.git_repo_commit_author_email.name: True,
                     },
-                }
+                },
             ),
         ]
         for test_case in test_cases:
@@ -280,17 +420,18 @@ class ThisTestClass(LocalTestClass):
                     line_number,
                     case_comment,
                     plugin_config,
-                    expected_non_empty_props_per_class,
+                    expected_data_envelopes_existence_per_collection,
+                    expected_prop_values_existence_per_collection,
                 ) = test_case
 
                 # Make `GitRepoLoader` plugin depend on all other plugins (to make it the last):
                 plugin_config_dict = plugin_config_desc.dict_from_default_file()
                 all_plugin_instance_ids = []
-                for plugin_instance_id, plugin_instance_entry in plugin_config_dict[plugin_instance_entries_].items():
+                for plugin_instance_id, plugin_instance_entry in plugin_config_dict[server_plugin_instances_].items():
                     if git_loader_plugin_instance_id != plugin_instance_id:
                         all_plugin_instance_ids.append(plugin_instance_id)
                 # Modify config to enable `GitRepoLoader` plugin:
-                git_loader_plugin_instance_entry = plugin_config_dict[plugin_instance_entries_][
+                git_loader_plugin_instance_entry = plugin_config_dict[server_plugin_instances_][
                     git_loader_plugin_instance_id
                 ]
                 git_loader_plugin_instance_entry[plugin_config_] = plugin_config
@@ -310,36 +451,51 @@ class ThisTestClass(LocalTestClass):
                     # Populate static data by plugin via `ClientLocal` who starts `LocalServer`:
                     command_obj: ClientCommandLocal = __main__.main()
                     assert isinstance(command_obj, ClientCommandLocal)
-                    static_data = command_obj.local_server.server_config.static_data
+                    query_engine = command_obj.local_server.query_engine
 
-                    # Verify:
-                    for class_name, prop_name_existence_dict in expected_non_empty_props_per_class.items():
+                    # Verify `class_name`-s:
+                    for class_name, class_name_existence in expected_data_envelopes_existence_per_collection.items():
 
-                        envelope_collection = static_data.envelope_collections.setdefault(
+                        data_envelopes = query_engine.query_data_envelopes(
                             class_name,
-                            EnvelopeCollection(
-                                index_props = [],
-                                data_envelopes = [],
-                            ),
+                            {
+                                f"{ReservedPropName.envelope_class.name}": f"{class_name}",
+                            },
                         )
 
-                        for prop_name, prop_name_existence in prop_name_existence_dict.items():
+                        if class_name_existence:
+                            assert len(data_envelopes) > 0
+                        else:
+                            assert len(data_envelopes) == 0
+
+                    # Verify `prop_value`-s:
+                    for class_name, prop_value_existence_dict in expected_prop_values_existence_per_collection.items():
+
+                        data_envelopes = query_engine.query_data_envelopes(
+                            class_name,
+                            {
+                                f"{ReservedPropName.envelope_class.name}": f"{class_name}",
+                            },
+                        )
+
+                        index_props = command_obj.local_server.data_model_per_class_per_collection[
+                            class_name
+                        ][
+                            class_name
+                        ].index_props
+
+                        for prop_name, prop_value_existence in prop_value_existence_dict.items():
 
                             is_empty = False
-                            if prop_name_existence:
-                                # TODO: TODO_00_79_72_55: Remove `static_data` from `server_config`:
-                                #       This test assumes that last loaded `static_data` can be inspected.
-                                #       Now, this requires a hack - see `_generate_and_load_meta_data`.
-                                assert prop_name in static_data.envelope_collections[class_name].index_props
+                            if prop_value_existence:
+                                assert prop_name in index_props
                             else:
-                                # Do not assert it as loader over-specifies index fields at the moment:
-                                # noinspection PyUnreachableCode
-                                if False:
-                                    assert prop_name not in static_data.envelope_collections[class_name].index_props
+                                # If we do not expect `prop_value`, it may still be part of `index_props`:
+                                pass
 
                             # Find list of all values in `data_envelope`-s per `prop_name`:
                             prop_values = []
-                            for data_envelope in envelope_collection.data_envelopes:
+                            for data_envelope in data_envelopes:
                                 if prop_name in data_envelope:
                                     prop_value = data_envelope[prop_name]
                                     if prop_value not in prop_values:
@@ -349,7 +505,7 @@ class ThisTestClass(LocalTestClass):
                                 is_empty = True
                             print(f"prop_name_to_prop_values: {prop_name}: {prop_values}")
 
-                            if prop_name_existence:
+                            if prop_value_existence:
                                 assert not is_empty
                             else:
                                 assert is_empty

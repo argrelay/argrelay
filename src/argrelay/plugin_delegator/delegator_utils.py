@@ -81,7 +81,7 @@ def redirect_to_error(
     error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput.with_interp_context(
         interp_ctx,
-        delegator_plugin_entry = plugin_config.plugin_instance_entries[delegator_plugin_instance_id],
+        delegator_plugin_entry = plugin_config.server_plugin_instances[delegator_plugin_instance_id],
         custom_plugin_data = custom_plugin_data,
     )
     return invocation_input

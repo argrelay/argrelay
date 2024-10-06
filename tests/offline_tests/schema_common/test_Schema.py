@@ -41,7 +41,6 @@ from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_de
 from argrelay.schema_config_core_server.MongoServerConfigSchema import mongo_server_config_desc
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_core_server.ServerPluginControlSchema import server_plugin_control_desc
-from argrelay.schema_config_core_server.StaticDataSchema import static_data_desc
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 from argrelay.schema_config_interp.FuncEnvelopeSchema import func_envelope_desc
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
@@ -76,7 +75,6 @@ class ThisTestClass(BaseTestClass):
         (line_no(), mongo_server_config_desc),
         (line_no(), server_config_desc),
         (line_no(), plugin_config_desc),
-        (line_no(), static_data_desc),
         (line_no(), data_envelope_desc),
         (line_no(), func_envelope_desc),
         (line_no(), search_control_desc),

@@ -1,23 +1,24 @@
 from __future__ import annotations
 
-import unittest
-
+from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import func_configs_
 from argrelay.custom_integ.ConfigOnlyDelegator import ConfigOnlyDelegator
 from argrelay.custom_integ.ConfigOnlyLoader import ConfigOnlyLoader
-from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import collection_name_to_index_props_map_
+from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
+    envelope_class_to_collection_name_map_,
+)
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_, instance_data_
+from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
 from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
-from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
-from argrelay.test_infra import line_no
+from argrelay.test_infra import line_no, parse_line_and_cpos
 from argrelay.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
     mock_subprocess_popen,
@@ -261,7 +262,7 @@ exit 1
                     # Change config to cause validation error:
                     plugin_config_dict = plugin_config_desc.dict_from_default_file()
                     instance_config_dict: dict = plugin_config_dict[
-                        plugin_instance_entries_
+                        server_plugin_instances_
                     ][
                         # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
                         f"{ConfigOnlyDelegator.__name__}.default"
@@ -304,6 +305,101 @@ exit 1
                 else:
                     # Should start successfully by default:
                     self._init_local_server(env_mock_builder)
+
+    def test_config_only_loaded_data(
+        self,
+    ):
+        """
+        Start the server, run (irrelevant) command, inspect loaded data
+        """
+
+        test_cases = [
+            (
+                line_no(),
+                "ConfigOnlyClass",
+                {
+                    "severity_level": "ERROR",
+                },
+                2,
+                f"Query `data_envelope` of `ConfigOnlyClass` without "
+                f"specified `{ReservedPropName.envelope_class.name}`.",
+            ),
+            (
+                line_no(),
+                "ConfigOnlyClass",
+                {
+                    ReservedPropName.envelope_class.name: "ConfigOnlyClass",
+                    "severity_level": "ERROR",
+                },
+                2,
+                f"Query `data_envelope` of `ConfigOnlyClass` with "
+                f"specified `{ReservedPropName.envelope_class.name}`.",
+            ),
+            (
+                line_no(),
+                "OutputFormat",
+                {
+                },
+                4,
+                f"Query `data_envelope` of `OutputFormat` (without any query criteria).",
+            ),
+        ]
+
+        for test_case in test_cases:
+            with self.subTest(test_case):
+                (
+                    line_number,
+                    class_name,
+                    query_dict,
+                    result_size,
+                    case_comment,
+                ) = test_case
+
+                # Get `envelope_class_to_collection_name_map` config of FS_49_96_50_77 config_only_loader plugin:
+                plugin_config_dict = plugin_config_desc.dict_from_default_file()
+                instance_config_dict: dict = plugin_config_dict[
+                    server_plugin_instances_
+                ][
+                    # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
+                    f"{ConfigOnlyLoader.__name__}.default"
+                ][
+                    plugin_config_
+                ]
+                envelope_class_to_collection_name_map: dict[str, str] = instance_config_dict[
+                    envelope_class_to_collection_name_map_
+                ]
+
+                test_line = "some_command config |"
+                (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
+                comp_type = CompType.PrefixHidden
+                env_mock_builder = (
+                    LocalClientEnvMockBuilder()
+                    .set_reset_local_server(True)
+                    .set_command_line(command_line)
+                    .set_cursor_cpos(cursor_cpos)
+                    .set_comp_type(comp_type)
+                )
+
+                with env_mock_builder.build():
+                    command_obj: ClientCommandLocal = __main__.main()
+                    assert isinstance(command_obj, ClientCommandLocal)
+                    query_engine = command_obj.local_server.query_engine
+
+                    collection_name = envelope_class_to_collection_name_map.get(class_name)
+                    data_envelopes = query_engine.query_data_envelopes(
+                        collection_name,
+                        query_dict,
+                    )
+                    for data_envelope in data_envelopes:
+                        for query_prop in query_dict:
+                            self.assertEqual(
+                                query_dict[query_prop],
+                                data_envelope[query_prop],
+                            )
+                    self.assertEqual(
+                        result_size,
+                        len(data_envelopes),
+                    )
 
     def _init_local_server(
         self,

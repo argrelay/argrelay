@@ -11,7 +11,6 @@ from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data.MongoConfig import MongoConfig
 from argrelay.mongo_data.ProgressTracker import ProgressTracker
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
-from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     data_envelope_desc,
@@ -29,25 +28,18 @@ def get_mongo_client(mongo_config: MongoConfig):
 def store_envelopes(
     mongo_db: Database,
     cleaned_mongo_collections: set[str],
-    static_data: StaticData,
+    envelope_collections: list[EnvelopeCollection],
     progress_tracker: ProgressTracker,
 ):
     # Calculate total:
-    for mongo_collection in static_data.envelope_collections:
-        envelope_collection: EnvelopeCollection = static_data.envelope_collections[
-            mongo_collection
-        ]
+    for envelope_collection in envelope_collections:
         progress_tracker.total_envelope_n += len(envelope_collection.data_envelopes)
 
     # Index all:
-    for mongo_collection in static_data.envelope_collections:
-        envelope_collection: EnvelopeCollection = static_data.envelope_collections[
-            mongo_collection
-        ]
+    for envelope_collection in envelope_collections:
         store_envelope_collection(
             mongo_db,
             cleaned_mongo_collections,
-            mongo_collection,
             envelope_collection,
             progress_tracker,
         )
@@ -58,24 +50,24 @@ def store_envelopes(
 def store_envelope_collection(
     mongo_db: Database,
     cleaned_mongo_collections: set[str],
-    mongo_collection: str,
     envelope_collection: EnvelopeCollection,
     progress_tracker: ProgressTracker,
 ) -> None:
-    col_proxy: Collection = mongo_db[mongo_collection]
-    if mongo_collection not in cleaned_mongo_collections:
+    collection_name = envelope_collection.collection_name
+    col_proxy: Collection = mongo_db[collection_name]
+    if collection_name not in cleaned_mongo_collections:
         col_proxy.delete_many({})
         col_proxy.drop_indexes()
-        cleaned_mongo_collections.add(mongo_collection)
+        cleaned_mongo_collections.add(collection_name)
 
     progress_tracker.track_collection_indexing_start(
-        mongo_collection,
+        collection_name,
         len(envelope_collection.data_envelopes),
     )
 
     for data_envelope in envelope_collection.data_envelopes:
 
-        progress_tracker.track_collection_indexing_increment(mongo_collection)
+        progress_tracker.track_collection_indexing_increment(collection_name)
         envelope_to_store = deepcopy(data_envelope)
 
         try:
@@ -90,7 +82,7 @@ def store_envelope_collection(
             # Rethrow previous error:
             raise
 
-    progress_tracker.track_collection_indexing_stop(mongo_collection)
+    progress_tracker.track_collection_indexing_stop(collection_name)
 
 
 def create_index(

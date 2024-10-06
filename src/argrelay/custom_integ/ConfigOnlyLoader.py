@@ -6,15 +6,15 @@ from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
     config_only_loader_config_desc,
     data_envelopes_,
     collection_name_to_index_props_map_,
+    envelope_class_to_collection_name_map_,
 )
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
-from argrelay.runtime_data.StaticData import StaticData
-from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 
 _primitive_types = (bool, str, int, float)
 
@@ -59,42 +59,30 @@ class ConfigOnlyLoader(AbstractLoader):
         collection_name_to_index_props_map: dict[str, list[str]] = self.plugin_config_dict[
             collection_name_to_index_props_map_
         ]
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
         data_models: list[DataModel] = []
         for collection_name, index_props in collection_name_to_index_props_map.items():
 
-            # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
-            #       In the future, `ConfigOnlyLoader` will have to provide (in config)
-            #       both `collection_name` and `class_name` per list of `index_props` to be flexible.
-            #       As of now, we demand that `collection_name` with its `index_props` in config
-            #       actually matches `envelope_class` for `ConfigOnlyLoader` - in other words,
-            #       we validata that there is no other `class_name` mapped into that `collection_name`
-            #       (only named alike):
-            for mapped_class_name, mapped_collection_name in class_to_collection_map.items():
-                if mapped_collection_name == collection_name:
-                    assert mapped_class_name == collection_name
-
             data_models.append(DataModel(
                 collection_name = collection_name,
+                # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`.
+                #       In the future, `class_name` will have to be removed from `data_model`.
+                #       As of now, we assume that `collection_name` with its `index_props` in config
+                #       actually matches `envelope_class` for `ConfigOnlyLoader`:
                 class_name = collection_name,
                 index_props = index_props,
             ))
 
         return data_models
 
-    def update_static_data(
+    def load_envelope_collections(
         self,
-        static_data: StaticData,
         query_engine: QueryEngine,
-    ) -> StaticData:
-
-        # Config for FS_56_43_05_79 different collections:
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
+    ) -> list[EnvelopeCollection]:
 
         # FS_49_96_50_77 config_only_loader plugin:
-        # *   `collection_name_to_index_props_map`:
-        collection_name_to_index_props_map: dict[str, list[str]] = self.plugin_config_dict[
-            collection_name_to_index_props_map_
+        # *   `envelope_class_to_collection_name_map`:
+        envelope_class_to_collection_name_map: dict[str, str] = self.plugin_config_dict[
+            envelope_class_to_collection_name_map_
         ]
         # *   list of `data_envelope`-s (actual data):
         data_envelopes = [
@@ -102,34 +90,21 @@ class ConfigOnlyLoader(AbstractLoader):
             for data_envelope in deepcopy(self.plugin_config_dict[data_envelopes_])
         ]
 
-        class_names: list[str] = [
-            data_envelope.get(ReservedPropName.envelope_class.name, ReservedEnvelopeClass.ClassUnknown.name)
-            for data_envelope in data_envelopes
-        ]
+        envelope_collections: dict[str, EnvelopeCollection] = {}
 
-        init_envelop_collections(
-            self.server_config.class_to_collection_map,
-            self.server_config.static_data.envelope_collections,
-            class_names,
-            lambda _collection_name, _class_name: collection_name_to_index_props_map[_collection_name],
-        )
+        for data_envelope in data_envelopes:
 
-        for class_name in class_names:
+            class_name = data_envelope.get(ReservedPropName.envelope_class.name, ReservedEnvelopeClass.ClassUnknown.name)
+            collection_name = envelope_class_to_collection_name_map.get(class_name, class_name)
 
-            class_data_envelopes = static_data.envelope_collections[
-                class_to_collection_map[class_name]
-            ].data_envelopes
+            envelope_collection = envelope_collections.setdefault(
+                collection_name,
+                EnvelopeCollection(
+                    collection_name = collection_name,
+                    data_envelopes = [],
+                ),
+            )
 
-            # Keep removing `data_envelope`-s after inserting them into specific collections based on class:
-            filtered_data_envelopes = list([
-                data_envelope for data_envelope in data_envelopes
-                if data_envelope.get(ReservedPropName.envelope_class.name, None) == class_name
-            ])
-            class_data_envelopes.extend(filtered_data_envelopes)
-            for data_envelope in filtered_data_envelopes:
-                data_envelopes.remove(data_envelope)
+            envelope_collection.data_envelopes.append(data_envelope)
 
-        if len(data_envelopes) != 0:
-            raise RuntimeError(f"ERROR: not all `data_envelope`-s have class assigned: {data_envelopes}")
-
-        return static_data
+        return envelope_collections.values()

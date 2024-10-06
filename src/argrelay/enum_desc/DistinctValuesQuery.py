@@ -7,26 +7,11 @@ class DistinctValuesQuery(Enum):
 
     See `test_QueryEngine_perf.py` for perf test used to produce these tables (time is in seconds):
 
-    Numbers for "use_single_collection: True" are more evident as `object_count` directly affects the query.
-
-    Numbers for "use_single_collection: False" are less evident as `object_count` is distributed across collections.
-
     *   `mongomock`:
 
         ```
         ================================
         use_mongomock: True
-        use_single_collection: True
-
-                       object_multiplier         3         4         5         6         7         8         9
-                            object_count       243      1024      3125      7776     16807     32768     59049
-        --------------------------------
-                  original_find_and_loop     0.012     0.044     0.134     0.459     1.715     6.159    28.553
-                         native_distinct     0.077     0.209     0.581     1.538     3.186     6.295    11.231
-                        native_aggregate     0.077     0.227     0.913     3.717    15.944    63.955   375.196
-        ================================
-        use_mongomock: True
-        use_single_collection: False
 
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049
@@ -44,17 +29,6 @@ class DistinctValuesQuery(Enum):
         ```
         ================================
         use_mongomock: False
-        use_single_collection: True
-
-                       object_multiplier         3         4         5         6         7         8         9
-                            object_count       243      1024      3125      7776     16807     32768     59049
-        --------------------------------
-                  original_find_and_loop     0.028     0.034     0.070     0.147     0.255     0.493     1.040
-                         native_distinct     0.070     0.137     0.264     0.550     0.976     1.896     3.452
-                        native_aggregate     0.028     0.046     0.070     0.115     0.207     0.354     0.550
-        ================================
-        use_mongomock: False
-        use_single_collection: False
 
                        object_multiplier         3         4         5         6         7         8         9
                             object_count       243      1024      3125      7776     16807     32768     59049

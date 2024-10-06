@@ -29,7 +29,7 @@ from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFacto
 from argrelay.plugin_loader.NoopLoader import NoopLoader
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_interp.FuncEnvelopeSchema import func_id_some_func_
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
 from argrelay.test_infra.LocalTestClass import LocalTestClass
@@ -62,7 +62,7 @@ class ThisTestClass(LocalTestClass):
                 server_config = cls.server_config,
                 plugin_instance_id = cls.interp_tree_plugin_id,
                 plugin_config_dict = plugin_config_desc.dict_from_default_file()[
-                    plugin_instance_entries_
+                    server_plugin_instances_
                 ][
                     cls.interp_tree_plugin_id
                 ][
@@ -73,7 +73,7 @@ class ThisTestClass(LocalTestClass):
                 server_config = cls.server_config,
                 plugin_instance_id = cls.func_tree_plugin_id,
                 plugin_config_dict = plugin_config_desc.dict_from_default_file()[
-                    plugin_instance_entries_
+                    server_plugin_instances_
                 ][
                     cls.func_tree_plugin_id
                 ][

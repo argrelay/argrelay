@@ -258,14 +258,14 @@ This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_
 
 This table summarizes all executables most users ever need to know:
 
-| Executable from `@/exe/` dir                            | Purpose                                                                     |
-|:--------------------------------------------------------|:----------------------------------------------------------------------------|
-| [`check_env.bash`][FS_36_17_84_44.check_env.md]         | checks Bash/Python environments for any issues                              |
-| [`bootstrap_env.bash`][FS_85_33_46_53.bootstrap_env.md] | bootstraps the environment (installs or upgrades `argrelay`)                |
-| [`dev_shell.bash`][FS_58_61_77_69.dev_shell.md]         | starts shell session with activated `venv` and `argrelay`-linked commands   |
-| `shell_env.bash`                                        | `source`-able by `~/.bashrc` to avoid starting `dev_shell.bash`             |
-| `run_argrelay_server`                                   | runs `argrelay` server (in foreground)                                      |
-| `run_argrelay_client`                                   | **not** used directly (invoked by `Alt+Shift+Q`-query and `Tab`-completion) |
+| Executable from `@/exe/` dir                            | Purpose                                                                      |
+|:--------------------------------------------------------|:-----------------------------------------------------------------------------|
+| [`check_env.bash`][FS_36_17_84_44.check_env.md]         | checks Bash/Python environments for any issues                               |
+| [`bootstrap_env.bash`][FS_85_33_46_53.bootstrap_env.md] | bootstraps the environment (installs or upgrades `argrelay`)                 |
+| [`dev_shell.bash`][FS_58_61_77_69.dev_shell.md]         | starts configured shell with activated `venv` and `argrelay`-linked commands |
+| `shell_env.bash`                                        | script `source`-able by `~/.bashrc` to avoid starting `dev_shell.bash`       |
+| `run_argrelay_server`                                   | runs `argrelay` server (in foreground)                                       |
+| `run_argrelay_client`                                   | **not** used directly (invoked by `Alt+Shift+Q`-query and `Tab`-completion)  |
 
 See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for details.
 

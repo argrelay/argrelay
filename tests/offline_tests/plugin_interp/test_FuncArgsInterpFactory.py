@@ -10,12 +10,10 @@ from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
 from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory, func_search_control_
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.schema_config_core_server.EnvelopeCollectionSchema import index_props_, data_envelopes_
+from argrelay.schema_config_core_server.EnvelopeCollectionSchema import data_envelopes_
 from argrelay.schema_config_core_server.ServerConfigSchema import (
-    static_data_,
     server_config_desc,
 )
-from argrelay.schema_config_core_server.StaticDataSchema import envelope_collections_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
@@ -27,7 +25,7 @@ from argrelay.schema_config_interp.SearchControlSchema import (
     keys_to_types_list_,
     collection_name_,
 )
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
     plugin_config_,
     plugin_module_name_,
@@ -56,7 +54,6 @@ class ThisTestClass(BaseTestClass):
         envelope_collection = server_config_dict[static_data_][envelope_collections_].setdefault(
             ReservedEnvelopeClass.ClassFunction.name,
             {
-                index_props_: [],
                 data_envelopes_: [],
             },
         )
@@ -68,8 +65,8 @@ class ThisTestClass(BaseTestClass):
         type_2 = "whatever_type_2"
 
         plugin_instance_id = f"{FuncTreeInterpFactory.__name__}.test"
-        assert plugin_instance_id not in plugin_config_dict[plugin_instance_entries_]
-        plugin_config_dict[plugin_instance_entries_][plugin_instance_id] = {
+        assert plugin_instance_id not in plugin_config_dict[server_plugin_instances_]
+        plugin_config_dict[server_plugin_instances_][plugin_instance_id] = {
             plugin_module_name_: FuncTreeInterpFactory.__module__,
             plugin_class_name_: FuncTreeInterpFactory.__name__,
             plugin_dependencies_: [],

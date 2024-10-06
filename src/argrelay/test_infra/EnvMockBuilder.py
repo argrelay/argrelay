@@ -57,7 +57,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
 )
 from argrelay.schema_config_plugin.PluginConfigSchema import (
     plugin_config_desc,
-    plugin_instance_entries_,
+    server_plugin_instances_,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_, plugin_enabled_
 from argrelay.schema_response.InvocationInput import InvocationInput
@@ -561,11 +561,11 @@ class EnvMockBuilder:
             assert self.plugin_config_dict is not None
 
             # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `GitRepoLoader`):
-            plugin_entry = self.plugin_config_dict[plugin_instance_entries_][f"{GitRepoLoader.__name__}.default"]
+            plugin_entry = self.plugin_config_dict[server_plugin_instances_][f"{GitRepoLoader.__name__}.default"]
             plugin_entry[plugin_enabled_] = self.enable_demo_git_loader
 
             # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ServiceLoader`):
-            plugin_entry = self.plugin_config_dict[plugin_instance_entries_][f"{ServiceLoader.__name__}.default"]
+            plugin_entry = self.plugin_config_dict[server_plugin_instances_][f"{ServiceLoader.__name__}.default"]
             plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
 
             # set mocked file content:

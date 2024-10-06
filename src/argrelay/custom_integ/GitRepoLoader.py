@@ -15,8 +15,8 @@ from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     load_repo_tags_,
     load_commits_max_count_,
     load_tags_last_days_,
+    load_repo_entries_,
 )
-from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
 from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     git_repo_loader_config_desc,
     load_git_commits_default_,
@@ -25,15 +25,16 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
     class_name_repo_,
     class_name_tag_,
     class_name_commit_,
+    load_git_repos_default_,
 )
 from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.custom_integ.git_utils import is_git_repo
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
+from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_data.DataModel import DataModel
-from argrelay.runtime_data.StaticData import StaticData
-from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     envelope_payload_,
@@ -136,23 +137,19 @@ class GitRepoLoader(AbstractLoader):
             ),
         ]
 
-    def update_static_data(
+    def load_envelope_collections(
         self,
-        static_data: StaticData,
         query_engine: QueryEngine,
-    ) -> StaticData:
+    ) -> list[EnvelopeCollection]:
 
         if not self.plugin_config_dict:
-            return static_data
+            return []
 
-        static_data = self.load_git_objects(static_data)
-
-        return static_data
+        return self.load_git_objects()
 
     def load_git_objects(
         self,
-        static_data: StaticData,
-    ) -> StaticData:
+    ) -> list[EnvelopeCollection]:
         """
         Scan `base_path` recursively and load metadata about all Git repos found.
         """
@@ -161,34 +158,35 @@ class GitRepoLoader(AbstractLoader):
         class_name_tag = self.plugin_config_dict[class_name_tag_]
         class_name_commit = self.plugin_config_dict[class_name_commit_]
 
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
+        envelope_collections: dict[str, EnvelopeCollection] = {}
 
-        class_names = [
+        repo_envelopes = envelope_collections.setdefault(
             class_name_repo,
+            EnvelopeCollection(
+                collection_name = class_name_repo,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
+
+        tag_envelopes = envelope_collections.setdefault(
             class_name_tag,
+            EnvelopeCollection(
+                collection_name = class_name_tag,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
+
+        commit_envelopes = envelope_collections.setdefault(
             class_name_commit,
-        ]
+            EnvelopeCollection(
+                collection_name = class_name_commit,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
 
-        init_envelop_collections(
-            self.server_config.class_to_collection_map,
-            self.server_config.static_data.envelope_collections,
-            class_names,
-            # Same index fields for all collections (can be fine-tuned later):
-            lambda collection_name, class_name: [enum_item.name for enum_item in GitRepoPropName],
-        )
-
-        repo_envelopes = static_data.envelope_collections[
-            class_to_collection_map[class_name_repo]
-        ].data_envelopes
-        tag_envelopes = static_data.envelope_collections[
-            class_to_collection_map[class_name_tag]
-        ].data_envelopes
-        commit_envelopes = static_data.envelope_collections[
-            class_to_collection_map[class_name_commit]
-        ].data_envelopes
-
-        load_git_commits_default = self.plugin_config_dict[load_git_commits_default_]
+        load_git_repos_default = self.plugin_config_dict[load_git_repos_default_]
         load_git_tags_default = self.plugin_config_dict[load_git_tags_default_]
+        load_git_commits_default = self.plugin_config_dict[load_git_commits_default_]
 
         # List of registered Git abs paths:
         repo_root_abs_paths = []
@@ -247,10 +245,17 @@ class GitRepoLoader(AbstractLoader):
                     GitRepoPropName.git_repo_root_base_name.name: repo_root_base_name,
                 })
                 self.enrich_git_repo_object(repo_envelope)
-                repo_envelopes.append(repo_envelope)
+
+                load_repo_entries = repo_entry[load_repo_entries_]
+                if load_repo_entries is None:
+                    load_repo_entries = load_git_repos_default
+                if load_repo_entries:
+                    repo_envelopes.append(repo_envelope)
 
                 load_repo_tags = repo_entry[load_repo_tags_]
-                if load_git_tags_default or load_repo_tags:
+                if load_repo_tags is None:
+                    load_repo_tags = load_git_tags_default
+                if load_repo_tags:
 
                     ########################################################################################################
                     # tags
@@ -303,7 +308,9 @@ class GitRepoLoader(AbstractLoader):
                         tag_envelopes.append(tag_envelope)
 
                 load_repo_commits = repo_entry[load_repo_commits_]
-                if load_git_commits_default or load_repo_commits:
+                if load_repo_commits is None:
+                    load_repo_commits = load_git_commits_default
+                if load_repo_commits:
 
                     ########################################################################################################
                     # commits
@@ -344,7 +351,7 @@ class GitRepoLoader(AbstractLoader):
                         self.enrich_git_repo_object(commit_envelope)
                         commit_envelopes.append(commit_envelope)
 
-        return static_data
+        return envelope_collections.values()
 
     # noinspection PyMethodMayBeStatic
     def get_commit_date_and_time(
@@ -382,6 +389,7 @@ class GitRepoLoader(AbstractLoader):
             return self.categorize_git_tag(data_envelope)
         return []
 
+    # noinspection PyMethodMayBeStatic
     def categorize_git_tag(
         self,
         data_envelope: dict,

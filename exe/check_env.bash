@@ -217,12 +217,28 @@ fi
 source "${argrelay_dir}/conf/check_env_plugin.conf.bash"
 
 ########################################################################################################################
-# Switch to Python:
+# Ensure config for Python `check_env` is present:
 
 if [[ ! -e "${argrelay_dir}/conf/check_env_plugin.conf.yaml" ]]
 then
     echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/conf/check_env_plugin.conf.yaml:${reset_style} ${argrelay_dir}/conf/check_env_plugin.conf.yaml ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
     exit 1
 fi
+
+########################################################################################################################
+# Start `check_env` in `dry_run` mode (e.g. ensure no config schema mismatch):
+
+set +e
+python -m argrelay.check_env "${argrelay_dir}" "dry_run"
+exit_code="${?}"
+set -e
+if [[ "${exit_code}" != "0" ]]
+then
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}check_env_python:${reset_style} ${failure_message}# Unable to run Python \`check_env\` in \`dry_run\` mode - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    exit 1
+fi
+
+########################################################################################################################
+# Run checks in Python:
 
 python -m argrelay.check_env "${argrelay_dir}" "${@}"

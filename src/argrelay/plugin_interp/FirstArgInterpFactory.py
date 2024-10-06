@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from argrelay.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
+from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
     ignored_func_ids_list_,
 )
 from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory, InterpTreeInterp
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data.DataModel import DataModel
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
@@ -35,14 +37,30 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
             server_config.server_plugin_control.composite_forest,
         )
 
+        self.mapped_func_ids: set[str] = set()
+        """
+        All `func_id`-s mapped somewhere within `composite_forest`.
+        """
+
+        self.index_props: set[str] = set()
+        """
+        All `index_props` used by all loaded funcs.
+        """
+
+        self.func_data_envelopes: list[dict] = []
+        """
+        All func `data_envelopes` loaded.
+        """
+
     def activate_plugin(
         self,
     ) -> None:
         """
         # NOTE: FS_42_76_93_51 first interp special case:
-        TODO: Think of anther way because `FirstArgInterp` is obsolete - this role here only extends its agony.
-        `FirstArgInterp` is used as the root and single instance which
-        triggers func loading of itself (and all others recursively).
+        # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
+                TODO: Think of anther way because `FirstArgInterp` is obsolete - this role here only extends its agony.
+                      `FirstArgInterp` is used as the root and single instance which
+                      triggers func loading of itself (and all others recursively).
 
         Takes part in implementation of FS_01_89_09_24 interp tree.
         """
@@ -62,10 +80,18 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
         self.load_interp_tree_abs_paths([])
 
         interp_tree_abs_path: tuple[str, ...] = tuple([])
-        mapped_func_ids: list[str] = self.load_func_envelopes(
+        (
+            mapped_func_ids,
+            index_props,
+            func_data_envelopes,
+        ) = self.load_func_envelopes(
             interp_tree_abs_path,
             func_ids_to_func_envelopes,
         )
+
+        self.mapped_func_ids.update(mapped_func_ids)
+        self.index_props.update(index_props)
+        self.func_data_envelopes.extend(func_data_envelopes)
 
         ignored_func_ids_list = self.plugin_config_dict.get(ignored_func_ids_list_, [])
         for func_id in func_ids_to_func_envelopes.keys():
@@ -89,6 +115,21 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
                 else:
                     # This `func_id` is mapped - skip:
                     continue
+
+    def is_root_func_loader(
+        self,
+    ) -> bool:
+        return True
+
+    def get_func_dynamic_index_props(
+        self,
+    ) -> list[str]:
+        return list(self.index_props)
+
+    def get_func_data_envelopes(
+        self,
+    ) -> list[dict]:
+        return self.func_data_envelopes
 
     def load_interp_tree_abs_paths(
         self,

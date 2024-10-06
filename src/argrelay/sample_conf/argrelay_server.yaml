@@ -66,11 +66,6 @@ gui_banner_config:
 
         </div>
 
-class_to_collection_map:
-    ClassCluster: ClassCluster
-    ClassHost: ClassHost
-    ClassService: ClassService
-
 server_plugin_control:
     first_interp_factory_id: FirstArgInterpFactory.default
 

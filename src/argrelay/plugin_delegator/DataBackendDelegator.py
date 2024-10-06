@@ -17,8 +17,8 @@ from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_a
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_context.SearchControl import SearchControl
+from argrelay.runtime_data.DataModel import index_props_
 from argrelay.runtime_data.ServerConfig import ServerConfig
-from argrelay.schema_config_core_server.EnvelopeCollectionSchema import index_props_
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
     envelope_payload_,
@@ -56,10 +56,8 @@ class DataBackendDelegator(AbstractDelegator):
         self,
     ) -> list[dict]:
 
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
-
         collection_search_control = populate_search_control(
-            class_to_collection_map,
+            ReservedEnvelopeClass.ClassCollectionMeta.name,
             ReservedEnvelopeClass.ClassCollectionMeta.name,
             [
                 {"collection": ReservedPropName.collection_name.name},
@@ -119,7 +117,7 @@ class DataBackendDelegator(AbstractDelegator):
 
                 # Construct `search_control` dynamically:
                 data_envelope_search_control_dict = populate_search_control(
-                    self.server_config.class_to_collection_map,
+                    collection_name,
                     # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
                     #       We specify `collection_name` instead of `class_name` while assuming they always match.
                     collection_name,
@@ -163,7 +161,7 @@ class DataBackendDelegator(AbstractDelegator):
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput.with_interp_context(
                     interp_ctx,
-                    delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
+                    delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
                         delegator_plugin_instance_id
                     ],
                     custom_plugin_data = {},

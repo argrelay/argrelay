@@ -17,7 +17,7 @@ from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory, 
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc, server_plugin_control_
 from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import (
@@ -101,10 +101,10 @@ class ThisTestClass(LocalTestClass):
                 # TODO: clean this up after investigation:
                 if False:
                     func_selector_tree_ = "func_selector_tree"
-                    val_a = plugin_config_dict[plugin_instance_entries_][
+                    val_a = plugin_config_dict[server_plugin_instances_][
                         f"{FuncTreeInterpFactory.__name__}.default"
                     ][plugin_config_][func_selector_tree_]["some_command"][""]
-                    val_b = plugin_config_dict[plugin_instance_entries_][
+                    val_b = plugin_config_dict[server_plugin_instances_][
                         f"{FuncTreeInterpFactory.__name__}.default"
                     ][plugin_config_][func_selector_tree_]["some_command"]["duplicates"][""]
                     print("1:", id(val_a))
@@ -113,10 +113,10 @@ class ThisTestClass(LocalTestClass):
                     assert id(val_a) == id(val_b), "this should not happen but it does"
                     # TODO: fixing the issue above (by dumping and re-loading)
                     plugin_config_dict = json.loads(json.dumps(plugin_config_dict))
-                    val_a = plugin_config_dict[plugin_instance_entries_][
+                    val_a = plugin_config_dict[server_plugin_instances_][
                         f"{FuncTreeInterpFactory.__name__}.default"
                     ][plugin_config_][func_selector_tree_]["some_command"][""]
-                    val_b = plugin_config_dict[plugin_instance_entries_][
+                    val_b = plugin_config_dict[server_plugin_instances_][
                         f"{FuncTreeInterpFactory.__name__}.default"
                     ][plugin_config_][func_selector_tree_]["some_command"]["duplicates"][""]
                     print("1:", id(val_a))
@@ -176,7 +176,7 @@ class ThisTestClass(LocalTestClass):
                     # Change config to cause validation error:
                     plugin_config_dict = plugin_config_desc.dict_from_default_file()
                     func_envelope = plugin_config_dict[
-                        plugin_instance_entries_
+                        server_plugin_instances_
                     ][
                         # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
                         f"{ConfigOnlyDelegator.__name__}.default"

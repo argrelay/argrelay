@@ -7,6 +7,7 @@ from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.TokenType import get_token_type, TokenType
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_context.InterpContext import InterpContext
+from argrelay.runtime_data.DataModel import DataModel
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
@@ -60,20 +61,65 @@ class AbstractInterpFactory(AbstractPluginServer):
         self,
         interp_tree_abs_path: tuple[str, ...],
         func_ids_to_func_envelopes: dict[str, dict],
-    ) -> list[str]:
+    ) -> tuple[
+        # mapped_func_ids:
+        list[str],
+        # index_props:
+        list[str],
+        # func_data_envelopes:
+        list[dict],
+    ]:
         """
         Load func `data_envelope`-s taking into account `interp_tree_abs_path`.
 
         Takes part in implementation of FS_01_89_09_24 interp tree.
 
-        Returns list of mapped `func_id`-s.
+        Returns:
+        *   list of mapped `func_id`-s
+        *   `index_prop`-s used by these `func_id`-s
         """
         if interp_tree_abs_path in self.interp_tree_abs_paths_to_node_configs:
             raise RuntimeError(f"`{interp_tree_abs_path}` has already been loaded")
         else:
             self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path] = deepcopy(self.plugin_config_dict)
 
-        return []
+        return (
+            [],
+            [],
+            [],
+        )
+
+    def is_root_func_loader(
+        self,
+    ) -> bool:
+        """
+        Indicates that it implements:
+        *   `get_loaded_func_data_model`
+        *   `get_func_data_envelopes`
+        """
+        # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
+        #       As of now, only `FirstArgInterpFactory` is supposed to return True.
+        return False
+
+    def get_func_dynamic_index_props(
+        self,
+    ) -> list[str]:
+        """
+        Provide `data_model` for `funcs` if `is_root_func_loader` returns `True`.
+        """
+        # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
+        #       As of now, it is only supposed to be implemented by `FirstArgInterpFactory`.
+        raise NotImplementedError
+
+    def get_func_data_envelopes(
+        self,
+    ) -> list[dict]:
+        """
+        Provide loaded func `data_envelope`-s if `is_root_func_loader` returns `True`.
+        """
+        # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
+        #       As of now, it is only supposed to be implemented by `FirstArgInterpFactory`.
+        raise NotImplementedError
 
     def create_interp(
         self,
