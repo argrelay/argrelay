@@ -14,7 +14,6 @@ from argrelay.handler_request.ProposeArgValuesServerRequestHandler import Propos
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
-    class_to_collection_map_,
 )
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
@@ -49,25 +48,12 @@ class ThisTestClass(LocalTestClass):
             # False,
         ]
 
-        # Related to FS_56_43_05_79 search diff collection:
-        # Uses separate collections for each class (False) or single collection for all (True).
-        # These are the `ServiceEnvelopeClass`-es handled only by `ServiceLoader` or `ServiceDelegator`
-        # (e.g. they exclude argrelay-managed `ReservedEnvelopeClass`-es).
-        use_single_collection_values: list[bool] = [
-            # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`
-            #       We can only use False now:
-            # True,
-            # Uncomment to use multiple collections (less clean measurement but more realistic config):
-            False,
-        ]
-
         # Report (multiple tables):
         # *   table selector A (1st index) = use_mongomock
-        # *   table selector B (2nd index) = use_single_collection
-        # *   Rows (3rd index) = DistinctValuesQuery
-        # *   Cols (4th index) = object_multiplier
+        # *   Rows (2nd index) = DistinctValuesQuery
+        # *   Cols (3rd index) = object_multiplier
         # *   Cell = query time in ms
-        report_tables: dict[bool, dict[bool, dict[DistinctValuesQuery, dict[int, float]]]] = {}
+        report_tables: dict[bool, dict[DistinctValuesQuery, dict[int, float]]] = {}
 
         object_multiplier_values = [
             3,
@@ -90,13 +76,12 @@ class ThisTestClass(LocalTestClass):
         ]
 
         # Extend test cases with generated data
-        # (Cartesian product with all `DistinctValuesQuery`, use_mongomock_values, use_single_collection_values, ...):
+        # (Cartesian product with all `DistinctValuesQuery`, use_mongomock_values, ...):
         extended_test_cases: list[tuple[
             int,
             str,
             CompType,
             int,
-            bool,
             bool,
             DistinctValuesQuery,
         ]] = []
@@ -104,7 +89,6 @@ class ThisTestClass(LocalTestClass):
             for extended_params in itertools.product(
                 object_multiplier_values,
                 use_mongomock_values,
-                use_single_collection_values,
                 distinct_value_queries,
             ):
                 extended_test_cases.append(test_case + extended_params)
@@ -118,7 +102,6 @@ class ThisTestClass(LocalTestClass):
                     comp_type,
                     object_multiplier,
                     use_mongomock,
-                    use_single_collection,
                     distinct_values_query,
                 ) = extended_test_case
 
@@ -134,46 +117,8 @@ class ThisTestClass(LocalTestClass):
 
                 ServiceLoader.object_multiplier = object_multiplier
 
-                # Overwrite server config to use single or multiple collections:
-                server_config_dict: dict = server_config_desc.dict_from_default_file()
-                if use_single_collection:
-                    server_config_dict[class_to_collection_map_] = {
-                        # ---
-                        ReservedEnvelopeClass.ClassFunction.name: ThisTestClass.__name__,
-                        # ---
-                        ServiceEnvelopeClass.ClassCluster.name: ThisTestClass.__name__,
-                        ServiceEnvelopeClass.ClassHost.name: ThisTestClass.__name__,
-                        ServiceEnvelopeClass.ClassService.name: ThisTestClass.__name__,
-                        ServiceEnvelopeClass.ClassAccessType.name: ThisTestClass.__name__,
-                        # ---
-                        GitRepoEnvelopeClass.ClassGitRepo.name: ThisTestClass.__name__,
-                        GitRepoEnvelopeClass.ClassGitTag.name: ThisTestClass.__name__,
-                        GitRepoEnvelopeClass.ClassGitCommit.name: ThisTestClass.__name__,
-                        # ---
-                        ReservedEnvelopeClass.ClassHelp.name: ThisTestClass.__name__,
-                        # ---
-                    }
-                else:
-                    server_config_dict[class_to_collection_map_] = {
-                        # ---
-                        ReservedEnvelopeClass.ClassFunction.name: ReservedEnvelopeClass.ClassFunction.name,
-                        # ---
-                        ServiceEnvelopeClass.ClassCluster.name: ServiceEnvelopeClass.ClassCluster.name,
-                        ServiceEnvelopeClass.ClassHost.name: ServiceEnvelopeClass.ClassHost.name,
-                        ServiceEnvelopeClass.ClassService.name: ServiceEnvelopeClass.ClassService.name,
-                        ServiceEnvelopeClass.ClassAccessType.name: ServiceEnvelopeClass.ClassAccessType.name,
-                        # ---
-                        GitRepoEnvelopeClass.ClassGitRepo.name: GitRepoEnvelopeClass.ClassGitRepo.name,
-                        GitRepoEnvelopeClass.ClassGitTag.name: GitRepoEnvelopeClass.ClassGitTag.name,
-                        GitRepoEnvelopeClass.ClassGitCommit.name: GitRepoEnvelopeClass.ClassGitCommit.name,
-                        # ---
-                        ReservedEnvelopeClass.ClassHelp.name: ReservedEnvelopeClass.ClassHelp.name,
-                        # ---
-                    }
-
                 env_mock_builder = (
                     ServerOnlyEnvMockBuilder()
-                    .set_server_config_dict(server_config_dict)
                     .set_enable_query_cache(False)
                     .set_use_mongomock(use_mongomock)
                     .set_distinct_values_query(distinct_values_query)
@@ -207,7 +152,6 @@ class ThisTestClass(LocalTestClass):
                         print("---")
                         print(f"distinct_values_query: {distinct_values_query}")
                         print(f"use_mongomock: {use_mongomock}")
-                        print(f"use_single_collection: {use_single_collection}")
                         print(f"object_multiplier: {object_multiplier}")
 
                         start_ns: int = time.time_ns()
@@ -221,10 +165,9 @@ class ThisTestClass(LocalTestClass):
                         diff_ns: int = stop_ns - start_ns
 
                         report_tables.setdefault(use_mongomock, {})
-                        report_tables[use_mongomock].setdefault(use_single_collection, {})
-                        report_tables[use_mongomock][use_single_collection].setdefault(distinct_values_query, {})
+                        report_tables[use_mongomock].setdefault(distinct_values_query, {})
 
-                        report_row = report_tables[use_mongomock][use_single_collection][distinct_values_query]
+                        report_row = report_tables[use_mongomock][distinct_values_query]
                         cell_value = diff_ns / 1_000_000_000
                         report_row[object_multiplier] = cell_value
 
@@ -239,16 +182,15 @@ class ThisTestClass(LocalTestClass):
 
         self.print_report(
             use_mongomock_values,
-            use_single_collection_values,
             object_multiplier_values,
             distinct_value_queries,
             report_tables,
         )
 
+    # noinspection PyMethodMayBeStatic
     def print_report(
         self,
         use_mongomock_values: list[bool],
-        use_single_collection_values: list[bool],
         object_multiplier_values: list[int],
         distinct_value_queries: list[DistinctValuesQuery],
         report_tables,
@@ -256,36 +198,34 @@ class ThisTestClass(LocalTestClass):
         number_cell_width = 10
 
         for use_mongomock in use_mongomock_values:
-            for use_single_collection in use_single_collection_values:
 
-                # Delimiter:
-                print("=" * 32)
-                print(f"use_mongomock: {use_mongomock}")
-                print(f"use_single_collection: {use_single_collection}")
-                print()
+            # Delimiter:
+            print("=" * 32)
+            print(f"use_mongomock: {use_mongomock}")
+            print()
 
-                # Header row:
-                print(f"{'object_multiplier':>32}", end = "")
+            # Header row:
+            print(f"{'object_multiplier':>32}", end = "")
+            for object_multiplier in object_multiplier_values:
+                print(f"{object_multiplier:>{number_cell_width}}", end = "")
+            print()
+
+            print(f"{'object_count':>32}", end = "")
+            for object_multiplier in object_multiplier_values:
+                # There are 5 loops, each with `object_multiplier` items:
+                print(f"{object_multiplier ** 5:>{number_cell_width}}", end = "")
+            print()
+
+            # delimiter:
+            print(f"{'-' * 32:>32}", end = "")
+
+            print()
+            for distinct_values_query in distinct_value_queries:
+                # Header column:
+                print(f"{distinct_values_query.name:>32}", end = "")
                 for object_multiplier in object_multiplier_values:
-                    print(f"{object_multiplier:>{number_cell_width}}", end = "")
+                    print(
+                        f"{report_tables[use_mongomock][distinct_values_query][object_multiplier]:>{number_cell_width}.3f}",
+                        end = "",
+                    )
                 print()
-
-                print(f"{'object_count':>32}", end = "")
-                for object_multiplier in object_multiplier_values:
-                    # There are 5 loops, each with `object_multiplier` items:
-                    print(f"{object_multiplier ** 5:>{number_cell_width}}", end = "")
-                print()
-
-                # delimiter:
-                print(f"{'-' * 32:>32}", end = "")
-
-                print()
-                for distinct_values_query in distinct_value_queries:
-                    # Header column:
-                    print(f"{distinct_values_query.name:>32}", end = "")
-                    for object_multiplier in object_multiplier_values:
-                        print(
-                            f"{report_tables[use_mongomock][use_single_collection][distinct_values_query][object_multiplier]:>{number_cell_width}.3f}",
-                            end = "",
-                        )
-                    print()

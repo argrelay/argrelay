@@ -23,10 +23,9 @@ class NoopDelegator(AbstractDelegator):
     def get_supported_func_envelopes(
         self,
     ) -> list[dict]:
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
 
         no_data_search_control = populate_search_control(
-            class_to_collection_map,
+            ReservedEnvelopeClass.ClassNoData.name,
             ReservedEnvelopeClass.ClassNoData.name,
             [
                 {"no_data_key_one": NoDataPropName.no_data_key_one.name},
@@ -72,7 +71,7 @@ class NoopDelegator(AbstractDelegator):
     ) -> InvocationInput:
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
+            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
                 self.plugin_instance_id
             ],
             custom_plugin_data = {},

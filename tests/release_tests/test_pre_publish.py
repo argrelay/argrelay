@@ -44,7 +44,7 @@ class ThisTestClass(BaseTestClass):
             found_one = False
             git_loader_plugin_entry: Union[PluginEntry, None] = None
             for plugin_instance_id in plugin_config.plugin_instance_id_activate_list:
-                plugin_entry: PluginEntry = plugin_config.plugin_instance_entries[plugin_instance_id]
+                plugin_entry: PluginEntry = plugin_config.server_plugin_instances[plugin_instance_id]
                 if (
                     plugin_entry.plugin_module_name == GitRepoLoader_module.__name__
                     and

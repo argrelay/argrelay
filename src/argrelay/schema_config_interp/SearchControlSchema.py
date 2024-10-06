@@ -87,18 +87,13 @@ search_control_desc = TypeDesc(
 
 
 def populate_search_control(
-    class_to_collection_map: dict,
+    collection_name: str,
     class_name: str,
     keys_to_types_list: list[dict],
 ) -> dict:
-    # If not overridden, each class name uses collection by its own name:
-    class_to_collection_map.setdefault(
-        class_name,
-        class_name,
-    )
 
     search_control: dict = {
-        collection_name_: class_to_collection_map[class_name],
+        collection_name_: collection_name,
         envelope_class_: class_name,
         keys_to_types_list_: keys_to_types_list,
     }

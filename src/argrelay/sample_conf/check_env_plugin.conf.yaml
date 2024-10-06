@@ -1,5 +1,5 @@
 
-check_env_plugin_instance_entries:
+check_env_plugin_instances:
 
     ####################################################################################################################
     # List of client-side plugins for FS_36_17_84_44 `check_env`

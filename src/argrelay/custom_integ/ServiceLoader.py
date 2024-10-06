@@ -12,9 +12,8 @@ from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
-from argrelay.runtime_data.StaticData import StaticData
-from argrelay.schema_config_core_server.EnvelopeCollectionSchema import init_envelop_collections
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     envelope_id_,
@@ -87,59 +86,54 @@ class ServiceLoader(AbstractLoader):
                     ReservedPropName.envelope_class.name,
                     ReservedPropName.arg_type.name,
                     ReservedPropName.arg_value.name,
+                    # `ReservedPropName.help_hint` is not indexed (not used in `search_control`) - instead,
+                    # it is a search result:
+                    # ReservedPropName.help_hint.name,
                 ],
             ),
         ]
 
-    def update_static_data(
+    def load_envelope_collections(
         self,
-        static_data: StaticData,
         query_engine: QueryEngine,
-    ) -> StaticData:
-
-        static_data = self.load_data_envelopes(static_data)
-
-        return static_data
-
-    # noinspection PyMethodMayBeStatic
-    def load_data_envelopes(
-        self,
-        static_data: StaticData,
-    ) -> StaticData:
+    ) -> list[EnvelopeCollection]:
         """
-        The loader writes samples into `static_data` simply from code (without any data source).
+        The loader returns `data_envelope`-s populated by code (without any data source).
         """
 
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
+        envelope_collections: dict[str, EnvelopeCollection] = {}
 
-        class_names = [
+        cluster_envelopes = envelope_collections.setdefault(
             ServiceEnvelopeClass.ClassCluster.name,
+            EnvelopeCollection(
+                collection_name = ServiceEnvelopeClass.ClassCluster.name,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
+
+        host_envelopes = envelope_collections.setdefault(
             ServiceEnvelopeClass.ClassHost.name,
+            EnvelopeCollection(
+                collection_name = ServiceEnvelopeClass.ClassHost.name,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
+
+        service_envelopes = envelope_collections.setdefault(
             ServiceEnvelopeClass.ClassService.name,
+            EnvelopeCollection(
+                collection_name = ServiceEnvelopeClass.ClassService.name,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
+
+        access_envelopes = envelope_collections.setdefault(
             ServiceEnvelopeClass.ClassAccessType.name,
-        ]
-
-        init_envelop_collections(
-            self.server_config.class_to_collection_map,
-            self.server_config.static_data.envelope_collections,
-            class_names,
-            # Same index fields for all collections (can be fine-tuned later):
-            lambda collection_name, class_name: [enum_item.name for enum_item in ServicePropName],
-        )
-
-        # Select `data_envelope` lists used by each collection name
-        cluster_envelopes = static_data.envelope_collections[
-            class_to_collection_map[ServiceEnvelopeClass.ClassCluster.name]
-        ].data_envelopes
-        host_envelopes = static_data.envelope_collections[
-            class_to_collection_map[ServiceEnvelopeClass.ClassHost.name]
-        ].data_envelopes
-        service_envelopes = static_data.envelope_collections[
-            class_to_collection_map[ServiceEnvelopeClass.ClassService.name]
-        ].data_envelopes
-        access_envelopes = static_data.envelope_collections[
-            class_to_collection_map[ServiceEnvelopeClass.ClassAccessType.name]
-        ].data_envelopes
+            EnvelopeCollection(
+                collection_name = ServiceEnvelopeClass.ClassAccessType.name,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
 
         self.populate_common_access_type(access_envelopes)
         self.populate_TD_63_37_05_36_default(
@@ -176,11 +170,10 @@ class ServiceLoader(AbstractLoader):
         self.generate_envelope_id(cluster_envelopes + host_envelopes + service_envelopes)
 
         self.generate_help_hints(
-            class_to_collection_map,
-            static_data,
+            envelope_collections,
         )
 
-        return static_data
+        return envelope_collections.values()
 
     # noinspection PyMethodMayBeStatic
     def generate_envelope_id(
@@ -208,9 +201,8 @@ class ServiceLoader(AbstractLoader):
 
     @staticmethod
     def generate_help_hints(
-        class_to_collection_map: dict,
-        static_data: StaticData,
-    ):
+        envelope_collections: dict[str, EnvelopeCollection],
+    ) -> list[dict]:
         """
         This demos FS_71_87_33_52 help_hint for `ServicePropName.ip_address`.
 
@@ -218,30 +210,15 @@ class ServiceLoader(AbstractLoader):
         values of `ServicePropName.ip_address` equal to corresponding `ServicePropName.host_name`.
         """
 
-        class_names = [
+        help_hint_envelopes = envelope_collections.setdefault(
             ReservedEnvelopeClass.ClassHelp.name,
-        ]
-        # Init index fields (if they do not exist):
-        help_hint_index_props = [
-            ReservedPropName.envelope_class.name,
-            ReservedPropName.arg_type.name,
-            ReservedPropName.arg_value.name,
-            # `ReservedPropName.help_hint` is not indexed (and uses as search param) - instead, it is a search result:
-            # ReservedPropName.help_hint.name,
-        ]
-        init_envelop_collections(
-            class_to_collection_map,
-            static_data.envelope_collections,
-            class_names,
-            lambda collection_name, class_name: help_hint_index_props,
-        )
+            EnvelopeCollection(
+                collection_name = ReservedEnvelopeClass.ClassHelp.name,
+                data_envelopes = [],
+            ),
+        ).data_envelopes
 
-        help_hint_envelopes = static_data.envelope_collections[
-            class_to_collection_map[ReservedEnvelopeClass.ClassHelp.name]
-        ].data_envelopes
-        host_envelopes = static_data.envelope_collections[
-            class_to_collection_map[ServiceEnvelopeClass.ClassHost.name]
-        ].data_envelopes
+        host_envelopes = envelope_collections[ServiceEnvelopeClass.ClassHost.name].data_envelopes
 
         # Generating `help_hint` data:
         for host_envelope in host_envelopes:
@@ -255,6 +232,8 @@ class ServiceLoader(AbstractLoader):
                         f"{ReservedPropName.arg_value.name}": f"{host_envelope[ServicePropName.ip_address.name]}",
                         f"{ReservedPropName.help_hint.name}": f"{host_envelope[ServicePropName.host_name.name]}",
                     })
+
+        return help_hint_envelopes
 
     def is_test_data_allowed(
         self,

@@ -70,10 +70,8 @@ class ServiceDelegator(AbstractDelegator):
         self,
     ) -> list[dict]:
 
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
-
         cluster_search_control = populate_search_control(
-            class_to_collection_map,
+            ServiceEnvelopeClass.ClassCluster.name,
             ServiceEnvelopeClass.ClassCluster.name,
             [
                 {"code": ServicePropName.code_maturity.name},
@@ -84,7 +82,7 @@ class ServiceDelegator(AbstractDelegator):
         )
 
         host_search_control = populate_search_control(
-            class_to_collection_map,
+            ServiceEnvelopeClass.ClassHost.name,
             ServiceEnvelopeClass.ClassHost.name,
             [
                 # ClassCluster:
@@ -101,7 +99,7 @@ class ServiceDelegator(AbstractDelegator):
         )
 
         service_search_control = populate_search_control(
-            class_to_collection_map,
+            ServiceEnvelopeClass.ClassService.name,
             ServiceEnvelopeClass.ClassService.name,
             [
                 # ClassCluster:
@@ -123,7 +121,7 @@ class ServiceDelegator(AbstractDelegator):
         )
 
         access_search_control = populate_search_control(
-            class_to_collection_map,
+            ServiceEnvelopeClass.ClassAccessType.name,
             ServiceEnvelopeClass.ClassAccessType.name,
             [
                 {"access": ServicePropName.access_type.name},
@@ -393,7 +391,7 @@ class ServiceDelegator(AbstractDelegator):
                 # Package into `InvocationInput` payload object:
                 invocation_input = InvocationInput.with_interp_context(
                     interp_ctx,
-                    delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
+                    delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
                         delegator_plugin_instance_id
                     ],
                     custom_plugin_data = {},

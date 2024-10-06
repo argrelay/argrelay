@@ -29,17 +29,6 @@ class AbstractPluginServer(AbstractPlugin):
         """
         return []
 
-    def validate_loaded_data(
-        self,
-        static_data: "StaticData"
-    ) -> None:
-        """
-        Callback to validate data after all :class:`AbstractLoader`-s completed loading data.
-
-        This is a chance for any plugin to verify that the data still matches its expectation.
-        """
-        pass
-
 
 def instantiate_server_plugin(
     server_config: ServerConfig,

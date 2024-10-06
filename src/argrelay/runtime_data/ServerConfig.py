@@ -8,7 +8,6 @@ from argrelay.relay_server.GuiBannerConfig import GuiBannerConfig
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.runtime_data.ServerPluginControl import ServerPluginControl
-from argrelay.runtime_data.StaticData import StaticData
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_enabled_, plugin_dependencies_
 
 
@@ -20,13 +19,7 @@ class ServerConfig:
     gui_banner_config: GuiBannerConfig = field()
     default_gui_command: str = field()
 
-    # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
-    class_to_collection_map: dict[str, str] = field()
-
     server_plugin_control: ServerPluginControl = field()
-
-    # TODO: TODO_00_79_72_55: remove in the future:
-    static_data: StaticData = field()
 
     plugin_instances: dict[str, "AbstractPluginServer"] = field(default_factory = lambda: {})
     """

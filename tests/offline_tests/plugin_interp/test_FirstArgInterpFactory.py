@@ -22,7 +22,7 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
 )
 from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
 from argrelay.schema_config_plugin.PluginConfigSchema import (
-    plugin_instance_entries_,
+    server_plugin_instances_,
     plugin_config_desc,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import (
@@ -52,7 +52,7 @@ class ThisTestClass(LocalTestClass):
         # Patch server config for `FirstArgInterpFactory`:
         # bind all `first_command_name`-s to `InterpTreeInterpFactory.default`:
         dependent_plugin_id = f"{FirstArgInterpFactory.__name__}.default"
-        plugin_entry = plugin_config_dict[plugin_instance_entries_][dependent_plugin_id]
+        plugin_entry = plugin_config_dict[server_plugin_instances_][dependent_plugin_id]
 
         # List all known `func_id`-s (without using them by this plugin) to keep validation happy:
         plugin_entry[plugin_config_][ignored_func_ids_list_] = [

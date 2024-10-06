@@ -4,7 +4,7 @@ from argrelay.enum_desc.PluginType import PluginType
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_data.DataModel import DataModel
-from argrelay.runtime_data.StaticData import StaticData
+from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 
 
 class AbstractLoader(AbstractPluginServer):
@@ -29,9 +29,12 @@ class AbstractLoader(AbstractPluginServer):
         """
         raise NotImplementedError
 
-    def update_static_data(
+    def load_envelope_collections(
         self,
-        static_data: StaticData,
         query_engine: QueryEngine,
-    ) -> StaticData:
-        pass
+    ) -> list[EnvelopeCollection]:
+        """
+        Return loaded `envelope_collection`-s possibly joining them with
+        data already stored in the backend accessible via `query_engine`.
+        """
+        return []

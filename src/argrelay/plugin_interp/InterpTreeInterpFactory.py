@@ -78,7 +78,14 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         self,
         interp_tree_abs_path: tuple[str, ...],
         func_ids_to_func_envelopes: dict[str, dict],
-    ) -> list[str]:
+    ) -> tuple[
+        # mapped_func_ids:
+        list[str],
+        # index_props:
+        list[str],
+        # func_data_envelopes:
+        list[dict],
+    ]:
         with self._is_recursive_load() as is_recursive_load:
             # TODO: FS_33_76_82_84 composite forest: add validation that same interp tree interp is not loaded twice - is it required (given that plugin instances can be reused)?
             if is_recursive_load:
@@ -107,8 +114,19 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         self,
         interp_tree_abs_path: tuple[str, ...],
         func_ids_to_func_envelopes: dict[str, dict],
-    ) -> list[str]:
-        mapped_func_ids: list[str] = super().load_func_envelopes(
+    ) -> tuple[
+        # mapped_func_ids:
+        list[str],
+        # index_props:
+        list[str],
+        # func_data_envelopes:
+        list[dict],
+    ]:
+        (
+            mapped_func_ids,
+            index_props,
+            func_data_envelopes,
+        ) = super().load_func_envelopes(
             interp_tree_abs_path,
             func_ids_to_func_envelopes,
         )
@@ -130,11 +148,22 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
                 )
                 interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_factory_instance_id]
 
-                mapped_func_ids.extend(interp_factory.load_func_envelopes(
+                (
+                    extra_mapped_func_ids,
+                    extra_index_props,
+                    extra_func_data_envelopes,
+                ) = interp_factory.load_func_envelopes(
                     tuple(sub_interp_tree_abs_path),
                     func_ids_to_func_envelopes,
-                ))
-        return mapped_func_ids
+                )
+                mapped_func_ids.extend(extra_mapped_func_ids)
+                index_props.extend(extra_index_props)
+                func_data_envelopes.extend(extra_func_data_envelopes)
+        return (
+            mapped_func_ids,
+            index_props,
+            func_data_envelopes,
+        )
 
     def create_interp(
         self,

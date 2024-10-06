@@ -20,7 +20,7 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.relay_client import __main__
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, plugin_instance_entries_
+from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no
 from argrelay.test_infra.BaseTestClass import BaseTestClass
@@ -142,7 +142,7 @@ class ThisTestClass(BaseTestClass):
 
                 # Modify config to enable `GitRepoLoader` plugin:
                 plugin_config_dict = plugin_config_desc.dict_from_default_file()
-                plugin_config_dict[plugin_instance_entries_][
+                plugin_config_dict[server_plugin_instances_][
                     f"{GitRepoLoader.__name__}.default"
                 ][plugin_config_] = plugin_config
 
@@ -163,7 +163,7 @@ class ThisTestClass(BaseTestClass):
                     local_server: LocalServer = command_obj.local_server
 
                     repo_envelopes = local_server.query_engine.query_data_envelopes(
-                        local_server.server_config.class_to_collection_map[GitRepoEnvelopeClass.ClassGitRepo.name],
+                        GitRepoEnvelopeClass.ClassGitRepo.name,
                         {
                             f"{ReservedPropName.envelope_class.name}": f"{GitRepoEnvelopeClass.ClassGitRepo.name}",
                         },

@@ -10,9 +10,10 @@ class_name_repo_ = "class_name_repo"
 class_name_tag_ = "class_name_tag"
 class_name_commit_ = "class_name_commit"
 
-# TODO: Add `load_git_repos_default` as well:
+load_git_repos_default_ = "load_git_repos_default"
 load_git_tags_default_ = "load_git_tags_default"
 load_git_commits_default_ = "load_git_commits_default"
+
 repo_entries_ = "repo_entries"
 
 
@@ -34,6 +35,11 @@ class GitRepoLoaderConfigSchema(Schema):
     class_name_commit = fields.String(
         required = False,
         load_default = GitRepoEnvelopeClass.ClassGitCommit.name,
+    )
+
+    load_git_repos_default = fields.Boolean(
+        required = False,
+        load_default = True,
     )
 
     load_git_tags_default = fields.Boolean(
@@ -67,6 +73,7 @@ git_repo_loader_config_desc = TypeDesc(
         class_name_repo_: GitRepoEnvelopeClass.ClassGitRepo.name,
         class_name_tag_: GitRepoEnvelopeClass.ClassGitTag.name,
         class_name_commit_: GitRepoEnvelopeClass.ClassGitCommit.name,
+        load_git_repos_default_: True,
         load_git_tags_default_: False,
         load_git_commits_default_: False,
         repo_entries_: {

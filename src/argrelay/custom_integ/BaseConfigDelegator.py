@@ -17,14 +17,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
-    search_control_list_,
     func_id_,
-)
-from argrelay.schema_config_interp.SearchControlSchema import (
-    collection_name_,
-    envelope_class_,
-    keys_to_types_list_,
-    populate_search_control,
 )
 from argrelay.schema_response.InvocationInput import InvocationInput
 
@@ -61,7 +54,6 @@ class BaseConfigDelegator(AbstractDelegator):
         """
 
         modified_plugin_config_dict = self.delegator_config_desc.dict_from_input_dict(plugin_config_dict)
-        class_to_collection_map: dict = self.server_config.class_to_collection_map
 
         func_configs: dict = modified_plugin_config_dict[func_configs_]
         for func_id, func_config in func_configs.items():
@@ -89,27 +81,6 @@ class BaseConfigDelegator(AbstractDelegator):
                 assert instance_data[delegator_plugin_instance_id_] == self.plugin_instance_id
             else:
                 instance_data[delegator_plugin_instance_id_] = self.plugin_instance_id
-
-            orig_search_control_list = func_envelope[instance_data_][search_control_list_]
-            next_search_control_list = []
-
-            for orig_search_control in orig_search_control_list:
-
-                next_search_control = populate_search_control(
-                    class_to_collection_map,
-                    orig_search_control[envelope_class_],
-                    orig_search_control[keys_to_types_list_],
-                )
-
-                # In general, it is allowed to have any `collection_name`, but it is likely an error
-                # if configured `collection_name` is different from what `class_to_collection_map` provides:
-                if collection_name_ in orig_search_control:
-                    assert orig_search_control[collection_name_] == next_search_control[collection_name_]
-
-                next_search_control_list.append(next_search_control)
-
-            # Replace:
-            func_envelope[instance_data_][search_control_list_] = next_search_control_list
 
             if envelope_payload_ in func_envelope:
                 envelope_payload = func_envelope[envelope_payload_]
@@ -190,7 +161,7 @@ class BaseConfigDelegator(AbstractDelegator):
         )
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.plugin_instance_entries[
+            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
                 delegator_plugin_instance_id
             ],
             custom_plugin_data = {},

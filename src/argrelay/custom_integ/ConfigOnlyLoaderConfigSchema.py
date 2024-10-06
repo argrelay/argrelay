@@ -12,6 +12,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
 )
 from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
+envelope_class_to_collection_name_map_ = "envelope_class_to_collection_name_map"
 collection_name_to_index_props_map_ = "collection_name_to_index_props_map"
 
 
@@ -23,6 +24,16 @@ class ConfigOnlyLoaderConfigSchema(Schema):
     class Meta:
         unknown = RAISE
         strict = True
+
+    # Specifies `collection_name` for each `envelope_class` to load.
+    # By default, if mapping for `envelope_class` is not specified,
+    # the same `collection_name` is used as `envelope_class`.
+    envelope_class_to_collection_name_map = fields.Dict(
+        keys = fields.String(),
+        values = fields.String(),
+        required = False,
+        load_default = {},
+    )
 
     collection_name_to_index_props_map = fields.Dict(
         keys = fields.String(),
@@ -43,6 +54,9 @@ config_only_loader_config_desc = TypeDesc(
     dict_schema = ConfigOnlyLoaderConfigSchema(),
     ref_name = ConfigOnlyLoaderConfigSchema.__name__,
     dict_example = {
+        envelope_class_to_collection_name_map_: {
+            ReservedEnvelopeClass.ClassFunction.name: ReservedEnvelopeClass.ClassFunction.name,
+        },
         collection_name_to_index_props_map_: {
             ReservedEnvelopeClass.ClassFunction.name: [
                 sample_field_type_A_,
