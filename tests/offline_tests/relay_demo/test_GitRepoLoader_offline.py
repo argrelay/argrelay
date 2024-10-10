@@ -453,14 +453,12 @@ class ThisTestClass(LocalTestClass):
                     assert isinstance(command_obj, ClientCommandLocal)
                     query_engine = command_obj.local_server.query_engine
 
-                    # Verify `class_name`-s:
-                    for class_name, class_name_existence in expected_data_envelopes_existence_per_collection.items():
+                    # Verify `collection_name`-s:
+                    for collection_name, class_name_existence in expected_data_envelopes_existence_per_collection.items():
 
                         data_envelopes = query_engine.query_data_envelopes(
-                            class_name,
-                            {
-                                f"{ReservedPropName.envelope_class.name}": f"{class_name}",
-                            },
+                            collection_name,
+                            {},
                         )
 
                         if class_name_existence:
@@ -469,19 +467,15 @@ class ThisTestClass(LocalTestClass):
                             assert len(data_envelopes) == 0
 
                     # Verify `prop_value`-s:
-                    for class_name, prop_value_existence_dict in expected_prop_values_existence_per_collection.items():
+                    for collection_name, prop_value_existence_dict in expected_prop_values_existence_per_collection.items():
 
                         data_envelopes = query_engine.query_data_envelopes(
-                            class_name,
-                            {
-                                f"{ReservedPropName.envelope_class.name}": f"{class_name}",
-                            },
+                            collection_name,
+                            {},
                         )
 
-                        index_props = command_obj.local_server.data_model_per_class_per_collection[
-                            class_name
-                        ][
-                            class_name
+                        index_props = command_obj.local_server.index_model_per_collection[
+                            collection_name
                         ].index_props
 
                         for prop_name, prop_value_existence in prop_value_existence_dict.items():

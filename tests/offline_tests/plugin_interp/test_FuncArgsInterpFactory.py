@@ -21,9 +21,9 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     func_id_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import (
-    envelope_class_,
-    keys_to_types_list_,
+    keys_to_props_list_,
     collection_name_,
+    props_to_values_dict_,
 )
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import (
@@ -73,8 +73,10 @@ class ThisTestClass(BaseTestClass):
             plugin_config_: {
                 func_search_control_: {
                     collection_name_: ReservedEnvelopeClass.ClassFunction.name,
-                    envelope_class_: ReservedEnvelopeClass.ClassFunction.name,
-                    keys_to_types_list_: [
+                    props_to_values_dict_: {
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                    },
+                    keys_to_props_list_: [
                         {type_1: type_1},
                         {type_2: type_2},
                     ],

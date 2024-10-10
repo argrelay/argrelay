@@ -8,7 +8,7 @@ from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
 )
 from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory, InterpTreeInterp
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 

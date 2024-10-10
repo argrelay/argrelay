@@ -880,10 +880,10 @@ function populate_envelope_containers(
         const envelope_class_elem = envelope_container_elem.querySelector(".envelope_class")
         const found_count_elem = envelope_container_elem.querySelector(".found_count")
         const arg_list_container_elem = envelope_container_elem.querySelector(".arg_list_container")
-        envelope_class_elem.textContent = envelope_container.search_control.envelope_class + ": "
+        envelope_class_elem.textContent = envelope_container.search_control.collection_name + ": "
         found_count_elem.textContent = envelope_container.found_count
 
-        for (const key_to_type_dict of envelope_container.search_control.keys_to_types_list) {
+        for (const key_to_type_dict of envelope_container.search_control.keys_to_props_list) {
 
             const arg_key = Object.keys(key_to_type_dict)[0];
             const arg_type = key_to_type_dict[arg_key];

@@ -26,8 +26,13 @@ class NoopDelegator(AbstractDelegator):
 
         no_data_search_control = populate_search_control(
             ReservedEnvelopeClass.ClassNoData.name,
-            ReservedEnvelopeClass.ClassNoData.name,
+            {
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassNoData.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"no_data_key_one": NoDataPropName.no_data_key_one.name},
                 {"no_data_key_two": NoDataPropName.no_data_key_two.name},
             ],

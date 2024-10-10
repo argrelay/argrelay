@@ -199,9 +199,11 @@ server_plugin_instance_groups:
                     OutputFormat: OutputFormat
                 collection_name_to_index_props_map:
                     ConfigOnlyClass:
+                        -   envelope_class
                         -   severity_level
                         -   exit_code
                     OutputFormat:
+                        -   envelope_class
                         -   output_format
                 data_envelopes:
                   !include "data/ConfigOnlyLoader.default.data.yaml"
@@ -220,8 +222,10 @@ server_plugin_instance_groups:
                                 search_control_list:
                                     -
                                         collection_name: ConfigOnlyClass
-                                        envelope_class: ConfigOnlyClass
-                                        keys_to_types_list:
+                                        props_to_values_dict:
+                                            envelope_class: ConfigOnlyClass
+                                        keys_to_props_list:
+                                            -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
                             envelope_payload:
@@ -235,8 +239,10 @@ server_plugin_instance_groups:
                                 search_control_list:
                                     -
                                         collection_name: ConfigOnlyClass
-                                        envelope_class: ConfigOnlyClass
-                                        keys_to_types_list:
+                                        props_to_values_dict:
+                                            envelope_class: ConfigOnlyClass
+                                        keys_to_props_list:
+                                            -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
                             envelope_payload:
@@ -251,8 +257,10 @@ server_plugin_instance_groups:
                                 search_control_list:
                                     -
                                         collection_name: ConfigOnlyClass
-                                        envelope_class: ConfigOnlyClass
-                                        keys_to_types_list:
+                                        props_to_values_dict:
+                                            envelope_class: ConfigOnlyClass
+                                        keys_to_props_list:
+                                            -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
                             envelope_payload:
@@ -281,14 +289,18 @@ server_plugin_instance_groups:
                                 search_control_list:
                                     -
                                         collection_name: ConfigOnlyClass
-                                        envelope_class: ConfigOnlyClass
-                                        keys_to_types_list:
+                                        props_to_values_dict:
+                                            envelope_class: ConfigOnlyClass
+                                        keys_to_props_list:
+                                            -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
                                     -
                                         collection_name: ConfigOnlyClass
-                                        envelope_class: ConfigOnlyClass
-                                        keys_to_types_list:
+                                        props_to_values_dict:
+                                            envelope_class: ConfigOnlyClass
+                                        keys_to_props_list:
+                                            -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
                             envelope_payload:

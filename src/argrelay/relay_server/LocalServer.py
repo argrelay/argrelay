@@ -26,7 +26,7 @@ from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.relay_server.UsageStatsStore import UsageStatsStore
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer, instantiate_server_plugin
 from argrelay.runtime_context.SearchControl import SearchControl
-from argrelay.runtime_data.DataModel import DataModel, index_props_
+from argrelay.runtime_data.IndexModel import IndexModel, index_props_
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
@@ -37,9 +37,8 @@ from argrelay.schema_config_core_server.EnvelopeCollectionSchema import (
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_, envelope_payload_, envelope_id_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
 from argrelay.schema_config_interp.SearchControlSchema import (
-    keys_to_types_list_,
+    keys_to_props_list_,
     collection_name_,
-    envelope_class_,
     search_control_desc,
 )
 
@@ -79,9 +78,9 @@ class LocalServer:
         Server uses `cleaned_mongo_collections` to track what collection have been cleaned once and what have not.
         """
 
-        # FS_45_08_22_15 data model manipulation:
-        # This internal server state is a convenience cache for data model which is also stored in data backend.
-        self.data_model_per_class_per_collection: dict[str, dict[str, DataModel]] = {}
+        # FS_45_08_22_15 index model:
+        # This internal server state is a convenience cache for index model which is also stored in data backend.
+        self.index_model_per_collection: dict[str, IndexModel] = {}
 
         # seconds since epoch:
         self.server_start_time: int = int(time.time())
@@ -214,7 +213,6 @@ class LocalServer:
         for envelope_collection_obj in envelope_collections:
             envelope_collection_dict = envelope_collection_desc.dict_schema.dump(envelope_collection_obj)
             envelope_collection_desc.validate_dict(envelope_collection_dict)
-            envelope_collection_desc.validate_dict(envelope_collection_dict)
 
     def _pre_validate_data_envelope_string_index_prop_values_per_step(
         self,
@@ -238,8 +236,7 @@ class LocalServer:
                 len(envelope_collection.data_envelopes),
             )
             for data_envelope in envelope_collection.data_envelopes:
-                envelope_class = data_envelope[ReservedPropName.envelope_class.name]
-                index_props = self.data_model_per_class_per_collection[collection_name][envelope_class].index_props
+                index_props = self.index_model_per_collection[collection_name].index_props
                 for index_prop in index_props:
                     if index_prop not in data_envelope:
                         # TODO: TODO_39_25_11_76: `data_envelope`-s with missing props:
@@ -253,51 +250,48 @@ class LocalServer:
 
                     prop_value = data_envelope[index_prop]
                     self._validate_string_prop_value(
-                        envelope_class,
+                        collection_name,
                         index_prop,
                         prop_value,
                     )
 
     def _validate_string_prop_value(
         self,
-        envelope_class,
+        collection_name,
         index_prop,
         prop_value,
     ):
         if isinstance(prop_value, str):
             if not prop_value and prop_value.strip():
-                raise ValueError(f"`{envelope_class}.{index_prop}` [{prop_value}] has to be non-blank string")
+                raise ValueError(f"`{collection_name}.{index_prop}` [{prop_value}] has to be non-blank string")
             if contains_whitespace(prop_value):
-                raise ValueError(f"`{envelope_class}.{index_prop}` [{prop_value}] cannot contain whitespace")
+                raise ValueError(f"`{collection_name}.{index_prop}` [{prop_value}] cannot contain whitespace")
         elif isinstance(prop_value, list):
             for prop_value_item in prop_value:
                 self._validate_string_prop_value(
-                    envelope_class,
+                    collection_name,
                     index_prop,
                     prop_value_item,
                 )
         else:
             # FS_06_99_43_60: list arg value:
-            raise ValueError(f"`{envelope_class}.{index_prop}` has to be a `list` of `str` or `str`")
+            raise ValueError(f"`{collection_name}.{index_prop}` has to be a `list` of `str` or `str`")
 
     def _post_validate_stored_data(
         self,
         progress_tracker: ProgressTracker,
     ):
-        search_props_per_class_per_collection: dict[str, dict[str, set[str]]] = self._scan_for_all_search_props()
-
         self._post_validate_all_data_envelope_for_missing_index_prop_names(
-            search_props_per_class_per_collection,
             progress_tracker,
         )
         self._post_validate_all_data_envelope_for_missing_search_prop_names(
-            search_props_per_class_per_collection,
+            self._scan_for_all_search_props(),
             progress_tracker,
         )
 
     def _post_validate_all_data_envelope_for_missing_search_prop_names(
         self,
-        search_props_per_class_per_collection: dict[str, dict[str, set[str]]],
+        search_props_per_collection: dict[str, set[str]],
         progress_tracker: ProgressTracker,
     ):
         """
@@ -311,74 +305,60 @@ class LocalServer:
 
         # TODO: Deduplicate with L <- R:
         # Compare L -> R:
-        # Ensure that `data_model` references are used in  some`search_control`.
-        for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
-            for class_name, data_model in data_model_per_class.items():
-                if (
-                    collection_name not in search_props_per_class_per_collection
-                    or
-                    class_name not in search_props_per_class_per_collection[collection_name]
-                ):
+        # Ensure that `index_model` references are used in  some`search_control`.
+        for collection_name, index_model in self.index_model_per_collection.items():
+            if collection_name not in search_props_per_collection:
+                progress_tracker.track_unused_index_props_per_collection_unused_by_search_control(
+                    collection_name,
+                    # all are unused:
+                    index_model.index_props,
+                )
+            else:
+                search_props = search_props_per_collection[collection_name]
+                unused_index_props = []
+                for index_prop in index_model.index_props:
+                    if index_prop not in search_props:
+                        unused_index_props.append(index_prop)
+                if len(unused_index_props) > 0:
                     progress_tracker.track_unused_index_props_per_collection_unused_by_search_control(
                         collection_name,
-                        class_name,
-                        # all are unused:
-                        data_model.index_props,
+                        # unused are selected only:
+                        unused_index_props,
                     )
-                else:
-                    search_props = search_props_per_class_per_collection[collection_name][class_name]
-                    unused_index_props = []
-                    for index_prop in data_model.index_props:
-                        if index_prop not in search_props:
-                            unused_index_props.append(index_prop)
-                    if len(unused_index_props) > 0:
-                        progress_tracker.track_unused_index_props_per_collection_unused_by_search_control(
-                            collection_name,
-                            class_name,
-                            # unused are selected only:
-                            unused_index_props,
-                        )
 
         # TODO: Deduplicate with L -> R:
         # Compare L <- R:
-        # Ensure that every `search_prop` is among the `index_prop`-s in `data_model`:
-        for collection_name, search_props_per_class in search_props_per_class_per_collection.items():
-            for class_name, search_props in search_props_per_class.items():
-                if (
-                    collection_name not in self.data_model_per_class_per_collection
-                    or
-                    class_name not in self.data_model_per_class_per_collection[collection_name]
-                ):
-                    progress_tracker.track_dangling_search_props_per_collection_undefined_by_data_model(
+        # Ensure that every `search_prop` is among the `index_prop`-s in `index_model`:
+        for collection_name, search_props in search_props_per_collection.items():
+            if collection_name not in self.index_model_per_collection:
+                progress_tracker.track_dangling_search_props_per_collection_undefined_by_index_model(
+                    collection_name,
+                    # all are dangling:
+                    search_props,
+                )
+            else:
+                search_props = search_props_per_collection[collection_name]
+                index_props = self.index_model_per_collection[collection_name].index_props
+                dangling_search_props = []
+                for search_prop in search_props:
+                    if search_prop not in index_props:
+                        dangling_search_props.append(search_prop)
+                if len(dangling_search_props) > 0:
+                    progress_tracker.track_dangling_search_props_per_collection_undefined_by_index_model(
                         collection_name,
-                        class_name,
-                        # all are dangling:
-                        search_props,
+                        # dangling are selected only:
+                        dangling_search_props,
                     )
-                else:
-                    search_props = search_props_per_class_per_collection[collection_name][class_name]
-                    index_props = self.data_model_per_class_per_collection[collection_name][class_name].index_props
-                    dangling_search_props = []
-                    for search_prop in search_props:
-                        if search_prop not in index_props:
-                            dangling_search_props.append(search_prop)
-                    if len(dangling_search_props) > 0:
-                        progress_tracker.track_dangling_search_props_per_collection_undefined_by_data_model(
-                            collection_name,
-                            class_name,
-                            # dangling are selected only:
-                            dangling_search_props,
-                        )
 
     def _scan_for_all_search_props(
         self,
-    ) -> dict[str, dict[str, set[str]]]:
+    ) -> dict[str, set[str]]:
         """
-        Build search prop names per (2-level map) `collection_name` and `envelope_class`
+        Build search `prop_name`-s per `collection_name`
         by scanning `search_control`-s for `prop_name`-s.
         """
 
-        search_props_per_class_per_collection: dict[str, dict[str, set[str]]] = {}
+        search_props_per_collection: dict[str, set[str]] = {}
 
         plugin_search_controls: list[SearchControl] = []
         for plugin_instance in self.server_config.plugin_instances.values():
@@ -386,9 +366,9 @@ class LocalServer:
 
         # Scan `search_control`-s of all plugins:
         for search_control in plugin_search_controls:
-            self._populate_search_props_per_class_per_collection(
+            self._populate_search_props_per_collection(
                 search_control_desc.dict_from_input_obj(search_control),
-                search_props_per_class_per_collection,
+                search_props_per_collection,
             )
 
         # Scan `search_control`-s of all funcs:
@@ -399,33 +379,28 @@ class LocalServer:
             },
         ):
             for search_control in func_envelope[instance_data_][search_control_list_]:
-                self._populate_search_props_per_class_per_collection(
+                self._populate_search_props_per_collection(
                     search_control,
-                    search_props_per_class_per_collection,
+                    search_props_per_collection,
                 )
 
-        return search_props_per_class_per_collection
+        return search_props_per_collection
 
     # noinspection PyMethodMayBeStatic
-    def _populate_search_props_per_class_per_collection(
+    def _populate_search_props_per_collection(
         self,
         search_control: dict,
-        search_props_per_class_per_collection,
+        search_props_per_collection,
     ):
         search_collection_name = search_control[collection_name_]
-        search_class_name = search_control[envelope_class_]
 
-        search_props_name_per_class = search_props_per_class_per_collection.setdefault(
+        search_props = search_props_per_collection.setdefault(
             search_collection_name,
-            {},
-        )
-        search_props = search_props_name_per_class.setdefault(
-            search_class_name,
-            set()
+            set(),
         )
 
         # TODO: TODO_66_66_75_78.split_arg_and_prop_concepts: Rename: `arg_type` to `prop_name`:
-        for key_to_value_dict in search_control[keys_to_types_list_]:
+        for key_to_value_dict in search_control[keys_to_props_list_]:
             assert type(key_to_value_dict) is dict
             assert len(key_to_value_dict) == 1
             search_prop_name = next(iter(key_to_value_dict.values()))
@@ -433,7 +408,6 @@ class LocalServer:
 
     def _post_validate_all_data_envelope_for_missing_index_prop_names(
         self,
-        search_props_per_class_per_collection: dict[str, dict[str, set[str]]],
         progress_tracker: ProgressTracker,
     ):
         """
@@ -446,9 +420,9 @@ class LocalServer:
 
         progress_tracker.track_total_validation_start()
 
-        # Verify that all prop names per (2-level map) `collection_name` and `envelope_class`
+        # Verify that all prop names per `collection_name`
         # exists in all corresponding `data_envelope`-s:
-        for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
+        for collection_name, index_model in self.index_model_per_collection.items():
             progress_tracker.track_collection_validation_start(collection_name)
 
             prev_found_missing_prop_names: dict[str, dict] = {}
@@ -459,10 +433,7 @@ class LocalServer:
             ):
                 progress_tracker.track_collection_validation_increment(collection_name)
 
-                envelope_class = data_envelope[ReservedPropName.envelope_class.name]
-                assert envelope_class in data_model_per_class
-
-                for prop_name in data_model_per_class[envelope_class].index_props:
+                for prop_name in index_model.index_props:
                     if prop_name not in data_envelope:
 
                         if prop_name not in prev_found_missing_prop_names:
@@ -472,7 +443,6 @@ class LocalServer:
                             self._raise_validation_error_for_missing_prop_name(
                                 True,
                                 collection_name,
-                                envelope_class,
                                 prop_name,
                                 data_envelope,
                                 prev_found_existing_prop_names[prop_name],
@@ -486,14 +456,13 @@ class LocalServer:
                             self._raise_validation_error_for_missing_prop_name(
                                 False,
                                 collection_name,
-                                envelope_class,
                                 prop_name,
                                 data_envelope,
                                 prev_found_missing_prop_names[prop_name],
                             )
                         prop_value = data_envelope[prop_name]
                         self._validate_string_prop_value(
-                            envelope_class,
+                            collection_name,
                             prop_name,
                             prop_value,
                         )
@@ -507,7 +476,6 @@ class LocalServer:
         self,
         is_missing_otherwise_existing_prop_name: bool,
         collection_name: str,
-        envelope_class: str,
         prop_name: str,
         curr_sample: dict,
         prev_sample: dict,
@@ -519,11 +487,11 @@ class LocalServer:
         # It is allowed to have no `prop_name` for all `data_envelope` until at least one has it.
         if is_missing_otherwise_existing_prop_name:
             raise ValueError(
-                f"data_envelope of (collection_name: `{collection_name}`, envelope_class: `{envelope_class}`) does not have (prop_name: `{prop_name}`) while another one had:\ncurr_sample:\n{curr_sample}\nprev_sample:\n{prev_sample}"
+                f"`data_envelope` of `collection_name` [{collection_name}] does not have `prop_name` [{prop_name}] while another one had:\ncurr_sample:\n{curr_sample}\nprev_sample:\n{prev_sample}"
             )
         else:
             raise ValueError(
-                f"data_envelope of (collection_name: `{collection_name}`, envelope_class: `{envelope_class}`) has (prop_name: `{prop_name}`) while another one did not have:\ncurr_sample:\n{curr_sample}\nprev_sample:\n{prev_sample}"
+                f"`data_envelope` of `collection_name` [{collection_name}] has `prop_name` [{prop_name}] while another one did not have:\ncurr_sample:\n{curr_sample}\nprev_sample:\n{prev_sample}"
             )
 
     def _start_mongo_server(
@@ -570,7 +538,7 @@ class LocalServer:
             collection_name = ReservedEnvelopeClass.ClassFunction.name,
             data_envelopes = self.root_func_loader.get_func_data_envelopes(),
         )
-        self._define_func_data_model(
+        self._define_func_index_model(
             func_envelope_collection,
         )
         # Initial step: store funcs and any data from config:
@@ -585,12 +553,12 @@ class LocalServer:
             if plugin_instance_id in self.server_config.data_loaders:
                 plugin_instance = self.server_config.data_loaders[plugin_instance_id]
 
-                # Use loader to define required FS_45_08_22_15 data models.
-                data_models: list[DataModel] = plugin_instance.list_data_models()
+                # Use loader to define required FS_45_08_22_15 index models.
+                index_models: list[IndexModel] = plugin_instance.list_index_models()
 
-                for data_model in data_models:
-                    self._define_data_model_step(
-                        data_model,
+                for index_model in index_models:
+                    self._define_index_model_step(
+                        index_model,
                     )
 
                 # Use loader to update data:
@@ -615,19 +583,19 @@ class LocalServer:
         progress_tracker,
     ):
         """
-        This method stores FS_45_08_22_15 data model into data backend.
+        This method stores FS_45_08_22_15 index model into data backend.
 
-        The data model (metadata) is used for FS_74_69_61_79 get set data envelope.
+        The index model (metadata) is used for FS_74_69_61_79 get set data envelope.
         """
 
         # Add generated `envelope_collection` (itself) for completeness:
-        self._define_data_model_step(
-            DataModel(
+        self._define_index_model_step(
+            IndexModel(
                 collection_name = ReservedEnvelopeClass.ClassCollectionMeta.name,
-                class_name = ReservedEnvelopeClass.ClassCollectionMeta.name,
                 index_props = [
-                    ReservedPropName.collection_name.name,
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     ReservedPropName.envelope_class.name,
+                    ReservedPropName.collection_name.name,
                 ],
             ),
         )
@@ -636,18 +604,16 @@ class LocalServer:
             collection_name = ReservedEnvelopeClass.ClassCollectionMeta.name,
             data_envelopes = []
         )
-        for collection_name, data_model_per_class in self.data_model_per_class_per_collection.items():
-            for class_name, data_model in data_model_per_class.items():
-                assert ReservedPropName.envelope_class.name in data_model.index_props
-                envelope_collection.data_envelopes.append({
-                    envelope_id_: f"{collection_name}:{class_name}",
-                    ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollectionMeta.name,
-                    # TODO: May add loader plugin instance name as metadata:
-                    ReservedPropName.collection_name.name: collection_name,
-                    envelope_payload_: {
-                        index_props_: list(data_model.index_props),
-                    },
-                })
+        for collection_name, index_model in self.index_model_per_collection.items():
+            envelope_collection.data_envelopes.append({
+                envelope_id_: f"{collection_name}",
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollectionMeta.name,
+                # TODO: May add loader plugin instance name as metadata:
+                ReservedPropName.collection_name.name: collection_name,
+                envelope_payload_: {
+                    index_props_: list(index_model.index_props),
+                },
+            })
 
         self._store_mongo_data_step(
             [envelope_collection],
@@ -655,14 +621,14 @@ class LocalServer:
             progress_tracker,
         )
 
-    def _define_func_data_model(
+    def _define_func_index_model(
         self,
         func_envelope_collection: EnvelopeCollection,
     ):
         """
-        Implements FS_45_08_22_15 data model manipulation.
+        Implements FS_45_08_22_15 index model.
 
-        Unlike most of other data, func data is not loaded via loaders and its data model is defined here.
+        Unlike most of other data, func data is not loaded via loaders and its index model is defined here.
         """
 
         func_index_props: list[str] = self.root_func_loader.get_func_dynamic_index_props()
@@ -675,24 +641,25 @@ class LocalServer:
         # These added after `_populate_func_missing_dynamic_props_` to ensure that they are populated explicitly.
         # Extend `index_props` for funcs:
         func_index_props.extend([
+            # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+            ReservedPropName.envelope_class.name,
             ReservedPropName.func_id.name,
             ReservedPropName.func_state.name,
         ])
 
-        func_data_model: DataModel = DataModel(
+        func_index_model: IndexModel = IndexModel(
             collection_name = ReservedEnvelopeClass.ClassFunction.name,
-            class_name = ReservedEnvelopeClass.ClassFunction.name,
             index_props = func_index_props,
         )
 
-        self._define_data_model_step(func_data_model)
+        self._define_index_model_step(func_index_model)
 
-    def _define_data_model_step(
+    def _define_index_model_step(
         self,
-        given_data_model: DataModel,
+        given_index_model: IndexModel,
     ):
         """
-        Implements internal API for FS_45_08_22_15 data model manipulation.
+        Implements internal API for FS_45_08_22_15 index model.
 
         If there are already existing list of `index_props` per `class_name` per `collection_name`,
         it is possible to call it again, but `index_props` must be exactly the same.
@@ -700,32 +667,24 @@ class LocalServer:
         but that data definition must match across all loaders working with this type.
 
         TODO: Limitation: this is append only at the moment
-              (you cannot remove added data model - you can only extend or restart server to start over).
+              (you cannot remove added index model - you can only extend or restart server to start over).
 
         TODO: Expose this via REST API.
         """
 
-        known_data_models: dict[str, DataModel] = self.data_model_per_class_per_collection.setdefault(
-            given_data_model.collection_name,
-            {},
-        )
+        known_index_model: dict[str, IndexModel] = self.index_model_per_collection
 
-        # It is fine not to list `ReservedPropName.envelope_class` as it is implied by `DataModel.class_name`.
-        # But it has to be present for search:
-        if ReservedPropName.envelope_class.name not in given_data_model.index_props:
-            given_data_model.index_props.append(ReservedPropName.envelope_class.name)
-
-        # Ensure `given_data_model` does not redefine `known_data_models` anyhow:
-        if given_data_model.class_name not in known_data_models:
-            known_data_models[given_data_model.class_name] = given_data_model
+        # Ensure `given_index_model` does not redefine `known_index_model` anyhow:
+        if given_index_model.collection_name not in known_index_model:
+            known_index_model[given_index_model.collection_name] = given_index_model
         else:
-            known_data_model = known_data_models[given_data_model.class_name]
+            known_index_model = known_index_model[given_index_model.collection_name]
             # Compare L to R:
-            for known_index_prop in known_data_model.index_props:
-                assert known_index_prop in given_data_model.index_props
+            for known_index_prop in known_index_model.index_props:
+                assert known_index_prop in given_index_model.index_props
             # Compare R to L:
-            for given_index_prop in given_data_model.index_props:
-                assert given_index_prop in known_data_model.index_props
+            for given_index_prop in given_index_model.index_props:
+                assert given_index_prop in known_index_model.index_props
 
     def _store_mongo_data_step(
         self,
@@ -762,14 +721,7 @@ class LocalServer:
         for envelope_collection in envelope_collections:
             collection_name = envelope_collection.collection_name
 
-            # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
-            #       Assuming for now `class_name` == `collection_name`:
-            class_name = collection_name
-
-            # Include `envelope_class` field into index by default:
-            index_props: list[str] = self.data_model_per_class_per_collection[collection_name][class_name].index_props
-            if ReservedPropName.envelope_class.name not in index_props:
-                index_props.append(ReservedPropName.envelope_class.name)
+            index_props: list[str] = self.index_model_per_collection[collection_name].index_props
 
             MongoClientWrapper.create_index(
                 mongo_db,

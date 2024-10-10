@@ -47,8 +47,13 @@ class InterceptDelegator(AbstractJumpDelegator):
 
         output_format_search_control = populate_search_control(
             output_format_class_name,
-            output_format_class_name,
+            {
+                ReservedPropName.envelope_class.name: output_format_class_name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"output": output_format_prop_name},
             ],
         )

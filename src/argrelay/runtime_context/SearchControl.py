@@ -6,8 +6,11 @@ from dataclasses import dataclass, field
 @dataclass
 class SearchControl:
     """
-    Implements FS_31_70_49_15: search control:
-    Object to specify what arg types will be used in search (and how they are mapped to named arg keys).
+    Implements:
+    *   FS_46_96_59_05 `init_control`
+    *   FS_31_70_49_15 `search control`
+
+    See also `SearchControlSchema`.
     """
 
     collection_name: str = field(default_factory = lambda: None)
@@ -15,41 +18,42 @@ class SearchControl:
     MongoDB collection to search `data_envelope`-s in.
     """
 
-    # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`
-    envelope_class: str = field(default_factory = lambda: None)
-    """
-    Specifies `ReservedPropName.envelope_class` to search.
-
-    Provides key-value pair (`ReservedPropName.envelope_class`, `envelope_class`) to be fixed in query.
-    If this field was not here, it would potentially become an issue because
-    user would need to be interrogated on command line to disambiguate `data_envelope`-s with same properties.
-    """
+    props_to_values_dict: dict[str, str] = field(default_factory = lambda: {})
 
     # A specs how to query `data_envelope` for this `EnvelopeContainer` (which arg types to use).
     # Direct list to preserve order:
-    keys_to_types_list: list[dict[str, str]] = field(default_factory = lambda: [])
+    keys_to_props_list: list[dict[str, str]] = field(default_factory = lambda: [])
 
-    # `keys_to_types_dict` is derived from `keys_to_types_list`:
+    # `keys_to_props_dict` is derived from `keys_to_props_list`:
     # Direct dict for quick lookup:
-    keys_to_types_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
+    keys_to_props_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
 
-    # `types_to_keys_dict` is derived from `keys_to_types_dict`:
+    # `props_to_keys_dict` is derived from `keys_to_props_dict`:
     # Reverse lookup:
-    types_to_keys_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
+    props_to_keys_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
 
     def __post_init__(self):
         self._init_derived_fields()
+        self._verify_prop_names_consistency()
 
     def _init_derived_fields(self):
-        self.keys_to_types_dict = self.convert_list_of_ordered_singular_dicts_to_unordered_dict(
-            self.keys_to_types_list
+        self.keys_to_props_dict = self.convert_list_of_ordered_singular_dicts_to_unordered_dict(
+            self.keys_to_props_list
         )
 
         # generate reverse:
-        self.types_to_keys_dict = {
+        self.props_to_keys_dict = {
             v: k for k, v in
-            self.keys_to_types_dict.items()
+            self.keys_to_props_dict.items()
         }
+
+    def _verify_prop_names_consistency(self):
+        """
+        Make sure `prop_name`-s specified in `props_to_values_dict` for FS_46_96_59_05 `init_control`
+        are also among `prop_name`-s specified for FS_31_70_49_15 `search control`.
+        """
+        for prop_name in self.props_to_values_dict:
+            assert prop_name in self.props_to_keys_dict
 
     @staticmethod
     def convert_list_of_ordered_singular_dicts_to_unordered_dict(dict_list: list[dict]) -> dict:
