@@ -28,7 +28,7 @@ def set_default_to(
     *   Ensure that this `prop_value` is actually one of the remaining ones.
     """
 
-    if prop_name in envelope_container.search_control.types_to_keys_dict:
+    if prop_name in envelope_container.search_control.props_to_keys_dict:
         if prop_name not in envelope_container.assigned_types_to_values:
             if prop_name in envelope_container.remaining_types_to_values:
                 if prop_value in envelope_container.remaining_types_to_values[prop_name]:

@@ -33,7 +33,7 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
@@ -74,19 +74,20 @@ class GitRepoLoader(AbstractLoader):
     ) -> dict:
         return git_repo_loader_config_desc.dict_from_input_dict(plugin_config_dict)
 
-    def list_data_models(
+    def list_index_models(
         self,
-    ) -> list[DataModel]:
+    ) -> list[IndexModel]:
 
         class_name_repo = self.plugin_config_dict[class_name_repo_]
         class_name_tag = self.plugin_config_dict[class_name_tag_]
         class_name_commit = self.plugin_config_dict[class_name_commit_]
 
         return [
-            DataModel(
+            IndexModel(
                 collection_name = class_name_repo,
-                class_name = class_name_repo,
                 index_props = [
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                    ReservedPropName.envelope_class.name,
                     GitRepoPropName.git_repo_alias.name,
                     GitRepoPropName.git_repo_root_abs_path.name,
                     GitRepoPropName.git_repo_root_rel_path.name,
@@ -95,10 +96,11 @@ class GitRepoLoader(AbstractLoader):
                     GitRepoPropName.git_repo_object_category.name,
                 ],
             ),
-            DataModel(
+            IndexModel(
                 collection_name = class_name_tag,
-                class_name = class_name_tag,
                 index_props = [
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                    ReservedPropName.envelope_class.name,
                     GitRepoPropName.git_repo_alias.name,
                     GitRepoPropName.git_repo_root_abs_path.name,
                     GitRepoPropName.git_repo_root_rel_path.name,
@@ -115,10 +117,11 @@ class GitRepoLoader(AbstractLoader):
                     GitRepoPropName.git_repo_object_category.name,
                 ],
             ),
-            DataModel(
+            IndexModel(
                 collection_name = class_name_commit,
-                class_name = class_name_commit,
                 index_props = [
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                    ReservedPropName.envelope_class.name,
                     GitRepoPropName.git_repo_alias.name,
                     GitRepoPropName.git_repo_root_abs_path.name,
                     GitRepoPropName.git_repo_root_rel_path.name,

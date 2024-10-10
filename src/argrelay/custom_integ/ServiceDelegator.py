@@ -72,8 +72,13 @@ class ServiceDelegator(AbstractDelegator):
 
         cluster_search_control = populate_search_control(
             ServiceEnvelopeClass.ClassCluster.name,
-            ServiceEnvelopeClass.ClassCluster.name,
+            {
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"code": ServicePropName.code_maturity.name},
                 {"stage": ServicePropName.flow_stage.name},
                 {"region": ServicePropName.geo_region.name},
@@ -83,8 +88,13 @@ class ServiceDelegator(AbstractDelegator):
 
         host_search_control = populate_search_control(
             ServiceEnvelopeClass.ClassHost.name,
-            ServiceEnvelopeClass.ClassHost.name,
+            {
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 # ClassCluster:
                 {"code": ServicePropName.code_maturity.name},
                 {"stage": ServicePropName.flow_stage.name},
@@ -100,8 +110,13 @@ class ServiceDelegator(AbstractDelegator):
 
         service_search_control = populate_search_control(
             ServiceEnvelopeClass.ClassService.name,
-            ServiceEnvelopeClass.ClassService.name,
+            {
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 # ClassCluster:
                 {"code": ServicePropName.code_maturity.name},
                 {"stage": ServicePropName.flow_stage.name},
@@ -122,8 +137,13 @@ class ServiceDelegator(AbstractDelegator):
 
         access_search_control = populate_search_control(
             ServiceEnvelopeClass.ClassAccessType.name,
-            ServiceEnvelopeClass.ClassAccessType.name,
+            {
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"access": ServicePropName.access_type.name},
             ],
         )

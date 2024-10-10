@@ -12,7 +12,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
@@ -52,27 +52,22 @@ class ConfigOnlyLoader(AbstractLoader):
         )
         self.plugin_config_dict = config_only_loader_config_desc.obj_from_input_dict(self.plugin_config_dict)
 
-    def list_data_models(
+    def list_index_models(
         self,
-    ) -> list[DataModel]:
+    ) -> list[IndexModel]:
 
         collection_name_to_index_props_map: dict[str, list[str]] = self.plugin_config_dict[
             collection_name_to_index_props_map_
         ]
-        data_models: list[DataModel] = []
+        index_models: list[IndexModel] = []
         for collection_name, index_props in collection_name_to_index_props_map.items():
 
-            data_models.append(DataModel(
+            index_models.append(IndexModel(
                 collection_name = collection_name,
-                # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`.
-                #       In the future, `class_name` will have to be removed from `data_model`.
-                #       As of now, we assume that `collection_name` with its `index_props` in config
-                #       actually matches `envelope_class` for `ConfigOnlyLoader`:
-                class_name = collection_name,
                 index_props = index_props,
             ))
 
-        return data_models
+        return index_models
 
     def load_envelope_collections(
         self,

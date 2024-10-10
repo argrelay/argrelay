@@ -192,15 +192,10 @@ class InterpContext:
         )
 
     def query_prop_values(self):
-        if not (
-            self.curr_container
-            and
-            self.curr_container.search_control.envelope_class
-        ):
-            # If `ReservedPropName.envelope_class` is not specified, nothing to search:
+        if not self.curr_container:
             return
 
-        ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.envelope_class}")
+        ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.collection_name}")
         query_dict = populate_query_dict(self.curr_container)
         query_result: QueryResult = self.query_engine.query_prop_values(
             query_dict,

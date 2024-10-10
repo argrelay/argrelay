@@ -71,6 +71,20 @@ class AbstractDelegator(AbstractPluginServer):
         """
         return []
 
+
+    def run_init_control(
+        self,
+        envelope_containers: list[EnvelopeContainer],
+        curr_container_ipos: int,
+    ) -> None:
+        """
+        Implements FS_46_96_59_05 `init_control`.
+        """
+        self.init_envelope_props(
+            envelope_containers,
+            curr_container_ipos,
+        )
+
     def run_search_control(
         self,
         interp_ctx: "InterpContext",
@@ -87,19 +101,6 @@ class AbstractDelegator(AbstractPluginServer):
             return search_control_list[func_param_container_offset]
         else:
             return None
-
-    def run_init_control(
-        self,
-        envelope_containers: list[EnvelopeContainer],
-        curr_container_ipos: int,
-    ) -> None:
-        """
-        Implements FS_46_96_59_05 `init_control`.
-        """
-        self.init_envelope_class(
-            envelope_containers,
-            curr_container_ipos,
-        )
 
     def has_fill_control(
         self,
@@ -172,17 +173,19 @@ class AbstractDelegator(AbstractPluginServer):
         ]
 
     @staticmethod
-    def init_envelope_class(
+    def init_envelope_props(
         envelope_containers: list[EnvelopeContainer],
         curr_container_ipos: int,
     ) -> None:
         """
-        Sets `ReservedPropName.envelope_class` according to FS_31_70_49_15 search control.
+        Sets `prop_value`-s according to `props_to_values_dict` for FS_46_96_59_05 `init_control`
+        (within `search_control` structures shared with FS_31_70_49_15 `search_control`).
         """
         curr_container = envelope_containers[curr_container_ipos]
-        curr_container.assigned_types_to_values[
-            ReservedPropName.envelope_class.name
-        ] = AssignedValue(
-            curr_container.search_control.envelope_class,
-            ArgSource.InitValue,
-        )
+        for prop_name, prop_value in curr_container.search_control.props_to_values_dict.items():
+            curr_container.assigned_types_to_values[
+                prop_name
+            ] = AssignedValue(
+                prop_value,
+                ArgSource.InitValue,
+            )

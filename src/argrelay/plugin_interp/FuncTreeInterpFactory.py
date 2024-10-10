@@ -29,7 +29,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
 from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_, init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import (
-    keys_to_types_list_,
+    keys_to_props_list_,
     populate_search_control,
     search_control_desc,
 )
@@ -277,25 +277,30 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
         plugin_search_control_dict: dict = populate_search_control(
             ReservedEnvelopeClass.ClassFunction.name,
-            ReservedEnvelopeClass.ClassFunction.name,
-            [],
+            {
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            },
+            [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+            ],
         )
 
         # `func_search_control` should include keys from the interp tree abs path:
-        keys_to_types_list = plugin_search_control_dict[keys_to_types_list_]
+        keys_to_props_list = plugin_search_control_dict[keys_to_props_list_]
 
         # Include func tree path:
         max_len = max_path_len(self.func_ids_to_func_abs_paths)
         for sel_ipos in range(max_len):
-            keys_to_types_list.append({
+            keys_to_props_list.append({
                 f"{path_step_key_arg_name(sel_ipos)}": f"{func_envelope_path_step_prop_name(sel_ipos)}"
             })
 
         # Include other fields:
-        keys_to_types_list.append({
+        keys_to_props_list.append({
             "state": ReservedPropName.func_state.name
         })
-        keys_to_types_list.append({
+        keys_to_props_list.append({
             "id": ReservedPropName.func_id.name
         })
 
@@ -672,7 +677,7 @@ class FuncTreeInterp(AbstractInterp):
         ):
             return [
                 type_name + SpecialChar.KeyValueDelimiter.value
-                for type_name in self.interp_ctx.curr_container.search_control.types_to_keys_dict
+                for type_name in self.interp_ctx.curr_container.search_control.props_to_keys_dict
                 if not type_name.startswith("_")
             ]
 
@@ -705,7 +710,7 @@ class FuncTreeInterp(AbstractInterp):
         proposed_values: list[str] = []
 
         # Return filtered value set from the next missing arg:
-        for arg_type in self.interp_ctx.curr_container.search_control.types_to_keys_dict:
+        for arg_type in self.interp_ctx.curr_container.search_control.props_to_keys_dict:
             if (
                 # TODO: only one condition should be enough: arg_type is either in one or in another, not in both:
                 arg_type not in self.interp_ctx.curr_container.assigned_types_to_values

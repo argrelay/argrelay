@@ -7,7 +7,7 @@ from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.TokenType import get_token_type, TokenType
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
@@ -94,7 +94,7 @@ class AbstractInterpFactory(AbstractPluginServer):
     ) -> bool:
         """
         Indicates that it implements:
-        *   `get_loaded_func_data_model`
+        *   `get_func_dynamic_index_props`
         *   `get_func_data_envelopes`
         """
         # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
@@ -105,7 +105,7 @@ class AbstractInterpFactory(AbstractPluginServer):
         self,
     ) -> list[str]:
         """
-        Provide `data_model` for `funcs` if `is_root_func_loader` returns `True`.
+        Provide `index_props` of `index_model` for `funcs` if `is_root_func_loader` returns `True`.
         """
         # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
         #       As of now, it is only supposed to be implemented by `FirstArgInterpFactory`.
