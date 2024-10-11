@@ -11,7 +11,7 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
@@ -49,40 +49,50 @@ class ServiceLoader(AbstractLoader):
     ) -> dict:
         return service_loader_config_desc.dict_from_input_dict(plugin_config_dict)
 
-    def list_data_models(
+    def list_index_models(
         self,
-    ) -> list[DataModel]:
+    ) -> list[IndexModel]:
 
         return [
-            DataModel(
+            IndexModel(
                 collection_name = ServiceEnvelopeClass.ClassCluster.name,
-                class_name = ServiceEnvelopeClass.ClassCluster.name,
-                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
-                index_props = [e.name for e in ServicePropName],
+                index_props = (
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                    [ReservedPropName.envelope_class.name] +
+                    # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                    [e.name for e in ServicePropName]
+                )
             ),
-            DataModel(
+            IndexModel(
                 collection_name = ServiceEnvelopeClass.ClassHost.name,
-                class_name = ServiceEnvelopeClass.ClassHost.name,
-                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
-                index_props = [e.name for e in ServicePropName],
+                index_props = (
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                    [ReservedPropName.envelope_class.name] +
+                    # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                    [e.name for e in ServicePropName]
+                )
             ),
-            DataModel(
+            IndexModel(
                 collection_name = ServiceEnvelopeClass.ClassService.name,
-                class_name = ServiceEnvelopeClass.ClassService.name,
-                # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
-                index_props = [e.name for e in ServicePropName],
+                index_props = (
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                    [ReservedPropName.envelope_class.name] +
+                    # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                    [e.name for e in ServicePropName]
+                )
             ),
-            DataModel(
+            IndexModel(
                 collection_name = ServiceEnvelopeClass.ClassAccessType.name,
-                class_name = ServiceEnvelopeClass.ClassAccessType.name,
                 index_props = [
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                    ReservedPropName.envelope_class.name,
                     ServicePropName.access_type.name,
                 ],
             ),
-            DataModel(
+            IndexModel(
                 collection_name = ReservedEnvelopeClass.ClassHelp.name,
-                class_name = ReservedEnvelopeClass.ClassHelp.name,
                 index_props = [
+                    # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     ReservedPropName.envelope_class.name,
                     ReservedPropName.arg_type.name,
                     ReservedPropName.arg_value.name,

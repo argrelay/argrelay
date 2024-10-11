@@ -15,7 +15,7 @@ from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
-from argrelay.schema_config_interp.SearchControlSchema import keys_to_types_list_
+from argrelay.schema_config_interp.SearchControlSchema import keys_to_props_list_
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no, parse_line_and_cpos
@@ -283,7 +283,7 @@ exit 1
                     ][
                         0
                     ][
-                        keys_to_types_list_
+                        keys_to_props_list_
                     ].append({
                         "some_key": UNKNOWN_INDEX_PROP_NAME,
                     })
@@ -294,10 +294,8 @@ exit 1
                         self._init_local_server(env_mock_builder)
                     self.assertEqual(
                         (
-                            f"`search_control` components not in `data_model`: "
+                            f"`search_control` components not in `index_model`: "
                             f"`collection_name` [ConfigOnlyClass] "
-                            # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
-                            f"`class_name` [ConfigOnlyClass] "
                             f"`search_props`: {UNKNOWN_INDEX_PROP_NAME} "
                         ),
                         cm.exception.args[0],

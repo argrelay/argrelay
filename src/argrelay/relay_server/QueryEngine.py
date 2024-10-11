@@ -91,8 +91,14 @@ class QueryEngine:
         """
 
         if self.enable_query_cache:
+            # Wrap `query_dict` into another dict (specifying `collection_name`) to be used serialized into cache key:
+            query_spec = {
+                ReservedPropName.collection_name.name: search_control.collection_name,
+                "": query_dict,
+            }
+
             ElapsedTime.measure("before_cache_lookup")
-            query_key = json.dumps(query_dict, separators = (",", ":"))
+            query_key = json.dumps(query_spec, separators = (",", ":"))
             query_result = self.query_cache.get(query_key)
             ElapsedTime.measure("after_cache_lookup")
             if query_result:
@@ -179,7 +185,7 @@ class QueryEngine:
         data_envelopes = []
 
         # Construct grouping instruction:
-        for prop_name in search_control.types_to_keys_dict:
+        for prop_name in search_control.props_to_keys_dict:
             # If assigned/consumed, `arg_type` must not appear as an option again:
             if prop_name not in assigned_types_to_values:
 
@@ -226,7 +232,7 @@ class QueryEngine:
 
         # Construct grouping instruction:
         inner_group_dict: dict = group_dict["$group"]
-        for prop_name in search_control.types_to_keys_dict:
+        for prop_name in search_control.props_to_keys_dict:
             # If assigned/consumed, `arg_type` must not appear as an option again:
             if prop_name not in assigned_types_to_values:
                 inner_group_dict[prop_name] = {
@@ -307,7 +313,7 @@ class QueryEngine:
         for data_envelope in iter(mongo_result):
             found_count += 1
             # `arg_type` must be known:
-            for arg_type in search_control.types_to_keys_dict:
+            for arg_type in search_control.props_to_keys_dict:
                 # `arg_type` must be in one of the `data_envelope`-s found:
                 if arg_type in data_envelope:
                     # If assigned/consumed, `arg_type` must not appear
@@ -366,11 +372,9 @@ def scalar_to_list_values(arg_type_val: list | str) -> list[str]:
 def populate_query_dict(
     envelope_container: EnvelopeContainer,
 ) -> dict:
-    query_dict = {
-        ReservedPropName.envelope_class.name: envelope_container.search_control.envelope_class,
-    }
+    query_dict = {}
     # FS_31_70_49_15: populate arg values to search from the context:
-    for arg_type in envelope_container.search_control.types_to_keys_dict:
+    for arg_type in envelope_container.search_control.props_to_keys_dict:
         if arg_type in envelope_container.assigned_types_to_values:
             query_dict[arg_type] = envelope_container.assigned_types_to_values[arg_type].arg_value
     return query_dict

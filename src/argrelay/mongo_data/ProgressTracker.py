@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from typing import Collection
 
 from argrelay.misc_helper_common import eprint
-from argrelay.schema_config_interp.SearchControlSchema import envelope_class_
 
 
 @dataclass
@@ -24,82 +23,58 @@ class ProgressTracker:
     # TODO: Provide a way to exclude some collection_name and envelope_classes from
     #       requirement of being part of `search_control`.
     #       For example, `ReservedEnvelopeClass.ClassHelp` is used internally (may not be used by `search_control`).
-    unused_index_props_per_class_per_collection: dict[str, dict[str, set[str]]] = field(default_factory = lambda: {})
+    unused_index_props_per_collection: dict[str, set[str]] = field(default_factory = lambda: {})
 
-    dangling_search_props_per_class_per_collection: dict[str, dict[str, set[str]]] = field(default_factory = lambda: {})
+    dangling_search_props_per_collection: dict[str, set[str]] = field(default_factory = lambda: {})
 
     def track_unused_index_props_per_collection_unused_by_search_control(
         self,
         collection_name: str,
-        # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
-        class_name: str,
         index_props: Collection[str],
     ):
         """
-        TODO: deduplicate with `track_dangling_search_props_per_collection_undefined_by_data_model`
+        TODO: deduplicate with `track_dangling_search_props_per_collection_undefined_by_index_model`
         """
         assert len(index_props) > 0
-        if len(index_props) == 1:
-            if envelope_class_ in index_props:
-                # Do not report `envelope_class` `search_prop` as unused because it is currently implicitly
-                # added to be search even if `search_control` does not list that.
-                # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
-                #       Eventually (when `class_name` is removed from `search_control` data structure as bespoke field),
-                #       it has to be explicitly listed in `search_control`
-                #       to avoid finding object of different `envelope_class`.
-                return
-
-        self.unused_index_props_per_class_per_collection.setdefault(
+        self.unused_index_props_per_collection.setdefault(
             collection_name,
-            {},
-        ).setdefault(
-            class_name,
             set(),
         ).update(index_props)
 
         prop_names = " ".join(index_props)
         eprint(
-            f"`data_model` components not used by any `search_control`: "
+            f"`index_model` components not used by any `search_control`: "
             f"`collection_name` [{collection_name}] "
-            # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
-            f"`class_name` [{class_name}] "
             f"`index_props`: {prop_names} "
         )
 
-    def track_dangling_search_props_per_collection_undefined_by_data_model(
+    def track_dangling_search_props_per_collection_undefined_by_index_model(
         self,
         collection_name: str,
-        # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
-        class_name: str,
         search_props: Collection[str],
     ):
         """
         TODO: deduplicate with `track_unused_index_props_per_collection_unused_by_search_control`
         """
         assert len(search_props) > 0
-        self.dangling_search_props_per_class_per_collection.setdefault(
+        self.dangling_search_props_per_collection.setdefault(
             collection_name,
-            {},
-        ).setdefault(
-            class_name,
             set(),
         ).update(search_props)
 
         prop_names = " ".join(search_props)
         error_message = (
             f"`collection_name` [{collection_name}] "
-            # TODO: TODO_98_35_14_72: exclude `class_name` from `search_control`:
-            f"`class_name` [{class_name}] "
             f"`search_props`: {prop_names} "
         )
         if self.collection_sizes.get(collection_name, 0) == 0:
             eprint(
-                f"`search_control` components not in `data_model` (but ignoring as collection is empty now): " +
+                f"`search_control` components not in `index_model` (but ignoring as collection is empty now): " +
                 error_message
             )
         else:
             raise ValueError(
-                f"`search_control` components not in `data_model`: " +
+                f"`search_control` components not in `index_model`: " +
                 error_message
             )
 
@@ -111,7 +86,7 @@ class ProgressTracker:
                 eprint(f"`collection_name` [{collection_name}] size: {collection_size}")
         for collection_name, collection_size in self.collection_sizes.items():
             if collection_size == 0:
-                eprint(f"`data_model` declares `collection_name` [{collection_name}] but it is empty")
+                eprint(f"`index_model` declares `collection_name` [{collection_name}] but it is empty")
 
     def _assert_intermediate_progress(
         self,

@@ -197,7 +197,7 @@ class ThisTestClass(LocalTestClass):
                         self._start_server(env_mock_builder)
                     self.assertTrue(
                         cm.exception.args[0].startswith(
-                            "data_envelope of (collection_name: `ClassFunction`, envelope_class: `ClassFunction`) does not have (prop_name: `func_state`) while another one had:",
+                            "`data_envelope` of `collection_name` [ClassFunction] does not have `prop_name` [func_state] while another one had:",
                         ),
                     )
                 else:
