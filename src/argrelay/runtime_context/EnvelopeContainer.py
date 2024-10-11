@@ -83,7 +83,7 @@ class EnvelopeContainer:
 
         any_assigned = False
         # Filter as in: FS_31_70_49_15 search control:
-        for arg_type in self.search_control.keys_to_types_dict.values():
+        for arg_type in self.search_control.keys_to_props_dict.values():
             if arg_type not in self.assigned_types_to_values:
                 if arg_type in self.remaining_types_to_values:
                     arg_values = self.remaining_types_to_values[arg_type]

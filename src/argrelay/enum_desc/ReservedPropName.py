@@ -7,6 +7,11 @@ class ReservedPropName(Enum):
     """
 
     collection_name = auto()
+    """
+    Normally, `collection_name` is not part of `data_envelope` - instead, it is only used in MongoDB query API.
+    But it is part of `data_envelope` (see FS_74_69_61_79 get set data envelope)
+    with `ReservedEnvelopeClass.ClassCollectionMeta` `envelope_class`.
+    """
 
     # TODO: Maybe rename to `envelope_class` everywhere for consistency?
     envelope_class = auto()

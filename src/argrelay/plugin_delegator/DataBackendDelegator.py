@@ -17,7 +17,7 @@ from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_a
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_context.SearchControl import SearchControl
-from argrelay.runtime_data.DataModel import index_props_
+from argrelay.runtime_data.IndexModel import index_props_
 from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
@@ -58,8 +58,13 @@ class DataBackendDelegator(AbstractDelegator):
 
         collection_search_control = populate_search_control(
             ReservedEnvelopeClass.ClassCollectionMeta.name,
-            ReservedEnvelopeClass.ClassCollectionMeta.name,
+            {
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollectionMeta.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"collection": ReservedPropName.collection_name.name},
             ],
         )
@@ -110,18 +115,16 @@ class DataBackendDelegator(AbstractDelegator):
                 index_props: list[str] = collection_name_container.data_envelopes[0][envelope_payload_][index_props_]
                 collection_name = collection_name_container.data_envelopes[0][ReservedPropName.collection_name.name]
 
-                keys_to_types_list: list[dict] = []
+                keys_to_props_list: list[dict] = []
                 for index_prop in index_props:
                     # For metadata: arg name is the same as prop name:
-                    keys_to_types_list.append({index_prop: index_prop})
+                    keys_to_props_list.append({index_prop: index_prop})
 
                 # Construct `search_control` dynamically:
                 data_envelope_search_control_dict = populate_search_control(
                     collection_name,
-                    # TODO: TODO_08_25_32_95: redesign `class_to_collection_map`:
-                    #       We specify `collection_name` instead of `class_name` while assuming they always match.
-                    collection_name,
-                    keys_to_types_list,
+                    {},
+                    keys_to_props_list,
                 )
                 data_envelope_search_control_obj = search_control_desc.dict_schema.load(
                     data_envelope_search_control_dict,

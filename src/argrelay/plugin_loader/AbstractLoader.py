@@ -3,7 +3,7 @@ from __future__ import annotations
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
-from argrelay.runtime_data.DataModel import DataModel
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 
 
@@ -21,11 +21,11 @@ class AbstractLoader(AbstractPluginServer):
     ) -> PluginType:
         return PluginType.LoaderPlugin
 
-    def list_data_models(
+    def list_index_models(
         self,
-    ) -> list[DataModel]:
+    ) -> list[IndexModel]:
         """
-        Provides list of data models for FS_45_08_22_15 data model manipulation API.
+        Provides list of index models for FS_45_08_22_15 index model API.
         """
         raise NotImplementedError
 

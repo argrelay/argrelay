@@ -57,8 +57,13 @@ class GitRepoDelegator(AbstractDelegator):
 
         repo_search_control = populate_search_control(
             GitRepoEnvelopeClass.ClassGitRepo.name,
-            GitRepoEnvelopeClass.ClassGitRepo.name,
+            {
+                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitRepo.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"category": GitRepoPropName.git_repo_object_category.name},
                 {"alias": GitRepoPropName.git_repo_alias.name},
                 {"content": GitRepoPropName.git_repo_content_type.name},
@@ -70,8 +75,13 @@ class GitRepoDelegator(AbstractDelegator):
 
         tag_search_control = populate_search_control(
             GitRepoEnvelopeClass.ClassGitTag.name,
-            GitRepoEnvelopeClass.ClassGitTag.name,
+            {
+                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitTag.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"category": GitRepoPropName.git_repo_object_category.name},
 
                 {"alias": GitRepoPropName.git_repo_alias.name},
@@ -89,8 +99,13 @@ class GitRepoDelegator(AbstractDelegator):
 
         commit_search_control = populate_search_control(
             GitRepoEnvelopeClass.ClassGitCommit.name,
-            GitRepoEnvelopeClass.ClassGitCommit.name,
+            {
+                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitCommit.name,
+            },
             [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                {"class": ReservedPropName.envelope_class.name},
+
                 {"category": GitRepoPropName.git_repo_object_category.name},
 
                 {"alias": GitRepoPropName.git_repo_alias.name},
