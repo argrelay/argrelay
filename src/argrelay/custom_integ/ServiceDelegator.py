@@ -26,7 +26,7 @@ from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
     error_code_,
     error_delegator_stub_custom_data_example,
 )
-from argrelay.plugin_delegator.delegator_utils import set_default_to, redirect_to_error, redirect_to_no_func_error
+from argrelay.plugin_delegator.delegator_utils import set_default_to, redirect_to_error, redirect_to_not_disambiguated_error
 from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
@@ -418,9 +418,15 @@ class ServiceDelegator(AbstractDelegator):
                 )
                 return invocation_input
             else:
-                return redirect_to_no_func_error(
+                envelope_class = None
+                if func_id == func_id_list_host_:
+                    envelope_class = ServiceEnvelopeClass.ClassHost.name
+                if func_id == func_id_list_service_:
+                    envelope_class = ServiceEnvelopeClass.ClassService.name
+                return redirect_to_not_disambiguated_error(
                     interp_ctx,
-                    local_server.server_config,
+                    local_server.plugin_config,
+                    envelope_class,
                 )
         elif func_id in [
             func_id_desc_host_,

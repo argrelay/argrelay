@@ -369,8 +369,9 @@ class ThisTestClass(LocalTestClass):
         func_tree_main = {
             "echo": "func_id_echo_args",
             "no_data": SpecialFunc.func_id_no_data.name,
-            "meta": {
+            "data": {
                 "get": SpecialFunc.func_id_get_data_envelopes.name,
+                "set": SpecialFunc.func_id_set_data_envelopes.name,
             },
             "goto": {
                 "repo": "func_id_goto_git_repo",

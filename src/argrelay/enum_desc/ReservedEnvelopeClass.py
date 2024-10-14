@@ -15,7 +15,7 @@ class ReservedEnvelopeClass(Enum):
     See FS_71_87_33_52 help_hint.
     """
 
-    ClassCollectionMeta = auto()
+    ClassCollection = auto()
     """
     See FS_74_69_61_79 get set data envelope.
     """

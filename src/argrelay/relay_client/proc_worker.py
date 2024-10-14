@@ -7,7 +7,6 @@ def worker_main(
     proc_role,
     is_optimized_completion,
     w_pipe_end,
-    shell_ctx,
     server_index: int,
 ) -> "ClientCommandAbstract":
     if client_config.use_local_requests:
@@ -31,6 +30,6 @@ def worker_main(
     command_obj = abstract_client.make_request(call_ctx)
 
     ElapsedTime.measure("on_exit")
-    if shell_ctx.is_debug_enabled:
+    if call_ctx.is_debug_enabled:
         ElapsedTime.print_all()
     return command_obj

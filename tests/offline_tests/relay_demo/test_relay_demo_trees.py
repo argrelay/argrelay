@@ -46,6 +46,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                 line_no(), "some_command |", CompType.PrefixHidden,
                 [
                     "config",
+                    "data",
                     "desc",
                     "diff",
                     "duplicates",
@@ -55,7 +56,6 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     "help",
                     "intercept",
                     "list",
-                    "meta",
                     "no_data",
                 ],
                 "Basic test.",

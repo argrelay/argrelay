@@ -23,6 +23,7 @@ class CallContext:
     client_uid: str = field()
     client_pid: int = field()
     is_debug_enabled: bool = field()
+    input_data: str = field()
 
     def print_debug(
         self,

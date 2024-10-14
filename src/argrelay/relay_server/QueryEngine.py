@@ -8,7 +8,6 @@ from pymongo.cursor import Cursor
 from pymongo.database import Database
 
 from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.relay_server.QueryCacheConfig import QueryCacheConfig
@@ -29,10 +28,13 @@ class QueryEngine:
         distinct_values_query: DistinctValuesQuery,
     ):
         self.mongo_db: Database = mongo_db
-        self.query_cache: TTLCache = TTLCache(
-            maxsize = query_cache_config.query_cache_max_size_bytes,
-            ttl = query_cache_config.query_cache_ttl_sec,
-        )
+
+        self.query_cache_max_size_bytes = query_cache_config.query_cache_max_size_bytes
+        self.query_cache_ttl_sec = query_cache_config.query_cache_ttl_sec
+
+        # There is a separate cache per `collection_name`:
+        self.query_caches: dict[str, TTLCache] = {}
+
         self.enable_query_cache: bool = query_cache_config.enable_query_cache
         self.distinct_values_query: DistinctValuesQuery = distinct_values_query
 
@@ -72,6 +74,13 @@ class QueryEngine:
     ) -> Cursor:
         return self.mongo_db[collection_name].find(query_dict)
 
+    def invalidate_cache_for_collection(
+        self,
+        collection_name: str,
+    ):
+        query_cache = self._get_query_cache_for_collection(collection_name)
+        query_cache.clear()
+
     def query_prop_values(
         self,
         query_dict: dict,
@@ -91,15 +100,10 @@ class QueryEngine:
         """
 
         if self.enable_query_cache:
-            # Wrap `query_dict` into another dict (specifying `collection_name`) to be used serialized into cache key:
-            query_spec = {
-                ReservedPropName.collection_name.name: search_control.collection_name,
-                "": query_dict,
-            }
-
             ElapsedTime.measure("before_cache_lookup")
-            query_key = json.dumps(query_spec, separators = (",", ":"))
-            query_result = self.query_cache.get(query_key)
+            query_key = json.dumps(query_dict, separators = (",", ":"))
+            query_cache = self._get_query_cache_for_collection(search_control.collection_name)
+            query_result = query_cache.get(query_key)
             ElapsedTime.measure("after_cache_lookup")
             if query_result:
                 return copy.deepcopy(query_result)
@@ -110,7 +114,7 @@ class QueryEngine:
                 search_control,
             )
 
-            self.query_cache[query_key] = copy.deepcopy(query_result)
+            query_cache[query_key] = copy.deepcopy(query_result)
         else:
             query_result = self._query_prop_values(
                 assigned_types_to_values,
@@ -119,6 +123,19 @@ class QueryEngine:
             )
         # No cache -> no deep copy (throw away result):
         return query_result
+
+    def _get_query_cache_for_collection(
+        self,
+        collection_name: str,
+    ):
+        query_cache = self.query_caches.setdefault(
+            collection_name,
+            TTLCache(
+                maxsize = self.query_cache_max_size_bytes,
+                ttl = self.query_cache_ttl_sec,
+            ),
+        )
+        return query_cache
 
     def _query_prop_values(
         self,

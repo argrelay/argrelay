@@ -129,7 +129,6 @@ class ThisTestClass(BaseTestClass):
         ],
         "argrelay.relay_client.__main__": [
             "argrelay.client_spec.ShellContext",
-            "argrelay.enum_desc.CompType",
             "argrelay.enum_desc.ProcRole",
             "argrelay.enum_desc.ServerAction",
             "argrelay.misc_helper_common",
@@ -137,6 +136,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.relay_client.client_utils",
             "argrelay.runtime_data.ClientConfig",
             "argrelay.runtime_data.ConnectionConfig",
+            "argrelay.server_spec.CallContext",
             "sys"
         ],
         "argrelay.relay_client.client_utils": [
@@ -284,6 +284,7 @@ class ThisTestClass(BaseTestClass):
             comp_type = CompType.PrefixShown,
             is_debug_enabled = False,
             comp_key = UNKNOWN_COMP_KEY,
+            input_data = None,
         )
         call_ctx = shell_ctx.create_call_context()
 

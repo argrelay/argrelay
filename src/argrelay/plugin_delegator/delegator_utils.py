@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Callable, Any, Union
 
 from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.plugin_config.ConfiguratorAbstract import ConfiguratorAbstract
 from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
 from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
@@ -87,13 +88,14 @@ def redirect_to_error(
     return invocation_input
 
 
-def redirect_to_no_func_error(
+def redirect_to_not_disambiguated_error(
     interp_ctx,
     plugin_config,
+    envelope_class,
 ):
     return redirect_to_error(
         interp_ctx,
         plugin_config,
-        "ERROR: objects cannot be searched until function is fully qualified",
-        1,
+        f"ERROR: `envelope_class` [{envelope_class}] is not fully qualified (not disambiguated)",
+        ClientExitCode.GeneralError.value,
     )

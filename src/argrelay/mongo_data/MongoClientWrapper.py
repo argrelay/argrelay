@@ -7,7 +7,6 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data.MongoConfig import MongoConfig
 from argrelay.mongo_data.ProgressTracker import ProgressTracker
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
@@ -46,6 +45,13 @@ def store_envelopes(
 
     assert progress_tracker.total_envelope_i == progress_tracker.total_envelope_n
 
+def delete_data_envelopes(
+    mongo_db: Database,
+    collection_name: str,
+    query_dict: dict,
+) -> None:
+    col_proxy: Collection = mongo_db[collection_name]
+    col_proxy.delete_many(query_dict)
 
 def store_envelope_collection(
     mongo_db: Database,

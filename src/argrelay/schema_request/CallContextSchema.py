@@ -15,6 +15,7 @@ comp_scope_ = "comp_scope"
 client_uid_ = "client_uid"
 client_pid_ = "client_pid"
 is_debug_enabled_ = "is_debug_enabled"
+input_data_ = "input_data"
 
 _sample_command_line = "some_command goto service "
 
@@ -28,6 +29,7 @@ _call_context_example = {
     client_uid_: "",
     client_pid_: 0,
     is_debug_enabled_: False,
+    input_data_: None,
 }
 
 
@@ -106,6 +108,14 @@ class CallContextSchema(ObjectSchema):
         metadata = {
             "description": "Enable extra debug output",
             "example": _call_context_example[is_debug_enabled_],
+        },
+    )
+    input_data = fields.String(
+        required = False,
+        load_default = None,
+        metadata = {
+            "description": "Enable extra debug output",
+            "example": _call_context_example[input_data_],
         },
     )
 

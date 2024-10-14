@@ -2,7 +2,6 @@
 import sys
 
 from argrelay.client_spec.ShellContext import ShellContext
-from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import get_config_path
@@ -10,6 +9,7 @@ from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_client.client_utils import handle_main_exception
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
+from argrelay.server_spec.CallContext import CallContext
 
 ElapsedTime.measure("after_program_entry")
 
@@ -17,12 +17,12 @@ ElapsedTime.measure("after_program_entry")
 def main():
     # noinspection PyBroadException
     try:
-        return run_client()
+        return prepare_and_run_client()
     except BaseException as e1:
         handle_main_exception(e1)
 
 
-def run_client():
+def prepare_and_run_client():
     ElapsedTime.measure("after_initial_imports")
 
     file_path = get_config_path("argrelay_client.json")
@@ -31,13 +31,24 @@ def run_client():
 
     shell_ctx = ShellContext.from_env(sys.argv)
     shell_ctx.print_debug()
+
     call_ctx = shell_ctx.create_call_context()
+
+    return run_client(
+        client_config,
+        call_ctx,
+    )
+
+def run_client(
+    client_config: ClientConfig,
+    call_ctx: CallContext,
+):
 
     is_split_mode: bool = (
         # FS_14_59_14_06 pending requests: at the moment the process is split only to provide spinner:
         client_config.show_pending_spinner
         and
-        shell_ctx.comp_type is not CompType.InvokeAction
+        call_ctx.server_action is not ServerAction.RelayLineArgs
     )
 
     is_optimized_completion = (
@@ -86,7 +97,6 @@ def run_client():
         proc_role,
         is_optimized_completion,
         w_pipe_end,
-        shell_ctx,
         -1,
     )
     return command_obj
