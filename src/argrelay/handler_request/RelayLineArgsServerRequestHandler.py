@@ -1,3 +1,4 @@
+from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
@@ -38,7 +39,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         ElapsedTime.measure("after_interpret_command")
         is_error = False
         error_message = ""
-        error_code = 0
+        error_code = ClientExitCode.ClientSuccess.value
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
@@ -52,7 +53,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         else:
             is_error = True
             error_message = "ERROR: Function is not selected, try help, or press Tab to complete selection."
-            error_code = 1
+            error_code = ClientExitCode.GeneralError.value
             # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ErrorDelegator`):
             delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
 

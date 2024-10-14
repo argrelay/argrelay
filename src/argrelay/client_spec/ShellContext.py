@@ -35,6 +35,7 @@ class ShellContext:
     comp_type: CompType = field()
     comp_key: str = field()
     is_debug_enabled: bool = field()
+    input_data: str = field()
 
     def __post_init__(self):
         assert 0 <= self.cursor_cpos <= len(self.command_line), (
@@ -79,6 +80,7 @@ class ShellContext:
             comp_type = comp_type,
             comp_key = comp_key,
             is_debug_enabled = is_debug_enabled,
+            input_data = None,
         )
 
     def print_debug(
@@ -107,6 +109,7 @@ class ShellContext:
             client_uid = get_user_name(),
             client_pid = os.getpid(),
             is_debug_enabled = self.is_debug_enabled,
+            input_data = self.input_data,
         )
 
 

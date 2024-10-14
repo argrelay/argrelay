@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import contextlib
 import dataclasses
-import io
 import json
 import os
 import re
@@ -86,8 +85,9 @@ class EnvMockBuilder:
         *   `set_server_config_dict`
         *   `set_plugin_config_dict`
 
-    *   Capture `stdout` and `stderr` - see usage of:
+    *   Mock `stdin` or capture `stdout` and `stderr` - see usage of:
 
+        *   `set_mock_stdin`
         *   `set_capture_stdout`
         *   `set_capture_stderr`
 
@@ -150,6 +150,11 @@ class EnvMockBuilder:
     """
     See `DistinctValuesQuery`.
     """
+
+    ####################################################################################################################
+    # Input mocking
+
+    given_stdin: str = field(default = None)
 
     ####################################################################################################################
     # Output capturing
@@ -295,6 +300,13 @@ class EnvMockBuilder:
         distinct_values_query: Union[distinct_values_query, None]
     ):
         self.distinct_values_query = distinct_values_query
+        return self
+
+    ####################################################################################################################
+    # Input mocking
+
+    def set_mock_stdin(self, given_val: str):
+        self.given_stdin = given_val
         return self
 
     ####################################################################################################################
@@ -623,12 +635,15 @@ class EnvMockBuilder:
                 else:
                     raise RuntimeError
 
+            if self.given_stdin is not None:
+                yield_list.append(exit_stack.enter_context(_mock_stdin(self.given_stdin)))
+
             if self.capture_stdout:
-                self.actual_stdout = io.StringIO()
+                self.actual_stdout = StringIO()
                 yield_list.append(exit_stack.enter_context(_capture_stdout(self.actual_stdout)))
 
             if self.capture_stderr:
-                self.actual_stderr = io.StringIO()
+                self.actual_stderr = StringIO()
                 yield_list.append(exit_stack.enter_context(_capture_stderr(self.actual_stderr)))
 
             if self.assert_on_close:
@@ -985,6 +1000,17 @@ def _mock_client_input_in_invocation_mode_with_args(command_args: list[str]):
 
 
 ########################################################################################################################
+# Input mocking
+
+@contextlib.contextmanager
+def _mock_stdin(
+    stdin_data: str,
+):
+    with mock.patch("sys.stdin", StringIO(stdin_data)) as stdin_mock:
+        yield stdin_mock
+
+
+########################################################################################################################
 # Output capturing
 
 @contextlib.contextmanager
@@ -1098,4 +1124,5 @@ def default_test_call_context(
         comp_type = comp_type,
         comp_key = UNKNOWN_COMP_KEY,
         is_debug_enabled = False,
+        input_data = None,
     ).create_call_context()

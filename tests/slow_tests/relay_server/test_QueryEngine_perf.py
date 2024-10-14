@@ -147,6 +147,7 @@ class ThisTestClass(LocalTestClass):
                             comp_type = comp_type,
                             is_debug_enabled = False,
                             comp_key = UNKNOWN_COMP_KEY,
+                            input_data = None,
                         ).create_call_context()
 
                         print("---")

@@ -63,6 +63,7 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
                         comp_type = CompType.InvokeAction,
                         comp_key = UNKNOWN_COMP_KEY,
                         is_debug_enabled = False,
+                        input_data = None,
                     )
 
                     call_ctx = shell_ctx.create_call_context()
@@ -76,7 +77,6 @@ class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):
                             proc_role,
                             False,
                             None,
-                            shell_ctx,
                             server_index,
                         )
                         is_offline = False

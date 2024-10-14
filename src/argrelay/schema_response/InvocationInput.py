@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.schema_response.InterpResult import InterpResult
+from argrelay.server_spec.CallContext import CallContext
 
 
 @dataclass
@@ -14,6 +15,11 @@ class InvocationInput(InterpResult):
 
     Unlike `InterpResult` this class provides full list of `data_envelope`-s per `envelope_container`
     because invocation is not latency-sensitive and funcs expect all `data_envelope`-s.
+    """
+
+    call_ctx: CallContext = field()
+    """
+    Call context (sent back to client) which caused this `invocation_input`.
     """
 
     delegator_plugin_entry: PluginEntry = field()
@@ -37,6 +43,7 @@ class InvocationInput(InterpResult):
         custom_plugin_data: dict,
     ) -> InvocationInput:
         return InvocationInput(
+            call_ctx = interp_ctx.parsed_ctx,
             arg_values = interp_ctx.comp_suggestions,
             all_tokens = interp_ctx.parsed_ctx.all_tokens,
             excluded_tokens = interp_ctx.excluded_tokens,

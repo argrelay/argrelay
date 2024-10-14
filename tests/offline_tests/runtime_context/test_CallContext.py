@@ -16,6 +16,7 @@ from argrelay.schema_request.CallContextSchema import (
     client_uid_,
     client_conf_target_,
     client_version_,
+    input_data_,
 )
 from argrelay.test_infra import line_no, parse_line_and_cpos
 from argrelay.test_infra.BaseTestClass import BaseTestClass
@@ -41,7 +42,8 @@ class ThisTestClass(BaseTestClass):
                 f'"{comp_scope_}": "{CompScope.ScopeInitial.name}", '
                 f'"{client_uid_}": "{get_user_name()}", '
                 f'"{client_pid_}": {os.getpid()}, '
-                f'"{is_debug_enabled_}": false'
+                f'"{is_debug_enabled_}": false, '
+                f'"{input_data_}": null'
                 f'}}',
             ),
         ]
@@ -55,6 +57,7 @@ class ThisTestClass(BaseTestClass):
                     comp_type = comp_type,
                     is_debug_enabled = False,
                     comp_key = UNKNOWN_COMP_KEY,
+                    input_data = None,
                 ).create_call_context()
                 actual_json = call_context_desc.dict_schema.dumps(call_ctx)
                 self.assertEqual(expected_json, actual_json)

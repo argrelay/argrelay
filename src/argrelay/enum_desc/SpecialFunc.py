@@ -41,5 +41,10 @@ class SpecialFunc(Enum):
 
     func_id_get_data_envelopes = auto()
     """
-    Implements FS_74_69_61_79 get set data envelope.
+    Implements "get" of FS_74_69_61_79 get set data envelope.
+    """
+
+    func_id_set_data_envelopes = auto()
+    """
+    Implements "set" of FS_74_69_61_79 get set data envelope.
     """

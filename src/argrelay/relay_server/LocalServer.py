@@ -26,8 +26,8 @@ from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.relay_server.UsageStatsStore import UsageStatsStore
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer, instantiate_server_plugin
 from argrelay.runtime_context.SearchControl import SearchControl
-from argrelay.runtime_data.IndexModel import IndexModel, index_props_
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.runtime_data.IndexModel import IndexModel, index_props_
 from argrelay.runtime_data.PluginConfig import PluginConfig
 from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -542,7 +542,7 @@ class LocalServer:
             func_envelope_collection,
         )
         # Initial step: store funcs and any data from config:
-        self._store_mongo_data_step(
+        self.store_mongo_data_step(
             # Single `envelope_collection` with `func_data_envelopes`:
             [func_envelope_collection],
             "config_data",
@@ -566,7 +566,7 @@ class LocalServer:
                     self.query_engine,
                 )
 
-                self._store_mongo_data_step(
+                self.store_mongo_data_step(
                     envelope_collections,
                     plugin_instance_id,
                     progress_tracker,
@@ -591,7 +591,7 @@ class LocalServer:
         # Add generated `envelope_collection` (itself) for completeness:
         self._define_index_model_step(
             IndexModel(
-                collection_name = ReservedEnvelopeClass.ClassCollectionMeta.name,
+                collection_name = ReservedEnvelopeClass.ClassCollection.name,
                 index_props = [
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     ReservedPropName.envelope_class.name,
@@ -601,13 +601,13 @@ class LocalServer:
         )
 
         envelope_collection = EnvelopeCollection(
-            collection_name = ReservedEnvelopeClass.ClassCollectionMeta.name,
+            collection_name = ReservedEnvelopeClass.ClassCollection.name,
             data_envelopes = []
         )
         for collection_name, index_model in self.index_model_per_collection.items():
             envelope_collection.data_envelopes.append({
                 envelope_id_: f"{collection_name}",
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollectionMeta.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollection.name,
                 # TODO: May add loader plugin instance name as metadata:
                 ReservedPropName.collection_name.name: collection_name,
                 envelope_payload_: {
@@ -615,7 +615,7 @@ class LocalServer:
                 },
             })
 
-        self._store_mongo_data_step(
+        self.store_mongo_data_step(
             [envelope_collection],
             self.__class__.__name__,
             progress_tracker,
@@ -686,7 +686,19 @@ class LocalServer:
             for given_index_prop in given_index_model.index_props:
                 assert given_index_prop in known_index_model.index_props
 
-    def _store_mongo_data_step(
+    def delete_data_envelopes(
+        self,
+        collection_name: str,
+        query_dict: dict,
+    ):
+        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+        MongoClientWrapper.delete_data_envelopes(
+            mongo_db,
+            collection_name,
+            query_dict,
+        )
+
+    def store_mongo_data_step(
         self,
         envelope_collections: list[EnvelopeCollection],
         step_name: str,
@@ -711,6 +723,12 @@ class LocalServer:
         self._create_mongo_index_step(
             envelope_collections,
         )
+
+    def invalidate_cache_for_collection(
+        self,
+        collection_name: str,
+    ):
+        self.query_engine.invalidate_cache_for_collection(collection_name)
 
     def _create_mongo_index_step(
         self,

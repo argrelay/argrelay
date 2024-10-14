@@ -56,9 +56,9 @@ Learn more about [how search works][how_search_works.md].
 <a name="argrelay-overview"></a>
 # Interaction overview
 
-User is interrogated for each next input arg based on:
+User is interrogated for each next input arg based on server knowledge of:
 *  custom command **input schema**
-*  custom data which matches already given input
+*  custom data which matches already given input on the command line
 
 Each command resembles "enum language":
 *   Tokens are tags | labels | keywords from one of the `enum` sets.
@@ -207,8 +207,44 @@ This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_
     ```
 
     ```sh
-    lay goto host dev        # press Alt+Shift+Q to observe changes in the output
+    lay goto host dev        # press `Alt+Shift+Q` to observe changes in the output
     ```
+
+    If executed (press `Enter`), it runs stub implementations
+    (in real app it would do remote `ssh`-login for example).
+
+*   It is possible to:
+
+    *   Browse and retrieve data used in search and auto-completion as well as execution (for specific query):
+
+        ```sh
+        lay get ConfigOnlyClass ERROR
+        ```
+
+        `stdout` (one JSON per line):
+
+        ```
+        {"envelope_payload": {"text_message": "text message C"}, "exit_code": "1", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+        {"envelope_payload": {"text_message": "text message D"}, "exit_code": "2", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+        ```
+
+    *   Replace this data (for specific query):
+
+        `stdin` (one JSON per line):
+
+        ```sh
+        echo '
+        {"envelope_payload": {"text_message": "text message C"}, "exit_code": "101", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+        {"envelope_payload": {"text_message": "text message D"}, "exit_code": "102", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+        ' |
+        lay set ConfigOnlyClass ERROR
+        ```
+
+        <!--
+        TODO: Remove NOTE below when all the docs and validations added.
+        -->
+
+        NOTE: Replacing data on the server is in alpha version.
 
 *   To clean up, exit the sub-shell:
 

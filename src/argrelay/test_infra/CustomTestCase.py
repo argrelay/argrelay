@@ -45,7 +45,7 @@ class ShellInputTestCase(TestCase):
         self.test_line = given_test_line
         (
             self.command_line,
-            self.cursor_cpos
+            self.cursor_cpos,
         ) = parse_line_and_cpos(given_test_line)
 
     def set_comp_type(
