@@ -1,7 +1,5 @@
 import time
-from datetime import datetime
-
-from dateutil.tz import tz
+from datetime import datetime, timezone
 
 from argrelay.check_env.CheckEnvResult import CheckEnvResult
 from argrelay.check_env.PluginCheckEnvServerResponseValueAbstract import PluginCheckEnvServerResponseValueAbstract
@@ -37,17 +35,14 @@ class PluginCheckEnvServerResponseValueStartTime(PluginCheckEnvServerResponseVal
         )
         # Put formated time to the message:
         if check_env_result.result_category.VerificationSuccess:
-            from_zone = tz.tzutc()
-            into_zone = tz.tzlocal()
-            utc_time = datetime.utcfromtimestamp(int(field_value))
-            utc_time = utc_time.replace(tzinfo = from_zone)
+            utc_time = datetime.fromtimestamp(int(field_value), timezone.utc)
+            epoch_start = datetime.fromtimestamp(0, timezone.utc)
 
-            epoch_start = datetime.utcfromtimestamp(0)
-
-            abs_time_str = utc_time.astimezone(into_zone).isoformat()
+            # Local timezone:
+            abs_time_str = utc_time.astimezone(None).isoformat()
             rel_time_str = format_time_to_relative(
                 time.time() * 1000,
-                (utc_time.replace(tzinfo = None) - epoch_start).total_seconds() * 1000,
+                (utc_time - epoch_start).total_seconds() * 1000,
             )
 
             check_env_result.result_message = f"{abs_time_str} ~ {rel_time_str}"

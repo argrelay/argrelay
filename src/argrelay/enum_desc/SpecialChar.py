@@ -16,7 +16,7 @@ class SpecialChar(Enum):
     See FS_97_64_39_94 arg buckets.
     """
 
-    KeyValueDelimiter = ":"
+    ArgNamePrefix = "-"
     """
     See FS_20_88_05_60 named args.
     """

@@ -7,11 +7,11 @@ class ThisTestClass(BaseTestClass):
 
     def test_get_token_type(self):
         test_cases = [
-            (line_no(), ["KeyArg1:", "ValArg1", "PosArg1"], 0, TokenType.KeyArg, ""),
-            (line_no(), ["KeyArg1:", "ValArg1", "PosArg1"], 1, TokenType.ValArg, ""),
-            (line_no(), ["KeyArg1:", "ValArg1", "PosArg1"], 2, TokenType.PosArg, ""),
-            (line_no(), ["KeyArg1:", "ValArg1", "KeyArg2:"], 2, TokenType.KeyArg, ""),
-            (line_no(), ["KeyArg1:", "KeyArg2:", "ValArg2"], 2, TokenType.ValArg, ""),
+            (line_no(), ["-KeyArg1", "ValArg1", "PosArg1"], 0, TokenType.KeyArg, ""),
+            (line_no(), ["-KeyArg1", "ValArg1", "PosArg1"], 1, TokenType.ValArg, ""),
+            (line_no(), ["-KeyArg1", "ValArg1", "PosArg1"], 2, TokenType.PosArg, ""),
+            (line_no(), ["-KeyArg1", "ValArg1", "-KeyArg2"], 2, TokenType.KeyArg, ""),
+            (line_no(), ["-KeyArg1", "-KeyArg2", "ValArg2"], 2, TokenType.ValArg, ""),
             (line_no(), ["PosArg1", "PosArg2", "PosArg3"], 0, TokenType.PosArg, ""),
         ]
         for test_case in test_cases:

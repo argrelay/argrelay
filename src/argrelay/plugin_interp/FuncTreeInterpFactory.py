@@ -670,15 +670,16 @@ class FuncTreeInterp(AbstractInterp):
     def propose_auto_comp_list(self) -> list[str]:
 
         # TODO: FS_20_88_05_60: POC: Either remove it or implement properly: just testing named args:
-        if (
-            self.interp_ctx.parsed_ctx.tan_token_l_part.endswith(":")
-            or
-            self.interp_ctx.parsed_ctx.tan_token_r_part.startswith(":")
-        ):
+        if self.interp_ctx.parsed_ctx.tan_token_l_part.startswith(SpecialChar.ArgNamePrefix.value):
+            # TODO: exclude those `arg_name`-s which have already been matched with value:
             return [
-                type_name + SpecialChar.KeyValueDelimiter.value
+                SpecialChar.ArgNamePrefix.value + type_name
                 for type_name in self.interp_ctx.curr_container.search_control.props_to_keys_dict
-                if not type_name.startswith("_")
+                if (
+                    not type_name.startswith("_")
+                    and
+                    type_name.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part[1:])
+                )
             ]
 
         # TODO: FS_23_62_89_43: the logic for both if-s (`if-A` and `if-B`) is identical at the moment - what do we want to improve?
@@ -695,7 +696,7 @@ class FuncTreeInterp(AbstractInterp):
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
                 return self.remaining_from_next_missing_type()
             else:
-                # TODO: FS_20_88_05_60: Suggest keys (:) of missing types instead - it is `ScopeSubsequent`, user insist and wants something else:
+                # TODO: FS_20_88_05_60: Suggest `arg_name`-s (:) for missing `prop_name`-s instead - it is `ScopeSubsequent`, user insist and wants something else:
                 return self.remaining_from_next_missing_type()
 
         return []

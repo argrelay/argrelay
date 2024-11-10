@@ -18,7 +18,7 @@ class TokenType(Enum):
     PosArg = auto()
 
     """
-    Keyword arg - must have special format (e.g. ending with `:`).
+    Keyword arg - must have special format (e.g. starting with `SpecialChar.ArgNamePrefix.value`).
     """
     KeyArg = auto()
 
@@ -30,11 +30,11 @@ class TokenType(Enum):
 
 def get_token_type(all_tokens: list[str], token_ipos: int) -> TokenType:
     # TODO: POC: FS_20_88_05_60: Either remove it or implement properly: just testing named args:
-    if all_tokens[token_ipos].endswith(SpecialChar.KeyValueDelimiter.value):
+    if all_tokens[token_ipos].startswith(SpecialChar.ArgNamePrefix.value):
         return TokenType.KeyArg
     else:
         if token_ipos > 0:
-            if not all_tokens[token_ipos - 1].endswith(SpecialChar.KeyValueDelimiter.value):
+            if not all_tokens[token_ipos - 1].startswith(SpecialChar.ArgNamePrefix.value):
                 return TokenType.PosArg
             else:
                 return TokenType.ValArg

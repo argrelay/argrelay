@@ -46,6 +46,7 @@ class ConfigOnlyDelegator(BaseConfigDelegator):
 
         # Keep this as it is supposed to be referenced in the `command_template`
         envelope_containers = invocation_input.envelope_containers
+        all_tokens = invocation_input.all_tokens
 
         # There is no way to check on client side if this function belongs to this plugin
         # (client has no access to config):
