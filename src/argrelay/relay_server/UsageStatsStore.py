@@ -15,9 +15,16 @@ class UsageStatsStore:
     def __init__(
         self,
     ):
+        store_dir_path = os.path.join(
+           get_argrelay_dir(),
+           TopDir.var_dir.value,
+        )
+        os.makedirs(
+            store_dir_path,
+            exist_ok=True,
+        )
         self.store_file_path: str = str(os.path.join(
-            get_argrelay_dir(),
-            TopDir.var_dir.value,
+            store_dir_path,
             "usage_stats",
         ))
 

@@ -10,30 +10,73 @@ See: docs/dev_notes/screencast_notes.md
 -->
 
 <a name="argrelay-about"></a>
-# What's this?
+# About [`argrelay`][argrelay_org]
+
+### What is this?
 
 A framework to "ergonomically" select **custom data** input for command line interface (CLI) tools.
 
-The aim is to augment two-way &#10231; interaction by **prepared** reference data:
-*   &#10230; Human inputs args that (s)he **remembers** (via `Tab`-auto-completion) in **relaxed order**.
-*   &#10229; Machine provides feedback (via `Alt+Shift+Q` query) on current state:
-    *   What args it already **matched** with server data according to **command schema**.
-    *   What **else** it needs to fill remaining command args.
+It integrates (1) standard shell, (2) local commands, (3) server data, ... to make CLI input **intuitive**.
 
-This broadens applicability of CLI input as a slim alternative to graphical user interface (GUI)
-competing in **convenience** for apps especially for developers = "doing more with less".
+*   Although its initial purpose was command **auto-completion**, that become a trivial byproduct of...
+*   Its primary "rich" feature = keyword-based **structured data search**.
 
-*   When your data is instantly and directly queryable, try [`argcomplete`][argcomplete_github].
-*   When your data is sizeable, users need perf (indexing), relaxed syntax, keyword search, try [`argrelay`][argrelay_org].
+### How does it work?
+
+It relies on the same shell API as auto-completion for (e.g.) `git` command,<br/>
+except that requests go to the server **plugin** to run logic against some **indexed** data.
+
+A typical scenario:
+
+*   Human types in some **remembered** args (via `Tab`-auto-completion) in **relaxed syntax and order**.
+*   Machine provides feedback (via `Alt+Shift+Q`-query) on the progress of input interrogation:
+    *   What args machine **already matched** with the data according to **command schema**.
+    *   What **else** machine needs from human to **disambiguate** and select the remaining command args.
+
+### Why is it needed?
+
+CLI is indispensable for:
+*   **ubiquitous automation** (any command is effectively replay-able code)
+*   **quick implementation** (get it done "in the afternoon" instead of next month after fullstack API discussions)
+*   **manual intervention** (when everything else is already failed and unavailable)
+
+And `argrelay` broaden applicability of CLI by **convenience**:
+*   enables **inline search directly in shell** (without copy-and-pasting args from other apps)
+*   reduces cognitive load for rapidly evolving add-hoc tools by **eliminating syntax and options memorization**
+*   unifies CLI (look and feel, validation, help) for multiple commands via generic data-driven framework
+
+<!--
+
+# Features
+
+For sizeable and inter-dependent data, need for perf, relaxed syntax, keyword search, try [`argrelay`][argrelay_org].
+
+*   Command execution is still trivially local to shell.
+
+    The client only fetches more data from the server based on command line args before passing control to user code.
+
+*   All security (auth and authz) to execute command must also be resolved by local process (just like for any script).
+
+*   Precise structured search.
+
+    It may appear fuzzy due to relaxed args order - but any ambiguity is resolved via simple rules of priority.
+
+*   Support for any number of custom command names.
+
+*   Support for any number of custom functions (registered).
+
+    Functions are bound to any command name and args combination.
+
+-->
 
 <a name="argrelay-focus"></a>
-# `argrelay` focus
+# Project focus
 
 > Data-assisted CLI with search and completion
 
 GUI-s are targeted secondarily as they not have the restrictions vs the benefits CLI-s have:
 *   To leverage minimal syntax queries, API requests can be handled from anything (including GUI).
-*   But API-s are purposefully feature-tailored to support (both challenging and rewarding) CLI.
+*   But API-s are purposefully feature-tailored to support (both challenging and rewarding) CLI peculiarities.
 
 <details>
 <summary>show example</summary>
@@ -43,15 +86,17 @@ For example, in GUI-s, typing a query into a search bar may easily be accompanie
 (3) full-text-search results<br/>
 (4) populated async-ly with typing...<br/>
 
-In CLI-s, `grep` does (3) full-text-search, but slow and completely misses the rest (1), (2), (4).
+In CLI-s, `grep` does (3) full-text-search, but it is slow and completely misses the rest (1), (2), (4).
 
-Simple full-text-search is imprecise - facilitating selection in CLI requires:<br/>
-a catalogue-like navigation via structured search with auto-completion.
+Also, simple full-text-search is imprecise - facilitating selection in CLI requires:<br/>
+a catalogue-like navigation selecting keywords via structured data search with auto-completion.
 </details>
 
 <!-- TODO: update the doc first before publishing its link
 Learn more about [how search works][how_search_works.md].
 -->
+
+<!--
 
 <a name="argrelay-overview"></a>
 # Interaction overview
@@ -73,6 +118,8 @@ Wrapping any command by `argrelay`:
 *   reduces cognitive load with minimalistic enum-based query syntax (matching target executable command line)
 *   maintains small client-side footprint (suitable for resource-constrained terminals)
 *   exposes conveniently browsable data inventory (generic CLI builder)
+
+-->
 
 <a name="argrelay-general-dilemma"></a>
 # General dilemma
@@ -96,13 +143,15 @@ Wrapping any command by `argrelay`:
 | :heavy_plus_sign: point-click actions                                         | :heavy_minus_sign: increased typing:exclamation:          |
 | :heavy_plus_sign: intuitive data-driven human interface                       | :heavy_minus_sign: human interface:question: API, in fact |
 
-While retaining advantages of a CLI tool, `argrelay` tries to provide those last :heavy_plus_sign:-s:
+While retaining advantages of a CLI tool,<br/>
+`argrelay` tries to provide a slim alternative to GUI for those last :heavy_plus_sign:-s:
 *   intuitive data-driven interface
 *   reduced typing (args auto-reduction)
 *   keyword options (args auto-completion)
 
-As opposed to GUI-demanding approaches like [Warp][Warp_site] or [IDEA terminal][IDEA_terminal],<br/>
-`argrelay` survives in basic text modes.
+As opposed to GUI-demanding approaches like [Warp][Warp_site] or [IDEA terminal][IDEA_terminal]<br/>
+(in desktop environment where any tool is available),<br/>
+`argrelay` survives in basic text modes (over telnet or SSH).
 
 Given that `argrelay` target audience are devs (using shell),<br/>
 the advantages of CLI tools over GUI can be summarized property-by-property:
@@ -156,7 +205,7 @@ with associated data around to invoke the program selected by the user:
 ```mermaid
 sequenceDiagram
     autonumber
-    participant P as Any program:<br/>user-required<br/>client-side-local
+    participant P as Any program:<br/>user-specific<br/>client-side-local
     actor U as <br/>User
     box transparent <br/>argrelay
     participant C as Client
@@ -213,38 +262,37 @@ This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_
     If executed (press `Enter`), it runs stub implementations
     (in real app it would do remote `ssh`-login for example).
 
-*   It is possible to:
+*   Browse and retrieve data (for specific query):
 
-    *   Browse and retrieve data used in search and auto-completion as well as execution (for specific query):
+    ```sh
+    lay get ConfigOnlyClass ERROR
+    ```
 
-        ```sh
-        lay get ConfigOnlyClass ERROR
-        ```
+    `stdout` (one JSON per line):
 
-        `stdout` (one JSON per line):
+    ```json
+    {"envelope_payload": {"text_message": "text message C"}, "exit_code": "1", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+    {"envelope_payload": {"text_message": "text message D"}, "exit_code": "2", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+    ```
 
-        ```
-        {"envelope_payload": {"text_message": "text message C"}, "exit_code": "1", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
-        {"envelope_payload": {"text_message": "text message D"}, "exit_code": "2", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
-        ```
+*   Replace this data (for specific query):
 
-    *   Replace this data (for specific query):
+    `stdin` (one JSON per line):
 
-        `stdin` (one JSON per line):
+    ```sh
+    echo '
+    {"envelope_payload": {"text_message": "text message C"}, "exit_code": "101", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+    {"envelope_payload": {"text_message": "text message D"}, "exit_code": "102", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
+    ' |
+    lay set ConfigOnlyClass ERROR
+    ```
 
-        ```sh
-        echo '
-        {"envelope_payload": {"text_message": "text message C"}, "exit_code": "101", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
-        {"envelope_payload": {"text_message": "text message D"}, "exit_code": "102", "envelope_class": "ConfigOnlyClass", "severity_level": "ERROR"}
-        ' |
-        lay set ConfigOnlyClass ERROR
-        ```
+    <!--
+    TODO: Remove NOTE below when all the docs and validations added.
+    -->
 
-        <!--
-        TODO: Remove NOTE below when all the docs and validations added.
-        -->
-
-        NOTE: Replacing data on the server is in alpha version.
+    NOTE: Replacing data on the server is in alpha version
+          (it misses validations allowing updates incompatible with schema).
 
 *   To clean up, exit the sub-shell:
 
@@ -354,7 +402,7 @@ sequenceDiagram
     autonumber
     actor U as <br/>User
     participant B as Bash
-    participant P as Any program:<br/>user-required<br/>client-side-local
+    participant P as Any program:<br/>user-specific<br/>client-side-local
     box transparent <br/>argrelay
     participant C as Client
     participant S as Server
@@ -393,7 +441,6 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 <!-- refs ---------------------------------------------------------------------------------------------------------- -->
 
-[argcomplete_github]: https://github.com/kislyuk/argcomplete
 [argrelay_org]: https://argrelay.org/
 [Warp_site]: https://warp.dev/
 [IDEA_terminal]: https://www.jetbrains.com/help/idea/terminal-emulator.html

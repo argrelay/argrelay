@@ -398,6 +398,7 @@ install_project_EOF
     "${ret_command}" 1
 fi
 
+# NOTE: Running this script is supposed to install `argrelay` package - otherwise, subsequent steps will fail:
 source "${argrelay_dir}/exe/install_project.bash"
 
 # Get path of `argrelay` module:
@@ -428,16 +429,22 @@ check_env_src="${argrelay_module_dir_path}/custom_integ_res/check_env.bash"
 check_env_dst="${argrelay_dir}/exe/check_env.bash"
 if [[ ! -L "${check_env_dst}" ]]
 then
-    if [[ -f "${check_env_dst}" ]]
+    if [[ -e "${check_env_dst}" ]]
     then
-        cp -p "${check_env_src}" "${check_env_dst}"
+        if [[ -f "${check_env_dst}" ]]
+        then
+            cp -p "${check_env_src}" "${check_env_dst}"
+        else
+            echo "ERROR: This target path is neither a symlink nor a file - review and remove manually: ${check_env_dst}" 1>&2
+            exit 1
+        fi
     else
-        echo "ERROR: This target path is not a file - review and remove manually: ${check_env_dst}" 1>&2
-        exit 1
+        cp -p "${check_env_src}" "${check_env_dst}"
     fi
 else
     if [[ "$( readlink "${check_env_dst}" )" == "${check_env_src}" ]]
     then
+        # Replace symlink with direct file:
         rm "${check_env_dst}"
         cp -p "${check_env_src}" "${check_env_dst}"
     else

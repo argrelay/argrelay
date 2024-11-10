@@ -4,55 +4,87 @@ This procedure describes using [`FS_85_33_46_53.bootstrap_env.md`][FS_85_33_46_5
 2.  initial installation for existing project: [`bootstrap_procedure.2.initial_installation.md`][bootstrap_procedure.2.initial_installation.md]
 3.  `argrelay` upgrade as (dependency for existing project): [`bootstrap_procedure.3.argrelay_upgrade.md`][bootstrap_procedure.3.argrelay_upgrade.md]
 
-# Project creation with bootstrap script
+# Understand project root dir
+
+See [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md]:
+
+*   The project root dir is referred to as `@/`.
+*   The project root dir is not necessarily Git repo root dir - it might be any sub-dir.
+
+# Download bootstrap script
 
 Obtain (copy and paste or download) [`bootstrap_env.bash`][bootstrap_env.bash] into temporary path,<br/>
 for example, `/tmp/bootstrap_env.bash`.
 
-Then, run it **from the project root directory**:
-*   The project root dir is referred to as `@/` - see [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md].
-*   The project root dir is not necessarily Git repo root dir - it might be any sub-dir.
+# Bootstrap dependencies
+
+The bootstrap dependencies are various files and dirs relative to `@/` (project root dir).
+
+The script will fail (intentionally) if some of the dependencies are missing.
+
+# First run
+
+Run bootstrap **from the project root directory `@/`**:
 
 ```sh
-cd path/to/project/dir
+cd path/to/project/root_dir
 bash /tmp/bootstrap_env.bash
 ```
 
-It will likely fail first time (exits with code other than 0) due to missing config files,<br/>
-but it is meant to be re-run multiple times until it succeeds (until it exits with code 0).
+The script will likely fail for the first time (exits with code other than 0) due to missing dependencies,<br/>
+but it is meant to be re-run multiple times until it succeeds<br/>
+(until exits with code 0 after resolving all dependencies manually).
+
+# Create `@/exe/` dir
+
+Bootstrap script validates target dir by checking that it contains `@/exe/` dir<br/>
+(as a safety mechanism to ensure it is not run accidentally in a wrong dir).
+
+It also creates a copy of itself in `@/exe/` dir (to be versioned)<br/>
+so that anyone can bootstrap project quickly after cloning the repo.
 
 # Prepare `@/conf/` for the bootstrap of the current environment
 
-See [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md].
+Symlink `@/conf/` is supposed to point to (current) target environment config files.
+Normally, it points to one of the sub-dirs under `@/dst/` (different per target environment).
 
-Directory (or symlink) `@/conf/` contains (current) target environment config files.
-Normally, it has to be a symlink to one of the sub-dirs under `@/dst/` (different per target environment).
+To keep config files under version control:
 
-To keep config files under version control, if `@/conf/` is not a symlink yet:
-
-*   Move `@/conf/` dir under `@/dst/` dir giving it a name of the current environment, for example, `sample_target_env`:
+*   Create `@/dst/` dir and a sub-dir giving it a name of the current environment, for example, `sample_target_env`:
 
     ```sh
-    cd path/to/project/dir
-    mkdir -p ./dst
-    mv ./conf ./dst/sample_target_env
+    cd path/to/project/root_dir
+    mkdir -p ./dst/sample_target_env
     ```
 
 *   Create `@/conf/` symlink pointing to the dir with the given name, for example:
 
     ```sh
-    cd path/to/project/dir
+    cd path/to/project/root_dir
     ln -snf ./dst/sample_target_env ./conf
     ```
 
-This way config files for multiple target environments can co-exist under `@/dst/` and be selected via `@/conf/` symlink.
+    This way config files for multiple target environments can co-exist under `@/dst/` and<br/>
+    be selected via `@/conf/` symlink.
+
+*   Ignore `@/conf/` symlink by revision control because the dir it points to is a local config (per deployment):
+
+    ```sh
+    cd path/to/project/root_dir
+    cat .gitignore
+    ```
+    
+    ```
+    # Ignore local config:
+    /conf
+    ```
 
 # What else might bootstrap need?
 
 Keep re-running bootstrap until it succeeds (until it exits with code 0) addressing all issues step by step:
 
 ```sh
-cd path/to/project/dir
+cd path/to/project/root_dir
 bash /tmp/bootstrap_env.bash
 ```
 
@@ -61,7 +93,7 @@ bootstrap will fail (exits with code other than 0) due to many missing files and
 
 Normally, it is clear from the output what is the reason for the failure.
 
-This is a non-exhaustive list of reasons and clues how to address them:
+This is a non-exhaustive list of reasons and clues how to address them (trying to be in the order of occurrence):
 
 *   Missing `@/exe/` dir.
 
@@ -72,7 +104,9 @@ This is a non-exhaustive list of reasons and clues how to address them:
 
 *   Missing `@/bin/` dir.
 
-    Create it - again, see also [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md].
+    Bootstrap generates some files there.
+
+    Create this dir - again, see also [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md].
 
 *   Missing `@/conf/python_env.conf.bash` file.
 
@@ -86,11 +120,15 @@ This is a non-exhaustive list of reasons and clues how to address them:
 
     If missing, bootstrap prints initial copy-and-paste-able content of this file.
 
-*   Missing `setup.py` file.
+*   Missing Python project files (e.g. missing `setup.py` file).
 
-    This is expected by template version of `@/exe/install_project.bash` file.
+    Default `@/exe/install_project.bash` (see its sources) file assumes it is a Python project which is built via:
 
-    If missing, either create minimal `setup.py` or modify `@/exe/install_project.bash`.
+    ```
+    python -m pip install -e .[tests]
+    ```
+
+    If it is not the case (yet), you can comment out this line.
 
 *   Missing `argrelay` package.
 
@@ -104,14 +142,15 @@ This is a non-exhaustive list of reasons and clues how to address them:
 
 *   Other missing files.
 
+    When missing, bootstrap normally prints an initial copy-and-paste-able content for these files.
+
     This could be:
 
     *   `@/exe/config_files.conf.bash`
     *   `@/exe/resource_files.conf.bash`
     *   `@/exe/build_project.bash`
+    *   `@/conf/shell_env.conf.bash`
     *   ...
-
-    When missing, bootstrap prints initial copy-and-paste-able content for these files.
 
 # When bootstrap succeeds
 

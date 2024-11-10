@@ -55,7 +55,7 @@ class PluginCheckEnvArgrelayUnversionedSymlinks(PluginCheckEnvAbstract):
                         result_category = ResultCategory.VerificationWarning,
                         result_key = f"{self.field_name}[{len(results_per_file)}]",
                         result_value = full_path,
-                        result_message = "Running `@/exe/bootstrap_env.bash` may leave unversioned unignored symlinks - review to remove them manually.",
+                        result_message = "Running `@/exe/bootstrap_env.bash` may leave unversioned unignored symlinks - review and decide to remove or ignore them manually.",
                     ))
 
             if len(results_per_file) > 0:
