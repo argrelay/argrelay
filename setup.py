@@ -22,6 +22,7 @@ tests_require = [
     "pandas",
     "icecream",
     "jsonpath-ng",
+    "pymarkdownlnt",
 ]
 
 # To install these extra dev dependencies:

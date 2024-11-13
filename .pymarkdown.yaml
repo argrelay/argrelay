@@ -1,0 +1,42 @@
+# NOTE: Keep rules sorted.
+#       See also:
+#       @/docs/dev_notes/lint_markdown.md
+#       Docs for all rules:
+#       https://github.com/jackdewinter/pymarkdown/tree/main/docs/rules
+
+plugins:
+
+    # MD007: Unordered list indentation
+    MD007:
+        indent: 4
+        enabled: true
+
+    # MD013: Line length
+    MD013:
+        enabled: false
+
+    # MD025: Multiple top-level headings in the same document (single-title,single-h1)
+    MD025:
+        # NOTE: Disabled because why not otherwise?
+        enabled: false
+
+    # MD030: Spaces after list markers
+    MD030:
+        # Given that ul-marker is 1 char, there should be 3 spaces to match indent in MD007 rule:
+        ul_single: 3
+        ul_multi: 3
+        enabled: true
+
+    # MD033: Inline HTML [Element: a] (no-inline-html)
+    MD033:
+        # NOTE: Allow extra HTML elements:
+        # *   Allow `br` to break lines predictably.
+        # *   Allow `a` for stable anchors: <a name="id"></a>.
+        # *   Allow `details` and `summary`.
+        allowed_elements: "!--,![CDATA[,!DOCTYPE,br,a,details,summary"
+        enabled: true
+
+    # MD041: First line in file should be a top level heading (first-line-heading,first-line-h1)
+    MD041:
+        # NOTE: Disabled because why not otherwise?
+        enabled: false
