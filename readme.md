@@ -3,6 +3,7 @@
 [![GitHub build](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml/badge.svg?branch=main)](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml)
 
 <a name="argrelay-secreencast"></a>
+
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
 
 <!--
@@ -10,46 +11,112 @@ See: docs/dev_notes/screencast_notes.md
 -->
 
 <a name="argrelay-about"></a>
-# About [`argrelay`][argrelay_org]
 
-### What is this?
+# What is [`argrelay`][argrelay_org]?
 
-A framework to "ergonomically" select **custom data** input for command line interface (CLI) tools.
+A framework to search and select **custom data** input for command line interface (CLI) tools.
 
-It integrates (1) standard shell, (2) local commands, (3) server data, ... to make CLI input **intuitive**.
+It integrates standard shell, local commands, server logic & data<br/>
+to reveal available input **at your fingertips**.
 
 *   Although its initial purpose was command **auto-completion**, that become a trivial byproduct of...
-*   Its primary "rich" feature = keyword-based **structured data search**.
+*   Its primary target feature: keyword-based **structured data search**.
 
-### How does it work?
+<a name="argrelay-purpose"></a>
 
-It relies on the same shell API as auto-completion for (e.g.) `git` command,<br/>
-except that requests go to the server **plugin** to run logic against some **indexed** data.
+# Why is it needed?
 
-A typical scenario:
+CLI is indispensable for **rapidly evolving custom tools**:
+*   [A] **ubiquitous automation** (any command is effectively replay-able code)
+*   [B] **quick implementation** (get it done "in the afternoon" without discussing fullstack API whole month)
+*   [C] ultimate **manual intervention** (when everything else is already failed and unavailable)
+
+Achieving all three [A, B, C] is **nearly impossible without** CLI.
+
+And `argrelay` makes CLI more human-efficient by reducing manual and guess work:
+*   enables **inline search directly in shell** (without copy-and-pasting args from other apps)
+*   reduces cognitive load via feedback **eliminating syntax and options memorization**
+*   unifies expectations for all commands via **generic data-driven** framework
+
+See also ["general dilemma"][general_dilemma] below.
+
+<a name="argrelay-execution"></a>
+
+# How does it work?
+
+It employs the same shell API as auto-completion for any other (e.g. `ls` or `git`) command,<br/>
+except that requests go to the server with its **plugin**-s to run search logic against **indexed** data<br/>
+(instead of processing requests locally by querying file system).
+
+<a name="argrelay-name"></a>
+
+### It is in the name
+
+Essentially, sitting between the user shell and the user program,<br/>
+`argrelay` "relays" command line args (hence, the name) to the server on each request,<br/>
+then uses response data to complete/explain/invoke the command for the user:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as <br/>User with shell
+    box transparent <br/>argrelay
+    participant C as Client
+    participant S as Server
+    end
+    participant P as Any program:<br/>user-specific<br/>client-side-local
+    U ->> C: use shell hotkeys
+    activate C
+    C ->> S: "relay" all args
+    activate S
+    S ->> C: provide data to<br/>complete<br/>explain<br/>invoke<br/>the command
+    deactivate S
+    C ->> U: if<br/>complete<br/>or<br/>explain
+    C ->> P: if invoke
+    deactivate C
+    activate P
+    P ->> U: produce invocation results
+    deactivate P
+```
+
+See ["full picture"][full_picture] below.
+
+<a name="argrelay-scenario"></a>
+
+### Typical scenario
 
 *   Human types in some **remembered** args (via `Tab`-auto-completion) in **relaxed syntax and order**.
-*   Machine provides feedback (via `Alt+Shift+Q`-query) on the progress of input interrogation:
+*   Machine provides feedback (via `Alt+Shift+Q`-query) on the progress of the input interrogation - it tells:
     *   What args machine **already matched** with the data according to **command schema**.
     *   What **else** machine needs from human to **disambiguate** and select the remaining command args.
 
-### Why is it needed?
+Try ["interactive demo"][interactive_demo] below.
 
-CLI is indispensable for:
-*   **ubiquitous automation** (any command is effectively replay-able code)
-*   **quick implementation** (get it done "in the afternoon" instead of next month after fullstack API discussions)
-*   **manual intervention** (when everything else is already failed and unavailable)
+<a name="argrelay-request-hotkeys"></a>
 
-And `argrelay` broaden applicability of CLI by **convenience**:
-*   enables **inline search directly in shell** (without copy-and-pasting args from other apps)
-*   reduces cognitive load for rapidly evolving add-hoc tools by **eliminating syntax and options memorization**
-*   unifies CLI (look and feel, validation, help) for multiple commands via generic data-driven framework
+### Request hotkeys
+
+There are 3 types of requests corresponding to 3 types of hotkeys.
+
+| Bash:             | Server:                            | Client:                                     |
+|-------------------|:-----------------------------------|:--------------------------------------------|
+| **`Alt+Shift+Q`** | reports existing and missing input | displays command input interrogation status |
+| **`Tab`**         | suggests options for missing input | lists options to Bash for auto-completion   |
+| **`Enter`**       | provides data to invoke a command  | executes the command                        |
+
+Apart from the trivial `Enter` to execute command,</br>
+`Tab` and `Alt+Shift+Q` hotkeys are configured via [`Readline`][readline_config] library Bash relies on.
 
 <!--
 
 # Features
 
 For sizeable and inter-dependent data, need for perf, relaxed syntax, keyword search, try [`argrelay`][argrelay_org].
+
+*   Single server API for all commands.
+
+    Commands behave differently because of the command line interpretation, local logic, and server data,<br/>
+    not by extending server API.
 
 *   Command execution is still trivially local to shell.
 
@@ -70,6 +137,7 @@ For sizeable and inter-dependent data, need for perf, relaxed syntax, keyword se
 -->
 
 <a name="argrelay-focus"></a>
+
 # Project focus
 
 > Data-assisted CLI with search and completion
@@ -79,17 +147,21 @@ GUI-s are targeted secondarily as they not have the restrictions vs the benefits
 *   But API-s are purposefully feature-tailored to support (both challenging and rewarding) CLI peculiarities.
 
 <details>
+
 <summary>show example</summary>
+
 For example, in GUI-s, typing a query into a search bar may easily be accompanied by<br/>
-(1) a separate (from the search bar) window area<br/>
-(2) with individually selectable<br/>
-(3) full-text-search results<br/>
-(4) populated async-ly with typing...<br/>
+[1] a separate (from the search bar) window area<br/>
+[2] with individually selectable<br/>
+[3] full-text-search results<br/>
+[4] populated async-ly with typing...<br/>
 
-In CLI-s, `grep` does (3) full-text-search, but it is slow and completely misses the rest (1), (2), (4).
+In CLI-s, `grep` does [3] full-text-search,<br/>
+but it is slow and completely misses the rest [1], [2], [4].
 
-Also, simple full-text-search is imprecise - facilitating selection in CLI requires:<br/>
+Also, simple full-text-search is imprecise - facilitating selection in CLI works best with:<br/>
 a catalogue-like navigation selecting keywords via structured data search with auto-completion.
+
 </details>
 
 <!-- TODO: update the doc first before publishing its link
@@ -99,11 +171,12 @@ Learn more about [how search works][how_search_works.md].
 <!--
 
 <a name="argrelay-overview"></a>
+
 # Interaction overview
 
 User is interrogated for each next input arg based on server knowledge of:
-*  custom command **input schema**
-*  custom data which matches already given input on the command line
+*   custom command **input schema**
+*   custom data which matches already given input on the command line
 
 Each command resembles "enum language":
 *   Tokens are tags | labels | keywords from one of the `enum` sets.
@@ -122,7 +195,10 @@ Wrapping any command by `argrelay`:
 -->
 
 <a name="argrelay-general-dilemma"></a>
+
 # General dilemma
+
+Neither GUI nor CLI will ever go way:
 
 | GUI                                                                           | CLI                                                       |
 |-------------------------------------------------------------------------------|-----------------------------------------------------------|
@@ -143,88 +219,80 @@ Wrapping any command by `argrelay`:
 | :heavy_plus_sign: point-click actions                                         | :heavy_minus_sign: increased typing:exclamation:          |
 | :heavy_plus_sign: intuitive data-driven human interface                       | :heavy_minus_sign: human interface:question: API, in fact |
 
-While retaining advantages of a CLI tool,<br/>
-`argrelay` tries to provide a slim alternative to GUI for those last :heavy_plus_sign:-s:
+To resolve this dilemma, while retaining advantages of a CLI tool,<br/>
+`argrelay` compensates for those last :heavy_plus_sign:-s by:
 *   intuitive data-driven interface
 *   reduced typing (args auto-reduction)
 *   keyword options (args auto-completion)
 
+<a name="argrelay-alternatives"></a>
+
+# In search for alternatives
+
 As opposed to GUI-demanding approaches like [Warp][Warp_site] or [IDEA terminal][IDEA_terminal]<br/>
-(in desktop environment where any tool is available),<br/>
-`argrelay` survives in basic text modes (over telnet or SSH).
+(in desktop environment where any tool competes for installation),<br/>
+`argrelay` is slim and survives everywhere in basic text modes (over telnet or SSH).
+
+Also, none of these desktop tools allow building commands with custom input spec -<br/>
+they simply augment interaction, in fact, they complement `argrelay` (as they may work together).
+
+Alternatively, unlike this `argrelay` framework, independent [`argcomplete`][argcomplete_github] library:
+*   :heavy_plus_sign: queries args directly from the source
+*   :heavy_minus_sign: supports only `Tab`-completion
+*   :heavy_minus_sign: does not search data inline
+*   :heavy_minus_sign: does not provide feedback on input interrogation status
+*   :heavy_minus_sign: does not eliminate irrelevant args
+*   :heavy_minus_sign: uses stringent CLI syntax
+*   :heavy_minus_sign: suffers performance limitations (no specialized data index)
+
+<a name="argrelay-productivity"></a>
+
+# Dev productivity
 
 Given that `argrelay` target audience are devs (using shell),<br/>
-the advantages of CLI tools over GUI can be summarized property-by-property:
+the advantages of CLI tools over GUI can be summarized aspect-by-aspect:
 
-|                          | output    | interaction   | design | languages | integration | cycle | reviewers | team    | users  | resources |
-|--------------------------|-----------|---------------|--------|-----------|-------------|-------|-----------|---------|--------|-----------|
-| :heavy_minus_sign: GUI   | rigid     | manual        | heavy  | exclusive | denying     | days  | many      | another | anyone | max       |
-| :heavy_plus_sign: CLI    | adaptable | automate-able | light  | inclusive | composable  | hours | few       | same    | devs   | min       |
+| aspect      | :heavy_minus_sign: GUI | :heavy_plus_sign: CLI |
+|-------------|------------------------|-----------------------|
+| output      | rigid                  | adaptable             |
+| interaction | manual                 | automate-able         |
+| design      | heavy                  | light                 |
+| languages   | exclusive              | inclusive             |
+| integration | denying                | composable            |
+| cycle       | days                   | hours                 |
+| reviewers   | many                   | few                   |
+| team        | another                | same                  |
+| users       | anyone                 | devs                  |
+| resources   | max                    | min                   |
 
 <a name="argrelay-original-use-case"></a>
+
 # Original use case
 
 Auto-complete commands [based on arbitrary data sets][later_stack_question],<br/>
 for example, using metadata for 10s x clusters, 100s x hosts, 1000s x processes, ...<br/>
 **directly from standard shell**.
 
-Selecting args directly in shell CLI avoids **otherwise** error-prone coping-and-pasting via clumsy GUI window switching.
+Selecting args directly in shell CLI avoids **otherwise** error-prone<br/>
+coping-and-pasting via clumsy GUI window switching.
 
 Flexible and [responsive lookup][completion_perf_notes.md] required data indexing<br/>
 (e.g. each Tab-request demands short loading and querying time for context-specific data)<br/>
 which suggested a split...
 
 <a name="argrelay-client-server"></a>
-# Straightforward split: client & server
 
-The performance qualities were achieved by running a standby server with pre-loaded data<br/>
+# Design choice: client-server vs static rules
+
+The performance qualities are achieved by running a standby server with pre-loaded data<br/>
 (instead of loading this data into each client).
 > For example, with 1000s of data entries,<br/>
-> even if someone could generate static Bash completion config,<br/>
-> it would take considerable time to load it for every shell instance.
+> even if someone could generate static Bash completion rules,<br/>
+> it would take considerable time to load them for every shell instance.
 
-Unlike static | generated | offline index per client, standby server also naturally supports dynamic data updates.
+Unlike static | generated | offline index per client,<br/>
+standby server also naturally supports dynamic data updates.
 
-<a name="argrelay-request-hotkeys"></a>
-# Request hotkeys
-
-| Bash:             | Server:                            | Client:                                   |
-|-------------------|:-----------------------------------|:------------------------------------------|
-| **`Alt+Shift+Q`** | reports existing and missing input | displays command completion status        |
-| **`Tab`**         | suggests options for missing input | lists options to Bash for auto-completion |
-| **`Enter`**       | provides data to invoke a command  | executes the command                      |
-
-<a name="argrelay-name"></a>
-# What's in a name?
-
-CLI for any program is wrapped by `argrelay` interaction and invoked by the user indirectly.
-
-Eventually, `argrelay` "relays" command line args (hence, the name)<br/>
-with associated data around to invoke the program selected by the user:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant P as Any program:<br/>user-specific<br/>client-side-local
-    actor U as <br/>User
-    box transparent <br/>argrelay
-    participant C as Client
-    participant S as Server
-    end
-    U ->> C: invoke via shell<br/>on hotkeys
-    activate C
-    C ->> S: "relay" all args
-    activate S
-    S ->> C: "relay" enriched lookup details
-    deactivate S
-    C ->> P: "relay" details to invoke
-    deactivate C
-    activate P
-    P ->> U: show results
-    deactivate P
-```
-
-<a name="argrelay-demo"></a>
 # Interactive demo
 
 This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
@@ -338,11 +406,12 @@ This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_
     ```
 
 <a name="primary-executables"></a>
+
 # Primary executables
 
 This table summarizes all executables most users ever need to know:
 
-| Executable from `@/exe/` dir                            | Purpose                                                                      |
+| Executable<br/>from `@/exe/` dir                        | Purpose                                                                      |
 |:--------------------------------------------------------|:-----------------------------------------------------------------------------|
 | [`check_env.bash`][FS_36_17_84_44.check_env.md]         | checks Bash/Python environments for any issues                               |
 | [`bootstrap_env.bash`][FS_85_33_46_53.bootstrap_env.md] | bootstraps the environment (installs or upgrades `argrelay`)                 |
@@ -354,7 +423,8 @@ This table summarizes all executables most users ever need to know:
 See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for details.
 
 <a name="argrelay-includes"></a>
-# What's in the package?
+
+# What is in the package?
 
 *   **Client** to be invoked by Bash hook on every Tab to<br/>
     send command line arguments to the server.
@@ -370,6 +440,7 @@ See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for detai
 *   **Testing** support and coverage.
 
 <a name="argrelay-backend"></a>
+
 # Data backend
 
 There are two options at the moment - both using [MongoDB][MongoDB] API:
@@ -395,6 +466,7 @@ Quantitative comparison tables between the two can be seen in docstring for `Dis
 -->
 
 <a name="argrelay-full-picture"></a>
+
 # Full picture
 
 ```mermaid
@@ -402,19 +474,19 @@ sequenceDiagram
     autonumber
     actor U as <br/>User
     participant B as Bash
-    participant P as Any program:<br/>user-specific<br/>client-side-local
     box transparent <br/>argrelay
     participant C as Client
     participant S as Server
     participant DB as Data backend<br/>(internal or external)
     end
     participant DS as Data sources
+    participant P as Any program:<br/>user-specific<br/>client-side-local
     DS ->> S: load data
     activate S
     S ->> DB: load data
     deactivate S
     Note over S: <br/>stand-by<br/>
-    U ->> B: enter command and use hotkeys
+    U ->> B: type command and use hotkeys
     B ->> C: invoke
     activate C
     C ->> S: "relay" all args
@@ -435,6 +507,7 @@ sequenceDiagram
 ```
 
 <a name="argrelay-feedback"></a>
+
 # Feedback
 
 Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
@@ -444,6 +517,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 [argrelay_org]: https://argrelay.org/
 [Warp_site]: https://warp.dev/
 [IDEA_terminal]: https://www.jetbrains.com/help/idea/terminal-emulator.html
+[argcomplete_github]: https://github.com/kislyuk/argcomplete
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
 [MongoDB]: https://www.mongodb.com/
 [TD_63_37_05_36.demo_services_data.md]: docs/test_data/TD_63_37_05_36.demo_services_data.md
@@ -458,3 +532,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 [FS_36_17_84_44.check_env.md]: docs/feature_stories/FS_36_17_84_44.check_env.md
 [FS_85_33_46_53.bootstrap_env.md]: docs/feature_stories/FS_85_33_46_53.bootstrap_env.md
 [FS_58_61_77_69.dev_shell.md]: docs/feature_stories/FS_58_61_77_69.dev_shell.md
+[general_dilemma]: #argrelay-general-dilemma
+[full_picture]: #argrelay-full-picture
+[interactive_demo]: #argrelay-demo
+[readline_config]: https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
