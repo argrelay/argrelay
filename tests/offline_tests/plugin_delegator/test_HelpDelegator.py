@@ -3,8 +3,10 @@ from __future__ import annotations
 from typing import Union
 
 from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay.custom_integ.value_constants import func_id_list_service_
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
+from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.HelpDelegator import HelpDelegator
 from argrelay.relay_client import __main__
@@ -59,6 +61,22 @@ class ThisTestClass(LocalTestClass):
                 [
                     "intercept",
                 ]
+            ),
+            ThisTestCase(
+                f"CASE_A (see adjacent): test that `help` executes with "
+                f"selected func `{func_id_list_service_}` without failure.",
+                "some_command help list service |",
+                CompType.PrefixShown,
+                {},
+                ProposeArgValuesVerifier(self),
+            ),
+            ThisTestCase(
+                f"CASE_B (see adjacent): test that `help` executes with "
+                f"selected func `{SpecialFunc.func_id_get_data_envelopes.name}` without failure.",
+                "some_command help data get |",
+                CompType.PrefixShown,
+                {},
+                ProposeArgValuesVerifier(self),
             ),
         ]
 

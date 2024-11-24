@@ -14,10 +14,11 @@ See: docs/dev_notes/screencast_notes.md
 
 # What is [`argrelay`][argrelay_org]?
 
-A framework to search and select **custom data** input for command line interface (CLI) tools.
+A wrapper for command line interface (CLI) tools<br/>
+to search & select **custom data** input directly in the **standard shell**.
 
-It integrates standard shell, local commands, server logic & data<br/>
-to reveal available input **at your fingertips**.
+It integrates shell + client + server to enable local commands<br/>
+with enriched data based on concise input syntax.
 
 *   Although its initial purpose was command **auto-completion**, that become a trivial byproduct of...
 *   Its primary target feature: keyword-based **structured data search**.
@@ -252,33 +253,33 @@ Alternatively, unlike this `argrelay` framework, independent [`argcomplete`][arg
 Given that `argrelay` target audience are devs (using shell),<br/>
 the advantages of CLI tools over GUI can be summarized aspect-by-aspect:
 
-| aspect      | :heavy_minus_sign: GUI | :heavy_plus_sign: CLI |
-|-------------|------------------------|-----------------------|
-| output      | rigid                  | adaptable             |
-| interaction | manual                 | automate-able         |
-| design      | heavy                  | light                 |
-| languages   | exclusive              | inclusive             |
-| integration | denying                | composable            |
-| cycle       | days                   | hours                 |
-| reviewers   | many                   | few                   |
-| team        | another                | same                  |
-| users       | anyone                 | devs                  |
-| resources   | max                    | min                   |
+| aspect          | :heavy_minus_sign: GUI | :heavy_plus_sign: CLI |
+|-----------------|------------------------|-----------------------|
+| **output**      | image                  | text                  |
+| **interaction** | manual                 | automate-able         |
+| **design**      | heavy                  | light                 |
+| **languages**   | exclusive              | inclusive             |
+| **integration** | denying                | composable            |
+| **cycle**       | days                   | hours                 |
+| **reviewers**   | many                   | few                   |
+| **team**        | another                | same                  |
+| **users**       | anyone                 | devs                  |
+| **resources**   | max                    | min                   |
 
 <a name="argrelay-original-use-case"></a>
 
 # Original use case
 
-Auto-complete commands [based on arbitrary data sets][later_stack_question],<br/>
+It aimed at command auto-completion [based on arbitrary data sets][later_stack_question],<br/>
 for example, using metadata for 10s x clusters, 100s x hosts, 1000s x processes, ...<br/>
-**directly from standard shell**.
+(over 15K objects in total) **directly from the standard shell**.
 
 Selecting args directly in shell CLI avoids **otherwise** error-prone<br/>
 coping-and-pasting via clumsy GUI window switching.
 
 Flexible and [responsive lookup][completion_perf_notes.md] required data indexing<br/>
 (e.g. each Tab-request demands short loading and querying time for context-specific data)<br/>
-which suggested a split...
+which suggested a server...
 
 <a name="argrelay-client-server"></a>
 

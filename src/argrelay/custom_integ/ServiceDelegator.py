@@ -275,13 +275,16 @@ class ServiceDelegator(AbstractDelegator):
                 )
 
             # If we need to specify `access_type` `data_envelope`:
+            # TODO: TODO_73_23_85_93: use helper to select container ipos:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + access_container_ipos_:
                 # Take object found so far:
                 data_envelope = interp_ctx.envelope_containers[(
+                    # TODO: TODO_73_23_85_93: use helper to select container ipos:
                     interp_ctx.curr_interp.base_container_ipos + object_container_ipos
                 )].data_envelopes[0]
 
                 access_container = interp_ctx.envelope_containers[(
+                    # TODO: TODO_73_23_85_93: use helper to select container ipos:
                     interp_ctx.curr_interp.base_container_ipos + access_container_ipos_
                 )]
 
@@ -336,9 +339,11 @@ class ServiceDelegator(AbstractDelegator):
         object_container_ipos,
     ):
         if (
+            # TODO: TODO_73_23_85_93: use helper to select container ipos:
             interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + object_container_ipos
         ):
             service_container = interp_ctx.envelope_containers[(
+                # TODO: TODO_73_23_85_93: use helper to select container ipos:
                 interp_ctx.curr_interp.base_container_ipos + object_container_ipos
             )]
             any_assignment = (

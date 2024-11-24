@@ -23,6 +23,19 @@ query_cache_config:
 
 gui_banner_config:
 
+    meter_html: |
+        <!-- Google tag (gtag.js) for argrelay.org -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-R73MX6JD4D"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-R73MX6JD4D');
+        </script>
+
+    tagline_html: |
+        CLI input search and auto-completion
+
     header_html: |
         <div style="color: grey; font-size: small;">
 

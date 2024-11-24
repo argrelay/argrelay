@@ -128,7 +128,10 @@ class DataBackendDelegator(AbstractDelegator):
         if func_param_container_offset < len(search_control_list):
             return search_control_list[func_param_container_offset]
         elif func_param_container_offset == len(search_control_list):
-            collection_name_container = interp_ctx.envelope_containers[collection_name_container_ipos_]
+            # TODO: TODO_73_23_85_93: use helper to select container ipos:
+            collection_name_container = interp_ctx.envelope_containers[
+                interp_ctx.curr_interp.base_container_ipos + collection_name_container_ipos_
+            ]
             collection_name_container.data_envelopes = (
                 interp_ctx
                 .query_engine

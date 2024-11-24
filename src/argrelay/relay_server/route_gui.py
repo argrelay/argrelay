@@ -56,6 +56,8 @@ def create_blueprint_gui(
             project_git_commit_display_string = project_git_commit_display_string,
             project_git_conf_dir_url = project_git_conf_dir_url,
             project_git_conf_dir_display_string = project_git_conf_dir_display_string,
+            meter_html = gui_banner_config.meter_html,
+            tagline_html = gui_banner_config.tagline_html,
             header_html = gui_banner_config.header_html,
             footer_html = gui_banner_config.footer_html,
             command_line = command_line,
