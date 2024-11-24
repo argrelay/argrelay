@@ -8,6 +8,7 @@ from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
@@ -40,6 +41,15 @@ class ThisTestClass(LocalTestClass):
                     "ro",
                     "rw",
                 ]
+            ),
+            ThisTestCase(
+                f"Test that suggestion does not make server fail if "
+                f"`{SpecialFunc.func_id_get_data_envelopes.name}` is prefixed with "
+                f"`{SpecialFunc.func_id_help_hint.name}`.",
+                "some_command help data get |",
+                CompType.PrefixShown,
+                {},
+                ProposeArgValuesVerifier(self),
             ),
         ]
 

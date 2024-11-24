@@ -28,6 +28,7 @@ def get_func_id_from_interp_ctx(
     """
 
     func_data_envelope = interp_ctx.envelope_containers[(
+        # TODO: TODO_73_23_85_93: use helper to select container ipos:
         interp_ctx.curr_interp.base_container_ipos + function_container_ipos_
     )].data_envelopes[0]
     return func_data_envelope[instance_data_][func_id_]

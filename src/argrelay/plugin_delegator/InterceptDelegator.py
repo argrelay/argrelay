@@ -91,8 +91,10 @@ class InterceptDelegator(AbstractJumpDelegator):
             SpecialFunc.func_id_intercept_invocation.name,
         ]:
             # If we need to specify `output_format_class_name` `data_envelope`:
+            # TODO: TODO_73_23_85_93: use helper to select container ipos:
             if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + format_output_container_ipos_:
                 format_output_container = interp_ctx.envelope_containers[(
+                    # TODO: TODO_73_23_85_93: use helper to select container ipos:
                     interp_ctx.curr_interp.base_container_ipos + format_output_container_ipos_
                 )]
                 any_assignment = (

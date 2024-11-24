@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {{ meter_html | safe }}
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="{{ url_for("static", filename = "argrelay_style.css") }}"/>
@@ -39,6 +40,12 @@
     <div class="top_container">
         <div id="project_title">
             <a class="argrelay_link" href="{{ project_page_url }}" target="_blank">{{ project_title }} <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
+        </div>
+        <div
+            id="tagline_html"
+            class="project_tagline"
+        >
+            {{ tagline_html | safe }}
         </div>
         <div id="argrelay_page">
             <span class="info_label">built on:</span> <a class="argrelay_link" href="https://github.com/argrelay/argrelay" target="_blank">argrelay <img class="external_link_img" src="{{ url_for("static", filename = "external_link.svg") }}"/></a>
