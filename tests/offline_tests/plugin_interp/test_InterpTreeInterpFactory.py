@@ -69,6 +69,7 @@ class ThisTestClass(LocalTestClass):
                     "intercept",
                     "list",
                     "no_data",
+                    "ssh",
                 ],
                 {},
                 "FS_01_89_09_24: `intercept` and `help` are suggested via data search via props "

@@ -1,8 +1,13 @@
 
-These are some guidelines for the code style (excuses with justifications).
+These are some guidelines for the code style = list of excuses with justifications.
 
-They often go against what would be more natural
-preferring (not immediately obvious) practical properties.
+## Naming style
+
+Names often go against what would sound "more English".
+Instead, the preferred name strings serve sorting and searching properties
+(especially across files with different syntax like *.py, *.bash, *.yaml, *.md, ...).
+
+## Specific guidelines
 
 *   Use at least two words for identifiers.
 
@@ -14,28 +19,29 @@ preferring (not immediately obvious) practical properties.
 *   Prefer single file per class.
 
     Cons:
-    *   This makes content bloated.
+    *   This makes content appear bloated.
     *   It is also **not** how many other Python projects are structured.
 
     Nevertheless:
     *   It removes the need to decide how classes should be combined.
     *   It helps navigation.
+    *   The content is not really bloated - there are more files but each has fewer lines.
 
-*   Stick with flat module structure = only one sub-dir.
+*   Stick with flat module structure = only one sub-dir under package name.
 
     Until number of dirs in the list is excessively large, it is just simpler.
 
+    There are ordering ambiguity with "sub-categories".
     Where should "one of the client response handlers" be placed?
     *   `./handler/response/`
     *   `./response/handler/`
 
     Yet, "sub-categories" can still be represented by a dir with extra suffix
-    (to consistently survive renames and refactoring):
+    (to consistently survive renames and refactoring).
     *   `./handler_request/`
     *   `./handler_response/`
-    Instead of:
-    *   `./handler/request/`
-    *   `./handler/response/`
+
+    This also embeds the ordering pattern to follow without hiding it in sub dirs.
 
 *   Reorder words in identifiers if it helps dir grouping.
 
@@ -54,6 +60,9 @@ preferring (not immediately obvious) practical properties.
     After all, the three keywords (`local` | `remote`, `command`, `client`)
     are present in any of the naming style and
     there is no ambiguity in meaning.
+
+    For another example, see hierarchy of plugins where ordering of keywords embedded in
+    the names reflects inheritance which sorts list of classes in IDE as they all have common prefix.
 
 *   Use new lines excessively - prefer "tall" code rather than "wide" one.
 
@@ -80,7 +89,8 @@ preferring (not immediately obvious) practical properties.
         self.plugin_config_dict = plugin_config_dict
     ```
 
-    In case of constructor args changes, the first style:
+    In this case of constructor args list,
+    the first style (where each arg is on its own line):
     *   makes diff output cleaner for reviews
     *   preserves the history through `git blame` for more lines
 

@@ -57,6 +57,7 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
                     "intercept",
                     "list",
                     "no_data",
+                    "ssh",
                 ],
                 "Basic test.",
             ),

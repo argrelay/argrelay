@@ -12,9 +12,11 @@
 #     *   `@/tmp/multiple_clients/client_b/exe/dev_shell.bash`
 # *   Commands used:
 #     *   `lay`                is configured for both `client_a` and `client_b`
+#     *   `ar_ssh`             is configured for both `client_a` and `client_b`
 #     *   `relay_demo`         is configured for both `client_a` and `client_b`
 #     *   `some_command`       is configured for `client_a` only
 #     *   `service_relay_demo` is configured for `client_b` only
+#     *   `argrelay.check_env` NOT configured for both `client_a` and `client_b`
 # *   TODO: How can we test automatically that both `Alt+Shift+Q` and `Tab` work?
 
 # Debug: Print commands before execution:

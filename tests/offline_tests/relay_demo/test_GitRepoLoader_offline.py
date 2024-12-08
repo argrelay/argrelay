@@ -16,7 +16,6 @@ from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
 )
 from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
 from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.relay_client import __main__
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_

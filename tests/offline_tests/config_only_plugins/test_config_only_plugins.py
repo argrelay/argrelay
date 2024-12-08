@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import func_configs_
-from argrelay.custom_integ.ConfigOnlyDelegator import ConfigOnlyDelegator
 from argrelay.custom_integ.ConfigOnlyLoader import ConfigOnlyLoader
 from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
     envelope_class_to_collection_name_map_,
 )
+from argrelay.custom_integ.DelegatorConfigOnly import DelegatorConfigOnly
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_
+from argrelay.custom_integ.SchemaConfigDelegatorConfigBase import func_configs_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
@@ -244,7 +244,7 @@ exit 1
         """
         Test that validation preventing `search_control` referencing unknown `index_prop`-s works.
 
-        This test relies on `ConfigOnlyDelegator` to specify `search_control`.
+        This test relies on `DelegatorConfigOnly` to specify `search_control`.
 
         Server should not start if `search_prop` does not exists in `index_prop`-s.
         """
@@ -265,7 +265,7 @@ exit 1
                         server_plugin_instances_
                     ][
                         # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
-                        f"{ConfigOnlyDelegator.__name__}.default"
+                        f"{DelegatorConfigOnly.__name__}.default"
                     ][
                         plugin_config_
                     ]

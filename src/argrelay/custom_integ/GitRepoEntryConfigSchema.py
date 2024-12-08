@@ -16,6 +16,7 @@ load_tags_last_days_ = "load_tags_last_days"
 load_commits_max_count_ = "load_commits_max_count"
 envelope_properties_ = "envelope_properties"
 
+
 class GitRepoEntryConfigSchema(Schema):
     class Meta:
         unknown = RAISE

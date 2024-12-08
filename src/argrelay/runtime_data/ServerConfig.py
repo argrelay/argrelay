@@ -41,7 +41,7 @@ class ServerConfig:
     """
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
-    action_delegators: dict[str, "AbstractDelegator"] = field(default_factory = lambda: {})
+    action_delegators: dict[str, "DelegatorAbstract"] = field(default_factory = lambda: {})
     """
     Entries in `action_delegators` are not directly loaded from config.
     These are plugin instances created during plugin activation.

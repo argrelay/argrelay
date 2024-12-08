@@ -10,7 +10,7 @@ class FuncState(Enum):
     """
     Used for func that are not plugged anywhere in the tree (but they are published).
 
-    See `AbstractDelegator.get_supported_func_envelopes`.
+    See `DelegatorAbstract.get_supported_func_envelopes`.
     """
 
     fs_ignorable = auto()

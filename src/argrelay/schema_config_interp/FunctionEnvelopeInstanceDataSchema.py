@@ -5,7 +5,7 @@ from argrelay.schema_config_interp.SearchControlSchema import search_control_des
 
 func_id_ = "func_id"
 """
-An id (unique string) used by `AbstractDelegator` to distinguish one of many functions it can potentially support.
+An id (unique string) used by `DelegatorAbstract` to distinguish one of many functions it can potentially support.
 See also `ReservedPropName.func_id`.
 """
 
@@ -42,8 +42,8 @@ function_envelope_instance_data_desc = TypeDesc(
     ref_name = FunctionEnvelopeInstanceDataSchema.__name__,
     dict_example = {
         func_id_: "some_function",
-        # TODO: Be able to import `NoopDelegator` and reference it via `__name__`:
-        delegator_plugin_instance_id_: "NoopDelegator.default",
+        # TODO: Be able to import `DelegatorNoopEmpty` and reference it via `__name__`:
+        delegator_plugin_instance_id_: "DelegatorNoopEmpty.default",
         search_control_list_: [
             search_control_desc.dict_example,
         ],

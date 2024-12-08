@@ -6,6 +6,7 @@
 # shellcheck disable=SC2034
 argrelay_bind_command_basenames=(
     lay
+    ar_ssh
     relay_demo
     some_command
     service_relay_demo

@@ -20,7 +20,7 @@ class PluginType(Enum):
 
     DelegatorPlugin = PluginSide.PluginServerSideOnly
     """
-    See classes derived from `AbstractDelegator`.
+    See classes derived from `DelegatorAbstract`.
 
     Note that this plugin also implements client-side logic
     but it is not instantiated on the client-side -

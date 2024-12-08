@@ -3,7 +3,7 @@ from copy import deepcopy
 from marshmallow import RAISE, fields
 
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_custom_data_desc
+from argrelay.plugin_delegator.SchemaCustomDataDelegatorError import error_delegator_custom_data_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_entry_desc
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.InterpResultSchema import (
