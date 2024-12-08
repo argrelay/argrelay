@@ -5,7 +5,7 @@ from typing import Union, Type
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import eprint
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.server_spec.CallContext import CallContext
@@ -23,7 +23,7 @@ class InOutTestClass(BaseTestClass):
         actual_suggestions: list[str],
         container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
         container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
-        delegator_class: Union[Type[AbstractDelegator], None],
+        delegator_class: Union[Type[DelegatorAbstract], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         expected_suggestions: Union[list[str], None],
         envelope_containers: list[EnvelopeContainer],

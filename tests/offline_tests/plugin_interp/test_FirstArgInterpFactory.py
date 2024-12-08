@@ -147,6 +147,7 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(), "|", CompType.PrefixHidden,
                 [
+                    "ar_ssh",
                     "argrelay.check_env",
                     "lay",
                     "relay_demo",

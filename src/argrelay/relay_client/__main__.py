@@ -39,11 +39,11 @@ def prepare_and_run_client():
         call_ctx,
     )
 
+
 def run_client(
     client_config: ClientConfig,
     call_ctx: CallContext,
 ):
-
     is_split_mode: bool = (
         # FS_14_59_14_06 pending requests: at the moment the process is split only to provide spinner:
         client_config.show_pending_spinner

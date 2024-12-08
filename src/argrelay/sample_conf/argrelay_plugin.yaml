@@ -20,20 +20,17 @@ server_plugin_instance_groups:
             plugin_class_name: FirstArgInterpFactory
             plugin_dependencies:
                 #   Delegators for `func_tree`:
-                - NoopDelegator.default
-                - DelegatorCheckEnv.default
-                - EchoDelegator.default
-                - InterceptDelegator.default
-                - HelpDelegator.default
-                - QueryEnumDelegator.default
-                - DataBackendDelegator.default
-                - ServiceDelegator.default
-                - GitRepoDelegator.default
-                - ConfigOnlyDelegator.default
+                -   DelegatorNoopGroup.noop_group
+                -   DelegatorNoopGroup.special_func_group
+                -   DelegatorNoopGroup.check_env_command_group
+                -   DelegatorNoopGroup.ssh_dst_group
+                -   DelegatorNoopGroup.demo_service_group
+                -   DelegatorNoopGroup.generic_git_group
+                -   DelegatorConfigOnly.default
                 #   Interps for `interp_tree` per command (zero-arg):
-                - InterpTreeInterpFactory.default
-                - InterpTreeInterpFactory.check_env
-                - FuncTreeInterpFactory.default
+                -   InterpTreeInterpFactory.default
+                -   InterpTreeInterpFactory.check_env
+                -   FuncTreeInterpFactory.default
             plugin_config:
                 ignored_func_ids_list:
                     - func_id_unplugged
@@ -41,41 +38,57 @@ server_plugin_instance_groups:
     "special_func_group":
 
         # TODO: Add FS_80_45_89_81 / `error_message` func:
-        ErrorDelegator.default:
-            plugin_module_name: argrelay.plugin_delegator.ErrorDelegator
-            plugin_class_name: ErrorDelegator
+        DelegatorError.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorError
+            plugin_class_name: DelegatorError
 
-        EchoDelegator.default:
-            plugin_module_name: argrelay.plugin_delegator.EchoDelegator
-            plugin_class_name: EchoDelegator
+        DelegatorEcho.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorEcho
+            plugin_class_name: DelegatorEcho
 
-        InterceptDelegator.default:
-            plugin_module_name: argrelay.plugin_delegator.InterceptDelegator
-            plugin_class_name: InterceptDelegator
+        DelegatorIntercept.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorIntercept
+            plugin_class_name: DelegatorIntercept
             plugin_dependencies:
                 - FuncTreeInterpFactory.default
             plugin_config:
                 single_func_id: func_id_intercept_invocation
 
-        HelpDelegator.default:
-            plugin_module_name: argrelay.plugin_delegator.HelpDelegator
-            plugin_class_name: HelpDelegator
+        DelegatorHelp.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorHelp
+            plugin_class_name: DelegatorHelp
             plugin_dependencies:
                 - FuncTreeInterpFactory.default
             plugin_config:
                 single_func_id: func_id_help_hint
 
-        QueryEnumDelegator.default:
-            plugin_module_name: argrelay.plugin_delegator.QueryEnumDelegator
-            plugin_class_name: QueryEnumDelegator
+        DelegatorQueryEnum.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorQueryEnum
+            plugin_class_name: DelegatorQueryEnum
             plugin_dependencies:
                 - FuncTreeInterpFactory.default
             plugin_config:
                 single_func_id: func_id_query_enum_items
 
-        DataBackendDelegator.default:
-            plugin_module_name: argrelay.plugin_delegator.DataBackendDelegator
-            plugin_class_name: DataBackendDelegator
+        DelegatorDataBackendGet.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorDataBackendGet
+            plugin_class_name: DelegatorDataBackendGet
+
+        DelegatorDataBackendSet.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorDataBackendSet
+            plugin_class_name: DelegatorDataBackendSet
+
+        DelegatorNoopGroup.special_func_group:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorError.default
+                -   DelegatorEcho.default
+                -   DelegatorIntercept.default
+                -   DelegatorHelp.default
+                -   DelegatorQueryEnum.default
+                -   DelegatorDataBackendGet.default
+                -   DelegatorDataBackendSet.default
 
     "default_command_group":
 
@@ -101,9 +114,25 @@ server_plugin_instance_groups:
             plugin_module_name: argrelay.plugin_interp.FuncTreeInterpFactory
             plugin_class_name: FuncTreeInterpFactory
 
-        DelegatorCheckEnv.default:
-            plugin_module_name: argrelay.plugin_delegator.DelegatorCheckEnv
-            plugin_class_name: DelegatorCheckEnv
+        DelegatorCheckEnvGitCommitId.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorCheckEnvGitCommitId
+            plugin_class_name: DelegatorCheckEnvGitCommitId
+
+        DelegatorCheckEnvServerStartTime.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorCheckEnvServerStartTime
+            plugin_class_name: DelegatorCheckEnvServerStartTime
+
+        DelegatorCheckEnvServerVersion.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorCheckEnvServerVersion
+            plugin_class_name: DelegatorCheckEnvServerVersion
+
+        DelegatorNoopGroup.check_env_command_group:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorCheckEnvGitCommitId.default
+                -   DelegatorCheckEnvServerStartTime.default
+                -   DelegatorCheckEnvServerVersion.default
 
     "noop_group":
 
@@ -115,9 +144,67 @@ server_plugin_instance_groups:
             plugin_module_name: argrelay.plugin_loader.NoopLoader
             plugin_class_name: NoopLoader
 
-        NoopDelegator.default:
-            plugin_module_name: argrelay.plugin_delegator.NoopDelegator
-            plugin_class_name: NoopDelegator
+        DelegatorNoopEmpty.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopEmpty
+            plugin_class_name: DelegatorNoopEmpty
+
+        DelegatorNoopGroup.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+
+        DelegatorNoopNoDataFunc.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopNoDataFunc
+            plugin_class_name: DelegatorNoopNoDataFunc
+
+        DelegatorNoopUnpluggedFunc.default:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopUnpluggedFunc
+            plugin_class_name: DelegatorNoopUnpluggedFunc
+
+        DelegatorNoopGroup.noop_group:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorNoopEmpty.default
+                -   DelegatorNoopGroup.default
+                -   DelegatorNoopNoDataFunc.default
+                -   DelegatorNoopUnpluggedFunc.default
+
+    "ssh_dst_group":
+
+        ConfigOnlyLoader.ssh_dst_group:
+            plugin_module_name: argrelay.custom_integ.ConfigOnlyLoader
+            plugin_class_name: ConfigOnlyLoader
+            plugin_config:
+                envelope_class_to_collection_name_map:
+                    class_ssh_dst: class_ssh_dst
+                collection_name_to_index_props_map:
+                    class_ssh_dst:
+                        -   envelope_class
+                        -   code_maturity
+                        -   flow_stage
+                        -   geo_region
+                        -   cluster_name
+                        -   group_label
+                        -   service_name
+                        -   run_mode
+                        -   user_name
+                        -   host_name
+                        -   dir_path
+                        -   live_status
+                        -   data_center
+                        -   ip_address
+                data_envelopes:
+                  !include "data/ConfigOnlyLoader.ssh_dst_group.data.yaml"
+
+        DelegatorSshDst.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorSshDst
+            plugin_class_name: DelegatorSshDst
+
+        DelegatorNoopGroup.ssh_dst_group:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorSshDst.default
 
     "demo_service_group":
 
@@ -131,9 +218,45 @@ server_plugin_instance_groups:
                     # WARNING: with `mongomock` and not `enable_query_cache` requests run up for TD_38_03_48_51 may run up to 10 mins:
                     #-   TD_38_03_48_51  # large generated
 
-        ServiceDelegator.default:
-            plugin_module_name: argrelay.custom_integ.ServiceDelegator
-            plugin_class_name: ServiceDelegator
+        DelegatorServiceHostDesc.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorServiceHostDesc
+            plugin_class_name: DelegatorServiceHostDesc
+
+        DelegatorServiceHostGoto.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorServiceHostGoto
+            plugin_class_name: DelegatorServiceHostGoto
+
+        DelegatorServiceHostList.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorServiceHostList
+            plugin_class_name: DelegatorServiceHostList
+
+        DelegatorServiceInstanceDesc.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorServiceInstanceDesc
+            plugin_class_name: DelegatorServiceInstanceDesc
+
+        DelegatorServiceInstanceDiff.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorServiceInstanceDiff
+            plugin_class_name: DelegatorServiceInstanceDiff
+
+        DelegatorServiceInstanceGoto.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorServiceInstanceGoto
+            plugin_class_name: DelegatorServiceInstanceGoto
+
+        DelegatorServiceInstanceList.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorServiceInstanceList
+            plugin_class_name: DelegatorServiceInstanceList
+
+        DelegatorNoopGroup.demo_service_group:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorServiceHostDesc.default
+                -   DelegatorServiceHostGoto.default
+                -   DelegatorServiceHostList.default
+                -   DelegatorServiceInstanceDesc.default
+                -   DelegatorServiceInstanceDiff.default
+                -   DelegatorServiceInstanceGoto.default
+                -   DelegatorServiceInstanceList.default
 
     "generic_git_group":
 
@@ -184,9 +307,25 @@ server_plugin_instance_groups:
                                 git_repo_alias: argrelay
                                 git_repo_content_type: code
 
-        GitRepoDelegator.default:
-            plugin_module_name: argrelay.custom_integ.GitRepoDelegator
-            plugin_class_name: GitRepoDelegator
+        DelegatorGitRepoDescCommit.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorGitRepoDescCommit
+            plugin_class_name: DelegatorGitRepoDescCommit
+
+        DelegatorGitRepoDescTag.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorGitRepoDescTag
+            plugin_class_name: DelegatorGitRepoDescTag
+
+        DelegatorGitRepoGotoRepo.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorGitRepoGotoRepo
+            plugin_class_name: DelegatorGitRepoGotoRepo
+
+        DelegatorNoopGroup.generic_git_group:
+            plugin_module_name: argrelay.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorGitRepoDescCommit.default
+                -   DelegatorGitRepoDescTag.default
+                -   DelegatorGitRepoGotoRepo.default
 
     "config_only_group":
 
@@ -208,9 +347,9 @@ server_plugin_instance_groups:
                 data_envelopes:
                   !include "data/ConfigOnlyLoader.default.data.yaml"
 
-        ConfigOnlyDelegator.default:
-            plugin_module_name: argrelay.custom_integ.ConfigOnlyDelegator
-            plugin_class_name: ConfigOnlyDelegator
+        DelegatorConfigOnly.default:
+            plugin_module_name: argrelay.custom_integ.DelegatorConfigOnly
+            plugin_class_name: DelegatorConfigOnly
             plugin_config:
                 # TODO: TODO_84_71_86_21: change to realistic examples:
                 func_configs:

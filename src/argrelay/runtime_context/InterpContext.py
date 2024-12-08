@@ -36,7 +36,7 @@ class InterpContext:
     Reference to `ServerConfig.action_delegators`.
     """
 
-    action_delegators: dict[str, "AbstractDelegator"] = field()
+    action_delegators: dict[str, "DelegatorAbstract"] = field()
     """
     Reference to `ServerConfig.action_delegators`.
     """

@@ -4,7 +4,7 @@ from typing import Type, Union
 
 from argrelay.client_command_remote.ClientCommandRemoteWorkerJson import ClientCommandRemoteWorkerJson
 from argrelay.enum_desc.CompType import CompType
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.ArgValuesSchema import arg_values_
@@ -28,7 +28,7 @@ class RemoteTestClass(ClientServerTestClass):
         comp_type: CompType,
         expected_suggestions: Union[list[str], None],
         container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
-        delegator_class: Union[Type[AbstractDelegator], None],
+        delegator_class: Union[Type[DelegatorAbstract], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         expected_container_ipos_to_used_arg_bucket: Union[dict[int, Union[int, None]], None],
         init_env_mock_builder: EnvMockBuilder,

@@ -6,10 +6,10 @@ from copy import deepcopy
 from argrelay.composite_forest.CompositeForestSchema import tree_roots_
 from argrelay.composite_forest.CompositeNodeSchema import sub_tree_, node_type_, func_id_
 from argrelay.composite_forest.CompositeNodeType import CompositeNodeType
-from argrelay.custom_integ.BaseConfigDelegatorConfigSchema import func_configs_
-from argrelay.custom_integ.ConfigOnlyDelegator import ConfigOnlyDelegator
+from argrelay.custom_integ.DelegatorConfigOnly import DelegatorConfigOnly
+from argrelay.custom_integ.DelegatorGitRepoDescTag import func_id_desc_git_tag_
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_
-from argrelay.custom_integ.value_constants import func_id_desc_git_tag_
+from argrelay.custom_integ.SchemaConfigDelegatorConfigBase import func_configs_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
@@ -157,7 +157,7 @@ class ThisTestClass(LocalTestClass):
 
     def test_validation_for_plugin_search_control_with_func_envelope_having_missing_props(self):
         """
-        This test relies on `ConfigOnlyDelegator` to remove some `prop_name`-s in its `func_envelope`.
+        This test relies on `DelegatorConfigOnly` to remove some `prop_name`-s in its `func_envelope`.
 
         TODO: TODO_39_25_11_76: `data_envelope`-s with missing props.
 
@@ -179,7 +179,7 @@ class ThisTestClass(LocalTestClass):
                         server_plugin_instances_
                     ][
                         # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
-                        f"{ConfigOnlyDelegator.__name__}.default"
+                        f"{DelegatorConfigOnly.__name__}.default"
                     ][
                         plugin_config_
                     ][

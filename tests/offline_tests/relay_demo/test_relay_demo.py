@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
+from argrelay.custom_integ.DelegatorServiceHostGoto import func_id_goto_host_
+from argrelay.custom_integ.DelegatorServiceHostList import DelegatorServiceHostList
+from argrelay.custom_integ.DelegatorServiceInstanceGoto import func_id_goto_service_
+from argrelay.custom_integ.DelegatorServiceInstanceList import DelegatorServiceInstanceList
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.custom_integ.value_constants import func_id_goto_service_, func_id_goto_host_
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
@@ -16,9 +18,10 @@ from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import (
     indent_size,
     ClientResponseHandlerDescribeLineArgs,
 )
-from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_delegator.DelegatorError import DelegatorError
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.relay_client import __main__
+from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_response.InterpResult import InterpResult
 from argrelay.test_infra import line_no, parse_line_and_cpos
@@ -56,6 +59,7 @@ class ThisTestClass(LocalTestClass):
                     "intercept",
                     "list",
                     "no_data",
+                    "ssh",
                 ],
                 # TODO: Maybe we should suggest selection for `internal` func like `intercept` as well?
                 "Suggest from the set of values for the first unassigned arg type.",
@@ -251,7 +255,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     2: None,
                 },
-                ServiceDelegator,
+                DelegatorServiceHostList,
                 {
                     0: {
                         ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -311,7 +315,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     2: None,
                 },
-                ServiceDelegator,
+                DelegatorServiceInstanceList,
                 {
                     0: {
                         ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -391,7 +395,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     2: None,
                 },
-                ServiceDelegator,
+                DelegatorServiceHostList,
                 {
                     0: {
                         ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -436,7 +440,7 @@ class ThisTestClass(LocalTestClass):
                 # For `CompType.InvokeAction`, suggestions are in payload but always empty list:
                 [],
                 None,
-                ServiceDelegator,
+                DelegatorServiceHostList,
                 None,
                 {
                     0: 1,
@@ -468,7 +472,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     2: None,
                 },
-                ServiceDelegator,
+                DelegatorServiceInstanceList,
                 {
                     0: {
                         ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -540,14 +544,14 @@ class ThisTestClass(LocalTestClass):
                 "FS_41_40_39_44: TODO: suggest from interp tree.",
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}41{TermColor.reset_style.value}
+{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}43{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ReservedEnvelopeClass.ClassFunction.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config data desc diff duplicates echo enum goto help intercept list no_data 
-{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config data desc diff double_execution echo get goto help host intercept list no_data print_with_exit print_with_io_redirect print_with_level repo service set tag {SpecialChar.NoPropValue.value} 
+{" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(1)}: ?{TermColor.reset_style.value} config data desc diff duplicates echo enum goto help intercept list no_data ssh 
+{" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} commit config data desc diff double_execution echo get goto help host intercept list no_data print_with_exit print_with_io_redirect print_with_level repo service set ssh tag {SpecialChar.NoPropValue.value} 
 {" " * indent_size}{TermColor.remaining_value.value}{func_envelope_path_step_prop_name(3)}: ?{TermColor.reset_style.value} commit double_execution get host print_with_exit print_with_io_redirect print_with_level repo service set tag {SpecialChar.NoPropValue.value} 
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} {FuncState.fs_alpha} {FuncState.fs_beta} {FuncState.fs_demo} {FuncState.fs_gamma} {FuncState.fs_ignorable} 
-{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_desc_git_commit func_id_desc_git_tag func_id_desc_host func_id_desc_service func_id_diff_service func_id_double_execution func_id_echo_args func_id_get_data_envelopes func_id_goto_git_repo func_id_goto_host func_id_goto_service func_id_help_hint func_id_intercept_invocation func_id_list_host func_id_list_service func_id_no_data func_id_print_with_exit_code func_id_print_with_io_redirect func_id_print_with_severity_level func_id_query_enum_items func_id_set_data_envelopes 
+{" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_desc_git_commit func_id_desc_git_tag func_id_desc_host func_id_desc_service func_id_diff_service func_id_double_execution func_id_echo_args func_id_get_data_envelopes func_id_goto_git_repo func_id_goto_host func_id_goto_service func_id_help_hint func_id_intercept_invocation func_id_list_host func_id_list_service func_id_no_data func_id_print_with_exit_code func_id_print_with_io_redirect func_id_print_with_severity_level func_id_query_enum_items func_id_set_data_envelopes func_id_ssh_dst 
 """,
             ),
             (
@@ -886,7 +890,7 @@ class ThisTestClass(LocalTestClass):
         test_cases = [
             (
                 line_no(), "some_command goto service prod downstream wert-pd-1 |",
-                ErrorDelegator,
+                DelegatorError,
                 {
                     1: {
                         ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
@@ -895,11 +899,11 @@ class ThisTestClass(LocalTestClass):
                         ServicePropName.service_name.name: "tt1",
                     },
                 },
-                "Verify invocation input when ErrorDelegator is used.",
+                f"Verify invocation input when `{DelegatorError.__name__}` is used.",
             ),
             (
                 line_no(), "some_command list service dev upstream emea |",
-                ServiceDelegator,
+                DelegatorServiceInstanceList,
                 {
                     # vararg_ipos + 0
                     1: {
@@ -914,7 +918,8 @@ class ThisTestClass(LocalTestClass):
                         ServicePropName.service_name.name: "s_b",
                     },
                 },
-                "Verify invocation input with FS_18_64_57_18 varargs when ServiceDelegator is used.",
+                f"Verify invocation input with FS_18_64_57_18 varargs "
+                f"when `{DelegatorServiceInstanceList.__name__}` is used.",
             ),
         ]
 
@@ -974,8 +979,8 @@ class ThisTestClass(LocalTestClass):
                     1: 0,
                     2: None,
                 },
-                "Ensure options hidden by `ArgSource.DefaultValue` for `ServicePropName.access_type` "
-                "and `EnvelopeContainer.used_arg_bucket` stays None.",
+                f"Ensure options hidden by `{ArgSource.DefaultValue.name}` for `{ServicePropName.access_type.name}` "
+                f"and `{EnvelopeContainer.used_arg_bucket}` stays None.",
             ),
             (
                 line_no(), "some_command diff prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,

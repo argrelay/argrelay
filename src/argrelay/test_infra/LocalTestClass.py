@@ -4,7 +4,7 @@ from typing import Union, Type
 
 from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.enum_desc.CompType import CompType
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.relay_client import __main__
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -42,7 +42,7 @@ class LocalTestClass(InOutTestClass):
         comp_type: CompType,
         expected_suggestions: Union[list[str], None],
         container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
-        delegator_class: Union[Type[AbstractDelegator], None],
+        delegator_class: Union[Type[DelegatorAbstract], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
     ):
         self.verify_output_via_local_client(
@@ -66,7 +66,7 @@ class LocalTestClass(InOutTestClass):
         expected_suggestions: Union[list[str], None],
         container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
         container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
-        delegator_class: Union[Type[AbstractDelegator], None],
+        delegator_class: Union[Type[DelegatorAbstract], None],
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         expected_container_ipos_to_used_arg_bucket: Union[dict[int, Union[int, None]], None],
         init_env_mock_builder: EnvMockBuilder,

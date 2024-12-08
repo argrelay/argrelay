@@ -13,7 +13,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory, AbstractInterp
 from argrelay.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     func_tree_interp_config_desc,
@@ -390,7 +390,7 @@ class FuncTreeInterp(AbstractInterp):
     Implements FS_26_43_73_72 func tree.
 
     Finds function `data_envelope` within func tree first,
-    then uses its delegator (see `AbstractDelegator`) to find all args-related `data_envelope`-s.
+    then uses its delegator (see `DelegatorAbstract`) to find all args-related `data_envelope`-s.
 
     See FS_55_57_45_04 enum selector.
     """
@@ -638,7 +638,7 @@ class FuncTreeInterp(AbstractInterp):
         func_data_envelope = self.get_found_func_data_envelope()
         if func_data_envelope:
             delegator_plugin_instance_id = func_data_envelope[instance_data_][delegator_plugin_instance_id_]
-            delegator_plugin: AbstractDelegator = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
+            delegator_plugin: DelegatorAbstract = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
             return delegator_plugin
         else:
             # func envelope hasn't been found yet:
