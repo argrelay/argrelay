@@ -4,12 +4,9 @@ import itertools
 import time
 
 from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
-from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
-from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.schema_config_core_server.ServerConfigSchema import (
@@ -95,7 +92,6 @@ class ThisTestClass(LocalTestClass):
 
         for extended_test_case in extended_test_cases:
             with self.subTest(extended_test_case):
-
                 (
                     line_number,
                     test_line,

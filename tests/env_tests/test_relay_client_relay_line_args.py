@@ -2,7 +2,7 @@ from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_delegator.DelegatorError import DelegatorError
 from argrelay.relay_client import __main__
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.EnvMockBuilder import (
@@ -24,7 +24,7 @@ class ThisTestClass(ManualServerTestClass):
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(CompType.InvokeAction)
-            .set_capture_delegator_invocation_input(ErrorDelegator)
+            .set_capture_delegator_invocation_input(DelegatorError)
         )
         with env_mock_builder.build():
             __main__.main()

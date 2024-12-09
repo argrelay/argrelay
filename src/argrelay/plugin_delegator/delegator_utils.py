@@ -6,9 +6,10 @@ from typing import Callable, Any, Union
 
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ClientExitCode import ClientExitCode
+from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.plugin_config.ConfiguratorAbstract import ConfiguratorAbstract
-from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
-from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
+from argrelay.plugin_delegator.DelegatorError import DelegatorError
+from argrelay.plugin_delegator.SchemaCustomDataDelegatorError import (
     error_message_,
     error_code_,
     error_delegator_custom_data_desc,
@@ -72,9 +73,9 @@ def redirect_to_error(
     error_message,
     error_code,
 ):
-    # Redirect to `ErrorDelegator`:
-    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ErrorDelegator`):
-    delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
+    # Redirect to `DelegatorError`:
+    # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `DelegatorError`):
+    delegator_plugin_instance_id = f"{DelegatorError.__name__}.default"
     custom_plugin_data = {
         error_message_: error_message,
         error_code_: error_code,
@@ -99,3 +100,11 @@ def redirect_to_not_disambiguated_error(
         f"ERROR: `envelope_class` [{envelope_class}] is not fully qualified (not disambiguated)",
         ClientExitCode.GeneralError.value,
     )
+
+def clean_prop_value(
+    prop_value: str,
+) -> str:
+    if prop_value == SpecialChar.NoPropValue.value:
+        return ""
+    else:
+        return prop_value

@@ -7,7 +7,6 @@ from argrelay.enum_desc.PluginType import PluginType
 from argrelay.enum_desc.TokenType import get_token_type, TokenType
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 
@@ -205,7 +204,7 @@ class AbstractInterp:
         self,
     ) -> bool:
         """
-        FS_72_53_55_13: See `AbstractDelegator.has_fill_control` for more information.
+        FS_72_53_55_13: See `DelegatorAbstract.has_fill_control` for more information.
         """
         return False
 
@@ -213,7 +212,7 @@ class AbstractInterp:
         self,
     ) -> bool:
         """
-        FS_72_53_55_13: See `AbstractDelegator.run_fill_control` for more information.
+        FS_72_53_55_13: See `DelegatorAbstract.run_fill_control` for more information.
         """
         return False
 

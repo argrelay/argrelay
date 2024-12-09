@@ -25,7 +25,7 @@
     envelope_payload:
         text_message: text message D
 
-# Used by `InterceptDelegator` to select output format.
+# Used by `DelegatorIntercept` to select output format.
 -
     envelope_class: OutputFormat
     output_format: json_format

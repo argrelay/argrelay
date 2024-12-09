@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from typing import Callable, Any
 
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import error_delegator_stub_custom_data_example
+from argrelay.plugin_delegator.SchemaCustomDataDelegatorError import error_delegator_stub_custom_data_example
 from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.schema_response.InterpResultSchema import interp_result_desc, all_tokens_

@@ -39,6 +39,14 @@ class ServicePropName(Enum):
 
     # ---
 
+    user_name = auto()
+
+    # ---
+
+    dir_path = auto()
+
+    # ---
+
     live_status = auto()
     """
     A value manually or dynamically assigned to the resource indicating its status.

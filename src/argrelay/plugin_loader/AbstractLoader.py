@@ -3,8 +3,8 @@ from __future__ import annotations
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.relay_server.QueryEngine import QueryEngine
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
-from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.runtime_data.IndexModel import IndexModel
 
 
 class AbstractLoader(AbstractPluginServer):

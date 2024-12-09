@@ -2,9 +2,9 @@ from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
-from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
-from argrelay.plugin_delegator.ErrorDelegatorCustomDataSchema import (
+from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
+from argrelay.plugin_delegator.DelegatorError import DelegatorError
+from argrelay.plugin_delegator.SchemaCustomDataDelegatorError import (
     error_message_,
     error_delegator_custom_data_desc,
     error_code_,
@@ -54,10 +54,10 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
             is_error = True
             error_message = "ERROR: Function is not selected, try help, or press Tab to complete selection."
             error_code = ClientExitCode.GeneralError.value
-            # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ErrorDelegator`):
-            delegator_plugin_instance_id = f"{ErrorDelegator.__name__}.default"
+            # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `DelegatorError`):
+            delegator_plugin_instance_id = f"{DelegatorError.__name__}.default"
 
-        delegator_plugin: AbstractDelegator = self.local_server.server_config.action_delegators[
+        delegator_plugin: DelegatorAbstract = self.local_server.server_config.action_delegators[
             delegator_plugin_instance_id
         ]
         invocation_input: InvocationInput = delegator_plugin.run_invoke_control(

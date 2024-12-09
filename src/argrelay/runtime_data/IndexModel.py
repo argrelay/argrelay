@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 index_props_ = "index_props"
 
+
 @dataclass(frozen = True)
 class IndexModel:
     """

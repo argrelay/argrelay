@@ -18,7 +18,7 @@ from argrelay.misc_helper_common import eprint
 from argrelay.mongo_data import MongoClientWrapper
 from argrelay.mongo_data.MongoServerWrapper import MongoServerWrapper
 from argrelay.mongo_data.ProgressTracker import ProgressTracker
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.HelpHintCache import HelpHintCache
@@ -165,13 +165,13 @@ class LocalServer:
                 continue
 
             if plugin_type is PluginType.DelegatorPlugin:
-                plugin_instance: AbstractDelegator
-                # Store instance of `AbstractDelegator` under specified id for future use:
+                plugin_instance: DelegatorAbstract
+                # Store instance of `DelegatorAbstract` under specified id for future use:
                 self.server_config.action_delegators[plugin_instance_id] = plugin_instance
                 continue
 
             if plugin_type is PluginType.ConfiguratorPlugin:
-                plugin_instance: AbstractDelegator
+                plugin_instance: DelegatorAbstract
                 # Store instance of `ConfiguratorAbstract` under specified id for future use:
                 self.server_config.server_configurators[plugin_instance_id] = plugin_instance
                 continue
@@ -226,7 +226,7 @@ class LocalServer:
 
         See also FS_99_81_19_25 no space in options.
 
-        See also `_post_validate_all_data_envelope_missing_index_prop_names`.
+        See also `_post_validate_all_data_envelope_for_missing_index_prop_names`.
         """
 
         for envelope_collection in envelope_collections:
@@ -239,13 +239,17 @@ class LocalServer:
                 index_props = self.index_model_per_collection[collection_name].index_props
                 for index_prop in index_props:
                     if index_prop not in data_envelope:
-                        # TODO: TODO_39_25_11_76: `data_envelope`-s with missing props:
                         # Let the `data_envelope` load without some `prop_name`-s from `index_prop`-s
                         # in pre-validation - if any of `data_envelope`-s have that `prop_name`, it will fail
                         # in post-validation (see where `_raise_validation_error_for_missing_prop_name` is used).
                         # For now:
                         #     It is allowed to have no `prop_name` for all `data_envelope`
                         #     within given `collection_name` until at least one has it.
+                        # TODO: TODO_39_25_11_76: `data_envelope`-s with missing props:
+                        #       Be careful with "until at least one has it" as this
+                        #       delayed validation has to be explicitly/separately run
+                        #       after data is loaded.
+                        #       Consider refactoring data manipulation into safe manager.
                         continue
 
                     prop_value = data_envelope[index_prop]
@@ -262,7 +266,7 @@ class LocalServer:
         prop_value,
     ):
         if isinstance(prop_value, str):
-            if not prop_value and prop_value.strip():
+            if not prop_value or not prop_value.strip():
                 raise ValueError(f"`{collection_name}.{index_prop}` [{prop_value}] has to be non-blank string")
             if contains_whitespace(prop_value):
                 raise ValueError(f"`{collection_name}.{index_prop}` [{prop_value}] cannot contain whitespace")
@@ -284,12 +288,12 @@ class LocalServer:
         self._post_validate_all_data_envelope_for_missing_index_prop_names(
             progress_tracker,
         )
-        self._post_validate_all_data_envelope_for_missing_search_prop_names(
+        self._post_validate_search_props_and_index_props_reference_each_other(
             self._scan_for_all_search_props(),
             progress_tracker,
         )
 
-    def _post_validate_all_data_envelope_for_missing_search_prop_names(
+    def _post_validate_search_props_and_index_props_reference_each_other(
         self,
         search_props_per_collection: dict[str, set[str]],
         progress_tracker: ProgressTracker,
@@ -297,7 +301,7 @@ class LocalServer:
         """
         See TODO_39_25_11_76 missing props based on `search_control`-s for all loaded functions.
 
-        This function relies on `_post_validate_all_data_envelope_missing_index_prop_names`
+        This function relies on `_post_validate_all_data_envelope_for_missing_index_prop_names`
         to guarantee that all listed `index_props` exists in every loaded `data_envelope`.
         On top of that fact, this function ensures that every `search_control` used
         specifies `search_props` which exists among `index_props`.
@@ -415,61 +419,74 @@ class LocalServer:
 
         See also:
         *   `_pre_validate_data_envelope_string_index_prop_values_per_step`
-        *   `_post_validate_all_data_envelope_missing_search_prop_names`
+        *   `_post_validate_search_props_and_index_props_reference_each_other`
         """
 
         progress_tracker.track_total_validation_start()
 
         # Verify that all prop names per `collection_name`
         # exists in all corresponding `data_envelope`-s:
-        for collection_name, index_model in self.index_model_per_collection.items():
+        for collection_name in self.index_model_per_collection.keys():
             progress_tracker.track_collection_validation_start(collection_name)
-
-            prev_found_missing_prop_names: dict[str, dict] = {}
-            prev_found_existing_prop_names: dict[str, dict] = {}
-            for data_envelope in self.query_engine.get_data_envelopes_cursor(
+            self.post_validate_collection_for_missing_index_prop_names(
                 collection_name,
-                {},
-            ):
-                progress_tracker.track_collection_validation_increment(collection_name)
-
-                for prop_name in index_model.index_props:
-                    if prop_name not in data_envelope:
-
-                        if prop_name not in prev_found_missing_prop_names:
-                            prev_found_missing_prop_names[prop_name] = deepcopy(data_envelope)
-
-                        if prop_name in prev_found_existing_prop_names:
-                            self._raise_validation_error_for_missing_prop_name(
-                                True,
-                                collection_name,
-                                prop_name,
-                                data_envelope,
-                                prev_found_existing_prop_names[prop_name],
-                            )
-                    else:
-
-                        if prop_name not in prev_found_existing_prop_names:
-                            prev_found_existing_prop_names[prop_name] = deepcopy(data_envelope)
-
-                        if prop_name in prev_found_missing_prop_names:
-                            self._raise_validation_error_for_missing_prop_name(
-                                False,
-                                collection_name,
-                                prop_name,
-                                data_envelope,
-                                prev_found_missing_prop_names[prop_name],
-                            )
-                        prop_value = data_envelope[prop_name]
-                        self._validate_string_prop_value(
-                            collection_name,
-                            prop_name,
-                            prop_value,
-                        )
-
+                progress_tracker,
+            )
             progress_tracker.track_collection_validation_stop(collection_name)
 
         progress_tracker.track_total_validation_stop()
+
+    def post_validate_collection_for_missing_index_prop_names(
+        self,
+        collection_name,
+        progress_tracker,
+    ):
+        index_model = self.index_model_per_collection[collection_name]
+        prev_found_missing_prop_names: dict[str, dict] = {}
+        prev_found_existing_prop_names: dict[str, dict] = {}
+        for data_envelope in self.query_engine.get_data_envelopes_cursor(
+            collection_name,
+            {},
+        ):
+            # TODO: Even if we track and validate `data_envelope` count on server start,
+            #       we do not validate (only track increments) for `DelegatorDataBackendSet`
+            #       for now - to do this, we need know how many `data_envelope`-s each
+            #       set operation replaces.
+            progress_tracker.track_collection_validation_increment(collection_name)
+
+            for prop_name in index_model.index_props:
+                if prop_name not in data_envelope:
+
+                    if prop_name not in prev_found_missing_prop_names:
+                        prev_found_missing_prop_names[prop_name] = deepcopy(data_envelope)
+
+                    if prop_name in prev_found_existing_prop_names:
+                        self._raise_validation_error_for_missing_prop_name(
+                            True,
+                            collection_name,
+                            prop_name,
+                            data_envelope,
+                            prev_found_existing_prop_names[prop_name],
+                        )
+                else:
+
+                    if prop_name not in prev_found_existing_prop_names:
+                        prev_found_existing_prop_names[prop_name] = deepcopy(data_envelope)
+
+                    if prop_name in prev_found_missing_prop_names:
+                        self._raise_validation_error_for_missing_prop_name(
+                            False,
+                            collection_name,
+                            prop_name,
+                            data_envelope,
+                            prev_found_missing_prop_names[prop_name],
+                        )
+                    prop_value = data_envelope[prop_name]
+                    self._validate_string_prop_value(
+                        collection_name,
+                        prop_name,
+                        prop_value,
+                    )
 
     # noinspection PyMethodMayBeStatic
     def _raise_validation_error_for_missing_prop_name(

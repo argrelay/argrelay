@@ -6,7 +6,7 @@ from datetime import timezone, datetime, timedelta
 
 from git import Repo
 
-from argrelay.custom_integ.GitRepoDelegator import repo_root_abs_path_
+from argrelay.custom_integ.DelegatorGitRepoBase import repo_root_abs_path_
 from argrelay.custom_integ.GitRepoEntryConfigSchema import (
     repo_rel_path_,
     envelope_properties_,
@@ -33,8 +33,8 @@ from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     envelope_payload_,

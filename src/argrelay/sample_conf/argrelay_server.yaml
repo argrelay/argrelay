@@ -185,6 +185,9 @@ server_plugin_control:
                                     "double_execution":
                                         node_type: func_tree_node
                                         func_id: func_id_double_execution
+                            "ssh":
+                                node_type: func_tree_node
+                                func_id: func_id_ssh_dst
                     "duplicates":
                         node_type: tree_path_node
                         sub_tree:
@@ -194,6 +197,17 @@ server_plugin_control:
                                 <<: *interp_tree_node_func_id_help_hint
                             "":
                                 <<: *interp_tree_node_default_func
+            "ar_ssh":
+                node_type: zero_arg_node
+                plugin_instance_id: InterpTreeInterpFactory.default
+                sub_tree:
+                    "":
+                        node_type: interp_tree_node
+                        plugin_instance_id: FuncTreeInterpFactory.default
+                        sub_tree:
+                            "":
+                                node_type: func_tree_node
+                                func_id: func_id_ssh_dst
             "relay_demo":
                 node_type: zero_arg_node
                 plugin_instance_id: InterpTreeInterpFactory.default

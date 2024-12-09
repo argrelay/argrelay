@@ -1,0 +1,62 @@
+# This data is loaded by instance of `ConfigOnlyLoader` for `ssh_dst_group` plugins.
+# See `DelegatorSshDst` who consumes this data.
+# The data is a small set of objects which can be easily changed manually for demo purposes.
+# Each object describes an `ssh` destination augmented by different properties used in
+# search and selection of one specific destination via CLI.
+# Normally, instead of hard-coding static set, this data is automatically extracted from
+# some data source by implementing a specialized loader (see FS_00_13_77_97 plugin framework).
+
+# TODO: FS_20_88_05_60 named args are not ready yet:
+#       Until then IP addresses are prefixed with `ip.` to separate IP address value space
+#       from other properties for selection on CLI.
+
+# TODO: TODO_39_25_11_76: `data_envelope`-s with missing props
+#       User is set to "~" (quoted tilda) which is interpreted as `SpecialChar.NoPropValue`.
+#       If set to `null` (or other YAML equivalents), it does not pass validation -
+#       at the moment, all props must have a non-null non-empty values.
+
+-
+    envelope_class: class_ssh_dst
+    code_maturity: dev
+    flow_stage: backend
+    geo_region: apac
+    cluster_name: demo
+    group_label: core
+    service_name: tmp
+    run_mode: active
+    user_name: "~"
+    host_name: localhost
+    dir_path: /tmp
+    live_status: offline
+    data_center: local
+    ip_address: ip.127.0.0.1
+-
+    envelope_class: class_ssh_dst
+    code_maturity: test
+    flow_stage: backend
+    geo_region: apac
+    cluster_name: demo
+    group_label: core
+    service_name: root
+    run_mode: active
+    user_name: "~"
+    host_name: localhost
+    dir_path: /
+    live_status: online
+    data_center: local
+    ip_address: ip.127.0.0.1
+-
+    envelope_class: class_ssh_dst
+    code_maturity: test
+    flow_stage: backend
+    geo_region: apac
+    cluster_name: demo
+    group_label: core
+    service_name: home
+    run_mode: passive
+    user_name: "~"
+    host_name: localhost
+    dir_path: "~"
+    live_status: online
+    data_center: local
+    ip_address: ip.127.0.0.1

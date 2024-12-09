@@ -129,6 +129,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 {
                     "lay": "InterpTreeInterpFactory.default",
+                    "ar_ssh": "InterpTreeInterpFactory.default",
                     "relay_demo": "InterpTreeInterpFactory.default",
                     "some_command": "InterpTreeInterpFactory.default",
                     "service_relay_demo": "InterpTreeInterpFactory.default",
@@ -190,6 +191,11 @@ class ThisTestClass(LocalTestClass):
                         },
                         "": [
                             "lay",
+                        ],
+                    },
+                    "ar_ssh": {
+                        "": [
+                            "ar_ssh",
                         ],
                     },
                     "relay_demo": {
@@ -302,6 +308,9 @@ class ThisTestClass(LocalTestClass):
                             "": "FuncTreeInterpFactory.default",
                         },
                     },
+                    "ar_ssh": {
+                        "": "FuncTreeInterpFactory.default",
+                    },
                     "relay_demo": {
                         "intercept": "FuncTreeInterpFactory.default",
                         "help": "FuncTreeInterpFactory.default",
@@ -397,6 +406,7 @@ class ThisTestClass(LocalTestClass):
                 "print_with_io_redirect": "func_id_print_with_io_redirect",
                 "double_execution": "func_id_double_execution",
             },
+            "ssh": "func_id_ssh_dst",
         }
 
         test_cases = [
@@ -413,6 +423,9 @@ class ThisTestClass(LocalTestClass):
                             "": func_tree_main,
                         },
                         "": func_tree_main,
+                    },
+                    "ar_ssh": {
+                        "": "func_id_ssh_dst",
                     },
                     "relay_demo": {
                         "help": "func_id_help_hint",
@@ -472,17 +485,14 @@ class ThisTestClass(LocalTestClass):
 
                 normalized_expected_dict = normalize_tree(expected_func_tree)
 
-                # No need to normalize extracted `actual_dict`
-                # because `composite_forest` is constructed to maintain `dict` structure
-                # without `surrogate_node_id_`-s and `surrogate_tree_leaf_`-s.
-                actual_dict = normalize_tree(extract_func_tree(
+                normalized_actual_dict = normalize_tree(extract_func_tree(
                     self.load_composite_forest(),
                     plugin_instance_id,
                 ))
 
                 self.assertEqual(
                     normalized_expected_dict,
-                    actual_dict,
+                    normalized_actual_dict,
                 )
 
     @staticmethod

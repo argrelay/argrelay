@@ -56,6 +56,7 @@ class ServerConfigSchema(ObjectSchema):
         required = True,
     )
 
+
 server_config_desc = TypeDesc(
     dict_schema = ServerConfigSchema(),
     ref_name = ServerConfigSchema.__name__,
