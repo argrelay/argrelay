@@ -102,7 +102,6 @@ def populate_search_control(
     props_to_values_dict: dict[str, str],
     keys_to_props_list: list[dict],
 ) -> dict:
-
     search_control: dict = {
         collection_name_: collection_name,
         props_to_values_dict_: props_to_values_dict,

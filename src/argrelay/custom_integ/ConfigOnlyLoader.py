@@ -12,8 +12,8 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.plugin_loader.AbstractLoader import AbstractLoader
 from argrelay.relay_server.QueryEngine import QueryEngine
-from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
+from argrelay.runtime_data.IndexModel import IndexModel
 from argrelay.runtime_data.ServerConfig import ServerConfig
 
 _primitive_types = (bool, str, int, float)
@@ -61,7 +61,6 @@ class ConfigOnlyLoader(AbstractLoader):
         ]
         index_models: list[IndexModel] = []
         for collection_name, index_props in collection_name_to_index_props_map.items():
-
             index_models.append(IndexModel(
                 collection_name = collection_name,
                 index_props = index_props,
@@ -88,8 +87,10 @@ class ConfigOnlyLoader(AbstractLoader):
         envelope_collections: dict[str, EnvelopeCollection] = {}
 
         for data_envelope in data_envelopes:
-
-            class_name = data_envelope.get(ReservedPropName.envelope_class.name, ReservedEnvelopeClass.ClassUnknown.name)
+            class_name = data_envelope.get(
+                ReservedPropName.envelope_class.name,
+                ReservedEnvelopeClass.ClassUnknown.name,
+            )
             collection_name = envelope_class_to_collection_name_map.get(class_name, class_name)
 
             envelope_collection = envelope_collections.setdefault(

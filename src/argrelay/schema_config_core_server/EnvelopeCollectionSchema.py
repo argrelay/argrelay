@@ -11,6 +11,7 @@ from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
 collection_name_ = "collection_name"
 
+
 class EnvelopeCollectionSchema(ObjectSchema):
     class Meta:
         unknown = RAISE

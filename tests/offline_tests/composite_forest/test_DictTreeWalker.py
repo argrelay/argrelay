@@ -70,6 +70,24 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
+                    "l1_k1": {
+                        surrogate_node_id_: {
+                            surrogate_node_id_: {
+                                "l3_k1": "some_value",
+                            },
+                        },
+                    },
+                },
+                {
+                    "l1_k1": {
+                        "l3_k1": "some_value",
+                    },
+                },
+                f"Transform to collapse multiple nested levels with `{surrogate_node_id_}`.",
+            ),
+            (
+                line_no(),
+                {
                     surrogate_node_id_: {
                         "l2_k1": "some_value",
                     },
@@ -83,7 +101,7 @@ class ThisTestClass(LocalTestClass):
                     "l1_k1": {
                     },
                 },
-                f"Ensure no collapse of `{surrogate_node_id_}` if there are other nodes.",
+                f"Ensure no collapse of `{surrogate_node_id_}` if there are other nodes on the same level.",
             ),
             (
                 line_no(),

@@ -36,7 +36,7 @@ from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TopDir import TopDir
 from argrelay.misc_helper_common import get_argrelay_dir
-from argrelay.plugin_delegator.AbstractDelegator import AbstractDelegator
+from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.schema_config_core_client.ClientConfigSchema import (
     use_local_requests_,
@@ -427,9 +427,9 @@ class EnvMockBuilder:
     ####################################################################################################################
     # Intercept specific payload
 
-    def set_capture_delegator_invocation_input(self, delegator_class: Type[AbstractDelegator]):
+    def set_capture_delegator_invocation_input(self, delegator_class: Type[DelegatorAbstract]):
         """
-        This func causes `AbstractDelegator.invoke_action` to be mocked to capture `InvocationInput`
+        This func causes `DelegatorAbstract.invoke_action` to be mocked to capture `InvocationInput`
         inside `EnvMockBuilder.invocation_input` allowing tests to assert
         the data received from server on `ServerAction.RelayLineArgs`.
         """

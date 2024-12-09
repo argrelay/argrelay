@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServiceDelegator import ServiceDelegator
+from argrelay.custom_integ.DelegatorServiceHostList import DelegatorServiceHostList
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
 from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.plugin_delegator.ErrorDelegator import ErrorDelegator
+from argrelay.plugin_delegator.DelegatorError import DelegatorError
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
@@ -43,7 +43,7 @@ class ThisTestClass(RemoteTestClass):
                     },
                     2: None,
                 },
-                ServiceDelegator,
+                DelegatorServiceHostList,
                 {
                     0: {
                         ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
@@ -100,7 +100,7 @@ class ThisTestClass(RemoteTestClass):
                     },
                     3: None,
                 },
-                ErrorDelegator,
+                DelegatorError,
                 {
                     0: {
                         ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,

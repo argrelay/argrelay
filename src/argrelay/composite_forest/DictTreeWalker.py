@@ -86,10 +86,11 @@ def _normalize_tree(
                 output_tree[surrogate_node_id_] = input_tree
     elif isinstance(input_tree, dict):
         if len(input_tree) == 1 and surrogate_node_id_ in input_tree:
-            # collapse `dict` to `str`:
-            output_tree = input_tree[surrogate_node_id_]
+            # collapse curr and next level:
+            output_tree = _normalize_tree(input_tree[surrogate_node_id_], tree_depth)
         else:
             for node_id in input_tree:
+                # normalize next level:
                 output_tree[node_id] = _normalize_tree(input_tree[node_id], tree_depth + 1)
     else:
         raise ValueError(f"unexpected `input_tree` type: {type(input_tree)}")

@@ -9,7 +9,7 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
-from argrelay.plugin_delegator.NoopDelegator import NoopDelegator
+from argrelay.plugin_delegator.DelegatorNoopEmpty import DelegatorNoopEmpty
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_module_name_, plugin_class_name_
@@ -116,8 +116,8 @@ class ThisTestClass(BaseTestClass):
     def test_mocked_RelayLineArgs_response(self):
         server_response = deepcopy(invocation_input_desc.dict_example)
         server_response[delegator_plugin_entry_].update({
-            plugin_module_name_: NoopDelegator.__module__,
-            plugin_class_name_: NoopDelegator.__name__,
+            plugin_module_name_: DelegatorNoopEmpty.__module__,
+            plugin_class_name_: DelegatorNoopEmpty.__name__,
         })
         responses.add(self.get_mocked_response(
             ServerAction.RelayLineArgs,

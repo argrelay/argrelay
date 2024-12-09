@@ -45,6 +45,7 @@ def store_envelopes(
 
     assert progress_tracker.total_envelope_i == progress_tracker.total_envelope_n
 
+
 def delete_data_envelopes(
     mongo_db: Database,
     collection_name: str,
@@ -52,6 +53,7 @@ def delete_data_envelopes(
 ) -> None:
     col_proxy: Collection = mongo_db[collection_name]
     col_proxy.delete_many(query_dict)
+
 
 def store_envelope_collection(
     mongo_db: Database,
