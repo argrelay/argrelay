@@ -45,7 +45,7 @@ class DelegatorServiceHostList(DelegatorServiceHostBase):
                         host_search_control,
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "List remote hosts matching search query",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: func_id_list_host_,
@@ -69,7 +69,7 @@ class DelegatorServiceHostList(DelegatorServiceHostBase):
             interp_ctx,
             local_server,
             vararg_container_ipos,
-            ServiceEnvelopeClass.ClassHost.name,
+            ServiceEnvelopeClass.class_host.name,
         )
 
     @staticmethod

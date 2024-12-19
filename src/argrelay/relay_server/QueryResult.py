@@ -30,6 +30,9 @@ class QueryResult:
     When `found_count == 1`, `data_envelopes` contains exactly the one `data_envelope` found.
     """
 
+    # TODO: TODO_66_66_75_78: Split `arg` to `prop` concepts:
+    #       Which "types"? Which "values"?
+    #       Rename to `remaining_prop_name_to_prop_value`.
     remaining_types_to_values: dict[str, list[str]] = field()
     """
     See `EnvelopeContainer.remaining_types_to_values`.

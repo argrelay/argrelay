@@ -43,7 +43,7 @@ Achieving all three [A, B, C] is **nearly impossible without** CLI.
 
 ### Solution:
 
-And `argrelay` makes CLI more human-efficient by reducing manual and guess work:
+Make CLI more human-efficient by reducing manual and guess work:
 *   enables **inline search directly in shell** (without copying-and-pasting args from other apps)
 *   reduces cognitive load via feedback **eliminating syntax and options memorization**
 *   unifies interaction for all registered commands via **data-driven** framework
@@ -145,19 +145,19 @@ This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
 
 Clone this repo somewhere (`@/` is [the project root][FS_29_54_67_86.dir_structure.md]).
 
-Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the first time):
+Start `@/exe/relay_demo.bash` sub-shell (it may take a couple of minutes to start for the first time):
 
 ```sh
 ./exe/relay_demo.bash
 ```
+
+This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
 
 Optionally, review env state (any time):
 
 ```sh
 ./exe/check_env.bash
 ```
-
-This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
 
 To clean up at any point, simply exit the sub-shell:
 
@@ -184,10 +184,20 @@ While still in the sub-shell:
     If executed (press `Enter`), it runs stub implementations
     (in real app it would do remote `ssh`-login for example).
 
+*   Command `lay goto` binds to only one of the function.
+
+    To see all bindings for `lay` command, run help function accessible via this command:
+
+    ```sh
+    lay help
+    ```
+
+    A lot of the functions are stubs and tests for demo purposes only.
+
 *   To interact with executable command, try `ssh` wrapper:
 
     Note that it is possible to bind functions to more than one command.<br/>
-    For `ssh` wrapper example, try `lay ssh` and `ar_ssh`:
+    For `ssh` wrapper example, try `lay ssh` or `ar_ssh`:
 
     ```sh
     lay ssh                  # press `Alt+Shift+Q` to describe available options
@@ -326,6 +336,32 @@ sequenceDiagram
 
 <a name="argrelay-feedback"></a>
 
+# Project status
+
+### Past stage:
+
+It grew:
+*    out of an attempt to solve the [original use case][original_use_case]
+*    into an attempt to make it generic
+
+All the core features has already been added:
+*   search logic
+*   extensibility via plugins
+*   automated shell config and check scripts
+*   demo samples for various use cases
+
+<!--
+    TODO: add links to separate docs for each of the points
+--->
+
+### Next stage:
+
+Simplifying adoption:
+
+*   Focus on feedback, target relevant features, avoid unnecessary ones.
+*   Stabilize APIs, split project into individual components with [semantic versioning][semver_notes.md].
+*   Widen dev comprehension by refactoring for clarity, removing obsoleted parts, improving docs.
+
 # Feedback
 
 Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
@@ -351,6 +387,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 [FS_58_61_77_69.dev_shell.md]: docs/feature_stories/FS_58_61_77_69.dev_shell.md
 
 [general_dilemma]: docs/dev_notes/project_origin.md#argrelay-general-dilemma
+[original_use_case]: docs/dev_notes/project_origin.md#argrelay-original-use-case
 
 [full_picture]: #argrelay-full-picture
 [interactive_demo]: #argrelay-demo
@@ -361,3 +398,5 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 [ssh_loder_data]: data/ConfigOnlyLoader.ssh_dst_group.data.yaml
 
 [project_walkthrough.md]: docs/user_tutorials/project_walkthrough.md
+
+[semver_notes.md]: docs/dev_notes/semver_notes.md

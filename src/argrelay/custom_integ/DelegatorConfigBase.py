@@ -62,9 +62,9 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
             func_envelope = func_config[func_envelope_]
 
             if ReservedPropName.envelope_class.name in func_envelope:
-                assert func_envelope[ReservedPropName.envelope_class.name] == ReservedEnvelopeClass.ClassFunction.name
+                assert func_envelope[ReservedPropName.envelope_class.name] == ReservedEnvelopeClass.class_function.name
             else:
-                func_envelope[ReservedPropName.envelope_class.name] = ReservedEnvelopeClass.ClassFunction.name
+                func_envelope[ReservedPropName.envelope_class.name] = ReservedEnvelopeClass.class_function.name
 
             if ReservedPropName.func_id.name in func_envelope:
                 assert func_envelope[ReservedPropName.func_id.name] == func_id
@@ -154,7 +154,7 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
         assert interp_ctx.is_func_found(), "the (first) function envelope must be found"
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
-        # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
+        # `ReservedEnvelopeClass.class_function` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         function_container = interp_ctx.envelope_containers[function_container_ipos_]
         delegator_plugin_instance_id = (
             function_container.data_envelopes[0][instance_data_]

@@ -67,7 +67,7 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
                             props_to_values_dict = {
                                 ReservedPropName.envelope_class.name: class_ssh_dst_,
                             },
-                            keys_to_props_list = [
+                            arg_name_to_prop_name_map = [
                                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                                 {"class": ReservedPropName.envelope_class.name},
                                 # ---
@@ -91,7 +91,7 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
                         ),
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "Use `ssh` to log into the destination.",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: func_id_ssh_dst_,

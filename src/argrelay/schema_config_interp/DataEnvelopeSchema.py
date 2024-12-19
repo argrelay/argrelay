@@ -52,7 +52,7 @@ class DataEnvelopeSchema(Schema):
     """
     Data specific to `envelope_class`.
     Each envelope class may define its own schema for that data.
-    For example, `ReservedEnvelopeClass.ClassFunction` defines `FunctionEnvelopeInstanceDataSchema`.
+    For example, `ReservedEnvelopeClass.class_function` defines `FunctionEnvelopeInstanceDataSchema`.
     """
     # TODO: TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
     instance_data = fields.Dict(
@@ -74,7 +74,7 @@ class DataEnvelopeSchema(Schema):
         input_dict: dict,
         **kwargs,
     ):
-        if input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.ClassFunction.name:
+        if input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.class_function.name:
             function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
     @post_dump(pass_original = True)
@@ -117,7 +117,7 @@ data_envelope_desc = TypeDesc(
         envelope_id_: "some_unique_id",
         instance_data_: function_envelope_instance_data_desc.dict_example,
         envelope_payload_: {},
-        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
         sample_field_type_A_: "A_value_1",
         sample_field_type_B_: "B_value_1",
         sample_field_type_C_: "C_value_1",

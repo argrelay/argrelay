@@ -55,10 +55,10 @@ config_only_loader_config_desc = TypeDesc(
     ref_name = ConfigOnlyLoaderConfigSchema.__name__,
     dict_example = {
         envelope_class_to_collection_name_map_: {
-            ReservedEnvelopeClass.ClassFunction.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedEnvelopeClass.class_function.name: ReservedEnvelopeClass.class_function.name,
         },
         collection_name_to_index_props_map_: {
-            ReservedEnvelopeClass.ClassFunction.name: [
+            ReservedEnvelopeClass.class_function.name: [
                 sample_field_type_A_,
                 sample_field_type_B_,
                 sample_field_type_C_,

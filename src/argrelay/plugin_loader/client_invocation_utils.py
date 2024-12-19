@@ -31,7 +31,11 @@ def filter_remaining_args(
     invocation_input: InvocationInput,
 ) -> list[str]:
     """
-    Returns list of all unconsumed args from all FS_97_64_39_94 arg buckets.
+    Returns list of all unconsumed args from all FS_97_64_39_94 `token_bucket`s.
+
+    TODO: TODO_66_09_41_16: clarify command line processing
+          What this function really returns is list of unconsumed tokens.
+          Consider rename.
     """
 
     remaining_args = []

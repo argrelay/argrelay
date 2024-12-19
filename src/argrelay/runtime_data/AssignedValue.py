@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 
-from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ValueSource import ValueSource
 
 
 @dataclass
 class AssignedValue:
-    arg_value: str = field()
-    arg_source: ArgSource = field()
+    prop_value: str = field()
+    value_source: ValueSource = field()

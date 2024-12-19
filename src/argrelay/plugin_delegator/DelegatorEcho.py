@@ -31,7 +31,7 @@ class DelegatorEcho(DelegatorSingleFuncAbstract):
                 search_control_list_: [
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: (
                 f"Print command line args `{InvocationInput.__name__}`"
             ),

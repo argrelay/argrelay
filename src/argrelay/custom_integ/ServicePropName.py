@@ -3,10 +3,9 @@ from enum import Enum, auto
 
 class ServicePropName(Enum):
     """
-    Custom arg types used by :class:`ServiceLoader`.
+    Custom `prop_name`-s used by :class:`ServiceLoader`.
 
     See also:
-    *   `FS_53_81_66_18` (TnC) for arg types.
     *   `TD_63_37_05_36` (demo) for `test_data`.
     """
 
@@ -26,7 +25,7 @@ class ServicePropName(Enum):
     host_name = auto()
     ip_address = auto()
 
-    # FS_06_99_43_60: example of using non-scalar value (array|list):
+    # FS_06_99_43_60: example of using non-scalar `prop_value` (array):
     group_label = auto()
 
     service_name = auto()

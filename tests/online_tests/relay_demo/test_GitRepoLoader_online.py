@@ -163,9 +163,9 @@ class ThisTestClass(BaseTestClass):
                     local_server: LocalServer = command_obj.local_server
 
                     repo_envelopes = local_server.query_engine.query_data_envelopes(
-                        GitRepoEnvelopeClass.ClassGitRepo.name,
+                        GitRepoEnvelopeClass.class_git_repo.name,
                         {
-                            f"{ReservedPropName.envelope_class.name}": f"{GitRepoEnvelopeClass.ClassGitRepo.name}",
+                            f"{ReservedPropName.envelope_class.name}": f"{GitRepoEnvelopeClass.class_git_repo.name}",
                         },
                     )
 

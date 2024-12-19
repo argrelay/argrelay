@@ -5,7 +5,7 @@ For `argrelay`, there are multiple interfaces:
 *   user interface (expected behaviour)
 *   internal plugin interfaces
 *   config schema
-*   client-server REST interface
+*   client-server REST interfaces
 *   filesystem structure
 *   shell scripts (env vars and source-able funcs)
 

@@ -35,7 +35,7 @@ class OutputFormat(Enum):
     table_format = auto()
 
 
-output_format_class_name = OutputFormat.__name__
+output_format_class_name = "class_output_format"
 output_format_prop_name = "output_format"
 
 
@@ -66,7 +66,7 @@ class DelegatorIntercept(DelegatorJumpAbstract):
                     output_format_search_control,
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: (
                 f"Intercept and print `{InvocationInput.__name__}` "
                 "for specified function and its args"
@@ -134,14 +134,14 @@ class DelegatorIntercept(DelegatorJumpAbstract):
 
             # NOTE: This function does not prohibit unrecognized args.
 
-            output_format: OutputFormat = OutputFormat[invocation_input.envelope_containers[
+            output_format: output_format = OutputFormat[invocation_input.envelope_containers[
                 format_output_container_ipos_
             ].data_envelopes[0][output_format_prop_name]]
             if not output_format:
                 raise RuntimeError
-            elif output_format == OutputFormat.json_format:
+            elif output_format == output_format.json_format:
                 print(invocation_input_desc.dict_schema.dumps(invocation_input))
-            elif output_format == OutputFormat.repr_format:
+            elif output_format == output_format.repr_format:
                 print(invocation_input)
             else:
                 raise RuntimeError(f"not implemented: {output_format}")

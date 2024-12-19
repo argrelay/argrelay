@@ -2,10 +2,10 @@ from enum import Enum, auto
 
 
 class ServiceEnvelopeClass(Enum):
-    ClassCluster = auto()
-    ClassHost = auto()
-    ClassService = auto()
-    ClassAccessType = auto()
+    class_cluster = auto()
+    class_host = auto()
+    class_service = auto()
+    class_access_type = auto()
 
     def __str__(self):
         return self.name

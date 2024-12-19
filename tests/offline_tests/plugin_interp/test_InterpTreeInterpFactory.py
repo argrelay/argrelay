@@ -48,7 +48,7 @@ class ThisTestClass(LocalTestClass):
 
     def test_FS_01_89_09_24_interp_tree(self):
         """
-        Test arg values suggestion with FS_01_89_09_24 # interp tree
+        Test `arg_value`-s suggestion with FS_01_89_09_24 # interp tree
         """
 
         test_cases = [
@@ -98,9 +98,10 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 "some_command | host qa upstream amer qw goto ro s_c green rtyu-qu",
                 CompType.PrefixShown,
-                # TODO: FS_23_62_89_43: This can be fixed to take into account cursor position
-                #                       and suggest not only missing args for already populated command line,
-                #                       but also internal functions available for that position (e.g. `intercept`)
+                # TODO: FS_23_62_89_43: `tangent_token`
+                #       This can be fixed to take into account cursor position
+                #       and suggest not only missing args for already populated command line,
+                #       but also internal functions available for that position (e.g. `intercept`)
                 ["amer", "emea", "host-3-amer"],
                 {},
                 "FS_01_89_09_24: Suggest functions available for this position "

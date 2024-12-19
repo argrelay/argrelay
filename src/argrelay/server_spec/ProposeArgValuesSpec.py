@@ -3,7 +3,7 @@ from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values
 from argrelay.server_spec.server_data_schema import get_schema_definitions
 
 spec_data = {
-    "summary": "Propose arg values for the given command line and cursor position",
+    "summary": "Propose `arg_value`-s for the given command line and cursor position",
     "consumes": [
         "application/json",
     ],
@@ -23,7 +23,7 @@ spec_data = {
     ],
     "responses": {
         "200": {
-            "description": "List of proposed arg values",
+            "description": "List of proposed `arg_value`-s",
             "schema": {
                 "$ref": "#/definitions/" + arg_values_desc.ref_name,
             },

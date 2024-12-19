@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import contextlib
 from copy import deepcopy
-from typing import Union
+from typing import Union, Optional
 
 from argrelay.composite_forest.CompositeForestExtractor import extract_interp_tree
 from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
-from argrelay.composite_forest.DictTreeWalker import DictTreeWalker, sequence_starts_with, fetch_subtree_node, \
-    surrogate_node_id_
+from argrelay.composite_forest.DictTreeWalker import (
+    DictTreeWalker,
+    sequence_starts_with,
+    fetch_subtree_node,
+    surrogate_node_id_,
+)
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
@@ -16,6 +20,7 @@ from argrelay.plugin_interp.InterpTreeInterpFactoryConfigSchema import (
     tree_path_interp_factory_config_desc,
 )
 from argrelay.plugin_interp.NoopInterpFactory import NoopInterpFactory
+from argrelay.runtime_context.AbstractArg import ArgCommandValueOffered
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig, assert_plugin_instance_id
 
@@ -234,16 +239,22 @@ class InterpTreeInterp(AbstractInterp):
     def consumes_args_at_once(self) -> bool:
         return True
 
-    def consume_pos_args(self) -> bool:
+    def consume_dictated_args(self) -> bool:
+        # TODO: FS_20_88_05_60 `dictated_arg`-s: stub
+        return False
+
+    def consume_offered_args(
+        self,
+    ) -> bool:
         """
-        Consumes heading args in `remaining_arg_buckets` according to the `interp_selector_tree`.
+        Consumes heading args in `remaining_token_buckets` according to the `interp_selector_tree`.
 
         Unlike normal guideline to consume one arg at time (FS_44_36_84_88),
         this func consumes all possible args
         because args are selected according to the `interp_selector_tree` (not via query)
         and do not become incompatible by consuming all (causing FS_51_67_38_37 impossible arg combinations).
 
-        Also, FS_01_89_09_24 interp tree does not observe FS_97_64_39_94 `arg_bucket` boundaries
+        Also, FS_01_89_09_24 interp tree does not observe FS_97_64_39_94 `token_bucket` boundaries
         and consumes all necessary args sequentially.
         """
 
@@ -259,27 +270,26 @@ class InterpTreeInterp(AbstractInterp):
                 return any_consumed
 
             # Always consume next remaining token:
-            # TODO: Is this assumption valid/safe that next remaining `ipos` is in the order it appears on command line?
-            #       Apparently, it is fine as we keep deleting head of `remaining_arg_buckets` below:
-            curr_token_ipos = self.interp_ctx.next_remaining_token_ipos()
+            # TODO: TODO_66_09_41_16: clarify command line processing
+            #       The code below consumes `curr_token_ipos` ignoring `token_bucket` boundaries.
+            #       Is this assumption valid/safe that next remaining `ipos` is in the order it appears on command line?
+            #       Apparently, it is fine as we keep deleting head of `remaining_token_buckets` below.
+            offered_arg: Optional[ArgCommandValueOffered] = self.interp_ctx.next_remaining_offered_arg()
 
-            if curr_token_ipos is None:
+            if offered_arg is None:
                 self.set_default_factory_id(curr_sub_tree)
                 return any_consumed
 
-            curr_token_value = self.interp_ctx.parsed_ctx.all_tokens[curr_token_ipos]
-            assert self.is_pos_arg(curr_token_ipos)
-
             if isinstance(curr_sub_tree, dict):
-                if curr_token_value in curr_sub_tree:
+                if offered_arg.get_arg_value() in curr_sub_tree:
                     # Consume one more arg into path:
-                    self.interp_tree_abs_path.append(curr_token_value)
+                    self.interp_tree_abs_path.append(offered_arg.get_arg_value())
 
-                    bucket_index = self.interp_ctx.token_ipos_to_arg_bucket_map[curr_token_ipos]
-                    self.interp_ctx.consumed_arg_buckets[bucket_index].append(curr_token_ipos)
-                    del self.interp_ctx.remaining_arg_buckets[bucket_index][0]
+                    bucket_index = self.interp_ctx.token_ipos_to_token_bucket_map[offered_arg.get_arg_tokens()[0]]
+                    self.interp_ctx.consumed_token_buckets[bucket_index].append(offered_arg.get_arg_tokens()[0])
+                    del self.interp_ctx.remaining_token_buckets[bucket_index][0]
 
-                    curr_sub_tree = curr_sub_tree[curr_token_value]
+                    curr_sub_tree = curr_sub_tree[offered_arg.get_arg_value()]
                     any_consumed = True
                     continue
                 else:
@@ -336,18 +346,19 @@ class InterpTreeInterp(AbstractInterp):
 
     def is_eligible_for_suggestion(self):
         """
-        Suggesting anything is possible only if there is no other tokens
-        (after those recorded in `interp_tree_abs_path`) available for consumption by subsequent interpreters.
+        Suggesting anything is possible only if there are no other tokens
+        (after those recorded in `interp_tree_abs_path`)
+        available for consumption by subsequent interpreters.
         """
 
-        if self.interp_ctx.next_remaining_token_ipos() is None:
+        if self.interp_ctx.next_remaining_offered_arg() is None:
             return True
         else:
             return False
 
-        # TODO: Clean up code below or take into account tangent token (ipos cursor position).
+        # TODO: Clean up code below or take into account `tangent_token` (ipos cursor position).
         #       Note that there is no ipos cursor position at the moment.
-        #       It has to be computed with help of FS_23_62_89_43 tangent token
+        #       It has to be computed with help of FS_23_62_89_43 `tangent_token`
         #       (which might be a surrogate one if cursor does not touch non-whitespace chars).
         remaining_consumed_tokens = deepcopy(self.interp_ctx.consumed_token_ipos_list())
 

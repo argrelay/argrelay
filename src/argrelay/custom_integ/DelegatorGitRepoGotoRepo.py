@@ -39,9 +39,9 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
     ) -> list[dict]:
 
         repo_search_control = populate_search_control(
-            GitRepoEnvelopeClass.ClassGitRepo.name,
+            GitRepoEnvelopeClass.class_git_repo.name,
             {
-                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitRepo.name,
+                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.class_git_repo.name,
             },
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -66,7 +66,7 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
                     repo_search_control,
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: "Goto Git repository (`cd` to its path)",
             ReservedPropName.func_state.name: FuncState.fs_beta.name,
             ReservedPropName.func_id.name: func_id_goto_git_repo_,

@@ -32,9 +32,9 @@ class DelegatorGitRepoDescTag(DelegatorGitRepoBase):
         self,
     ) -> list[dict]:
         tag_search_control = populate_search_control(
-            GitRepoEnvelopeClass.ClassGitTag.name,
+            GitRepoEnvelopeClass.class_git_tag.name,
             {
-                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitTag.name,
+                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.class_git_tag.name,
             },
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -65,7 +65,7 @@ class DelegatorGitRepoDescTag(DelegatorGitRepoBase):
                     tag_search_control,
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: "Describe Git tag",
             ReservedPropName.func_state.name: FuncState.fs_demo.name,
             ReservedPropName.func_id.name: func_id_desc_git_tag_,

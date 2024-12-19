@@ -31,7 +31,7 @@ class ThisTestClass(ManualServerTestClass):
             print(EnvMockBuilder.invocation_input)
             invocation_input = EnvMockBuilder.invocation_input
             self.assertEqual(
-                ServiceEnvelopeClass.ClassService.name,
+                ServiceEnvelopeClass.class_service.name,
                 invocation_input.envelope_containers[1].data_envelopes[0][ReservedPropName.envelope_class.name]
             )
             self.assertEqual(

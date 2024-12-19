@@ -34,7 +34,7 @@ envelope_collection_desc = TypeDesc(
     dict_schema = EnvelopeCollectionSchema(),
     ref_name = EnvelopeCollectionSchema.__name__,
     dict_example = {
-        collection_name_: ReservedEnvelopeClass.ClassFunction.name,
+        collection_name_: ReservedEnvelopeClass.class_function.name,
         data_envelopes_: [
             data_envelope_desc.dict_example,
         ],

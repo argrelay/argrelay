@@ -105,7 +105,8 @@ class ThisTestClass(LocalTestClass):
                 self.assertEqual([], interp_ctx.consumed_token_ipos_list())
                 return
 
-            # FirstArgInterp is supposed to consume first pos arg only (first token):
+            # TODO: reconsider next comment with FS_15_79_76_85 line_processor:
+            # FirstArgInterp is supposed to consume first `offered_arg` only (`zero_index_arg`):
             self.assertEqual([0], interp_ctx.consumed_token_ipos_list())
             first_token_value = interp_ctx.parsed_ctx.all_tokens[0]
 
@@ -128,17 +129,17 @@ class ThisTestClass(LocalTestClass):
                 "config instructs to name interp instance as the first token it binds to",
             )
 
-    def test_consume_pos_args_unknown(self):
+    def test_consume_offered_args_unknown(self):
         test_line = "unknown_command prod|"
         self.run_consume_test(test_line, None)
 
-    def test_consume_pos_args_known(self):
+    def test_consume_offered_args_known(self):
         test_line = "known_command1 prod|"
         self.run_consume_test(test_line, "known_command1")
         test_line = "known_command2 prod|"
         self.run_consume_test(test_line, "known_command2")
 
-    def test_consume_pos_args_with_no_args(self):
+    def test_consume_offered_args_with_no_args(self):
         test_line = "  | "
         self.run_consume_test(test_line, None)
 

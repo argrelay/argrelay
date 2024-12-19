@@ -20,31 +20,34 @@ class SearchControl:
 
     props_to_values_dict: dict[str, str] = field(default_factory = lambda: {})
 
-    # A specs how to query `data_envelope` for this `EnvelopeContainer` (which arg types to use).
-    # Direct list to preserve order:
-    keys_to_props_list: list[dict[str, str]] = field(default_factory = lambda: [])
+    # FS_10_93_78_10: `arg_name_to_prop_name_map`:
+    # A spec to query `data_envelope`-s for this `EnvelopeContainer`:
+    # *   which `prop_name`-s to use in query
+    # *   which `arg_name` is mapped into which `prop_name`
+    # a `list` to preserve order:
+    arg_name_to_prop_name_map: list[dict[str, str]] = field(default_factory = lambda: [])
 
-    # `keys_to_props_dict` is derived from `keys_to_props_list`:
-    # Direct dict for quick lookup:
-    keys_to_props_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
+    # `arg_name_to_prop_name_dict` is derived from `arg_name_to_prop_name_map`:
+    # a `dict` for quick lookup:
+    arg_name_to_prop_name_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
 
-    # `props_to_keys_dict` is derived from `keys_to_props_dict`:
-    # Reverse lookup:
-    props_to_keys_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
+    # `prop_name_to_arg_name_dict` is derived from `arg_name_to_prop_name_map`:
+    # a `dict` for reverse lookup:
+    prop_name_to_arg_name_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
 
     def __post_init__(self):
         self._init_derived_fields()
         self._verify_prop_names_consistency()
 
     def _init_derived_fields(self):
-        self.keys_to_props_dict = self.convert_list_of_ordered_singular_dicts_to_unordered_dict(
-            self.keys_to_props_list
+        self.arg_name_to_prop_name_dict = self.convert_list_of_ordered_singular_dicts_to_unordered_dict(
+            self.arg_name_to_prop_name_map
         )
 
         # generate reverse:
-        self.props_to_keys_dict = {
+        self.prop_name_to_arg_name_dict = {
             v: k for k, v in
-            self.keys_to_props_dict.items()
+            self.arg_name_to_prop_name_dict.items()
         }
 
     def _verify_prop_names_consistency(self):
@@ -53,7 +56,7 @@ class SearchControl:
         are also among `prop_name`-s specified for FS_31_70_49_15 `search control`.
         """
         for prop_name in self.props_to_values_dict:
-            assert prop_name in self.props_to_keys_dict
+            assert prop_name in self.prop_name_to_arg_name_dict
 
     @staticmethod
     def convert_list_of_ordered_singular_dicts_to_unordered_dict(dict_list: list[dict]) -> dict:

@@ -72,7 +72,7 @@ class ParsedContext(CallContext):
         ```
         ```
                             |                                         # non-existing char placed to indicate cursor cpos
-                                                %                     # arg bucket separator
+                                                %                     # `token_bucket` separator
         0            1                 2        3 4          5        # token ipos
         01234567890123456789 0123456789012345678901234567890123456789 # char cpos (the least significant digit)
         ```
@@ -82,7 +82,7 @@ class ParsedContext(CallContext):
                 "some_command",             # 0
                 "some_sub_command",         # 1 (tangent token = token "touched" by the cursor)
                 "some_arg",                 # 2
-                "%",                        # 3 arg bucket separator
+                "%",                        # 3 `token_bucket` separator
                 "next_arg",                 # 4
                 "last_arg"                  # 5
             ],
@@ -90,8 +90,8 @@ class ParsedContext(CallContext):
             13                              # left-most char position (cpos) of tangent token (including it)
             29                              # right-most char position (cpos) of tangent token (excluding it)
             "some_sub_command",             # tangent token string
-            "some_su",                      # tangent token left part substring (preceding cursor position)
-            "b_command",                    # tangent token right part substring (succeeding cursor position)
+            "some_su",                      # tangent `token_left_part` substring (preceding cursor position)
+            "b_command",                    # tangent `token_right_part` substring (succeeding cursor position)
         )
         """
         # Wrap orig command line into delimiter for simplification:
@@ -100,7 +100,7 @@ class ParsedContext(CallContext):
         line_len = len(command_line)
 
         # Init with defaults:
-        # TODO: FS_23_62_89_43: Tangent token ipos should always be above zero and point to
+        # TODO: FS_23_62_89_43: `tangent_token` ipos should always be above zero and point to
         #                       (possibly surrogate missing empty) token ipos within command line.
         all_tokens = []
         tan_token_ipos = -1

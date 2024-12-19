@@ -4,7 +4,7 @@ from enum import Enum, auto
 class NoDataPropName(Enum):
     """
     These `prop_name`-s are used for (see also):
-    *   `ReservedEnvelopeClass.ClassNoData`
+    *   `ReservedEnvelopeClass.class_no_data`
     *   `SpecialFunc.func_id_no_data`
     """
 

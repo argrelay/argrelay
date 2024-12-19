@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Union, Type
 
-from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
@@ -27,7 +27,7 @@ class InOutTestClass(BaseTestClass):
         envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
         expected_suggestions: Union[list[str], None],
         envelope_containers: list[EnvelopeContainer],
-        expected_container_ipos_to_used_arg_bucket: Union[dict[int, Union[int, None]], None],
+        expected_container_ipos_to_used_token_bucket: Union[dict[int, Union[int, None]], None],
     ):
         try:
 
@@ -72,13 +72,13 @@ class InOutTestClass(BaseTestClass):
                     envelope_ipos_to_field_values,
                 )
 
-            if expected_container_ipos_to_used_arg_bucket is not None:
+            if expected_container_ipos_to_used_token_bucket is not None:
                 # TODO: TODO_32_99_70_35: candidate for generic library of JSONPath verifiers:
                 for envelope_container_ipos, envelope_container in enumerate(envelope_containers):
-                    expected_used_arg_bucket = expected_container_ipos_to_used_arg_bucket[envelope_container_ipos]
+                    expected_used_token_bucket = expected_container_ipos_to_used_token_bucket[envelope_container_ipos]
                     self.assertEqual(
-                        expected_used_arg_bucket,
-                        envelope_container.used_arg_bucket,
+                        expected_used_token_bucket,
+                        envelope_container.used_token_bucket,
                     )
 
         except:
@@ -112,6 +112,10 @@ class InOutTestClass(BaseTestClass):
                     self.assertFalse(0 <= container_ipos < len(envelope_containers))
                 else:
                     self.assertTrue(0 <= container_ipos < len(envelope_containers))
+                    # TODO: TODO_66_66_75_78: Split `arg` to `prop` concepts:
+                    #       The variables below should be renamed:
+                    #       `arg_value` -> `prop_value`
+                    #       `arg_type` -> `prop_name`
                     for arg_type, assigned_value in expected_assignments.items():
                         try:
                             if assigned_value is None:
@@ -137,7 +141,7 @@ class InOutTestClass(BaseTestClass):
                                 )
                         except:
                             eprint(
-                                f"container_ipos:{container_ipos} arg_type:{arg_type} assigned_value:{assigned_value}",
+                                f"container_ipos:{container_ipos} prop_name:{arg_type} assigned_value:{assigned_value}",
                             )
                             raise
             except:
@@ -151,7 +155,7 @@ class InOutTestClass(BaseTestClass):
     ):
         """
         Make sure that specified expected `options_hidden_by_default_value` list
-        (per `envelope_container` ipos, per `arg_type`) match what is populated into
+        (per `envelope_container` ipos, per `prop_name`) match what is populated into
         `EnvelopeContainer.filled_types_to_values_hidden_by_defaults`.
         """
         for container_ipos, options_hidden_by_default_value_per_type in container_ipos_to_options_hidden_by_default_value.items():
@@ -160,6 +164,10 @@ class InOutTestClass(BaseTestClass):
                     self.assertFalse(0 <= container_ipos < len(envelope_containers))
                 else:
                     self.assertTrue(0 <= container_ipos < len(envelope_containers))
+                    # TODO: TODO_66_66_75_78: Split `arg` to `prop` concepts:
+                    #       The variables below should be renamed:
+                    #       `arg_value` -> `prop_value`
+                    #       `arg_type` -> `prop_name`
                     for arg_type, options_hidden_by_default_value in options_hidden_by_default_value_per_type.items():
                         try:
                             if options_hidden_by_default_value is None:
@@ -177,7 +185,7 @@ class InOutTestClass(BaseTestClass):
                                 )
                         except:
                             eprint(
-                                f"container_ipos:{container_ipos} arg_type:{arg_type} options_hidden_by_default_value:{options_hidden_by_default_value}",
+                                f"container_ipos:{container_ipos} prop_name:{arg_type} options_hidden_by_default_value:{options_hidden_by_default_value}",
                             )
                             raise
             except:
@@ -193,12 +201,16 @@ class InOutTestClass(BaseTestClass):
         Make sure that, for given `container_ipos`, if there are both:
         *   options hidden by default
         *   assigned value
-        then, the assigned value has `ArgSource.DefaultValue`.
+        then, the assigned value has `ValueSource.default_value`.
         """
         for container_ipos, expected_assignments in container_ipos_to_expected_assignments.items():
             try:
                 if expected_assignments is not None:
                     if container_ipos in container_ipos_to_options_hidden_by_default_value:
+                        # TODO: TODO_66_66_75_78: Split `arg` to `prop` concepts:
+                        #       The variables below should be renamed:
+                        #       `arg_values` -> `prop_values`
+                        #       `arg_type` -> `prop_name`
                         for arg_type, assigned_value in expected_assignments.items():
                             options_hidden_by_default_value_per_type = (
                                 container_ipos_to_options_hidden_by_default_value[
@@ -208,13 +220,13 @@ class InOutTestClass(BaseTestClass):
                             if arg_type in options_hidden_by_default_value_per_type:
                                 if options_hidden_by_default_value_per_type[arg_type] is None:
                                     self.assertNotEqual(
-                                        assigned_value.arg_source,
-                                        ArgSource.DefaultValue,
+                                        assigned_value.value_source,
+                                        ValueSource.default_value,
                                     )
                                 else:
                                     self.assertEqual(
-                                        assigned_value.arg_source,
-                                        ArgSource.DefaultValue,
+                                        assigned_value.value_source,
+                                        ValueSource.default_value,
                                     )
             except:
                 print(

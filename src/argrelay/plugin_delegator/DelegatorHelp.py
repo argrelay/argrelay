@@ -8,7 +8,7 @@ from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.DelegatorAbstract import get_func_id_from_invocation_input
 from argrelay.plugin_delegator.DelegatorJumpAbstract import DelegatorJumpAbstract
 from argrelay.plugin_delegator.delegator_utils import redirect_to_not_disambiguated_error
-from argrelay.plugin_interp.FuncTreeInterpFactory import tree_path_selector_prefix_
+from argrelay.plugin_interp.FuncTreeInterpFactory import tree_step_prop_name_prefix_
 from argrelay.plugin_loader.client_invocation_utils import prohibit_unconsumed_args
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import function_container_ipos_, InterpContext
@@ -36,7 +36,7 @@ class DelegatorHelp(DelegatorJumpAbstract):
                 search_control_list_: [
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: "List defined function matching search criteria with their help hints",
             ReservedPropName.func_state.name: FuncState.fs_gamma.name,
             ReservedPropName.func_id.name: SpecialFunc.func_id_help_hint.name,
@@ -76,7 +76,7 @@ class DelegatorHelp(DelegatorJumpAbstract):
             return redirect_to_not_disambiguated_error(
                 interp_ctx,
                 local_server.plugin_config,
-                ReservedEnvelopeClass.ClassFunction.name,
+                ReservedEnvelopeClass.class_function.name,
             )
 
     @staticmethod
@@ -96,14 +96,14 @@ class DelegatorHelp(DelegatorJumpAbstract):
                 # Dynamic `search_control` does not contain full paths to funcs all the time -
                 # it is based on curr path within FS_01_89_09_24 interp tree and FS_26_43_73_72 func tree.
                 # Recognize props with the prefix instead (which are set on loading and remain static):
-                tree_path_selector_prop_names = []
+                tree_step_prop_names = []
                 for prop_name in data_envelope:
-                    if prop_name.startswith(tree_path_selector_prefix_):
-                        tree_path_selector_prop_names.append(prop_name)
-                # Iterate through sorted prop names - `tree_path_selector_prefix_` is numbered:
-                tree_path_selector_prop_names.sort()
-                for tree_path_selector_prop_name in tree_path_selector_prop_names:
-                    print(f"{data_envelope[tree_path_selector_prop_name]}", end = " ")
+                    if prop_name.startswith(tree_step_prop_name_prefix_):
+                        tree_step_prop_names.append(prop_name)
+                # Iterate through sorted prop names - `tree_step_prop_name_prefix_` is numbered:
+                tree_step_prop_names.sort()
+                for tree_step_prop_name in tree_step_prop_names:
+                    print(f"{data_envelope[tree_step_prop_name]}", end = " ")
 
                 # TODO: FS_02_25_41_81 (func_id_query_enum_items): perform color control only if the output is a terminal:
 

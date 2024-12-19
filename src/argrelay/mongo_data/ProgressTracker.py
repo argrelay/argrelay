@@ -22,7 +22,7 @@ class ProgressTracker:
 
     # TODO: Provide a way to exclude some collection_name and envelope_classes from
     #       requirement of being part of `search_control`.
-    #       For example, `ReservedEnvelopeClass.ClassHelp` is used internally (may not be used by `search_control`).
+    #       For example, `ReservedEnvelopeClass.class_help` is used internally (may not be used by `search_control`).
     unused_index_props_per_collection: dict[str, set[str]] = field(default_factory = lambda: {})
 
     dangling_search_props_per_collection: dict[str, set[str]] = field(default_factory = lambda: {})
