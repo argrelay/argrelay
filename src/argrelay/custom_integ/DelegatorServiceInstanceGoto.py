@@ -52,7 +52,7 @@ class DelegatorServiceInstanceGoto(DelegatorServiceInstanceBase):
                         access_search_control,
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "Go (log in) to remote host and dir path with specified service",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: func_id_goto_service_,

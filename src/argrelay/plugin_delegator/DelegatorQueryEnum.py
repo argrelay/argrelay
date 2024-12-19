@@ -34,8 +34,8 @@ class DelegatorQueryEnum(DelegatorJumpAbstract):
                 search_control_list_: [
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
-            ReservedPropName.help_hint.name: "Enumerate available arg options (based on existing arg values)",
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
+            ReservedPropName.help_hint.name: "Enumerate available arg options (based on existing `prop_value`-s)",
             ReservedPropName.func_state.name: FuncState.fs_alpha.name,
             ReservedPropName.func_id.name: SpecialFunc.func_id_query_enum_items.name,
         }]

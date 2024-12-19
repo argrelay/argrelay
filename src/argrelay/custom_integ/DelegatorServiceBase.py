@@ -14,9 +14,9 @@ from argrelay.schema_response.InvocationInput import InvocationInput
 def get_access_search_control(
 ) -> dict:
     return populate_search_control(
-        ServiceEnvelopeClass.ClassAccessType.name,
+        ServiceEnvelopeClass.class_access_type.name,
         {
-            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
         },
         [
             # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -72,9 +72,9 @@ class DelegatorServiceBase(DelegatorSingleFuncAbstract):
             )]
 
             # Select default value to search `access_type` `data_envelope` based on `code_maturity`:
-            code_arg_type = ServicePropName.code_maturity.name
-            if code_arg_type in data_envelope:
-                code_arg_val = data_envelope[code_arg_type]
+            code_prop_name = ServicePropName.code_maturity.name
+            if code_prop_name in data_envelope:
+                code_arg_val = data_envelope[code_prop_name]
                 if code_arg_val == "prod":
                     any_assignment = (
                         set_default_to(ServicePropName.access_type.name, "ro", access_container)

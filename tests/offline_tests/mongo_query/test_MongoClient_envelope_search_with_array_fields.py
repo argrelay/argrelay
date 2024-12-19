@@ -15,7 +15,7 @@ class ThisTestClass(MongoClientTestClass):
         """
         Example with data searched by multiple { type: value } pairs
         where some fields contain array of values.
-        See: FS_06_99_43_60 list arg value
+        See: FS_06_99_43_60 array `prop_value`
         """
 
         # Fields which will be indexed:

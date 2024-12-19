@@ -24,17 +24,17 @@ class GitRepoLoaderConfigSchema(Schema):
 
     class_name_repo = fields.String(
         required = False,
-        load_default = GitRepoEnvelopeClass.ClassGitRepo.name,
+        load_default = GitRepoEnvelopeClass.class_git_repo.name,
     )
 
     class_name_tag = fields.String(
         required = False,
-        load_default = GitRepoEnvelopeClass.ClassGitTag.name,
+        load_default = GitRepoEnvelopeClass.class_git_tag.name,
     )
 
     class_name_commit = fields.String(
         required = False,
-        load_default = GitRepoEnvelopeClass.ClassGitCommit.name,
+        load_default = GitRepoEnvelopeClass.class_git_commit.name,
     )
 
     load_git_repos_default = fields.Boolean(
@@ -70,9 +70,9 @@ git_repo_loader_config_desc = TypeDesc(
     dict_schema = GitRepoLoaderConfigSchema(),
     ref_name = GitRepoLoaderConfigSchema.__name__,
     dict_example = {
-        class_name_repo_: GitRepoEnvelopeClass.ClassGitRepo.name,
-        class_name_tag_: GitRepoEnvelopeClass.ClassGitTag.name,
-        class_name_commit_: GitRepoEnvelopeClass.ClassGitCommit.name,
+        class_name_repo_: GitRepoEnvelopeClass.class_git_repo.name,
+        class_name_tag_: GitRepoEnvelopeClass.class_git_tag.name,
+        class_name_commit_: GitRepoEnvelopeClass.class_git_commit.name,
         load_git_repos_default_: True,
         load_git_tags_default_: False,
         load_git_commits_default_: False,

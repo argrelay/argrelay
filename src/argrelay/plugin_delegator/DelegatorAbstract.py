@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.enum_desc.PluginType import PluginType
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
@@ -67,6 +67,12 @@ class DelegatorAbstract(AbstractPluginServer):
         self,
     ) -> list[dict]:
         """
+        Provide `data_envelope`-s defining each func supported by this delegator.
+
+        The best practice is use dedicated delegator for each function (1-to-1 relationship),
+        but it is not strictly required. That is why this function returns a list with
+        potentially more than one func.
+
         Part of FS_26_43_73_72 func tree implementation.
         """
         return []
@@ -190,5 +196,5 @@ class DelegatorAbstract(AbstractPluginServer):
                 prop_name
             ] = AssignedValue(
                 prop_value,
-                ArgSource.InitValue,
+                ValueSource.init_value,
             )

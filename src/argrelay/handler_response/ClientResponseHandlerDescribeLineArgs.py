@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
@@ -39,8 +39,6 @@ class ClientResponseHandlerDescribeLineArgs(ClientResponseHandlerAbstract):
         """
         FS_02_25_41_81: Renders results `func_id_query_enum_items` (Alt+Shift+Q)
         """
-
-        # TODO: TODO_11_77_28_50: print suggestions in `InterpResult.arg_values`
 
         print()
 
@@ -103,34 +101,39 @@ class ClientResponseHandlerDescribeLineArgs(ClientResponseHandlerAbstract):
                 f"{envelope_container.search_control.collection_name}: {count_color.value}{envelope_container.found_count}{TermColor.reset_style.value}"
             )
 
-            for key_to_type_dict in envelope_container.search_control.keys_to_props_list:
+            # TODO: TODO_66_66_75_78: Split `arg` to `prop` concepts:
+            #       The variables below should be renamed:
+            #       `key_to_type_dict` -> `arg_name_to_prop_name_dict`
+            #       `arg_key` -> `arg_name`
+            #       `arg_type` -> `prop_name`
+            for key_to_type_dict in envelope_container.search_control.arg_name_to_prop_name_map:
                 arg_key = next(iter(key_to_type_dict))
                 arg_type = key_to_type_dict[arg_key]
 
                 if arg_type in envelope_container.assigned_types_to_values:
                     print(" " * indent_size, end = "")
 
-                    # Set color based on `ArgSource`:
-                    arg_source_color: TermColor
-                    arg_source_color = ClientResponseHandlerDescribeLineArgs.select_arg_source_color(
+                    # Set color based on `ValueSource`:
+                    value_source_color: TermColor
+                    value_source_color = ClientResponseHandlerDescribeLineArgs.select_value_source_color(
                         envelope_container,
                         arg_type,
                     )
-                    print(arg_source_color.value, end = "")
+                    print(value_source_color.value, end = "")
 
                     # Key = `arg_type`:
                     print(f"{arg_type}:", end = " ")
 
-                    # Single value = `arg_value` (with prefix highlight):
+                    # Single value = `prop_value` (with prefix highlight):
                     ClientResponseHandlerDescribeLineArgs.highlight_prefix(
-                        [envelope_container.assigned_types_to_values[arg_type].arg_value],
+                        [envelope_container.assigned_types_to_values[arg_type].prop_value],
                         value_prefix,
                     )
 
-                    # Restore color to name `ArgSource`:
-                    print(arg_source_color.value, end = "")
+                    # Restore color to name `ValueSource`:
+                    print(value_source_color.value, end = "")
                     print(
-                        f"[{envelope_container.assigned_types_to_values[arg_type].arg_source.name}]",
+                        f"[{envelope_container.assigned_types_to_values[arg_type].value_source.name}]",
                         end = ""
                     )
                     print(TermColor.reset_style.value, end = "")
@@ -165,17 +168,18 @@ class ClientResponseHandlerDescribeLineArgs(ClientResponseHandlerAbstract):
                     print(f" ?", end = "")
                     print(TermColor.reset_style.value, end = " ")
 
-                    # Multiple values = `arg_value` (with prefix highlight):
+                    # Multiple values = `prop_value` (with prefix highlight):
                     ClientResponseHandlerDescribeLineArgs.highlight_prefix(
                         envelope_container.remaining_types_to_values[arg_type],
                         value_prefix,
                     )
 
                 else:
-                    # The arg type is in the remaining but data have no arg values to suggest.
-                    # Such arg types are shown because they are part of `search_control`.
-                    # But they cannot be specified for current situation, otherwise, if already no data,
-                    # any arg value assigned to such arg type would return no results.
+                    # The `prop_name` is in the remaining but data have no `prop_value`-s to suggest.
+                    # Such `prop_name`-s are shown because they are part of `search_control`.
+                    # But they cannot be specified for current situation,
+                    # because, if already no data, any `prop_value` assigned to such
+                    # `prop_name` would return no results.
                     print(" " * indent_size, end = "")
                     print(TermColor.no_option_to_suggest.value, end = "")
                     print(f"{arg_type}: ", end = "")
@@ -185,15 +189,15 @@ class ClientResponseHandlerDescribeLineArgs(ClientResponseHandlerAbstract):
                 print()
 
     @staticmethod
-    def select_arg_source_color(
+    def select_value_source_color(
         envelope_container,
         arg_type,
     ):
-        if envelope_container.assigned_types_to_values[arg_type].arg_source is ArgSource.ExplicitPosArg:
-            arg_source_color = TermColor.explicit_pos_arg_value
+        if envelope_container.assigned_types_to_values[arg_type].value_source is ValueSource.explicit_offered_arg:
+            value_source_color = TermColor.explicit_offered_arg_value
         else:
-            arg_source_color = TermColor.other_assigned_arg_value
-        return arg_source_color
+            value_source_color = TermColor.other_assigned_arg_value
+        return value_source_color
 
     @staticmethod
     def highlight_prefix(

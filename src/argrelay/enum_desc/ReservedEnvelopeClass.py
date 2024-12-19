@@ -8,19 +8,19 @@ class ReservedEnvelopeClass(Enum):
 
     ClassUnknown = auto()
 
-    ClassFunction = auto()
+    class_function = auto()
 
-    ClassHelp = auto()
+    class_help = auto()
     """
     See FS_71_87_33_52 help_hint.
     """
 
-    ClassCollection = auto()
+    class_collection = auto()
     """
     See FS_74_69_61_79 get set data envelope.
     """
 
-    ClassNoData = auto()
+    class_no_data = auto()
     """
     Class which is supposed to have no `data_envelope`-s loaded.
 

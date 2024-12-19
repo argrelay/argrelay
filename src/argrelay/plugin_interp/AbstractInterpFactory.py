@@ -4,7 +4,6 @@ from copy import deepcopy
 
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.PluginType import PluginType
-from argrelay.enum_desc.TokenType import get_token_type, TokenType
 from argrelay.runtime_context.AbstractPluginServer import AbstractPluginServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.ServerConfig import ServerConfig
@@ -104,7 +103,7 @@ class AbstractInterpFactory(AbstractPluginServer):
         self,
     ) -> list[str]:
         """
-        Provide `index_props` of `index_model` for `funcs` if `is_root_func_loader` returns `True`.
+        Provide `index_prop`-s of `index_model` for `funcs` if `is_root_func_loader` returns `True`.
         """
         # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor
         #       As of now, it is only supposed to be implemented by `FirstArgInterpFactory`.
@@ -168,18 +167,17 @@ class AbstractInterp:
 
     def consumes_args_at_once(self) -> bool:
         """
-        Tell whether this interp consumes args one by one (FS_44_36_84_88) - see `consume_pos_arg` for details.
+        Tell whether this interp consumes args one by one (FS_44_36_84_88) - see `consume_offered_args` for details.
         """
         return False
 
-    def consume_key_args(self) -> bool:
+    def consume_dictated_args(self) -> bool:
         """
-        Same as `consume_pos_args`, but for keyword arguments.
+        Same as `consume_offered_args`, but for `dictated_arg`-s.
         """
-        # TODO: FS_20_88_05_60 named args: stub
         return False
 
-    def consume_pos_args(self) -> bool:
+    def consume_offered_args(self) -> bool:
         """
         Consume (usually) one arg at time: if consumed, return True, otherwise return False.
 
@@ -224,12 +222,3 @@ class AbstractInterp:
         Return next interp factory id (or None).
         """
         return None
-
-    def is_pos_arg(
-        self,
-        token_ipos: int,
-    ) -> bool:
-        return get_token_type(
-            self.interp_ctx.parsed_ctx.all_tokens,
-            token_ipos,
-        ) is TokenType.PosArg

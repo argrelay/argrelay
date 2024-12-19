@@ -38,7 +38,7 @@ class DelegatorCheckEnvServerVersion(DelegatorCheckEnvBase):
                     search_control_list_: [
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: (
                     CheckEnvFunc.func_id_get_server_argrelay_version.name
                 ),

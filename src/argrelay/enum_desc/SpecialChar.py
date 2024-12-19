@@ -11,14 +11,14 @@ class SpecialChar(Enum):
     See FS_27_16_67_19 line syntax.
     """
 
-    ArgBucketDelimiter = "%"
+    TokenBucketDelimiter = "%"
     """
-    See FS_97_64_39_94 arg buckets.
+    See FS_97_64_39_94 `token_bucket`-s.
     """
 
     ArgNamePrefix = "-"
     """
-    See FS_20_88_05_60 named args.
+    See FS_20_88_05_60 `dictated_arg`-s.
     """
 
     NoPropValue = "~"

@@ -32,7 +32,7 @@ class FuncEnvelopeSchema(DataEnvelopeSchema):
         input_dict: dict,
         **kwargs,
     ):
-        assert input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.ClassFunction.name
+        assert input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.class_function.name
         function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
 
@@ -49,7 +49,7 @@ func_envelope_desc = TypeDesc(
         sample_field_type_A_: "A_value_1",
         sample_field_type_B_: "B_value_1",
         sample_field_type_C_: "C_value_1",
-        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
         ReservedPropName.help_hint.name: f"Some help hint",
         ReservedPropName.func_state.name: FuncState.fs_demo.name,
         ReservedPropName.func_id.name: func_id_some_func_,

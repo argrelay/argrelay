@@ -120,9 +120,9 @@ class ThisTestClass(BaseTestClass):
                         if not ServiceLoader.load_class_cluster:
                             continue
                         query_dict.update({
-                            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                         })
-                        mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassCluster.name]
+                        mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.class_cluster.name]
                         self.find_single_data_envelope(mongo_col, query_dict)
                     else:
 
@@ -143,9 +143,9 @@ class ThisTestClass(BaseTestClass):
                         })
                         if is_host:
                             query_dict.update({
-                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                             })
-                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassHost.name]
+                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.class_host.name]
                             # Ensure `host_name` contains abbreviation of (`code_maturity`, `flow_stage`) as its suffix:
                             host_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
                             self.assertTrue(
@@ -157,17 +157,17 @@ class ThisTestClass(BaseTestClass):
                             )
                         else:
                             query_dict.update({
-                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                             })
-                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassHost.name]
+                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.class_host.name]
                             host_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             query_dict.update({
-                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                                 ServicePropName.service_name.name: service_name,
                                 ServicePropName.run_mode.name: run_mode,
                             })
-                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.ClassService.name]
+                            mongo_col = local_server.get_mongo_database()[ServiceEnvelopeClass.class_service.name]
                             service_data_envelope = self.find_single_data_envelope(mongo_col, query_dict)
 
                             # Both host and service should have same host name:

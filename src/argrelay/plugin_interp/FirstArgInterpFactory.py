@@ -42,7 +42,7 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
 
         self.index_props: set[str] = set()
         """
-        All `index_props` used by all loaded funcs.
+        All `index_prop`-s used by all loaded funcs.
         """
 
         self.func_data_envelopes: list[dict] = []

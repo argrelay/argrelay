@@ -33,10 +33,10 @@ class ThisTestClass(LocalTestClass):
         # TODO: Test why `lay` on query shows `some_command`?
         """
 lay 
-ClassFunction: 20
-tree_path_selector_0: some_command [InitValue]
-*tree_path_selector_1: ? intercept help subtree goto desc list 
-tree_path_selector_2: ? intercept help goto desc list host service repo commit 
+class_function: 20
+tree_step_0: some_command [init_value]
+*tree_step_1: ? intercept help subtree goto desc list 
+tree_step_2: ? intercept help goto desc list host service repo commit 
         """
 
         # TODO: Add test to run both `lay` and `some_command` and compare output is identical for identical requests.
@@ -90,13 +90,13 @@ tree_path_selector_2: ? intercept help goto desc list host service repo commit
         test_cases = [
             (
                 line_no(), "some_command |", CompType.DescribeArgs,
-                "Ensure it provides `some_command` as first `InitValue` prop.",
+                "Ensure it provides `some_command` as first `init_value` prop.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
                 line_no(), "some_command |", CompType.DescribeArgs,
-                "Ensure it provides `some_command` as first `InitValue` prop.",
+                "Ensure it provides `some_command` as first `init_value` prop.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),

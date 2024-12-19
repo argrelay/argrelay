@@ -59,7 +59,7 @@ class GitRepoEntryConfigSchema(Schema):
         load_default = True,
     )
 
-    # These key-values are copied into `data_envelope`:
+    # These `prop_name` and `prop_values` are copied into `data_envelope`:
     envelope_properties = fields.Dict(
         keys = fields.String(),
         values = fields.String(),

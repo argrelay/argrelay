@@ -14,7 +14,7 @@ Schema for the result of interpretation taken from :class:`InterpContext`
 
 all_tokens_ = "all_tokens"
 excluded_tokens_ = "excluded_tokens"
-consumed_arg_buckets_ = "consumed_arg_buckets"
+consumed_token_buckets_ = "consumed_token_buckets"
 envelope_containers_ = "envelope_containers"
 tan_token_ipos_ = "tan_token_ipos"
 tan_token_l_part_ = "tan_token_l_part"
@@ -41,7 +41,7 @@ class InterpResultSchema(ArgValuesSchema):
         required = True,
     )
 
-    consumed_arg_buckets = fields.List(
+    consumed_token_buckets = fields.List(
         fields.List(
             fields.Integer(),
         ),
@@ -66,12 +66,12 @@ _interp_result_example.update({
         "goto",
         "host",
         "prod",
-        SpecialChar.ArgBucketDelimiter.value,
+        SpecialChar.TokenBucketDelimiter.value,
     ],
     excluded_tokens_: [
         5,
     ],
-    consumed_arg_buckets_: [
+    consumed_token_buckets_: [
         [
             0,
             2,

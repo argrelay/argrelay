@@ -27,7 +27,7 @@ class ServiceLoader(AbstractLoader):
     Used by TD_38_03_48_51 to generate large data set.
     """
 
-    # Quick flag to load (or not) `ServiceEnvelopeClass.ClassCluster` (currently not used by anything).
+    # Quick flag to load (or not) `ServiceEnvelopeClass.class_cluster` (currently not used by anything).
     # Alternatively, a dummy function with `search_list` using it will make validation pass:
     load_class_cluster: bool = False
 
@@ -55,34 +55,34 @@ class ServiceLoader(AbstractLoader):
 
         return [
             IndexModel(
-                collection_name = ServiceEnvelopeClass.ClassCluster.name,
+                collection_name = ServiceEnvelopeClass.class_cluster.name,
                 index_props = (
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     [ReservedPropName.envelope_class.name] +
-                    # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                    # TODO: TODO_89_50_17_63: fine-tune list of `index_prop`-s:
                     [e.name for e in ServicePropName]
                 )
             ),
             IndexModel(
-                collection_name = ServiceEnvelopeClass.ClassHost.name,
+                collection_name = ServiceEnvelopeClass.class_host.name,
                 index_props = (
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     [ReservedPropName.envelope_class.name] +
-                    # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                    # TODO: TODO_89_50_17_63: fine-tune list of `index_prop`-s:
                     [e.name for e in ServicePropName]
                 )
             ),
             IndexModel(
-                collection_name = ServiceEnvelopeClass.ClassService.name,
+                collection_name = ServiceEnvelopeClass.class_service.name,
                 index_props = (
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     [ReservedPropName.envelope_class.name] +
-                    # TODO: TODO_89_50_17_63: fine-tune list of `index_props`:
+                    # TODO: TODO_89_50_17_63: fine-tune list of `index_prop`-s:
                     [e.name for e in ServicePropName]
                 )
             ),
             IndexModel(
-                collection_name = ServiceEnvelopeClass.ClassAccessType.name,
+                collection_name = ServiceEnvelopeClass.class_access_type.name,
                 index_props = [
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     ReservedPropName.envelope_class.name,
@@ -90,12 +90,12 @@ class ServiceLoader(AbstractLoader):
                 ],
             ),
             IndexModel(
-                collection_name = ReservedEnvelopeClass.ClassHelp.name,
+                collection_name = ReservedEnvelopeClass.class_help.name,
                 index_props = [
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     ReservedPropName.envelope_class.name,
-                    ReservedPropName.arg_type.name,
-                    ReservedPropName.arg_value.name,
+                    ReservedPropName.prop_name.name,
+                    ReservedPropName.prop_value.name,
                     # `ReservedPropName.help_hint` is not indexed (not used in `search_control`) - instead,
                     # it is a search result:
                     # ReservedPropName.help_hint.name,
@@ -114,33 +114,33 @@ class ServiceLoader(AbstractLoader):
         envelope_collections: dict[str, EnvelopeCollection] = {}
 
         cluster_envelopes = envelope_collections.setdefault(
-            ServiceEnvelopeClass.ClassCluster.name,
+            ServiceEnvelopeClass.class_cluster.name,
             EnvelopeCollection(
-                collection_name = ServiceEnvelopeClass.ClassCluster.name,
+                collection_name = ServiceEnvelopeClass.class_cluster.name,
                 data_envelopes = [],
             ),
         ).data_envelopes
 
         host_envelopes = envelope_collections.setdefault(
-            ServiceEnvelopeClass.ClassHost.name,
+            ServiceEnvelopeClass.class_host.name,
             EnvelopeCollection(
-                collection_name = ServiceEnvelopeClass.ClassHost.name,
+                collection_name = ServiceEnvelopeClass.class_host.name,
                 data_envelopes = [],
             ),
         ).data_envelopes
 
         service_envelopes = envelope_collections.setdefault(
-            ServiceEnvelopeClass.ClassService.name,
+            ServiceEnvelopeClass.class_service.name,
             EnvelopeCollection(
-                collection_name = ServiceEnvelopeClass.ClassService.name,
+                collection_name = ServiceEnvelopeClass.class_service.name,
                 data_envelopes = [],
             ),
         ).data_envelopes
 
         access_envelopes = envelope_collections.setdefault(
-            ServiceEnvelopeClass.ClassAccessType.name,
+            ServiceEnvelopeClass.class_access_type.name,
             EnvelopeCollection(
-                collection_name = ServiceEnvelopeClass.ClassAccessType.name,
+                collection_name = ServiceEnvelopeClass.class_access_type.name,
                 data_envelopes = [],
             ),
         ).data_envelopes
@@ -192,13 +192,13 @@ class ServiceLoader(AbstractLoader):
     ):
         for data_envelope in data_envelopes:
             if envelope_id_ not in data_envelope:
-                if data_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.ClassHost.name:
+                if data_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.class_host.name:
                     data_envelope[envelope_id_] = (
                         data_envelope[ServicePropName.cluster_name.name]
                         + "." +
                         data_envelope[ServicePropName.host_name.name]
                     )
-                if data_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.ClassService.name:
+                if data_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.class_service.name:
                     data_envelope[envelope_id_] = (
                         data_envelope[ServicePropName.cluster_name.name]
                         + "." +
@@ -216,30 +216,30 @@ class ServiceLoader(AbstractLoader):
         """
         This demos FS_71_87_33_52 help_hint for `ServicePropName.ip_address`.
 
-        It simply generates `data_envelope`-s of `ReservedEnvelopeClass.ClassHelp` for
+        It simply generates `data_envelope`-s of `ReservedEnvelopeClass.class_help` for
         values of `ServicePropName.ip_address` equal to corresponding `ServicePropName.host_name`.
         """
 
         help_hint_envelopes = envelope_collections.setdefault(
-            ReservedEnvelopeClass.ClassHelp.name,
+            ReservedEnvelopeClass.class_help.name,
             EnvelopeCollection(
-                collection_name = ReservedEnvelopeClass.ClassHelp.name,
+                collection_name = ReservedEnvelopeClass.class_help.name,
                 data_envelopes = [],
             ),
         ).data_envelopes
 
-        host_envelopes = envelope_collections[ServiceEnvelopeClass.ClassHost.name].data_envelopes
+        host_envelopes = envelope_collections[ServiceEnvelopeClass.class_host.name].data_envelopes
 
         # Generating `help_hint` data:
         for host_envelope in host_envelopes:
             # This `if`-filter is not necessary until non-host-class-envelopes
             # get stored into the same collection:
-            if host_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.ClassHost.name:
+            if host_envelope[ReservedPropName.envelope_class.name] == ServiceEnvelopeClass.class_host.name:
                 if ServicePropName.ip_address.name in host_envelope:
                     help_hint_envelopes.append({
-                        f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
-                        f"{ReservedPropName.arg_type.name}": f"{ServicePropName.ip_address.name}",
-                        f"{ReservedPropName.arg_value.name}": f"{host_envelope[ServicePropName.ip_address.name]}",
+                        f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.class_help.name}",
+                        f"{ReservedPropName.prop_name.name}": f"{ServicePropName.ip_address.name}",
+                        f"{ReservedPropName.prop_value.name}": f"{host_envelope[ServicePropName.ip_address.name]}",
                         f"{ReservedPropName.help_hint.name}": f"{host_envelope[ServicePropName.host_name.name]}",
                     })
 
@@ -262,18 +262,18 @@ class ServiceLoader(AbstractLoader):
         data_envelopes.extend([
 
             ############################################################################################################
-            # `access_type`: FS_24_50_40_64
+            # `access_type`
 
             {
                 envelope_payload_: {
                 },
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
                 ServicePropName.access_type.name: "ro",
             },
             {
                 envelope_payload_: {
                 },
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
                 ServicePropName.access_type.name: "rw",
             },
         ])
@@ -307,7 +307,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -317,7 +317,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -327,7 +327,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "upstream",
@@ -337,7 +337,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -347,7 +347,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "upstream",
@@ -357,7 +357,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -367,7 +367,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -377,7 +377,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "upstream",
@@ -387,7 +387,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -397,7 +397,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -407,7 +407,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -425,7 +425,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -438,7 +438,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -451,7 +451,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -464,7 +464,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "upstream",
@@ -477,7 +477,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -490,7 +490,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "upstream",
@@ -506,7 +506,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -519,7 +519,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -532,7 +532,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "upstream",
@@ -545,7 +545,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "upstream",
@@ -558,7 +558,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -571,7 +571,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -584,7 +584,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -600,7 +600,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -613,7 +613,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -626,7 +626,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -639,7 +639,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -652,7 +652,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -671,7 +671,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -690,7 +690,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -709,7 +709,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -728,7 +728,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -738,14 +738,14 @@ class ServiceLoader(AbstractLoader):
                 ServicePropName.ip_address.name: "ip.172.16.1.2",
                 ServicePropName.service_name.name: "tt",
                 ServicePropName.run_mode.name: "active",
-                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                # FS_06_99_43_60 providing scalar value for array `prop_name` is also possible:
                 ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -764,7 +764,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "upstream",
@@ -783,7 +783,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "upstream",
@@ -802,7 +802,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -821,7 +821,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -841,7 +841,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "upstream",
@@ -860,7 +860,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -879,7 +879,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -898,7 +898,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -917,7 +917,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "upstream",
@@ -936,7 +936,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -946,14 +946,14 @@ class ServiceLoader(AbstractLoader):
                 ServicePropName.ip_address.name: "ip.192.168.6.3",
                 ServicePropName.service_name.name: "tt1",
                 ServicePropName.run_mode.name: "active",
-                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                # FS_06_99_43_60 providing scalar value for array `prop_name` is also possible:
                 ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -972,7 +972,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -991,7 +991,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -1010,7 +1010,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -1029,7 +1029,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -1048,7 +1048,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -1067,7 +1067,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "upstream",
@@ -1086,7 +1086,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1096,14 +1096,14 @@ class ServiceLoader(AbstractLoader):
                 ServicePropName.ip_address.name: "ip.192.168.7.3",
                 ServicePropName.service_name.name: "tt1",
                 ServicePropName.run_mode.name: "active",
-                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                # FS_06_99_43_60 providing scalar value for array `prop_name` is also possible:
                 ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1113,14 +1113,14 @@ class ServiceLoader(AbstractLoader):
                 ServicePropName.ip_address.name: "ip.192.168.7.3",
                 ServicePropName.service_name.name: "tt2",
                 ServicePropName.run_mode.name: "passive",
-                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                # FS_06_99_43_60 providing scalar value for array `prop_name` is also possible:
                 ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1130,14 +1130,14 @@ class ServiceLoader(AbstractLoader):
                 ServicePropName.ip_address.name: "ip.192.168.7.4",
                 ServicePropName.service_name.name: "tt1",
                 ServicePropName.run_mode.name: "passive",
-                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                # FS_06_99_43_60 providing scalar value for array `prop_name` is also possible:
                 ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1147,14 +1147,14 @@ class ServiceLoader(AbstractLoader):
                 ServicePropName.ip_address.name: "ip.192.168.7.4",
                 ServicePropName.service_name.name: "tt2",
                 ServicePropName.run_mode.name: "active",
-                # FS_06_99_43_60 providing scalar value for list/array field is also possible:
+                # FS_06_99_43_60 providing scalar value for array `prop_name` is also possible:
                 ServicePropName.group_label.name: "rrr",
             },
             {
                 envelope_payload_: {
                 },
                 test_data_: "TD_63_37_05_36",  # demo
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                 ServicePropName.code_maturity.name: "prod",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1191,7 +1191,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1202,7 +1202,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1219,7 +1219,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 # TD_76_09_29_31 geo_region set overlaps with host_name set:
                 ServicePropName.geo_region.name: "amer",
@@ -1233,7 +1233,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1246,7 +1246,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "amer",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1259,7 +1259,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 # TD_76_09_29_31 geo_region set overlaps with host_name set:
                 ServicePropName.geo_region.name: "emea",
@@ -1273,7 +1273,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1286,7 +1286,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_76_09_29_31",  # overlapped
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1316,7 +1316,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1327,7 +1327,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1344,7 +1344,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1355,7 +1355,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "qa",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1367,7 +1367,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1378,7 +1378,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_99_99_88_75",  # mutually exclusive
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1416,7 +1416,7 @@ class ServiceLoader(AbstractLoader):
                         envelope_payload_: {
                         },
                         test_data_: "TD_38_03_48_51",  # large generated
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                         ServicePropName.code_maturity.name: code_maturity,
                         ServicePropName.geo_region.name: geo_region,
                         ServicePropName.flow_stage.name: flow_stage,
@@ -1434,7 +1434,7 @@ class ServiceLoader(AbstractLoader):
                             envelope_payload_: {
                             },
                             test_data_: "TD_38_03_48_51",  # large generated
-                            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                             ServicePropName.code_maturity.name: code_maturity,
                             ServicePropName.geo_region.name: geo_region,
                             ServicePropName.flow_stage.name: flow_stage,
@@ -1453,7 +1453,7 @@ class ServiceLoader(AbstractLoader):
                                 envelope_payload_: {
                                 },
                                 test_data_: "TD_38_03_48_51",  # large generated
-                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                                 ServicePropName.code_maturity.name: code_maturity,
                                 ServicePropName.geo_region.name: geo_region,
                                 ServicePropName.flow_stage.name: flow_stage,
@@ -1492,7 +1492,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1503,7 +1503,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1520,7 +1520,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1532,7 +1532,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1544,7 +1544,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1556,7 +1556,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_43_24_76_58",  # single
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1586,7 +1586,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1598,7 +1598,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1617,7 +1617,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1631,7 +1631,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1645,7 +1645,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "apac",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1660,7 +1660,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1674,7 +1674,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",
@@ -1688,7 +1688,7 @@ class ServiceLoader(AbstractLoader):
                 envelope_payload_: {
                 },
                 test_data_: "TD_39_25_11_76",  # missing props
-                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                 ServicePropName.code_maturity.name: "dev",
                 ServicePropName.geo_region.name: "emea",
                 ServicePropName.flow_stage.name: "downstream",

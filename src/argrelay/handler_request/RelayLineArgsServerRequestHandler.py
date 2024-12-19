@@ -42,7 +42,7 @@ class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
         error_code = ClientExitCode.ClientSuccess.value
 
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
-        # `ReservedEnvelopeClass.ClassFunction` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
+        # `ReservedEnvelopeClass.class_function` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         if self.interp_ctx.is_func_found():
             delegator_plugin_instance_id = (
                 self

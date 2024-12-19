@@ -78,6 +78,15 @@ def change_to_known_repo_path(path_from_repo_root = "./tests"):
     finally:
         os.chdir(old_pwd)
 
+def assert_test_func_name_embeds_prod_class_name(
+    prod_class: type,
+):
+    """
+    Ensure caller test function name contains given prod class name.
+    """
+    caller_func_name = currentframe().f_back.f_code.co_name
+    simple_prod_class_name = prod_class.__name__.split(".")[-1]
+    _assert_test_name_embeds_prod_name(simple_prod_class_name, caller_func_name)
 
 def assert_test_module_name_embeds_prod_class_name(
     prod_class: type,

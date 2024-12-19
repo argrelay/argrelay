@@ -10,20 +10,20 @@ from argrelay.schema_config_interp.SearchControlSchema import populate_search_co
 def get_host_search_control(
 ) -> dict:
     return populate_search_control(
-        ServiceEnvelopeClass.ClassHost.name,
+        ServiceEnvelopeClass.class_host.name,
         {
-            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
         },
         [
             # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
             {"class": ReservedPropName.envelope_class.name},
 
-            # ClassCluster:
+            # class_cluster:
             {"code": ServicePropName.code_maturity.name},
             {"stage": ServicePropName.flow_stage.name},
             {"region": ServicePropName.geo_region.name},
             {"cluster": ServicePropName.cluster_name.name},
-            # ClassHost:
+            # class_host:
             {"host": ServicePropName.host_name.name},
             # ---
             {"status": ServicePropName.live_status.name},
@@ -34,5 +34,5 @@ def get_host_search_control(
 
 class DelegatorServiceHostBase(DelegatorServiceBase):
     """
-    Provide base functionality for funcs working with `ServiceEnvelopeClass.ClassHost`.
+    Provide base functionality for funcs working with `ServiceEnvelopeClass.class_host`.
     """

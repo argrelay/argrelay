@@ -41,9 +41,6 @@ Integration:
 
 GUI bits:
 
-*   Add info descriptions (tooltip or question mark with description).
-    REGISTER
-
 *   When there is no common prefix, Tab should not work, flash command line with red color.
     REGISTER
 
@@ -61,21 +58,10 @@ GUI bits:
 *   Handle `help` response differently in GUI - print help.
     REGISTER
 
-*   Make command history a list (not drop down). Make it scrollable beyond 20 commands.
-    REGISTER
-
-*   Can we cancel request if new request has to be made and old one is invalid (e.g. caret has moved)?
-    See also: https://stackoverflow.com/a/47250621/441652
-    FINALIZE
-
 Conceptual:
 
 *   Instead of providing positional parameter list for test cases (see those with subTests),
     introduce generic ResultAssertBuilder (or something like that) which can build expectations in any order.
-    REGISTER
-
-*   What is even `args_context`? It is meaningless (or means many things).
-    Also describe or merged `assigned_context` vs `args_context`.
     REGISTER
 
 *   Establish some clear order for:
@@ -89,7 +75,7 @@ Conceptual:
     Plan (TODO: merge this plan with "how search works"):
     *   Implement constant number of searches (S) per `data_envelope` required:
         1. S1: Implement query of unique values at the start of the new `data_envelope` search.
-        2. Consume all args after "enum search" per `data_envelope` because no other narrowed down search for this envelope can help to consume more arg values (enum sets will only narrow down).
+        2. Consume all args after "enum search" per `data_envelope` because no other narrowed down search for this envelope can help to consume more `arg_value`-s (enum sets will only narrow down).
         3. S2: How do we call the process (to be controlled as `*_control`) when we assign implicit values? Populate singled out. This requires search for data envelopes before defaults assigned.
         4. Implement `fill_control` to provide default values.
         5. S3: Last search is to see if default values singled out envelope (or more values) - these can be colored separately from singled-out (as they singled out by defaults).
@@ -112,7 +98,7 @@ Conceptual:
     REGISTER
 
     ALSO:
-    *   `init_control` sets values which are ensured non-overridable (by placing arg value consumable to replace default).
+    *   `init_control` sets values which are ensured non-overridable (by placing `arg_value` consumable to replace default).
     *   `fill_control` sets exactly the default values (when none are selected).
     Therefore, there are several views at remaining values generated at different stages:
     *    full enum set (after `init_control` is applied) - it is actually not full because `init_control` is already effective.
@@ -166,22 +152,12 @@ Ease integration into external project:
 
 Extra:
 
-*   Add version arg type to the test data.
+*   Add version `prop_name` to the test data.
     See `TD_63_37_05_36.demo_services_data.md` - it does not have source version or source tag.
     REGISTER
 
 *   Add test coverage reporting.
     It could be a result of `@/exe/run_max_tests.bash` or `tox`.
-    REGISTER
-
-*   Consider splitting argrelay into separate packages (install-able independently but interdependent):
-    argrelay-core
-    argrelay-rest-api
-    argrelay-client
-    argrelay-server
-    argrelay-integ (server and client)
-    argrelay-demo
-    while keeping `argrelay` as an easy to install package for everything at once.
     REGISTER
 
 *   Check start of mongo db server by client connection (instead of delay).

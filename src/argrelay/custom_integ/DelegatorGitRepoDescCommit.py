@@ -32,9 +32,9 @@ class DelegatorGitRepoDescCommit(DelegatorGitRepoBase):
         self,
     ) -> list[dict]:
         commit_search_control = populate_search_control(
-            GitRepoEnvelopeClass.ClassGitCommit.name,
+            GitRepoEnvelopeClass.class_git_commit.name,
             {
-                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitCommit.name,
+                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.class_git_commit.name,
             },
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -65,7 +65,7 @@ class DelegatorGitRepoDescCommit(DelegatorGitRepoBase):
                     commit_search_control,
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: "Describe Git commit",
             ReservedPropName.func_state.name: FuncState.fs_demo.name,
             ReservedPropName.func_id.name: func_id_desc_git_commit_,

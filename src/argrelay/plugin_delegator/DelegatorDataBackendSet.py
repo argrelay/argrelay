@@ -57,7 +57,7 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
                     collection_search_control,
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: "Set `data_envelope`-s based on their `index_prop`-s.",
             ReservedPropName.func_state.name: FuncState.fs_alpha.name,
             ReservedPropName.func_id.name: SpecialFunc.func_id_set_data_envelopes.name,
@@ -84,7 +84,7 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
             return redirect_to_not_disambiguated_error(
                 interp_ctx,
                 local_server.plugin_config,
-                ReservedEnvelopeClass.ClassCollection.name,
+                ReservedEnvelopeClass.class_collection.name,
             )
 
         collection_container = interp_ctx.envelope_containers[collection_name_container_ipos_]
@@ -107,7 +107,7 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
             # Delete:
             collection_name = collection_container.assigned_types_to_values[
                 ReservedPropName.collection_name.name
-            ].arg_value
+            ].prop_value
             query_dict = populate_query_dict(vararg_container)
             eprint(f"delete: {query_dict}")
             local_server.delete_data_envelopes(

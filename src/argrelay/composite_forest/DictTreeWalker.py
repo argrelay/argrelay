@@ -120,7 +120,7 @@ def sequence_starts_with(
     inner_seq: Sequence[str],
 ) -> bool:
     """
-    Similar to `str.startwith` but in terms of sequence elements.
+    Similar to `str.startwith` but in terms of sequence of values.
     """
     for part_index, part_value in enumerate(inner_seq):
         if part_index < len(outer_seq):

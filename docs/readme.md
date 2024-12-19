@@ -19,7 +19,7 @@ and better survive refactoring.
 To provide hints, ids are often followed by ignorable mnemonic keywords or abbreviations, for example:
 
 ```
-FS_53_81_66_18 # TnC
+FS_96_46_42_30 # offered_arg
 TD_70_69_38_46 # no data
 ```
 

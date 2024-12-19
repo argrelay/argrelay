@@ -5,7 +5,7 @@ from enum import Enum, auto
 
 class GitRepoPropName(Enum):
     """
-    Envelope arg types (properties) used by `GitRepoLoader`.
+    Envelope `prop_name`-s used by `GitRepoLoader`.
     """
 
     # Short name for a repo (to avoid specifying its `git_repo_root_rel_path`):
@@ -47,7 +47,7 @@ class GitRepoPropName(Enum):
     # Git commit time (UTC):
     git_repo_commit_time = auto()
 
-    # FS_06_99_43_60: example of using non-scalar value (array|list):
+    # FS_06_99_43_60: example of using non-scalar `prop_value` (array):
     # List of categories object belongs to:
     git_repo_object_category = auto()
 

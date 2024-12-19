@@ -9,7 +9,7 @@ class TestCase:
     *   flexibility by omitting some parameters
         (assuming some defaults)
     *   flexibility by reordering parameters
-        (e.g. instead of tuple with positional args, use named args or set them via func)
+        (e.g. instead of tuple with `offered_arg`-s, use `dictated_arg`-s or set them via func)
     *   flexibility by separating:
         *   partial input specification (e.g. common defaults)
         *   final input specification (e.g. individual overrides)

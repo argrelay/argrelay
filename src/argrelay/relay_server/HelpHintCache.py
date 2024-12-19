@@ -18,20 +18,28 @@ class HelpHintCache:
     def populate_cache(self):
 
         help_hint_envelopes = self.query_engine.query_data_envelopes(
-            ReservedEnvelopeClass.ClassHelp.name,
+            ReservedEnvelopeClass.class_help.name,
             {
-                f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
+                f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.class_help.name}",
             },
         )
 
+        # TODO: TODO_66_66_75_78: Split `arg` to `prop` concepts:
+        #       The variables below should be renamed:
+        #       `arg_value` -> `prop_value`
+        #       `arg_type` -> `prop_name`
         for help_hint_envelope in help_hint_envelopes:
-            arg_type = help_hint_envelope[ReservedPropName.arg_type.name]
-            arg_value = help_hint_envelope[ReservedPropName.arg_value.name]
+            arg_type = help_hint_envelope[ReservedPropName.prop_name.name]
+            arg_value = help_hint_envelope[ReservedPropName.prop_value.name]
             help_hint = help_hint_envelope[ReservedPropName.help_hint.name]
             if arg_type not in self.help_hint_dict:
                 self.help_hint_dict[arg_type] = {}
             self.help_hint_dict[arg_type][arg_value] = help_hint
 
+    # TODO: TODO_66_66_75_78: Split `arg` to `prop` concepts:
+    #       The variables below should be renamed:
+    #       `arg_value` -> `prop_value`
+    #       `arg_type` -> `prop_name`
     def get_value_with_help_hint(
         self,
         arg_type: str,

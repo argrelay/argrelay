@@ -88,8 +88,8 @@ for argrelay_command_basename in "${argrelay_bind_command_basenames[@]}"
 do
     # Command line auto-completion process is largely similar to parsing command line args.
     # The difference is only in last step - either/or:
-    # (A) an action is run             (based on provided parsed arg values)
-    # (B) arg values are suggested     (based on provided parsed arg values)
+    # (A) an action is run               (based on provided parsed `arg_value`-s)
+    # (B) `arg_value`-s are suggested    (based on provided parsed `arg_value`-s)
     # Therefore, the same `@/exe/run_argrelay_client` can run both processes:
     # (A) as target command of `${argrelay_command_basename}` symlink
     # (B) as `-C` argument to Bash `complete` to configure auto-completion for `${argrelay_command_basename}`

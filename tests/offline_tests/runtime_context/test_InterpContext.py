@@ -3,6 +3,8 @@ from __future__ import annotations
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.relay_server.LocalServer import LocalServer
+from argrelay.runtime_context.AbstractArg import ArgCommandValueOffered, ArgCommandValueDictated
+from argrelay.runtime_context.DataArg import ArgCommandValueOfferedData, ArgCommandValueDictatedData
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
@@ -18,9 +20,11 @@ class ThisTestCase(ShellInputTestCase):
         self,
         test_line: str,
         comp_type: CompType,
-        expected_arg_buckets: list[list[int]],
+        expected_token_buckets: list[list[int]],
         expected_excluded_tokens: list[int],
-        expected_token_ipos_to_arg_bucket_map: dict[int, int],
+        expected_token_ipos_to_token_bucket_map: dict[int, int],
+        expected_offered_args_per_bucket: list[list[ArgCommandValueOffered]],
+        expected_dictated_args_per_bucket: list[list[ArgCommandValueDictated]],
         case_comment: str,
     ):
         super().__init__(
@@ -29,9 +33,11 @@ class ThisTestCase(ShellInputTestCase):
         )
         self.set_test_line(test_line)
         self.set_comp_type(comp_type)
-        self.expected_arg_buckets = expected_arg_buckets
+        self.expected_token_buckets = expected_token_buckets
         self.expected_excluded_tokens = expected_excluded_tokens
-        self.expected_token_ipos_to_arg_bucket_map = expected_token_ipos_to_arg_bucket_map
+        self.expected_token_ipos_to_token_bucket_map = expected_token_ipos_to_token_bucket_map
+        self.expected_offered_args_per_bucket = expected_offered_args_per_bucket
+        self.expected_dictated_args_per_bucket = expected_dictated_args_per_bucket
 
     def __iter__(self):
         return iter((
@@ -40,15 +46,17 @@ class ThisTestCase(ShellInputTestCase):
             self.command_line,
             self.cursor_cpos,
             self.comp_type,
-            self.expected_arg_buckets,
+            self.expected_token_buckets,
             self.expected_excluded_tokens,
-            self.expected_token_ipos_to_arg_bucket_map,
+            self.expected_token_ipos_to_token_bucket_map,
+            self.expected_offered_args_per_bucket,
+            self.expected_dictated_args_per_bucket,
         ))
 
 
 class ThisTestClass(BaseTestClass):
     """
-    Tests parsing of `FS_97_64_39_94` arg buckets.
+    Tests parsing of FS_97_64_39_94 `token_bucket`-s.
     """
 
     def test_parse_input(self):
@@ -71,7 +79,7 @@ class ThisTestClass(BaseTestClass):
                 dummy_plugin_config,
             )
 
-            assert "%" == SpecialChar.ArgBucketDelimiter.value, "if not `%`, update test cases"
+            assert "%" == SpecialChar.TokenBucketDelimiter.value, "if not `%`, update test cases"
 
             test_cases = [
                 ThisTestCase(
@@ -81,6 +89,12 @@ class ThisTestClass(BaseTestClass):
                     ],
                     [],
                     {},
+                    [
+                        [],
+                    ],
+                    [
+                        [],
+                    ],
                     "empty line",
                 ),
                 ThisTestCase(
@@ -90,6 +104,12 @@ class ThisTestClass(BaseTestClass):
                     ],
                     [0],
                     {},
+                    [
+                        [],
+                    ],
+                    [
+                        [],
+                    ],
                     "case A: with tangent token excluded: single arg, no bucket separator",
                 ),
                 ThisTestCase(
@@ -101,6 +121,17 @@ class ThisTestClass(BaseTestClass):
                     {
                         0: 0,
                     },
+                    [
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [0],
+                                arg_value = "a",
+                            ),
+                        ],
+                    ],
+                    [
+                        [],
+                    ],
                     "case B: with tangent token included: single arg, no bucket separator",
                 ),
                 ThisTestCase(
@@ -114,6 +145,19 @@ class ThisTestClass(BaseTestClass):
                     {
                         1: 1,
                     },
+                    [
+                        [],
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [1],
+                                arg_value = "a",
+                            ),
+                        ],
+                    ],
+                    [
+                        [],
+                        [],
+                    ],
                     "single arg + bucket separator before",
                 ),
                 ThisTestCase(
@@ -126,6 +170,19 @@ class ThisTestClass(BaseTestClass):
                     {
                         0: 0,
                     },
+                    [
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [0],
+                                arg_value = "a",
+                            ),
+                        ],
+                        [],
+                    ],
+                    [
+                        [],
+                        [],
+                    ],
                     "single arg + bucket separator after",
                 ),
                 ThisTestCase(
@@ -137,6 +194,17 @@ class ThisTestClass(BaseTestClass):
                     {
                         0: 0,
                     },
+                    [
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [0],
+                                arg_value = "%a",
+                            ),
+                        ],
+                    ],
+                    [
+                        [],
+                    ],
                     "single arg concatenated with bucket separator before",
                 ),
                 ThisTestCase(
@@ -148,6 +216,17 @@ class ThisTestClass(BaseTestClass):
                     {
                         0: 0,
                     },
+                    [
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [0],
+                                arg_value = "a%",
+                            ),
+                        ],
+                    ],
+                    [
+                        [],
+                    ],
                     "single arg concatenated with bucket separator after",
                 ),
                 ThisTestCase(
@@ -165,7 +244,36 @@ class ThisTestClass(BaseTestClass):
                         3: 2,
                         5: 3,
                     },
-                    "multiple arg buckets with single arg only",
+                    [
+                        [],
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [1],
+                                arg_value = "qwer",
+                            ),
+                        ],
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [3],
+                                arg_value = "asdf",
+                            ),
+                        ],
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [5],
+                                arg_value = "zxcv",
+                            ),
+                        ],
+                        [],
+                    ],
+                    [
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                    ],
+                    "multiple `token_bucket`-s with single `command_token` only",
                 ),
                 ThisTestCase(
                     "% qwer asdf zxcv % qwer asdf % zxcv %    |", CompType.InvokeAction,
@@ -185,7 +293,137 @@ class ThisTestClass(BaseTestClass):
                         6: 2,
                         8: 3,
                     },
-                    "multiple arg buckets with multiple args",
+                    [
+                        [],
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [1],
+                                arg_value = "qwer",
+                            ),
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [2],
+                                arg_value = "asdf",
+                            ),
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [3],
+                                arg_value = "zxcv",
+                            ),
+                        ],
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [5],
+                                arg_value = "qwer",
+                            ),
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [6],
+                                arg_value = "asdf",
+                            ),
+                        ],
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [8],
+                                arg_value = "zxcv",
+                            ),
+                        ],
+                        [],
+                    ],
+                    [
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                    ],
+                    "multiple `arg_bucket`-s with multiple `command_token`-s",
+                ),
+                ThisTestCase(
+                    "-dictated_arg_name1 dictated_arg_value1 offered_arg_value1 |", CompType.InvokeAction,
+                    [
+                        [0, 1, 2],
+                    ],
+                    [],
+                    {
+                        0: 0,
+                        1: 0,
+                        2: 0,
+                    },
+                    [
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [2],
+                                arg_value = "offered_arg_value1",
+                            ),
+                        ],
+                    ],
+                    [
+                        [
+                            ArgCommandValueDictatedData(
+                                token_ipos_list = [0, 1],
+                                arg_value = "dictated_arg_value1",
+                                arg_name = "-dictated_arg_name1",
+                            ),
+                        ],
+                    ],
+                    "parse well-formed `dictated_arg` and "
+                    "well-formed `offered_arg_value`",
+                ),
+                ThisTestCase(
+                    "-dictated_arg_name1 dictated_arg_value1 -dictated_arg_name2 |", CompType.InvokeAction,
+                    [
+                        [0, 1, 2],
+                    ],
+                    [],
+                    {
+                        0: 0,
+                        1: 0,
+                        2: 0,
+                    },
+                    [
+                        [],
+                    ],
+                    [
+                        [
+                            ArgCommandValueDictatedData(
+                                token_ipos_list = [0, 1],
+                                arg_value = "dictated_arg_value1",
+                                arg_name = "-dictated_arg_name1",
+                            ),
+                        ],
+                    ],
+                    "parse first well-formed `dictated_arg` and "
+                    "second ill-formed `dictated_arg` (missing value)",
+                ),
+                ThisTestCase(
+                    "-dictated_arg_name1 -dictated_arg_value1 offered_arg_value2 |", CompType.InvokeAction,
+                    [
+                        [0, 1, 2],
+                    ],
+                    [],
+                    {
+                        0: 0,
+                        1: 0,
+                        2: 0,
+                    },
+                    [
+                        [
+                            ArgCommandValueOfferedData(
+                                token_ipos_list = [2],
+                                arg_value = "offered_arg_value2",
+                            ),
+                        ],
+                    ],
+                    [
+                        [
+                            ArgCommandValueDictatedData(
+                                token_ipos_list = [0, 1],
+                                arg_value = "-dictated_arg_value1",
+                                arg_name = "-dictated_arg_name1",
+                            ),
+                        ],
+                    ],
+                    "parse first well-formed `dictated_arg` "
+                    "(with value which only looks like start of another `dictated_arg`) and "
+                    "second well-formed `offered_arg_value`",
                 ),
             ]
             for test_case in test_cases:
@@ -196,10 +434,13 @@ class ThisTestClass(BaseTestClass):
                         command_line,
                         cursor_cpos,
                         comp_type,
-                        expected_arg_buckets,
+                        expected_token_buckets,
                         expected_excluded_tokens,
-                        expected_token_ipos_to_arg_bucket_map,
+                        expected_token_ipos_to_token_bucket_map,
+                        expected_offered_args_per_bucket,
+                        expected_dictated_args_per_bucket,
                     ) = test_case
+
                     parsed_ctx = default_test_parsed_context(
                         command_line,
                         cursor_cpos,
@@ -213,24 +454,24 @@ class ThisTestClass(BaseTestClass):
                         help_hint_cache = dummy_local_server.help_hint_cache,
                     )
                     self.assertEqual(
-                        expected_arg_buckets,
-                        interp_ctx.included_arg_buckets,
+                        expected_token_buckets,
+                        interp_ctx.included_token_buckets,
                     )
                     self.assertEqual(
-                        expected_arg_buckets,
-                        interp_ctx.remaining_arg_buckets,
+                        expected_token_buckets,
+                        interp_ctx.remaining_token_buckets,
                     )
                     self.assertEqual(
-                        [[] for i in interp_ctx.included_arg_buckets],
-                        interp_ctx.consumed_arg_buckets,
+                        [[] for i in interp_ctx.included_token_buckets],
+                        interp_ctx.consumed_token_buckets,
                     )
                     self.assertEqual(
                         expected_excluded_tokens,
                         interp_ctx.excluded_tokens,
                     )
                     self.assertEqual(
-                        expected_token_ipos_to_arg_bucket_map,
-                        interp_ctx.token_ipos_to_arg_bucket_map,
+                        expected_token_ipos_to_token_bucket_map,
+                        interp_ctx.token_ipos_to_token_bucket_map,
                     )
                     self.assertEqual(
                         [],
@@ -245,4 +486,12 @@ class ThisTestClass(BaseTestClass):
                             +
                             interp_ctx.excluded_tokens
                         ),
+                    )
+                    self.assertEqual(
+                        interp_ctx.offered_args_per_bucket,
+                        expected_offered_args_per_bucket,
+                    )
+                    self.assertEqual(
+                        interp_ctx.dictated_args_per_bucket,
+                        expected_dictated_args_per_bucket,
                     )

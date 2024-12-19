@@ -16,7 +16,7 @@ Schema for :class:`EnvelopeContainer`
 search_control_ = "search_control"
 data_envelopes_ = "data_envelopes"
 found_count_ = "found_count"
-used_arg_bucket_ = "used_arg_bucket"
+used_token_bucket_ = "used_token_bucket"
 assigned_types_to_values_ = "assigned_types_to_values"
 remaining_types_to_values_ = "remaining_types_to_values"
 filled_types_to_values_hidden_by_defaults_ = "filled_types_to_values_hidden_by_defaults"
@@ -43,7 +43,7 @@ class EnvelopeContainerSchema(ObjectSchema):
         required = True,
     )
 
-    used_arg_bucket = fields.Integer(
+    used_token_bucket = fields.Integer(
         required = True,
         allow_none = True,
     )
@@ -80,7 +80,7 @@ envelope_container_desc = TypeDesc(
             data_envelope_desc.dict_example,
         ],
         found_count_: 1,
-        used_arg_bucket_: 0,
+        used_token_bucket_: 0,
         assigned_types_to_values_: {
             "SomeTypeA": assigned_value_desc.dict_example,
         },
