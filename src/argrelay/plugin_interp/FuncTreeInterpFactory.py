@@ -6,12 +6,12 @@ from typing import Union
 from argrelay.composite_forest.CompositeForestExtractor import extract_jump_tree, extract_func_tree
 from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
 from argrelay.composite_forest.DictTreeWalker import DictTreeWalker, normalize_tree, sequence_starts_with
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.misc_helper_server import insert_unique_to_sorted_list
 from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.plugin_interp.AbstractInterpFactory import AbstractInterpFactory, AbstractInterp
@@ -29,7 +29,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
 from argrelay.schema_config_interp.InitControlSchema import init_types_to_values_, init_control_desc
 from argrelay.schema_config_interp.SearchControlSchema import (
-    keys_to_props_list_,
+    arg_name_to_prop_name_map_,
     populate_search_control,
     search_control_desc,
 )
@@ -44,8 +44,8 @@ func_init_control_ = "func_init_control"
 This field is automatically populated by `FuncTreeInterpFactory` inside `interp_tree_node_config_dict`.
 """
 
-tree_path_selector_prefix_ = "tree_path_selector_"
-tree_path_selector_key_prefix_ = "s"
+tree_step_prop_name_prefix_ = "tree_step_"
+tree_step_arg_name_prefix_ = "step_"
 
 
 class FuncTreeInterpFactory(AbstractInterpFactory):
@@ -202,7 +202,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
     ]:
         """
         Returns:
-        *   `index_props` used by all loaded funcs
+        *   `index_prop`-s used by all loaded funcs
         *   func `data_envelope`-s
         """
 
@@ -220,7 +220,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             func_id_to_func_abs_path_to_func_envelope,
         )
         envelope_collection = EnvelopeCollection(
-            collection_name = ReservedEnvelopeClass.ClassFunction.name,
+            collection_name = ReservedEnvelopeClass.class_function.name,
             data_envelopes = interp_tree_abs_path_func_envelopes,
         )
         return (
@@ -276,9 +276,9 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         """
 
         plugin_search_control_dict: dict = populate_search_control(
-            ReservedEnvelopeClass.ClassFunction.name,
+            ReservedEnvelopeClass.class_function.name,
             {
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             },
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -287,20 +287,20 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         )
 
         # `func_search_control` should include keys from the interp tree abs path:
-        keys_to_props_list = plugin_search_control_dict[keys_to_props_list_]
+        arg_name_to_prop_name_map = plugin_search_control_dict[arg_name_to_prop_name_map_]
 
         # Include func tree path:
         max_len = max_path_len(self.func_ids_to_func_abs_paths)
         for sel_ipos in range(max_len):
-            keys_to_props_list.append({
-                f"{path_step_key_arg_name(sel_ipos)}": f"{func_envelope_path_step_prop_name(sel_ipos)}"
+            arg_name_to_prop_name_map.append({
+                f"{tree_step_arg_name(sel_ipos)}": f"{func_envelope_path_step_prop_name(sel_ipos)}"
             })
 
         # Include other fields:
-        keys_to_props_list.append({
+        arg_name_to_prop_name_map.append({
             "state": ReservedPropName.func_state.name
         })
-        keys_to_props_list.append({
+        arg_name_to_prop_name_map.append({
             "id": ReservedPropName.func_id.name
         })
 
@@ -316,7 +316,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
         For each func envelope:
         *   Select its place on the func tree (provided by plugin config).
-        *   Populate the path as envelope props with `tree_path_selector_prefix_`.
+        *   Populate the path as envelope props with `tree_step_prop_name_prefix_`.
         """
         interp_tree_abs_path_func_envelopes: list[dict] = []
         prop_names: set[str] = set()
@@ -363,13 +363,13 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 def func_envelope_path_step_prop_name(
     path_step_ipos: int,
 ) -> str:
-    return f"{tree_path_selector_prefix_}{path_step_ipos}"
+    return f"{tree_step_prop_name_prefix_}{path_step_ipos}"
 
 
-def path_step_key_arg_name(
+def tree_step_arg_name(
     path_step_ipos: int,
 ) -> str:
-    return f"{tree_path_selector_key_prefix_}{path_step_ipos}"
+    return f"{tree_step_arg_name_prefix_}{path_step_ipos}"
 
 
 def max_path_len(
@@ -421,22 +421,22 @@ class FuncTreeInterp(AbstractInterp):
         self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = func_ids_to_func_abs_paths
 
     def _apply_func_init_control(self):
-        self.interp_ctx.curr_container.assigned_types_to_values[
+        self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[
             ReservedPropName.envelope_class.name
         ] = AssignedValue(
-            ReservedEnvelopeClass.ClassFunction.name,
-            ArgSource.InitValue,
+            ReservedEnvelopeClass.class_function.name,
+            ValueSource.init_value,
         )
         func_init_control: InitControl = init_control_desc.dict_schema.load(
             self.interp_tree_node_config_dict[func_init_control_],
         )
         for prop_type, prop_value in func_init_control.init_types_to_values.items():
-            self.interp_ctx.curr_container.assigned_types_to_values[prop_type] = AssignedValue(
+            self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[prop_type] = AssignedValue(
                 prop_value,
-                ArgSource.InitValue,
+                ValueSource.init_value,
             )
-            if prop_type in self.interp_ctx.curr_container.remaining_types_to_values:
-                del self.interp_ctx.curr_container.remaining_types_to_values[prop_type]
+            if prop_type in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value:
+                del self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[prop_type]
 
     def _apply_func_search_control(self):
         # Function `search_control` is populated based on
@@ -446,15 +446,19 @@ class FuncTreeInterp(AbstractInterp):
             self.interp_tree_node_config_dict[func_search_control_]
         )
 
-    def consume_pos_args(self) -> bool:
+    def consume_dictated_args(self) -> bool:
+        # TODO: FS_20_88_05_60 `dictated_arg`-s: stub
+        return False
+
+    def consume_offered_args(self) -> bool:
         """
-        Scans through `remaining_arg_buckets` and tries to match its value against values of each type.
+        Scans through `remaining_token_buckets` and tries to match its value against values of each type.
 
         Implements:
-        *   FS_76_29_13_28 arg consumption priorities.
+        *   FS_76_29_13_28 `command_arg` consumption priority.
         *   FS_44_36_84_88 consume args one by one:
             This func consumes all until the first remaining non-singled out arg.
-        *   FS_97_64_39_94 `arg_bucket`-s: consumption is limited to single bucket per `envelope_container`.
+        *   FS_97_64_39_94 `token_bucket`-s: consumption is limited to single bucket per `envelope_container`.
         """
 
         consumed_token_ipos_list = []
@@ -463,79 +467,84 @@ class FuncTreeInterp(AbstractInterp):
         # We can keep consuming args (without creating FS_51_67_38_37 impossible arg combinations)
         # as long as they are singled out - we cannot consume two ambiguous args at once, but
         # we can consume as many singled out as possible (plus one ambiguous).
-        # If arg is singled out but still matches remaining arg, it must be assigned as `ArgSource.ExplicitPosArg`
-        # rather than be left remaining and (later) be assigned as `ArgSource.ImplicitValue`.
+        # If arg is singled out but still matches remaining arg, it must be assigned as `ValueSource.explicit_offered_arg`
+        # rather than be left remaining and (later) be assigned as `ValueSource.implicit_value`.
         consumed_ambiguous_value = False
-        if self.interp_ctx.curr_container.used_arg_bucket is not None:
-            # If `envelope_container` has one `used_arg_bucket`, loop through it only:
-            any_consumed = self.consume_pos_args_from_arg_bucket(
-                bucket_index = self.interp_ctx.curr_container.used_arg_bucket,
-                bucket_list = self.interp_ctx.remaining_arg_buckets[self.interp_ctx.curr_container.used_arg_bucket],
+        if self.interp_ctx.curr_container.used_token_bucket is not None:
+            # If `envelope_container` has one `used_token_bucket`, loop through it only:
+            any_consumed = self.consume_offered_args_from_token_bucket(
+                bucket_index = self.interp_ctx.curr_container.used_token_bucket,
+                bucket_list = self.interp_ctx.remaining_token_buckets[self.interp_ctx.curr_container.used_token_bucket],
                 consumed_ambiguous_value = consumed_ambiguous_value,
                 consumed_token_ipos_list = consumed_token_ipos_list,
             )
         else:
-            # Otherwise, loop through all buckets until the single `used_arg_bucket` is chosen:
-            for bucket_index, bucket_list in enumerate(self.interp_ctx.remaining_arg_buckets):
-                any_consumed = self.consume_pos_args_from_arg_bucket(
+            # Otherwise, loop through all buckets until the single `used_token_bucket` is chosen:
+            for bucket_index, bucket_list in enumerate(self.interp_ctx.remaining_token_buckets):
+                any_consumed = self.consume_offered_args_from_token_bucket(
                     bucket_index = bucket_index,
                     bucket_list = bucket_list,
                     consumed_ambiguous_value = consumed_ambiguous_value,
                     consumed_token_ipos_list = consumed_token_ipos_list,
                 )
                 if any_consumed:
-                    # Consume from single `arg_bucket` only:
+                    # Consume from single `token_bucket` only:
                     break
 
         # perform list modifications out of the prev loop:
         for consumed_token_ipos in consumed_token_ipos_list:
-            bucket_index = self.interp_ctx.token_ipos_to_arg_bucket_map[consumed_token_ipos]
-            self.interp_ctx.remaining_arg_buckets[bucket_index].remove(consumed_token_ipos)
+            bucket_index = self.interp_ctx.token_ipos_to_token_bucket_map[consumed_token_ipos]
+            self.interp_ctx.remaining_token_buckets[bucket_index].remove(consumed_token_ipos)
 
         return any_consumed
 
-    def consume_pos_args_from_arg_bucket(
+    def consume_offered_args_from_token_bucket(
         self,
         bucket_index,
         bucket_list,
         consumed_ambiguous_value,
         consumed_token_ipos_list,
     ) -> bool:
+
+        # TODO: TODO_66_09_41_16: clarify command line processing
+        #       All `command_token`-s in the `token_bucket` should be pre-processed to have a lists of
+        #       FS_96_46_42_30 `offered_arg`-s and FS_20_88_05_60 `dictated_arg`-s
+
         any_consumed = False
         for remaining_token_ipos in bucket_list:
 
             remaining_token = self.interp_ctx.parsed_ctx.all_tokens[remaining_token_ipos]
 
             # TODO: FS_76_29_13_28 Why not define the order based on FS_31_70_49_15 `search_control`
-            #       (instead of whatever internal order `remaining_types_to_values` has)?
-            #       It could already be the case that `remaining_types_to_values` are ordered as `search_control`.
+            #       (instead of whatever internal order `remaining_prop_name_to_prop_value` has)?
+            #       It could already be the case that `remaining_prop_name_to_prop_value` are ordered as `search_control`.
             #       Why not make it explicit?
 
             # See if token matches any type by value:
-            for arg_type, arg_values in self.interp_ctx.curr_container.remaining_types_to_values.items():
-                if remaining_token in arg_values:
+            for prop_name, prop_values in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value.items():
+                if remaining_token in prop_values:
                     if (
-                        len(arg_values) == 1
+                        len(prop_values) == 1
                         or
                         not consumed_ambiguous_value
                     ):
-                        self.interp_ctx.curr_container.assigned_types_to_values[arg_type] = AssignedValue(
+                        self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[prop_name] = AssignedValue(
                             remaining_token,
-                            ArgSource.ExplicitPosArg,
+                            ValueSource.explicit_offered_arg,
                         )
-                        self.interp_ctx.curr_container.used_arg_bucket = bucket_index
-                        if len(arg_values) > 1:
+                        self.interp_ctx.curr_container.used_token_bucket = bucket_index
+                        if len(prop_values) > 1:
                             # This was not singled out arg:
                             # allow only one ambiguous consumption to avoid FS_51_67_38_37 impossible arg combinations.
                             consumed_ambiguous_value = True
                         any_consumed = True
                         consumed_token_ipos_list.append(remaining_token_ipos)
 
-                        self.interp_ctx.consumed_arg_buckets[bucket_index].append(remaining_token_ipos)
+                        self.interp_ctx.consumed_token_buckets[bucket_index].append(remaining_token_ipos)
 
                         # TD_76_09_29_31: overlapped
-                        # Assign matching remaining arg value to the first type it matches (only once):
-                        del self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
+                        # Assign matching remaining `prop_value` to the first `prop_name` it matches (only once):
+                        del self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[prop_name]
                         break
         return any_consumed
 
@@ -670,12 +679,12 @@ class FuncTreeInterp(AbstractInterp):
 
     def propose_auto_comp_list(self) -> list[str]:
 
-        # TODO: FS_20_88_05_60: POC: Either remove it or implement properly: just testing named args:
+        # TODO: FS_20_88_05_60: POC: Either remove it or implement properly: just testing `dictated_arg`-s:
         if self.interp_ctx.parsed_ctx.tan_token_l_part.startswith(SpecialChar.ArgNamePrefix.value):
             # TODO: exclude those `arg_name`-s which have already been matched with value:
             return [
                 SpecialChar.ArgNamePrefix.value + type_name
-                for type_name in self.interp_ctx.curr_container.search_control.props_to_keys_dict
+                for type_name in self.interp_ctx.curr_container.search_control.prop_name_to_arg_name_dict
                 if (
                     not type_name.startswith("_")
                     and
@@ -683,46 +692,50 @@ class FuncTreeInterp(AbstractInterp):
                 )
             ]
 
-        # TODO: FS_23_62_89_43: the logic for both if-s (`if-A` and `if-B`) is identical at the moment - what do we want to improve?
+        # TODO: FS_23_62_89_43: `tangent_token`
+        #       The logic for both if-s (`if-A` and `if-B`) is identical at the moment - what do we want to improve?
 
         # TODO: FS_23_62_89_43: if-A:
-        if self.interp_ctx.parsed_ctx.comp_scope is CompScope.ScopeInitial:
+        if self.interp_ctx.parsed_ctx.comp_scope in [
+            CompScope.ScopeInitial,
+            CompScope.ScopeUnknown,
+        ]:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
-                return self.remaining_from_next_missing_type()
+                return self.remaining_from_next_missing_prop_name()
             else:
-                return self.remaining_from_next_missing_type()
+                return self.remaining_from_next_missing_prop_name()
 
         # TODO: FS_23_62_89_43: if-B:
         if self.interp_ctx.parsed_ctx.comp_scope is CompScope.ScopeSubsequent:
             if self.interp_ctx.parsed_ctx.tan_token_l_part == "":
-                return self.remaining_from_next_missing_type()
+                return self.remaining_from_next_missing_prop_name()
             else:
                 # TODO: FS_20_88_05_60: Suggest `arg_name`-s (:) for missing `prop_name`-s instead - it is `ScopeSubsequent`, user insist and wants something else:
-                return self.remaining_from_next_missing_type()
+                return self.remaining_from_next_missing_prop_name()
 
         return []
 
-    def remaining_from_next_missing_type(self) -> list[str]:
+    def remaining_from_next_missing_prop_name(self) -> list[str]:
         """
         Clarifications:
         *   remaining = because values for the given type are reduced based on narrowed down `data_envelope` set
-        *   missing = because this arg type is not specified yet
-        *   next = because arg types are tired in specific order
+        *   missing = because this `prop_name` is not specified yet
+        *   next = because `prop_name`-s are tired in specific order
         """
         proposed_values: list[str] = []
 
         # Return filtered value set from the next missing arg:
-        for arg_type in self.interp_ctx.curr_container.search_control.props_to_keys_dict:
+        for prop_name in self.interp_ctx.curr_container.search_control.prop_name_to_arg_name_dict:
             if (
-                # TODO: only one condition should be enough: arg_type is either in one or in another, not in both:
-                arg_type not in self.interp_ctx.curr_container.assigned_types_to_values
+                # TODO: only one condition should be enough: `prop_name` is either in one or in another, not in both:
+                prop_name not in self.interp_ctx.curr_container.assigned_prop_name_to_prop_value
                 and
-                arg_type in self.interp_ctx.curr_container.remaining_types_to_values
+                prop_name in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value
             ):
                 proposed_values = [
                     # FS_71_87_33_52: `help_hint`:
-                    self.interp_ctx.help_hint_cache.get_value_with_help_hint(arg_type, x)
-                    for x in self.interp_ctx.curr_container.remaining_types_to_values[arg_type]
+                    self.interp_ctx.help_hint_cache.get_value_with_help_hint(prop_name, x)
+                    for x in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[prop_name]
                     if (
                         # NOTE: This checks for `str` meaning primitive (scalar, not `list` or `dict`),
                         #       but this also filters out `int` or others.
@@ -733,7 +746,7 @@ class FuncTreeInterp(AbstractInterp):
                         # FS_32_05_46_00: using `startswith`:
                         # FS_23_62_89_43: filter using L part of tangent token:
                         x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)
-                        # TODO: FS_06_99_43_60: Support list[str] - what if one type can have list of values (and we need to match any as in OR)?
+                        # TODO: FS_06_99_43_60: Support list[str] - what if one type can have array of values (and we need to match any as in OR)?
                     )
                 ]
                 if proposed_values:

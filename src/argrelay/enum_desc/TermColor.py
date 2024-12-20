@@ -66,19 +66,19 @@ class TermColor(Enum):
     See `ParsedContext.tangent_token_r_part`
     """
 
-    explicit_pos_arg_value = fore_bright_blue
+    explicit_offered_arg_value = fore_bright_blue
     """
-    See `ArgSource.ExplicitPosArg`.
+    See `ValueSource.explicit_offered_arg`.
     """
 
     other_assigned_arg_value = fore_dark_green
     """
-    Any other assigned arg value except `explicit_pos_arg_value`.
+    Any other assigned `arg_value` except `explicit_offered_arg_value`.
     """
 
     remaining_value = fore_bright_yellow
     """
-    See `EnvelopeContainer.remaining_types_to_values`.
+    See `EnvelopeContainer.remaining_prop_name_to_prop_value`.
     """
 
     excluded_token = fore_dark_blue
@@ -91,14 +91,14 @@ class TermColor(Enum):
     consumed_token = fore_bright_blue
     """
     See:
-    *   `InterpContext.consumed_arg_buckets`
-    *   `InterpResult.consumed_arg_buckets`
+    *   `InterpContext.consumed_token_buckets`
+    *   `InterpResult.consumed_token_buckets`
     """
 
     remaining_token = fore_bright_magenta
     """
     See:
-    *   `InterpContext.remaining_arg_buckets`
+    *   `InterpContext.remaining_token_buckets`
     """
 
     no_option_to_suggest = fore_dark_gray

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
@@ -14,7 +14,7 @@ class ThisTestClass(LocalTestClass):
 
     def test_propose_auto_comp_TD_43_24_76_58_single(self):
         """
-        Test arg values suggestion with TD_43_24_76_58 # single
+        Test `arg_value`-s suggestion with TD_43_24_76_58 # single
         """
 
         test_cases = [
@@ -26,7 +26,7 @@ class ThisTestClass(LocalTestClass):
                 ],
                 1,
                 {
-                    ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ImplicitValue),
+                    ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.implicit_value),
                 },
                 "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServicePropName.code_maturity`",
             ),
@@ -38,7 +38,7 @@ class ThisTestClass(LocalTestClass):
                 ],
                 1,
                 {
-                    ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                    ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
                 },
                 "Even if all `data_envelope`-s has the same `dev` `ServicePropName.code_maturity`, "
                 "if it is provided, the value `dev` is still consumed."

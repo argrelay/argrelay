@@ -52,7 +52,7 @@ class DataEnvelopeSchema(Schema):
     """
     Data specific to `envelope_class`.
     Each envelope class may define its own schema for that data.
-    For example, `ReservedEnvelopeClass.ClassFunction` defines `FunctionEnvelopeInstanceDataSchema`.
+    For example, `ReservedEnvelopeClass.class_function` defines `FunctionEnvelopeInstanceDataSchema`.
     """
     # TODO: TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
     instance_data = fields.Dict(
@@ -74,7 +74,7 @@ class DataEnvelopeSchema(Schema):
         input_dict: dict,
         **kwargs,
     ):
-        if input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.ClassFunction.name:
+        if input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.class_function.name:
             function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
     @post_dump(pass_original = True)
@@ -85,10 +85,10 @@ class DataEnvelopeSchema(Schema):
         **kwargs,
     ):
         """
-        Dump any unknown fields in `data_envelope` as well.
+        Dump any unknown `prop_name`-s in `data_envelope` as well.
 
-        *   Because `data_envelope`-s use any (search) metadata fields, they contain arbitrary top-level keys.
-        *   Because these top-level keys are arbitrary, they cannot be defined in this schema.
+        *   `data_envelope`-s use arbitrary top-level `prop_name`-s for search.
+        *   Because these top-level `prop_name`-s are arbitrary, they cannot be defined in this schema.
         *   Because they cannot be defined in the schema, they do not survive `Schema.dump`.
         This is a known issue/limitation of `marshmallow` - the `Meta.unknown` field is only used on `Schema.load`
         to allow extra keys in, but `Schema.dump` simply do not serialize them.
@@ -97,30 +97,30 @@ class DataEnvelopeSchema(Schema):
         See:
         https://github.com/marshmallow-code/marshmallow/issues/1545#issuecomment-947231172
         """
-        for field_name in orig_dict:
-            if field_name not in output_dict:
+        for prop_name in orig_dict:
+            if prop_name not in output_dict:
                 # Do not dump `mongo_id` field because it cannot be serialized subsequently
                 # (see `test_data_dump_on_server_with_non_serializable_id`):
-                if field_name != mongo_id_:
-                    output_dict[field_name] = orig_dict[field_name]
+                if prop_name != mongo_id_:
+                    output_dict[prop_name] = orig_dict[prop_name]
         return output_dict
 
 
-sample_field_type_A_ = "SomeTypeA"
-sample_field_type_B_ = "SomeTypeB"
-sample_field_type_C_ = "SomeTypeC"
+sample_prop_name_a_ = "sample_prop_name_a"
+sample_prop_name_b_ = "sample_prop_name_b"
+sample_prop_name_c_ = "sample_prop_name_c"
 
 data_envelope_desc = TypeDesc(
     dict_schema = DataEnvelopeSchema(),
     ref_name = DataEnvelopeSchema.__name__,
     dict_example = {
-        envelope_id_: "some_unique_id",
+        envelope_id_: "sample_unique_id",
         instance_data_: function_envelope_instance_data_desc.dict_example,
         envelope_payload_: {},
-        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
-        sample_field_type_A_: "A_value_1",
-        sample_field_type_B_: "B_value_1",
-        sample_field_type_C_: "C_value_1",
+        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
+        sample_prop_name_a_: "sample_prop_value_1",
+        sample_prop_name_b_: "sample_prop_value_2",
+        sample_prop_name_c_: "sample_prop_value_3",
     },
     default_file_path = "",
 )

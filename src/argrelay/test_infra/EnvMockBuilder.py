@@ -177,7 +177,7 @@ class EnvMockBuilder:
     mock_plugin_config_file_read: bool = field(default = False)
     mock_usage_stats_file_write: bool = field(default = False)
 
-    # Implement FS_62_25_92_06 generated config for `out`-processes to read it (see FS_66_17_43_42 test infra):
+    # Implement FS_63_63_14_08 generated test config for `out`-processes to read it (see FS_66_17_43_42 test infra):
     generate_client_config_file: bool = field(default = False)
     generate_server_config_file: bool = field(default = False)
     generate_plugin_config_file: bool = field(default = False)
@@ -691,28 +691,28 @@ class EnvMockBuilder:
                 or
                 self.mock_plugin_config_file_read != self.generate_plugin_config_file
             )
-        ), "FS_62_25_92_06: generated config: mocked config and generated config are mutually exclusive"
+        ), "FS_63_63_14_08: generated test config: mocked config and generated test config are mutually exclusive"
 
     def assert_client_config_substitute_enabled(self):
         assert (
             self.mock_client_config_file_read
             or
             self.generate_client_config_file
-        ), "FS_62_25_92_06: generated config: when enabled: either mocked config or generated config"
+        ), "FS_63_63_14_08: generated test config: when enabled: either mocked config or generated test config"
 
     def assert_server_config_substitute_enabled(self):
         assert (
             self.mock_server_config_file_read
             or
             self.generate_server_config_file
-        ), "FS_62_25_92_06: generated config: when enabled: either mocked config or generated config"
+        ), "FS_63_63_14_08: generated test config: when enabled: either mocked config or generated test config"
 
     def assert_plugin_config_substitute_enabled(self):
         assert (
             self.mock_plugin_config_file_read
             or
             self.generate_plugin_config_file
-        ), "FS_62_25_92_06: generated config: when enabled: either mocked config or generated config"
+        ), "FS_63_63_14_08: generated test config: when enabled: either mocked config or generated test config"
 
     @contextlib.contextmanager
     def assert_all_cm(self):

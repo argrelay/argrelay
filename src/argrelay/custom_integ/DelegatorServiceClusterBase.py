@@ -12,9 +12,9 @@ from argrelay.schema_config_interp.SearchControlSchema import (
 def get_cluster_search_control(
 ) -> dict:
     return populate_search_control(
-        ServiceEnvelopeClass.ClassCluster.name,
+        ServiceEnvelopeClass.class_cluster.name,
         {
-            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassCluster.name,
+            ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_cluster.name,
         },
         [
             # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -30,5 +30,5 @@ def get_cluster_search_control(
 
 class DelegatorServiceClusterBase(DelegatorServiceBase):
     """
-    Provide base functionality for funcs working with `ServiceEnvelopeClass.ClassCluster`.
+    Provide base functionality for funcs working with `ServiceEnvelopeClass.class_cluster`.
     """

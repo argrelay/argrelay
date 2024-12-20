@@ -127,9 +127,9 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
-                    GitRepoEnvelopeClass.ClassGitTag.name: False,
-                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                    GitRepoEnvelopeClass.class_git_repo.name: True,
+                    GitRepoEnvelopeClass.class_git_tag.name: False,
+                    GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
                 {
                 },
@@ -155,9 +155,9 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: False,
-                    GitRepoEnvelopeClass.ClassGitTag.name: False,
-                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                    GitRepoEnvelopeClass.class_git_repo.name: False,
+                    GitRepoEnvelopeClass.class_git_tag.name: False,
+                    GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
                 {
                 },
@@ -184,9 +184,9 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
-                    GitRepoEnvelopeClass.ClassGitTag.name: False,
-                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                    GitRepoEnvelopeClass.class_git_repo.name: True,
+                    GitRepoEnvelopeClass.class_git_tag.name: False,
+                    GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
                 {
                 },
@@ -213,9 +213,9 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: False,
-                    GitRepoEnvelopeClass.ClassGitTag.name: False,
-                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                    GitRepoEnvelopeClass.class_git_repo.name: False,
+                    GitRepoEnvelopeClass.class_git_tag.name: False,
+                    GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
                 {
                 },
@@ -239,20 +239,20 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
-                    GitRepoEnvelopeClass.ClassGitTag.name: False,
-                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                    GitRepoEnvelopeClass.class_git_repo.name: True,
+                    GitRepoEnvelopeClass.class_git_tag.name: False,
+                    GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: {
+                    GitRepoEnvelopeClass.class_git_repo.name: {
                         GitRepoPropName.git_repo_object_category.name: True,
-                        # Expect all repo-related metadata for `GitRepoEnvelopeClass.ClassGitRepo`:
+                        # Expect all repo-related metadata for `GitRepoEnvelopeClass.class_git_repo`:
                         GitRepoPropName.git_repo_alias.name: True,
                         GitRepoPropName.git_repo_root_abs_path.name: True,
                         GitRepoPropName.git_repo_root_rel_path.name: True,
                         GitRepoPropName.git_repo_root_base_name.name: True,
                         GitRepoPropName.git_repo_content_type.name: True,
-                        # Commit-related metadata should not be seen for `GitRepoEnvelopeClass.ClassGitRepo`:
+                        # Commit-related metadata should not be seen for `GitRepoEnvelopeClass.class_git_repo`:
                         GitRepoPropName.git_repo_commit_id.name: False,
                         GitRepoPropName.git_repo_short_commit_id.name: False,
                         GitRepoPropName.git_repo_commit_message.name: False,
@@ -260,7 +260,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
                     # Not loaded:
-                    GitRepoEnvelopeClass.ClassGitTag.name: {
+                    GitRepoEnvelopeClass.class_git_tag.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Tag-related metadata should not be as loading commits is disabled:
                         GitRepoPropName.git_repo_tag_name.name: False,
@@ -271,7 +271,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
                     # Not loaded:
-                    GitRepoEnvelopeClass.ClassGitCommit.name: {
+                    GitRepoEnvelopeClass.class_git_commit.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Commit-related metadata should not be as loading commits is disabled:
                         GitRepoPropName.git_repo_commit_id.name: False,
@@ -302,27 +302,27 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
-                    GitRepoEnvelopeClass.ClassGitTag.name: True,
-                    GitRepoEnvelopeClass.ClassGitCommit.name: False,
+                    GitRepoEnvelopeClass.class_git_repo.name: True,
+                    GitRepoEnvelopeClass.class_git_tag.name: True,
+                    GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: {
+                    GitRepoEnvelopeClass.class_git_repo.name: {
                         GitRepoPropName.git_repo_object_category.name: True,
-                        # Expect all repo-related metadata for `GitRepoEnvelopeClass.ClassGitRepo`:
+                        # Expect all repo-related metadata for `GitRepoEnvelopeClass.class_git_repo`:
                         GitRepoPropName.git_repo_alias.name: True,
                         GitRepoPropName.git_repo_root_abs_path.name: True,
                         GitRepoPropName.git_repo_root_rel_path.name: True,
                         GitRepoPropName.git_repo_root_base_name.name: True,
                         GitRepoPropName.git_repo_content_type.name: True,
-                        # Commit-related metadata should not be seen for `GitRepoEnvelopeClass.ClassGitRepo`:
+                        # Commit-related metadata should not be seen for `GitRepoEnvelopeClass.class_git_repo`:
                         GitRepoPropName.git_repo_commit_id.name: False,
                         GitRepoPropName.git_repo_short_commit_id.name: False,
                         GitRepoPropName.git_repo_commit_message.name: False,
                         GitRepoPropName.git_repo_commit_author_name.name: False,
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
-                    GitRepoEnvelopeClass.ClassGitTag.name: {
+                    GitRepoEnvelopeClass.class_git_tag.name: {
                         GitRepoPropName.git_repo_object_category.name: True,
                         # Tag-related metadata should not be as loading commits is disabled:
                         GitRepoPropName.git_repo_tag_name.name: True,
@@ -333,7 +333,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_email.name: True,
                     },
                     # Not loaded:
-                    GitRepoEnvelopeClass.ClassGitCommit.name: {
+                    GitRepoEnvelopeClass.class_git_commit.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Commit-related metadata should not be as loading commits is disabled:
                         GitRepoPropName.git_repo_commit_id.name: False,
@@ -364,20 +364,20 @@ class ThisTestClass(LocalTestClass):
                     },
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: True,
-                    GitRepoEnvelopeClass.ClassGitTag.name: False,
-                    GitRepoEnvelopeClass.ClassGitCommit.name: True,
+                    GitRepoEnvelopeClass.class_git_repo.name: True,
+                    GitRepoEnvelopeClass.class_git_tag.name: False,
+                    GitRepoEnvelopeClass.class_git_commit.name: True,
                 },
                 {
-                    GitRepoEnvelopeClass.ClassGitRepo.name: {
+                    GitRepoEnvelopeClass.class_git_repo.name: {
                         GitRepoPropName.git_repo_object_category.name: True,
-                        # Expect all repo-related metadata for `GitRepoEnvelopeClass.ClassGitRepo`:
+                        # Expect all repo-related metadata for `GitRepoEnvelopeClass.class_git_repo`:
                         GitRepoPropName.git_repo_alias.name: True,
                         GitRepoPropName.git_repo_root_abs_path.name: True,
                         GitRepoPropName.git_repo_root_rel_path.name: True,
                         GitRepoPropName.git_repo_root_base_name.name: True,
                         GitRepoPropName.git_repo_content_type.name: True,
-                        # Commit-related metadata should not be seen for `GitRepoEnvelopeClass.ClassGitRepo`:
+                        # Commit-related metadata should not be seen for `GitRepoEnvelopeClass.class_git_repo`:
                         GitRepoPropName.git_repo_commit_id.name: False,
                         GitRepoPropName.git_repo_short_commit_id.name: False,
                         GitRepoPropName.git_repo_commit_message.name: False,
@@ -385,7 +385,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
                     # Not loaded:
-                    GitRepoEnvelopeClass.ClassGitTag.name: {
+                    GitRepoEnvelopeClass.class_git_tag.name: {
                         GitRepoPropName.git_repo_object_category.name: False,
                         # Tag-related metadata should not be as loading commits is disabled:
                         GitRepoPropName.git_repo_tag_name.name: False,
@@ -395,7 +395,7 @@ class ThisTestClass(LocalTestClass):
                         GitRepoPropName.git_repo_commit_author_name.name: False,
                         GitRepoPropName.git_repo_commit_author_email.name: False,
                     },
-                    GitRepoEnvelopeClass.ClassGitCommit.name: {
+                    GitRepoEnvelopeClass.class_git_commit.name: {
                         GitRepoPropName.git_repo_object_category.name: True,
                         # Repo-related (parent) data:
                         GitRepoPropName.git_repo_alias.name: True,

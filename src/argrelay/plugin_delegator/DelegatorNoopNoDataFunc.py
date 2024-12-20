@@ -21,16 +21,16 @@ class DelegatorNoopNoDataFunc(DelegatorNoopBase):
         self,
     ) -> list[dict]:
         no_data_search_control = populate_search_control(
-            ReservedEnvelopeClass.ClassNoData.name,
+            ReservedEnvelopeClass.class_no_data.name,
             {
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassNoData.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_no_data.name,
             },
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                 {"class": ReservedPropName.envelope_class.name},
 
-                {"no_data_key_one": NoDataPropName.no_data_key_one.name},
-                {"no_data_key_two": NoDataPropName.no_data_key_two.name},
+                {"no_data_arg_name_one": NoDataPropName.no_data_prop_name_one.name},
+                {"no_data_arg_name_two": NoDataPropName.no_data_prop_name_two.name},
             ],
         )
 
@@ -43,7 +43,7 @@ class DelegatorNoopNoDataFunc(DelegatorNoopBase):
                         no_data_search_control,
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "Function which has no data it searches for and does nothing",
                 ReservedPropName.func_state.name: FuncState.fs_ignorable.name,
                 ReservedPropName.func_id.name: SpecialFunc.func_id_no_data.name,

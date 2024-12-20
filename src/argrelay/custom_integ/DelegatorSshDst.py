@@ -38,6 +38,7 @@ class_ssh_dst_ = "class_ssh_dst"
 
 ssh_dst_container_ipos_ = 1
 
+
 class DelegatorSshDst(DelegatorSingleFuncAbstract):
     """
     This is a demo delegator wrapping `ssh` command.
@@ -67,7 +68,7 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
                             props_to_values_dict = {
                                 ReservedPropName.envelope_class.name: class_ssh_dst_,
                             },
-                            keys_to_props_list = [
+                            arg_name_to_prop_name_map = [
                                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                                 {"class": ReservedPropName.envelope_class.name},
                                 # ---
@@ -91,7 +92,7 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
                         ),
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "Use `ssh` to log into the destination.",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: func_id_ssh_dst_,
@@ -145,6 +146,7 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
             for ssh_dst_data_envelope in ssh_dst_data_envelopes:
                 eprint(_data_envelope_to_str(ssh_dst_data_envelope))
 
+            # TODO: TODO_20_61_16_31 `cardinality_hook`: run different funcs based on `data_envelope` set size
             eprint(
                 "ERROR: `ssh` destination is ambiguous "
                 "(multiple candidates based on given command line input)"
@@ -159,6 +161,7 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
             ssh_dst_data_envelope = ssh_dst_data_envelopes[0]
             _run_ssh(ssh_dst_data_envelope)
 
+
 def _data_envelope_to_str(
     data_envelope: dict,
 ) -> str:
@@ -167,10 +170,10 @@ def _data_envelope_to_str(
         indent = 4,
     )
 
+
 def _run_ssh(
     ssh_dst_data_envelope: dict,
 ) -> None:
-
     eprint(_data_envelope_to_str(ssh_dst_data_envelope))
 
     user_name = clean_prop_value(ssh_dst_data_envelope[ServicePropName.user_name.name])

@@ -27,9 +27,9 @@ TODO: Create separate FS with the first two sections of this doc to describe arg
 
 *   Legend:
 
-    *   [func impl] = group of command line args to find `data_envelope` of `ClassFunction`
+    *   [func impl] = group of command line args to find `data_envelope` of `class_function`
 
-    *   [host] = group of command line args to find `data_envelope` of `ClassHost`
+    *   [host] = group of command line args to find `data_envelope` of `class_host`
 
     *   [access] = group of command line args (only one) to find `data_envelope` providing `access_type`
 
@@ -80,11 +80,11 @@ TODO: Merge this section of the doc with FS_55_57_45_04 enum selector.
 
 *   Matching `data_envelope`-s.
 
-    Each `data_envelope` has unique set of key-value paris ~ (`arg_key`, `arg_value`) to be searched by.
+    Each `data_envelope` has unique set of pairs ~ (`arg_name`, `arg_value`) to be searched by.
 
     The command line args provide `arg_value`-s to perform the search of `data_envelope`-s.
 
-    The task is to decide which `arg_key` each command line arg belongs to.
+    The task is to decide which `prop_name` each command line arg belongs to.
 
 *   The role of phase 1 (func impl)
 
@@ -100,8 +100,8 @@ TODO: Merge this section of the doc with FS_55_57_45_04 enum selector.
     Phase 1:
     *   Invoke `search_control` (not on func impl yet, but on interp) to learn `search_control` structure.
     *   Invoke `init_control` (not on func impl yet, but on interp) to pre-assign some fields in `search_control` structure.
-    *   Enum query: in database, find all unique values for unassigned fields in `search_control` structure of func impl class (`ReservedEnvelopeClass.ClassFunction`).
-    *   Assign command line args to `search_control` structure by matching if arg type belongs to enum class.
+    *   Enum query: in database, find all unique values for unassigned fields in `search_control` structure of func impl class (`ReservedEnvelopeClass.class_function`).
+    *   Assign `command_arg`-s to `search_control` structure by matching if `arg_value` belongs to enum set.
     *   TODO: Invoke `fill_control` (not on func impl yet, but on interp) to select default values.
     *   Perform final search to see if func impl is uniquely identified (only one fits the criteria).
 
@@ -111,7 +111,7 @@ TODO: Merge this section of the doc with FS_55_57_45_04 enum selector.
     *   Invoke `search_control` (now on func impl) to learn `search_control` structure.
     *   Invoke `init_control` (now on func impl) to pre-assign some fields in `search_control` structure.
     *   Enum query: in database, find all unique values for unassigned fields in `search_control` structure of this `data_envelope` class (for example, `ServiceEnvelopeClass`).
-    *   Assign command line args to `search_control` structure by matching if arg type belongs to enum class.
+    *   Assign command line args to `search_control` structure by matching if `arg_value` belongs to enum set.
     *   TODO: Invoke `fill_control` now on func impl to select default values.
     *   Perform final search to see if `data_envelope` is uniquely identified (only one fits the criteria).
 

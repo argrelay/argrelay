@@ -19,6 +19,7 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
+    # noinspection PyMethodMayBeStatic
     def test_relationship(self):
         assert_test_module_name_embeds_prod_class_name(DelegatorDataBackendGet)
 
@@ -30,7 +31,7 @@ class ThisTestClass(LocalTestClass):
         test_cases = [
             ThisTestCase(
                 "Test that suggestion works for `index_prop`-s to select `data_envelope`-s.",
-                "some_command data get ClassAccessType |",
+                "some_command data get class_access_type |",
                 CompType.PrefixShown,
                 {},
                 ProposeArgValuesVerifier(self),
@@ -81,6 +82,7 @@ class ThisTestClass(LocalTestClass):
                         command_obj.interp_ctx.parsed_ctx,
                     ))
 
+
 class ThisTestCase(ShellInputTestCase):
 
     def __init__(
@@ -110,4 +112,3 @@ class ThisTestCase(ShellInputTestCase):
         assert self.expected_suggestions is None
         self.expected_suggestions = given_expected_suggestions
         return self
-

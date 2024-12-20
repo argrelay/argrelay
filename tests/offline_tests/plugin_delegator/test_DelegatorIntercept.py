@@ -1,9 +1,9 @@
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialFunc import SpecialFunc
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.plugin_delegator.DelegatorIntercept import (
     output_format_class_name,
     OutputFormat,
@@ -19,6 +19,7 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
+    # noinspection PyMethodMayBeStatic
     def test_relationship(self):
         assert_test_module_name_embeds_prod_class_name(DelegatorIntercept)
 
@@ -78,7 +79,7 @@ class ThisTestClass(LocalTestClass):
                 None,
                 "Completion continues to be driven by function selected via `goto` and `service`.",
             ),
-            # TODO: TODO_10_06_46_37: list arg value consumption stop options
+            # TODO: TODO_10_06_46_37: list `arg_value` consumption stop options
             # (
             #     line_no(),
             #     "some_command intercept goto service s_b prod dc.77 |",
@@ -89,7 +90,7 @@ class ThisTestClass(LocalTestClass):
             #     ],
             #     None,
             #     None,
-            #     "FS_13_51_07_97 list arg value: singled out `data_envelope` with list arg value "
+            #     "FS_13_51_07_97 list `arg_value`: singled out `data_envelope` with list `arg_value` "
             #     "will still show all options of the list "
             #     "because explicit selection of one of these values from singled out `data_envelop` "
             #     "may be used to affect behavior of the function.",
@@ -105,7 +106,7 @@ class ThisTestClass(LocalTestClass):
                 ],
                 None,
                 None,
-                "FS_13_51_07_97 list arg value from different `data_envelope`-s combine."
+                "FS_13_51_07_97 list `arg_value` from different `data_envelope`-s combine."
             ),
             (
                 line_no(),
@@ -138,28 +139,46 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     0: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "intercept",
+                            ValueSource.init_value,
+                        ),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
                             output_format_class_name,
-                            ArgSource.InitValue,
+                            ValueSource.init_value,
                         ),
-                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                        output_format_prop_name: AssignedValue(
+                            OutputFormat.json_format.name,
+                            ValueSource.default_value,
+                        ),
                     },
                     2: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "goto",
+                            ValueSource.explicit_offered_arg,
+                        ),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
+                            "service",
+                            ValueSource.explicit_offered_arg,
+                        ),
                     },
                     3: {
-                        ServicePropName.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ArgSource.ExplicitPosArg),
+                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
+                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ValueSource.explicit_offered_arg),
                     },
                     4: {
-                        ServicePropName.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
                     },
                     5: None,
                 },
@@ -173,28 +192,46 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     0: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "intercept",
+                            ValueSource.init_value,
+                        ),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
                             output_format_class_name,
-                            ArgSource.InitValue,
+                            ValueSource.init_value,
                         ),
-                        output_format_prop_name: AssignedValue(OutputFormat.repr_format.name, ArgSource.ExplicitPosArg),
+                        output_format_prop_name: AssignedValue(
+                            OutputFormat.repr_format.name,
+                            ValueSource.explicit_offered_arg,
+                        ),
                     },
                     2: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "goto",
+                            ValueSource.explicit_offered_arg,
+                        ),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
+                            "service",
+                            ValueSource.explicit_offered_arg,
+                        ),
                     },
                     3: {
-                        ServicePropName.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ArgSource.ExplicitPosArg),
+                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
+                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ValueSource.explicit_offered_arg),
                     },
                     4: {
-                        ServicePropName.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
                     },
                     5: None,
                 },
@@ -209,70 +246,109 @@ class ThisTestClass(LocalTestClass):
                 {
                     0: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "intercept",
+                            ValueSource.init_value,
+                        ),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
                             output_format_class_name,
-                            ArgSource.InitValue,
+                            ValueSource.init_value,
                         ),
-                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                        output_format_prop_name: AssignedValue(
+                            OutputFormat.json_format.name,
+                            ValueSource.default_value,
+                        ),
                     },
                     2: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "intercept",
+                            ValueSource.init_value,
+                        ),
                     },
                     3: {
                         ReservedPropName.envelope_class.name: AssignedValue(
                             output_format_class_name,
-                            ArgSource.InitValue,
+                            ValueSource.init_value,
                         ),
-                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                        output_format_prop_name: AssignedValue(
+                            OutputFormat.json_format.name,
+                            ValueSource.default_value,
+                        ),
                     },
                     4: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "intercept",
+                            ValueSource.init_value,
+                        ),
                     },
                     5: {
                         ReservedPropName.envelope_class.name: AssignedValue(
                             output_format_class_name,
-                            ArgSource.InitValue,
+                            ValueSource.init_value,
                         ),
-                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                        output_format_prop_name: AssignedValue(
+                            OutputFormat.json_format.name,
+                            ValueSource.default_value,
+                        ),
                     },
                     6: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "intercept",
+                            ValueSource.init_value,
+                        ),
                     },
                     7: {
                         ReservedPropName.envelope_class.name: AssignedValue(
                             output_format_class_name,
-                            ArgSource.InitValue,
+                            ValueSource.init_value,
                         ),
-                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                        output_format_prop_name: AssignedValue(
+                            OutputFormat.json_format.name,
+                            ValueSource.default_value,
+                        ),
                     },
                     8: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
                     },
                     9: None,
                 },
@@ -289,22 +365,31 @@ class ThisTestClass(LocalTestClass):
                 {
                     0: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("intercept", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "intercept",
+                            ValueSource.explicit_offered_arg,
+                        ),
                         ReservedPropName.func_id.name: AssignedValue(
                             SpecialFunc.func_id_intercept_invocation.name,
-                            ArgSource.ExplicitPosArg
+                            ValueSource.explicit_offered_arg,
                         )
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
                             output_format_class_name,
-                            ArgSource.InitValue,
+                            ValueSource.init_value,
                         ),
-                        output_format_prop_name: AssignedValue(OutputFormat.json_format.name, ArgSource.DefaultValue),
+                        output_format_prop_name: AssignedValue(
+                            OutputFormat.json_format.name,
+                            ValueSource.default_value,
+                        ),
                     },
                     2: None,
                 },

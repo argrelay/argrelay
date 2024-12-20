@@ -30,9 +30,9 @@ class QueryResult:
     When `found_count == 1`, `data_envelopes` contains exactly the one `data_envelope` found.
     """
 
-    remaining_types_to_values: dict[str, list[str]] = field()
+    remaining_prop_name_to_prop_value: dict[str, list[str]] = field()
     """
-    See `EnvelopeContainer.remaining_types_to_values`.
+    See `EnvelopeContainer.remaining_prop_name_to_prop_value`.
 
     Each list is sorted.
     """

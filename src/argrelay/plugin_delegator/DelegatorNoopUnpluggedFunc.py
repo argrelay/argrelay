@@ -26,7 +26,7 @@ class DelegatorNoopUnpluggedFunc(DelegatorNoopBase):
                     search_control_list_: [
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "Function which does nothing and is not supposed to be plugged in",
                 # TODO: TODO_19_67_22_89: remove `ignored_func_ids_list` - load as `FuncState.fs_unplugged`:
                 # Tagged as `FuncState.fs_ignorable` but, if unplugged, it becomes `FuncState.func_id_unplugged`:

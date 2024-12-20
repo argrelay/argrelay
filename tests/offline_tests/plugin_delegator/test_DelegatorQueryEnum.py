@@ -1,8 +1,8 @@
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.plugin_delegator.DelegatorQueryEnum import DelegatorQueryEnum
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -13,6 +13,7 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
+    # noinspection PyMethodMayBeStatic
     def test_relationship(self):
         assert_test_module_name_embeds_prod_class_name(DelegatorQueryEnum)
 
@@ -78,21 +79,36 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     0: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "enum",
+                            ValueSource.init_value,
+                        ),
                     },
                     1: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "goto",
+                            ValueSource.explicit_offered_arg,
+                        ),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
+                            "service",
+                            ValueSource.explicit_offered_arg,
+                        ),
                     },
                     2: {
-                        ServicePropName.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ArgSource.ExplicitPosArg),
+                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
+                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ValueSource.explicit_offered_arg),
                     },
                     3: {
-                        ServicePropName.access_type.name: AssignedValue("ro", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
                     },
                     4: None,
                 },
@@ -107,42 +123,57 @@ class ThisTestClass(LocalTestClass):
                 {
                     0: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
                     },
                     2: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
                     },
                     3: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
                     },
                     4: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ReservedEnvelopeClass.ClassFunction.name,
-                            ArgSource.InitValue,
+                            ReservedEnvelopeClass.class_function.name,
+                            ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
                     },
                     5: None,
                 },

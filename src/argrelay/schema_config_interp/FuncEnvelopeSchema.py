@@ -9,9 +9,9 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     instance_data_,
     envelope_payload_,
-    sample_field_type_A_,
-    sample_field_type_B_,
-    sample_field_type_C_,
+    sample_prop_name_a_,
+    sample_prop_name_b_,
+    sample_prop_name_c_,
 )
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import function_envelope_instance_data_desc
 
@@ -32,7 +32,7 @@ class FuncEnvelopeSchema(DataEnvelopeSchema):
         input_dict: dict,
         **kwargs,
     ):
-        assert input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.ClassFunction.name
+        assert input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.class_function.name
         function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
 
@@ -46,10 +46,10 @@ func_envelope_desc = TypeDesc(
         envelope_id_: func_id_some_func_,
         instance_data_: function_envelope_instance_data_desc.dict_example,
         envelope_payload_: {},
-        sample_field_type_A_: "A_value_1",
-        sample_field_type_B_: "B_value_1",
-        sample_field_type_C_: "C_value_1",
-        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+        sample_prop_name_a_: "sample_prop_value_1",
+        sample_prop_name_b_: "sample_prop_value_2",
+        sample_prop_name_c_: "sample_prop_value_3",
+        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
         ReservedPropName.help_hint.name: f"Some help hint",
         ReservedPropName.func_state.name: FuncState.fs_demo.name,
         ReservedPropName.func_id.name: func_id_some_func_,

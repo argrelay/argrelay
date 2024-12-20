@@ -39,9 +39,9 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
     ) -> list[dict]:
 
         repo_search_control = populate_search_control(
-            GitRepoEnvelopeClass.ClassGitRepo.name,
+            GitRepoEnvelopeClass.class_git_repo.name,
             {
-                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.ClassGitRepo.name,
+                ReservedPropName.envelope_class.name: GitRepoEnvelopeClass.class_git_repo.name,
             },
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -66,7 +66,7 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
                     repo_search_control,
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: "Goto Git repository (`cd` to its path)",
             ReservedPropName.func_state.name: FuncState.fs_beta.name,
             ReservedPropName.func_id.name: func_id_goto_git_repo_,
@@ -81,6 +81,7 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
     ) -> None:
         assert get_func_id_from_invocation_input(invocation_input) == func_id_goto_git_repo_
         prohibit_unconsumed_args(invocation_input)
+        # TODO: TODO_20_61_16_31 `cardinality_hook`: run different funcs based on `data_envelope` set size
         # TODO: TODO_86_57_50_38: make this behavior (require singled-out `data_envelope`) configure-able for all plugins:
         if len(invocation_input.envelope_containers[repo_container_ipos_].data_envelopes) != 1:
             eprint(f"ERROR: single repo is not selected (not disambiguated from multiple candidates)")

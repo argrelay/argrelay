@@ -76,7 +76,7 @@ Each command resembles "enum language":
 *   The `enum` sets are the objects property values within user data.
 *   Fuzzy-search (yet easily predictable) is achieved by:
     *   relying on rare intersection between `enum` sets
-    *   allowing unordered args (using priorities to resolve arg type in case `enum` sets intersect)
+    *   allowing unordered args (using priorities to resolve `prop_name` in case `enum` sets intersect)
 
 Wrapping any command by `argrelay`:
 *   provides generic help and navigation (see `Alt+Shift+Q` hotkey below)
@@ -185,23 +185,6 @@ The performance qualities are achieved by running a standby server with pre-load
 
 Unlike static | generated | offline index per client,<br/>
 standby server also naturally supports dynamic data updates.
-
-<a name="argrelay-includes"></a>
-
-# What is in the package?
-
-*   **Client** to be invoked by Bash hook on every Tab to<br/>
-    send command line arguments to the server.
-*   **Server** to parse command line and propose values from<br/>
-    pre-loaded data for the argument under the cursor.
-*   **Plugins** to customize:
-    *   actions the client can run
-    *   objects the server can search
-    *   grammar the command line can have
-*   **Interfaces** to bind these all together.
-*   **Bootstrap** process to init the environment and maintain it.
-*   **Demo** example to start from.
-*   **Testing** support and coverage.
 
 <!-- links --------------------------------------------------------------------------------------------------------- -->
 

@@ -18,26 +18,26 @@ class HelpHintCache:
     def populate_cache(self):
 
         help_hint_envelopes = self.query_engine.query_data_envelopes(
-            ReservedEnvelopeClass.ClassHelp.name,
+            ReservedEnvelopeClass.class_help.name,
             {
-                f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.ClassHelp.name}",
+                f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.class_help.name}",
             },
         )
 
         for help_hint_envelope in help_hint_envelopes:
-            arg_type = help_hint_envelope[ReservedPropName.arg_type.name]
-            arg_value = help_hint_envelope[ReservedPropName.arg_value.name]
+            prop_name = help_hint_envelope[ReservedPropName.prop_name.name]
+            prop_value = help_hint_envelope[ReservedPropName.prop_value.name]
             help_hint = help_hint_envelope[ReservedPropName.help_hint.name]
-            if arg_type not in self.help_hint_dict:
-                self.help_hint_dict[arg_type] = {}
-            self.help_hint_dict[arg_type][arg_value] = help_hint
+            if prop_name not in self.help_hint_dict:
+                self.help_hint_dict[prop_name] = {}
+            self.help_hint_dict[prop_name][prop_value] = help_hint
 
     def get_value_with_help_hint(
         self,
-        arg_type: str,
-        arg_value: str,
+        prop_name: str,
+        prop_value: str,
     ) -> str:
-        if arg_type in self.help_hint_dict:
-            if arg_value in self.help_hint_dict[arg_type]:
-                return f"{arg_value} # {self.help_hint_dict[arg_type][arg_value]}"
-        return arg_value
+        if prop_name in self.help_hint_dict:
+            if prop_value in self.help_hint_dict[prop_name]:
+                return f"{prop_value} # {self.help_hint_dict[prop_name][prop_value]}"
+        return prop_value

@@ -6,7 +6,7 @@
 # Normally, instead of hard-coding static set, this data is automatically extracted from
 # some data source by implementing a specialized loader (see FS_00_13_77_97 plugin framework).
 
-# TODO: FS_20_88_05_60 named args are not ready yet:
+# TODO: FS_20_88_05_60 `dictated_arg`-s are not ready yet:
 #       Until then IP addresses are prefixed with `ip.` to separate IP address value space
 #       from other properties for selection on CLI.
 

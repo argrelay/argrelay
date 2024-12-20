@@ -2,22 +2,24 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import field, dataclass
-from typing import Union
+from typing import Optional
 
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
+from argrelay.runtime_context.AbstractArg import ArgCommandValueOffered, ArgCommandValueDictated
+from argrelay.runtime_context.DataArg import ArgCommandValueDictatedData, ArgCommandValueOfferedData
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_context.SearchControl import SearchControl
-from argrelay.runtime_context.arg_buckets_utils import arg_buckets_to_token_ipos_list
+from argrelay.runtime_context.token_bucket_utils import token_buckets_to_token_ipos_list
 
 function_container_ipos_ = 0
 
@@ -47,34 +49,50 @@ class InterpContext:
 
     excluded_tokens: list[int] = field(init = False, default_factory = lambda: [])
     """
-    Tokens excluded by ways other than consumption into `consumed_arg_buckets`.
+    Tokens excluded by ways other than consumption into `consumed_token_buckets`.
     """
 
-    included_arg_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
+    included_token_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
     """
-    FS_97_64_39_94: arg buckets
+    FS_97_64_39_94: `token_bucket`-s
     
-    If `included_arg_buckets` are combined,
-    the result will contain both `remaining_arg_buckets` and `consumed_arg_buckets`.
-    Field `included_arg_buckets` is maximum set for arg buckets -
+    If `included_token_buckets` are combined,
+    the result will contain both `remaining_token_buckets` and `consumed_token_buckets`.
+    Field `included_token_buckets` is maximum set for `token_bucket`-s -
     it is similar to maximum set `ParsedContext.all_tokens`,
-    but it cannot contain all tokens - it must exclude at least `SpecialChar.ArgBucketDelimiter` to start with.
+    but it cannot contain all tokens - it must exclude at least `SpecialChar.TokenBucketDelimiter` to start with.
     """
 
-    remaining_arg_buckets: list[list[int]] = field(init = False)
+    remaining_token_buckets: list[list[int]] = field(init = False)
     """
-    Same as `included_arg_buckets` but for remaining tokens only.
-    """
-
-    consumed_arg_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
-    """
-    Same as `included_arg_buckets` but for consumed tokens only.
+    Same as `included_token_buckets` but for remaining tokens only.
     """
 
-    token_ipos_to_arg_bucket_map: dict[int, int] = field(init = False, default_factory = lambda: {})
+    consumed_token_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
     """
-    Index reversed to `included_arg_buckets` -
-    for each `token_ipos` it gives the index of the `arg_bucket` it is in.
+    Same as `included_token_buckets` but for consumed tokens only.
+    """
+
+    token_ipos_to_token_bucket_map: dict[int, int] = field(init = False, default_factory = lambda: {})
+    """
+    Index reversed to `included_token_buckets` -
+    for each `token_ipos` it gives the index of the `token_bucket` it is in.
+    It does not map `token_ipos`-es from `excluded_tokens`.
+    """
+
+    offered_args_per_bucket: list[list[ArgCommandValueOffered]] = field(init = False, default_factory = lambda: [])
+    """
+    All `offered_args`-s for each bucket.
+    """
+
+    dictated_args_per_bucket: list[list[ArgCommandValueDictated]] = field(init = False, default_factory = lambda: [])
+    """
+    All `dictated_arg`-s for each bucket.
+    """
+
+    token_ipos_to_arg_map: dict[int, int] = field(init = False, default_factory = lambda: {})
+    """
+    Maps `token_ipos` into one of the arg in `offered_args_per_bucket` or `offered_args_per_bucket` (or `None`).
     """
 
     envelope_containers: list[EnvelopeContainer] = field(init = False, default_factory = lambda: [])
@@ -116,60 +134,112 @@ class InterpContext:
     """
 
     def __post_init__(self):
-        self._init_arg_buckets()
+        self._init_token_buckets()
+        self._build_arg_collections()
 
-    def _init_arg_buckets(self):
-        self.included_arg_buckets.append([])
-        curr_bucket_index = len(self.included_arg_buckets) - 1
-        curr_arg_bucket = self.included_arg_buckets[curr_bucket_index]
+    def _init_token_buckets(self):
+        self.included_token_buckets.append([])
+        curr_bucket_index = len(self.included_token_buckets) - 1
+        curr_token_bucket = self.included_token_buckets[curr_bucket_index]
         for token_ipos in range(0, len(self.parsed_ctx.all_tokens)):
 
-            # Split and populate FS_97_64_39_94 arg buckets:
-            if self.parsed_ctx.all_tokens[token_ipos] == SpecialChar.ArgBucketDelimiter.value:
-                self.included_arg_buckets.append([])
-                curr_bucket_index = len(self.included_arg_buckets) - 1
-                curr_arg_bucket = self.included_arg_buckets[curr_bucket_index]
-                # Exclude `SpecialChar.ArgBucketDelimiter` unconditionally:
+            # Split and populate FS_97_64_39_94 `token_bucket`-s:
+            if self.parsed_ctx.all_tokens[token_ipos] == SpecialChar.TokenBucketDelimiter.value:
+                self.included_token_buckets.append([])
+                curr_bucket_index = len(self.included_token_buckets) - 1
+                curr_token_bucket = self.included_token_buckets[curr_bucket_index]
+                # Exclude `SpecialChar.TokenBucketDelimiter` unconditionally:
                 self.excluded_tokens.append(token_ipos)
             else:
 
-                if self.parsed_ctx.server_action is ServerAction.ProposeArgValues:
-                    # FS_23_62_89_43 tangent arg value completion:
-                    # `ServerAction.ProposeArgValues` excludes tangent token because it is supposed to be completed:
-                    if token_ipos == self.parsed_ctx.tan_token_ipos:
-                        self.excluded_tokens.append(token_ipos)
-                    else:
-                        curr_arg_bucket.append(token_ipos)
-                        self.token_ipos_to_arg_bucket_map[token_ipos] = curr_bucket_index
+                if (
+                    self.parsed_ctx.server_action is ServerAction.ProposeArgValues
+                    and
+                    token_ipos == self.parsed_ctx.tan_token_ipos
+                ):
+                    # FS_23_62_89_43 `tangent_token` completion:
+                    # `ServerAction.ProposeArgValues` excludes tangent token from consumption because
+                    # this action is not supposed to consume that tangent token (and complete it instead):
+                    self.excluded_tokens.append(token_ipos)
                 else:
-                    # FS_23_62_89_43 tangent arg value completion:
-                    # Process all tokens (including tangent token) in case of `ServerAction.DescribeLineArgs`.
-                    # Obviously, same applies for `ServerAction.RelayLineArgs` (as there is no chance to propose more).
-                    curr_arg_bucket.append(token_ipos)
-                    self.token_ipos_to_arg_bucket_map[token_ipos] = curr_bucket_index
+                    # FS_23_62_89_43 `tangent_token` completion:
+                    # Set all tokens for consumption (including tangent token) in case of
+                    # `ServerAction.DescribeLineArgs` and `ServerAction.RelayLineArgs`.
+                    curr_token_bucket.append(token_ipos)
+                    self.token_ipos_to_token_bucket_map[token_ipos] = curr_bucket_index
 
         # Init remaining and consumed:
-        self.remaining_arg_buckets = deepcopy(self.included_arg_buckets)
-        for i in range(len(self.included_arg_buckets)):
-            self.consumed_arg_buckets.append([])
+        self.remaining_token_buckets = deepcopy(self.included_token_buckets)
+        for i in range(len(self.included_token_buckets)):
+            self.consumed_token_buckets.append([])
 
-    def next_remaining_token_ipos(
+    def _build_arg_collections(
         self,
-    ) -> Union[int, None]:
-        for arg_bucket in self.remaining_arg_buckets:
-            for token_ipos in arg_bucket:
-                return token_ipos
+    ):
+        """
+        Interpret `command_token`-s as `command_arg`-s within `token_bucket`-s
+        """
+
+        all_tokens = self.parsed_ctx.all_tokens
+
+        for token_bucket in self.remaining_token_buckets:
+
+            offered_args: list[ArgCommandValueOffered] = []
+            dictated_args: list[ArgCommandValueDictated] = []
+            self.offered_args_per_bucket.append(offered_args)
+            self.dictated_args_per_bucket.append(dictated_args)
+
+            arg_name_ipos: Optional[int] = None
+            arg_name_value: Optional[str] = None
+            for token_ipos in token_bucket:
+
+                token_value = all_tokens[token_ipos]
+
+                if arg_name_value is None:
+                    if token_value.startswith(SpecialChar.ArgNamePrefix.value):
+                        arg_name_value = token_value
+                        arg_name_ipos = token_ipos
+                        continue
+                    else:
+                        offered_args.append(ArgCommandValueOfferedData(
+                            token_ipos_list = [token_ipos],
+                            arg_value = token_value,
+                        ))
+                else:
+                    dictated_args.append(ArgCommandValueDictatedData(
+                        token_ipos_list = [arg_name_ipos, token_ipos],
+                        arg_name = arg_name_value,
+                        arg_value = token_value,
+                    ))
+                    arg_name_ipos = None
+                    arg_name_value = None
+
+            # If `dictated_arg` is incomplete (has `arg_name`, but missing `arg_value`),
+            # it is not added, and it will not be seen by the arg-to-prop mapping logic.
+
+    def next_remaining_offered_arg(
+        self,
+    ) -> Optional[ArgCommandValueOffered]:
+        # TODO: TODO_66_09_41_16: clarify command line processing
+        #       Should not we respect `token_bucket` boundaries?
+        for bucket_ipos, token_bucket in enumerate(self.remaining_token_buckets):
+            for offered_arg in self.offered_args_per_bucket[bucket_ipos]:
+                # TODO: TODO_66_09_41_16: clarify command line processing
+                #       This is a hack of checking if `offered_arg` was already consumed -
+                #       check more efficiently (e.g. by pre-built data or index):
+                if offered_arg.get_arg_tokens()[0] not in self.consumed_token_ipos_list():
+                    return offered_arg
         return None
 
     def remaining_token_ipos_list(
         self,
     ) -> list[int]:
-        return arg_buckets_to_token_ipos_list(self.remaining_arg_buckets)
+        return token_buckets_to_token_ipos_list(self.remaining_token_buckets)
 
     def consumed_token_ipos_list(
         self,
     ) -> list[int]:
-        return arg_buckets_to_token_ipos_list(self.consumed_arg_buckets)
+        return token_buckets_to_token_ipos_list(self.consumed_token_buckets)
 
     def alloc_searchable_container(
         self,
@@ -200,9 +270,9 @@ class InterpContext:
         query_result: QueryResult = self.query_engine.query_prop_values(
             query_dict,
             self.curr_container.search_control,
-            self.curr_container.assigned_types_to_values,
+            self.curr_container.assigned_prop_name_to_prop_value,
         )
-        self.curr_container.remaining_types_to_values = query_result.remaining_types_to_values
+        self.curr_container.remaining_prop_name_to_prop_value = query_result.remaining_prop_name_to_prop_value
         self.curr_container.data_envelopes = query_result.data_envelopes
         self.curr_container.found_count = query_result.found_count
         ElapsedTime.measure(f"end_query_envelopes: {query_dict} {self.curr_container.found_count}")
@@ -229,11 +299,11 @@ class InterpContext:
                 # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
                 # separate `interpret_command` calls is close to that logically better approach.
                 if not arg_was_consumed:
-                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_key_args: {self.curr_interp}")
-                    arg_was_consumed = self.curr_interp.consume_key_args()
+                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_dictated_args: {self.curr_interp}")
+                    arg_was_consumed = self.curr_interp.consume_dictated_args()
                 if not arg_was_consumed:
-                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_pos_args: {self.curr_interp}")
-                    arg_was_consumed = self.curr_interp.consume_pos_args()
+                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_offered_args: {self.curr_interp}")
+                    arg_was_consumed = self.curr_interp.consume_offered_args()
 
                 if arg_was_consumed:
                     if self.curr_interp.consumes_args_at_once():
@@ -345,51 +415,50 @@ class InterpContext:
 
     def _save_potentially_hidden_by_defaults(self):
         """
-        Save all `remaining_types_to_values` before applying defaults.
+        Save all `remaining_prop_name_to_prop_value` before applying defaults.
 
-        These `filled_types_to_values_hidden_by_defaults` are subsequently
+        These `filled_prop_values_hidden_by_defaults` are subsequently
         filtered out in `_leave_only_hidden_by_defaults`.
         """
         if not self.curr_container:
             return
-        for remaining_type in self.curr_container.remaining_types_to_values.keys():
-            self.curr_container.filled_types_to_values_hidden_by_defaults[
-                remaining_type
-            ] = deepcopy(self.curr_container.remaining_types_to_values[remaining_type])
+        for remaining_prop_name in self.curr_container.remaining_prop_name_to_prop_value.keys():
+            self.curr_container.filled_prop_values_hidden_by_defaults[
+                remaining_prop_name
+            ] = deepcopy(self.curr_container.remaining_prop_name_to_prop_value[remaining_prop_name])
 
     def _leave_only_hidden_by_defaults(self):
         """
-        Weed out those `assigned_types_to_values` from `filled_types_to_values_hidden_by_defaults`
+        Weed out those `assigned_prop_name_to_prop_value` from `filled_prop_values_hidden_by_defaults`
         which were set by applying defaults.
 
-        Use `filled_types_to_values_hidden_by_defaults` saved before applying defaults
-        (in `_save_potentially_hidden_by_defaults` for all `remaining_types_to_values`)
+        Use `filled_prop_values_hidden_by_defaults` saved before applying defaults
+        (in `_save_potentially_hidden_by_defaults` for all `remaining_prop_name_to_prop_value`)
         and remove those which were not hidden by defaults
         to yield only those hidden by defaults.
         """
         if not self.curr_container:
             return
         types_not_hidden_by_defaults = []
-        for type_potentially_hidden_by_defaults in self.curr_container.filled_types_to_values_hidden_by_defaults.keys():
-            if type_potentially_hidden_by_defaults in self.curr_container.assigned_types_to_values:
+        for prop_name_potentially_hidden_by_defaults in self.curr_container.filled_prop_values_hidden_by_defaults.keys():
+            if prop_name_potentially_hidden_by_defaults in self.curr_container.assigned_prop_name_to_prop_value:
                 if (
-                    self.curr_container.assigned_types_to_values[
-                        type_potentially_hidden_by_defaults
-                    ].arg_source
+                    self.curr_container.assigned_prop_name_to_prop_value[
+                        prop_name_potentially_hidden_by_defaults
+                    ].value_source
                     is not
-                    ArgSource.DefaultValue
+                    ValueSource.default_value
                 ):
-                    types_not_hidden_by_defaults.append(type_potentially_hidden_by_defaults)
+                    types_not_hidden_by_defaults.append(prop_name_potentially_hidden_by_defaults)
             else:
-                types_not_hidden_by_defaults.append(type_potentially_hidden_by_defaults)
+                types_not_hidden_by_defaults.append(prop_name_potentially_hidden_by_defaults)
         # Delete items outside the previous loop:
-        for arg_type in types_not_hidden_by_defaults:
-            del self.curr_container.filled_types_to_values_hidden_by_defaults[arg_type]
+        for prop_name in types_not_hidden_by_defaults:
+            del self.curr_container.filled_prop_values_hidden_by_defaults[prop_name]
 
     def _contribute_to_completion(self):
-        if self.parsed_ctx.server_action is ServerAction.ProposeArgValues:
-            # Each in the chains of interpreters hava a chance to suggest completion values (contribute):
-            self.curr_interp.propose_arg_completion()
+        # Each one in the chain of interpreters hava a chance to suggest completion values (contribute):
+        self.curr_interp.propose_arg_completion()
 
     def propose_arg_values(self) -> list[str]:
         """

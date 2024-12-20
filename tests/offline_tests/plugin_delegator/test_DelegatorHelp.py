@@ -28,6 +28,7 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
+    # noinspection PyMethodMayBeStatic
     def test_relationship(self):
         assert_test_module_name_embeds_prod_class_name(DelegatorHelp)
 
@@ -45,7 +46,9 @@ class ThisTestClass(LocalTestClass):
                     0: {},  # help func envelope itself
                     1: {
                         # (goto, desc, list) x (host, service) external functions:
-                        # TODO: TODO_32_99_70_35: (JSONPath?) Universal verifier: be able to verify arbitrary data on `EnvelopeContainer`, not only assigned types to values.
+                        # TODO: TODO_32_99_70_35: (JSONPath?) Universal verifier:
+                        #       be able to verify arbitrary data on `EnvelopeContainer`,
+                        #       not only assigned types to values.
                         # "found_count": 6
                     },
                 },

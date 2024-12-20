@@ -1,5 +1,5 @@
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.plugin_delegator.DelegatorNoopNoDataFunc import DelegatorNoopNoDataFunc
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -10,6 +10,7 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
+    # noinspection PyMethodMayBeStatic
     def test_relationship(self):
         assert_test_module_name_embeds_prod_class_name(DelegatorNoopNoDataFunc)
 
@@ -36,8 +37,14 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     0: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("no_data", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "no_data",
+                            ValueSource.explicit_offered_arg,
+                        ),
                     },
                     1: {
                     },

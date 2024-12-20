@@ -75,7 +75,7 @@ describe('argrelay GUI', () => {
         // If cache is disabled and TD_38_03_48_51 large generated data set is used, it takes a while:
         defaultCommandTimeout: 30_000
     }, () => {
-        const input_command_3 = 'lay meta '
+        const input_command_3 = 'lay data '
         const input_command_4 = 'lay '
         const extra_arg = 'qwer'
         // Type command which has suggestion:

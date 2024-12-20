@@ -28,9 +28,9 @@ def convert_envelope_fields_to_string(
     See also:
     https://stackoverflow.com/a/6392016/441652
     """
-    for field_name, field_value in data_envelope.items():
-        if isinstance(field_value, _primitive_types):
-            data_envelope[field_name] = str(field_value)
+    for prop_name, prop_value in data_envelope.items():
+        if isinstance(prop_value, _primitive_types):
+            data_envelope[prop_name] = str(prop_value)
     return data_envelope
 
 

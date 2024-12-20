@@ -11,11 +11,11 @@ from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass,
 class ThisTestClass(MongoClientTestClass):
 
     # noinspection PyMethodMayBeStatic
-    def test_live_envelope_searched_by_multiple_typed_key_value_pairs(self):
+    def test_live_envelope_searched_by_multiple_prop_name_prop_value_pairs(self):
         """
-        Example with data searched by multiple { type: value } pairs
+        Example with data searched by multiple { prop_name: prop_value } pairs
         where some fields contain array of values.
-        See: FS_06_99_43_60 list arg value
+        See: FS_06_99_43_60 array `prop_value`
         """
 
         # Fields which will be indexed:
