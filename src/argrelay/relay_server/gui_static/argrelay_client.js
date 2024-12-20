@@ -883,38 +883,38 @@ function populate_envelope_containers(
         envelope_class_elem.textContent = envelope_container.search_control.collection_name + ": "
         found_count_elem.textContent = envelope_container.found_count
 
-        for (const key_to_type_dict of envelope_container.search_control.keys_to_props_list) {
+        for (const arg_name_to_prop_name_entry of envelope_container.search_control.arg_name_to_prop_name_map) {
 
-            const arg_key = Object.keys(key_to_type_dict)[0];
-            const arg_type = key_to_type_dict[arg_key];
+            const arg_name = Object.keys(arg_name_to_prop_name_entry)[0];
+            const prop_name = arg_name_to_prop_name_entry[arg_name];
 
             const arg_container_elem = arg_container_temp.content.cloneNode(true).children[0]
 
-            const arg_type_elem = arg_container_elem.querySelector(".arg_type")
-            const arg_value_elem = arg_container_elem.querySelector(".arg_value")
-            const arg_source_elem = arg_container_elem.querySelector(".arg_source")
+            const prop_name_elem = arg_container_elem.querySelector(".prop_name")
+            const prop_value_elem = arg_container_elem.querySelector(".prop_value")
+            const value_source_elem = arg_container_elem.querySelector(".value_source")
             const remaining_values_elem = arg_container_elem.querySelector(".remaining_values")
 
-            if (arg_type in envelope_container.assigned_types_to_values) {
-                arg_type_elem.textContent = arg_type + ": "
-                arg_value_elem.textContent = envelope_container.assigned_types_to_values[arg_type].arg_value
-                arg_source_elem.textContent = `[${envelope_container.assigned_types_to_values[arg_type].arg_source}]`
+            if (prop_name in envelope_container.assigned_prop_name_to_prop_value) {
+                prop_name_elem.textContent = prop_name + ": "
+                prop_value_elem.textContent = envelope_container.assigned_prop_name_to_prop_value[prop_name].arg_value
+                value_source_elem.textContent = `[${envelope_container.assigned_prop_name_to_prop_value[prop_name].value_source}]`
 
-                if (envelope_container.assigned_types_to_values[arg_type].arg_source === "ExplicitPosArg") {
+                if (envelope_container.assigned_prop_name_to_prop_value[prop_name].value_source === "explicit_offered_arg") {
                     arg_container_elem.classList.add("explicit_arg_value");
                 } else {
                     arg_container_elem.classList.add("selected_arg_value");
                 }
-            } else if (arg_type in envelope_container.remaining_types_to_values) {
+            } else if (prop_name in envelope_container.remaining_prop_name_to_prop_value) {
                 if (!is_first_missing_found) {
-                    arg_type_elem.textContent = "*" + arg_type + ": ";
+                    prop_name_elem.textContent = "*" + prop_name + ": ";
                     is_first_missing_found = true;
                 } else {
-                    arg_type_elem.textContent = arg_type + ": ";
+                    prop_name_elem.textContent = prop_name + ": ";
                 }
-                arg_value_elem.textContent = "?";
-                arg_source_elem.textContent = "";
-                for (const remaining_value of envelope_container.remaining_types_to_values[arg_type]) {
+                prop_value_elem.textContent = "?";
+                value_source_elem.textContent = "";
+                for (const remaining_value of envelope_container.remaining_prop_name_to_prop_value[prop_name]) {
                     const remaining_item_elem = remaining_item_temp.content.cloneNode(true).children[0];
                     remaining_item_elem.addEventListener(
                         "click",
@@ -924,11 +924,11 @@ function populate_envelope_containers(
                     remaining_values_elem.append(remaining_item_elem);
                 }
 
-                arg_type_elem.classList.add("unknown_arg_value");
+                prop_name_elem.classList.add("unknown_arg_value");
             } else {
-                arg_type_elem.textContent = arg_type + ": ";
+                prop_name_elem.textContent = prop_name + ": ";
                 // See: SpecialChar.NoPropValue:
-                arg_value_elem.textContent = "~";
+                prop_value_elem.textContent = "~";
                 arg_container_elem.classList.add("no_data");
             }
 

@@ -6,9 +6,9 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     data_envelope_desc,
-    sample_field_type_A_,
-    sample_field_type_B_,
-    sample_field_type_C_,
+    sample_prop_name_a_,
+    sample_prop_name_b_,
+    sample_prop_name_c_,
 )
 from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
 
@@ -55,13 +55,13 @@ config_only_loader_config_desc = TypeDesc(
     ref_name = ConfigOnlyLoaderConfigSchema.__name__,
     dict_example = {
         envelope_class_to_collection_name_map_: {
-            ReservedEnvelopeClass.ClassFunction.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedEnvelopeClass.class_function.name: ReservedEnvelopeClass.class_function.name,
         },
         collection_name_to_index_props_map_: {
-            ReservedEnvelopeClass.ClassFunction.name: [
-                sample_field_type_A_,
-                sample_field_type_B_,
-                sample_field_type_C_,
+            ReservedEnvelopeClass.class_function.name: [
+                sample_prop_name_a_,
+                sample_prop_name_b_,
+                sample_prop_name_c_,
             ],
         },
         data_envelopes_: [

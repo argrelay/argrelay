@@ -45,13 +45,13 @@ class DelegatorServiceInstanceDiff(DelegatorServiceInstanceBase):
                     func_id_: func_id_diff_service_,
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
-                        # This function was created to demo FS_97_64_39_94 `arg_bucket`-s:
+                        # This function was created to demo FS_97_64_39_94 `token_bucket`-s:
                         # it intentionally uses two services as to specify in its args:
                         service_search_control,
                         service_search_control,
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "Diff two service instances",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: func_id_diff_service_,
@@ -96,7 +96,7 @@ class DelegatorServiceInstanceDiff(DelegatorServiceInstanceBase):
         func_id = get_func_id_from_interp_ctx(interp_ctx)
         assert func_id == func_id_diff_service_
 
-        # TODO: TODO_75_52_01_67: `arg_bucket`-s to support multiple var args:
+        # TODO: TODO_75_52_01_67: `token_bucket`-s to support multiple var args:
         #       query both service lists and compare them.
 
         # Actual implementation is not defined for demo:

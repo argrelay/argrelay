@@ -10,10 +10,10 @@ from argrelay.custom_integ.DelegatorConfigOnly import DelegatorConfigOnly
 from argrelay.custom_integ.DelegatorGitRepoDescTag import func_id_desc_git_tag_
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_
 from argrelay.custom_integ.SchemaConfigDelegatorConfigBase import func_configs_
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
-from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory, tree_path_selector_prefix_
+from argrelay.enum_desc.ValueSource import ValueSource
+from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory, tree_step_prop_name_prefix_
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc, server_plugin_control_
 from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
@@ -42,9 +42,9 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     0: {
-                        f"{tree_path_selector_prefix_}{0}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{tree_path_selector_prefix_}{1}": AssignedValue("desc", ArgSource.ExplicitPosArg),
-                        f"{tree_path_selector_prefix_}{2}": [
+                        f"{tree_step_prop_name_prefix_}{0}": AssignedValue("some_command", ValueSource.init_value),
+                        f"{tree_step_prop_name_prefix_}{1}": AssignedValue("desc", ValueSource.explicit_offered_arg),
+                        f"{tree_step_prop_name_prefix_}{2}": [
                             "commit",
                             "host",
                             "service",
@@ -62,16 +62,16 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     0: {
-                        f"{tree_path_selector_prefix_}{0}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{tree_path_selector_prefix_}{1}": AssignedValue("desc", ArgSource.ExplicitPosArg),
-                        f"{tree_path_selector_prefix_}{2}": [
+                        f"{tree_step_prop_name_prefix_}{0}": AssignedValue("some_command", ValueSource.init_value),
+                        f"{tree_step_prop_name_prefix_}{1}": AssignedValue("desc", ValueSource.explicit_offered_arg),
+                        f"{tree_step_prop_name_prefix_}{2}": [
                             "commit",
                             "host",
                             "retag",
                             "service",
                             "tag",
                         ],
-                        f"{tree_path_selector_prefix_}{3}": [
+                        f"{tree_step_prop_name_prefix_}{3}": [
                             "qwer",
                             SpecialChar.NoPropValue.value,
                         ],
@@ -197,7 +197,7 @@ class ThisTestClass(LocalTestClass):
                         self._start_server(env_mock_builder)
                     self.assertTrue(
                         cm.exception.args[0].startswith(
-                            "`data_envelope` of `collection_name` [ClassFunction] does not have `prop_name` [func_state] while another one had:",
+                            "`data_envelope` of `collection_name` [class_function] does not have `prop_name` [func_state] while another one had:",
                         ),
                     )
                 else:

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import Callable, Any, Union
 
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.SpecialChar import SpecialChar
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.plugin_config.ConfiguratorAbstract import ConfiguratorAbstract
 from argrelay.plugin_delegator.DelegatorError import DelegatorError
 from argrelay.plugin_delegator.SchemaCustomDataDelegatorError import (
@@ -30,18 +30,18 @@ def set_default_to(
     *   Ensure that this `prop_value` is actually one of the remaining ones.
     """
 
-    if prop_name in envelope_container.search_control.props_to_keys_dict:
-        if prop_name not in envelope_container.assigned_types_to_values:
-            if prop_name in envelope_container.remaining_types_to_values:
-                if prop_value in envelope_container.remaining_types_to_values[prop_name]:
-                    del envelope_container.remaining_types_to_values[prop_name]
-                    envelope_container.assigned_types_to_values[prop_name] = AssignedValue(
+    if prop_name in envelope_container.search_control.prop_name_to_arg_name_dict:
+        if prop_name not in envelope_container.assigned_prop_name_to_prop_value:
+            if prop_name in envelope_container.remaining_prop_name_to_prop_value:
+                if prop_value in envelope_container.remaining_prop_name_to_prop_value[prop_name]:
+                    del envelope_container.remaining_prop_name_to_prop_value[prop_name]
+                    envelope_container.assigned_prop_name_to_prop_value[prop_name] = AssignedValue(
                         prop_value,
-                        ArgSource.DefaultValue,
+                        ValueSource.default_value,
                     )
                     return True
         else:
-            # Setting `ArgSource.DefaultValue`: it cannot override any, right? No point to handle assigned case:
+            # Setting `ValueSource.default_value`: it cannot override any, right? No point to handle assigned case:
             pass
     return False
 
@@ -100,6 +100,7 @@ def redirect_to_not_disambiguated_error(
         f"ERROR: `envelope_class` [{envelope_class}] is not fully qualified (not disambiguated)",
         ClientExitCode.GeneralError.value,
     )
+
 
 def clean_prop_value(
     prop_value: str,

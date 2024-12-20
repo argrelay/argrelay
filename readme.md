@@ -12,41 +12,54 @@ See: docs/dev_notes/screencast_notes.md
 
 <a name="argrelay-about"></a>
 
-# What is [`argrelay`][argrelay_org]?
+# What is `argrelay`?
 
-A **human interface** into "automation arsenal" with sensible lookup for scripts & their input data.
+A **human interface** into "automation arsenal" with built-in search for scripts & their input data.
 
 ### Longer answer:
 
 A wrapper for command line interface (CLI) tools to simplify input selection.<br/>
-It integrates shell + client + server to search & categorize loaded **custom data**<br/>
+It integrates shell + client + server to search & navigate loaded **custom data**<br/>
 via CLI args directly in the **standard shell**.
 
 *   Although its initial purpose was command **auto-completion**, that become a trivial byproduct of...
 *   Its primary feature: (tag|label|keyword)-based **structured data search**.
 
+# When is it needed?
+
+*   When command args map into sizeable object sets **incomprehensible** to<br/>
+    select, browse, discover otherwise.
+
+*   When knowledge about ( non-standard | undocumented ) "enterprise automation" scripts is<br/>
+    constantly **invalidated** by frequent updates of code & data.
+
+`argrelay`-registered functions are **queryable** - they use schemas with<br/>
+loaded data to contextually limit possible options to locate or auto-complete them.
+
 <a name="argrelay-general-dilemma"></a>
 <a name="argrelay-purpose"></a>
 
-# Why is it needed?
+# Why is it for shell?
 
-### Problem:
+[It is not necessarily only for shell][argrelay_org], but there is an **oversupply** of shiny GUI-s.
+
+### Vacant niche:
 
 CLI is indispensable for **rapidly evolving custom tools**:
-*   [A] **ubiquitous automation** (any command is effectively replay-able code)
-*   [B] **quick implementation** (get it done "in the afternoon" without discussing fullstack API whole month)
+*   [A] **ubiquitous automation** (any command is effectively **replay-able code**)
+*   [B] **quick implementation** (get it done "in the afternoon" without **drilling fullstack** API whole month)
 *   [C] ultimate **manual intervention** (when everything else is already failed and unavailable)
 
-### Point:
+### Accepting the problem:
 
 Achieving all three [A, B, C] is **nearly impossible without** CLI.
 
-### Solution:
+### Devising a solution:
 
-And `argrelay` makes CLI more human-efficient by reducing manual and guess work:
-*   enables **inline search directly in shell** (without copying-and-pasting args from other apps)
-*   reduces cognitive load via feedback **eliminating syntax and options memorization**
-*   unifies interaction for all registered commands via **data-driven** framework
+Make CLI more human-efficient by reducing manual and guess work:
+*   enable **inline search directly in shell** (without copying-and-pasting args from other apps)
+*   reduce cognitive load via feedback **eliminating syntax and options memorization**
+*   unify interaction for all registered commands via **data-driven** framework
 
 See also ["general dilemma"][general_dilemma].
 
@@ -137,6 +150,9 @@ The simplest way is to fork|branch the repo and wrap the intended logic followin
 Try ["interactive demo"][interactive_demo] while changing code and data from that example to<br/>
 see how CLI arguments are matched against properties of the `ssh` destinations loaded by the loader.
 
+Ultimately, `argrelay` can be used as dependency for a [separate project][bootstrap_procedure.1.project_creation.md]
+(in its own another repo).
+
 <a name="argrelay-demo"></a>
 
 # Interactive demo
@@ -145,19 +161,19 @@ This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
 
 Clone this repo somewhere (`@/` is [the project root][FS_29_54_67_86.dir_structure.md]).
 
-Start `@/exe/relay_demo.bash` (it may take a couple of minutes to start for the first time):
+Start `@/exe/relay_demo.bash` sub-shell (it may take a couple of minutes to start for the first time):
 
 ```sh
 ./exe/relay_demo.bash
 ```
+
+This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
 
 Optionally, review env state (any time):
 
 ```sh
 ./exe/check_env.bash
 ```
-
-This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
 
 To clean up at any point, simply exit the sub-shell:
 
@@ -184,10 +200,20 @@ While still in the sub-shell:
     If executed (press `Enter`), it runs stub implementations
     (in real app it would do remote `ssh`-login for example).
 
+*   Command `lay goto` binds to only one of the function.
+
+    To see all bindings for `lay` command, run help function accessible via this command:
+
+    ```sh
+    lay help
+    ```
+
+    A lot of the functions are stubs and tests for demo purposes only.
+
 *   To interact with executable command, try `ssh` wrapper:
 
     Note that it is possible to bind functions to more than one command.<br/>
-    For `ssh` wrapper example, try `lay ssh` and `ar_ssh`:
+    For `ssh` wrapper example, try `lay ssh` or `ar_ssh`:
 
     ```sh
     lay ssh                  # press `Alt+Shift+Q` to describe available options
@@ -326,6 +352,32 @@ sequenceDiagram
 
 <a name="argrelay-feedback"></a>
 
+# Project status
+
+### Past stage:
+
+It grew:
+*    out of an attempt to solve the [original use case][original_use_case]
+*    into an attempt to make it generic
+
+All the core features has already been added:
+*   search logic
+*   extensibility via plugins
+*   automated shell config and check scripts
+*   demo samples for various use cases
+
+<!--
+    TODO: add links to separate docs for each of the points
+--->
+
+### Next stage:
+
+Simplifying adoption:
+
+*   Focus on feedback, target relevant features, avoid unnecessary ones.
+*   Stabilize APIs, split project into individual components with [semantic versioning][semver_notes.md].
+*   Widen dev comprehension by refactoring for clarity, removing obsoleted parts, improving docs.
+
 # Feedback
 
 Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
@@ -351,6 +403,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 [FS_58_61_77_69.dev_shell.md]: docs/feature_stories/FS_58_61_77_69.dev_shell.md
 
 [general_dilemma]: docs/dev_notes/project_origin.md#argrelay-general-dilemma
+[original_use_case]: docs/dev_notes/project_origin.md#argrelay-original-use-case
 
 [full_picture]: #argrelay-full-picture
 [interactive_demo]: #argrelay-demo
@@ -361,3 +414,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 [ssh_loder_data]: data/ConfigOnlyLoader.ssh_dst_group.data.yaml
 
 [project_walkthrough.md]: docs/user_tutorials/project_walkthrough.md
+
+[semver_notes.md]: docs/dev_notes/semver_notes.md
+
+[bootstrap_procedure.1.project_creation.md]: docs/user_tutorials/bootstrap_procedure.1.project_creation.md

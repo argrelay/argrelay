@@ -44,7 +44,7 @@ class DelegatorServiceHostDesc(DelegatorServiceHostBase):
                         host_search_control,
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "Describe remote host",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: func_id_desc_host_,

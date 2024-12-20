@@ -85,7 +85,7 @@ class QueryEngine:
         self,
         query_dict: dict,
         search_control: SearchControl,
-        assigned_types_to_values: dict[str, AssignedValue],
+        assigned_prop_name_to_prop_value: dict[str, AssignedValue],
     ) -> QueryResult:
         """
         Implements FS_39_58_01_91 query cache (if `enable_query_cache`).
@@ -109,7 +109,7 @@ class QueryEngine:
                 return copy.deepcopy(query_result)
 
             query_result = self._query_prop_values(
-                assigned_types_to_values,
+                assigned_prop_name_to_prop_value,
                 query_dict,
                 search_control,
             )
@@ -117,7 +117,7 @@ class QueryEngine:
             query_cache[query_key] = copy.deepcopy(query_result)
         else:
             query_result = self._query_prop_values(
-                assigned_types_to_values,
+                assigned_prop_name_to_prop_value,
                 query_dict,
                 search_control,
             )
@@ -139,7 +139,7 @@ class QueryEngine:
 
     def _query_prop_values(
         self,
-        assigned_types_to_values,
+        assigned_prop_name_to_prop_value,
         query_dict,
         search_control,
     ) -> QueryResult:
@@ -148,19 +148,19 @@ class QueryEngine:
         """
         if self.distinct_values_query is DistinctValuesQuery.original_find_and_loop:
             return self._query_prop_values_original_find_and_loop(
-                assigned_types_to_values,
+                assigned_prop_name_to_prop_value,
                 query_dict,
                 search_control,
             )
         elif self.distinct_values_query is DistinctValuesQuery.native_distinct:
             return self._query_prop_values_native_distinct(
-                assigned_types_to_values,
+                assigned_prop_name_to_prop_value,
                 query_dict,
                 search_control,
             )
         elif self.distinct_values_query is DistinctValuesQuery.native_aggregate:
             return self._query_prop_values_native_aggregate(
-                assigned_types_to_values,
+                assigned_prop_name_to_prop_value,
                 query_dict,
                 search_control,
             )
@@ -169,7 +169,7 @@ class QueryEngine:
 
     def _query_prop_values_original_find_and_loop(
         self,
-        assigned_types_to_values,
+        assigned_prop_name_to_prop_value,
         query_dict,
         search_control,
     ) -> QueryResult:
@@ -183,14 +183,14 @@ class QueryEngine:
         query_result = self._process_prop_values(
             mongo_result,
             search_control,
-            assigned_types_to_values,
+            assigned_prop_name_to_prop_value,
         )
         ElapsedTime.measure("after_process_results")
         return query_result
 
     def _query_prop_values_native_distinct(
         self,
-        assigned_types_to_values,
+        assigned_prop_name_to_prop_value,
         query_dict,
         search_control,
     ) -> QueryResult:
@@ -198,20 +198,20 @@ class QueryEngine:
         See `DistinctValuesQuery.native_distinct`.
         """
 
-        remaining_types_to_values: dict[str, list[str]] = {}
+        remaining_prop_name_to_prop_value: dict[str, list[str]] = {}
         data_envelopes = []
 
         # Construct grouping instruction:
-        for prop_name in search_control.props_to_keys_dict:
-            # If assigned/consumed, `arg_type` must not appear as an option again:
-            if prop_name not in assigned_types_to_values:
+        for prop_name in search_control.prop_name_to_arg_name_dict:
+            # If assigned/consumed, `prop_name` must not appear as an option again:
+            if prop_name not in assigned_prop_name_to_prop_value:
 
                 ElapsedTime.measure(f"before_mongo_distinct.{prop_name}")
                 distinct_vals: list = self.mongo_db[search_control.collection_name].distinct(prop_name, query_dict)
                 ElapsedTime.measure(f"after_mongo_distinct.{prop_name}")
 
                 if len(distinct_vals) > 0:
-                    remaining_types_to_values[prop_name] = sorted(distinct_vals)
+                    remaining_prop_name_to_prop_value[prop_name] = sorted(distinct_vals)
 
                 ElapsedTime.measure(f"after_process_results.{prop_name}")
 
@@ -224,13 +224,13 @@ class QueryEngine:
         query_result = QueryResult(
             data_envelopes,
             found_count,
-            remaining_types_to_values,
+            remaining_prop_name_to_prop_value,
         )
         return query_result
 
     def _query_prop_values_native_aggregate(
         self,
-        assigned_types_to_values,
+        assigned_prop_name_to_prop_value,
         query_dict,
         search_control,
     ) -> QueryResult:
@@ -238,7 +238,7 @@ class QueryEngine:
         See `DistinctValuesQuery.native_aggregate`.
         """
 
-        remaining_types_to_values: dict[str, list[str]] = {}
+        remaining_prop_name_to_prop_value: dict[str, list[str]] = {}
         data_envelopes = []
 
         group_dict: dict = {
@@ -249,9 +249,9 @@ class QueryEngine:
 
         # Construct grouping instruction:
         inner_group_dict: dict = group_dict["$group"]
-        for prop_name in search_control.props_to_keys_dict:
-            # If assigned/consumed, `arg_type` must not appear as an option again:
-            if prop_name not in assigned_types_to_values:
+        for prop_name in search_control.prop_name_to_arg_name_dict:
+            # If assigned/consumed, `prop_name` must not appear as an option again:
+            if prop_name not in assigned_prop_name_to_prop_value:
                 inner_group_dict[prop_name] = {
                     "$addToSet": f"${prop_name}",
                 }
@@ -282,11 +282,11 @@ class QueryEngine:
         result_object.pop(mongo_id_)
         result_object.pop(found_count_)
 
-        for arg_type in result_object:
+        for prop_name in result_object:
             # Flatten and deduplicate:
-            arg_vals = list(dict.fromkeys(flatten_list(result_object[arg_type])))
-            if len(arg_vals) > 0:
-                remaining_types_to_values[arg_type] = sorted(arg_vals)
+            prop_values = list(dict.fromkeys(flatten_list(result_object[prop_name])))
+            if len(prop_values) > 0:
+                remaining_prop_name_to_prop_value[prop_name] = sorted(prop_values)
 
         if found_count == 1:
             data_envelopes.append(self.mongo_db[search_control.collection_name].find_one(query_dict))
@@ -296,7 +296,7 @@ class QueryEngine:
         query_result = QueryResult(
             data_envelopes,
             found_count,
-            remaining_types_to_values,
+            remaining_prop_name_to_prop_value,
         )
         return query_result
 
@@ -304,10 +304,10 @@ class QueryEngine:
     def _process_prop_values(
         mongo_result,
         search_control: SearchControl,
-        assigned_types_to_values: dict[str, AssignedValue],
+        assigned_prop_name_to_prop_value: dict[str, AssignedValue],
     ) -> QueryResult:
         """
-        Process `mongo_result` per types in `search_control` and populates `remaining_types_to_values`.
+        Process `mongo_result` per types in `search_control` and populates `remaining_prop_name_to_prop_value`.
 
         It combines in one loop:
         *   counting total `found_count` of `data_envelope`-s returned and
@@ -317,32 +317,32 @@ class QueryEngine:
 
         Populates:
         *   `found_count`
-        *   `remaining_types_to_values`
+        *   `remaining_prop_name_to_prop_value`
         """
 
-        remaining_types_to_values: dict[str, list[str]] = {}
+        remaining_prop_name_to_prop_value: dict[str, list[str]] = {}
         data_envelope = None
         data_envelopes = []
         found_count = 0
 
         # TODO: What if search result is huge? Blame data set designer?
-        # find all remaining arg vals per arg type:
+        # find all remaining `prp_value`-s per `prop_name`:
         for data_envelope in iter(mongo_result):
             found_count += 1
-            # `arg_type` must be known:
-            for arg_type in search_control.props_to_keys_dict:
-                # `arg_type` must be in one of the `data_envelope`-s found:
-                if arg_type in data_envelope:
-                    # If assigned/consumed, `arg_type` must not appear
-                    # as an option in `remaining_types_to_values` again:
-                    if arg_type not in assigned_types_to_values:
-                        arg_vals = scalar_to_list_values(data_envelope[arg_type])
+            # `prop_name` must be known:
+            for prop_name in search_control.prop_name_to_arg_name_dict:
+                # `prop_name` must be in one of the `data_envelope`-s found:
+                if prop_name in data_envelope:
+                    # If assigned/consumed, `prop_name` must not appear
+                    # as an option in `remaining_prop_name_to_prop_value` again:
+                    if prop_name not in assigned_prop_name_to_prop_value:
+                        prop_values_src = scalar_to_list_values(data_envelope[prop_name])
 
-                        val_list = remaining_types_to_values.setdefault(arg_type, [])
+                        prop_values_dst = remaining_prop_name_to_prop_value.setdefault(prop_name, [])
 
-                        # Deduplicate: ensure unique `arg_value`-s:
-                        for arg_val in arg_vals:
-                            insert_unique_to_sorted_list(val_list, arg_val)
+                        # Deduplicate: ensure unique `prop_value`-s:
+                        for prop_value in prop_values_src:
+                            insert_unique_to_sorted_list(prop_values_dst, prop_value)
 
         # Populate max one (last) `data_envelope` on prop query for performance reasons:
         if found_count == 1:
@@ -352,46 +352,50 @@ class QueryEngine:
         return QueryResult(
             data_envelopes,
             found_count,
-            remaining_types_to_values,
+            remaining_prop_name_to_prop_value,
         )
 
 
-def flatten_list(arg_vals: list | str) -> list[str]:
+def flatten_list(
+    prop_values: list | str,
+) -> list[str]:
     """
-    FS_06_99_43_60 providing scalar value for list/array field is also possible (and vice versa).
+    FS_06_99_43_60 providing scalar value for array `prop_value` is also possible (and vice versa).
     """
-    if not isinstance(arg_vals, list):
+    if not isinstance(prop_values, list):
         # Scalar value -> list:
-        return [arg_vals]
+        return [prop_values]
     else:
         flat_list: list[str] = []
-        for arg_val in arg_vals:
-            # FS_06_99_43_60 (list arg value): avoid list of lists per value:
+        for prop_value in prop_values:
+            # FS_06_99_43_60 (array `prop_value`): avoid array of arrays per value:
             # In case of using `aggregate` from MongoDB API, lists can contain lists - flatten:
-            if isinstance(arg_val, list):
+            if isinstance(prop_value, list):
                 # List of lists -> list:
-                flat_list.extend(flatten_list(arg_val))
+                flat_list.extend(flatten_list(prop_value))
             else:
-                flat_list.append(arg_val)
+                flat_list.append(prop_value)
         return flat_list
 
 
-def scalar_to_list_values(arg_type_val: list | str) -> list[str]:
+def scalar_to_list_values(
+    prop_values: list | str,
+) -> list[str]:
     """
-    FS_06_99_43_60 providing scalar value for list/array field is also possible (and vice versa).
+    FS_06_99_43_60 providing scalar value for array `prop_name` is also possible (and vice versa).
     """
-    if not isinstance(arg_type_val, list):
-        return [arg_type_val]
+    if not isinstance(prop_values, list):
+        return [prop_values]
     else:
-        return arg_type_val
+        return prop_values
 
 
 def populate_query_dict(
     envelope_container: EnvelopeContainer,
 ) -> dict:
     query_dict = {}
-    # FS_31_70_49_15: populate arg values to search from the context:
-    for arg_type in envelope_container.search_control.props_to_keys_dict:
-        if arg_type in envelope_container.assigned_types_to_values:
-            query_dict[arg_type] = envelope_container.assigned_types_to_values[arg_type].arg_value
+    # FS_31_70_49_15: populate `prop_value`-s to search from the context:
+    for prop_name in envelope_container.search_control.prop_name_to_arg_name_dict:
+        if prop_name in envelope_container.assigned_prop_name_to_prop_value:
+            query_dict[prop_name] = envelope_container.assigned_prop_name_to_prop_value[prop_name].prop_value
     return query_dict

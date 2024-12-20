@@ -29,13 +29,13 @@ class RemoteTestClass(ClientServerTestClass):
         expected_suggestions: Union[list[str], None],
         container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
         delegator_class: Union[Type[DelegatorAbstract], None],
-        envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
-        expected_container_ipos_to_used_arg_bucket: Union[dict[int, Union[int, None]], None],
+        envelope_ipos_to_prop_values: Union[dict[int, dict[str, str]], None],
+        expected_container_ipos_to_used_token_bucket: Union[dict[int, Union[int, None]], None],
         init_env_mock_builder: EnvMockBuilder,
     ):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
-        if envelope_ipos_to_field_values is not None:
+        if envelope_ipos_to_prop_values is not None:
             self.assertIsNotNone(delegator_class)
 
         # TODO: Make it possible to capture response for other `ServerAction`-s.
@@ -90,8 +90,8 @@ class RemoteTestClass(ClientServerTestClass):
                 container_ipos_to_expected_assignments,
                 None,
                 delegator_class,
-                envelope_ipos_to_field_values,
+                envelope_ipos_to_prop_values,
                 expected_suggestions,
                 envelope_containers,
-                expected_container_ipos_to_used_arg_bucket,
+                expected_container_ipos_to_used_token_bucket,
             )

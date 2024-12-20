@@ -334,14 +334,14 @@ server_plugin_instance_groups:
             plugin_class_name: ConfigOnlyLoader
             plugin_config:
                 envelope_class_to_collection_name_map:
-                    ConfigOnlyClass: ConfigOnlyClass
-                    OutputFormat: OutputFormat
+                    class_config_only: class_config_only
+                    class_output_format: class_output_format
                 collection_name_to_index_props_map:
-                    ConfigOnlyClass:
+                    class_config_only:
                         -   envelope_class
                         -   severity_level
                         -   exit_code
-                    OutputFormat:
+                    class_output_format:
                         -   envelope_class
                         -   output_format
                 data_envelopes:
@@ -360,10 +360,10 @@ server_plugin_instance_groups:
                             instance_data:
                                 search_control_list:
                                     -
-                                        collection_name: ConfigOnlyClass
+                                        collection_name: class_config_only
                                         props_to_values_dict:
-                                            envelope_class: ConfigOnlyClass
-                                        keys_to_props_list:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
                                             -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
@@ -377,10 +377,10 @@ server_plugin_instance_groups:
                             instance_data:
                                 search_control_list:
                                     -
-                                        collection_name: ConfigOnlyClass
+                                        collection_name: class_config_only
                                         props_to_values_dict:
-                                            envelope_class: ConfigOnlyClass
-                                        keys_to_props_list:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
                                             -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
@@ -395,10 +395,10 @@ server_plugin_instance_groups:
                             instance_data:
                                 search_control_list:
                                     -
-                                        collection_name: ConfigOnlyClass
+                                        collection_name: class_config_only
                                         props_to_values_dict:
-                                            envelope_class: ConfigOnlyClass
-                                        keys_to_props_list:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
                                             -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
@@ -427,18 +427,18 @@ server_plugin_instance_groups:
                             instance_data:
                                 search_control_list:
                                     -
-                                        collection_name: ConfigOnlyClass
+                                        collection_name: class_config_only
                                         props_to_values_dict:
-                                            envelope_class: ConfigOnlyClass
-                                        keys_to_props_list:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
                                             -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code
                                     -
-                                        collection_name: ConfigOnlyClass
+                                        collection_name: class_config_only
                                         props_to_values_dict:
-                                            envelope_class: ConfigOnlyClass
-                                        keys_to_props_list:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
                                             -   class: envelope_class
                                             -   level: severity_level
                                             -   code: exit_code

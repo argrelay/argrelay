@@ -14,7 +14,7 @@ class NoopLoader(AbstractLoader):
     ) -> list[IndexModel]:
         return [
             IndexModel(
-                collection_name = ReservedEnvelopeClass.ClassNoData.name,
+                collection_name = ReservedEnvelopeClass.class_no_data.name,
                 index_props = (
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     [ReservedPropName.envelope_class.name] +

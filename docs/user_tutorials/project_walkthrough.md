@@ -41,6 +41,30 @@ Start with the ["interactive demo"][interactive_demo] from the main readme.
     ./exe/relay_demo.bash
     ```
 
+<a name="argrelay-includes"></a>
+
+# What is in the package?
+
+<!--
+    TODO: add links to separate docs for each of the points
+--->
+
+At the moment, `argrelay` is still bundled into single Python package:
+
+*   **Client** to be invoked by Bash hook on every Tab to<br/>
+    send command line arguments to the server.
+*   **Server** to parse command line and propose values from<br/>
+    pre-loaded data for the argument under the cursor.
+*   **Plugins** to customize:
+    *   actions the client can run
+    *   objects the server can search
+    *   grammar the command line can have
+*   **Interfaces** and schemas to bind these all together.
+*   **Bootstrap** process to init the environment and maintain it.
+*   **Demo** example to start from.
+*   **Testing** support and coverage.
+*   **Documentation** to explain things and capture decisions made.
+
 <!-- links --------------------------------------------------------------------------------------------------------- -->
 
 [interactive_demo]: ../../readme.md#argrelay-demo

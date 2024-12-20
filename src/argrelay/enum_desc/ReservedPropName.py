@@ -10,7 +10,7 @@ class ReservedPropName(Enum):
     """
     Normally, `collection_name` is not part of `data_envelope` - instead, it is only used in MongoDB query API.
     But it is part of `data_envelope` (see FS_74_69_61_79 get set data envelope)
-    with `ReservedEnvelopeClass.ClassCollection` `envelope_class`.
+    with `ReservedEnvelopeClass.class_collection` `envelope_class`.
     """
 
     # TODO: Maybe rename to `envelope_class` everywhere for consistency?
@@ -25,13 +25,9 @@ class ReservedPropName(Enum):
     It is normally the same with `FunctionEnvelopeInstanceDataSchema.func_id_`.
     """
 
-    # TODO: TODO_66_66_75_78.split_arg_and_prop_concepts: Rename: `arg_type` to `prop_name`:
-    # TODO: Review: how it is used. Should it be renamed to `prop_name`? Does it make sense to have a property named as `prop_name`?
-    arg_type = auto()
+    prop_name = auto()
 
-    # TODO: TODO_66_66_75_78.split_arg_and_prop_concepts: Rename: `arg_type` to `prop_name`:
-    # TODO: Review: how it is used. Should it be renamed to `prop_value`? Does it make sense to have a property named as `prop_value`?
-    arg_value = auto()
+    prop_value = auto()
 
     help_hint = auto()
 

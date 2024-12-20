@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from argrelay.custom_integ.ServiceLoader import ServiceLoader
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
@@ -26,9 +26,9 @@ class ThisTestClass(LocalTestClass):
                 [f"hs{host_number}" for host_number in range(0, ServiceLoader.object_multiplier)],
                 {
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
-                        ServicePropName.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
-                        ServicePropName.geo_region.name: AssignedValue("gr3", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("cm1", ValueSource.explicit_offered_arg),
+                        ServicePropName.flow_stage.name: AssignedValue("fs2", ValueSource.explicit_offered_arg),
+                        ServicePropName.geo_region.name: AssignedValue("gr3", ValueSource.explicit_offered_arg),
                     },
                 },
                 "Ensure it suggests relevant hosts.",
@@ -40,8 +40,8 @@ class ThisTestClass(LocalTestClass):
                 ],
                 {
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("cm1", ArgSource.ExplicitPosArg),
-                        ServicePropName.flow_stage.name: AssignedValue("fs2", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("cm1", ValueSource.explicit_offered_arg),
+                        ServicePropName.flow_stage.name: AssignedValue("fs2", ValueSource.explicit_offered_arg),
                         ServicePropName.geo_region.name: None,
                     },
                 },

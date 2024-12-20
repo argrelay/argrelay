@@ -20,9 +20,9 @@ data_envelope_container_ipos_ = 2
 def get_collection_search_control(
 ) -> dict:
     return populate_search_control(
-        ReservedEnvelopeClass.ClassCollection.name,
+        ReservedEnvelopeClass.class_collection.name,
         {
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollection.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_collection.name,
         },
         [
             # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
@@ -68,16 +68,16 @@ class DelegatorDataBackendBase(DelegatorSingleFuncAbstract):
                 index_props: list[str] = collection_name_container.data_envelopes[0][envelope_payload_][index_props_]
                 collection_name = collection_name_container.data_envelopes[0][ReservedPropName.collection_name.name]
 
-                keys_to_props_list: list[dict] = []
+                arg_name_to_prop_name_map: list[dict] = []
                 for index_prop in index_props:
-                    # For metadata: arg name is the same as prop name:
-                    keys_to_props_list.append({index_prop: index_prop})
+                    # For metadata: `arg_name` is the same as prop name:
+                    arg_name_to_prop_name_map.append({index_prop: index_prop})
 
                 # Construct `search_control` dynamically:
                 data_envelope_search_control_dict = populate_search_control(
                     collection_name,
                     {},
-                    keys_to_props_list,
+                    arg_name_to_prop_name_map,
                 )
                 data_envelope_search_control_obj = search_control_desc.dict_schema.load(
                     data_envelope_search_control_dict,

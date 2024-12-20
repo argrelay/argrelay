@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.test_infra import line_no
 from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
@@ -41,11 +41,11 @@ class ThisTestClass(LocalTestClass):
                         ServicePropName.cluster_name.name: [
                             "dev-emea-downstream",
                         ],
-                        ServicePropName.host_name.name: AssignedValue("zxcv", ArgSource.ExplicitPosArg),
-                        ServicePropName.live_status.name: AssignedValue("red", ArgSource.ImplicitValue),
+                        ServicePropName.host_name.name: AssignedValue("zxcv", ValueSource.explicit_offered_arg),
+                        ServicePropName.live_status.name: AssignedValue("red", ValueSource.implicit_value),
                     },
                     2: {
-                        ServicePropName.access_type.name: AssignedValue("rw", ArgSource.DefaultValue),
+                        ServicePropName.access_type.name: AssignedValue("rw", ValueSource.default_value),
                     },
                     3: None,
                 },
@@ -53,13 +53,13 @@ class ThisTestClass(LocalTestClass):
                 "TD_39_25_11_76: `data_envelope`-s with missing props: "
                 "there are two `zxcv` hosts: one in `apac` and another in `emea`, "
                 "but there is no suggestions because `apac` host does not have `ServicePropName.live_status` property "
-                "which is assigned as `ArgSource.ImplicitValue` now from the single value available in `emea` - "
+                "which is assigned as `ValueSource.implicit_value` now from the single value available in `emea` - "
                 "this hides existence of the host in `apac`. "
 
                 "Also, `ServicePropName.geo_region` and `ServicePropName.cluster_name` are not singled out "
                 "even though there is only single value - this happens because "
                 "`EnvelopeContainer.populate_implicit_arg_values` is sets `ServicePropName.live_status` to "
-                "`ArgSource.ImplicitValue` but still sees multiple `data_envelope`-s with different values"
+                "`ValueSource.implicit_value` but still sees multiple `data_envelope`-s with different values"
                 "for `ServicePropName.geo_region` and `ServicePropName.cluster_name`.",
             ),
             (
@@ -87,8 +87,8 @@ class ThisTestClass(LocalTestClass):
                             "dev-apac-downstream",
                             "dev-emea-downstream",
                         ],
-                        ServicePropName.host_name.name: AssignedValue("asdf", ArgSource.ExplicitPosArg),
-                        ServicePropName.live_status.name: AssignedValue("yellow", ArgSource.ImplicitValue),
+                        ServicePropName.host_name.name: AssignedValue("asdf", ValueSource.explicit_offered_arg),
+                        ServicePropName.live_status.name: AssignedValue("yellow", ValueSource.implicit_value),
                     },
                     2: {
                         ServicePropName.access_type.name: None,

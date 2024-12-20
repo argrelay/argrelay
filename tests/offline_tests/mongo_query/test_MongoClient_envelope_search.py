@@ -8,9 +8,10 @@ from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass,
 class ThisTestClass(MongoClientTestClass):
 
     # noinspection PyMethodMayBeStatic
-    def test_live_envelope_searched_by_multiple_typed_key_value_pairs(self):
+    def test_live_envelope_searched_by_multiple_prop_name_prop_value_pairs(self):
         """
-        Example with data searched by multiple { type: value } pairs = typical search feature `argrelay` relies on.
+        Example with data searched by multiple { prop_name: prop_value } pairs =
+        a typical search feature `argrelay` relies on.
         """
 
         # Fields which will be indexed:

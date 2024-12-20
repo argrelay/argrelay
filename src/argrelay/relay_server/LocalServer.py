@@ -37,7 +37,7 @@ from argrelay.schema_config_core_server.EnvelopeCollectionSchema import (
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_, envelope_payload_, envelope_id_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
 from argrelay.schema_config_interp.SearchControlSchema import (
-    keys_to_props_list_,
+    arg_name_to_prop_name_map_,
     collection_name_,
     search_control_desc,
 )
@@ -278,7 +278,7 @@ class LocalServer:
                     prop_value_item,
                 )
         else:
-            # FS_06_99_43_60: list arg value:
+            # FS_06_99_43_60: array `prop_value`:
             raise ValueError(f"`{collection_name}.{index_prop}` has to be a `list` of `str` or `str`")
 
     def _post_validate_stored_data(
@@ -377,9 +377,9 @@ class LocalServer:
 
         # Scan `search_control`-s of all funcs:
         for func_envelope in self.query_engine.get_data_envelopes_cursor(
-            ReservedEnvelopeClass.ClassFunction.name,
+            ReservedEnvelopeClass.class_function.name,
             {
-                f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.ClassFunction.name}",
+                f"{ReservedPropName.envelope_class.name}": f"{ReservedEnvelopeClass.class_function.name}",
             },
         ):
             for search_control in func_envelope[instance_data_][search_control_list_]:
@@ -403,11 +403,10 @@ class LocalServer:
             set(),
         )
 
-        # TODO: TODO_66_66_75_78.split_arg_and_prop_concepts: Rename: `arg_type` to `prop_name`:
-        for key_to_value_dict in search_control[keys_to_props_list_]:
-            assert type(key_to_value_dict) is dict
-            assert len(key_to_value_dict) == 1
-            search_prop_name = next(iter(key_to_value_dict.values()))
+        for arg_name_to_prop_name_entry in search_control[arg_name_to_prop_name_map_]:
+            assert type(arg_name_to_prop_name_entry) is dict
+            assert len(arg_name_to_prop_name_entry) == 1
+            search_prop_name = next(iter(arg_name_to_prop_name_entry.values()))
             search_props.add(search_prop_name)
 
     def _post_validate_all_data_envelope_for_missing_index_prop_names(
@@ -530,7 +529,7 @@ class LocalServer:
         """
         TODO: TODO_39_25_11_76 missing props: populate missing props supported by funcs.
 
-        This function only targets `ReservedEnvelopeClass.ClassFunction` (because loading funcs is special).
+        This function only targets `ReservedEnvelopeClass.class_function` (because loading funcs is special).
         There is no decision (yet) to populate missing `prop_value`-s for any `data_envelope`.
         Instead, there is a validation to prevent missing `prop_name`-s for other `data_envelope`-s - if it fails,
         the corresponding loader has to be fixed to provide seme set of `prop_name`-s for all `data_envelope`.
@@ -539,7 +538,7 @@ class LocalServer:
         # Populate missing `prop_name`-s with special value:
         for data_envelope in func_envelope_collection.data_envelopes:
             envelope_class = data_envelope[ReservedPropName.envelope_class.name]
-            if envelope_class == ReservedEnvelopeClass.ClassFunction.name:
+            if envelope_class == ReservedEnvelopeClass.class_function.name:
                 for prop_name in func_index_props:
                     if prop_name not in data_envelope:
                         data_envelope[prop_name] = SpecialChar.NoPropValue.value
@@ -552,7 +551,7 @@ class LocalServer:
 
         # At this moment, funcs have already been loaded on `AbstractPlugin.activate_plugin`.
         func_envelope_collection = EnvelopeCollection(
-            collection_name = ReservedEnvelopeClass.ClassFunction.name,
+            collection_name = ReservedEnvelopeClass.class_function.name,
             data_envelopes = self.root_func_loader.get_func_data_envelopes(),
         )
         self._define_func_index_model(
@@ -608,7 +607,7 @@ class LocalServer:
         # Add generated `envelope_collection` (itself) for completeness:
         self._define_index_model_step(
             IndexModel(
-                collection_name = ReservedEnvelopeClass.ClassCollection.name,
+                collection_name = ReservedEnvelopeClass.class_collection.name,
                 index_props = [
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     ReservedPropName.envelope_class.name,
@@ -618,13 +617,13 @@ class LocalServer:
         )
 
         envelope_collection = EnvelopeCollection(
-            collection_name = ReservedEnvelopeClass.ClassCollection.name,
+            collection_name = ReservedEnvelopeClass.class_collection.name,
             data_envelopes = []
         )
         for collection_name, index_model in self.index_model_per_collection.items():
             envelope_collection.data_envelopes.append({
                 envelope_id_: f"{collection_name}",
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassCollection.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_collection.name,
                 # TODO: May add loader plugin instance name as metadata:
                 ReservedPropName.collection_name.name: collection_name,
                 envelope_payload_: {
@@ -665,7 +664,7 @@ class LocalServer:
         ])
 
         func_index_model: IndexModel = IndexModel(
-            collection_name = ReservedEnvelopeClass.ClassFunction.name,
+            collection_name = ReservedEnvelopeClass.class_function.name,
             index_props = func_index_props,
         )
 

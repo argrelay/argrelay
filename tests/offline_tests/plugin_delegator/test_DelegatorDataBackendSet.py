@@ -22,6 +22,7 @@ from argrelay.test_infra.LocalTestClass import LocalTestClass
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 
+    # noinspection PyMethodMayBeStatic
     def test_relationship(self):
         assert_test_module_name_embeds_prod_class_name(DelegatorDataBackendSet)
 
@@ -31,28 +32,28 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             ThisTestCase(
-                f"Replace _entire data_ for `{ServiceEnvelopeClass.ClassAccessType.name}` via `set` "
+                f"Replace _entire data_ for `{ServiceEnvelopeClass.class_access_type.name}` via `set` "
                 f"to _more items_ and check if it can be seen via `get`.",
-                "some_command data get ClassAccessType |",
+                "some_command data get class_access_type |",
                 CompType.InvokeAction,
                 {},
                 ProposeArgValuesVerifier(self),
             )
             .set_extra_data_envelopes(
-                "some_command data set ClassAccessType |",
+                "some_command data set class_access_type |",
                 [
                     {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
                         ServicePropName.access_type.name: "ro",
                         envelope_payload_: {},
                     },
                     {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
                         ServicePropName.access_type.name: "rw",
                         envelope_payload_: {},
                     },
                     {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
                         ServicePropName.access_type.name: "xx",
                         envelope_payload_: {},
                     },
@@ -66,18 +67,18 @@ class ThisTestClass(LocalTestClass):
                 ]
             ),
             ThisTestCase(
-                f"Replace _entire data_ for `{ServiceEnvelopeClass.ClassAccessType.name}` via `set` "
+                f"Replace _entire data_ for `{ServiceEnvelopeClass.class_access_type.name}` via `set` "
                 f"to _fewer items_ and check if it can be seen via `get`.",
-                "some_command data get ClassAccessType |",
+                "some_command data get class_access_type |",
                 CompType.InvokeAction,
                 {},
                 ProposeArgValuesVerifier(self),
             )
             .set_extra_data_envelopes(
-                "some_command data set ClassAccessType |",
+                "some_command data set class_access_type |",
                 [
                     {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
                         ServicePropName.access_type.name: "xx",
                         envelope_payload_: {},
                     },
@@ -89,18 +90,18 @@ class ThisTestClass(LocalTestClass):
                 ]
             ),
             ThisTestCase(
-                f"Replace _single item_ for `{ServiceEnvelopeClass.ClassAccessType.name}` via `set` "
+                f"Replace _single item_ for `{ServiceEnvelopeClass.class_access_type.name}` via `set` "
                 f"to _another item_ and check if it can be seen via `get`.",
-                "some_command data get ClassAccessType |",
+                "some_command data get class_access_type |",
                 CompType.InvokeAction,
                 {},
                 ProposeArgValuesVerifier(self),
             )
             .set_extra_data_envelopes(
-                "some_command data set ClassAccessType ro |",
+                "some_command data set class_access_type ro |",
                 [
                     {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassAccessType.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_access_type.name,
                         ServicePropName.access_type.name: "xx",
                         envelope_payload_: {},
                     },

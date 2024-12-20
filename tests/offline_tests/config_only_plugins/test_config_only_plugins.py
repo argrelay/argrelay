@@ -8,14 +8,14 @@ from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
 from argrelay.custom_integ.DelegatorConfigOnly import DelegatorConfigOnly
 from argrelay.custom_integ.FuncConfigSchema import func_envelope_
 from argrelay.custom_integ.SchemaConfigDelegatorConfigBase import func_configs_
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
-from argrelay.schema_config_interp.SearchControlSchema import keys_to_props_list_
+from argrelay.schema_config_interp.SearchControlSchema import arg_name_to_prop_name_map_
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
 from argrelay.test_infra import line_no, parse_line_and_cpos
@@ -100,12 +100,12 @@ class ThisTestClass(LocalTestClass):
                 line_no(), "some_command config double_execution ERROR 1 |", CompType.DescribeArgs,
                 {
                     1: {
-                        "severity_level": AssignedValue("ERROR", ArgSource.ExplicitPosArg),
-                        "exit_code": AssignedValue("1", ArgSource.ExplicitPosArg),
+                        "severity_level": AssignedValue("ERROR", ValueSource.explicit_offered_arg),
+                        "exit_code": AssignedValue("1", ValueSource.explicit_offered_arg),
                     },
                     2: {
-                        "severity_level": AssignedValue("ERROR", ArgSource.DefaultValue),
-                        "exit_code": AssignedValue("1", ArgSource.DefaultValue),
+                        "severity_level": AssignedValue("ERROR", ValueSource.default_value),
+                        "exit_code": AssignedValue("1", ValueSource.default_value),
                     },
                     3: None,
                 },
@@ -283,9 +283,9 @@ exit 1
                     ][
                         0
                     ][
-                        keys_to_props_list_
+                        arg_name_to_prop_name_map_
                     ].append({
-                        "some_key": UNKNOWN_INDEX_PROP_NAME,
+                        "some_arg_name": UNKNOWN_INDEX_PROP_NAME,
                     })
 
                     env_mock_builder.set_plugin_config_dict(plugin_config_dict)
@@ -295,7 +295,7 @@ exit 1
                     self.assertEqual(
                         (
                             f"`search_control` components not in `index_model`: "
-                            f"`collection_name` [ConfigOnlyClass] "
+                            f"`collection_name` [class_config_only] "
                             f"`search_props`: {UNKNOWN_INDEX_PROP_NAME} "
                         ),
                         cm.exception.args[0],
@@ -314,32 +314,32 @@ exit 1
         test_cases = [
             (
                 line_no(),
-                "ConfigOnlyClass",
+                "class_config_only",
                 {
                     "severity_level": "ERROR",
                 },
                 2,
-                f"Query `data_envelope` of `ConfigOnlyClass` without "
+                f"Query `data_envelope` of `class_config_only` without "
                 f"specified `{ReservedPropName.envelope_class.name}`.",
             ),
             (
                 line_no(),
-                "ConfigOnlyClass",
+                "class_config_only",
                 {
-                    ReservedPropName.envelope_class.name: "ConfigOnlyClass",
+                    ReservedPropName.envelope_class.name: "class_config_only",
                     "severity_level": "ERROR",
                 },
                 2,
-                f"Query `data_envelope` of `ConfigOnlyClass` with "
+                f"Query `data_envelope` of `class_config_only` with "
                 f"specified `{ReservedPropName.envelope_class.name}`.",
             ),
             (
                 line_no(),
-                "OutputFormat",
+                "class_output_format",
                 {
                 },
                 4,
-                f"Query `data_envelope` of `OutputFormat` (without any query criteria).",
+                f"Query `data_envelope` of `class_output_format` (without any query criteria).",
             ),
         ]
 

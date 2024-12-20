@@ -3,10 +3,10 @@ from __future__ import annotations
 from argrelay.custom_integ.DelegatorServiceHostList import DelegatorServiceHostList
 from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
 from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.plugin_delegator.DelegatorError import DelegatorError
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.runtime_data.AssignedValue import AssignedValue
@@ -30,46 +30,55 @@ class ThisTestClass(RemoteTestClass):
                 "some_command list host dev |",
                 {
                     0: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("list", ArgSource.ExplicitPosArg),
-                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "list",
+                            ValueSource.explicit_offered_arg,
+                        ),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
+                            "host",
+                            ValueSource.explicit_offered_arg,
+                        ),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ServiceEnvelopeClass.ClassHost.name,
-                            ArgSource.InitValue,
+                            ServiceEnvelopeClass.class_host.name,
+                            ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ArgSource.ExplicitPosArg),
+                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
                     },
                     2: None,
                 },
                 DelegatorServiceHostList,
                 {
                     0: {
-                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                     },
                     1: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                         ServicePropName.host_name.name: "zxcv-du",
                     },
                     2: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                         ServicePropName.host_name.name: "zxcv-dd",
                     },
                     3: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                         ServicePropName.host_name.name: "poiu-dd",
                     },
                     4: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                         ServicePropName.host_name.name: "asdf-du",
                     },
                     5: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                         ServicePropName.host_name.name: "xcvb-dd",
                     },
                     6: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassHost.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
                         ServicePropName.host_name.name: "qwer-du",
                     },
                     7: None,
@@ -82,18 +91,27 @@ class ThisTestClass(RemoteTestClass):
                 "some_command goto service s_b prod |",
                 {
                     0: {
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ArgSource.InitValue),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ArgSource.ExplicitPosArg),
-                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue("service", ArgSource.ExplicitPosArg),
+                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                            "some_command",
+                            ValueSource.init_value,
+                        ),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "goto",
+                            ValueSource.explicit_offered_arg,
+                        ),
+                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
+                            "service",
+                            ValueSource.explicit_offered_arg,
+                        ),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
-                            ServiceEnvelopeClass.ClassService.name,
-                            ArgSource.InitValue,
+                            ServiceEnvelopeClass.class_service.name,
+                            ValueSource.init_value,
                         ),
-                        ServicePropName.service_name.name: AssignedValue("s_b", ArgSource.ExplicitPosArg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ArgSource.ExplicitPosArg),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ArgSource.ImplicitValue),
+                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
+                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.implicit_value),
                     },
                     2: {
                         # Nothing is assigned for `ServicePropName.access_type`, but it exists.
@@ -103,15 +121,15 @@ class ThisTestClass(RemoteTestClass):
                 DelegatorError,
                 {
                     0: {
-                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                     },
                     1: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                         ServicePropName.service_name.name: "s_b",
                         ServicePropName.host_name.name: "qwer-pd-1",
                     },
                     2: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.ClassService.name,
+                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
                         ServicePropName.service_name.name: "s_b",
                         ServicePropName.host_name.name: "qwer-pd-2",
                     },
@@ -129,7 +147,7 @@ class ThisTestClass(RemoteTestClass):
                     test_line,
                     container_ipos_to_expected_assignments,
                     delegator_class,
-                    envelope_ipos_to_field_values,
+                    envelope_ipos_to_prop_values,
                     case_comment,
                 ) = test_case
 
@@ -139,7 +157,7 @@ class ThisTestClass(RemoteTestClass):
                     None,
                     container_ipos_to_expected_assignments,
                     delegator_class,
-                    envelope_ipos_to_field_values,
+                    envelope_ipos_to_prop_values,
                     None,
                     LiveServerEnvMockBuilder(),
                 )

@@ -1,6 +1,5 @@
 from argrelay.custom_integ.DelegatorGitRepoGotoRepo import func_id_goto_git_repo_
 from argrelay.custom_integ.DelegatorServiceHostDesc import func_id_desc_host_
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.FuncState import FuncState
@@ -8,6 +7,7 @@ from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay.enum_desc.ReservedPropName import ReservedPropName
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
 from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
 from argrelay.test_infra import change_to_known_repo_path, line_no
@@ -30,12 +30,12 @@ class ThisTestClass(End2EndTestClass):
                 line_no(), f"{self.default_bound_command} goto h|",
                 f"""
 {TermColor.consumed_token.value}{self.default_bound_command}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}3{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ReservedEnvelopeClass.ClassFunction.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {self.default_bound_command} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_n.value}3{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ReservedEnvelopeClass.class_function.name} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {self.default_bound_command} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_offered_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_offered_arg_value.value}[{ValueSource.explicit_offered_arg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}h{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ost{TermColor.reset_style.value} repo service 
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} {FuncState.fs_beta} {FuncState.fs_demo} 
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_goto_git_repo func_id_goto_host func_id_goto_service 
 """,
@@ -45,12 +45,12 @@ class ThisTestClass(End2EndTestClass):
                 line_no(), f"{self.default_bound_command} goto s|",
                 f"""
 {TermColor.consumed_token.value}{self.default_bound_command}{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
-{ReservedEnvelopeClass.ClassFunction.name}: {TermColor.found_count_n.value}3{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ReservedEnvelopeClass.ClassFunction.name} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {self.default_bound_command} {TermColor.other_assigned_arg_value.value}[{ArgSource.InitValue.name}]{TermColor.reset_style.value}
-{" " * indent_size}{TermColor.explicit_pos_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_pos_arg_value.value}[{ArgSource.ExplicitPosArg.name}]{TermColor.reset_style.value}
+{ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_n.value}3{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ReservedEnvelopeClass.class_function.name} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: {self.default_bound_command} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_offered_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_offered_arg_value.value}[{ValueSource.explicit_offered_arg.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}*{func_envelope_path_step_prop_name(2)}: ?{TermColor.reset_style.value} host repo {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}ervice{TermColor.reset_style.value} 
-{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ArgSource.ImplicitValue.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} {FuncState.fs_beta} {FuncState.fs_demo} 
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_goto_git_repo func_id_goto_host func_id_goto_service 
 """,

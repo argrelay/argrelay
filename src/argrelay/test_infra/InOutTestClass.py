@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Union, Type
 
-from argrelay.enum_desc.ArgSource import ArgSource
 from argrelay.enum_desc.ServerAction import ServerAction
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
@@ -24,10 +24,10 @@ class InOutTestClass(BaseTestClass):
         container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
         container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
         delegator_class: Union[Type[DelegatorAbstract], None],
-        envelope_ipos_to_field_values: Union[dict[int, dict[str, str]], None],
+        envelope_ipos_to_prop_values: Union[dict[int, dict[str, str]], None],
         expected_suggestions: Union[list[str], None],
         envelope_containers: list[EnvelopeContainer],
-        expected_container_ipos_to_used_arg_bucket: Union[dict[int, Union[int, None]], None],
+        expected_container_ipos_to_used_token_bucket: Union[dict[int, Union[int, None]], None],
     ):
         try:
 
@@ -66,19 +66,19 @@ class InOutTestClass(BaseTestClass):
                     delegator_class.__name__,
                 )
 
-            if envelope_ipos_to_field_values is not None:
+            if envelope_ipos_to_prop_values is not None:
                 self.verify_data_envelopes(
                     EnvMockBuilder.invocation_input.get_data_envelopes(),
-                    envelope_ipos_to_field_values,
+                    envelope_ipos_to_prop_values,
                 )
 
-            if expected_container_ipos_to_used_arg_bucket is not None:
+            if expected_container_ipos_to_used_token_bucket is not None:
                 # TODO: TODO_32_99_70_35: candidate for generic library of JSONPath verifiers:
                 for envelope_container_ipos, envelope_container in enumerate(envelope_containers):
-                    expected_used_arg_bucket = expected_container_ipos_to_used_arg_bucket[envelope_container_ipos]
+                    expected_used_token_bucket = expected_container_ipos_to_used_token_bucket[envelope_container_ipos]
                     self.assertEqual(
-                        expected_used_arg_bucket,
-                        envelope_container.used_arg_bucket,
+                        expected_used_token_bucket,
+                        envelope_container.used_token_bucket,
                     )
 
         except:
@@ -87,12 +87,12 @@ class InOutTestClass(BaseTestClass):
 
             if call_ctx.server_action is ServerAction.ProposeArgValues:
                 self.assertIsNone(delegator_class)
-                self.assertIsNone(envelope_ipos_to_field_values)
+                self.assertIsNone(envelope_ipos_to_prop_values)
             elif call_ctx.server_action is ServerAction.DescribeLineArgs:
                 # TODO: TODO_42_81_01_90: assert data instead of print out: there will be no delegator_class, but a mock to intercept response for enum query:
                 self.assertIsNone(delegator_class)
                 # TODO: TODO_42_81_01_90: assert data instead of print out: the data should be available:
-                self.assertIsNone(envelope_ipos_to_field_values)
+                self.assertIsNone(envelope_ipos_to_prop_values)
             elif call_ctx.server_action is ServerAction.RelayLineArgs:
                 pass
             else:
@@ -112,32 +112,32 @@ class InOutTestClass(BaseTestClass):
                     self.assertFalse(0 <= container_ipos < len(envelope_containers))
                 else:
                     self.assertTrue(0 <= container_ipos < len(envelope_containers))
-                    for arg_type, assigned_value in expected_assignments.items():
+                    for prop_name, assigned_value in expected_assignments.items():
                         try:
                             if assigned_value is None:
                                 self.assertTrue(
-                                    arg_type not in
+                                    prop_name not in
                                     envelope_containers
-                                    [container_ipos].assigned_types_to_values
+                                    [container_ipos].assigned_prop_name_to_prop_value
                                 )
                             elif isinstance(assigned_value, list):
-                                # A bit of hack: if `list`, then check if it matches `remaining_types_to_values`:
+                                # A bit of hack: if `list`, then check if it matches `remaining_prop_name_to_prop_value`:
                                 self.assertEqual(
                                     assigned_value,
                                     envelope_containers
-                                    [container_ipos].remaining_types_to_values
-                                    [arg_type]
+                                    [container_ipos].remaining_prop_name_to_prop_value
+                                    [prop_name]
                                 )
                             else:
                                 self.assertEqual(
                                     assigned_value,
                                     envelope_containers
-                                    [container_ipos].assigned_types_to_values
-                                    [arg_type],
+                                    [container_ipos].assigned_prop_name_to_prop_value
+                                    [prop_name],
                                 )
                         except:
                             eprint(
-                                f"container_ipos:{container_ipos} arg_type:{arg_type} assigned_value:{assigned_value}",
+                                f"container_ipos:{container_ipos} prop_name:{prop_name} assigned_value:{assigned_value}",
                             )
                             raise
             except:
@@ -151,33 +151,33 @@ class InOutTestClass(BaseTestClass):
     ):
         """
         Make sure that specified expected `options_hidden_by_default_value` list
-        (per `envelope_container` ipos, per `arg_type`) match what is populated into
-        `EnvelopeContainer.filled_types_to_values_hidden_by_defaults`.
+        (per `envelope_container` ipos, per `prop_name`) match what is populated into
+        `EnvelopeContainer.filled_prop_values_hidden_by_defaults`.
         """
-        for container_ipos, options_hidden_by_default_value_per_type in container_ipos_to_options_hidden_by_default_value.items():
+        for container_ipos, options_hidden_by_default_value_per_prop_name in container_ipos_to_options_hidden_by_default_value.items():
             try:
-                if options_hidden_by_default_value_per_type is None:
+                if options_hidden_by_default_value_per_prop_name is None:
                     self.assertFalse(0 <= container_ipos < len(envelope_containers))
                 else:
                     self.assertTrue(0 <= container_ipos < len(envelope_containers))
-                    for arg_type, options_hidden_by_default_value in options_hidden_by_default_value_per_type.items():
+                    for prop_name, options_hidden_by_default_value in options_hidden_by_default_value_per_prop_name.items():
                         try:
                             if options_hidden_by_default_value is None:
                                 self.assertTrue(
-                                    arg_type not in
+                                    prop_name not in
                                     envelope_containers
-                                    [container_ipos].filled_types_to_values_hidden_by_defaults
+                                    [container_ipos].filled_prop_values_hidden_by_defaults
                                 )
                             else:
                                 self.assertEqual(
                                     options_hidden_by_default_value,
                                     envelope_containers
-                                    [container_ipos].filled_types_to_values_hidden_by_defaults
-                                    [arg_type],
+                                    [container_ipos].filled_prop_values_hidden_by_defaults
+                                    [prop_name],
                                 )
                         except:
                             eprint(
-                                f"container_ipos:{container_ipos} arg_type:{arg_type} options_hidden_by_default_value:{options_hidden_by_default_value}",
+                                f"container_ipos:{container_ipos} prop_name:{prop_name} options_hidden_by_default_value:{options_hidden_by_default_value}",
                             )
                             raise
             except:
@@ -193,28 +193,28 @@ class InOutTestClass(BaseTestClass):
         Make sure that, for given `container_ipos`, if there are both:
         *   options hidden by default
         *   assigned value
-        then, the assigned value has `ArgSource.DefaultValue`.
+        then, the assigned value has `ValueSource.default_value`.
         """
         for container_ipos, expected_assignments in container_ipos_to_expected_assignments.items():
             try:
                 if expected_assignments is not None:
                     if container_ipos in container_ipos_to_options_hidden_by_default_value:
-                        for arg_type, assigned_value in expected_assignments.items():
-                            options_hidden_by_default_value_per_type = (
+                        for prop_name, assigned_value in expected_assignments.items():
+                            options_hidden_by_default_value_per_prop_name = (
                                 container_ipos_to_options_hidden_by_default_value[
                                     container_ipos
                                 ]
                             )
-                            if arg_type in options_hidden_by_default_value_per_type:
-                                if options_hidden_by_default_value_per_type[arg_type] is None:
+                            if prop_name in options_hidden_by_default_value_per_prop_name:
+                                if options_hidden_by_default_value_per_prop_name[prop_name] is None:
                                     self.assertNotEqual(
-                                        assigned_value.arg_source,
-                                        ArgSource.DefaultValue,
+                                        assigned_value.value_source,
+                                        ValueSource.default_value,
                                     )
                                 else:
                                     self.assertEqual(
-                                        assigned_value.arg_source,
-                                        ArgSource.DefaultValue,
+                                        assigned_value.value_source,
+                                        ValueSource.default_value,
                                     )
             except:
                 print(
@@ -228,11 +228,11 @@ class InOutTestClass(BaseTestClass):
     def verify_data_envelopes(
         self,
         data_envelopes,
-        envelope_ipos_to_field_values,
+        envelope_ipos_to_prop_values,
     ):
-        for envelope_ipos, field_values in envelope_ipos_to_field_values.items():
+        for envelope_ipos, prop_values in envelope_ipos_to_prop_values.items():
             try:
-                if field_values is None:
+                if prop_values is None:
                     self.assertFalse(
                         (0 <= envelope_ipos < len(data_envelopes))
                         and
@@ -244,21 +244,21 @@ class InOutTestClass(BaseTestClass):
                     self.assertTrue(
                         (0 <= envelope_ipos < len(data_envelopes))
                     )
-                    for field_name, field_value in field_values.items():
+                    for prop_name, prop_value in prop_values.items():
                         try:
-                            if field_value is None:
+                            if prop_value is None:
                                 self.assertTrue(
-                                    field_name not in
+                                    prop_name not in
                                     data_envelopes[envelope_ipos]
                                 )
                             else:
                                 self.assertEqual(
-                                    field_value,
-                                    data_envelopes[envelope_ipos][field_name],
+                                    prop_value,
+                                    data_envelopes[envelope_ipos][prop_name],
                                 )
                         except:
                             eprint(
-                                f"envelope_ipos:{envelope_ipos} field_name:{field_name} field_value:{field_value}",
+                                f"envelope_ipos:{envelope_ipos} prop_name:{prop_name} prop_value:{prop_value}",
                             )
                             raise
 

@@ -16,10 +16,10 @@ Schema for :class:`EnvelopeContainer`
 search_control_ = "search_control"
 data_envelopes_ = "data_envelopes"
 found_count_ = "found_count"
-used_arg_bucket_ = "used_arg_bucket"
-assigned_types_to_values_ = "assigned_types_to_values"
-remaining_types_to_values_ = "remaining_types_to_values"
-filled_types_to_values_hidden_by_defaults_ = "filled_types_to_values_hidden_by_defaults"
+used_token_bucket_ = "used_token_bucket"
+assigned_prop_name_to_prop_value_ = "assigned_prop_name_to_prop_value"
+remaining_prop_name_to_prop_value_ = "remaining_prop_name_to_prop_value"
+filled_prop_values_hidden_by_defaults_ = "filled_prop_values_hidden_by_defaults"
 
 
 class EnvelopeContainerSchema(ObjectSchema):
@@ -43,18 +43,18 @@ class EnvelopeContainerSchema(ObjectSchema):
         required = True,
     )
 
-    used_arg_bucket = fields.Integer(
+    used_token_bucket = fields.Integer(
         required = True,
         allow_none = True,
     )
 
-    assigned_types_to_values = fields.Dict(
+    assigned_prop_name_to_prop_value = fields.Dict(
         keys = fields.String(),
         values = fields.Nested(assigned_value_desc.dict_schema),
         required = True,
     )
 
-    remaining_types_to_values = fields.Dict(
+    remaining_prop_name_to_prop_value = fields.Dict(
         keys = fields.String(),
         values = fields.List(
             fields.String(),
@@ -62,7 +62,7 @@ class EnvelopeContainerSchema(ObjectSchema):
         required = True,
     )
 
-    filled_types_to_values_hidden_by_defaults = fields.Dict(
+    filled_prop_values_hidden_by_defaults = fields.Dict(
         keys = fields.String(),
         values = fields.List(
             fields.String(),
@@ -80,11 +80,11 @@ envelope_container_desc = TypeDesc(
             data_envelope_desc.dict_example,
         ],
         found_count_: 1,
-        used_arg_bucket_: 0,
-        assigned_types_to_values_: {
+        used_token_bucket_: 0,
+        assigned_prop_name_to_prop_value_: {
             "SomeTypeA": assigned_value_desc.dict_example,
         },
-        remaining_types_to_values_: {
+        remaining_prop_name_to_prop_value_: {
             "SomeTypeB": [
                 "B_value_1",
                 "B_value_7",
@@ -94,7 +94,7 @@ envelope_container_desc = TypeDesc(
                 "C_value_9",
             ],
         },
-        filled_types_to_values_hidden_by_defaults_: {
+        filled_prop_values_hidden_by_defaults_: {
         },
     },
     default_file_path = "",

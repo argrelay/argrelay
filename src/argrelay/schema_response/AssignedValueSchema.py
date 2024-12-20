@@ -1,12 +1,12 @@
 from marshmallow import fields, RAISE
 
-from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
-arg_value_ = "arg_value"
-arg_source_ = "arg_source"
+prop_value_ = "prop_value"
+value_source_ = "value_source"
 
 
 class AssignedValueSchema(ObjectSchema):
@@ -16,12 +16,12 @@ class AssignedValueSchema(ObjectSchema):
 
     model_class = AssignedValue
 
-    arg_value = fields.String(
+    prop_value = fields.String(
         required = True,
     )
 
-    arg_source = fields.Enum(
-        ArgSource,
+    value_source = fields.Enum(
+        ValueSource,
         by_value = False,
         required = True,
     )
@@ -31,8 +31,8 @@ assigned_value_desc = TypeDesc(
     dict_schema = AssignedValueSchema(),
     ref_name = AssignedValueSchema.__name__,
     dict_example = {
-        arg_value_: "value_1",
-        arg_source_: ArgSource.ImplicitValue.name,
+        prop_value_: "value_1",
+        value_source_: ValueSource.implicit_value.name,
     },
     default_file_path = "",
 )

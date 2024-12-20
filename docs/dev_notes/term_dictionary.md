@@ -1,36 +1,61 @@
 
-TODO: reformat, sort, populate, link to `feature_story`-ies.
+This doc explains (and links) some of the terms used in `argrelay` docs and sources.
 
-*   argument = arg: one or more command line token interpreted as a function argument, see usage of `TokenType`.
-*   curr, prev, next: current, previous, next item during processing.
+# A
 
-*   token: substring of command line (split by one or more delimiter chars), see usage of `SpecialChar`.
-*   incomplete token: matching some enum items as prefix but not matching any exactly
-    TODO: clarify: what about matching one enum item exactly, but matching other enum items as prefix?
-*   unrecognized token: token matching none of the enum items (under given context)
-    TODO: clarify: can it be incomplete (matching some enum items as prefix)?
-*   tangent = tan: token "touched" by the cursor - see FS_23_62_89_43.
-    TODO: clarify: should it be touched on the side as in `apac|` or it is still tangent for `ap|ac`?
-*   token left part: tangent token substring on the left from the cursor.
-*   token right part: tangent token substring on the right from the cursor.
+### `arg_name`
 
-*   interpreter = interp: see usage of `AbstractInterp`.
+= a name for `command_arg`.
 
-*   type: unique (across all interpreters) name for a set of values.
-*   key: unique (within current interpreter) alias name for a type.
+It is applicable only to:
+*   FS_20_88_05_60 `dictated_arg`-s
 
-*   interrogate (user to specify arg value)
-*   suggest (arg values to user (to interrogate the user))
+Do not confuse with `prop_name` (which is used in `data_envelope`-s) -
+`arg_name` and `prop_name` are not the same concept (and may be different in name),
+but they are still closely related
+(as `arg_name` is mapped into `prop_name` via FS_31_70_49_15 `search_control`).
 
-*   arg type = describes arg value, see also: FS_53_81_66_18 # TnC
-*   arg value = any string from a value set according to arg type.
-*   envelope class = describes `data_envelope` schema, see also: FS_53_81_66_18 # TnC
+See also:
+*   `command_arg`
+*   `arg_value`
+*   `prop_name`
+*   FS_10_93_78_10 `arg_name_to_prop_name_map`
+
+### `arg_value`
+
+= a value of `command_arg`.
+
+It is applicable to both:
+*   FS_96_46_42_30 `offered_arg`-s
+*   FS_20_88_05_60 `dictated_arg`-s
+
+Do not confuse with `prop_value` (which is used in `data_envelope`-s) -
+`arg_value` and `prop_value` are not the same concept,
+but they have the same values
+(when corresponding `arg_name` is mapped into corresponding `prop_name` via FS_31_70_49_15 `search_control`).
+
+See also:
+*   `command_arg`
+*   `arg_name`
+*   `prop_value`
 
 # C
 
+### `command_arg`
+
+= a higher level concept (composition) built out of `command_token`-s.
+
+There are few type of `command_arg`-s:
+*   FS_96_46_42_30 `offered_arg`-s
+*   FS_20_88_05_60 `dictated_arg`-s
+
+See also:
+*   `token_bucket`
+*   `command_token`
+
 ### `command_id`
 
-= the very first arg on the command line (`PosArg` with 0 ipos = index 0).
+= the very first arg on the command line (`offered_arg` with 0 ipos = index 0).
 
 For example, `some_command` is `command_id` in this command line:
 
@@ -38,9 +63,36 @@ For example, `some_command` is `command_id` in this command line:
 some_command goto host dev amer upstream qwer
 ```
 
+In fact, `command_id` is equivalent to `zero_index_arg`, but two different terms are used depending on the context.
+
 See also:
+*   `zero_index_arg`
 *   FS_01_89_09_24 (interp tree) and FS_42_76_93_51 (zero arg interp).
 *   `ipos`
+
+### `command_token`
+
+= a string of contiguous non-whitespace chars between two whitespaces.
+
+`argrelay` server splits command line string into tokens by whitespaces.
+
+In all cases, the server receives the entire command line
+(concatenated back into single string if required) to re-tokenize, re-parse, re-interpret by
+the server with its own logic...
+
+For example, in case of `ServerAction.RelayLineArgs`, `argrelay` client receives CLI input as
+`sys.argv` (in Python) which is a result of parsing by shell,
+but despite that `sys.argv` name, they correspond to `command_token`-s (rather than `command_arg`-s) because
+they are subsequently concatenated and re-tokenized.
+
+`command_token` and `command_arg` bear confusingly close meaning,
+but there are `argrelay`-specific differences
+*   `command_token` is a lower-level (atomic) concept
+*   `command_arg`-s is a higher-level (composite) concept
+
+See also:
+*  `command_arg`
+*  `token_bucket`
 
 ### `cpos`
 
@@ -54,11 +106,27 @@ See also `ipos`.
 
 = a `dict` storable as is in data backend.
 
-This `dict` has properties for searching.
+This `dict` has `prop_name` and `prop_value` for searching.
 
-See also FS_37_57_36_29 (containers, envelopes, payloads).
+See also:
+*   FS_37_57_36_29 (containers, envelopes, payloads).
+
+### `dictated_arg`
+
+= a `command_arg` which has both a name and a value.
+
+See also:
+*   FS_20_88_05_60 dictated_arg
+*   FS_96_46_42_30 offered_arg
 
 # E
+
+### `envelope_class`
+
+= a name which determines `data_envelope` payload schema.
+
+See also:
+*   FS_37_57_36_29 containers, envelopes, payloads
 
 ### `envelope_container`
 
@@ -83,7 +151,23 @@ See also:
 
 See also FS_37_57_36_29 (containers, envelopes, payloads).
 
+# F
+
+### `func`
+
+= synonym to `function` (`func` is just shorter to type).
+
+Each `func` has `func_id` and it is implemented by delegator plugin (see `DelegatorAbstract` hierarchy).
+
 # I
+
+### `incomplete_token`
+
+= a `tangent_token` with empty `token_right_part` matching some of the enum items.
+
+This is a token which is actually complete (matching one of the value, maybe matching more a prefix)
+except that it is also a `tangent_token` and should behave differently depending on
+whether it is `ServerAction.ProposeArgValues` or not.
 
 ### `index_prop`
 
@@ -94,14 +178,26 @@ List of `index_prop`-s per collection is defined in `EnvelopeCollection`.
 
 ### `interp`
 
-= synonym to `interperter` (`interp` is just easier to pronounce and shorter type).
+= synonym to `interpreter` (`interp` is just easier to pronounce and shorter to type).
+
+See usage of `AbstractInterp`.
+
+### `interpreter`
+
+See `interp`.
+
+### `interrogate`
+
+See `interrogation`
 
 ### `interrogation`
 
-= process when user types a selected command line arg (normally, based on previous Tab-completion).
+= process when user types a selected `command_arg`-s (normally, based on previous Tab-completion).
 
-This is "interrogation" in the sense that suggested arg values via Tab-completion appear to user
+This is "interrogation" in the sense that `suggest`-ed `arg_value`-s via Tab-completion appear to user
 as a question with answer options choose from.
+
+See also `suggestion`.
 
 ### `ipos`
 
@@ -125,10 +221,20 @@ some_command goto host dev amer upstream qwer
                cpos = 2
 ```
 
-*   `ipos` is an index of arg within list of command line args
+*   `ipos` is an index of token within list of command line tokens
 *   `cpos` is an index of char within string (e.g. individual arg or entire command line)
 
 See also `cpos`.
+
+# O
+
+### `offered_arg`
+
+= a `command_arg` which has only a value.
+
+See also:
+*   FS_96_46_42_30 offered_arg
+*   FS_20_88_05_60 dictated_arg
 
 # P
 
@@ -146,7 +252,69 @@ See also FS_00_13_77_97 plugin framework.
 
 See also FS_00_13_77_97 plugin framework.
 
+### `prop_name`
+
+= a name of a property in `data_envelope` and `envelope_container`.
+
+Do not confuse with `arg_name` (which is part of `command_arg`), but compare them - see `arg_name`.
+
+See also:
+*   FS_10_93_78_10 `arg_name_to_prop_name_map`
+*   `prop_value`
+
+### `prop_value`
+
+= a value of a property in `data_envelope` and `envelope_container`.
+
+Do not confuse with `arg_value` (which is part of `command_arg`), but compare them - see `arg_value`.
+
+See also:
+*   `prop_name`
+
+# S
+
+### `suggest`
+
+See `suggestion`.
+
+### `suggestion`
+
+= a process to request `command_arg`-s options to choose from (normally, during Tab-completion).
+
+See also `interrogation`.
+
 # T
+
+### `tangent_token`
+
+= a token "touched" by the cursor.
+
+See FS_23_62_89_43 `tangent_token`.
+
+It can be touched on the side as in `apac|` or can be touched within `ap|ac`.
+
+*   `token_left_part`: tangent token substring on the left from the cursor (can be empty).
+*   `token_right_part`: tangent token substring on the right from the cursor (can be empty).
+
+### `token_bucket`
+
+= a collection of `command_token`-s separated by `SpecialChar.TokenBucketDelimiter` token
+
+It does not include `SpecialChar.TokenBucketDelimiter` token.
+
+`token_bucket` form a sub-set of `command_token`-s.
+
+`token_bucket` is used to set boundaries for `command_arg`-s consumption.
+
+See [`FS_97_64_39_94.token_bucket.md`][FS_97_64_39_94.token_bucket.md].
+
+### `token_left_part`
+
+See `tangent_token`.
+
+### `token_right_part`
+
+See `tangent_token`.
 
 ### `tree_path`
 
@@ -190,3 +358,47 @@ Tree paths can also be:
 *   `tree_abs_path` = absolute tree path (e.g. equivalent to FS notation `/l1_4/l2_2` starting from the root)
 *   `tree_rel_path` = relative tree path (e.g. equivalent to FS notation `l2_1/l3_1` starting anywhere within the tree).
 
+# U
+
+### `unrecognized_token`
+
+= a token matching none of the enum items (under given context)
+
+It can be match some enum items as prefix, but if left as is, it does not match any.
+
+# Z
+
+### `zero_index_arg`
+
+This is the first arg on the command line (which is accessed via zero index into array of args).
+
+`zero_index_arg` is equivalent to `command_id`.
+
+For example:
+
+```sh
+ls -lrt
+git log
+```
+
+In the example above, `ls` and `git` are `zero_index_arg`-s.
+
+Such arg is special:
+
+*   on client side:
+
+    It defines what shell does (e.g. what Tab-completion logic to run) or
+    what executable file to start.
+
+*   on server side:
+
+    It is supposed to select interpretation logic of the entire command line
+    (e.g. via FS_15_79_76_85 line processor).
+
+See also:
+*   `command_id`
+*   FS_42_76_93_51 very first zero arg mapping interp
+
+<!-- links --------------------------------------------------------------------------------------------------------- -->
+
+[FS_97_64_39_94.token_bucket.md]: ../feature_stories/FS_97_64_39_94.token_bucket.md

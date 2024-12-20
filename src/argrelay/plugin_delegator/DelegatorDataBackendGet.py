@@ -48,7 +48,7 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
                     collection_search_control,
                 ],
             },
-            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+            ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
             ReservedPropName.help_hint.name: "Get `data_envelope`-s based on their `index_prop`-s.",
             ReservedPropName.func_state.name: FuncState.fs_alpha.name,
             ReservedPropName.func_id.name: SpecialFunc.func_id_get_data_envelopes.name,
@@ -75,7 +75,7 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
             return redirect_to_not_disambiguated_error(
                 interp_ctx,
                 local_server.plugin_config,
-                ReservedEnvelopeClass.ClassCollection.name,
+                ReservedEnvelopeClass.class_collection.name,
             )
 
         vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]

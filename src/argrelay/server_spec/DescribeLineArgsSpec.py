@@ -7,7 +7,7 @@ from argrelay.schema_response.InterpResultSchema import interp_result_desc
 from argrelay.server_spec.server_data_schema import get_schema_definitions
 
 spec_data = {
-    "summary": "Describe search results from arg values of the given command line and cursor position",
+    "summary": "Describe search results from `prop_value`-s of the given command line and cursor position",
     "consumes": [
         "application/json",
     ],

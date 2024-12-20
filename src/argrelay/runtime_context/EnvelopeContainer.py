@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Union
 
-from argrelay.enum_desc.ArgSource import ArgSource
+from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 
@@ -39,40 +39,43 @@ class EnvelopeContainer:
     Counter of `data_envelope`-s found in the last query.
     """
 
-    used_arg_bucket: Union[int, None] = field(default = None)
+    used_token_bucket: Union[int, None] = field(default = None)
     """
-    FS_97_64_39_94 `arg_bucket` (index) where args were consumed from for the current `envelope_container`.
+    FS_97_64_39_94 `token_bucket` (index) where args were consumed from for the current `envelope_container`.
     """
 
-    # TODO: Maybe rename to `context_types_to_values`?
+    # TODO: TODO_55_51_89_92: review and update `args_context`
     # TODO: Part of (or actually is?) `args_context`: FS_62_25_92_06:
-    assigned_types_to_values: dict[str, AssignedValue] = field(default_factory = lambda: {})
+    assigned_prop_name_to_prop_value: dict[str, AssignedValue] = field(default_factory = lambda: {})
     """
     All assigned args (from interpreted tokens) mapped as type:value which belong to `data_envelope`.
     """
 
+    # TODO: TODO_55_51_89_92: review and update `args_context`
     # TODO: Part of (or not?) `args_context` (FS_62_25_92_06) to support FS_13_51_07_97 (single out implicit values):
-    remaining_types_to_values: dict[str, list[str]] = field(default_factory = lambda: {})
+    remaining_prop_name_to_prop_value: dict[str, list[str]] = field(default_factory = lambda: {})
     """
-    All arg values per arg type left as options to match arg value given on the command line.
+    All `prop_value`-s per `prop_name` left as options to match `arg_value` given on the command line.
 
-    When arg value from command line matches one of the values, this arg type moves to `assigned_types_to_values`.
+    When `arg_value` from command line matches one of the `prop_value`-s for one of the `prop_name`,
+    this `prop_name` moves to `assigned_prop_name_to_prop_value`.
     """
 
-    filled_types_to_values_hidden_by_defaults: dict[str, list[str]] = field(default_factory = lambda: {})
+    filled_prop_values_hidden_by_defaults: dict[str, list[str]] = field(default_factory = lambda: {})
     """
     FS_72_53_55_13: values hidden by defaults:
     This dict stores values which were hidden by applying defaults (see FS_72_40_53_00 fill control).
-    Only keys for those `arg_type`-s which have `ArgSource.InitValue` in `assigned_types_to_values` are listed here.
+    Only keys for those `prop_name`-s which have `ValueSource.default_value` in
+    `assigned_prop_name_to_prop_value` are listed here.
     """
 
     def populate_implicit_arg_values(
         self,
     ) -> bool:
         """
-        When possible arg_values are singled out, assign them as `ArgSource.ImplicitValue`.
+        When possible `arg_value`-s are singled out, assign them as `ValueSource.implicit_value`.
 
-        When `data_envelope` is singled out, all remaining single-value `arg_type`-s become `ArgSource.ImplicitValue`.
+        When `data_envelope` is singled out, all remaining single-value `prop_name`-s become `ValueSource.implicit_value`.
 
         Implements FS_13_51_07_97 singled out implicit values.
 
@@ -83,23 +86,23 @@ class EnvelopeContainer:
 
         any_assigned = False
         # Filter as in: FS_31_70_49_15 search control:
-        for arg_type in self.search_control.keys_to_props_dict.values():
-            if arg_type not in self.assigned_types_to_values:
-                if arg_type in self.remaining_types_to_values:
-                    arg_values = self.remaining_types_to_values[arg_type]
+        for prop_name in self.search_control.arg_name_to_prop_name_dict.values():
+            if prop_name not in self.assigned_prop_name_to_prop_value:
+                if prop_name in self.remaining_prop_name_to_prop_value:
+                    prop_values = self.remaining_prop_name_to_prop_value[prop_name]
 
-                    # FS_06_99_43_60 list arg value:
-                    # When a `data_envelope` is singled out, its array arg value will not be set as
-                    # singled out via `ArgSource.ImplicitValue` (user can still select them explicitly).
+                    # FS_06_99_43_60 array `prop_value`:
+                    # When a `data_envelope` is singled out, its array `prop_value` will not be set as
+                    # singled out via `ValueSource.implicit_value` (user can still select them explicitly).
                     # This is deliberate for now as the selection of specific value out of the array can be used
                     # by delegators to implement difference in behavior.
 
-                    if len(arg_values) == 1:
-                        del self.remaining_types_to_values[arg_type]
-                        self.assigned_types_to_values[arg_type] = AssignedValue(
+                    if len(prop_values) == 1:
+                        del self.remaining_prop_name_to_prop_value[prop_name]
+                        self.assigned_prop_name_to_prop_value[prop_name] = AssignedValue(
                             # single value:
-                            arg_values[0],
-                            ArgSource.ImplicitValue,
+                            prop_values[0],
+                            ValueSource.implicit_value,
                         )
                         any_assigned = True
         return any_assigned

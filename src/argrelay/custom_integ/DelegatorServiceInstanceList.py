@@ -45,7 +45,7 @@ class DelegatorServiceInstanceList(DelegatorServiceInstanceBase):
                         service_search_control,
                     ],
                 },
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.ClassFunction.name,
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
                 ReservedPropName.help_hint.name: "List service instances matching search query",
                 ReservedPropName.func_state.name: FuncState.fs_demo.name,
                 ReservedPropName.func_id.name: func_id_list_service_,
@@ -69,7 +69,7 @@ class DelegatorServiceInstanceList(DelegatorServiceInstanceBase):
             interp_ctx,
             local_server,
             vararg_container_ipos,
-            ServiceEnvelopeClass.ClassService.name,
+            ServiceEnvelopeClass.class_service.name,
         )
 
     @staticmethod
