@@ -6,7 +6,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from argrelay.runtime_context.AbstractArg import ArgCommandValueOffered, ArgCommand, ArgCommandValueDictated
+from argrelay.runtime_context.AbstractArg import (
+    ArgCommandValueOffered, ArgCommand, ArgCommandValueDictated,
+    ArgCommandIncomplete,
+)
 
 
 @dataclass
@@ -29,9 +32,9 @@ class ArgCommandData(ArgCommand):
 
 
 @dataclass
-class ArgCommandValue(ArgCommandData):
+class ArgCommandDataValue(ArgCommandData):
     """
-    Extends `ArgCommandData` with value.
+    Extends `ArgCommandData` with `arg_value`.
     """
 
     arg_value: str = field()
@@ -43,14 +46,14 @@ class ArgCommandValue(ArgCommandData):
 
 
 @dataclass
-class ArgCommandValueOfferedData(ArgCommandValue, ArgCommandValueOffered):
+class ArgCommandDataValueOffered(ArgCommandDataValue, ArgCommandValueOffered):
     """
     Implements FS_96_46_42_30 `offered_arg`.
     """
 
 
 @dataclass
-class ArgCommandValueDictatedData(ArgCommandValue, ArgCommandValueDictated):
+class ArgCommandDataValueDictated(ArgCommandDataValue, ArgCommandValueDictated):
     """
     Implements FS_20_88_05_60 `dictated_arg``.
     """
@@ -60,4 +63,19 @@ class ArgCommandValueDictatedData(ArgCommandValue, ArgCommandValueDictated):
     def get_arg_name(
         self
     ) -> str:
-        raise self.arg_name
+        return self.arg_name
+
+
+
+@dataclass
+class ArgCommandDataIncomplete(ArgCommandData, ArgCommandIncomplete):
+    """
+    Implements FS_08_58_30_24 `incomplete_arg`.
+    """
+
+    arg_name: str = field()
+
+    def get_arg_name(
+        self
+    ) -> str:
+        return self.arg_name

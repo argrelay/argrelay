@@ -25,7 +25,7 @@ def create_blueprint_gui(
     project_git_conf_dir_display_string: str,
 ):
     if default_gui_command is None or len(default_gui_command.strip()) == 0:
-        default_gui_command = "lay"
+        default_gui_command = "lay goto"
     else:
         default_gui_command = default_gui_command.strip()
 

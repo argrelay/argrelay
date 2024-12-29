@@ -51,7 +51,7 @@ setuptools.setup(
     version = version_string,
     author = "uvsmtid",
     author_email = "uvsmtid@gmail.com",
-    description = "Tab-completion & data search server = total recall for Bash shell",
+    description = "A data server to CLI tools with attribute search & Tab-completion in Bash shell",
     long_description = """
 See: https://github.com/argrelay/argrelay
     """,
@@ -115,7 +115,7 @@ See: https://github.com/argrelay/argrelay
 
             # GUI client:
             "relay_server/gui_static/argrelay_client.js",
-            "relay_server/gui_static/argrelay_favicon.ico",
+            "relay_server/gui_static/argrelay_favicon_16.ico",
             "relay_server/gui_static/argrelay_style.css",
             "relay_server/gui_static/external_link.svg",
             "relay_server/gui_templates/argrelay_main.html",

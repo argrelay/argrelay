@@ -21,30 +21,43 @@ class ParsedContext(CallContext):
     """
 
     all_tokens: list[str] = field(init = False)
+    """
+    List of all token values.
+
+    This list is where each token ipos (index) refers to.
+    """
+
+    prev_token_ipos: int = field(init = False)
+    """
+    Token ipos (index) for the token before the cursor.
+    """
+
     tan_token_ipos: int = field(init = False)
     tan_token_l_cpos: int = field(init = False)
     tan_token_r_cpos: int = field(init = False)
-    tan_token: str = field(init = False)
+    tan_token_value: str = field(init = False)
     tan_token_l_part: str = field(init = False)
     tan_token_r_part: str = field(init = False)
 
     def __post_init__(self):
         (
             all_tokens,
+            prev_token_ipos,
             tan_token_ipos,
             tan_token_l_cpos,
             tan_token_r_cpos,
-            tan_token,
+            tan_token_value,
             tan_token_l_part,
             tan_token_r_part,
         ) = self.parse_input(self)
-        object.__setattr__(self, 'all_tokens', all_tokens)
-        object.__setattr__(self, 'tan_token_ipos', tan_token_ipos)
-        object.__setattr__(self, 'tan_token_l_cpos', tan_token_l_cpos)
-        object.__setattr__(self, 'tan_token_r_cpos', tan_token_r_cpos)
-        object.__setattr__(self, 'tan_token', tan_token)
-        object.__setattr__(self, 'tan_token_l_part', tan_token_l_part)
-        object.__setattr__(self, 'tan_token_r_part', tan_token_r_part)
+        object.__setattr__(self, "all_tokens", all_tokens)
+        object.__setattr__(self, "prev_token_ipos", prev_token_ipos)
+        object.__setattr__(self, "tan_token_ipos", tan_token_ipos)
+        object.__setattr__(self, "tan_token_l_cpos", tan_token_l_cpos)
+        object.__setattr__(self, "tan_token_r_cpos", tan_token_r_cpos)
+        object.__setattr__(self, "tan_token_value", tan_token_value)
+        object.__setattr__(self, "tan_token_l_part", tan_token_l_part)
+        object.__setattr__(self, "tan_token_r_part", tan_token_r_part)
 
     @classmethod
     def from_instance(
@@ -57,12 +70,21 @@ class ParsedContext(CallContext):
     def parse_input(
         call_ctx: CallContext,
     ) -> tuple[
+        # all_tokens:
         list[str],
+        # prev_token_ipos:
         int,
+        # tan_token_ipos:
         int,
+        # tan_token_l_cpos:
         int,
+        # tan_token_r_cpos:
+        int,
+        # tan_token_value:
         str,
+        # tan_token_l_part:
         str,
+        # tan_token_r_part:
         str,
     ]:
         """
@@ -100,9 +122,11 @@ class ParsedContext(CallContext):
         line_len = len(command_line)
 
         # Init with defaults:
+        # TODO: TODO_51_14_50_19: ensure `tangent_token` always exists
         # TODO: FS_23_62_89_43: `tangent_token` ipos should always be above zero and point to
         #                       (possibly surrogate missing empty) token ipos within command line.
         all_tokens = []
+        prev_token_ipos = -1
         tan_token_ipos = -1
         tan_token_l_cpos = -1
         tan_token_r_cpos = -1
@@ -113,6 +137,7 @@ class ParsedContext(CallContext):
         token_ipos = 0
         for m in re.finditer(SpecialChar.TokenDelimiter.value, command_line):
             (span_l, span_r) = m.span(0)
+
             if prev_span_r != -1:
                 # New token found between prev and curr delimiter span.
                 if prev_span_r <= cursor_cpos <= span_l:
@@ -124,6 +149,10 @@ class ParsedContext(CallContext):
                 all_tokens.append(command_line[prev_span_r:span_l])
                 token_ipos += 1
 
+            if span_l < cursor_cpos:
+                if len(all_tokens) > 0:
+                    prev_token_ipos = token_ipos - 1
+
             prev_span_l = span_l
             prev_span_r = span_r
 
@@ -134,7 +163,7 @@ class ParsedContext(CallContext):
             tan_token_r_cpos = line_len
             all_tokens.append(command_line)
 
-        tan_token = command_line[tan_token_l_cpos:tan_token_r_cpos]
+        tan_token_value = command_line[tan_token_l_cpos:tan_token_r_cpos]
         tan_token_l_part = command_line[tan_token_l_cpos:cursor_cpos]
         tan_token_r_part = command_line[cursor_cpos:tan_token_r_cpos]
 
@@ -146,10 +175,11 @@ class ParsedContext(CallContext):
 
         return (
             all_tokens,
+            prev_token_ipos,
             tan_token_ipos,
             tan_token_l_cpos,
             tan_token_r_cpos,
-            tan_token,
+            tan_token_value,
             tan_token_l_part,
             tan_token_r_part,
         )

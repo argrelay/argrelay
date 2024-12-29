@@ -11,7 +11,7 @@
         Resize: https://redketchup.io/icon-converter
         Convert: https://cloudconvert.com/
     -->
-    <link rel="icon" sizes="16x16" href="{{ url_for("static", filename = "argrelay_favicon.ico") }}"/>
+    <link rel="icon" sizes="16x16" href="{{ url_for("static", filename = "argrelay_favicon_16.ico") }}"/>
 
     <script
         type="text/javascript"
@@ -200,15 +200,16 @@
     </div>
 
     <div class="top_container">
-        <div
-            id="invocation_output_label"
-            class="box_label"
-            for="invocation_output"
-        >last invocation response:</div>
-        <div
-            id="invocation_output"
-            class="output_box"
-        >
+        <details>
+            <summary
+                id="invocation_output_label"
+                class="box_label"
+                for="invocation_output"
+            >last invocation response:</summary>
+            <div
+                id="invocation_output"
+                class="output_box"
+            >
         </div>
     </div>
 

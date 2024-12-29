@@ -4,7 +4,10 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.AbstractArg import ArgCommandValueOffered, ArgCommandValueDictated
-from argrelay.runtime_context.DataArg import ArgCommandValueOfferedData, ArgCommandValueDictatedData
+from argrelay.runtime_context.DataArg import (
+    ArgCommandDataValueOffered, ArgCommandDataValueDictated,
+    ArgCommandDataIncomplete,
+)
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
@@ -23,8 +26,9 @@ class ThisTestCase(ShellInputTestCase):
         expected_token_buckets: list[list[int]],
         expected_excluded_tokens: list[int],
         expected_token_ipos_to_token_bucket_map: dict[int, int],
-        expected_offered_args_per_bucket: list[list[ArgCommandValueOffered]],
-        expected_dictated_args_per_bucket: list[list[ArgCommandValueDictated]],
+        expected_remaining_offered_args_per_bucket: list[list[ArgCommandValueOffered]],
+        expected_remaining_dictated_args_per_bucket: list[list[ArgCommandValueDictated]],
+        expected_remaining_incomplete_args_per_bucket: list[list[ArgCommandDataIncomplete]],
         case_comment: str,
     ):
         super().__init__(
@@ -36,8 +40,9 @@ class ThisTestCase(ShellInputTestCase):
         self.expected_token_buckets = expected_token_buckets
         self.expected_excluded_tokens = expected_excluded_tokens
         self.expected_token_ipos_to_token_bucket_map = expected_token_ipos_to_token_bucket_map
-        self.expected_offered_args_per_bucket = expected_offered_args_per_bucket
-        self.expected_dictated_args_per_bucket = expected_dictated_args_per_bucket
+        self.expected_remaining_offered_args_per_bucket = expected_remaining_offered_args_per_bucket
+        self.expected_remaining_dictated_args_per_bucket = expected_remaining_dictated_args_per_bucket
+        self.expected_remaining_incomplete_args_per_bucket = expected_remaining_incomplete_args_per_bucket
 
     def __iter__(self):
         return iter((
@@ -49,8 +54,9 @@ class ThisTestCase(ShellInputTestCase):
             self.expected_token_buckets,
             self.expected_excluded_tokens,
             self.expected_token_ipos_to_token_bucket_map,
-            self.expected_offered_args_per_bucket,
-            self.expected_dictated_args_per_bucket,
+            self.expected_remaining_offered_args_per_bucket,
+            self.expected_remaining_dictated_args_per_bucket,
+            self.expected_remaining_incomplete_args_per_bucket,
         ))
 
 
@@ -95,6 +101,9 @@ class ThisTestClass(BaseTestClass):
                     [
                         [],
                     ],
+                    [
+                        [],
+                    ],
                     "empty line",
                 ),
                 ThisTestCase(
@@ -103,14 +112,19 @@ class ThisTestClass(BaseTestClass):
                         [],
                     ],
                     [0],
-                    {},
+                    {
+                        0: 0,
+                    },
                     [
                         [],
                     ],
                     [
                         [],
                     ],
-                    "case A: with tangent token excluded: single arg, no bucket separator",
+                    [
+                        [],
+                    ],
+                    "case A: with `tangent_token` excluded as for `ServerAction.ProposeArgValues`: single arg, no bucket separator",
                 ),
                 ThisTestCase(
                     "a|", CompType.InvokeAction,
@@ -123,7 +137,7 @@ class ThisTestClass(BaseTestClass):
                     },
                     [
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [0],
                                 arg_value = "a",
                             ),
@@ -132,7 +146,10 @@ class ThisTestClass(BaseTestClass):
                     [
                         [],
                     ],
-                    "case B: with tangent token included: single arg, no bucket separator",
+                    [
+                        [],
+                    ],
+                    "case B: with `tangent_token` included for NOT `ServerAction.ProposeArgValues`: single arg, no bucket separator",
                 ),
                 ThisTestCase(
                     "% a|", CompType.InvokeAction,
@@ -148,11 +165,15 @@ class ThisTestClass(BaseTestClass):
                     [
                         [],
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [1],
                                 arg_value = "a",
                             ),
                         ],
+                    ],
+                    [
+                        [],
+                        [],
                     ],
                     [
                         [],
@@ -172,11 +193,15 @@ class ThisTestClass(BaseTestClass):
                     },
                     [
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [0],
                                 arg_value = "a",
                             ),
                         ],
+                        [],
+                    ],
+                    [
+                        [],
                         [],
                     ],
                     [
@@ -196,11 +221,14 @@ class ThisTestClass(BaseTestClass):
                     },
                     [
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [0],
                                 arg_value = "%a",
                             ),
                         ],
+                    ],
+                    [
+                        [],
                     ],
                     [
                         [],
@@ -218,11 +246,14 @@ class ThisTestClass(BaseTestClass):
                     },
                     [
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [0],
                                 arg_value = "a%",
                             ),
                         ],
+                    ],
+                    [
+                        [],
                     ],
                     [
                         [],
@@ -247,23 +278,30 @@ class ThisTestClass(BaseTestClass):
                     [
                         [],
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [1],
                                 arg_value = "qwer",
                             ),
                         ],
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [3],
                                 arg_value = "asdf",
                             ),
                         ],
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [5],
                                 arg_value = "zxcv",
                             ),
                         ],
+                        [],
+                    ],
+                    [
+                        [],
+                        [],
+                        [],
+                        [],
                         [],
                     ],
                     [
@@ -296,35 +334,42 @@ class ThisTestClass(BaseTestClass):
                     [
                         [],
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [1],
                                 arg_value = "qwer",
                             ),
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [2],
                                 arg_value = "asdf",
                             ),
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [3],
                                 arg_value = "zxcv",
                             ),
                         ],
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [5],
                                 arg_value = "qwer",
                             ),
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [6],
                                 arg_value = "asdf",
                             ),
                         ],
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [8],
                                 arg_value = "zxcv",
                             ),
                         ],
+                        [],
+                    ],
+                    [
+                        [],
+                        [],
+                        [],
+                        [],
                         [],
                     ],
                     [
@@ -349,7 +394,7 @@ class ThisTestClass(BaseTestClass):
                     },
                     [
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [2],
                                 arg_value = "offered_arg_value1",
                             ),
@@ -357,18 +402,21 @@ class ThisTestClass(BaseTestClass):
                     ],
                     [
                         [
-                            ArgCommandValueDictatedData(
+                            ArgCommandDataValueDictated(
                                 token_ipos_list = [0, 1],
                                 arg_value = "dictated_arg_value1",
-                                arg_name = "-dictated_arg_name1",
+                                arg_name = "dictated_arg_name1",
                             ),
                         ],
+                    ],
+                    [
+                        [],
                     ],
                     "parse well-formed `dictated_arg` and "
                     "well-formed `offered_arg_value`",
                 ),
                 ThisTestCase(
-                    "-dictated_arg_name1 dictated_arg_value1 -dictated_arg_name2 |", CompType.InvokeAction,
+                    "-dictated_arg_name1 dictated_arg_value1 -incomplete_arg_name2 |", CompType.InvokeAction,
                     [
                         [0, 1, 2],
                     ],
@@ -383,15 +431,23 @@ class ThisTestClass(BaseTestClass):
                     ],
                     [
                         [
-                            ArgCommandValueDictatedData(
+                            ArgCommandDataValueDictated(
                                 token_ipos_list = [0, 1],
                                 arg_value = "dictated_arg_value1",
-                                arg_name = "-dictated_arg_name1",
+                                arg_name = "dictated_arg_name1",
+                            ),
+                        ],
+                    ],
+                    [
+                        [
+                            ArgCommandDataIncomplete(
+                                token_ipos_list = [2],
+                                arg_name = "incomplete_arg_name2",
                             ),
                         ],
                     ],
                     "parse first well-formed `dictated_arg` and "
-                    "second ill-formed `dictated_arg` (missing value)",
+                    "second ill-formed `dictated_arg` (missing value) which becomes FS_08_58_30_24 `incomplete_arg`",
                 ),
                 ThisTestCase(
                     "-dictated_arg_name1 -dictated_arg_value1 offered_arg_value2 |", CompType.InvokeAction,
@@ -406,7 +462,7 @@ class ThisTestClass(BaseTestClass):
                     },
                     [
                         [
-                            ArgCommandValueOfferedData(
+                            ArgCommandDataValueOffered(
                                 token_ipos_list = [2],
                                 arg_value = "offered_arg_value2",
                             ),
@@ -414,19 +470,133 @@ class ThisTestClass(BaseTestClass):
                     ],
                     [
                         [
-                            ArgCommandValueDictatedData(
+                            ArgCommandDataValueDictated(
                                 token_ipos_list = [0, 1],
                                 arg_value = "-dictated_arg_value1",
-                                arg_name = "-dictated_arg_name1",
+                                arg_name = "dictated_arg_name1",
                             ),
                         ],
+                    ],
+                    [
+                        [],
                     ],
                     "parse first well-formed `dictated_arg` "
                     "(with value which only looks like start of another `dictated_arg`) and "
                     "second well-formed `offered_arg_value`",
                 ),
+                ThisTestCase(
+                    "-incomplete_arg_name1 |", CompType.InvokeAction,
+                    [
+                        [0],
+                    ],
+                    [],
+                    {
+                        0: 0,
+                    },
+                    [
+                        [],
+                    ],
+                    [
+                        [],
+                    ],
+                    [
+                        [
+                            ArgCommandDataIncomplete(
+                                token_ipos_list = [0],
+                                arg_name = "incomplete_arg_name1",
+                            ),
+                        ],
+                    ],
+                    "Parse single `incomplete_arg`.",
+                ),
+                ThisTestCase(
+                    "-incomplete_arg_name1 % -incomplete_arg_name2 |", CompType.InvokeAction,
+                    [
+                        [0],
+                        [2],
+                    ],
+                    [1],
+                    {
+                        0: 0,
+                        2: 1,
+                    },
+                    [
+                        [],
+                        [],
+                    ],
+                    [
+                        [],
+                        [],
+                    ],
+                    [
+                        [
+                            ArgCommandDataIncomplete(
+                                token_ipos_list = [0],
+                                arg_name = "incomplete_arg_name1",
+                            ),
+                        ],
+                        [
+                            ArgCommandDataIncomplete(
+                                token_ipos_list = [2],
+                                arg_name = "incomplete_arg_name2",
+                            ),
+                        ],
+                    ],
+                    "Parse FS_08_58_30_24 `incomplete_arg`-s - one for each `token_bucket`.",
+                ),
+                ThisTestCase(
+                    "offered_arg_value1 -incomplete_arg_name2 % -dictated_arg_name3 dictated_arg_value3 -incomplete_arg_name4 |", CompType.InvokeAction,
+                    [
+                        [0, 1],
+                        [3, 4, 5],
+                    ],
+                    [2],
+                    {
+                        0: 0,
+                        1: 0,
+                        3: 1,
+                        4: 1,
+                        5: 1,
+                    },
+                    [
+                        [
+                            ArgCommandDataValueOffered(
+                                token_ipos_list = [0],
+                                arg_value = "offered_arg_value1",
+                            ),
+                        ],
+                        [],
+                    ],
+                    [
+                        [],
+                        [
+                            ArgCommandDataValueDictated(
+                                token_ipos_list = [3, 4],
+                                arg_value = "dictated_arg_value3",
+                                arg_name = "dictated_arg_name3",
+                            ),
+                        ],
+                    ],
+                    [
+                        [
+                            ArgCommandDataIncomplete(
+                                token_ipos_list = [1],
+                                arg_name = "incomplete_arg_name2",
+                            ),
+                        ],
+                        [
+                            ArgCommandDataIncomplete(
+                                token_ipos_list = [5],
+                                arg_name = "incomplete_arg_name4",
+                            ),
+                        ],
+                    ],
+                    "Parse combination of `offered_arg`, `dictated_arg`, `incomplete_arg` "
+                    "in different `token_bucket`-s.",
+                ),
             ]
             for test_case in test_cases:
+
                 with self.subTest(test_case):
                     (
                         line_number,
@@ -437,8 +607,9 @@ class ThisTestClass(BaseTestClass):
                         expected_token_buckets,
                         expected_excluded_tokens,
                         expected_token_ipos_to_token_bucket_map,
-                        expected_offered_args_per_bucket,
-                        expected_dictated_args_per_bucket,
+                        expected_remaining_offered_args_per_bucket,
+                        expected_remaining_dictated_args_per_bucket,
+                        expected_remaining_incomplete_args_per_bucket,
                     ) = test_case
 
                     parsed_ctx = default_test_parsed_context(
@@ -488,10 +659,14 @@ class ThisTestClass(BaseTestClass):
                         ),
                     )
                     self.assertEqual(
-                        interp_ctx.offered_args_per_bucket,
-                        expected_offered_args_per_bucket,
+                        interp_ctx.remaining_offered_args_per_bucket,
+                        expected_remaining_offered_args_per_bucket,
                     )
                     self.assertEqual(
-                        interp_ctx.dictated_args_per_bucket,
-                        expected_dictated_args_per_bucket,
+                        interp_ctx.remaining_dictated_args_per_bucket,
+                        expected_remaining_dictated_args_per_bucket,
+                    )
+                    self.assertEqual(
+                        interp_ctx.remaining_incomplete_args_per_bucket,
+                        expected_remaining_incomplete_args_per_bucket,
                     )

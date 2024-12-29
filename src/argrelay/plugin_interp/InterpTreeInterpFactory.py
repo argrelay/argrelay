@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import contextlib
 from copy import deepcopy
-from typing import Union, Optional
+from typing import Union
 
 from argrelay.composite_forest.CompositeForestExtractor import extract_interp_tree
 from argrelay.composite_forest.CompositeInfoType import CompositeInfoType
@@ -240,22 +240,27 @@ class InterpTreeInterp(AbstractInterp):
         return True
 
     def consume_dictated_args(self) -> bool:
-        # TODO: FS_20_88_05_60 `dictated_arg`-s: stub
+        """
+        As of now, `InterpTreeInterp` ignores `dictated_arg`-s.
+        """
         return False
 
     def consume_offered_args(
         self,
     ) -> bool:
         """
-        Consumes heading args in `remaining_token_buckets` according to the `interp_selector_tree`.
+        Consumes heading `offered_arg`-s according to the possible paths within `interp_selector_tree`.
 
-        Unlike normal guideline to consume one arg at time (FS_44_36_84_88),
-        this func consumes all possible args
-        because args are selected according to the `interp_selector_tree` (not via query)
-        and do not become incompatible by consuming all (causing FS_51_67_38_37 impossible arg combinations).
+        Unlike normal guideline to consume one `offered_arg`-s at time before re-query (FS_44_36_84_88),
+        this func consumes all possible `offered_arg`-s at once
+        because `arg_value`-s are selected by walking the `interp_selector_tree` (not via data query)
+        and do not become incompatible by consuming all
+        (do not violate FS_51_67_38_37 avoid impossible arg combinations).
 
-        Also, FS_01_89_09_24 interp tree does not observe FS_97_64_39_94 `token_bucket` boundaries
-        and consumes all necessary args sequentially.
+        Also, FS_01_89_09_24 interp tree interp consumes only from
+        the first (ipos = 0) `remaining_offered_args_per_bucket`.
+        It still respects FS_97_64_39_94 `token_bucket` boundaries but
+        does not have the same flexibility as consumption by FS_26_43_73_72 func tree interp.
         """
 
         curr_sub_tree = fetch_subtree_node(
@@ -269,12 +274,8 @@ class InterpTreeInterp(AbstractInterp):
                 self.next_interp_factory_id = curr_sub_tree
                 return any_consumed
 
-            # Always consume next remaining token:
-            # TODO: TODO_66_09_41_16: clarify command line processing
-            #       The code below consumes `curr_token_ipos` ignoring `token_bucket` boundaries.
-            #       Is this assumption valid/safe that next remaining `ipos` is in the order it appears on command line?
-            #       Apparently, it is fine as we keep deleting head of `remaining_token_buckets` below.
-            offered_arg: Optional[ArgCommandValueOffered] = self.interp_ctx.next_remaining_offered_arg()
+            # Always consume next remaining `offered_arg`:
+            offered_arg: Union[ArgCommandValueOffered, None] = self._next_remaining_offered_arg_from_first_bucket()
 
             if offered_arg is None:
                 self.set_default_factory_id(curr_sub_tree)
@@ -285,9 +286,15 @@ class InterpTreeInterp(AbstractInterp):
                     # Consume one more arg into path:
                     self.interp_tree_abs_path.append(offered_arg.get_arg_value())
 
-                    bucket_index = self.interp_ctx.token_ipos_to_token_bucket_map[offered_arg.get_arg_tokens()[0]]
-                    self.interp_ctx.consumed_token_buckets[bucket_index].append(offered_arg.get_arg_tokens()[0])
-                    del self.interp_ctx.remaining_token_buckets[bucket_index][0]
+                    bucket_index = self.interp_ctx.token_ipos_to_token_bucket_map[offered_arg.get_arg_token()]
+                    # Always consume from the first `token_bucket` (ipos = 0):
+                    assert bucket_index == 0
+                    # TODO: TODO_66_09_41_16: clarify command line processing
+                    #       Use helper functions which ensure consistency
+                    #       (like in this case, if one is removed, another is removed)
+                    self.interp_ctx.consumed_token_buckets[bucket_index].append(offered_arg.get_arg_token())
+                    self.interp_ctx.remaining_token_buckets[bucket_index].remove(offered_arg.get_arg_token())
+                    self.interp_ctx.remaining_offered_args_per_bucket[bucket_index].remove(offered_arg)
 
                     curr_sub_tree = curr_sub_tree[offered_arg.get_arg_value()]
                     any_consumed = True
@@ -297,6 +304,13 @@ class InterpTreeInterp(AbstractInterp):
                     return any_consumed
             else:
                 raise LookupError()
+
+    def _next_remaining_offered_arg_from_first_bucket(
+        self,
+    ) -> Union[ArgCommandValueOffered, None]:
+        for offered_arg in self.interp_ctx.remaining_offered_args_per_bucket[0]:
+            return offered_arg
+        return None
 
     def set_default_factory_id(
         self,
@@ -346,17 +360,22 @@ class InterpTreeInterp(AbstractInterp):
 
     def is_eligible_for_suggestion(self):
         """
-        Suggesting anything is possible only if there are no other tokens
+        Suggesting anything is possible only if there are NO other tokens
         (after those recorded in `interp_tree_abs_path`)
         available for consumption by subsequent interpreters.
         """
 
-        if self.interp_ctx.next_remaining_offered_arg() is None:
+        if self._next_remaining_offered_arg_from_first_bucket() is None:
             return True
         else:
             return False
 
-        # TODO: Clean up code below or take into account `tangent_token` (ipos cursor position).
+        # TODO: TODO_66_09_41_16: clarify command line processing
+        #       This comment and leftover code makes little sense now.
+        #       Was it an attempt to implement suggestion when `tangent_token` is excluded and not eaten?
+        #       So that we can suggest possible completions by interp tree interp?
+        # TODO: TODO_51_14_50_19: ensure `tangent_token` always exists
+        #       Clean up code below or take into account `tangent_token` (ipos cursor position).
         #       Note that there is no ipos cursor position at the moment.
         #       It has to be computed with help of FS_23_62_89_43 `tangent_token`
         #       (which might be a surrogate one if cursor does not touch non-whitespace chars).

@@ -70,14 +70,14 @@ class ClientResponseHandlerDescribeLineArgs(ClientResponseHandlerAbstract):
     @staticmethod
     def render_tangent_token(
         interp_result: InterpResult,
-        tan_token,
+        tan_token_value,
     ):
         """
         Implements FS_11_87_76_73 (highlight tangent prefix).
         """
 
         ClientResponseHandlerDescribeLineArgs.highlight_prefix(
-            [tan_token],
+            [tan_token_value],
             interp_result.tan_token_l_part,
             TermColor.tangent_token_r_part,
         )
@@ -194,6 +194,12 @@ class ClientResponseHandlerDescribeLineArgs(ClientResponseHandlerAbstract):
             ValueSource.explicit_offered_arg
         ):
             value_source_color = TermColor.explicit_offered_arg_value
+        elif (
+            envelope_container.assigned_prop_name_to_prop_value[prop_name].value_source
+            is
+            ValueSource.explicit_dictated_arg
+        ):
+            value_source_color = TermColor.explicit_dictated_arg_name_and_arg_value
         else:
             value_source_color = TermColor.other_assigned_arg_value
         return value_source_color

@@ -154,8 +154,8 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(), "some_command goto host pro| dev", CompType.PrefixHidden,
                 [],
-                "FS_13_51_07_97: No suggestion for another value from a space which already have \"coordinate\" specified, "
-                "and this value still do not force itself (FS_90_48_11_45) yet as it is incomplete.",
+                "FS_13_51_07_97: No suggestion for another value `prod` from a space which "
+                "already have \"coordinate\" `dev` specified.",
             ),
             (
                 line_no(), "some_command goto service q| whatever", CompType.PrefixHidden,
@@ -398,76 +398,68 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 "% some_command % list host % dev |",
                 [
-                    "downstream",
-                    "upstream",
+                    # TODO: TODO_66_09_41_16: clarify command line processing
+                    #       This suggestion list does not make sense
+                    #       (at least for this position of the cursor).
+                    #       Fix FS_01_89_09_24 interp tree interp to suggest anything only
+                    #       when cursor is in the first `token_bucket` (ipos = 0).
+                    "ar_ssh",
+                    "argrelay.check_env",
+                    "lay",
+                    "relay_demo",
+                    "service_relay_demo",
+                    "some_command",
                 ],
                 {
-                    0: {
-                        # TODO: Use `explicit_offered_arg` for the first arg instead of `init_value`:
-                        f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
-                            "some_command",
-                            ValueSource.init_value,
-                        ),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
-                            "list",
-                            ValueSource.explicit_offered_arg,
-                        ),
-                        f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
-                            "host",
-                            ValueSource.explicit_offered_arg,
-                        ),
-                    },
-                    1: {
-                        ReservedPropName.envelope_class.name: AssignedValue(
-                            ServiceEnvelopeClass.class_host.name,
-                            ValueSource.init_value,
-                        ),
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                    },
-                    2: None,
+                    0: None,
                 },
-                DelegatorServiceHostList,
+                DelegatorError,
                 {
-                    0: {
-                        ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
-                    },
-                    1: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
-                        ServicePropName.host_name.name: "zxcv-du",
-                    },
-                    2: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
-                        ServicePropName.host_name.name: "zxcv-dd",
-                    },
-                    3: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
-                        ServicePropName.host_name.name: "poiu-dd",
-                    },
-                    4: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
-                        ServicePropName.host_name.name: "asdf-du",
-                    },
-                    5: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
-                        ServicePropName.host_name.name: "xcvb-dd",
-                    },
-                    6: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_host.name,
-                        ServicePropName.host_name.name: "qwer-du",
-                    },
-                    7: None,
+                    0: None,
                 },
                 {
-                    0: 2,
-                    1: 3,
-                    2: None,
+                    0: None,
                 },
-                "FS_97_64_39_94: Case A1: `token_bucket` with `some_command` is not used by any `envelope_container`, "
-                "the rest of `token_bucket`-s are set according to arg consumption",
+                "FS_97_64_39_94: Case A1: `token_bucket` before the one with `some_command` is not consumed by anything "
+                "because it is empty - this causes FS_01_89_09_24 interp tree interp consume nothing via tree path. "
+                "So no progress can be made beyond the first `token_bucket` (ipos = 0)."
             ),
             (
                 line_no(),
-                "% some_command list host % dev |",
+                "some_command % list host % dev |",
+                [
+                    # TODO: TODO_66_09_41_16: clarify command line processing
+                    #       This suggestion list does not make sense
+                    #       (at least for this position of the cursor).
+                    #       Such suggestion makes sense only in the `token_bucket` with ipos = 0.
+                    "config",
+                    "data",
+                    "desc",
+                    "diff",
+                    "duplicates",
+                    "echo",
+                    "enum",
+                    "goto",
+                    "help",
+                    "intercept",
+                    "list",
+                    "no_data",
+                    "ssh",
+                ],
+                {
+                },
+                DelegatorError,
+                {
+                    0: None,
+                },
+                None,
+                "FS_97_64_39_94: Case A2: `token_bucket` with `some_command` is not used by any `envelope_container`, "
+                "because it is consumed only by FS_01_89_09_24 interp tree interp (via tree path without data query). "
+                "So no progress can be made beyond the first `token_bucket` (ipos = 0).",
+            ),
+            (
+                line_no(),
+                "some_command list host % dev |",
                 [
                     "downstream",
                     "upstream",
@@ -476,20 +468,26 @@ class ThisTestClass(LocalTestClass):
                 DelegatorServiceHostList,
                 None,
                 {
-                    0: 1,
-                    1: 2,
+                    0: 0,
+                    1: 1,
                     2: None,
                 },
-                "FS_97_64_39_94: Case A2: `token_bucket` with `some_command` is used as its args define function, "
-                "the rest of `token_bucket`-s are set according to arg consumption",
+                "FS_97_64_39_94: Case A3: `token_bucket` with `some_command` is consumed by both"
+                "FS_01_89_09_24 interp tree interp (via tree path without data query) and "
+                "FS_26_43_73_72 func tree into `envelope_container`-s via data query - "
+                "the rest of `token_bucket`-s are consumed by func tree as func args.",
             ),
             (
                 line_no(),
                 "some_command list service % SOME_UNKNOWN_VALUE % s_b prod |",
                 [
-                    "bbb",
-                    "sss",
-                    "xxx",
+                    # TODO: TODO_66_09_41_16: clarify command line processing
+                    #       This suggestion list does not make sense
+                    #       (at least for this position of the cursor).
+                    #       Such suggestion makes sense only in the `token_bucket` corresponding to service selection.
+                    "dev",
+                    "prod",
+                    "qa",
                 ],
                 {
                     0: {
@@ -511,9 +509,9 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.class_service.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.implicit_value),
+                        ServicePropName.service_name.name: None,
+                        ServicePropName.code_maturity.name: None,
+                        ServicePropName.geo_region.name: None,
                     },
                     2: None,
                 },
@@ -524,19 +522,12 @@ class ThisTestClass(LocalTestClass):
                     },
                     1: {
                         ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
-                        ServicePropName.service_name.name: "s_b",
-                        ServicePropName.host_name.name: "qwer-pd-1",
                     },
-                    2: {
-                        ReservedPropName.envelope_class.name: ServiceEnvelopeClass.class_service.name,
-                        ServicePropName.service_name.name: "s_b",
-                        ServicePropName.host_name.name: "qwer-pd-2",
-                    },
-                    3: None,
+                    # Multiple other `data_envelope`-s...
                 },
                 {
                     0: 0,
-                    1: 2,
+                    1: 1,
                     2: None,
                 },
                 "FS_97_64_39_94: `token_bucket` with SOME_UNKNOWN_VALUE is not used",
@@ -1028,13 +1019,13 @@ class ThisTestClass(LocalTestClass):
                 {
                     0: 0,
                     1: 0,
-                    2: None,
+                    2: 0,
                 },
                 f"Ensure options hidden by `{ValueSource.default_value.name}` for `{ServicePropName.access_type.name}` "
                 f"and `{EnvelopeContainer.used_token_bucket}` stays None.",
             ),
             (
-                line_no(), "some_command diff prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,
+                line_no(), "some_command diff % prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,
                 {
                     1: {
                         ServicePropName.run_mode.name: AssignedValue("active", ValueSource.default_value),
@@ -1060,8 +1051,8 @@ class ThisTestClass(LocalTestClass):
                 },
                 {
                     0: 0,
-                    1: 0,
-                    2: 1,
+                    1: 1,
+                    2: 2,
                 },
                 "Case A1: "
                 "FS_97_64_39_94 `token_bucket`-s used by the 1st/left service `envelope_container` prevents assignment "
@@ -1070,7 +1061,7 @@ class ThisTestClass(LocalTestClass):
                 "while 2nd/right service `envelope_container` accepts that override, not using default.",
             ),
             (
-                line_no(), "some_command diff prod downstream rrr tt1 % tt1 % passive |", CompType.DescribeArgs,
+                line_no(), "some_command diff % prod downstream rrr tt1 % tt1 % passive |", CompType.DescribeArgs,
                 {
                     1: {
                         ServicePropName.run_mode.name: AssignedValue("active", ValueSource.default_value),
@@ -1097,8 +1088,8 @@ class ThisTestClass(LocalTestClass):
                 },
                 {
                     0: 0,
-                    1: 0,
-                    2: 1,
+                    1: 1,
+                    2: 2,
                 },
                 "Case A2: "
                 "Similar to case A1, but now FS_97_64_39_94 `token_bucket` with override is not used by any of the "
@@ -1220,6 +1211,37 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.07 {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.remaining_value.value}ip_address: ?{TermColor.reset_style.value} ip.192.168.7.3 ip.192.168.7.4 
+{ServiceEnvelopeClass.class_access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}{ReservedPropName.envelope_class.name}: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
+""",
+            ),
+            (
+                line_no(), "some_command goto service -ip ip.192.168.7.1 |", CompType.DescribeArgs,
+                "FS_20_88_05_60: `dictated_arg` should be colored as `TermColor.explicit_offered_arg_value`",
+                f"""
+{TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}-ip{TermColor.reset_style.value} {TermColor.consumed_token.value}ip.192.168.7.1{TermColor.reset_style.value} 
+{ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ReservedEnvelopeClass.class_function.name} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(0)}: some_command {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_offered_arg_value.value}{func_envelope_path_step_prop_name(1)}: goto {TermColor.explicit_offered_arg_value.value}[{ValueSource.explicit_offered_arg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_offered_arg_value.value}{func_envelope_path_step_prop_name(2)}: service {TermColor.explicit_offered_arg_value.value}[{ValueSource.explicit_offered_arg.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{func_envelope_path_step_prop_name(3)}: {SpecialChar.NoPropValue.value} {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_state.name}: {FuncState.fs_demo.name} {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.func_id.name}: {func_id_goto_service_} {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{ServiceEnvelopeClass.class_service.name}: {TermColor.found_count_n.value}2{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ServiceEnvelopeClass.class_service.name} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}code_maturity: prod {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}flow_stage: upstream {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}geo_region: apac {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}cluster_name: prod-apac-upstream {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.remaining_value.value}*group_label: ?{TermColor.reset_style.value} aaa bbb sss 
+{" " * indent_size}{TermColor.remaining_value.value}service_name: ?{TermColor.reset_style.value} s_a s_b 
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}run_mode: active {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}host_name: qwer-pd-1 {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.no_option_to_suggest.value}live_status: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.other_assigned_arg_value.value}data_center: dc.07 {TermColor.other_assigned_arg_value.value}[{ValueSource.implicit_value.name}]{TermColor.reset_style.value}
+{" " * indent_size}{TermColor.explicit_dictated_arg_name_and_arg_value.value}ip_address: ip.192.168.7.1 {TermColor.explicit_dictated_arg_name_and_arg_value.value}[{ValueSource.explicit_dictated_arg.name}]{TermColor.reset_style.value}
 {ServiceEnvelopeClass.class_access_type.name}: {TermColor.found_count_0.value}0{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}{ReservedPropName.envelope_class.name}: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}

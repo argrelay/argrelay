@@ -10,6 +10,12 @@
 #     grep -r WaylandEnable /etc/gdm/
 #     /etc/gdm/custom.conf:WaylandEnable=false
 
+# TODO: Update scenario to:
+#       *   Move the very first printed intro line from the top (by pressing new lines).
+#       *   Demonstrate both FS_96_46_42_30 `offered_arg` and FS_20_88_05_60 `dictated_arg`.
+#       *   Demonstrate binding to multiple commands.
+#       *   Review history between last and curr tags to highlight new features.
+
 # Define with `s` in value to debug:
 if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
 then
