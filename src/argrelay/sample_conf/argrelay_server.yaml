@@ -31,17 +31,31 @@ gui_banner_config:
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-R73MX6JD4D');
+          gtag('config', 'AW-16801932846');
         </script>
 
     tagline_html: |
         CLI input search and auto-completion
 
     header_html: |
-        <div style="color: grey; font-size: small;">
+        <div style="color: grey;">
 
         This is a demo GUI client for a server with mocked data.<br/>
-        A GUI client cannot execute commands.<br/>
-        To execute commands, use a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> instead.<br/>
+        A GUI client looks up the data, but it cannot execute commands.<br/>
+        To execute commands, use a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> instead:<br/>
+        <br/>
+        <div style="text-align: center;">
+            <iframe
+                style="max-width: 1000px; width: 100%; aspect-ratio: 1;"
+                src="https://www.youtube.com/embed/ZjPcOBy3cbU"
+                title="argrelay: attribute search for CLI tools in Bash shell with Tab-completion"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+            >
+            </iframe>
+        </div>
         <br/>
         To try auto-completion, type either|or:
         <ul>
@@ -53,7 +67,7 @@ gui_banner_config:
         </div>
 
     footer_html: |
-        <div style="color: grey; font-size: small;">
+        <div style="color: grey;">
 
         <details>
         <summary>Try a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> for full functionality.</summary>

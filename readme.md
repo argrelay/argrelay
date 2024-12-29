@@ -4,11 +4,20 @@
 
 <a name="argrelay-secreencast"></a>
 
+<!--
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
+-->
+
+[![youtube](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://www.youtube.com/shorts/ZjPcOBy3cbU)
 
 <!--
 See: docs/dev_notes/screencast_notes.md
 -->
+
+Supported:
+*   Linux
+*   Bash >= 4.0
+*   Python >= 3.8
 
 <a name="argrelay-about"></a>
 
@@ -41,7 +50,8 @@ loaded data to contextually limit possible options to locate or auto-complete th
 
 # Why is it for shell?
 
-[It is not necessarily only for shell][argrelay_org], but there is an **oversupply** of shiny GUI-s.
+[It is not necessarily only for shell][argrelay_org],<br/>
+but there is an **oversupply** of GUI-s (and they do not integrate with scripts).
 
 ### Vacant niche:
 
@@ -225,6 +235,18 @@ While still in the sub-shell:
     *   **Data** from [`ConfigOnlyLoader.ssh_dst_group.data.yaml`][ssh_loder_data].
     *   **Code** from [`DelegatorSshDst.py`][ssh_delegator_code].
 
+<!--
+    TODO: Add link to "How search works?" when it is ready (or something else relevant).
+-->
+
+See [`project_walkthrough.md`][project_walkthrough.md] for more details.
+
+<a name="argrelay-data-access"></a>
+
+# Browse and replace data
+
+Data is accessed by snapshots (also narrowed down by properties within data):
+
 *   Browse and retrieve data used by `ssh` wrapper:
 
     ```sh
@@ -263,6 +285,10 @@ While still in the sub-shell:
 
     NOTE: Normally all data is loaded on server startup by loader plugins.
           Replacing data on the already running server is still in preview and will require more explanation.
+
+<!--
+    TODO: Add more relevant link.
+-->
 
 See [`project_walkthrough.md`][project_walkthrough.md] for more details.
 

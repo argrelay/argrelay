@@ -184,12 +184,13 @@ class AbstractInterp:
         If interp consumes all args at once,
         it has to override `consumes_args_at_once` to return `True`.
 
-        Whether to consume more than one arg depends on whether it causes situation like
-        FS_51_67_38_37 (impossible arg combinations). For example:
+        Whether to consume more than one arg depends on whether it may
+        violate FS_51_67_38_37 avoid impossible arg combinations.
+        For example:
         *   FS_26_43_73_72 (func tree)
             All args (for func `data_container` or subsequent func `data_container` as arguments) has to be
             consumed one by one FS_44_36_84_88) because user is allowed to specify them in any order and
-            consuming several at a time will cause FS_51_67_38_37 (impossible arg combinations).
+            consuming several at a time will violate FS_51_67_38_37 avoid impossible arg combinations.
         *   FS_01_89_09_24 (interp tree)
             All args can be consumed at once because user has to specify them in the order of the interp tree path.
         """

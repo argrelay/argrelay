@@ -2,7 +2,7 @@
 """
 import os
 from contextlib import contextmanager
-from inspect import getframeinfo, currentframe
+from inspect import getframeinfo, currentframe, Traceback
 from pathlib import PurePath
 
 test_data_ = "test_data"

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import field, dataclass
-from typing import Optional
+from typing import Union
 
 from argrelay.enum_desc.InterpStep import InterpStep
 from argrelay.enum_desc.ServerAction import ServerAction
@@ -14,8 +14,14 @@ from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.HelpHintCache import HelpHintCache
 from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
-from argrelay.runtime_context.AbstractArg import ArgCommandValueOffered, ArgCommandValueDictated
-from argrelay.runtime_context.DataArg import ArgCommandValueDictatedData, ArgCommandValueOfferedData
+from argrelay.runtime_context.AbstractArg import (
+    ArgCommandValueOffered, ArgCommandValueDictated, ArgCommand,
+    ArgCommandIncomplete, ArgCommandValue,
+)
+from argrelay.runtime_context.DataArg import (
+    ArgCommandDataValueDictated, ArgCommandDataValueOffered,
+    ArgCommandDataIncomplete,
+)
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.ParsedContext import ParsedContext
 from argrelay.runtime_context.SearchControl import SearchControl
@@ -52,14 +58,19 @@ class InterpContext:
     Tokens excluded by ways other than consumption into `consumed_token_buckets`.
     """
 
+    last_token_bucket_used: Union[int, None] = None
+    """
+    FS_97_64_39_94: ipos of the `token_bucket` which was used by one of the `EnvelopeContainer`-s
+    """
+
     included_token_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
     """
     FS_97_64_39_94: `token_bucket`-s
     
     If `included_token_buckets` are combined,
     the result will contain both `remaining_token_buckets` and `consumed_token_buckets`.
-    Field `included_token_buckets` is maximum set for `token_bucket`-s -
-    it is similar to maximum set `ParsedContext.all_tokens`,
+    Field `included_token_buckets` is a maximum set for `token_bucket`-s -
+    it is similar to the maximum set `ParsedContext.all_tokens`,
     but it cannot contain all tokens - it must exclude at least `SpecialChar.TokenBucketDelimiter` to start with.
     """
 
@@ -80,19 +91,39 @@ class InterpContext:
     It does not map `token_ipos`-es from `excluded_tokens`.
     """
 
-    offered_args_per_bucket: list[list[ArgCommandValueOffered]] = field(init = False, default_factory = lambda: [])
+    remaining_dictated_args_per_bucket: list[list[ArgCommandValueDictated]] = field(
+        init = False,
+        default_factory = lambda: [],
+    )
     """
-    All `offered_args`-s for each bucket.
-    """
-
-    dictated_args_per_bucket: list[list[ArgCommandValueDictated]] = field(init = False, default_factory = lambda: [])
-    """
-    All `dictated_arg`-s for each bucket.
+    Remaining `dictated_arg`-s for each bucket.
     """
 
-    token_ipos_to_arg_map: dict[int, int] = field(init = False, default_factory = lambda: {})
+    remaining_offered_args_per_bucket: list[list[ArgCommandValueOffered]] = field(
+        init = False,
+        default_factory = lambda: [],
+    )
     """
-    Maps `token_ipos` into one of the arg in `offered_args_per_bucket` or `offered_args_per_bucket` (or `None`).
+    Remaining `offered_arg`-s for each bucket.
+    """
+
+    remaining_incomplete_args_per_bucket: list[list[ArgCommandIncomplete]] = field(
+        init = False,
+        default_factory = lambda: [],
+    )
+    """
+    Remaining FS_08_58_30_24 `incomplete_arg`-s for each bucket.
+    """
+
+    tangent_arg: Union[ArgCommand, None] = field(init = False, default = None)
+    """
+    Similar to `tangent_token` but affects entire `command_arg` this `tangent_token` is part of.
+    """
+
+    token_ipos_to_arg_map: dict[int, ArgCommand] = field(init = False, default_factory = lambda: {})
+    """
+    Maps `token_ipos` into one of the args in
+    either `remaining_offered_args_per_bucket` or `remaining_offered_args_per_bucket` (or `None`).
     """
 
     envelope_containers: list[EnvelopeContainer] = field(init = False, default_factory = lambda: [])
@@ -151,22 +182,8 @@ class InterpContext:
                 # Exclude `SpecialChar.TokenBucketDelimiter` unconditionally:
                 self.excluded_tokens.append(token_ipos)
             else:
-
-                if (
-                    self.parsed_ctx.server_action is ServerAction.ProposeArgValues
-                    and
-                    token_ipos == self.parsed_ctx.tan_token_ipos
-                ):
-                    # FS_23_62_89_43 `tangent_token` completion:
-                    # `ServerAction.ProposeArgValues` excludes tangent token from consumption because
-                    # this action is not supposed to consume that tangent token (and complete it instead):
-                    self.excluded_tokens.append(token_ipos)
-                else:
-                    # FS_23_62_89_43 `tangent_token` completion:
-                    # Set all tokens for consumption (including tangent token) in case of
-                    # `ServerAction.DescribeLineArgs` and `ServerAction.RelayLineArgs`.
-                    curr_token_bucket.append(token_ipos)
-                    self.token_ipos_to_token_bucket_map[token_ipos] = curr_bucket_index
+                curr_token_bucket.append(token_ipos)
+                self.token_ipos_to_token_bucket_map[token_ipos] = curr_bucket_index
 
         # Init remaining and consumed:
         self.remaining_token_buckets = deepcopy(self.included_token_buckets)
@@ -186,50 +203,98 @@ class InterpContext:
 
             offered_args: list[ArgCommandValueOffered] = []
             dictated_args: list[ArgCommandValueDictated] = []
-            self.offered_args_per_bucket.append(offered_args)
-            self.dictated_args_per_bucket.append(dictated_args)
+            incomplete_args: list[ArgCommandIncomplete] = []
+            self.remaining_offered_args_per_bucket.append(offered_args)
+            self.remaining_dictated_args_per_bucket.append(dictated_args)
+            self.remaining_incomplete_args_per_bucket.append(incomplete_args)
 
-            arg_name_ipos: Optional[int] = None
-            arg_name_value: Optional[str] = None
+            arg_name_ipos: Union[int, None] = None
+            arg_name_value: Union[str, None] = None
             for token_ipos in token_bucket:
 
                 token_value = all_tokens[token_ipos]
 
                 if arg_name_value is None:
                     if token_value.startswith(SpecialChar.ArgNamePrefix.value):
-                        arg_name_value = token_value
+                        # Skip `SpecialChar.ArgNamePrefix`:
+                        arg_name_value = token_value[1:]
                         arg_name_ipos = token_ipos
                         continue
                     else:
-                        offered_args.append(ArgCommandValueOfferedData(
+                        command_arg = ArgCommandDataValueOffered(
                             token_ipos_list = [token_ipos],
                             arg_value = token_value,
-                        ))
+                        )
+                        offered_args.append(command_arg)
+                        self.token_ipos_to_arg_map[token_ipos] = command_arg
                 else:
-                    dictated_args.append(ArgCommandValueDictatedData(
+                    command_arg = ArgCommandDataValueDictated(
                         token_ipos_list = [arg_name_ipos, token_ipos],
                         arg_name = arg_name_value,
                         arg_value = token_value,
-                    ))
+                    )
+                    dictated_args.append(command_arg)
+                    self.token_ipos_to_arg_map[arg_name_ipos] = command_arg
+                    self.token_ipos_to_arg_map[token_ipos] = command_arg
                     arg_name_ipos = None
                     arg_name_value = None
 
             # If `dictated_arg` is incomplete (has `arg_name`, but missing `arg_value`),
-            # it is not added, and it will not be seen by the arg-to-prop mapping logic.
+            # it is registered as `incomplete_arg`.
+            if arg_name_value is not None:
+                command_arg = ArgCommandDataIncomplete(
+                    token_ipos_list = [arg_name_ipos],
+                    arg_name = arg_name_value,
+                )
+                incomplete_args.append(command_arg)
+                self.token_ipos_to_arg_map[arg_name_ipos] = command_arg
+                arg_name_ipos = None
+                arg_name_value = None
 
-    def next_remaining_offered_arg(
-        self,
-    ) -> Optional[ArgCommandValueOffered]:
-        # TODO: TODO_66_09_41_16: clarify command line processing
-        #       Should not we respect `token_bucket` boundaries?
-        for bucket_ipos, token_bucket in enumerate(self.remaining_token_buckets):
-            for offered_arg in self.offered_args_per_bucket[bucket_ipos]:
-                # TODO: TODO_66_09_41_16: clarify command line processing
-                #       This is a hack of checking if `offered_arg` was already consumed -
-                #       check more efficiently (e.g. by pre-built data or index):
-                if offered_arg.get_arg_tokens()[0] not in self.consumed_token_ipos_list():
-                    return offered_arg
-        return None
+            # TODO: TODO_51_14_50_19: ensure `tangent_token` always exists
+            #       This may simplify this condition:
+            # Post-process `tangent_arg`:
+            if (
+                self.parsed_ctx.server_action is ServerAction.ProposeArgValues
+                and
+                self.parsed_ctx.tan_token_ipos >= 0
+                and
+                self.parsed_ctx.tan_token_ipos in self.token_ipos_to_arg_map
+            ):
+                tangent_arg = self.token_ipos_to_arg_map[self.parsed_ctx.tan_token_ipos]
+                token_bucket_ipos = self.token_ipos_to_token_bucket_map[self.parsed_ctx.tan_token_ipos]
+                # FS_23_62_89_43 `tangent_token` completion:
+                # `ServerAction.ProposeArgValues` excludes tangent token from consumption because
+                # this action is not supposed to consume that tangent token (and complete it instead):
+                if isinstance(tangent_arg, ArgCommandIncomplete):
+                    # `incomplete_arg` is not consumed - no need to remove:
+                    pass
+                elif isinstance(tangent_arg, ArgCommandValueDictated):
+                    dictated_arg: ArgCommandValueDictated = tangent_arg
+                    # TODO: TODO_66_09_41_16: clarify command line processing
+                    #       Use helper functions which ensure consistency
+                    #       (like in this case, if one is removed, another is removed)
+                    self.remaining_dictated_args_per_bucket[token_bucket_ipos].remove(dictated_arg)
+                    for token_ipos in dictated_arg.get_arg_tokens():
+                        self.remaining_token_buckets[token_bucket_ipos].remove(token_ipos)
+                        self.included_token_buckets[token_bucket_ipos].remove(token_ipos)
+                        self.excluded_tokens.append(token_ipos)
+                elif isinstance(tangent_arg, ArgCommandValueOffered):
+                    offered_arg: ArgCommandValueOffered = tangent_arg
+                    # TODO: TODO_66_09_41_16: clarify command line processing
+                    #       Use helper functions which ensure consistency
+                    #       (like in this case, if one is removed, another is removed)
+                    self.remaining_offered_args_per_bucket[token_bucket_ipos].remove(offered_arg)
+                    self.remaining_token_buckets[token_bucket_ipos].remove(offered_arg.get_arg_token())
+                    self.included_token_buckets[token_bucket_ipos].remove(offered_arg.get_arg_token())
+                    self.excluded_tokens.append(offered_arg.get_arg_token())
+                else:
+                    raise TypeError(f"unhandled argument type: {type(tangent_arg)}")
+            else:
+                # FS_23_62_89_43 `tangent_token` completion:
+                # Set all tokens for consumption (including tangent token) in case of
+                # `ServerAction.DescribeLineArgs` and `ServerAction.RelayLineArgs`.
+                pass
 
     def remaining_token_ipos_list(
         self,

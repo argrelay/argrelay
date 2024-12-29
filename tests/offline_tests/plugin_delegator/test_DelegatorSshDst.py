@@ -83,10 +83,7 @@ class ThisTestClass(LocalTestClass):
                     2: None,
                 },
                 {
-                    # TODO: TODO_75_52_01_67: also fix this (related to `token_bucket`-s)
-                    #       When func is selected by the first arg only, apparently,
-                    #       `token_bucket` logic is not invoked and `None` value is left:
-                    0: None,
+                    0: 0,
                     1: 0,
                 },
                 f"Access `{func_id_ssh_dst_}` via `ar_ssh` command and "
@@ -224,11 +221,8 @@ class ThisTestClass(LocalTestClass):
                     4: None,
                 },
                 {
-                    # TODO: TODO_75_52_01_67: also fix this (related to `token_bucket`-s)
-                    #       When func is selected by the first arg only, apparently,
-                    #       `token_bucket` logic is not invoked and `None` value is left:
-                    0: None,
-                    1: None,
+                    0: 0,
+                    1: 0,
                 },
                 f"Run `{func_id_ssh_dst_}` without any args to ensure `{DelegatorSshDst.__name__}` works."
             ),

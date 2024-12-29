@@ -370,6 +370,7 @@ class suggest_state_class extends abstract_state_class {
 
     update_gui() {
         populate_suggestions()
+        scroll_line_to_top()
     }
 
     process_response(server_response) {
@@ -418,6 +419,7 @@ class search_state_class extends abstract_state_class {
 
     update_gui() {
         outline_search_plan()
+        scroll_line_to_top()
     }
 
     process_response(server_response) {
@@ -861,6 +863,10 @@ function remove_child_elements(
     }
 }
 
+function scroll_line_to_top() {
+    command_line_input_elem.scrollIntoView(true);
+}
+
 // Equivalent of `ClientResponseHandlerDescribeLineArgs.render_result`:
 function outline_search_plan() {
     console.assert(last_search_response_json != null);
@@ -897,13 +903,16 @@ function populate_envelope_containers(
 
             if (prop_name in envelope_container.assigned_prop_name_to_prop_value) {
                 prop_name_elem.textContent = prop_name + ": "
-                prop_value_elem.textContent = envelope_container.assigned_prop_name_to_prop_value[prop_name].arg_value
+                prop_value_elem.textContent = envelope_container.assigned_prop_name_to_prop_value[prop_name].prop_value
                 value_source_elem.textContent = `[${envelope_container.assigned_prop_name_to_prop_value[prop_name].value_source}]`
 
-                if (envelope_container.assigned_prop_name_to_prop_value[prop_name].value_source === "explicit_offered_arg") {
+                if ([
+                    "explicit_offered_arg",
+                    "explicit_dictated_arg",
+                ].includes(envelope_container.assigned_prop_name_to_prop_value[prop_name].value_source)) {
                     arg_container_elem.classList.add("explicit_arg_value");
                 } else {
-                    arg_container_elem.classList.add("selected_arg_value");
+                    arg_container_elem.classList.add("implicit_arg_value");
                 }
             } else if (prop_name in envelope_container.remaining_prop_name_to_prop_value) {
                 if (!is_first_missing_found) {

@@ -316,7 +316,7 @@ Search outline details
     color: purple;
 }
 
-.selected_arg_value {
+.implicit_arg_value {
     color: darkgreen;
 }
 

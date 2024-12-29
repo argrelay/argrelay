@@ -224,7 +224,7 @@ class ThisTestClass(LocalTestClass):
                 "FS_76_29_13_28: `command_arg` consumption priority, `emea` is eaten first, and "
                 # TODO: TODO_70_48_96_29: be able to assert remaining `arg_value`-s:
                 "FS_44_36_84_88: `qa` become remaining "
-                "(rather than becoming FS_51_67_38_37 impossible arg combination)",
+                "(rather than violating FS_51_67_38_37 avoid impossible arg combination)",
             ),
             (
                 line_no(),
@@ -264,7 +264,7 @@ class ThisTestClass(LocalTestClass):
                 "FS_76_29_13_28: `command_arg` consumption priority, `qa` is eaten first, and "
                 # TODO: TODO_70_48_96_29: be able to assert remaining `arg_value`-s:
                 "FS_44_36_84_88: `emea` become remaining "
-                "(rather than becoming FS_51_67_38_37 impossible arg combination)",
+                "(rather than violating FS_51_67_38_37 avoid impossible arg combination)",
             ),
             (
                 line_no(),
@@ -304,7 +304,7 @@ class ThisTestClass(LocalTestClass):
                 "FS_76_29_13_28: `command_arg` consumption priority, `apac` is eaten first, and "
                 # TODO: TODO_70_48_96_29: be able to assert remaining `arg_value`-s:
                 "FS_44_36_84_88: `dev` become remaining "
-                "(rather than becoming FS_51_67_38_37 impossible arg combination)",
+                "(rather than violating FS_51_67_38_37 avoid impossible arg combination)",
             ),
             (
                 line_no(),
@@ -344,7 +344,7 @@ class ThisTestClass(LocalTestClass):
                 "FS_76_29_13_28: `command_arg` consumption priority, `dev` is eaten first, and "
                 # TODO: TODO_70_48_96_29: be able to assert remaining `arg_value`-s:
                 "FS_44_36_84_88: `apac` become remaining "
-                "(rather than becoming FS_51_67_38_37 impossible arg combination)",
+                "(rather than violating FS_51_67_38_37 avoid impossible arg combination)",
             ),
         ]
 

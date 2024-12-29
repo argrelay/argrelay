@@ -66,9 +66,16 @@ class TermColor(Enum):
     See `ParsedContext.tangent_token_r_part`
     """
 
+    # TODO: TODO_66_09_41_16: clarify command line processing:
+    #       There should either be both `arg_name` (for `dictated_arg`) and `arg_value` or just `arg` (without `_name` and `_value).
     explicit_offered_arg_value = fore_bright_blue
     """
     See `ValueSource.explicit_offered_arg`.
+    """
+
+    explicit_dictated_arg_name_and_arg_value = fore_bright_blue
+    """
+    See `ValueSource.explicit_dictated_arg`.
     """
 
     other_assigned_arg_value = fore_dark_green
