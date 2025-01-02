@@ -83,7 +83,7 @@ See: https://github.com/argrelay/argrelay
         "Operating System :: POSIX :: Linux",
     ],
     # See sample layout:
-    # https://docs.python.org/3/distutils/setupscript.html#installing-package-data
+    # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
     packages = (
         setuptools.find_packages(
             where = "src",
@@ -92,11 +92,12 @@ See: https://github.com/argrelay/argrelay
         ]
     ),
     # See:
-    # https://docs.python.org/3/distutils/setupscript.html#listing-whole-packages
+    # https://docs.python.org/3.8/distutils/setupscript.html#listing-whole-packages
     # Instead of specifying directory of the specific package:
     # "argrelay": "src/argrelay",
     # Specify directory of "root" package:
     # "": "src",
+    # This automatically maps non-root "argrelay" into sub-path "./src/argrelay" (as root "" is in "./src").
     # Apparently, this makes `argrelay.egg-info` dir appear in `src` on editable mode rather than in root `.`.
     package_dir = {
         "": "./src/",

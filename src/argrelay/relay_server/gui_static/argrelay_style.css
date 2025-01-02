@@ -385,3 +385,16 @@ Pending spinner
         transform: rotate(360deg);
     }
 }
+
+/***********************************************************************************************************************
+Bottom blank area
+***********************************************************************************************************************/
+
+.blank_area {
+    color: gray;
+    /* Occupy entire screen: */
+    height: 100vh;
+    /* Line height is also = entire screen height: */
+    line-height: 100vh;
+    text-align: center;
+}

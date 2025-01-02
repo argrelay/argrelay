@@ -2,6 +2,12 @@
 [![PyPI package](https://badge.fury.io/py/argrelay.svg)](https://badge.fury.io/py/argrelay)
 [![GitHub build](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml/badge.svg?branch=main)](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml)
 
+
+Supported:
+*   Linux
+*   Bash >= 4.0
+*   Python >= 3.8
+
 <a name="argrelay-secreencast"></a>
 
 <!--
@@ -14,10 +20,6 @@
 See: docs/dev_notes/screencast_notes.md
 -->
 
-Supported:
-*   Linux
-*   Bash >= 4.0
-*   Python >= 3.8
 
 <a name="argrelay-about"></a>
 
@@ -28,13 +30,22 @@ A **human interface** into "automation arsenal" with built-in search for scripts
 ### Longer answer:
 
 A wrapper for command line interface (CLI) tools to simplify input selection.<br/>
-It integrates shell + client + server to search & navigate loaded **custom data**<br/>
-via CLI args directly in the **standard shell**.
+It integrates shell + client + server to search loaded **custom data**<br/>
+navigating **custom schema** via CLI args directly in the **standard shell**.
 
 *   Although its initial purpose was command **auto-completion**, that become a trivial byproduct of...
-*   Its primary feature: (tag|label|keyword)-based **structured data search**.
+*   Its primary feature: (tag|label|keyword|attribute)-based **structured data search**.
+
+### Probably the best answer:
+
+:heavy_exclamation_mark: :heavy_exclamation_mark: :heavy_exclamation_mark:
+
+You may find it easier to **get the idea through examples** in [`the_problem_argrelay_solves.md`][the_problem_argrelay_solves.md]<br/>
+instead of reading the rest of this document with distilled claims.
 
 # When is it needed?
+
+It solves **the single most annoying problem** to know what to type next **in the middle of typing**.
 
 *   When command args map into sizeable object sets **incomprehensible** to<br/>
     select, browse, discover otherwise.
@@ -409,6 +420,8 @@ Simplifying adoption:
 Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 <!-- links --------------------------------------------------------------------------------------------------------- -->
+
+[the_problem_argrelay_solves.md]: docs/user_tutorials/the_problem_argrelay_solves.md
 
 [argrelay_org]: https://argrelay.org/
 
