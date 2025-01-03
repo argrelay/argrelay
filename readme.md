@@ -2,6 +2,12 @@
 [![PyPI package](https://badge.fury.io/py/argrelay.svg)](https://badge.fury.io/py/argrelay)
 [![GitHub build](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml/badge.svg?branch=main)](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml)
 
+
+Supported:
+*   Linux
+*   Bash >= 4.0
+*   Python >= 3.8
+
 <a name="argrelay-secreencast"></a>
 
 <!--
@@ -14,30 +20,34 @@
 See: docs/dev_notes/screencast_notes.md
 -->
 
-Supported:
-*   Linux
-*   Bash >= 4.0
-*   Python >= 3.8
-
 <a name="argrelay-about"></a>
 
-# What is `argrelay`?
+# What is [`argrelay`][argrelay_org]?
 
 A **human interface** into "automation arsenal" with built-in search for scripts & their input data.
 
-### Longer answer:
+### A longer answer:
 
 A wrapper for command line interface (CLI) tools to simplify input selection.<br/>
-It integrates shell + client + server to search & navigate loaded **custom data**<br/>
-via CLI args directly in the **standard shell**.
+It integrates shell + client + server to search loaded **custom data**<br/>
+navigating **custom schema** via CLI args directly in the **standard shell**.
 
 *   Although its initial purpose was command **auto-completion**, that become a trivial byproduct of...
-*   Its primary feature: (tag|label|keyword)-based **structured data search**.
+*   Its primary feature: (tag|label|keyword|attribute)-based **structured data search**.
+
+### Probably the best answer:
+
+:star: :star: :star: :star: :star:
+
+You may find it easier to **get the idea through examples** in [`the_problem_argrelay_solves.md`][the_problem_argrelay_solves.md]<br/>
+and ignore the rest of this `readme.md` (to avoid reading distilled claims).
 
 # When is it needed?
 
-*   When command args map into sizeable object sets **incomprehensible** to<br/>
-    select, browse, discover otherwise.
+It solves **the single most annoying problem** to know what to type next **in the middle of typing**.
+
+*   When command args relate to sizeable data **incomprehensible or difficult** to<br/>
+    review, select, browse, discover on the spot.
 
 *   When knowledge about ( non-standard | undocumented ) "enterprise automation" scripts is<br/>
     constantly **invalidated** by frequent updates of code & data.
@@ -165,7 +175,7 @@ Ultimately, `argrelay` can be used as dependency for a [separate project][bootst
 
 <a name="argrelay-demo"></a>
 
-# Interactive demo
+# Interactive demo: starting and stopping
 
 This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
 
@@ -185,15 +195,23 @@ Optionally, review env state (any time):
 ./exe/check_env.bash
 ```
 
-To clean up at any point, simply exit the sub-shell:
+To stop & clean up at any point, simply exit the sub-shell:
 
 ```sh
 exit
 ```
 
-While still in the sub-shell:
+<!--
+    TODO: Add more relevant link about bootstrap_env and dev_shell.
+-->
 
-*   Interact with `lay` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
+See [`project_walkthrough.md`][project_walkthrough.md] for more details.
+
+# Interactive demo: elaborated test data
+
+While still in the started ["interactive demo"][interactive_demo] sub-shell:
+
+*   Try [request hotkeys][request_hotkeys] with `lay` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
 
     ```sh
     lay goto                 # press `Alt+Shift+Q` to describe available options
@@ -220,32 +238,47 @@ While still in the sub-shell:
 
     A lot of the functions are stubs and tests for demo purposes only.
 
-*   To interact with executable command, try `ssh` wrapper:
+<a name="argrelay-changes-to-code-and-data"></a>
 
-    Note that it is possible to bind functions to more than one command.<br/>
-    For `ssh` wrapper example, try `lay ssh` or `ar_ssh`:
+# Interactive demo: changes to code & data
+
+The following `ssh`-related command is intentionally added to demo simple changes to code & data.
+
+While still in the started ["interactive demo"][interactive_demo] sub-shell:
+
+*   For `ssh` wrapper example, try `lay ssh` or `ar_ssh` commands:
+
+    Note that this is an example when the same function is bound to more than one command.
 
     ```sh
     lay ssh                  # press `Alt+Shift+Q` to describe available options
     ar_ssh                   # press `Alt+Shift+Q` to describe available options
     ```
 
-    This function uses:
+*   Modify code or data (or both) in the files below.
+
+    This `ssh`-wrapper function uses:
 
     *   **Data** from [`ConfigOnlyLoader.ssh_dst_group.data.yaml`][ssh_loder_data].
     *   **Code** from [`DelegatorSshDst.py`][ssh_delegator_code].
 
-<!--
-    TODO: Add link to "How search works?" when it is ready (or something else relevant).
--->
+*   Restart ["interactive demo"][interactive_demo] and try `lay ssh` or `ar_ssh` command again to see the changes.
 
-See [`project_walkthrough.md`][project_walkthrough.md] for more details.
+You may apply many examples from [`the_problem_argrelay_solves.md`][the_problem_argrelay_solves.md] to this `ssh`-wrapper.
 
 <a name="argrelay-data-access"></a>
 
-# Browse and replace data
+# Interactive demo: browse and replace server data
 
-Data is accessed by snapshots (also narrowed down by properties within data):
+Data is accessed by snapshots.
+
+Snapshot does not need to include entire indexed data - it can be any sub-set of it.
+
+The data sub-set (sub-snapshot) is defined by search properties within the data.
+
+For consistency, all entries added/deleted/replaced should have the same values for the specified search properties.
+
+While still in the started ["interactive demo"][interactive_demo] sub-shell:
 
 *   Browse and retrieve data used by `ssh` wrapper:
 
@@ -287,7 +320,7 @@ Data is accessed by snapshots (also narrowed down by properties within data):
           Replacing data on the already running server is still in preview and will require more explanation.
 
 <!--
-    TODO: Add more relevant link.
+    TODO: Add more relevant link about snapshots.
 -->
 
 See [`project_walkthrough.md`][project_walkthrough.md] for more details.
@@ -410,6 +443,8 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 <!-- links --------------------------------------------------------------------------------------------------------- -->
 
+[the_problem_argrelay_solves.md]: docs/user_tutorials/the_problem_argrelay_solves.md
+
 [argrelay_org]: https://argrelay.org/
 
 [MongoDB]: https://www.mongodb.com/
@@ -433,6 +468,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 [full_picture]: #argrelay-full-picture
 [interactive_demo]: #argrelay-demo
+[request_hotkeys]: #argrelay-request-hotkeys
 
 [readline_config]: https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
 

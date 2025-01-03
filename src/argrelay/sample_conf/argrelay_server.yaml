@@ -33,15 +33,90 @@ gui_banner_config:
           gtag('config', 'G-R73MX6JD4D');
           gtag('config', 'AW-16801932846');
         </script>
+        <!-- Event snippet for Page view conversion page -->
+        <script>
+          gtag('event', 'conversion', {'send_to': 'AW-16801932846/g80mCIDGp_kZEK7M5Ms-'});
+        </script>
 
     tagline_html: |
         CLI input search and auto-completion
 
     header_html: |
+
+        <!--
+            Taken from here (then adjusted):
+            https://codepo8.github.io/css-fork-on-github-ribbon/
+        -->
+        <style>
+            #forkongithub a {
+                background: gray;
+                color: white;
+                text-decoration: none;
+                font-family: monospace;
+                text-align: center;
+                font-weight: bold;
+                padding: 5px 40px;
+                font-size: 1rem;
+                line-height: 2rem;
+                position: relative;
+                transition: 0.5s;
+            }
+            #forkongithub a:hover {
+                background: white;
+                color: gray;
+            }
+            #forkongithub a::before, #forkongithub a::after {
+                content: "";
+                width: 100%;
+                display: block;
+                position: absolute;
+                top: 1px;
+                left: 0;
+                height: 1px;
+                background: gray;
+            }
+            #forkongithub a::after {
+                bottom: 1px;
+                top: auto;
+            }
+            #forkongithub {
+                background: transparent;
+                position: absolute;
+                display: block;
+                top: 0;
+                left: 0;
+                width: 160px;
+                overflow: hidden;
+                height: 160px;
+                z-index: 9999;
+            }
+            #forkongithub a {
+                width: 160px;
+                position: absolute;
+                top: 40px;
+                left: -60px;
+                transform: rotate(-45deg);
+            }
+        </style>
+        <span id="forkongithub">
+            <a href="https://github.com/argrelay/argrelay" target="_blank">View it on GitHub</a>
+        </span>
+
+        <br/>
+
         <div style="color: grey;">
 
+        You have a choice:
+        <ul>
+            <li>read about <a href="https://github.com/argrelay/argrelay/blob/A-HIGH-NNN.group_modules/docs/user_tutorials/the_problem_argrelay_solves.md" target="_blank">the problem `argrelay` solves</a></li>
+            <li style="list-style-type: none;">OR</li>
+            <li>try to figure it out intuitively below</li>
+        </ul>
+        <br/>
         This is a demo GUI client for a server with mocked data.<br/>
+        <br/>
         A GUI client looks up the data, but it cannot execute commands.<br/>
+        <br/>
         To execute commands, use a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> instead:<br/>
         <br/>
         <div style="text-align: center;">
@@ -56,13 +131,15 @@ gui_banner_config:
             >
             </iframe>
         </div>
+
         <br/>
+
         To try auto-completion, type either|or:
         <ul>
             <li>lay goto host</li>
             <li>lay goto service</li>
         </ul>
-        Then, narrow down search by... IP, region, etc.
+        Then, narrow down object selection by picking values for search properties.
 
         </div>
 

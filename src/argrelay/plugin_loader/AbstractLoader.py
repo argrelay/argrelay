@@ -26,6 +26,8 @@ class AbstractLoader(AbstractPluginServer):
     ) -> list[IndexModel]:
         """
         Provides list of index models for FS_45_08_22_15 index model API.
+
+        TODO: TODO_23_17_31_04: publish `index_model` by delegator plugins.
         """
         raise NotImplementedError
 

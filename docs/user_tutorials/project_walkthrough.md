@@ -1,4 +1,10 @@
 
+:warning: :warning: :warning:
+
+[work in progress]
+
+:warning: :warning: :warning:
+
 This tutorial accumulates pointers to places within the repo or<br/>
 deployed instance describing their purposes.
 
