@@ -43,26 +43,9 @@ Instead, the preferred name strings serve sorting and searching properties
 
     This also embeds the ordering pattern to follow without hiding it in sub dirs.
 
-*   Reorder words in identifiers if it helps dir grouping.
+*   Use `reversed_naming_order` to group relevant components in lists via sorting.
 
-    For example,
-    these two modules will appear grouped together
-    (when sorted lexicographically in IDEs) due to common prefix:
-    *   `client_command_local`
-    *   `client_command_remote`
-
-    Naming them "in English" will break the grouping
-    as there is no common prefix anymore:
-    *   `local_client_command`
-    *   [something in between]
-    *   `remote_client_command`
-
-    After all, the three keywords (`local` | `remote`, `command`, `client`)
-    are present in any of the naming style and
-    there is no ambiguity in meaning.
-
-    For another example, see hierarchy of plugins where ordering of keywords embedded in
-    the names reflects inheritance which sorts list of classes in IDE as they all have common prefix.
+    See [`reversed_naming_order.md`][reversed_naming_order.md].
 
 *   Use new lines excessively - prefer "tall" code rather than "wide" one.
 
@@ -94,3 +77,4 @@ Instead, the preferred name strings serve sorting and searching properties
     *   makes diff output cleaner for reviews
     *   preserves the history through `git blame` for more lines
 
+[reversed_naming_order.md]: reversed_naming_order.md

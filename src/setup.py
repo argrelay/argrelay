@@ -4,7 +4,7 @@ import re
 
 # Implements this:
 # https://stackoverflow.com/a/7071358/441652
-version_file = "src/argrelay/_version.py"
+version_file = "argrelay/_version.py"
 version_content = open(version_file, "rt").read()
 version_regex = r"^__version__ = ['\"]([^'\"]*)['\"]"
 regex_match = re.search(version_regex, version_content, re.M)
@@ -25,7 +25,7 @@ tests_require = [
 ]
 
 # To install these extra dev dependencies:
-# pip install --editable .[tests]
+# pip install --editable "${argrelay_dir}/src/"[tests]
 extras_require = {
     "tests": tests_require,
 }
@@ -83,25 +83,18 @@ See: https://github.com/argrelay/argrelay
         "Operating System :: POSIX :: Linux",
     ],
     # See sample layout:
-    # https://docs.python.org/3/distutils/setupscript.html#installing-package-data
-    packages = (
-        setuptools.find_packages(
-            where = "src",
-        ) + [
-            "argrelay_docs",
-        ]
-    ),
+    # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
+    packages = [
+        "argrelay",
+        "argrelay_docs",
+        "argrelay_data",
+    ],
     # See:
-    # https://docs.python.org/3/distutils/setupscript.html#listing-whole-packages
-    # Instead of specifying directory of the specific package:
-    # "argrelay": "src/argrelay",
-    # Specify directory of "root" package:
-    # "": "src",
-    # Apparently, this makes `argrelay.egg-info` dir appear in `src` on editable mode rather than in root `.`.
+    # https://docs.python.org/3.8/distutils/setupscript.html#listing-whole-packages
     package_dir = {
-        "": "./src/",
-        "argrelay_docs": "./",
-        "argrelay_data": "./",
+        "argrelay": "./argrelay/",
+        "argrelay_docs": "../",
+        "argrelay_data": "../",
     },
     package_data = {
         "argrelay": [

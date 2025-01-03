@@ -6,7 +6,7 @@ describe('argrelay GUI', () => {
 
         cy
             .get('[data-cy=command_line_input]')
-            .should('have.value', 'lay ')
+            .should('have.value', 'lay goto ')
     })
 
     it('suggestions get listed on command input', {
