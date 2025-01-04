@@ -1,7 +1,7 @@
 ###############################################################################
 # Note that these dependencies are not necessarily required ones,
 # those required are listed in `setup.py` script and can be installed as:
-# pip install -e .
+# pip install --editable "${argrelay_dir}/src/"
 ###############################################################################
 apispec==6.4.0
 asttokens==2.4.1

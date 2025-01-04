@@ -126,7 +126,7 @@ then
     unset ARGRELAY_DEV_SHELL
 
     # Build and test via `tox`:
-    python -m tox
+    python -m tox --conf "${argrelay_dir}/src/"
 fi
 
 # Fetch from upstream:
@@ -197,13 +197,15 @@ python -m venv "${argrelay_dir}/tmp/venv.twine"
 source         "${argrelay_dir}/tmp/venv.twine/bin/activate"
 pip install setuptools
 
-# Apparently, `tox` already builds `sdist`, for example:
-# @/.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
-# However, the following are the staps found in majority of the web resources:
-python setup.py sdist
+# The following are the staps found in majority of the web resources.
+# Change to the dir of `setup.py` as some of its stages do not work well when it is not in the current dir:
+cd "${argrelay_dir}/src/"
+python "${argrelay_dir}/src/setup.py" sdist
+cd -
+
 pip install twine
 # This will prompt for login credentials:
-twine upload "dist/argrelay-${argrelay_version}.tar.gz"
+twine upload "${argrelay_dir}/src/dist/argrelay-${argrelay_version}.tar.gz"
 
 # Change version to non-release-able to force user to change it later:
 sed --in-place \

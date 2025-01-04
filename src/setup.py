@@ -1,10 +1,17 @@
 import os
 
 import re
+import sys
+
+# The "distribution root" refers to the top-level directory where your project code resides,
+# is the root directory that contains the `setup.py` file itself.
+# Depending on the stage (build, install, ...),
+# this might be a different directory:
+setup_py_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Implements this:
 # https://stackoverflow.com/a/7071358/441652
-version_file = "src/argrelay/_version.py"
+version_file = f"{setup_py_dir}/argrelay/_version.py"
 version_content = open(version_file, "rt").read()
 version_regex = r"^__version__ = ['\"]([^'\"]*)['\"]"
 regex_match = re.search(version_regex, version_content, re.M)
@@ -25,26 +32,48 @@ tests_require = [
 ]
 
 # To install these extra dev dependencies:
-# pip install --editable .[tests]
+# pip install --editable "${argrelay_dir}/src/"[tests]
 extras_require = {
     "tests": tests_require,
 }
 
 
 def list_dir(
-    # Path relative to the `setup.py` (relative to the repo root `@/`):
-    top_dir_path,
-):
-    file_paths = []
-    for (parent_dir_path, child_dir_names, child_file_names) in os.walk(top_dir_path):
+    top_dir_abs_path,
+) -> list[str]:
+    """
+    List files recursively from `top_dir_abs_path` with paths relative to `top_dir_abs_path`.
+    """
+    file_rel_paths = []
+    for (parent_dir_abs_path, child_dir_names, child_file_names) in os.walk(top_dir_abs_path):
         for child_file_name in child_file_names:
-            file_paths.append(os.path.join(
-                parent_dir_path,
+            file_abs_path = os.path.join(
+                parent_dir_abs_path,
                 child_file_name,
-            ))
-    # All paths start with `top_dir_path`:
-    return file_paths
+            )
+            file_rel_path = os.path.relpath(
+                file_abs_path,
+                top_dir_abs_path,
+            )
+            file_rel_paths.append(file_rel_path)
+    # TODO: clean up:
+    print(f"file_rel_paths for `{top_dir_abs_path}`: {file_rel_paths}", file = sys.stderr)
+    return file_rel_paths
 
+def prefix_file_rel_paths(
+    prefix_rel_path: str,
+    file_rel_paths: list[str],
+) -> list[str]:
+    file_prefixed_rel_paths = []
+    for file_rel_path in file_rel_paths:
+        file_prefixed_rel_path = os.path.join(
+            prefix_rel_path,
+            file_rel_path,
+        )
+        file_prefixed_rel_paths.append(file_prefixed_rel_path)
+    # TODO: clean up:
+    print(f"file_prefixed_rel_paths: {file_prefixed_rel_paths}", file = sys.stderr)
+    return file_prefixed_rel_paths
 
 setuptools.setup(
     name = "argrelay",
@@ -83,26 +112,29 @@ See: https://github.com/argrelay/argrelay
         "Operating System :: POSIX :: Linux",
     ],
     # See sample layout:
-    # https://docs.python.org/3/distutils/setupscript.html#installing-package-data
-    packages = (
-        setuptools.find_packages(
-            where = "src",
-        ) + [
-            "argrelay_docs",
-        ]
-    ),
+    # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
+    # List all packages/sub-packages (so that they are taken by `package_dir` below):
+    packages = setuptools.find_packages(
+        where = f"{setup_py_dir}",
+    ) + [
+        "argrelay_docs",
+        "argrelay_data",
+    ],
     # See:
-    # https://docs.python.org/3/distutils/setupscript.html#listing-whole-packages
-    # Instead of specifying directory of the specific package:
-    # "argrelay": "src/argrelay",
-    # Specify directory of "root" package:
-    # "": "src",
-    # Apparently, this makes `argrelay.egg-info` dir appear in `src` on editable mode rather than in root `.`.
+    # https://docs.python.org/3.8/distutils/setupscript.html#listing-whole-packages
+    #     The keys to this dictionary are package names,
+    #     and an empty package name stands for the root package.
+    #     The values are directory names relative to your distribution root.
     package_dir = {
-        "": "./src/",
-        "argrelay_docs": "./",
-        "argrelay_data": "./",
+        "argrelay": "./argrelay/",
+        "argrelay_docs": "./argrelay_docs/",
+        "argrelay_data": "./argrelay_data/",
     },
+    # See:
+    # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
+    #     The paths are interpreted as relative to the directory containing the package
+    #     (information from the `package_dir` mapping is used if appropriate);
+    #     that is, the files are expected to be part of the package in the source directories.
     package_data = {
         "argrelay": [
 
@@ -135,10 +167,17 @@ See: https://github.com/argrelay/argrelay
             "custom_integ_res/script_plugin.d/check_env_plugin.git_version.bash",
 
         ],
-        "argrelay_docs": list_dir("./docs/") + [
-            "readme.md",
-        ],
-        "argrelay_data": list_dir("./data/"),
+        "argrelay_docs": prefix_file_rel_paths(
+            "../../docs/",
+            list_dir(f"{setup_py_dir}/../docs/"),
+        ) + prefix_file_rel_paths(
+            "../../",
+            ["readme.md"],
+        ),
+        "argrelay_data": prefix_file_rel_paths(
+            "../../data/",
+            list_dir(f"{setup_py_dir}/../data/"),
+        ),
     },
     include_package_data = True,
     python_requires = ">=3.8",

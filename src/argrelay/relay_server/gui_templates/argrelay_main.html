@@ -205,16 +205,22 @@
                 id="invocation_output_label"
                 class="box_label"
                 for="invocation_output"
-            >last invocation response:</summary>
+            >last invocation response (hit `Enter` in the command line to retrieve it):</summary>
             <div
                 id="invocation_output"
                 class="output_box"
             >
-        </div>
+            </div>
+        </details>
     </div>
 
     <div class="top_container">
         {{ footer_html | safe }}
+    </div>
+
+    <!-- This bottom blank area helps to keep screen position of other elements if their height changes: -->
+    <div class="blank_area">
+            [intentionally blank]
     </div>
 
     <!------------------------------------------------------------------------------------------------------------------

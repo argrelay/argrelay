@@ -1,4 +1,8 @@
 
 # Python
 /argrelay.egg-info/
+/.tox/
 
+# Temporary dirs for Python tools:
+/build/
+/dist/

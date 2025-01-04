@@ -125,7 +125,7 @@ This is a non-exhaustive list of reasons and clues how to address them (trying t
     Default `@/exe/install_project.bash` (see its sources) file assumes it is a Python project which is built via:
 
     ```
-    python -m pip install -e .[tests]
+    python -m pip install --editable "${argrelay_dir}/src/"[tests]
     ```
 
     If it is not the case (yet), you can comment out this line.

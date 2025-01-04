@@ -6,7 +6,7 @@ describe('argrelay GUI', () => {
 
         cy
             .get('[data-cy=command_line_input]')
-            .should('have.value', 'lay ')
+            .should('have.value', 'lay goto ')
     })
 
     it('has command line input ready', () => {
@@ -16,12 +16,12 @@ describe('argrelay GUI', () => {
         cy
             .get('#command_line_input')
             .invoke('val')
-            .should('have.length', 4)
+            .should('have.length', 9)
         cy
             .get('#command_line_input')
             .invoke('val')
             .then((input_value) => {
-                expect(input_value).to.be.equal('lay ')
+                expect(input_value).to.be.equal('lay goto ')
             })
     })
 })
