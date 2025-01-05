@@ -4,8 +4,8 @@ from argrelay.handler_response.ClientResponseHandlerAbstract import ClientRespon
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.runtime_context.AbstractPlugin import import_plugin_class
-from argrelay.schema_response.InvocationInput import InvocationInput
-from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc
 
 
 class ClientResponseHandlerRelayLineArgs(ClientResponseHandlerAbstract):

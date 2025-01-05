@@ -29,7 +29,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     search_control_list_,
     func_id_,
 )
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 collection_name_container_ipos_ = 1
 data_envelope_container_ipos_ = 2

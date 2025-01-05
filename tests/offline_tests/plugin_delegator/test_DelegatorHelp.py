@@ -11,8 +11,6 @@ from argrelay.enum_desc.TermColor import TermColor
 from argrelay.plugin_delegator.DelegatorHelp import DelegatorHelp
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.schema_response.InvocationInput import InvocationInput
 from argrelay.test_infra import (
     line_no_from_ctor,
     line_no,
@@ -23,6 +21,8 @@ from argrelay.test_infra.CustomTestCase import ShellInputTestCase
 from argrelay.test_infra.CustomVerifier import RelayLineArgsVerifier, ServerActionVerifier, ProposeArgValuesVerifier
 from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder, EmptyEnvMockBuilder, EnvMockBuilder
 from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 class ThisTestClass(LocalTestClass):

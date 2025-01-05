@@ -3,7 +3,7 @@ from __future__ import annotations
 from argrelay.plugin_delegator.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 class DelegatorNoopBase(DelegatorSingleFuncAbstract):

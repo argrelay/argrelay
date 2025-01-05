@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_data.PluginEntry import PluginEntry
-from argrelay.schema_response.InterpResult import InterpResult
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 @dataclass

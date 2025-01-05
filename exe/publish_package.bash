@@ -197,13 +197,12 @@ python -m venv "${argrelay_dir}/tmp/venv.twine"
 source         "${argrelay_dir}/tmp/venv.twine/bin/activate"
 pip install setuptools
 
-# Apparently, `tox` already builds `sdist`, for example:
-# @/.tox/.pkg/dist/argrelay-0.0.0.dev3.tar.gz
-# However, the following are the staps found in majority of the web resources:
-python setup.py sdist
+# The following are the staps found in majority of the web resources.
+python "${argrelay_dir}/setup.py" sdist
+
 pip install twine
 # This will prompt for login credentials:
-twine upload "dist/argrelay-${argrelay_version}.tar.gz"
+twine upload "${argrelay_dir}/dist/argrelay-${argrelay_version}.tar.gz"
 
 # Change version to non-release-able to force user to change it later:
 sed --in-place \

@@ -66,7 +66,7 @@ class DistinctValuesQuery(Enum):
     See `QueryEngine._query_prop_values_native_aggregate`.
 
     It calls MongoDB `aggregate()` with `$match: query_dict`, then `$group` with `$addToSet`:
-    *   See `test_MongoClient_distinc_values_search.py`:
+    *   See `test_MongoClient_distinct_values_search.py`:
         https://stackoverflow.com/a/63595331/441652
     *   Another example:
         https://stackoverflow.com/a/11991854/441652

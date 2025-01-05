@@ -1,7 +1,7 @@
 from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.relay_client import ClientCommandAbstract
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class ClientCommandFactoryAbstract:

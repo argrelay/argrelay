@@ -14,7 +14,7 @@ from argrelay.runtime_data.ServerConfig import ServerConfig
 from argrelay.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
 )
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 object_container_ipos_ = 1
 

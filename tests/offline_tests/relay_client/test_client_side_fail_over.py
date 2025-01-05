@@ -15,11 +15,11 @@ from argrelay.relay_client import __main__
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.schema_response.InterpResultSchema import interp_result_desc
-from argrelay.server_spec.const_int import BASE_URL_FORMAT
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
+from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
+from argrelay_api_server_cli.server_spec.const_int import BASE_URL_FORMAT
 
 random_byte_value = b"\x07"
 

@@ -11,10 +11,10 @@ from argrelay.handler_request.ProposeArgValuesServerRequestHandler import Propos
 from argrelay.handler_request.RelayLineArgsServerRequestHandler import RelayLineArgsServerRequestHandler
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.schema_response.ArgValuesSchema import arg_values_
-from argrelay.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_
+from argrelay_api_server_cli.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 def create_blueprint_api(local_server: LocalServer):

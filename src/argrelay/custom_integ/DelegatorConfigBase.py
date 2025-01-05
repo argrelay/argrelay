@@ -20,7 +20,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
     func_id_,
 )
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 object_container_ipos_ = 1
 

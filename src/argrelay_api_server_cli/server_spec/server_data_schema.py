@@ -10,11 +10,11 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.schema_response.ArgValuesSchema import arg_values_desc
-from argrelay.schema_response.InterpResultSchema import interp_result_desc
-from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
-from argrelay.server_spec.const_int import (
+from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc
+from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay_api_server_cli.server_spec.const_int import (
     DEFAULT_OPEN_API_VERSION,
     UNUSED_TITLE,
     UNUSED_VERSION,

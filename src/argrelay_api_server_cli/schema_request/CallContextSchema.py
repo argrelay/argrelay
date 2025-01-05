@@ -4,7 +4,7 @@ from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 client_version_ = "client_version"
 client_conf_target_ = "client_conf_target"

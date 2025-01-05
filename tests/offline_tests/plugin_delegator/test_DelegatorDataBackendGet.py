@@ -8,12 +8,12 @@ from argrelay.enum_desc.SpecialFunc import SpecialFunc
 from argrelay.plugin_delegator.DelegatorDataBackendGet import DelegatorDataBackendGet
 from argrelay.relay_client import __main__
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_request.CallContextSchema import call_context_desc
 from argrelay.test_infra import line_no_from_ctor, assert_test_module_name_embeds_prod_class_name
 from argrelay.test_infra.CustomTestCase import ShellInputTestCase
 from argrelay.test_infra.CustomVerifier import ServerActionVerifier, ProposeArgValuesVerifier
 from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
 from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
 
 
 class ThisTestClass(LocalTestClass):

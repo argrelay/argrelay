@@ -16,7 +16,7 @@ from argrelay.relay_server.QueryEngine import QueryEngine, populate_query_dict
 from argrelay.relay_server.QueryResult import QueryResult
 from argrelay.runtime_context.AbstractArg import (
     ArgCommandValueOffered, ArgCommandValueDictated, ArgCommand,
-    ArgCommandIncomplete, ArgCommandValue,
+    ArgCommandIncomplete,
 )
 from argrelay.runtime_context.DataArg import (
     ArgCommandDataValueDictated, ArgCommandDataValueOffered,

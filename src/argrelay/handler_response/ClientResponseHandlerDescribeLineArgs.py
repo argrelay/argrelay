@@ -6,8 +6,8 @@ from argrelay.enum_desc.ValueSource import ValueSource
 from argrelay.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
-from argrelay.schema_response.InterpResult import InterpResult
-from argrelay.schema_response.InterpResultSchema import interp_result_desc
+from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
+from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
 
 indent_size = 2
 

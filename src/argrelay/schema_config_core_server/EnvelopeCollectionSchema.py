@@ -7,7 +7,7 @@ from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.EnvelopeCollection import EnvelopeCollection
 from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
-from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
+from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import data_envelopes_
 
 collection_name_ = "collection_name"
 

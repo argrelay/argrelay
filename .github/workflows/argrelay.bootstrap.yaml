@@ -16,8 +16,9 @@ jobs:
             # When one of the job fails, this prevents canceling another job (for another Python version):
             fail-fast: false
             matrix:
+                # FS_84_11_73_28: supported python versions:
                 python-version:
-                    -   3.8
+                    -   3.9
                     -   3.13
         steps:
             -   run: "echo runner.os: ${{ runner.os }}"

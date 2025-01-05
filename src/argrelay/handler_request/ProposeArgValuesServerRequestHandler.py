@@ -2,8 +2,8 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_response.ArgValuesSchema import arg_values_
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class ProposeArgValuesServerRequestHandler(AbstractServerRequestHandler):

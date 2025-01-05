@@ -53,6 +53,7 @@ class ServiceLoader(AbstractLoader):
         self,
     ) -> list[IndexModel]:
 
+        # TODO: TODO_23_17_31_04: publish `index_model` by delegator plugins:
         return [
             IndexModel(
                 collection_name = ServiceEnvelopeClass.class_cluster.name,

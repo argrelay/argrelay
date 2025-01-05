@@ -1,8 +1,8 @@
 from typing import Union
 
 from argrelay.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
-from argrelay.schema_response.InvocationInput import InvocationInput
-from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc
 
 
 class ClientResponseHandlerCheckEnv(ClientResponseHandlerAbstract):

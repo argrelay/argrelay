@@ -2,7 +2,7 @@ from argrelay.client_command_remote.exception_utils import ServerResponseError, 
 from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.relay_client.ClientCommandAbstract import ClientCommandAbstract
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class ClientCommandRemoteAbstract(ClientCommandAbstract):

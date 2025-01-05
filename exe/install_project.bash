@@ -11,5 +11,5 @@ python -m pip install -r "${argrelay_dir}/conf/env_packages.txt"
 
 # Use editable mode:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
-python -m pip install --editable .[tests]
+python -m pip install --editable "${argrelay_dir}/"[tests]
 ########################################################################################################################

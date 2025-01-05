@@ -3,7 +3,7 @@ from marshmallow import fields, RAISE
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
-from argrelay.server_spec.const_int import DEFAULT_IP_ADDRESS, DEFAULT_PORT_NUMBER
+from argrelay_api_server_cli.server_spec.const_int import DEFAULT_IP_ADDRESS, DEFAULT_PORT_NUMBER
 
 server_host_name_ = "server_host_name"
 server_port_number_ = "server_port_number"

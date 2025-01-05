@@ -21,7 +21,7 @@ from argrelay.misc_helper_common import eprint
 from argrelay.relay_client.proc_worker import worker_main
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 class PluginCheckEnvServerResponseValueAbstract(PluginCheckEnvAbstract):

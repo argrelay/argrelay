@@ -17,7 +17,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     func_id_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import search_control_desc
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 def get_func_id_from_interp_ctx(

@@ -2,7 +2,7 @@ from argrelay.client_command_remote.ClientCommandRemoteAbstract import ClientCom
 from argrelay.client_pipeline.BytesDstReceiver import BytesDstReceiver
 from argrelay.client_pipeline.BytesHandlerAbstract import BytesHandlerAbstract
 from argrelay.enum_desc.ProcRole import ProcRole
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class ClientCommandRemoteSpinner(ClientCommandRemoteAbstract):

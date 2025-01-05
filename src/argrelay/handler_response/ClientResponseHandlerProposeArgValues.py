@@ -1,7 +1,7 @@
 from argrelay.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
-from argrelay.schema_response.ArgValues import ArgValues
-from argrelay.schema_response.ArgValuesSchema import arg_values_desc
+from argrelay_api_server_cli.schema_response.ArgValues import ArgValues
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc
 
 
 class ClientResponseHandlerProposeArgValues(ClientResponseHandlerAbstract):

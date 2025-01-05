@@ -4,13 +4,13 @@ from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
 from argrelay.enum_desc.CompType import CompType
 from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import ClientResponseHandlerDescribeLineArgs
 from argrelay.relay_client import __main__
-from argrelay.schema_response.InterpResult import InterpResult
 from argrelay.test_infra import line_no, parse_line_and_cpos
 from argrelay.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
     EmptyEnvMockBuilder,
 )
 from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
 
 
 class ThisTestClass(LocalTestClass):

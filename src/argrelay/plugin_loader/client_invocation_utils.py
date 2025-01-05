@@ -7,7 +7,7 @@ from argrelay.enum_desc.ClientExitCode import ClientExitCode
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper_common import get_argrelay_dir, eprint
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 def load_client_plugin_config(

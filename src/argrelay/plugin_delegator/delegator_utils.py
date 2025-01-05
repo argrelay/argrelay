@@ -16,7 +16,7 @@ from argrelay.plugin_delegator.SchemaCustomDataDelegatorError import (
 )
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.runtime_data.PluginConfig import PluginConfig
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 def set_default_to(

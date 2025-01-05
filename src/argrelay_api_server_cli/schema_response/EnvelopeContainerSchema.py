@@ -7,7 +7,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
 from argrelay.schema_config_interp.SearchControlSchema import (
     search_control_desc,
 )
-from argrelay.schema_response.AssignedValueSchema import assigned_value_desc
+from argrelay_api_server_cli.schema_response.AssignedValueSchema import assigned_value_desc
 
 """
 Schema for :class:`EnvelopeContainer`

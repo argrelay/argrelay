@@ -2,7 +2,7 @@ from marshmallow import fields, RAISE
 
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.schema_response.ArgValues import ArgValues
+from argrelay_api_server_cli.schema_response.ArgValues import ArgValues
 
 arg_values_ = "arg_values"
 

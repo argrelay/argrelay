@@ -1,18 +1,19 @@
 # See FS_29_54_67_86 dir_structure.
 
-# Python
+# Python (recursively):
 __pycache__/
+
+# Temporary dirs for Python tools:
 /.tox/
+/build/
+/dist/
+/argrelay.egg-info/
 
 # Typical Python `venv` location:
 /venv/
 
 # PyCharm
 /.idea/
-
-# Temporary dirs for Python tools:
-/build/
-/dist/
 
 # Target environment config
 # (no trailing slash `/` because it can be a symlink):

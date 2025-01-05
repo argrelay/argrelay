@@ -8,9 +8,9 @@ from argrelay.misc_helper_common import eprint
 from argrelay.plugin_delegator.DelegatorAbstract import DelegatorAbstract
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import EnvMockBuilder
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class InOutTestClass(BaseTestClass):

@@ -23,13 +23,13 @@ from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step
 from argrelay.relay_client import __main__
 from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_response.InterpResult import InterpResult
 from argrelay.test_infra import line_no, parse_line_and_cpos
 from argrelay.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
     EmptyEnvMockBuilder,
 )
 from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
 
 
 class ThisTestClass(LocalTestClass):

@@ -4,7 +4,7 @@ from argrelay.plugin_delegator.DelegatorSingleFuncAbstract import DelegatorSingl
 from argrelay.plugin_delegator.SchemaCustomDataDelegatorError import error_message_, error_code_
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 class DelegatorError(DelegatorSingleFuncAbstract):

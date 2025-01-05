@@ -59,11 +59,11 @@ from argrelay.schema_config_plugin.PluginConfigSchema import (
     server_plugin_instances_,
 )
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_, plugin_enabled_
-from argrelay.schema_response.InvocationInput import InvocationInput
-from argrelay.server_spec.CallContext import CallContext
 from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 from argrelay.test_infra.OpenFileMock import OpenFileMock
 from argrelay.test_infra.PopenMock import PopenMock
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 @dataclass
