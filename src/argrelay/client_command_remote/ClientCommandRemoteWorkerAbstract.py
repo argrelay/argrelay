@@ -10,7 +10,7 @@ from argrelay.enum_desc.ProcRole import ProcRole
 from argrelay.enum_desc.TopDir import TopDir
 from argrelay.misc_helper_common import get_argrelay_dir
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 server_index_file_name = "argrelay_client.server_index"
 random_file = "/dev/random"

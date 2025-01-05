@@ -54,7 +54,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.enum_desc.ClientExitCode",
             "argrelay.enum_desc.ProcRole",
             "argrelay.relay_client.ClientCommandAbstract",
-            "argrelay.server_spec.CallContext"
+            "argrelay_api_server_cli.server_spec.CallContext"
         ],
         "argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract": [
             "__future__",
@@ -66,7 +66,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.enum_desc.TopDir",
             "argrelay.misc_helper_common",
             "argrelay.runtime_data.ConnectionConfig",
-            "argrelay.server_spec.CallContext",
+            "argrelay_api_server_cli.server_spec.CallContext",
             "os"
         ],
         "argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
@@ -87,7 +87,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.enum_desc.ServerAction",
             "argrelay.enum_desc.TermColor",
             "argrelay.misc_helper_common",
-            "argrelay.server_spec.CallContext",
+            "argrelay_api_server_cli.server_spec.CallContext",
             "dataclasses",
             "os"
         ],
@@ -125,7 +125,7 @@ class ThisTestClass(BaseTestClass):
             "time"
         ],
         "argrelay.relay_client.ClientCommandAbstract": [
-            "argrelay.server_spec.CallContext"
+            "argrelay_api_server_cli.server_spec.CallContext"
         ],
         "argrelay.relay_client.__main__": [
             "argrelay.client_spec.ShellContext",
@@ -136,7 +136,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay.relay_client.client_utils",
             "argrelay.runtime_data.ClientConfig",
             "argrelay.runtime_data.ConnectionConfig",
-            "argrelay.server_spec.CallContext",
+            "argrelay_api_server_cli.server_spec.CallContext",
             "sys"
         ],
         "argrelay.relay_client.client_utils": [
@@ -157,7 +157,7 @@ class ThisTestClass(BaseTestClass):
         "argrelay.runtime_data.ConnectionConfig": [
             "dataclasses"
         ],
-        "argrelay.server_spec.CallContext": [
+        "argrelay_api_server_cli.server_spec.CallContext": [
             "__future__",
             "argrelay.enum_desc.CompScope",
             "argrelay.enum_desc.ServerAction",

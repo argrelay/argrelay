@@ -16,7 +16,7 @@ from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay.runtime_context.SearchControl import SearchControl
 from argrelay.runtime_data.AssignedValue import AssignedValue
 from argrelay.schema_config_interp.DataEnvelopeSchema import mongo_id_
-from argrelay.schema_response.EnvelopeContainerSchema import found_count_
+from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import found_count_
 
 
 class QueryEngine:

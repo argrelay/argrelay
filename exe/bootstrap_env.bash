@@ -255,8 +255,9 @@ source "${argrelay_dir}/conf/python_env.conf.bash"
 # Cut out Python version number chars (from first digit until first space):
 # shellcheck disable=SC2154
 curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
+# FS_84_11_73_28: supported python versions:
 # Ensure Python version is not old:
-min_required_version="3.8"
+min_required_version="3.9"
 if [[ "${curr_python_version}" != "${min_required_version}" ]]
 then
     if ( echo "${curr_python_version}"; echo "${min_required_version}"; ) | sort --version-sort --check 2> /dev/null
@@ -392,7 +393,7 @@ python -m pip install -r "${argrelay_dir}/conf/env_packages.txt"
 
 # Use editable mode:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
-python -m pip install -e .[tests]
+python -m pip install --editable "${argrelay_dir}/"[tests]
 ########################################################################################################################
 install_project_EOF
     "${ret_command}" 1
@@ -864,7 +865,7 @@ cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/env_packages.txt"
 ###############################################################################
 # Note that these dependencies are not necessarily required ones,
 # those required are listed in `setup.py` script and can be installed as:
-# pip install -e .
+# pip install --editable "${argrelay_dir}/"
 ###############################################################################
 REQUIREMENTS_EOF
 # FS_85_33_46_53 bootstrap package management:

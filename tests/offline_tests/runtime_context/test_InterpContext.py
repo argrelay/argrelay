@@ -89,7 +89,8 @@ class ThisTestClass(BaseTestClass):
 
             test_cases = [
                 ThisTestCase(
-                    "|", CompType.InvokeAction,
+                    "|",
+                    CompType.InvokeAction,
                     [
                         [],
                     ],
@@ -127,7 +128,8 @@ class ThisTestClass(BaseTestClass):
                     "case A: with `tangent_token` excluded as for `ServerAction.ProposeArgValues`: single arg, no bucket separator",
                 ),
                 ThisTestCase(
-                    "a|", CompType.InvokeAction,
+                    "a|",
+                    CompType.InvokeAction,
                     [
                         [0],
                     ],
@@ -152,7 +154,8 @@ class ThisTestClass(BaseTestClass):
                     "case B: with `tangent_token` included for NOT `ServerAction.ProposeArgValues`: single arg, no bucket separator",
                 ),
                 ThisTestCase(
-                    "% a|", CompType.InvokeAction,
+                    "% a|",
+                    CompType.InvokeAction,
                     [
                         [],
                         # bucket separator is counted as a token - next token is at index = 1 (not 0):
@@ -182,7 +185,8 @@ class ThisTestClass(BaseTestClass):
                     "single arg + bucket separator before",
                 ),
                 ThisTestCase(
-                    "a %|", CompType.InvokeAction,
+                    "a %|",
+                    CompType.InvokeAction,
                     [
                         [0],
                         [],
@@ -211,7 +215,8 @@ class ThisTestClass(BaseTestClass):
                     "single arg + bucket separator after",
                 ),
                 ThisTestCase(
-                    "%a|", CompType.InvokeAction,
+                    "%a|",
+                    CompType.InvokeAction,
                     [
                         [0],
                     ],
@@ -236,7 +241,8 @@ class ThisTestClass(BaseTestClass):
                     "single arg concatenated with bucket separator before",
                 ),
                 ThisTestCase(
-                    "a%|", CompType.InvokeAction,
+                    "a%|",
+                    CompType.InvokeAction,
                     [
                         [0],
                     ],
@@ -261,7 +267,8 @@ class ThisTestClass(BaseTestClass):
                     "single arg concatenated with bucket separator after",
                 ),
                 ThisTestCase(
-                    "% qwer % asdf % zxcv %    |", CompType.InvokeAction,
+                    "% qwer % asdf % zxcv %    |",
+                    CompType.InvokeAction,
                     [
                         [],
                         [1],
@@ -314,7 +321,8 @@ class ThisTestClass(BaseTestClass):
                     "multiple `token_bucket`-s with single `command_token` only",
                 ),
                 ThisTestCase(
-                    "% qwer asdf zxcv % qwer asdf % zxcv %    |", CompType.InvokeAction,
+                    "% qwer asdf zxcv % qwer asdf % zxcv %    |",
+                    CompType.InvokeAction,
                     [
                         [],
                         [1, 2, 3],
@@ -382,7 +390,8 @@ class ThisTestClass(BaseTestClass):
                     "multiple `arg_bucket`-s with multiple `command_token`-s",
                 ),
                 ThisTestCase(
-                    "-dictated_arg_name1 dictated_arg_value1 offered_arg_value1 |", CompType.InvokeAction,
+                    "-dictated_arg_name1 dictated_arg_value1 offered_arg_value1 |",
+                    CompType.InvokeAction,
                     [
                         [0, 1, 2],
                     ],
@@ -416,7 +425,8 @@ class ThisTestClass(BaseTestClass):
                     "well-formed `offered_arg_value`",
                 ),
                 ThisTestCase(
-                    "-dictated_arg_name1 dictated_arg_value1 -incomplete_arg_name2 |", CompType.InvokeAction,
+                    "-dictated_arg_name1 dictated_arg_value1 -incomplete_arg_name2 |",
+                    CompType.InvokeAction,
                     [
                         [0, 1, 2],
                     ],
@@ -450,7 +460,8 @@ class ThisTestClass(BaseTestClass):
                     "second ill-formed `dictated_arg` (missing value) which becomes FS_08_58_30_24 `incomplete_arg`",
                 ),
                 ThisTestCase(
-                    "-dictated_arg_name1 -dictated_arg_value1 offered_arg_value2 |", CompType.InvokeAction,
+                    "-dictated_arg_name1 -dictated_arg_value1 offered_arg_value2 |",
+                    CompType.InvokeAction,
                     [
                         [0, 1, 2],
                     ],
@@ -485,7 +496,8 @@ class ThisTestClass(BaseTestClass):
                     "second well-formed `offered_arg_value`",
                 ),
                 ThisTestCase(
-                    "-incomplete_arg_name1 |", CompType.InvokeAction,
+                    "-incomplete_arg_name1 |",
+                    CompType.InvokeAction,
                     [
                         [0],
                     ],
@@ -510,7 +522,8 @@ class ThisTestClass(BaseTestClass):
                     "Parse single `incomplete_arg`.",
                 ),
                 ThisTestCase(
-                    "-incomplete_arg_name1 % -incomplete_arg_name2 |", CompType.InvokeAction,
+                    "-incomplete_arg_name1 % -incomplete_arg_name2 |",
+                    CompType.InvokeAction,
                     [
                         [0],
                         [2],
@@ -545,7 +558,8 @@ class ThisTestClass(BaseTestClass):
                     "Parse FS_08_58_30_24 `incomplete_arg`-s - one for each `token_bucket`.",
                 ),
                 ThisTestCase(
-                    "offered_arg_value1 -incomplete_arg_name2 % -dictated_arg_name3 dictated_arg_value3 -incomplete_arg_name4 |", CompType.InvokeAction,
+                    "offered_arg_value1 -incomplete_arg_name2 % -dictated_arg_name3 dictated_arg_value3 -incomplete_arg_name4 |",
+                    CompType.InvokeAction,
                     [
                         [0, 1],
                         [3, 4, 5],

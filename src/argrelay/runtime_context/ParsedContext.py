@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper_common import eprint
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 @dataclass(frozen = True)

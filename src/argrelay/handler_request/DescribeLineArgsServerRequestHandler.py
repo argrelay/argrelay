@@ -2,11 +2,11 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_response.InterpResult import InterpResult
-from argrelay.schema_response.InterpResultSchema import (
+from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
+from argrelay_api_server_cli.schema_response.InterpResultSchema import (
     interp_result_desc,
 )
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):

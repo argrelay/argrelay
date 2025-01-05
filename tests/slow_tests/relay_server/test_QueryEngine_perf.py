@@ -13,7 +13,6 @@ from argrelay.schema_config_core_server.ServerConfigSchema import (
     server_config_desc,
 )
 from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
-from argrelay.schema_response.ArgValuesSchema import arg_values_
 from argrelay.test_infra import parse_line_and_cpos, line_no
 from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
 from argrelay.test_infra.EnvMockBuilder import (
@@ -21,6 +20,7 @@ from argrelay.test_infra.EnvMockBuilder import (
     wrap_instance_method_on_instance,
 )
 from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_
 
 
 class ThisTestClass(LocalTestClass):

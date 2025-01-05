@@ -13,13 +13,13 @@ from argrelay.plugin_delegator.DelegatorNoopEmpty import DelegatorNoopEmpty
 from argrelay.relay_client import __main__
 from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
 from argrelay.schema_config_plugin.PluginEntrySchema import plugin_module_name_, plugin_class_name_
-from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
-from argrelay.schema_response.InterpResultSchema import interp_result_desc
-from argrelay.schema_response.InvocationInputSchema import invocation_input_desc, delegator_plugin_entry_
-from argrelay.server_spec.const_int import BASE_URL_FORMAT
 from argrelay.test_infra import parse_line_and_cpos
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
+from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc, delegator_plugin_entry_
+from argrelay_api_server_cli.server_spec.const_int import BASE_URL_FORMAT
 
 
 class ThisTestClass(BaseTestClass):

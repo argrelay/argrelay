@@ -9,7 +9,7 @@ from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay.relay_client.client_utils import handle_main_exception
 from argrelay.runtime_data.ClientConfig import ClientConfig
 from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 ElapsedTime.measure("after_program_entry")
 

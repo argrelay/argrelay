@@ -4,9 +4,9 @@ from marshmallow import RAISE, fields
 
 from argrelay.enum_desc.SpecialChar import SpecialChar
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.schema_response.ArgValuesSchema import ArgValuesSchema, arg_values_desc
-from argrelay.schema_response.EnvelopeContainerSchema import envelope_container_desc
-from argrelay.schema_response.InterpResult import InterpResult
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import ArgValuesSchema, arg_values_desc
+from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import envelope_container_desc
+from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
 
 """
 Schema for the result of interpretation taken from :class:`InterpContext`

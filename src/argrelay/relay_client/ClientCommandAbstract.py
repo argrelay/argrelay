@@ -1,4 +1,4 @@
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class ClientCommandAbstract:

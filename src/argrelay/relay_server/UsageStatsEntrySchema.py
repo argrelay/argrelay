@@ -5,7 +5,7 @@ from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay.relay_server.UsageStatsEntry import UsageStatsEntry
-from argrelay.schema_request.CallContextSchema import (
+from argrelay_api_server_cli.schema_request.CallContextSchema import (
     server_action_,
     command_line_,
     call_context_desc,

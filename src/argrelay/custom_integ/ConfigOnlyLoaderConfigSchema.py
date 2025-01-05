@@ -10,7 +10,7 @@ from argrelay.schema_config_interp.DataEnvelopeSchema import (
     sample_prop_name_b_,
     sample_prop_name_c_,
 )
-from argrelay.schema_response.EnvelopeContainerSchema import data_envelopes_
+from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import data_envelopes_
 
 envelope_class_to_collection_name_map_ = "envelope_class_to_collection_name_map"
 collection_name_to_index_props_map_ = "collection_name_to_index_props_map"

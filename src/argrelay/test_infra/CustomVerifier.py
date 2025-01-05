@@ -1,7 +1,7 @@
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.schema_request.CallContextSchema import server_action_
 from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay.test_infra.JsonTestOutputVerifier import JsonTestOutputVerifier
+from argrelay_api_server_cli.schema_request.CallContextSchema import server_action_
 
 
 class CustomVerifier(JsonTestOutputVerifier):

@@ -370,7 +370,6 @@ class suggest_state_class extends abstract_state_class {
 
     update_gui() {
         populate_suggestions()
-        scroll_line_to_top()
     }
 
     process_response(server_response) {
@@ -419,7 +418,6 @@ class search_state_class extends abstract_state_class {
 
     update_gui() {
         outline_search_plan()
-        scroll_line_to_top()
     }
 
     process_response(server_response) {
@@ -547,7 +545,9 @@ function handle_reset_all(
     command_line_input_elem.value = "";
     invocation_output.textContent = "";
     on_command_line_change();
-    command_line_input_elem.focus();
+    command_line_input_elem.focus({
+        preventScroll: true,
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -783,7 +783,9 @@ function complete_curr_token(input_elem, replacement_string) {
     );
     input_elem.value = result_string;
     const new_cursor_ipos = token_ipos_start + replacement_string.length;
-    input_elem.focus();
+    input_elem.focus({
+        preventScroll: true,
+    });
     input_elem.setSelectionRange(new_cursor_ipos, new_cursor_ipos);
 }
 
@@ -861,10 +863,6 @@ function remove_child_elements(
     while (parent_elem.firstChild) {
         parent_elem.removeChild(parent_elem.lastChild);
     }
-}
-
-function scroll_line_to_top() {
-    command_line_input_elem.scrollIntoView(true);
 }
 
 // Equivalent of `ClientResponseHandlerDescribeLineArgs.render_result`:
@@ -1025,6 +1023,8 @@ display_server_start_time();
 display_project_git_commit_time();
 load_command_history();
 on_command_line_change();
-command_line_input_elem.focus();
+command_line_input_elem.focus({
+    preventScroll: true,
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@ from argrelay.plugin_delegator.delegator_utils import set_default_to, redirect_t
 from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.schema_config_interp.SearchControlSchema import populate_search_control
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 
 def get_access_search_control(

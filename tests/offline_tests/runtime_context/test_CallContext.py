@@ -5,7 +5,9 @@ from argrelay.client_spec.ShellContext import UNKNOWN_COMP_KEY, ShellContext, ge
 from argrelay.enum_desc.CompScope import CompScope
 from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.schema_request.CallContextSchema import (
+from argrelay.test_infra import line_no, parse_line_and_cpos
+from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay_api_server_cli.schema_request.CallContextSchema import (
     call_context_desc,
     client_pid_,
     is_debug_enabled_,
@@ -18,8 +20,6 @@ from argrelay.schema_request.CallContextSchema import (
     client_version_,
     input_data_,
 )
-from argrelay.test_infra import line_no, parse_line_and_cpos
-from argrelay.test_infra.BaseTestClass import BaseTestClass
 
 
 class ThisTestClass(BaseTestClass):

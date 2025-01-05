@@ -4,8 +4,8 @@ from dataclasses import asdict
 from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import ClientCommandRemoteWorkerAbstract
 from argrelay.misc_helper_common import eprint
 from argrelay.misc_helper_common.ElapsedTime import ElapsedTime
-from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.server_spec.const_int import BASE_URL_FORMAT
+from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
+from argrelay_api_server_cli.server_spec.const_int import BASE_URL_FORMAT
 
 has_error_happened = False
 

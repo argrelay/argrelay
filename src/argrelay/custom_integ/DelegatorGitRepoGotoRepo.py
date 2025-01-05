@@ -22,7 +22,7 @@ from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     func_id_,
 )
 from argrelay.schema_config_interp.SearchControlSchema import populate_search_control
-from argrelay.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 
 func_id_goto_git_repo_ = "func_id_goto_git_repo"
 

@@ -9,7 +9,7 @@ from argrelay.enum_desc.CompType import CompType
 from argrelay.enum_desc.ServerAction import ServerAction
 from argrelay.enum_desc.TermColor import TermColor
 from argrelay.misc_helper_common import eprint, get_argrelay_dir
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 UNKNOWN_COMP_KEY: str = str(0)
 """

@@ -66,7 +66,6 @@ class ArgCommandDataValueDictated(ArgCommandDataValue, ArgCommandValueDictated):
         return self.arg_name
 
 
-
 @dataclass
 class ArgCommandDataIncomplete(ArgCommandData, ArgCommandIncomplete):
     """

@@ -4,7 +4,7 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.relay_server.UsageStatsEntry import UsageStatsEntry
 from argrelay.runtime_context.InterpContext import InterpContext
 from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class AbstractServerRequestHandler:

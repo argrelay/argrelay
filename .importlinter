@@ -1,0 +1,31 @@
+
+# See:
+# https://github.com/seddonym/import-linter
+# Run it in `@/exe/dev_shell.base`:
+# lint-imports
+
+# TODO: TODO_78_94_31_68: split argrelay into multiple packages:
+#       Populate rules for imports.
+
+# TODO: TODO_78_94_31_68: split argrelay into multiple packages:
+#       Think of contributing to `import-linter` to invoke it via tests
+#       instead of external tool with static config.
+
+[importlinter]
+root_packages=
+    argrelay
+    argrelay_api_server_cli
+# Optional:
+include_external_packages = True
+exclude_type_checking_imports = True
+
+[importlinter:contract:1]
+name=REST API specs are not used by anything in `argrelay_api_server_cli`
+type=forbidden
+source_modules=
+    argrelay_api_server_cli.schema_request.*
+    argrelay_api_server_cli.schema_response.*
+forbidden_modules=
+    argrelay_api_server_cli.server_spec.DescribeLineArgsSpec
+    argrelay_api_server_cli.server_spec.ProposeArgValuesSpec
+    argrelay_api_server_cli.server_spec.RelayLineArgsSpec

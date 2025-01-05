@@ -1,6 +1,6 @@
-from argrelay.schema_request.CallContextSchema import call_context_desc
-from argrelay.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
-from argrelay.server_spec.server_data_schema import get_schema_definitions
+from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
+from argrelay_api_server_cli.server_spec.server_data_schema import get_schema_definitions
 
 spec_data = {
     "summary": "Propose `arg_value`-s for the given command line and cursor position",

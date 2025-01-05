@@ -13,9 +13,9 @@ from argrelay.relay_server.LocalServer import LocalServer
 from argrelay.runtime_context.InterpContext import function_container_ipos_
 from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
 from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import delegator_plugin_instance_id_
-from argrelay.schema_response.InvocationInput import InvocationInput
-from argrelay.schema_response.InvocationInputSchema import invocation_input_desc
-from argrelay.server_spec.CallContext import CallContext
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay_api_server_cli.server_spec.CallContext import CallContext
 
 
 class RelayLineArgsServerRequestHandler(AbstractServerRequestHandler):
