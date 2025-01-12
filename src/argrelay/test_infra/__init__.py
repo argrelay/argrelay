@@ -29,14 +29,48 @@ def line_no() -> int:
     """
     Get source line in the caller frame
     """
-    return getframeinfo(currentframe().f_back).lineno
+    return line_no_l_0()
 
 
 def line_no_from_ctor() -> int:
     """
     Same as `line_no` but used inside `TestCase` ctor (behind one more stack frame).
     """
+    return line_no_l_1()
+
+
+def line_no_l_0() -> int:
+    """
+    Line no from frame level 0 = callee frame = curr frame (from call site POV)
+    """
+    return getframeinfo(currentframe().f_back).lineno
+
+
+def line_no_l_1() -> int:
+    """
+    Line no from frame level 1 = caller frame = prev frame (from call site POV)
+    """
     return getframeinfo(currentframe().f_back.f_back).lineno
+
+
+def file_line() -> str:
+    return file_line_l_0()
+
+
+def file_line_l_0() -> str:
+    """
+    Similar to `line_no_l_0` but includes file name.
+    """
+    stack_frame = currentframe().f_back
+    return f"{stack_frame.f_code.co_filename}:{stack_frame.f_lineno}"
+
+
+def file_line_l_1() -> str:
+    """
+    Similar to `file_line_l_1` but includes file name.
+    """
+    stack_frame = currentframe().f_back.f_back
+    return f"{stack_frame.f_code.co_filename}:{stack_frame.f_lineno}"
 
 
 def parse_line_and_cpos(test_line: str) -> (str, int):

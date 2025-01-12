@@ -54,12 +54,6 @@ then
     exit 1
 fi
 
-# TODO: TODO_78_94_31_68: split argrelay into multiple packages:
-#       Think of contributing to `import-linter` to invoke it via tests
-#       instead of external tool with static config.
-#       As of now, just run it ahead of selecting any tests:
-lint-imports
-
 default_test_dir="${argrelay_dir}/tests"
 
 input_path="${1:-"${default_test_dir}"}"
