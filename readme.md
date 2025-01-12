@@ -180,17 +180,27 @@ Ultimately, `argrelay` can be used as dependency for a [separate project][bootst
 
 # Interactive demo: starting and stopping
 
-This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
+There are two ways to start demo:
 
-Clone this repo somewhere (`@/` is [the project root][FS_29_54_67_86.dir_structure.md]).
+*   Using `docker` image:
 
-Start `@/exe/relay_demo.bash` sub-shell (it may take a couple of minutes to start for the first time):
+    ```sh
+    docker run -it argrelay/demo
+    ```
 
-```sh
-./exe/relay_demo.bash
-```
+*   Using `git` sources:
 
-This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
+    This is a non-intrusive demo (e.g. without permanent changes to `~/.bashrc`).
+
+    Clone this repo somewhere (`@/` is [the project root][FS_29_54_67_86.dir_structure.md]).
+
+    Start `@/exe/relay_demo.bash` sub-shell (it may take a couple of minutes to start for the first time):
+
+    ```sh
+    ./exe/relay_demo.bash
+    ```
+
+    This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
 
 Optionally, review env state (any time):
 

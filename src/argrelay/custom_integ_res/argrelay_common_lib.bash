@@ -157,6 +157,9 @@ function wait_for_open_port {
 
     end_time_sec="$(( $( date "+%s" ) + ${timeout_sec} ))"
 
+    # Check availability of `nc` command:
+    which nc
+
     # Wait until server has opened its port:
     while ! nc -z "${server_host_name}" "${server_port_number}"
     do
@@ -190,6 +193,9 @@ function wait_for_closed_port {
     server_port_number="${3}"
 
     end_time_sec="$(( $( date "+%s" ) + ${timeout_sec} ))"
+
+    # Check availability of `nc` command:
+    which nc
 
     # Wait until server has closed its port:
     while nc -z "${server_host_name}" "${server_port_number}"

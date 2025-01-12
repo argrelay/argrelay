@@ -117,7 +117,10 @@ gui_banner_config:
         <br/>
         A GUI client looks up the data, but it cannot execute commands.<br/>
         <br/>
-        To execute commands, use a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> instead:<br/>
+        To execute commands, use a <a href="https://github.com/argrelay/argrelay#argrelay-demo" target="_blank">CLI client</a> instead.<br/>
+        <br/>
+        <details>
+        <summary>Screencast:</summary>
         <br/>
         <div style="text-align: center;">
             <iframe
@@ -131,6 +134,7 @@ gui_banner_config:
             >
             </iframe>
         </div>
+        </details>
 
         <br/>
 
