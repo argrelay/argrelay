@@ -1,4 +1,4 @@
-from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 
 
 class ManualServerTestClass(BaseTestClass):

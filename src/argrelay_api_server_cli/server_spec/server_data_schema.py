@@ -9,7 +9,6 @@ from __future__ import annotations
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
-from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
 from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc
 from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
@@ -19,6 +18,7 @@ from argrelay_api_server_cli.server_spec.const_int import (
     UNUSED_TITLE,
     UNUSED_VERSION,
 )
+from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
 
 # This spec is only used to generate data schemas: Marshmallow Schemas -> JSON Schemas.
 # These data schemas are subsequently used in OAS specs for paths (which are defined manually).

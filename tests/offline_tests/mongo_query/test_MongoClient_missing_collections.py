@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass
 
 

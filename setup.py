@@ -145,12 +145,46 @@ See: https://github.com/argrelay/argrelay
     package_dir = {
         "argrelay":
             "./src/argrelay/",
+        "argrelay_api_plugin_abstract":
+            "./src/argrelay_api_plugin_abstract/",
+        "argrelay_api_plugin_check_env_abstract":
+            "./src/argrelay_api_plugin_check_env_abstract/",
+        "argrelay_api_plugin_client_abstract":
+            "./src/argrelay_api_plugin_client_abstract/",
+        "argrelay_api_plugin_server_abstract":
+            "./src/argrelay_api_plugin_server_abstract/",
         "argrelay_api_server_cli":
             "./src/argrelay_api_server_cli/",
+        "argrelay_app_check_env":
+            "./src/argrelay_app_check_env/",
+        "argrelay_app_bootstrap":
+            "./src/argrelay_app_bootstrap/",
+        "argrelay_app_client":
+            "./src/argrelay_app_client/",
+        "argrelay_app_server":
+            "./src/argrelay_app_server/",
         "argrelay_docs":
             "./",
         "argrelay_data":
             "./",
+        "argrelay_lib_check_env_plugin_core":
+            "./src/argrelay_lib_check_env_plugin_core/",
+        "argrelay_lib_root":
+            "./src/argrelay_lib_root/",
+        "argrelay_lib_server_plugin_check_env":
+            "./src/argrelay_lib_server_plugin_check_env/",
+        "argrelay_lib_server_plugin_core":
+            "./src/argrelay_lib_server_plugin_core/",
+        "argrelay_lib_server_plugin_demo":
+            "./src/argrelay_lib_server_plugin_demo/",
+        "argrelay_schema_config_check_env":
+            "./src/argrelay_schema_config_check_env/",
+        "argrelay_schema_config_client":
+            "./src/argrelay_schema_config_client/",
+        "argrelay_schema_config_server":
+            "./src/argrelay_schema_config_server/",
+        "argrelay_test_infra":
+            "./src/argrelay_test_infra/",
     },
     # See:
     # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
@@ -159,21 +193,6 @@ See: https://github.com/argrelay/argrelay
     #     that is, the files are expected to be part of the package in the source directories.
     package_data = {
         "argrelay": [
-
-            # Config files:
-            "sample_conf/argrelay_client.json",
-            "sample_conf/argrelay_server.yaml",
-            "sample_conf/argrelay_plugin.yaml",
-            "sample_conf/check_env_plugin.conf.bash",
-            "sample_conf/check_env_plugin.conf.yaml",
-
-            # GUI client:
-            "relay_server/gui_static/argrelay_client.js",
-            "relay_server/gui_static/argrelay_favicon_16.ico",
-            "relay_server/gui_static/argrelay_style.css",
-            "relay_server/gui_static/external_link.svg",
-            "relay_server/gui_templates/argrelay_main.html",
-
             # Other resource files:
             "custom_integ_res/argrelay_common_lib.bash",
             "custom_integ_res/shell_env.bash",
@@ -188,6 +207,22 @@ See: https://github.com/argrelay/argrelay
             "custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash",
             "custom_integ_res/script_plugin.d/check_env_plugin.git_version.bash",
 
+        ],
+        "argrelay_app_bootstrap": [
+            # Config files:
+            "sample_conf/argrelay_client.json",
+            "sample_conf/argrelay_server.yaml",
+            "sample_conf/argrelay_plugin.yaml",
+            "sample_conf/check_env_plugin.conf.bash",
+            "sample_conf/check_env_plugin.conf.yaml",
+        ],
+        "argrelay_app_server": [
+            # GUI client:
+            "argrelay_app_server/relay_server/gui_static/argrelay_client.js",
+            "argrelay_app_server/relay_server/gui_static/argrelay_favicon_16.ico",
+            "argrelay_app_server/relay_server/gui_static/argrelay_style.css",
+            "argrelay_app_server/relay_server/gui_static/external_link.svg",
+            "argrelay_app_server/relay_server/gui_templates/argrelay_main.html",
         ],
         "argrelay_docs": argrelay_docs_files,
         "argrelay_data": argrelay_data_files,

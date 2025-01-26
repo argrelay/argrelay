@@ -1,9 +1,12 @@
-from marshmallow import fields, RAISE
+from marshmallow import (
+    fields,
+    RAISE,
+)
 
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
-from argrelay.misc_helper_common.TypeDesc import TypeDesc
-from argrelay.runtime_data.AssignedValue import AssignedValue
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_root.misc_helper_common.ObjectSchema import ObjectSchema
+from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
 
 prop_value_ = "prop_value"
 value_source_ = "value_source"

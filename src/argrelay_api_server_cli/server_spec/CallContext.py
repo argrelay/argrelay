@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import (
+    dataclass,
+    field,
+)
 
-from argrelay.enum_desc.CompScope import CompScope
-from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.enum_desc.TermColor import TermColor
-from argrelay.misc_helper_common import eprint
+from argrelay_lib_root.enum_desc.CompScope import CompScope
+from argrelay_lib_root.enum_desc.ServerAction import ServerAction
+from argrelay_lib_root.enum_desc.TermColor import TermColor
+from argrelay_lib_root.misc_helper_common import eprint
 
 
 @dataclass(frozen = True)

@@ -1,4 +1,7 @@
 
+# See:
+# @/docs/dev_notes/docker_notes.md
+
 FROM fedora:41
 
 # Install dependencies:
@@ -22,7 +25,7 @@ EXPOSE 8787
 
 # Update to bind to 0.0.0.0 instad of 127.0.0.1:
 # https://stackoverflow.com/a/54942153/441652
-RUN sed -i "s/^\\([[:space:]]*server_host_name:[[:space:]]*\\)localhost/\\10.0.0.0/g" ./src/argrelay/sample_conf/argrelay_server.yaml
+RUN sed -i "s/^\\([[:space:]]*server_host_name:[[:space:]]*\\)localhost/\\10.0.0.0/g" ./src/argrelay_app_bootstrap/sample_conf/argrelay_server.yaml
 
 RUN ./exe/relay_demo.bash
 

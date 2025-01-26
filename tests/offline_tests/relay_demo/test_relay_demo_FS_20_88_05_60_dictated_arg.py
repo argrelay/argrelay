@@ -1,19 +1,22 @@
-from argrelay.custom_integ.DelegatorServiceInstanceGoto import DelegatorServiceInstanceGoto
-from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.plugin_delegator.DelegatorError import DelegatorError
-from argrelay.plugin_interp.FuncTreeInterpFactory import (
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import DelegatorError
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
     func_envelope_path_step_prop_name,
     tree_step_arg_name_prefix_,
 )
-from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_infra import line_no, assert_test_func_name_embeds_prod_class_name
-from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceGoto import DelegatorServiceInstanceGoto
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
+from argrelay_test_infra.test_infra import (
+    assert_test_func_name_embeds_prod_class_name,
+    line_no,
+)
+from argrelay_test_infra.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

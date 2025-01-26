@@ -1,25 +1,25 @@
 from __future__ import annotations
 
-from argrelay.composite_forest.CompositeForest import CompositeForest
-from argrelay.composite_forest.CompositeForestExtractor import (
+from argrelay_app_server.composite_forest.CompositeForestExtractor import (
+    extract_func_tree,
+    extract_interp_tree,
+    extract_jump_tree,
     extract_tree_abs_path_to_interp_id,
     extract_zero_arg_interp_tree,
-    extract_jump_tree,
-    extract_interp_tree,
-    extract_func_tree,
 )
-from argrelay.composite_forest.CompositeForestSchema import composite_forest_desc
-from argrelay.composite_forest.DictTreeWalker import normalize_tree
-from argrelay.enum_desc.SpecialFunc import SpecialFunc
-from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
-from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
-from argrelay.schema_config_core_server.ServerConfigSchema import (
+from argrelay_app_server.composite_forest.DictTreeWalker import normalize_tree
+from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
+from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
+from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import composite_forest_desc
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
     server_config_desc,
     server_plugin_control_,
 )
-from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
-from argrelay.test_infra import line_no
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import composite_forest_
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

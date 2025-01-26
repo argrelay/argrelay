@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import (
+    dataclass,
+    field,
+)
 
 from importlinter import Contract
 from importlinter.application.ports.reporting import Report
@@ -9,13 +12,47 @@ from importlinter.application.user_options import UserOptions
 from importlinter.contracts.forbidden import ForbiddenContract
 
 import argrelay
+import argrelay_api_plugin_abstract
+import argrelay_api_plugin_check_env_abstract
+import argrelay_api_plugin_client_abstract
+import argrelay_api_plugin_server_abstract
 import argrelay_api_server_cli
-from argrelay.test_infra import file_line_l_1
+import argrelay_app_bootstrap
+import argrelay_app_check_env
+import argrelay_app_client
+import argrelay_app_server
+import argrelay_lib_check_env_plugin_core
+import argrelay_lib_root
+import argrelay_lib_server_plugin_check_env
+import argrelay_lib_server_plugin_core
+import argrelay_lib_server_plugin_demo
+import argrelay_schema_config_check_env
+import argrelay_schema_config_client
+import argrelay_schema_config_server
+import argrelay_test_infra
+from argrelay_test_infra.test_infra import file_line_l_1
 
 session_options = {
     "root_packages": [
         argrelay.__name__,
+        argrelay_api_plugin_abstract.__name__,
+        argrelay_api_plugin_check_env_abstract.__name__,
+        argrelay_api_plugin_client_abstract.__name__,
+        argrelay_api_plugin_server_abstract.__name__,
         argrelay_api_server_cli.__name__,
+        argrelay_app_bootstrap.__name__,
+        argrelay_app_check_env.__name__,
+        argrelay_app_client.__name__,
+        argrelay_app_server.__name__,
+        argrelay_lib_check_env_plugin_core.__name__,
+        argrelay_lib_root.__name__,
+        argrelay_lib_server_plugin_check_env.__name__,
+        argrelay_lib_server_plugin_core.__name__,
+        argrelay_lib_server_plugin_demo.__name__,
+        argrelay_schema_config_check_env.__name__,
+        argrelay_schema_config_client.__name__,
+        argrelay_schema_config_server.__name__,
+        argrelay_test_infra.__name__,
     ],
     "include_external_packages": True,
     "exclude_type_checking_imports": True,
@@ -25,6 +62,7 @@ contract_type_ = "type"
 contract_title_ = "name"
 source_module_specs_ = "source_modules"
 forbidden_module_specs_ = "forbidden_modules"
+
 
 @dataclass
 class ForbiddenContractReportBuilder:

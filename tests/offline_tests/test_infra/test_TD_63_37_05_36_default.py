@@ -3,17 +3,20 @@ from io import StringIO
 
 import pandas as pd
 
-from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.custom_integ.ServiceLoader import ServiceLoader
-from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.relay_server.QueryEngine import scalar_to_list_values
-from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
-from argrelay.test_infra import change_to_known_repo_path, test_data_
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay_app_server.relay_server.LocalServer import LocalServer
+from argrelay_app_server.relay_server.QueryEngine import scalar_to_list_values
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_service.ServiceLoader import ServiceLoader
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import server_config_desc
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_test_infra.test_infra import (
+    change_to_known_repo_path,
+    test_data_,
+)
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestClass(BaseTestClass):

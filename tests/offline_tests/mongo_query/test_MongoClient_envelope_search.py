@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.schema_config_interp.DataEnvelopeSchema import envelope_payload_
-from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass, object_name_
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from offline_tests.mongo_query.MongoClientTestClass import (
+    MongoClientTestClass,
+    object_name_,
+)
 
 
 class ThisTestClass(MongoClientTestClass):

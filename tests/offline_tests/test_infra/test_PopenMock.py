@@ -1,9 +1,12 @@
 import subprocess
 from subprocess import CalledProcessError
 
-from argrelay.test_infra import line_no, change_to_known_repo_path
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import mock_subprocess_popen
+from argrelay_test_infra.test_infra import (
+    change_to_known_repo_path,
+    line_no,
+)
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import mock_subprocess_popen
 
 
 class ThisTestClass(BaseTestClass):

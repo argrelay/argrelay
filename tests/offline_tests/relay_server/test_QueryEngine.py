@@ -1,18 +1,29 @@
 import itertools
 
-from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.DistinctValuesQuery import DistinctValuesQuery
-from argrelay.handler_request.ProposeArgValuesServerRequestHandler import ProposeArgValuesServerRequestHandler
-from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
-from argrelay.test_infra import parse_line_and_cpos, line_no
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
-from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder, wrap_instance_method_on_instance
 from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
+from argrelay_app_client.client_spec.ShellContext import (
+    ShellContext,
+    UNKNOWN_COMP_KEY,
+)
+from argrelay_app_server.handler_request.ProposeArgValuesServerRequestHandler import (
+    ProposeArgValuesServerRequestHandler,
+)
+from argrelay_app_server.relay_server.LocalServer import LocalServer
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.DistinctValuesQuery import DistinctValuesQuery
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import server_config_desc
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_test_infra.test_infra import (
+    ClientCommandFactoryLocal,
+    line_no,
+    parse_line_and_cpos,
+)
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
+    ServerOnlyEnvMockBuilder,
+    wrap_instance_method_on_instance,
+)
 
 
 class ThisTestClass(BaseTestClass):

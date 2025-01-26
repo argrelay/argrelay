@@ -229,7 +229,7 @@ fi
 # Start `check_env` in `dry_run` mode (e.g. ensure no config schema mismatch):
 
 set +e
-python -m argrelay.check_env "${argrelay_dir}" "dry_run"
+python -m argrelay_app_check_env "${argrelay_dir}" "dry_run"
 exit_code="${?}"
 set -e
 if [[ "${exit_code}" != "0" ]]
@@ -241,4 +241,4 @@ fi
 ########################################################################################################################
 # Run checks in Python:
 
-python -m argrelay.check_env "${argrelay_dir}" "${@}"
+python -m argrelay_app_check_env "${argrelay_dir}" "${@}"

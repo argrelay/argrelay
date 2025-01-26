@@ -1,6 +1,9 @@
-from argrelay.test_infra import line_no, parse_line_and_cpos
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import default_test_parsed_context
+from argrelay_test_infra.test_infra import (
+    line_no,
+    parse_line_and_cpos,
+)
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import default_test_parsed_context
 
 
 class ThisTestClass(BaseTestClass):

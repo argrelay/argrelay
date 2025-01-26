@@ -2,37 +2,43 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
-from argrelay.composite_forest.CompositeForestSchema import tree_roots_
-from argrelay.composite_forest.CompositeNodeSchema import sub_tree_
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.SpecialFunc import SpecialFunc
-from argrelay.plugin_interp.FirstArgInterpFactory import (
+from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.relay_client import __main__
+from argrelay_app_server.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
+from argrelay_lib_server_plugin_core.plugin_interp.FirstArgInterpFactory import (
     FirstArgInterpFactory,
 )
-from argrelay.plugin_interp.FirstArgInterpFactoryConfigSchema import (
+from argrelay_lib_server_plugin_core.plugin_interp.FirstArgInterpFactoryConfigSchema import (
     ignored_func_ids_list_,
 )
-from argrelay.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory, InterpTreeInterp
-from argrelay.relay_client import __main__
-from argrelay.schema_config_core_server.ServerConfigSchema import (
+from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import (
+    InterpTreeInterp,
+    InterpTreeInterpFactory,
+)
+from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import tree_roots_
+from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import sub_tree_
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
     server_config_desc,
     server_plugin_control_,
 )
-from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
-from argrelay.schema_config_plugin.PluginConfigSchema import (
-    server_plugin_instances_,
+from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import composite_forest_
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
     plugin_config_desc,
+    server_plugin_instances_,
 )
-from argrelay.schema_config_plugin.PluginEntrySchema import (
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
     plugin_config_,
 )
-from argrelay.test_infra import parse_line_and_cpos, line_no
-from argrelay.test_infra.EnvMockBuilder import (
+from argrelay_test_infra.test_infra import (
+    line_no,
+    parse_line_and_cpos,
+)
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
 )
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

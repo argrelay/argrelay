@@ -1,4 +1,4 @@
-from argrelay.schema_config_interp.DataEnvelopeSchema import mongo_id_
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import mongo_id_
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass
 
 

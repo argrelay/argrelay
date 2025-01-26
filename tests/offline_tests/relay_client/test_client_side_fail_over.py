@@ -1,25 +1,31 @@
 from __future__ import annotations
 
 import os
-from dataclasses import asdict, replace
+from dataclasses import (
+    asdict,
+    replace,
+)
 from typing import Union
 
 import requests
 import responses
 
-from argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract import get_server_index_file_path, random_file
-from argrelay.enum_desc.ClientExitCode import ClientExitCode
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.relay_client import __main__
-from argrelay.runtime_data.ClientConfig import ClientConfig
-from argrelay.runtime_data.ConnectionConfig import ConnectionConfig
-from argrelay.schema_config_core_client.ClientConfigSchema import client_config_desc
-from argrelay.test_infra import parse_line_and_cpos
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
 from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
 from argrelay_api_server_cli.server_spec.const_int import BASE_URL_FORMAT
+from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerAbstract import (
+    get_server_index_file_path,
+    random_file,
+)
+from argrelay_app_client.relay_client import __main__
+from argrelay_lib_root.enum_desc.ClientExitCode import ClientExitCode
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ServerAction import ServerAction
+from argrelay_lib_root.schema_config.ConnectionConfig import ConnectionConfig
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
+from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import client_config_desc
+from argrelay_test_infra.test_infra import parse_line_and_cpos
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
 
 random_byte_value = b"\x07"
 

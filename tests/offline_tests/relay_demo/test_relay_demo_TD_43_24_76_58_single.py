@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_infra import line_no
-from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

@@ -1,10 +1,13 @@
-from marshmallow import fields, RAISE
+from marshmallow import (
+    fields,
+    RAISE,
+)
 
-from argrelay.enum_desc.CompScope import CompScope
-from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.misc_helper_common.ObjectSchema import ObjectSchema
-from argrelay.misc_helper_common.TypeDesc import TypeDesc
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
+from argrelay_lib_root.enum_desc.CompScope import CompScope
+from argrelay_lib_root.enum_desc.ServerAction import ServerAction
+from argrelay_lib_root.misc_helper_common.ObjectSchema import ObjectSchema
+from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
 
 client_version_ = "client_version"
 client_conf_target_ = "client_conf_target"

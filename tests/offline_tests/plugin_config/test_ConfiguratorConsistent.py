@@ -1,6 +1,6 @@
-from argrelay.plugin_config.ConfiguratorConsistent import ConfiguratorConsistent
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import wrap_instance_method_on_instance
+from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorConsistent import ConfiguratorConsistent
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import wrap_instance_method_on_instance
 
 
 class ThisTestClass(BaseTestClass):

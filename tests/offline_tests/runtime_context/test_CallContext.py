@@ -1,25 +1,33 @@
 import os
 
 import argrelay
-from argrelay.client_spec.ShellContext import UNKNOWN_COMP_KEY, ShellContext, get_user_name, get_client_conf_target
-from argrelay.enum_desc.CompScope import CompScope
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.test_infra import line_no, parse_line_and_cpos
-from argrelay.test_infra.BaseTestClass import BaseTestClass
 from argrelay_api_server_cli.schema_request.CallContextSchema import (
     call_context_desc,
+    client_conf_target_,
     client_pid_,
-    is_debug_enabled_,
-    server_action_,
+    client_uid_,
+    client_version_,
+    command_line_,
     comp_scope_,
     cursor_cpos_,
-    command_line_,
-    client_uid_,
-    client_conf_target_,
-    client_version_,
     input_data_,
+    is_debug_enabled_,
+    server_action_,
 )
+from argrelay_app_client.client_spec.ShellContext import (
+    get_client_conf_target,
+    get_user_name,
+    ShellContext,
+    UNKNOWN_COMP_KEY,
+)
+from argrelay_lib_root.enum_desc.CompScope import CompScope
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ServerAction import ServerAction
+from argrelay_test_infra.test_infra import (
+    line_no,
+    parse_line_and_cpos,
+)
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 
 
 class ThisTestClass(BaseTestClass):

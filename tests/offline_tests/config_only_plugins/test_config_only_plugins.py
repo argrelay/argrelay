@@ -1,30 +1,36 @@
 from __future__ import annotations
 
-from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.custom_integ.ConfigOnlyLoader import ConfigOnlyLoader
-from argrelay.custom_integ.ConfigOnlyLoaderConfigSchema import (
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
+from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.relay_client import __main__
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigOnly import DelegatorConfigOnly
+from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import func_envelope_
+from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import func_configs_
+from argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoader import ConfigOnlyLoader
+from argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoaderConfigSchema import (
     envelope_class_to_collection_name_map_,
 )
-from argrelay.custom_integ.DelegatorConfigOnly import DelegatorConfigOnly
-from argrelay.custom_integ.FuncConfigSchema import func_envelope_
-from argrelay.custom_integ.SchemaConfigDelegatorConfigBase import func_configs_
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.relay_client import __main__
-from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_config_interp.DataEnvelopeSchema import instance_data_
-from argrelay.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
-from argrelay.schema_config_interp.SearchControlSchema import arg_name_to_prop_name_map_
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
-from argrelay.test_infra import line_no, parse_line_and_cpos
-from argrelay.test_infra.EnvMockBuilder import (
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import instance_data_
+from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import arg_name_to_prop_name_map_
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+    server_plugin_instances_,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_config_
+from argrelay_test_infra.test_infra import (
+    line_no,
+    parse_line_and_cpos,
+)
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
+    EnvMockBuilder,
     LocalClientEnvMockBuilder,
     mock_subprocess_popen,
-    EnvMockBuilder,
 )
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):
