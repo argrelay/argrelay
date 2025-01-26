@@ -3,28 +3,41 @@ from __future__ import annotations
 import json
 from copy import deepcopy
 
-from argrelay.composite_forest.CompositeForestSchema import tree_roots_
-from argrelay.composite_forest.CompositeNodeSchema import sub_tree_, node_type_, func_id_
-from argrelay.composite_forest.CompositeNodeType import CompositeNodeType
-from argrelay.custom_integ.DelegatorConfigOnly import DelegatorConfigOnly
-from argrelay.custom_integ.DelegatorGitRepoDescTag import func_id_desc_git_tag_
-from argrelay.custom_integ.FuncConfigSchema import func_envelope_
-from argrelay.custom_integ.SchemaConfigDelegatorConfigBase import func_configs_
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.SpecialChar import SpecialChar
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory, tree_step_prop_name_prefix_
-from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc, server_plugin_control_
-from argrelay.schema_config_core_server.ServerPluginControlSchema import composite_forest_
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
-from argrelay.test_infra import line_no
-from argrelay.test_infra.EnvMockBuilder import (
-    LocalClientEnvMockBuilder,
-    EnvMockBuilder,
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigOnly import DelegatorConfigOnly
+from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import func_envelope_
+from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import func_configs_
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    FuncTreeInterpFactory,
+    tree_step_prop_name_prefix_,
 )
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoDescTag import func_id_desc_git_tag_
+from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import CompositeNodeType
+from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import tree_roots_
+from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import (
+    func_id_,
+    node_type_,
+    sub_tree_,
+)
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
+    server_config_desc,
+    server_plugin_control_,
+)
+from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import composite_forest_
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+    server_plugin_instances_,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_config_
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
+    EnvMockBuilder,
+    LocalClientEnvMockBuilder,
+)
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

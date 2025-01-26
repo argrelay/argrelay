@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from enum import Enum, auto
+from enum import (
+    auto,
+    Enum,
+)
 
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass
 

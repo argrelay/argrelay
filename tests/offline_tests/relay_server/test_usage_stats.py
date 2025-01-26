@@ -1,16 +1,23 @@
 import argrelay
-from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.client_spec.ShellContext import select_server_action, get_user_name, get_client_conf_target
-from argrelay.enum_desc.CompScope import CompScope
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.relay_client import __main__
-from argrelay.relay_server.UsageStatsEntry import UsageStatsEntry
-from argrelay.relay_server.UsageStatsEntrySchema import usage_stats_entry_desc
-from argrelay.test_infra import line_no_from_ctor
-from argrelay.test_infra.CustomTestCase import ShellInputTestCase
-from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder, EnvMockBuilder
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_spec.ShellContext import (
+    get_client_conf_target,
+    get_user_name,
+    select_server_action,
+)
+from argrelay_app_client.relay_client import __main__
+from argrelay_app_server.relay_server.UsageStatsEntry import UsageStatsEntry
+from argrelay_app_server.relay_server.UsageStatsEntrySchema import usage_stats_entry_desc
+from argrelay_lib_root.enum_desc.CompScope import CompScope
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ServerAction import ServerAction
+from argrelay_test_infra.test_infra import line_no_from_ctor
+from argrelay_test_infra.test_infra.CustomTestCase import ShellInputTestCase
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
+    EnvMockBuilder,
+    LocalClientEnvMockBuilder,
+)
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

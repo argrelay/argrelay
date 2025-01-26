@@ -1,0 +1,75 @@
+
+check_env_plugin_instances:
+
+    ####################################################################################################################
+    # List of client-side plugins for FS_36_17_84_44 `check_env`
+
+    PluginCheckEnvModuleVersion.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvModuleVersion
+        plugin_class_name: PluginCheckEnvModuleVersion
+
+    PluginCheckEnvArgrelayLocalVersionMismatch.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvArgrelayLocalVersionMismatch
+        plugin_class_name: PluginCheckEnvArgrelayLocalVersionMismatch
+
+    PluginCheckEnvServerResponseValueVersion.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvServerResponseValueVersion
+        plugin_class_name: PluginCheckEnvServerResponseValueVersion
+
+    PluginCheckEnvDevShell.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvDevShell
+        plugin_class_name: PluginCheckEnvDevShell
+
+    PluginCheckEnvClientLinkedCommands.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvClientLinkedCommands
+        plugin_class_name: PluginCheckEnvClientLinkedCommands
+
+    PluginCheckEnvArgrelayUnversionedSymlinks.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvArgrelayUnversionedSymlinks
+        plugin_class_name: PluginCheckEnvArgrelayUnversionedSymlinks
+
+    PluginCheckEnvOnlineMode.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvOnlineMode
+        plugin_class_name: PluginCheckEnvOnlineMode
+
+    PluginCheckEnvServerIndex.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvServerIndex
+        plugin_class_name: PluginCheckEnvServerIndex
+
+    PluginCheckEnvServerUrl.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvServerUrl
+        plugin_class_name: PluginCheckEnvServerUrl
+
+    PluginCheckEnvServerResponseValueCommitId.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvServerResponseValueCommitId
+        plugin_class_name: PluginCheckEnvServerResponseValueCommitId
+
+    PluginCheckEnvServerResponseValueStartTime.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvServerResponseValueStartTime
+        plugin_class_name: PluginCheckEnvServerResponseValueStartTime
+
+    PluginCheckEnvReadlineShowAllIfAmbiguous.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvReadline
+        plugin_class_name: PluginCheckEnvReadlineShowAllIfAmbiguous
+
+    PluginCheckEnvReadlineShowAllIfUnmodified.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvReadline
+        plugin_class_name: PluginCheckEnvReadlineShowAllIfUnmodified
+
+    PluginCheckEnvReadlineSkipCompletedText.default:
+        plugin_side: PluginClientSideOnly
+        plugin_module_name: argrelay_lib_check_env_plugin_core.PluginCheckEnvReadline
+        plugin_class_name: PluginCheckEnvReadlineSkipCompletedText

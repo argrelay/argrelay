@@ -1,17 +1,20 @@
-from argrelay.custom_integ.DelegatorGitRepoGotoRepo import func_id_goto_git_repo_
-from argrelay.custom_integ.DelegatorServiceHostDesc import func_id_desc_host_
-from argrelay.enum_desc.ClientExitCode import ClientExitCode
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.enum_desc.SpecialChar import SpecialChar
-from argrelay.enum_desc.TermColor import TermColor
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
-from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay.test_infra import change_to_known_repo_path, line_no
-from argrelay.test_infra.End2EndTestClass import (
+from argrelay_app_client.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
+from argrelay_lib_root.enum_desc.ClientExitCode import ClientExitCode
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.FuncState import FuncState
+from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
+from argrelay_lib_root.enum_desc.TermColor import TermColor
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
+from argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoGotoRepo import func_id_goto_git_repo_
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostDesc import func_id_desc_host_
+from argrelay_test_infra.test_infra import (
+    change_to_known_repo_path,
+    line_no,
+)
+from argrelay_test_infra.test_infra.End2EndTestClass import (
     End2EndTestClass,
 )
 

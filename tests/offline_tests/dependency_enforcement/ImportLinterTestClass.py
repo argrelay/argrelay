@@ -7,12 +7,15 @@ from importlinter.adapters.printing import ClickPrinter
 from importlinter.adapters.timing import SystemClockTimer
 from importlinter.application.app_config import settings
 from importlinter.application.ports.reporting import Report
-from importlinter.application.rendering import render_report, render_exception
+from importlinter.application.rendering import (
+    render_exception,
+    render_report,
+)
 from importlinter.contracts.forbidden import ForbiddenContract
 from importlinter.domain.contract import registry
 
-from argrelay.misc_helper_common import get_argrelay_dir
-from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay_lib_root.misc_helper_common import get_argrelay_dir
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 
 
 # noinspection PyMethodMayBeStatic

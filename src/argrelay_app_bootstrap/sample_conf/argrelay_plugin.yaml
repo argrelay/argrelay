@@ -1,0 +1,449 @@
+# `argrelay` plugin config: https://github.com/argrelay/argrelay
+
+server_plugin_instance_groups:
+
+    "primary_group":
+
+        ConfiguratorDefault.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_config.ConfiguratorDefault
+            plugin_class_name: ConfiguratorDefault
+            plugin_config:
+                project_title: "argrelay"
+                project_page_url: "https://argrelay.org"
+                git_files_by_commit_id_url_prefix: "https://github.com/argrelay/argrelay/tree/"
+                commit_id_url_prefix: "https://github.com/argrelay/argrelay/commit/"
+
+        # TODO: TODO_18_51_46_14: refactor FS_42_76_93_51 zero_arg_interp into FS_15_79_76_85 line processor:
+        #       `FirstArgInterpFactory` should be selecting line processors.
+        FirstArgInterpFactory.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_interp.FirstArgInterpFactory
+            plugin_class_name: FirstArgInterpFactory
+            plugin_dependencies:
+                #   Delegators for `func_tree`:
+                -   DelegatorNoopGroup.noop_group
+                -   DelegatorNoopGroup.special_func_group
+                -   DelegatorNoopGroup.check_env_command_group
+                -   DelegatorNoopGroup.ssh_dst_group
+                -   DelegatorNoopGroup.demo_service_group
+                -   DelegatorNoopGroup.generic_git_group
+                -   DelegatorConfigOnly.default
+                #   Interps for `interp_tree` per command (zero-arg):
+                -   InterpTreeInterpFactory.default
+                -   InterpTreeInterpFactory.check_env
+                -   FuncTreeInterpFactory.default
+            plugin_config:
+                ignored_func_ids_list:
+                    - func_id_unplugged
+
+    "special_func_group":
+
+        # TODO: Add FS_80_45_89_81 / `error_message` func:
+        DelegatorError.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError
+            plugin_class_name: DelegatorError
+
+        DelegatorEcho.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorEcho
+            plugin_class_name: DelegatorEcho
+
+        DelegatorIntercept.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorIntercept
+            plugin_class_name: DelegatorIntercept
+            plugin_dependencies:
+                - FuncTreeInterpFactory.default
+            plugin_config:
+                single_func_id: func_id_intercept_invocation
+
+        DelegatorHelp.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorHelp
+            plugin_class_name: DelegatorHelp
+            plugin_dependencies:
+                - FuncTreeInterpFactory.default
+            plugin_config:
+                single_func_id: func_id_help_hint
+
+        DelegatorQueryEnum.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorQueryEnum
+            plugin_class_name: DelegatorQueryEnum
+            plugin_dependencies:
+                - FuncTreeInterpFactory.default
+            plugin_config:
+                single_func_id: func_id_query_enum_items
+
+        DelegatorDataBackendGet.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorDataBackendGet
+            plugin_class_name: DelegatorDataBackendGet
+
+        DelegatorDataBackendSet.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorDataBackendSet
+            plugin_class_name: DelegatorDataBackendSet
+
+        DelegatorNoopGroup.special_func_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorError.default
+                -   DelegatorEcho.default
+                -   DelegatorIntercept.default
+                -   DelegatorHelp.default
+                -   DelegatorQueryEnum.default
+                -   DelegatorDataBackendGet.default
+                -   DelegatorDataBackendSet.default
+
+    "default_command_group":
+
+        InterpTreeInterpFactory.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory
+            plugin_class_name: InterpTreeInterpFactory
+            plugin_dependencies:
+                - FuncTreeInterpFactory.default
+
+        FuncTreeInterpFactory.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory
+            plugin_class_name: FuncTreeInterpFactory
+
+    "check_env_command_group":
+
+        InterpTreeInterpFactory.check_env:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory
+            plugin_class_name: InterpTreeInterpFactory
+            plugin_dependencies:
+                -   FuncTreeInterpFactory.check_env
+
+        FuncTreeInterpFactory.check_env:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory
+            plugin_class_name: FuncTreeInterpFactory
+
+        DelegatorCheckEnvGitCommitId.default:
+            plugin_module_name: argrelay_lib_server_plugin_check_env.DelegatorCheckEnvGitCommitId
+            plugin_class_name: DelegatorCheckEnvGitCommitId
+
+        DelegatorCheckEnvServerStartTime.default:
+            plugin_module_name: argrelay_lib_server_plugin_check_env.DelegatorCheckEnvServerStartTime
+            plugin_class_name: DelegatorCheckEnvServerStartTime
+
+        DelegatorCheckEnvServerVersion.default:
+            plugin_module_name: argrelay_lib_server_plugin_check_env.DelegatorCheckEnvServerVersion
+            plugin_class_name: DelegatorCheckEnvServerVersion
+
+        DelegatorNoopGroup.check_env_command_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorCheckEnvGitCommitId.default
+                -   DelegatorCheckEnvServerStartTime.default
+                -   DelegatorCheckEnvServerVersion.default
+
+    "noop_group":
+
+        NoopInterpFactory.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_interp.NoopInterpFactory
+            plugin_class_name: NoopInterpFactory
+
+        NoopLoader.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_loader.NoopLoader
+            plugin_class_name: NoopLoader
+
+        DelegatorNoopEmpty.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopEmpty
+            plugin_class_name: DelegatorNoopEmpty
+
+        DelegatorNoopGroup.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+
+        DelegatorNoopNoDataFunc.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopNoDataFunc
+            plugin_class_name: DelegatorNoopNoDataFunc
+
+        DelegatorNoopUnpluggedFunc.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopUnpluggedFunc
+            plugin_class_name: DelegatorNoopUnpluggedFunc
+
+        DelegatorNoopGroup.noop_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorNoopEmpty.default
+                -   DelegatorNoopGroup.default
+                -   DelegatorNoopNoDataFunc.default
+                -   DelegatorNoopUnpluggedFunc.default
+
+    "ssh_dst_group":
+
+        ConfigOnlyLoader.ssh_dst_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoader
+            plugin_class_name: ConfigOnlyLoader
+            plugin_config:
+                envelope_class_to_collection_name_map:
+                    class_ssh_dst: class_ssh_dst
+                collection_name_to_index_props_map:
+                    class_ssh_dst:
+                        -   envelope_class
+                        -   code_maturity
+                        -   flow_stage
+                        -   geo_region
+                        -   cluster_name
+                        -   group_label
+                        -   service_name
+                        -   run_mode
+                        -   user_name
+                        -   host_name
+                        -   dir_path
+                        -   live_status
+                        -   data_center
+                        -   ip_address
+                data_envelopes:
+                  !include "data/ConfigOnlyLoader.ssh_dst_group.data.yaml"
+
+        DelegatorSshDst.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_ssh.DelegatorSshDst
+            plugin_class_name: DelegatorSshDst
+
+        DelegatorNoopGroup.ssh_dst_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorSshDst.default
+
+    "demo_service_group":
+
+        ServiceLoader.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.ServiceLoader
+            plugin_class_name: ServiceLoader
+            plugin_config:
+                test_data_ids_to_load:
+                    #-   TD_70_69_38_46  # no data
+                    -   TD_63_37_05_36  # demo
+                    # WARNING: with `mongomock` and not `enable_query_cache` requests run up for TD_38_03_48_51 may run up to 10 mins:
+                    #-   TD_38_03_48_51  # large generated
+
+        DelegatorServiceHostDesc.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostDesc
+            plugin_class_name: DelegatorServiceHostDesc
+
+        DelegatorServiceHostGoto.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostGoto
+            plugin_class_name: DelegatorServiceHostGoto
+
+        DelegatorServiceHostList.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostList
+            plugin_class_name: DelegatorServiceHostList
+
+        DelegatorServiceInstanceDesc.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceDesc
+            plugin_class_name: DelegatorServiceInstanceDesc
+
+        DelegatorServiceInstanceDiff.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceDiff
+            plugin_class_name: DelegatorServiceInstanceDiff
+
+        DelegatorServiceInstanceGoto.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceGoto
+            plugin_class_name: DelegatorServiceInstanceGoto
+
+        DelegatorServiceInstanceList.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceList
+            plugin_class_name: DelegatorServiceInstanceList
+
+        DelegatorNoopGroup.demo_service_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorServiceHostDesc.default
+                -   DelegatorServiceHostGoto.default
+                -   DelegatorServiceHostList.default
+                -   DelegatorServiceInstanceDesc.default
+                -   DelegatorServiceInstanceDiff.default
+                -   DelegatorServiceInstanceGoto.default
+                -   DelegatorServiceInstanceList.default
+
+    "generic_git_group":
+
+        GitRepoLoader.default:
+            # Disabled by default because of reliance on other repos (unlike `GitRepoLoader.self`):
+            plugin_enabled: false
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader
+            plugin_class_name: GitRepoLoader
+            plugin_config:
+                load_git_tags_default: False
+                load_git_commits_default: False
+                repo_entries:
+                    "~/repos":
+                        -
+                            repo_rel_path: argrelay.git
+                            envelope_properties:
+                                git_repo_alias: ar
+                                git_repo_content_type: code
+                        -
+                            repo_rel_path: mongomock.git
+                            is_repo_enabled: True
+                            envelope_properties:
+                                git_repo_alias: mongom
+                                git_repo_content_type: ref
+                        -
+                            repo_rel_path: marshmallow.git
+                            is_repo_enabled: False
+                            envelope_properties:
+                                git_repo_alias: marshm
+                                git_repo_content_type: code
+
+        GitRepoLoader.self:
+            # Enabled by default because it is assumed that project is git-managed:
+            plugin_enabled: true
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader
+            plugin_class_name: GitRepoLoader
+            plugin_config:
+                load_git_tags_default: False
+                load_git_commits_default: False
+                repo_entries:
+                    "":
+                        -   repo_rel_path: ""
+                            load_repo_tags: True
+                            load_repo_commits: True
+                            load_tags_last_days: 90
+                            load_commits_max_count: 50
+                            envelope_properties:
+                                git_repo_alias: argrelay
+                                git_repo_content_type: code
+
+        DelegatorGitRepoDescCommit.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoDescCommit
+            plugin_class_name: DelegatorGitRepoDescCommit
+
+        DelegatorGitRepoDescTag.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoDescTag
+            plugin_class_name: DelegatorGitRepoDescTag
+
+        DelegatorGitRepoGotoRepo.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoGotoRepo
+            plugin_class_name: DelegatorGitRepoGotoRepo
+
+        DelegatorNoopGroup.generic_git_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorGitRepoDescCommit.default
+                -   DelegatorGitRepoDescTag.default
+                -   DelegatorGitRepoGotoRepo.default
+
+    "config_only_group":
+
+        ConfigOnlyLoader.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoader
+            plugin_class_name: ConfigOnlyLoader
+            plugin_config:
+                envelope_class_to_collection_name_map:
+                    class_config_only: class_config_only
+                    class_output_format: class_output_format
+                collection_name_to_index_props_map:
+                    class_config_only:
+                        -   envelope_class
+                        -   severity_level
+                        -   exit_code
+                    class_output_format:
+                        -   envelope_class
+                        -   output_format
+                data_envelopes:
+                  !include "data/ConfigOnlyLoader.default.data.yaml"
+
+        DelegatorConfigOnly.default:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigOnly
+            plugin_class_name: DelegatorConfigOnly
+            plugin_config:
+                # TODO: TODO_84_71_86_21: change to realistic examples:
+                func_configs:
+                    func_id_print_with_severity_level:
+                        func_envelope:
+                            help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` prefixed with `severity_level`"
+                            func_state: fs_demo
+                            instance_data:
+                                search_control_list:
+                                    -
+                                        collection_name: class_config_only
+                                        props_to_values_dict:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
+                                            -   class: envelope_class
+                                            -   level: severity_level
+                                            -   code: exit_code
+                            envelope_payload:
+                                command_template: "echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\""
+                                echo_command_on_stderr: True
+                    func_id_print_with_exit_code:
+                        func_envelope:
+                            help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` and exit with `exit_code`"
+                            func_state: fs_demo
+                            instance_data:
+                                search_control_list:
+                                    -
+                                        collection_name: class_config_only
+                                        props_to_values_dict:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
+                                            -   class: envelope_class
+                                            -   level: severity_level
+                                            -   code: exit_code
+                            envelope_payload:
+                                command_template: |
+                                    echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
+                                    exit {envelope_containers[1].data_envelopes[0]['exit_code']}
+                    func_id_print_with_io_redirect:
+                        func_envelope:
+                            help_hint: "Example: instantiate command template by data from `data_envelope` and executed it: print `text_message` on stdout or stderr based on exit code"
+                            func_state: fs_demo
+                            instance_data:
+                                search_control_list:
+                                    -
+                                        collection_name: class_config_only
+                                        props_to_values_dict:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
+                                            -   class: envelope_class
+                                            -   level: severity_level
+                                            -   code: exit_code
+                            envelope_payload:
+                                command_template: |
+                                    if [[ {envelope_containers[1].data_envelopes[0]['exit_code']} -eq 0 ]]
+                                    then
+                                        echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&1
+                                    else
+                                        echo \"{envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\" 1>&2
+                                    fi
+                                    exit {envelope_containers[1].data_envelopes[0]['exit_code']}
+                    func_id_double_execution:
+                        fill_control_list:
+                            # 0th = func container:
+                            -   { }
+                            # 1st container:
+                            -   { }
+                            # 2nd container:
+                            -
+                                severity_level: "{envelope_containers[1].data_envelopes[0]['severity_level']}"
+                                exit_code: "{envelope_containers[1].data_envelopes[0]['exit_code']}"
+                        func_envelope:
+                            help_hint: "Example: take two command templates and execute them: print `text_message` prefixed with `severity_level` and print exit code (without using it for exit)"
+                            func_state: fs_demo
+                            instance_data:
+                                search_control_list:
+                                    -
+                                        collection_name: class_config_only
+                                        props_to_values_dict:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
+                                            -   class: envelope_class
+                                            -   level: severity_level
+                                            -   code: exit_code
+                                    -
+                                        collection_name: class_config_only
+                                        props_to_values_dict:
+                                            envelope_class: class_config_only
+                                        arg_name_to_prop_name_map:
+                                            -   class: envelope_class
+                                            -   level: severity_level
+                                            -   code: exit_code
+                            envelope_payload:
+                                command_template: |
+                                    echo \"{envelope_containers[1].data_envelopes[0]['severity_level']}: exit_code={envelope_containers[1].data_envelopes[0]['exit_code']}: {envelope_containers[1].data_envelopes[0]['envelope_payload']['text_message']}\"
+                                    echo \"{envelope_containers[2].data_envelopes[0]['severity_level']}: exit_code={envelope_containers[2].data_envelopes[0]['exit_code']}: {envelope_containers[2].data_envelopes[0]['envelope_payload']['text_message']}\"
+                                echo_command_on_stderr: False

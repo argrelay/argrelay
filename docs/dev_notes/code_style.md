@@ -16,6 +16,10 @@ Instead, the preferred name strings serve sorting and searching properties
     This helps in refactoring and searching. Two words are less likely to have the same meaning
     across the same repo and will significantly narrow down the scope excluding unwanted search hits to review.
 
+*   Use `reversed_naming_order` to group relevant components in lists via sorting.
+
+    See [`reversed_naming_order.md`][reversed_naming_order.md].
+
 *   Prefer single file per class.
 
     Cons:
@@ -27,7 +31,13 @@ Instead, the preferred name strings serve sorting and searching properties
     *   It helps navigation.
     *   The content is not really bloated - there are more files but each has fewer lines.
 
-*   Stick with flat module structure = only one sub-dir under package name.
+*   Flatten module structure = only one sub-dir under package name.
+
+    TODO: TODO_78_94_31_68: split argrelay into multiple packages
+          Due to ongoing package-splitting activity, the flatness (or depth) of the nesting
+          is rather arbitrary:
+          *   simpler top-level modules have 0-level nesting
+          *   more complex top-level modules may have N-level nesting
 
     Until number of dirs in the list is excessively large, it is just simpler.
 
@@ -42,10 +52,6 @@ Instead, the preferred name strings serve sorting and searching properties
     *   `./handler_response/`
 
     This also embeds the ordering pattern to follow without hiding it in sub dirs.
-
-*   Use `reversed_naming_order` to group relevant components in lists via sorting.
-
-    See [`reversed_naming_order.md`][reversed_naming_order.md].
 
 *   Use new lines excessively - prefer "tall" code rather than "wide" one.
 

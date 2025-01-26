@@ -1,6 +1,9 @@
-from argrelay.enum_desc.CompType import CompType
-from argrelay.test_infra import change_to_known_repo_path, line_no
-from argrelay.test_infra.End2EndTestClass import (
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_test_infra.test_infra import (
+    change_to_known_repo_path,
+    line_no,
+)
+from argrelay_test_infra.test_infra.End2EndTestClass import (
     End2EndTestClass,
 )
 

@@ -1,20 +1,27 @@
 from __future__ import annotations
 
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.SpecialChar import SpecialChar
-from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.runtime_context.AbstractArg import ArgCommandValueOffered, ArgCommandValueDictated
-from argrelay.runtime_context.DataArg import (
-    ArgCommandDataValueOffered, ArgCommandDataValueDictated,
-    ArgCommandDataIncomplete,
+from argrelay_app_server.relay_server.LocalServer import LocalServer
+from argrelay_app_server.runtime_context.AbstractArg import (
+    ArgCommandValueDictated,
+    ArgCommandValueOffered,
 )
-from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.schema_config_core_server.ServerConfigSchema import server_config_desc
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
-from argrelay.test_infra import line_no_from_ctor
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.CustomTestCase import ShellInputTestCase
-from argrelay.test_infra.EnvMockBuilder import default_test_parsed_context, ServerOnlyEnvMockBuilder
+from argrelay_app_server.runtime_context.DataArg import (
+    ArgCommandDataIncomplete,
+    ArgCommandDataValueDictated,
+    ArgCommandDataValueOffered,
+)
+from argrelay_app_server.runtime_context.InterpContext import InterpContext
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import server_config_desc
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_test_infra.test_infra import line_no_from_ctor
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.CustomTestCase import ShellInputTestCase
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
+    default_test_parsed_context,
+    ServerOnlyEnvMockBuilder,
+)
 
 
 class ThisTestCase(ShellInputTestCase):

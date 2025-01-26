@@ -1,7 +1,7 @@
-from argrelay.composite_forest.DictTreeWalker import fetch_subtree_node
-from argrelay.enum_desc.CompType import CompType
-from argrelay.test_infra import line_no
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_app_server.composite_forest.DictTreeWalker import fetch_subtree_node
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

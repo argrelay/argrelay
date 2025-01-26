@@ -1,17 +1,20 @@
 from __future__ import annotations
 
-from argrelay.client_command_remote.ClientCommandRemoteWorkerJson import ClientCommandRemoteWorkerJson
-from argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized import (
+from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerJson import ClientCommandRemoteWorkerJson
+from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized import (
     ClientCommandRemoteWorkerTextProposeArgValuesOptimized,
 )
-from argrelay.enum_desc.CompType import CompType
-from argrelay.relay_client import __main__
-from argrelay.test_infra import line_no, parse_line_and_cpos
-from argrelay.test_infra.EnvMockBuilder import (
+from argrelay_app_client.relay_client import __main__
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_test_infra.test_infra import (
+    line_no,
+    parse_line_and_cpos,
+)
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
     LiveServerEnvMockBuilder,
     wrap_instance_method_on_class,
 )
-from argrelay.test_infra.RemoteTestClass import RemoteTestClass
+from argrelay_test_infra.test_infra.RemoteTestClass import RemoteTestClass
 
 
 class ThisTestClass(RemoteTestClass):

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import subprocess
 
-from argrelay.test_infra import change_to_known_repo_path
-from argrelay.test_infra.ClientServerTestClass import ClientServerTestClass
+from argrelay_test_infra.test_infra import change_to_known_repo_path
+from argrelay_test_infra.test_infra.ClientServerTestClass import ClientServerTestClass
 
 
 class CypressTestClass(ClientServerTestClass):

@@ -1,6 +1,13 @@
 import argrelay_api_server_cli
-from argrelay_api_server_cli import schema_request, schema_response
-from argrelay_api_server_cli.server_spec import DescribeLineArgsSpec, ProposeArgValuesSpec, RelayLineArgsSpec
+from argrelay_api_server_cli import (
+    schema_request,
+    schema_response,
+)
+from argrelay_api_server_cli.server_spec import (
+    DescribeLineArgsSpec,
+    ProposeArgValuesSpec,
+    RelayLineArgsSpec,
+)
 from offline_tests.dependency_enforcement.ForbiddenContractReportBuilder import ForbiddenContractReportBuilder
 from offline_tests.dependency_enforcement.ImportLinterTestClass import ImportLinterTestClass
 

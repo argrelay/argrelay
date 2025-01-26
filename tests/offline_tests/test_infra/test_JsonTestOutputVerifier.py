@@ -1,12 +1,18 @@
 from icecream import ic
 from jsonpath_ng import DatumInContext
 
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_module_name_, plugin_config_
-from argrelay.test_infra import line_no
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.JsonTestOutputVerifier import JsonTestOutputVerifier
 from argrelay_api_server_cli.schema_response.InterpResultSchema import consumed_token_buckets_
-from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc, delegator_plugin_entry_
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import (
+    delegator_plugin_entry_,
+    invocation_input_desc,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_config_,
+    plugin_module_name_,
+)
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.JsonTestOutputVerifier import JsonTestOutputVerifier
 
 
 class ThisTestClass(BaseTestClass):

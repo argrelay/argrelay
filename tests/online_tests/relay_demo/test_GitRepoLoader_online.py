@@ -2,29 +2,35 @@ import os
 import subprocess
 import tempfile
 
-from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.custom_integ.GitRepoEntryConfigSchema import (
-    repo_rel_path_,
-    is_repo_enabled_,
-    envelope_properties_,
+from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.relay_client import __main__
+from argrelay_app_server.relay_server.LocalServer import LocalServer
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_root.misc_helper_common import (
+    eprint,
+    get_argrelay_dir,
 )
-from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
-from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
-from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEntryConfigSchema import (
+    envelope_properties_,
+    is_repo_enabled_,
+    repo_rel_path_,
+)
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoaderConfigSchema import (
     load_git_commits_default_,
     repo_entries_,
 )
-from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.misc_helper_common import eprint, get_argrelay_dir
-from argrelay.relay_client import __main__
-from argrelay.relay_server.LocalServer import LocalServer
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_config_
-from argrelay.test_infra import line_no
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import (
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoPropName import GitRepoPropName
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+    server_plugin_instances_,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_config_
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
 )
 

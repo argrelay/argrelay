@@ -1,19 +1,22 @@
-from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.enum_desc.SpecialFunc import SpecialFunc
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.plugin_delegator.DelegatorIntercept import (
-    output_format_class_name,
-    OutputFormat,
-    output_format_prop_name,
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorIntercept import (
     DelegatorIntercept,
+    output_format_class_name,
+    output_format_prop_name,
+    OutputFormat,
 )
-from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_infra import line_no, assert_test_module_name_embeds_prod_class_name
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
+from argrelay_test_infra.test_infra import (
+    assert_test_module_name_embeds_prod_class_name,
+    line_no,
+)
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

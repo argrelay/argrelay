@@ -1,0 +1,132 @@
+from __future__ import annotations
+
+from argrelay_api_plugin_server_abstract.delegator_utils import redirect_to_error
+from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
+    get_func_id_from_interp_ctx,
+    get_func_id_from_invocation_input,
+)
+from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
+from argrelay_app_server.relay_server.LocalServer import LocalServer
+from argrelay_app_server.runtime_context.InterpContext import InterpContext
+from argrelay_lib_root.enum_desc.FuncState import FuncState
+from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_server_plugin_core.plugin_delegator.SchemaCustomDataDelegatorError import (
+    error_code_,
+    error_delegator_stub_custom_data_example,
+    error_message_,
+)
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceBase import get_access_search_control
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostBase import (
+    DelegatorServiceHostBase,
+    get_host_search_control,
+)
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    instance_data_,
+)
+from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
+    delegator_plugin_instance_id_,
+    func_id_,
+    search_control_list_,
+)
+
+func_id_goto_host_ = "func_id_goto_host"
+
+host_container_ipos_ = 1
+access_container_ipos_ = 2
+
+
+class DelegatorServiceHostGoto(DelegatorServiceHostBase):
+
+    def get_supported_func_envelopes(
+        self,
+    ) -> list[dict]:
+        host_search_control = get_host_search_control()
+
+        access_search_control = get_access_search_control()
+
+        func_envelopes = [
+            {
+                instance_data_: {
+                    func_id_: func_id_goto_host_,
+                    delegator_plugin_instance_id_: self.plugin_instance_id,
+                    search_control_list_: [
+                        host_search_control,
+                        access_search_control,
+                    ],
+                },
+                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name,
+                ReservedPropName.help_hint.name: "Go (log in) to remote host",
+                ReservedPropName.func_state.name: FuncState.fs_demo.name,
+                ReservedPropName.func_id.name: func_id_goto_host_,
+            },
+        ]
+        return func_envelopes
+
+    def has_fill_control(
+        self,
+    ) -> bool:
+        return True
+
+    def run_fill_control(
+        self,
+        interp_ctx: "InterpContext",
+    ) -> bool:
+        func_id = get_func_id_from_interp_ctx(interp_ctx)
+        assert func_id == func_id_goto_host_
+
+        object_container_ipos = host_container_ipos_
+
+        any_assignment = False
+
+        any_assignment = self._fill_object_container(
+            any_assignment,
+            interp_ctx,
+            object_container_ipos,
+        )
+
+        any_assignment = self._fill_access_container(
+            any_assignment,
+            interp_ctx,
+            object_container_ipos,
+            access_container_ipos_,
+        )
+
+        return any_assignment
+
+    def run_invoke_control(
+        self,
+        interp_ctx: InterpContext,
+        local_server: LocalServer,
+    ) -> InvocationInput:
+        assert interp_ctx.is_func_found(), "the (first) function envelope must be found"
+
+        func_id = get_func_id_from_interp_ctx(interp_ctx)
+        assert func_id == func_id_goto_host_
+
+        vararg_container_ipos = host_container_ipos_
+
+        # Even if these functions do not support varargs, when `redirect_to_error`, query all:
+        vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
+        vararg_container.data_envelopes = (
+            local_server
+            .get_query_engine()
+            .query_data_envelopes_for(vararg_container)
+        )
+
+        # Actual implementation is not defined for demo:
+        return redirect_to_error(
+            interp_ctx,
+            local_server.plugin_config,
+            error_delegator_stub_custom_data_example[error_message_],
+            error_delegator_stub_custom_data_example[error_code_],
+        )
+
+    @staticmethod
+    def invoke_action(
+        invocation_input: InvocationInput,
+    ) -> None:
+        func_id = get_func_id_from_invocation_input(invocation_input)
+        assert func_id == func_id_goto_host_
+
+        raise RuntimeError("ERROR: not implemented for demo")

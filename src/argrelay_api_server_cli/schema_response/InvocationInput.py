@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import (
+    dataclass,
+    field,
+)
 
-from argrelay.runtime_context.InterpContext import InterpContext
-from argrelay.runtime_data.PluginEntry import PluginEntry
 from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
+from argrelay_app_server.runtime_context.InterpContext import InterpContext
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import PluginEntry
 
 
 @dataclass

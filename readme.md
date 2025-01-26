@@ -485,7 +485,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 [readline_config]: https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
 
-[ssh_delegator_code]: src/argrelay/custom_integ/DelegatorSshDst.py
+[ssh_delegator_code]: src/argrelay_lib_server_plugin_demo/demo_ssh/DelegatorSshDst.py
 [ssh_loder_data]: data/ConfigOnlyLoader.ssh_dst_group.data.yaml
 
 [project_walkthrough.md]: docs/user_tutorials/project_walkthrough.md

@@ -4,14 +4,14 @@ import os
 from typing import Union
 from unittest import skipIf
 
-from argrelay.custom_integ import GitRepoLoader as GitRepoLoader_module
-from argrelay.custom_integ.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
-from argrelay.runtime_data.PluginConfig import PluginConfig
-from argrelay.runtime_data.PluginEntry import PluginEntry
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc
-from argrelay.test_infra import change_to_known_repo_path
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
+from argrelay_lib_server_plugin_demo.demo_git import GitRepoLoader as GitRepoLoader_module
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import PluginConfig
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import PluginEntry
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_test_infra.test_infra import change_to_known_repo_path
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
 
 
 class ThisTestClass(BaseTestClass):

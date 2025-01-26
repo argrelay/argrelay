@@ -1,34 +1,37 @@
-from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.custom_integ.GitRepoEntryConfigSchema import (
-    repo_rel_path_,
+from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.relay_client import __main__
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.misc_helper_common import get_argrelay_dir
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEntryConfigSchema import (
     envelope_properties_,
-    load_tags_last_days_,
     load_commits_max_count_,
     load_repo_entries_,
+    load_tags_last_days_,
+    repo_rel_path_,
 )
-from argrelay.custom_integ.GitRepoEnvelopeClass import GitRepoEnvelopeClass
-from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
-from argrelay.custom_integ.GitRepoLoaderConfigSchema import (
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoaderConfigSchema import (
     load_git_commits_default_,
-    repo_entries_,
-    load_git_tags_default_,
     load_git_repos_default_,
+    load_git_tags_default_,
+    repo_entries_,
 )
-from argrelay.custom_integ.GitRepoPropName import GitRepoPropName
-from argrelay.enum_desc.CompType import CompType
-from argrelay.misc_helper_common import get_argrelay_dir
-from argrelay.relay_client import __main__
-from argrelay.schema_config_plugin.PluginConfigSchema import plugin_config_desc, server_plugin_instances_
-from argrelay.schema_config_plugin.PluginEntrySchema import (
-    plugin_enabled_,
-    plugin_dependencies_,
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoPropName import GitRepoPropName
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+    server_plugin_instances_,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
     plugin_config_,
+    plugin_dependencies_,
+    plugin_enabled_,
 )
-from argrelay.test_infra import line_no
-from argrelay.test_infra.EnvMockBuilder import (
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
     LocalClientEnvMockBuilder,
 )
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

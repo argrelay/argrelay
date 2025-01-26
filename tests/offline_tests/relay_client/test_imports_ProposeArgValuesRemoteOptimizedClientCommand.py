@@ -11,17 +11,20 @@ import os.path
 import time
 import unittest
 
-from argrelay.client_command_remote import ClientCommandRemoteWorkerTextProposeArgValuesOptimized
-from argrelay.client_spec.ShellContext import ShellContext, UNKNOWN_COMP_KEY
-from argrelay.enum_desc.CompType import CompType
-from argrelay.relay_client import (
-    __main__,
-    proc_worker,
-    proc_splitter,
+from argrelay_app_client.client_command_remote import ClientCommandRemoteWorkerTextProposeArgValuesOptimized
+from argrelay_app_client.client_spec.ShellContext import (
+    ShellContext,
+    UNKNOWN_COMP_KEY,
 )
-from argrelay.runtime_context.ParsedContext import ParsedContext
-from argrelay.test_infra import change_to_known_repo_path
-from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay_app_client.relay_client import (
+    __main__,
+    proc_splitter,
+    proc_worker,
+)
+from argrelay_app_server.runtime_context.ParsedContext import ParsedContext
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_test_infra.test_infra import change_to_known_repo_path
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 
 
 # TODO: Fix this to run under `tox`:
@@ -49,120 +52,120 @@ class ThisTestClass(BaseTestClass):
             "argrelay._version"
         ],
         "argrelay._version": [],
-        "argrelay.client_command_remote.ClientCommandRemoteAbstract": [
-            "argrelay.client_command_remote.exception_utils",
-            "argrelay.enum_desc.ClientExitCode",
-            "argrelay.enum_desc.ProcRole",
-            "argrelay.relay_client.ClientCommandAbstract",
-            "argrelay_api_server_cli.server_spec.CallContext"
-        ],
-        "argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract": [
+        "argrelay_api_server_cli.server_spec.CallContext": [
             "__future__",
-            "argrelay.client_command_remote.ClientCommandRemoteAbstract",
-            "argrelay.client_command_remote.exception_utils",
-            "argrelay.client_pipeline",
-            "argrelay.enum_desc.ClientExitCode",
-            "argrelay.enum_desc.ProcRole",
-            "argrelay.enum_desc.TopDir",
-            "argrelay.misc_helper_common",
-            "argrelay.runtime_data.ConnectionConfig",
+            "argrelay_lib_root.enum_desc.CompScope",
+            "argrelay_lib_root.enum_desc.ServerAction",
+            "argrelay_lib_root.enum_desc.TermColor",
+            "argrelay_lib_root.misc_helper_common",
+            "dataclasses"
+        ],
+        "argrelay_app_client.client_command_remote.ClientCommandRemoteAbstract": [
             "argrelay_api_server_cli.server_spec.CallContext",
+            "argrelay_app_client.client_command_remote.exception_utils",
+            "argrelay_app_client.relay_client.ClientCommandAbstract",
+            "argrelay_lib_root.enum_desc.ClientExitCode",
+            "argrelay_lib_root.enum_desc.ProcRole"
+        ],
+        "argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerAbstract": [
+            "__future__",
+            "argrelay_api_server_cli.server_spec.CallContext",
+            "argrelay_app_client.client_command_remote.ClientCommandRemoteAbstract",
+            "argrelay_app_client.client_command_remote.exception_utils",
+            "argrelay_app_client.client_pipeline",
+            "argrelay_lib_root.enum_desc.ClientExitCode",
+            "argrelay_lib_root.enum_desc.ProcRole",
+            "argrelay_lib_root.enum_desc.TopDir",
+            "argrelay_lib_root.misc_helper_common",
+            "argrelay_lib_root.schema_config.ConnectionConfig",
             "os"
         ],
-        "argrelay.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
-            "argrelay.client_command_remote.ClientCommandRemoteWorkerAbstract",
-            "argrelay.enum_desc.ServerAction",
-            "argrelay.misc_helper_common.ElapsedTime",
-            "argrelay.runtime_data.ConnectionConfig",
+        "argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
+            "argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerAbstract",
+            "argrelay_lib_root.enum_desc.ServerAction",
+            "argrelay_lib_root.misc_helper_common.ElapsedTime",
+            "argrelay_lib_root.schema_config.ConnectionConfig",
             "json",
             "socket"
         ],
-        "argrelay.client_command_remote.exception_utils": [],
-        "argrelay.client_pipeline": [],
-        "argrelay.client_spec.ShellContext": [
+        "argrelay_app_client.client_command_remote.exception_utils": [],
+        "argrelay_app_client.client_pipeline": [],
+        "argrelay_app_client.client_spec.ShellContext": [
             "__future__",
             "argrelay",
-            "argrelay.enum_desc.CompScope",
-            "argrelay.enum_desc.CompType",
-            "argrelay.enum_desc.ServerAction",
-            "argrelay.enum_desc.TermColor",
-            "argrelay.misc_helper_common",
             "argrelay_api_server_cli.server_spec.CallContext",
+            "argrelay_lib_root.enum_desc.CompScope",
+            "argrelay_lib_root.enum_desc.CompType",
+            "argrelay_lib_root.enum_desc.ServerAction",
+            "argrelay_lib_root.enum_desc.TermColor",
+            "argrelay_lib_root.misc_helper_common",
             "dataclasses",
             "os"
         ],
-        "argrelay.enum_desc.ClientExitCode": [
-            "enum"
-        ],
-        "argrelay.enum_desc.CompScope": [
-            "__future__",
-            "argrelay.enum_desc.CompType",
-            "enum"
-        ],
-        "argrelay.enum_desc.CompType": [
-            "enum"
-        ],
-        "argrelay.enum_desc.ProcRole": [
-            "enum"
-        ],
-        "argrelay.enum_desc.ServerAction": [
-            "enum"
-        ],
-        "argrelay.enum_desc.TermColor": [
-            "enum"
-        ],
-        "argrelay.enum_desc.TopDir": [
-            "__future__",
-            "enum"
-        ],
-        "argrelay.misc_helper_common": [
-            "os",
-            "sys"
-        ],
-        "argrelay.misc_helper_common.ElapsedTime": [
-            "__future__",
-            "argrelay.misc_helper_common",
-            "time"
-        ],
-        "argrelay.relay_client.ClientCommandAbstract": [
+        "argrelay_app_client.relay_client.ClientCommandAbstract": [
             "argrelay_api_server_cli.server_spec.CallContext"
         ],
-        "argrelay.relay_client.__main__": [
-            "argrelay.client_spec.ShellContext",
-            "argrelay.enum_desc.ProcRole",
-            "argrelay.enum_desc.ServerAction",
-            "argrelay.misc_helper_common",
-            "argrelay.misc_helper_common.ElapsedTime",
-            "argrelay.relay_client.client_utils",
-            "argrelay.runtime_data.ClientConfig",
-            "argrelay.runtime_data.ConnectionConfig",
+        "argrelay_app_client.relay_client.__main__": [
             "argrelay_api_server_cli.server_spec.CallContext",
+            "argrelay_app_client.client_spec.ShellContext",
+            "argrelay_app_client.relay_client.client_utils",
+            "argrelay_lib_root.enum_desc.ProcRole",
+            "argrelay_lib_root.enum_desc.ServerAction",
+            "argrelay_lib_root.misc_helper_common",
+            "argrelay_lib_root.misc_helper_common.ElapsedTime",
+            "argrelay_lib_root.schema_config.ConnectionConfig",
+            "argrelay_schema_config_client.runtime_data_client_app.ClientConfig",
             "sys"
         ],
-        "argrelay.relay_client.client_utils": [
+        "argrelay_app_client.relay_client.client_utils": [
             "sys"
         ],
-        "argrelay.relay_client.proc_splitter": [
+        "argrelay_app_client.relay_client.proc_splitter": [
             "os",
             "signal"
         ],
-        "argrelay.relay_client.proc_worker": [
-            "argrelay.misc_helper_common.ElapsedTime"
+        "argrelay_app_client.relay_client.proc_worker": [
+            "argrelay_lib_root.misc_helper_common.ElapsedTime"
         ],
-        "argrelay.runtime_data.ClientConfig": [
+        "argrelay_lib_root.enum_desc.ClientExitCode": [
+            "enum"
+        ],
+        "argrelay_lib_root.enum_desc.CompScope": [
             "__future__",
-            "argrelay.runtime_data.ConnectionConfig",
+            "argrelay_lib_root.enum_desc.CompType",
+            "enum"
+        ],
+        "argrelay_lib_root.enum_desc.CompType": [
+            "enum"
+        ],
+        "argrelay_lib_root.enum_desc.ProcRole": [
+            "enum"
+        ],
+        "argrelay_lib_root.enum_desc.ServerAction": [
+            "enum"
+        ],
+        "argrelay_lib_root.enum_desc.TermColor": [
+            "enum"
+        ],
+        "argrelay_lib_root.enum_desc.TopDir": [
+            "__future__",
+            "enum"
+        ],
+        "argrelay_lib_root.misc_helper_common": [
+            "os",
+            "sys"
+        ],
+        "argrelay_lib_root.misc_helper_common.ElapsedTime": [
+            "__future__",
+            "argrelay_lib_root.misc_helper_common",
+            "time"
+        ],
+        "argrelay_lib_root.schema_config.ConnectionConfig": [
             "dataclasses"
         ],
-        "argrelay.runtime_data.ConnectionConfig": [
-            "dataclasses"
-        ],
-        "argrelay_api_server_cli.server_spec.CallContext": [
+        "argrelay_schema_config_client.runtime_data_client_app.ClientConfig": [
             "__future__",
-            "argrelay.enum_desc.CompScope",
-            "argrelay.enum_desc.ServerAction",
-            "argrelay.enum_desc.TermColor",
-            "argrelay.misc_helper_common",
+            "argrelay_lib_root.schema_config.ConnectionConfig",
             "dataclasses"
         ],
         "dataclasses": [],

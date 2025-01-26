@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from argrelay.schema_config_plugin.PluginConfigSchema import serialize_dag_to_list
-from argrelay.test_infra import line_no
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import serialize_dag_to_list
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

@@ -12,11 +12,11 @@ module_path_file_tuples=(
     #       Integration assumes different plugins, their configs, etc.
 
     # For example:
-    argrelay sample_conf/argrelay_client.json conf/argrelay_client.json
-    argrelay sample_conf/argrelay_server.yaml conf/argrelay_server.yaml
-    argrelay sample_conf/argrelay_plugin.yaml conf/argrelay_plugin.yaml
-    argrelay sample_conf/check_env_plugin.conf.bash conf/check_env_plugin.conf.bash
-    argrelay sample_conf/check_env_plugin.conf.yaml conf/check_env_plugin.conf.yaml
+    argrelay_app_bootstrap sample_conf/argrelay_client.json conf/argrelay_client.json
+    argrelay_app_bootstrap sample_conf/argrelay_server.yaml conf/argrelay_server.yaml
+    argrelay_app_bootstrap sample_conf/argrelay_plugin.yaml conf/argrelay_plugin.yaml
+    argrelay_app_bootstrap sample_conf/check_env_plugin.conf.bash conf/check_env_plugin.conf.bash
+    argrelay_app_bootstrap sample_conf/check_env_plugin.conf.yaml conf/check_env_plugin.conf.yaml
 )
 ########################################################################################################################
 

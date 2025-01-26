@@ -1,35 +1,38 @@
 from __future__ import annotations
 
-from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.custom_integ.DelegatorServiceHostGoto import func_id_goto_host_
-from argrelay.custom_integ.DelegatorServiceHostList import DelegatorServiceHostList
-from argrelay.custom_integ.DelegatorServiceInstanceGoto import func_id_goto_service_
-from argrelay.custom_integ.DelegatorServiceInstanceList import DelegatorServiceInstanceList
-from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.FuncState import FuncState
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.enum_desc.SpecialChar import SpecialChar
-from argrelay.enum_desc.TermColor import TermColor
-from argrelay.enum_desc.ValueSource import ValueSource
-from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import (
-    indent_size,
-    ClientResponseHandlerDescribeLineArgs,
-)
-from argrelay.plugin_delegator.DelegatorError import DelegatorError
-from argrelay.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay.relay_client import __main__
-from argrelay.runtime_context.EnvelopeContainer import EnvelopeContainer
-from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_infra import line_no, parse_line_and_cpos
-from argrelay.test_infra.EnvMockBuilder import (
-    LocalClientEnvMockBuilder,
-    EmptyEnvMockBuilder,
-)
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
+from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.handler_response.ClientResponseHandlerDescribeLineArgs import (
+    ClientResponseHandlerDescribeLineArgs,
+    indent_size,
+)
+from argrelay_app_client.relay_client import __main__
+from argrelay_app_server.runtime_context.EnvelopeContainer import EnvelopeContainer
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.FuncState import FuncState
+from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
+from argrelay_lib_root.enum_desc.TermColor import TermColor
+from argrelay_lib_root.enum_desc.ValueSource import ValueSource
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import DelegatorError
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostGoto import func_id_goto_host_
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostList import DelegatorServiceHostList
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceGoto import func_id_goto_service_
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceList import DelegatorServiceInstanceList
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
+from argrelay_test_infra.test_infra import (
+    line_no,
+    parse_line_and_cpos,
+)
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
+    EmptyEnvMockBuilder,
+    LocalClientEnvMockBuilder,
+)
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

@@ -4,9 +4,9 @@ from icecream import ic
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from argrelay.mongo_data.MongoClientWrapper import get_mongo_client
-from argrelay.schema_config_core_server.MongoConfigSchema import mongo_config_desc
-from argrelay.test_infra.BaseTestClass import BaseTestClass
+from argrelay_app_server.mongo_data.MongoClientWrapper import get_mongo_client
+from argrelay_schema_config_server.schema_config_server_app.MongoConfigSchema import mongo_config_desc
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 
 object_name_ = "object_name"
 

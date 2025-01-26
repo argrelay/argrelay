@@ -2,20 +2,20 @@ from __future__ import annotations
 
 from marshmallow import ValidationError
 
-from argrelay.custom_integ.GitRepoLoader import GitRepoLoader
-from argrelay.plugin_interp.NoopInterpFactory import NoopInterp
-from argrelay.schema_config_plugin.PluginConfigSchema import (
-    server_plugin_instances_,
+from argrelay_lib_server_plugin_core.plugin_interp.NoopInterpFactory import NoopInterp
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
     plugin_config_desc,
+    server_plugin_instances_,
 )
-from argrelay.schema_config_plugin.PluginEntrySchema import (
-    plugin_entry_desc,
-    plugin_enabled_,
-    plugin_module_name_,
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
     plugin_class_name_,
+    plugin_enabled_,
+    plugin_entry_desc,
+    plugin_module_name_,
 )
-from argrelay.test_infra import line_no
-from argrelay.test_infra.LocalTestClass import LocalTestClass
+from argrelay_test_infra.test_infra import line_no
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

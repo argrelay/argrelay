@@ -2,18 +2,24 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay.client_command_local.ClientCommandLocal import ClientCommandLocal
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.SpecialFunc import SpecialFunc
-from argrelay.plugin_delegator.DelegatorDataBackendGet import DelegatorDataBackendGet
-from argrelay.relay_client import __main__
-from argrelay.runtime_data.AssignedValue import AssignedValue
-from argrelay.test_infra import line_no_from_ctor, assert_test_module_name_embeds_prod_class_name
-from argrelay.test_infra.CustomTestCase import ShellInputTestCase
-from argrelay.test_infra.CustomVerifier import ServerActionVerifier, ProposeArgValuesVerifier
-from argrelay.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
-from argrelay.test_infra.LocalTestClass import LocalTestClass
 from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
+from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
+from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.relay_client import __main__
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorDataBackendGet import DelegatorDataBackendGet
+from argrelay_test_infra.test_infra import (
+    assert_test_module_name_embeds_prod_class_name,
+    line_no_from_ctor,
+)
+from argrelay_test_infra.test_infra.CustomTestCase import ShellInputTestCase
+from argrelay_test_infra.test_infra.CustomVerifier import (
+    ProposeArgValuesVerifier,
+    ServerActionVerifier,
+)
+from argrelay_test_infra.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
+from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
 class ThisTestClass(LocalTestClass):

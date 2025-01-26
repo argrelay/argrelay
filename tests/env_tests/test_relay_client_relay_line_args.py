@@ -1,11 +1,11 @@
-from argrelay.custom_integ.ServiceEnvelopeClass import ServiceEnvelopeClass
-from argrelay.custom_integ.ServicePropName import ServicePropName
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedPropName import ReservedPropName
-from argrelay.plugin_delegator.DelegatorError import DelegatorError
-from argrelay.relay_client import __main__
-from argrelay.test_infra import parse_line_and_cpos
-from argrelay.test_infra.EnvMockBuilder import (
+from argrelay_app_client.relay_client import __main__
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import DelegatorError
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
+from argrelay_test_infra.test_infra import parse_line_and_cpos
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
     EnvMockBuilder,
     LiveServerEnvMockBuilder,
 )

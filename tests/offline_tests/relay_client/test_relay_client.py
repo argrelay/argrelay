@@ -3,23 +3,32 @@ from copy import deepcopy
 import responses
 from icecream import ic
 
-from argrelay.enum_desc.CompType import CompType
-from argrelay.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
-from argrelay.enum_desc.ServerAction import ServerAction
-from argrelay.enum_desc.SpecialChar import SpecialChar
-from argrelay.enum_desc.TermColor import TermColor
-from argrelay.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
-from argrelay.plugin_delegator.DelegatorNoopEmpty import DelegatorNoopEmpty
-from argrelay.relay_client import __main__
-from argrelay.schema_config_core_client.ConnectionConfigSchema import connection_config_desc
-from argrelay.schema_config_plugin.PluginEntrySchema import plugin_module_name_, plugin_class_name_
-from argrelay.test_infra import parse_line_and_cpos
-from argrelay.test_infra.BaseTestClass import BaseTestClass
-from argrelay.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
-from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc, arg_values_
+from argrelay_api_server_cli.schema_response.ArgValuesSchema import (
+    arg_values_,
+    arg_values_desc,
+)
 from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
-from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc, delegator_plugin_entry_
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import (
+    delegator_plugin_entry_,
+    invocation_input_desc,
+)
 from argrelay_api_server_cli.server_spec.const_int import BASE_URL_FORMAT
+from argrelay_app_client.handler_response.ClientResponseHandlerDescribeLineArgs import indent_size
+from argrelay_app_client.relay_client import __main__
+from argrelay_lib_root.enum_desc.CompType import CompType
+from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
+from argrelay_lib_root.enum_desc.ServerAction import ServerAction
+from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
+from argrelay_lib_root.enum_desc.TermColor import TermColor
+from argrelay_lib_root.schema_config.ConnectionConfigSchema import connection_config_desc
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopEmpty import DelegatorNoopEmpty
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_class_name_,
+    plugin_module_name_,
+)
+from argrelay_test_infra.test_infra import parse_line_and_cpos
+from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
+from argrelay_test_infra.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
 
 
 class ThisTestClass(BaseTestClass):
