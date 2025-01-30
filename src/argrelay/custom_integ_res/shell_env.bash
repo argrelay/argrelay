@@ -79,7 +79,9 @@ fi
 
 # FS_57_36_37_48 multiple clients coexistence: this maps each symlink basename to its client path
 # so that `Alt+Shift+Q` can use `argrelay_basename_to_client_path_map` to select correct client path:
-declare -A argrelay_basename_to_client_path_map
+# TODO: clean up:
+#declare -A argrelay_basename_to_client_path_map
+argrelay_client_paths=()
 
 # Any (the first) command:
 export ARGRELAY_CLIENT_COMMAND="${argrelay_bind_command_basenames[0]}"
@@ -103,8 +105,23 @@ do
         complete           -C "${argrelay_rc_argrelay_dir}/exe/run_argrelay_client" "${argrelay_command_basename}"
     fi
 
-    argrelay_basename_to_client_path_map["${argrelay_command_basename}"]="${argrelay_rc_argrelay_dir}/exe/run_argrelay_client"
+    # TODO: clean up:
+    #argrelay_basename_to_client_path_map["${argrelay_command_basename}"]="${argrelay_rc_argrelay_dir}/exe/run_argrelay_client"
+    argrelay_client_paths+=("${argrelay_rc_argrelay_dir}/exe/run_argrelay_client")
 done
+
+function get_argrelay_bind_command_basename_index {
+    argrelay_bind_command_basename="${1}"
+    for i in "${!argrelay_bind_command_basenames[@]}"
+    do
+        if [[ "${argrelay_bind_command_basenames[$i]}" = "${argrelay_bind_command_basename}" ]]
+        then
+            echo "${i}"
+            return
+        fi
+    done
+    echo "$((${#argrelay_bind_command_basenames[@]}+1))"
+}
 
 # Invoke completion programmatically:
 function invoke_completion {
@@ -129,11 +146,11 @@ function invoke_completion {
         local command_components=( ${COMP_LINE} )
         local command_name="${command_components[0]}"
         argrelay_command_basename="$( basename "${command_name}" )"
-        if [[ -n "${argrelay_basename_to_client_path_map["${argrelay_command_basename}"]+x}" ]]
+        if [[ -n "${argrelay_client_paths[$( get_argrelay_bind_command_basename_index "${argrelay_command_basename}" )]+x}" ]]
         then
             # FS_57_36_37_48 multiple clients coexistence:
             # The symlink basename is found, use correct client path:
-            "${argrelay_basename_to_client_path_map["${argrelay_command_basename}"]}"
+            "${argrelay_client_paths[$( get_argrelay_bind_command_basename_index "${argrelay_command_basename}" )]}"
         else
             local basename_color="\e[41m"
             local reset_color="\e[0m"

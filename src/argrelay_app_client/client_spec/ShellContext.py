@@ -61,10 +61,11 @@ class ShellContext:
             # See `CallConv.EnvVarsConv`:
             command_line = os.environ[COMP_LINE_env_var]
             cursor_cpos = int(os.environ[COMP_POINT_env_var])
+            # NOTE: `COMP_TYPE` env var is not set in Bash 3.2 (on macOS).
             # If `COMP_LINE_env_var` exists, the call is definitely NOT for `CompType.InvokeAction`:
-            comp_type = CompType(int(os.environ[COMP_TYPE_env_var]))
+            comp_type = CompType(int(os.environ.get(COMP_TYPE_env_var, CompType.SubsequentHelp.value)))
             assert comp_type != CompType.InvokeAction
-            comp_key = os.environ[COMP_KEY_env_var]
+            comp_key = os.environ.get(COMP_KEY_env_var, UNKNOWN_COMP_KEY)
         else:
             # See `CallConv.CliArgsConv`:
             argv = [os.path.basename(argv[0])] + argv[1:]

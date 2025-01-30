@@ -14,7 +14,7 @@ fi
 full_bash_version="$( bash --version | head -n 1 | cut -f4 -d' ' )"
 
 major_bash_version="$( echo "${full_bash_version}" | sed -n 's/^\([^.]*\).*$/\1/gp' )"
-required_major_version=4
+required_major_version=3
 
 if [[ "${major_bash_version}" -lt "${required_major_version}" ]]
 then

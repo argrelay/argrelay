@@ -133,26 +133,30 @@ test -d "${argrelay_dir}/exe/"
 
 # Collect flags from command line args:
 unused_input_args=()
-for arg_i in "${@}"
-do
+# NOTE: This `if` is required for Bash version 3.2 (macOS) as expanding empty `@` array gives "unbound variable":
+if [ "${#@}" -gt "0" ]
+then
+    for arg_i in "${@}"
+    do
 
-    if [[ "${arg_i}" == "recursion_flag" ]]
-    then
-        # If not set, default is empty (no recursion):
-        recursion_flag="recursion_flag"
-        continue
-    fi
+        if [[ "${arg_i}" == "recursion_flag" ]]
+        then
+            # If not set, default is empty (no recursion):
+            recursion_flag="recursion_flag"
+            continue
+        fi
 
-    if [[ "${arg_i}" == "activate_venv_only_flag" ]]
-    then
-        # Used by `@/exe/dev_shell.bash` (by `@/exe/init_shell_env.bash`)
-        # to activate Python venv only:
-        activate_venv_only_flag="activate_venv_only_flag"
-        continue
-    fi
+        if [[ "${arg_i}" == "activate_venv_only_flag" ]]
+        then
+            # Used by `@/exe/dev_shell.bash` (by `@/exe/init_shell_env.bash`)
+            # to activate Python venv only:
+            activate_venv_only_flag="activate_venv_only_flag"
+            continue
+        fi
 
-    unused_input_args+=( "${arg_i}" )
-done
+        unused_input_args+=( "${arg_i}" )
+    done
+fi
 
 ########################################################################################################################
 
@@ -561,7 +565,7 @@ python_module_path_EOF
 
             target_file_path="${argrelay_dir}/${argrelay_dir_dst_path}"
             # Create target parent dirs:
-            mkdir --parents "$( dirname "${target_file_path}" )"
+            mkdir -p "$( dirname "${target_file_path}" )"
 
             # Install file to the target:
             if [[ ! -e "${target_file_path}" ]] && [[ ! -L "${target_file_path}" ]]
