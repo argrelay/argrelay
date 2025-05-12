@@ -242,7 +242,7 @@ See: https://github.com/argrelay/argrelay
         "PyYaml",
         "jsonschema",
         "flasgger",
-        "marshmallow<4.0.0",
+        "marshmallow<5.0.0",
         "marshmallow-oneofschema",
         "apispec",
         "pymongo",
