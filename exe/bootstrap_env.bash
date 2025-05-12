@@ -561,7 +561,8 @@ python_module_path_EOF
 
             target_file_path="${argrelay_dir}/${argrelay_dir_dst_path}"
             # Create target parent dirs:
-            mkdir --parents "$( dirname "${target_file_path}" )"
+            # NOTE: --parents is not supported on MacOS:
+            mkdir -p "$( dirname "${target_file_path}" )"
 
             # Install file to the target:
             if [[ ! -e "${target_file_path}" ]] && [[ ! -L "${target_file_path}" ]]
