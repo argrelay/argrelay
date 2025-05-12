@@ -100,6 +100,7 @@ class ThisTestClass(LocalTestClass):
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
+
     def test_FS_49_96_50_77_config_only_with_FS_72_53_55_13_default_overrides(self):
         test_cases = [
             (

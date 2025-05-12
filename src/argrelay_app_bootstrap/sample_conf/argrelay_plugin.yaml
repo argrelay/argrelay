@@ -301,7 +301,7 @@ server_plugin_instance_groups:
                         -   repo_rel_path: ""
                             load_repo_tags: True
                             load_repo_commits: True
-                            load_tags_last_days: 90
+                            load_tags_last_days: 360
                             load_commits_max_count: 50
                             envelope_properties:
                                 git_repo_alias: argrelay
