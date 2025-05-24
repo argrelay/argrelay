@@ -9,8 +9,12 @@ from datetime import (
 )
 
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
-from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import client_config_desc
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
+from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import (
+    client_config_desc,
+)
 from argrelay_test_infra.test_infra import change_to_known_repo_path
 from argrelay_test_infra.test_infra.InOutTestClass import InOutTestClass
 
@@ -43,9 +47,11 @@ class ClientServerTestClass(InOutTestClass):
     @classmethod
     def start_server(cls):
         with change_to_known_repo_path("."):
-            cls.server_proc = subprocess.Popen([
-                f"{get_argrelay_dir()}/exe/run_argrelay_server",
-            ])
+            cls.server_proc = subprocess.Popen(
+                [
+                    f"{get_argrelay_dir()}/exe/run_argrelay_server",
+                ]
+            )
         cls.wait_for_connection_to_server()
 
     @classmethod
@@ -64,13 +70,17 @@ class ClientServerTestClass(InOutTestClass):
 
         delay_s = 1
         # 10 mins should be enough, right?
-        timeout_ts = datetime.now() + timedelta(minutes = 10.0)
+        timeout_ts = datetime.now() + timedelta(minutes=10.0)
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
             while True:
-                result = sock.connect_ex((
-                    client_config.redundant_servers[server_index].server_host_name,
-                    client_config.redundant_servers[server_index].server_port_number,
-                ))
+                result = sock.connect_ex(
+                    (
+                        client_config.redundant_servers[server_index].server_host_name,
+                        client_config.redundant_servers[
+                            server_index
+                        ].server_port_number,
+                    )
+                )
                 if result == 0:
                     print("connected to server")
                     return

@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 from argrelay_api_plugin_server_abstract.delegator_utils import set_default_to
-from argrelay_api_plugin_server_abstract.DelegatorAbstract import get_func_id_from_interp_ctx
-from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
+from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
+    get_func_id_from_interp_ctx,
+)
+from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import (
+    DelegatorSingleFuncAbstract,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_app_server.runtime_context.InterpContext import (
@@ -19,8 +23,12 @@ from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import (
 from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigBase import (
     SchemaConfigDelegatorConfigBase,
 )
-from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import func_configs_
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import (
+    func_configs_,
+)
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
     instance_data_,
@@ -45,7 +53,9 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
         plugin_config_dict: dict,
         delegator_config_desc: TypeDesc,
     ):
-        assert issubclass(delegator_config_desc.dict_schema.__class__, SchemaConfigDelegatorConfigBase)
+        assert issubclass(
+            delegator_config_desc.dict_schema.__class__, SchemaConfigDelegatorConfigBase
+        )
         self.delegator_config_desc = delegator_config_desc
 
         super().__init__(
@@ -62,7 +72,9 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
         Populate (if missing) or assert (if present) func-related fields.
         """
 
-        modified_plugin_config_dict = self.delegator_config_desc.dict_from_input_dict(plugin_config_dict)
+        modified_plugin_config_dict = self.delegator_config_desc.dict_from_input_dict(
+            plugin_config_dict
+        )
 
         func_configs: dict = modified_plugin_config_dict[func_configs_]
         for func_id, func_config in func_configs.items():
@@ -70,9 +82,14 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
             func_envelope = func_config[func_envelope_]
 
             if ReservedPropName.envelope_class.name in func_envelope:
-                assert func_envelope[ReservedPropName.envelope_class.name] == ReservedEnvelopeClass.class_function.name
+                assert (
+                    func_envelope[ReservedPropName.envelope_class.name]
+                    == ReservedEnvelopeClass.class_function.name
+                )
             else:
-                func_envelope[ReservedPropName.envelope_class.name] = ReservedEnvelopeClass.class_function.name
+                func_envelope[ReservedPropName.envelope_class.name] = (
+                    ReservedEnvelopeClass.class_function.name
+                )
 
             if ReservedPropName.func_id.name in func_envelope:
                 assert func_envelope[ReservedPropName.func_id.name] == func_id
@@ -87,7 +104,10 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
                 instance_data[func_id_] = func_id
 
             if delegator_plugin_instance_id_ in instance_data:
-                assert instance_data[delegator_plugin_instance_id_] == self.plugin_instance_id
+                assert (
+                    instance_data[delegator_plugin_instance_id_]
+                    == self.plugin_instance_id
+                )
             else:
                 instance_data[delegator_plugin_instance_id_] = self.plugin_instance_id
 
@@ -138,7 +158,9 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
                     # Define vars in current context to evaluate `prop_value_template` below:
                     envelope_containers = interp_ctx.envelope_containers
 
-                    fill_control: dict = fill_control_list[interp_ctx.curr_container_ipos]
+                    fill_control: dict = fill_control_list[
+                        interp_ctx.curr_container_ipos
+                    ]
                     for prop_name, prop_value_template in fill_control.items():
                         if prop_value_template is not None:
                             # The input is trusted (from config), right? Then:
@@ -146,9 +168,10 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
                             prop_value = eval(f'f"""{prop_value_template}"""')
 
                             any_assignment = (
-                                set_default_to(prop_name, prop_value, interp_ctx.curr_container)
-                                or
-                                any_assignment
+                                set_default_to(
+                                    prop_name, prop_value, interp_ctx.curr_container
+                                )
+                                or any_assignment
                             )
 
         return any_assignment
@@ -164,16 +187,15 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.class_function` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         function_container = interp_ctx.envelope_containers[function_container_ipos_]
-        delegator_plugin_instance_id = (
-            function_container.data_envelopes[0][instance_data_]
-            [delegator_plugin_instance_id_]
-        )
+        delegator_plugin_instance_id = function_container.data_envelopes[0][
+            instance_data_
+        ][delegator_plugin_instance_id_]
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
+            delegator_plugin_entry=local_server.plugin_config.server_plugin_instances[
                 delegator_plugin_instance_id
             ],
-            custom_plugin_data = {},
+            custom_plugin_data={},
         )
         return invocation_input
 

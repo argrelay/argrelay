@@ -4,8 +4,8 @@ These are notes on optimization done for end-to-end request-response specificall
 # Scope
 
 The server-side query execution is factored out from this doc - here:
-*    the focus is on data round-trip
-*    all tests use the same (small) data set
+*   the focus is on data round-trip
+*   all tests use the same (small) data set
 
 For server-side query optimization with different data set sizes see instead:
 *   `DistinctValuesQuery`
@@ -22,7 +22,7 @@ unless using custom data-crunching logic with minimum `import`-s (or even not in
 # Why bother optimizing?
 
 Unlike many GUI-s, Bash CLI does not have async execution -
-Tab-completion request blocks shell completely.  
+Tab-completion request blocks shell completely.
 
 *   For humans, end-to-end request-response better be under 200 millis.
 *   It is hardly noticeable if under 50 millis.

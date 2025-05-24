@@ -10,8 +10,7 @@ class CustomVerifier(JsonTestOutputVerifier):
         self,
         test_instance: BaseTestClass,
     ):
-        super().__init__(
-        )
+        super().__init__()
 
         self.test_instance: BaseTestClass = test_instance
 
@@ -48,8 +47,8 @@ class ServerActionVerifier(CallContextVerifier):
             server_action,
         )
 
-        self.test_instance = test_instance,
-        self.server_action = server_action,
+        self.test_instance = (test_instance,)
+        self.server_action = (server_action,)
 
 
 class ProposeArgValuesVerifier(ServerActionVerifier):

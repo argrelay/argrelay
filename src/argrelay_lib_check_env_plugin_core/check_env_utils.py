@@ -1,5 +1,4 @@
-"""
-"""
+""" """
 
 
 def format_time_to_relative(

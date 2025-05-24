@@ -25,20 +25,20 @@ class InitControlSchema(ObjectSchema):
     model_class = InitControl
 
     init_types_to_values = fields.Dict(
-        keys = fields.String(),
-        values = fields.String(),
-        required = True,
+        keys=fields.String(),
+        values=fields.String(),
+        required=True,
     )
 
 
 init_control_desc = TypeDesc(
-    dict_schema = InitControlSchema(),
-    ref_name = InitControlSchema.__name__,
-    dict_example = {
+    dict_schema=InitControlSchema(),
+    ref_name=InitControlSchema.__name__,
+    dict_example={
         init_types_to_values_: {
             "type_a": "TypeA",
             "type_b": "TypeB",
         },
     },
-    default_file_path = "",
+    default_file_path="",
 )

@@ -1,7 +1,11 @@
 from argrelay_app_client.relay_client.ClientAbstract import ClientAbstract
-from argrelay_app_client.relay_client.ClientCommandFactoryRemote import ClientCommandFactoryRemote
+from argrelay_app_client.relay_client.ClientCommandFactoryRemote import (
+    ClientCommandFactoryRemote,
+)
 from argrelay_lib_root.enum_desc.ProcRole import ProcRole
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
 
 
 class ClientRemote(ClientAbstract):

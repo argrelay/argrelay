@@ -7,8 +7,7 @@ class BytesSrcSender(BytesSrcAbstract):
         self,
         w_pipe_end: "typing.BinaryIO",
     ):
-        super().__init__(
-        )
+        super().__init__()
         self.w_pipe_end: "typing.BinaryIO" = w_pipe_end
 
     def accept_bytes(

@@ -104,4 +104,3 @@ fi
 # Neither dir nor file:
 echo "ERROR: specify valid dir path or file path: ${input_path}" 1>&2
 exit 1
-

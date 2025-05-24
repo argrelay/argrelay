@@ -4,7 +4,7 @@ from dataclasses import (
 )
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class ConnectionConfig:
     server_host_name: str = field()
     server_port_number: int = field()

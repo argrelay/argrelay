@@ -11,7 +11,9 @@ import os.path
 import time
 import unittest
 
-from argrelay_app_client.client_command_remote import ClientCommandRemoteWorkerTextProposeArgValuesOptimized
+from argrelay_app_client.client_command_remote import (
+    ClientCommandRemoteWorkerTextProposeArgValuesOptimized,
+)
 from argrelay_app_client.client_spec.ShellContext import (
     ShellContext,
     UNKNOWN_COMP_KEY,
@@ -48,9 +50,7 @@ class ThisTestClass(BaseTestClass):
     # To generate `expected_imports`, run `test_print_grouped_imports`.
     expected_imports = {
         "__future__": [],
-        "argrelay": [
-            "argrelay._version"
-        ],
+        "argrelay": ["argrelay._version"],
         "argrelay._version": [],
         "argrelay_api_server_cli.server_spec.CallContext": [
             "__future__",
@@ -58,14 +58,14 @@ class ThisTestClass(BaseTestClass):
             "argrelay_lib_root.enum_desc.ServerAction",
             "argrelay_lib_root.enum_desc.TermColor",
             "argrelay_lib_root.misc_helper_common",
-            "dataclasses"
+            "dataclasses",
         ],
         "argrelay_app_client.client_command_remote.ClientCommandRemoteAbstract": [
             "argrelay_api_server_cli.server_spec.CallContext",
             "argrelay_app_client.client_command_remote.exception_utils",
             "argrelay_app_client.relay_client.ClientCommandAbstract",
             "argrelay_lib_root.enum_desc.ClientExitCode",
-            "argrelay_lib_root.enum_desc.ProcRole"
+            "argrelay_lib_root.enum_desc.ProcRole",
         ],
         "argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerAbstract": [
             "__future__",
@@ -78,7 +78,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay_lib_root.enum_desc.TopDir",
             "argrelay_lib_root.misc_helper_common",
             "argrelay_lib_root.schema_config.ConnectionConfig",
-            "os"
+            "os",
         ],
         "argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized": [
             "argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerAbstract",
@@ -86,7 +86,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay_lib_root.misc_helper_common.ElapsedTime",
             "argrelay_lib_root.schema_config.ConnectionConfig",
             "json",
-            "socket"
+            "socket",
         ],
         "argrelay_app_client.client_command_remote.exception_utils": [],
         "argrelay_app_client.client_pipeline": [],
@@ -100,7 +100,7 @@ class ThisTestClass(BaseTestClass):
             "argrelay_lib_root.enum_desc.TermColor",
             "argrelay_lib_root.misc_helper_common",
             "dataclasses",
-            "os"
+            "os",
         ],
         "argrelay_app_client.relay_client.ClientCommandAbstract": [
             "argrelay_api_server_cli.server_spec.CallContext"
@@ -115,58 +115,35 @@ class ThisTestClass(BaseTestClass):
             "argrelay_lib_root.misc_helper_common.ElapsedTime",
             "argrelay_lib_root.schema_config.ConnectionConfig",
             "argrelay_schema_config_client.runtime_data_client_app.ClientConfig",
-            "sys"
+            "sys",
         ],
-        "argrelay_app_client.relay_client.client_utils": [
-            "sys"
-        ],
-        "argrelay_app_client.relay_client.proc_splitter": [
-            "os",
-            "signal"
-        ],
+        "argrelay_app_client.relay_client.client_utils": ["sys"],
+        "argrelay_app_client.relay_client.proc_splitter": ["os", "signal"],
         "argrelay_app_client.relay_client.proc_worker": [
             "argrelay_lib_root.misc_helper_common.ElapsedTime"
         ],
-        "argrelay_lib_root.enum_desc.ClientExitCode": [
-            "enum"
-        ],
+        "argrelay_lib_root.enum_desc.ClientExitCode": ["enum"],
         "argrelay_lib_root.enum_desc.CompScope": [
             "__future__",
             "argrelay_lib_root.enum_desc.CompType",
-            "enum"
+            "enum",
         ],
-        "argrelay_lib_root.enum_desc.CompType": [
-            "enum"
-        ],
-        "argrelay_lib_root.enum_desc.ProcRole": [
-            "enum"
-        ],
-        "argrelay_lib_root.enum_desc.ServerAction": [
-            "enum"
-        ],
-        "argrelay_lib_root.enum_desc.TermColor": [
-            "enum"
-        ],
-        "argrelay_lib_root.enum_desc.TopDir": [
-            "__future__",
-            "enum"
-        ],
-        "argrelay_lib_root.misc_helper_common": [
-            "os",
-            "sys"
-        ],
+        "argrelay_lib_root.enum_desc.CompType": ["enum"],
+        "argrelay_lib_root.enum_desc.ProcRole": ["enum"],
+        "argrelay_lib_root.enum_desc.ServerAction": ["enum"],
+        "argrelay_lib_root.enum_desc.TermColor": ["enum"],
+        "argrelay_lib_root.enum_desc.TopDir": ["__future__", "enum"],
+        "argrelay_lib_root.misc_helper_common": ["os", "sys"],
         "argrelay_lib_root.misc_helper_common.ElapsedTime": [
             "__future__",
             "argrelay_lib_root.misc_helper_common",
-            "time"
+            "time",
         ],
-        "argrelay_lib_root.schema_config.ConnectionConfig": [
-            "dataclasses"
-        ],
+        "argrelay_lib_root.schema_config.ConnectionConfig": ["dataclasses"],
         "argrelay_schema_config_client.runtime_data_client_app.ClientConfig": [
             "__future__",
             "argrelay_lib_root.schema_config.ConnectionConfig",
-            "dataclasses"
+            "dataclasses",
         ],
         "dataclasses": [],
         "enum": [],
@@ -175,7 +152,7 @@ class ThisTestClass(BaseTestClass):
         "signal": [],
         "socket": [],
         "sys": [],
-        "time": []
+        "time": [],
     }
 
     def module_size(
@@ -219,7 +196,11 @@ class ThisTestClass(BaseTestClass):
             # noinspection PyTypeChecker
             instr_list = dis.get_instructions(module_file.read())
 
-            module_imports = [import_instr for import_instr in instr_list if "IMPORT_NAME" in import_instr.opname]
+            module_imports = [
+                import_instr
+                for import_instr in instr_list
+                if "IMPORT_NAME" in import_instr.opname
+            ]
 
             listed_imports = []
             for instr in module_imports:
@@ -250,7 +231,9 @@ class ThisTestClass(BaseTestClass):
         return grouped_imports
 
     def group_imports(self):
-        grouped_imports = self.group_imports_per_module_per_op(ThisTestClass.entry_module_names)
+        grouped_imports = self.group_imports_per_module_per_op(
+            ThisTestClass.entry_module_names
+        )
         return grouped_imports
 
     def dump_ordered_json(
@@ -259,8 +242,8 @@ class ThisTestClass(BaseTestClass):
     ):
         return json.dumps(
             grouped_imports,
-            indent = 4,
-            sort_keys = True,
+            indent=4,
+            sort_keys=True,
         )
 
     def get_module_load_time_ns(self, module_name):
@@ -282,12 +265,12 @@ class ThisTestClass(BaseTestClass):
     def test_module_reload_breaks_dataclass_asdict(self):
         # given:
         shell_ctx = ShellContext(
-            command_line = "whatever",
-            cursor_cpos = 0,
-            comp_type = CompType.PrefixShown,
-            is_debug_enabled = False,
-            comp_key = UNKNOWN_COMP_KEY,
-            input_data = None,
+            command_line="whatever",
+            cursor_cpos=0,
+            comp_type=CompType.PrefixShown,
+            is_debug_enabled=False,
+            comp_key=UNKNOWN_COMP_KEY,
+            input_data=None,
         )
         call_ctx = shell_ctx.create_call_context()
 
@@ -301,7 +284,10 @@ class ThisTestClass(BaseTestClass):
         # then: `dataclasses.asdict` does not work again:
         with self.assertRaises(TypeError) as e_ctx:
             parsed_ctx = ParsedContext(**dataclasses.asdict(call_ctx))
-        self.assertTrue("ParsedContext.__init__() missing 5 required positional arguments:" in e_ctx.exception.args[0])
+        self.assertTrue(
+            "ParsedContext.__init__() missing 5 required positional arguments:"
+            in e_ctx.exception.args[0]
+        )
         # and:
         dict_result = dataclasses.asdict(call_ctx)
         self.assertEqual(dict_result, {}, "dict is empty")
@@ -314,7 +300,11 @@ class ThisTestClass(BaseTestClass):
         with change_to_known_repo_path("."):
             grouped_imports = self.group_imports()
 
-            all_module_names = [module_name for sub_list in grouped_imports.values() for module_name in sub_list]
+            all_module_names = [
+                module_name
+                for sub_list in grouped_imports.values()
+                for module_name in sub_list
+            ]
             unique_module_names = sorted(set(all_module_names))
 
             module_load_times = []
@@ -323,14 +313,14 @@ class ThisTestClass(BaseTestClass):
                 module_size_bytes = self.module_size(module_name)
                 module_load_times.append((load_time_ns, module_size_bytes, module_name))
 
-            module_load_times.sort(key = lambda item: item[0])
+            module_load_times.sort(key=lambda item: item[0])
 
             def print_row(time_ms, size_bytes, row_name):
                 print(f"{time_ms:12.7f} ms: {size_bytes:>7} bytes: {row_name}")
 
             total_time_ms = 0
             total_size_bytes = 0
-            for (load_time_ns, module_size_bytes, module_name) in module_load_times:
+            for load_time_ns, module_size_bytes, module_name in module_load_times:
                 display_time_ms = load_time_ns / 1_000_000
                 total_time_ms += display_time_ms
                 total_size_bytes += module_size_bytes
@@ -338,7 +328,9 @@ class ThisTestClass(BaseTestClass):
             print("-" * 40)
             print_row(total_time_ms, total_size_bytes, "TOTAL")
 
-    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_imports_minimum(self):
+    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_imports_minimum(
+        self,
+    ):
         """
         Scan imported modules on the way from client entry point to sending data.
 

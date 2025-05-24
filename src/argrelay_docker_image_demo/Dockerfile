@@ -30,4 +30,3 @@ RUN sed -i "s/^\\([[:space:]]*server_host_name:[[:space:]]*\\)localhost/\\10.0.0
 RUN ./exe/relay_demo.bash
 
 CMD [ "./exe/relay_demo.bash" ]
-

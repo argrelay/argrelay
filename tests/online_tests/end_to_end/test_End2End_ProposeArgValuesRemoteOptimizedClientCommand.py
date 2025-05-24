@@ -10,7 +10,9 @@ from argrelay_test_infra.test_infra.End2EndTestClass import (
 
 class ThisTestClass(End2EndTestClass):
 
-    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_sends_valid_JSON_for_commands_with_quotes(self):
+    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_sends_valid_JSON_for_commands_with_quotes(
+        self,
+    ):
         """
         Invokes client via generated `@/exe/run_argrelay_client` sending `ServerAction.ProposeArgValues`.
         """
@@ -18,7 +20,8 @@ class ThisTestClass(End2EndTestClass):
         # @formatter:off
         test_cases = [
             (
-                line_no(), f"{self.default_bound_command} desc host dev \"some_unrecognized_token upstream |",
+                line_no(),
+                f'{self.default_bound_command} desc host dev "some_unrecognized_token upstream |',
                 CompType.PrefixShown,
                 f"""amer
 apac
@@ -26,7 +29,8 @@ emea
 """,
             ),
             (
-                line_no(), f"{self.default_bound_command} desc host dev \"some_unrecognized_token\" upstream a|",
+                line_no(),
+                f'{self.default_bound_command} desc host dev "some_unrecognized_token" upstream a|',
                 CompType.SubsequentHelp,
                 f"""amer
 apac

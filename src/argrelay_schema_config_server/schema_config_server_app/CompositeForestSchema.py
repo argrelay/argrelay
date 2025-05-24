@@ -5,7 +5,9 @@ from marshmallow import (
 
 from argrelay_lib_root.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
-from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import (
+    CompositeForest,
+)
 from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import (
     CompositeNodeSchema,
     zero_arg_node_desc,
@@ -26,9 +28,9 @@ class CompositeForestSchema(ObjectSchema):
     model_class = CompositeForest
 
     tree_roots = fields.Dict(
-        keys = fields.String(),
-        values = fields.Nested(CompositeNodeSchema()),
-        required = True,
+        keys=fields.String(),
+        values=fields.Nested(CompositeNodeSchema()),
+        required=True,
     )
 
 
@@ -39,8 +41,8 @@ _composite_forest_example = {
 }
 
 composite_forest_desc = TypeDesc(
-    dict_schema = CompositeForestSchema(),
-    ref_name = CompositeForestSchema.__name__,
-    dict_example = _composite_forest_example,
-    default_file_path = "",
+    dict_schema=CompositeForestSchema(),
+    ref_name=CompositeForestSchema.__name__,
+    dict_example=_composite_forest_example,
+    default_file_path="",
 )

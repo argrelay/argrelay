@@ -1,4 +1,6 @@
-from argrelay_app_client.client_pipeline.BytesHandlerAbstract import BytesHandlerAbstract
+from argrelay_app_client.client_pipeline.BytesHandlerAbstract import (
+    BytesHandlerAbstract,
+)
 
 
 class BytesHandlerTextProposeArgValuesOptimized(BytesHandlerAbstract):
@@ -6,8 +8,7 @@ class BytesHandlerTextProposeArgValuesOptimized(BytesHandlerAbstract):
     def __init__(
         self,
     ):
-        super().__init__(
-        )
+        super().__init__()
 
     def handle_bytes(
         self,

@@ -30,7 +30,7 @@ COMP_TYPE_env_var: str = "COMP_TYPE"
 COMP_KEY_env_var: str = "COMP_KEY"
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class ShellContext:
     """
     Immutable input data from a shell
@@ -44,9 +44,9 @@ class ShellContext:
     input_data: str = field()
 
     def __post_init__(self):
-        assert 0 <= self.cursor_cpos <= len(self.command_line), (
-            "Is this complex command line? See: https://github.com/argrelay/argrelay/issues/108"
-        )
+        assert (
+            0 <= self.cursor_cpos <= len(self.command_line)
+        ), "Is this complex command line? See: https://github.com/argrelay/argrelay/issues/108"
 
     @classmethod
     def from_env(
@@ -62,7 +62,9 @@ class ShellContext:
             command_line = os.environ[COMP_LINE_env_var]
             cursor_cpos = int(os.environ[COMP_POINT_env_var])
             # If `COMP_LINE_env_var` exists, the call is definitely NOT for `CompType.InvokeAction`:
-            comp_type = CompType(int(os.environ.get(COMP_TYPE_env_var, CompType.SubsequentHelp.value)))
+            comp_type = CompType(
+                int(os.environ.get(COMP_TYPE_env_var, CompType.SubsequentHelp.value))
+            )
             assert comp_type != CompType.InvokeAction
             comp_key = os.environ.get(COMP_KEY_env_var, UNKNOWN_COMP_KEY)
         else:
@@ -75,18 +77,16 @@ class ShellContext:
             comp_key = UNKNOWN_COMP_KEY
 
         is_debug_enabled = (
-            "ARGRELAY_DEBUG" in os.environ
-            and
-            "p" in os.environ["ARGRELAY_DEBUG"]
+            "ARGRELAY_DEBUG" in os.environ and "p" in os.environ["ARGRELAY_DEBUG"]
         )
 
         return cls(
-            command_line = command_line,
-            cursor_cpos = cursor_cpos,
-            comp_type = comp_type,
-            comp_key = comp_key,
-            is_debug_enabled = is_debug_enabled,
-            input_data = None,
+            command_line=command_line,
+            cursor_cpos=cursor_cpos,
+            comp_type=comp_type,
+            comp_key=comp_key,
+            is_debug_enabled=is_debug_enabled,
+            input_data=None,
         )
 
     def print_debug(
@@ -95,27 +95,27 @@ class ShellContext:
     ) -> None:
         if not self.is_debug_enabled:
             return
-        eprint(TermColor.debug_output.value, end = "")
-        eprint(f"\"{self.command_line}\"", end = " ")
-        eprint(f"cursor_cpos: {self.cursor_cpos}", end = " ")
-        eprint(f"comp_type: {self.comp_type}", end = " ")
-        eprint(TermColor.reset_style.value, end = end_str)
+        eprint(TermColor.debug_output.value, end="")
+        eprint(f'"{self.command_line}"', end=" ")
+        eprint(f"cursor_cpos: {self.cursor_cpos}", end=" ")
+        eprint(f"comp_type: {self.comp_type}", end=" ")
+        eprint(TermColor.reset_style.value, end=end_str)
 
     def create_call_context(
         self,
     ) -> CallContext:
         server_action: ServerAction = select_server_action(self.comp_type)
         return CallContext(
-            client_version = argrelay.__version__,
-            client_conf_target = get_client_conf_target(),
-            server_action = server_action,
-            command_line = self.command_line,
-            cursor_cpos = self.cursor_cpos,
-            comp_scope = CompScope.from_comp_type(self.comp_type),
-            client_uid = get_user_name(),
-            client_pid = os.getpid(),
-            is_debug_enabled = self.is_debug_enabled,
-            input_data = self.input_data,
+            client_version=argrelay.__version__,
+            client_conf_target=get_client_conf_target(),
+            server_action=server_action,
+            command_line=self.command_line,
+            cursor_cpos=self.cursor_cpos,
+            comp_scope=CompScope.from_comp_type(self.comp_type),
+            client_uid=get_user_name(),
+            client_pid=os.getpid(),
+            is_debug_enabled=self.is_debug_enabled,
+            input_data=self.input_data,
         )
 
 

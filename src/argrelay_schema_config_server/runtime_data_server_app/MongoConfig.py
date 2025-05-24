@@ -6,8 +6,12 @@ from dataclasses import (
 )
 
 from argrelay_lib_root.enum_desc.DistinctValuesQuery import DistinctValuesQuery
-from argrelay_schema_config_server.runtime_data_server_app.MongoClientConfig import MongoClientConfig
-from argrelay_schema_config_server.runtime_data_server_app.MongoServerConfig import MongoServerConfig
+from argrelay_schema_config_server.runtime_data_server_app.MongoClientConfig import (
+    MongoClientConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_app.MongoServerConfig import (
+    MongoServerConfig,
+)
 
 
 @dataclass

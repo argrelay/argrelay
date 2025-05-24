@@ -16,8 +16,12 @@ from argrelay_schema_config_server.runtime_data_server_app.CompositeNode import 
     TreePathNode,
     ZeroArgNode,
 )
-from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import CompositeNodeType
-from argrelay_schema_config_server.schema_config_interp.FuncEnvelopeSchema import func_id_some_func_
+from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import (
+    CompositeNodeType,
+)
+from argrelay_schema_config_server.schema_config_interp.FuncEnvelopeSchema import (
+    func_id_some_func_,
+)
 
 node_type_ = "node_type"
 sub_tree_ = "sub_tree"
@@ -40,11 +44,11 @@ class BaseNodeSchema(ObjectSchema):
     node_type = None
 
     sub_tree = fields.Dict(
-        keys = fields.String(),
-        values = fields.Nested("CompositeNodeSchema"),
-        required = False,
-        allow_none = True,
-        load_default = None,
+        keys=fields.String(),
+        values=fields.Nested("CompositeNodeSchema"),
+        required=False,
+        allow_none=True,
+        load_default=None,
     )
 
     @post_load
@@ -64,7 +68,7 @@ class BaseNodeSchema(ObjectSchema):
         """
         return type(self).model_class(
             **input_dict,
-            node_type = self.node_type,
+            node_type=self.node_type,
         )
 
 
@@ -82,7 +86,7 @@ class ZeroArgNodeSchema(BaseNodeSchema):
     node_type = CompositeNodeType.zero_arg_node
 
     plugin_instance_id = fields.String(
-        required = True,
+        required=True,
     )
 
 
@@ -109,11 +113,11 @@ class InterpTreeNodeSchema(BaseNodeSchema):
             strict = True
 
         plugin_instance_id = fields.String(
-            required = True,
+            required=True,
         )
 
     plugin_instance_id = fields.String(
-        required = True,
+        required=True,
     )
 
 
@@ -131,7 +135,7 @@ class FuncTreeNodeSchema(BaseNodeSchema):
     node_type = CompositeNodeType.func_tree_node
 
     func_id = fields.String(
-        required = True,
+        required=True,
     )
 
 
@@ -187,54 +191,60 @@ _base_node_example = {
 }
 
 base_node_desc = TypeDesc(
-    dict_schema = BaseNodeSchema(),
-    ref_name = BaseNodeSchema.__name__,
-    dict_example = _base_node_example,
-    default_file_path = "",
+    dict_schema=BaseNodeSchema(),
+    ref_name=BaseNodeSchema.__name__,
+    dict_example=_base_node_example,
+    default_file_path="",
 )
 
 _zero_arg_node_example = deepcopy(base_node_desc.dict_example)
-_zero_arg_node_example.update({
-    plugin_instance_id_: "some_plugin_instance_id",
-})
+_zero_arg_node_example.update(
+    {
+        plugin_instance_id_: "some_plugin_instance_id",
+    }
+)
 
 zero_arg_node_desc = TypeDesc(
-    dict_schema = ZeroArgNodeSchema(),
-    ref_name = ZeroArgNodeSchema.__name__,
-    dict_example = _zero_arg_node_example,
-    default_file_path = "",
+    dict_schema=ZeroArgNodeSchema(),
+    ref_name=ZeroArgNodeSchema.__name__,
+    dict_example=_zero_arg_node_example,
+    default_file_path="",
 )
 
 _interp_tree_node_example = deepcopy(base_node_desc.dict_example)
-_interp_tree_node_example.update({
-    plugin_instance_id_: "some_plugin_instance_id",
-})
+_interp_tree_node_example.update(
+    {
+        plugin_instance_id_: "some_plugin_instance_id",
+    }
+)
 
 interp_tree_node_desc = TypeDesc(
-    dict_schema = InterpTreeNodeSchema(),
-    ref_name = InterpTreeNodeSchema.__name__,
-    dict_example = _interp_tree_node_example,
-    default_file_path = "",
+    dict_schema=InterpTreeNodeSchema(),
+    ref_name=InterpTreeNodeSchema.__name__,
+    dict_example=_interp_tree_node_example,
+    default_file_path="",
 )
 
 _func_tree_node_example = deepcopy(base_node_desc.dict_example)
-_func_tree_node_example.update({
-    func_id_: func_id_some_func_,
-})
+_func_tree_node_example.update(
+    {
+        func_id_: func_id_some_func_,
+    }
+)
 
 func_tree_node_desc = TypeDesc(
-    dict_schema = FuncTreeNodeSchema(),
-    ref_name = FuncTreeNodeSchema.__name__,
-    dict_example = _func_tree_node_example,
-    default_file_path = "",
+    dict_schema=FuncTreeNodeSchema(),
+    ref_name=FuncTreeNodeSchema.__name__,
+    dict_example=_func_tree_node_example,
+    default_file_path="",
 )
 
 _tree_path_node_example = deepcopy(base_node_desc.dict_example)
 _tree_path_node_example.update({})
 
 tree_path_node_desc = TypeDesc(
-    dict_schema = TreePathNodeSchema(),
-    ref_name = TreePathNodeSchema.__name__,
-    dict_example = _tree_path_node_example,
-    default_file_path = "",
+    dict_schema=TreePathNodeSchema(),
+    ref_name=TreePathNodeSchema.__name__,
+    dict_example=_tree_path_node_example,
+    default_file_path="",
 )

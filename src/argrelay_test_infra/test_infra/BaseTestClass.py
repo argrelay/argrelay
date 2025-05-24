@@ -30,7 +30,9 @@ class BaseTestClass(TestCase):
     @classmethod
     def tearDownClass(cls):
         TestCase.tearDownClass()
-        assert cls.test_single_line_no is None, "see docstring for `test_single_line_no`"
+        assert (
+            cls.test_single_line_no is None
+        ), "see docstring for `test_single_line_no`"
 
     def setUp(self):
         super().setUp()

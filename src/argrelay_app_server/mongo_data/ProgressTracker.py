@@ -14,21 +14,26 @@ class ProgressTracker:
     """
     State and stats to track `data_envelope`-s loading progress.
     """
-    envelope_per_col_i: int = field(default = 0)
-    envelope_per_col_n: int = field(default = 0)
-    base_total_envelope_i: int = field(default = 0)
-    total_envelope_i: int = field(default = 0)
-    total_envelope_n: int = field(default = 0)
+
+    envelope_per_col_i: int = field(default=0)
+    envelope_per_col_n: int = field(default=0)
+    base_total_envelope_i: int = field(default=0)
+    total_envelope_i: int = field(default=0)
+    total_envelope_n: int = field(default=0)
 
     # Number of envelopes loaded per `collection_name`:
-    collection_sizes: dict[str, int] = field(default_factory = dict)
+    collection_sizes: dict[str, int] = field(default_factory=dict)
 
     # TODO: Provide a way to exclude some collection_name and envelope_classes from
     #       requirement of being part of `search_control`.
     #       For example, `ReservedEnvelopeClass.class_help` is used internally (may not be used by `search_control`).
-    unused_index_props_per_collection: dict[str, set[str]] = field(default_factory = lambda: {})
+    unused_index_props_per_collection: dict[str, set[str]] = field(
+        default_factory=lambda: {}
+    )
 
-    dangling_search_props_per_collection: dict[str, set[str]] = field(default_factory = lambda: {})
+    dangling_search_props_per_collection: dict[str, set[str]] = field(
+        default_factory=lambda: {}
+    )
 
     def track_unused_index_props_per_collection_unused_by_search_control(
         self,
@@ -67,18 +72,16 @@ class ProgressTracker:
 
         prop_names = " ".join(search_props)
         error_message = (
-            f"`collection_name` [{collection_name}] "
-            f"`search_props`: {prop_names} "
+            f"`collection_name` [{collection_name}] " f"`search_props`: {prop_names} "
         )
         if self.collection_sizes.get(collection_name, 0) == 0:
             eprint(
-                f"`search_control` components not in `index_model` (but ignoring as collection is empty now): " +
-                error_message
+                f"`search_control` components not in `index_model` (but ignoring as collection is empty now): "
+                + error_message
             )
         else:
             raise ValueError(
-                f"`search_control` components not in `index_model`: " +
-                error_message
+                f"`search_control` components not in `index_model`: " + error_message
             )
 
     def report_collection_sizes(
@@ -89,7 +92,9 @@ class ProgressTracker:
                 eprint(f"`collection_name` [{collection_name}] size: {collection_size}")
         for collection_name, collection_size in self.collection_sizes.items():
             if collection_size == 0:
-                eprint(f"`index_model` declares `collection_name` [{collection_name}] but it is empty")
+                eprint(
+                    f"`index_model` declares `collection_name` [{collection_name}] but it is empty"
+                )
 
     def _assert_intermediate_progress(
         self,
@@ -144,7 +149,10 @@ class ProgressTracker:
         self,
         collection_name: str,
     ):
-        assert self.envelope_per_col_i == self.total_envelope_i - self.base_total_envelope_i
+        assert (
+            self.envelope_per_col_i
+            == self.total_envelope_i - self.base_total_envelope_i
+        )
         self.log_collection_indexing_progress(collection_name)
 
     def track_collection_indexing_increment(

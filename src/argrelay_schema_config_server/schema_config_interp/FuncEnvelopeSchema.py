@@ -29,7 +29,7 @@ class FuncEnvelopeSchema(DataEnvelopeSchema):
         strict = True
 
     envelope_payload = fields.Dict(
-        required = False,
+        required=False,
     )
 
     @validates_schema
@@ -38,16 +38,19 @@ class FuncEnvelopeSchema(DataEnvelopeSchema):
         input_dict: dict,
         **kwargs,
     ):
-        assert input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.class_function.name
+        assert (
+            input_dict.get(ReservedPropName.envelope_class.name, None)
+            == ReservedEnvelopeClass.class_function.name
+        )
         function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
 
 
 func_id_some_func_ = "func_id_some_func"
 
 func_envelope_desc = TypeDesc(
-    dict_schema = DataEnvelopeSchema(),
-    ref_name = DataEnvelopeSchema.__name__,
-    dict_example = {
+    dict_schema=DataEnvelopeSchema(),
+    ref_name=DataEnvelopeSchema.__name__,
+    dict_example={
         # TODO: Do we need to duplicate `envelope_id_` and `ReservedPropName.func_id.name`?
         envelope_id_: func_id_some_func_,
         instance_data_: function_envelope_instance_data_desc.dict_example,
@@ -60,5 +63,5 @@ func_envelope_desc = TypeDesc(
         ReservedPropName.func_state.name: FuncState.fs_demo.name,
         ReservedPropName.func_id.name: func_id_some_func_,
     },
-    default_file_path = "",
+    default_file_path="",
 )

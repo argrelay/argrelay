@@ -1,6 +1,4 @@
 
-
-
 Download Mongo DB and Mongo Shell from: https://www.mongodb.com/try/download/community
 *   `mongodb-linux-x86_64-rhel80-6.0.3.tgz`
 *   `mongosh-1.6.1-linux-x64.tgz`

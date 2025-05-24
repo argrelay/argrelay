@@ -39,17 +39,17 @@ class SearchControlSchema(ObjectSchema):
     model_class = SearchControl
 
     collection_name = fields.String(
-        required = True,
+        required=True,
     )
 
     # Specifies:
     # *   FS_46_96_59_05 `init_control`: what `prop_value` should be set for `prop_name`.
     props_to_values_dict = fields.Dict(
         # `prop_name`:
-        keys = fields.String(),
+        keys=fields.String(),
         # `prop_value`:
-        values = fields.String(),
-        required = True,
+        values=fields.String(),
+        required=True,
     )
 
     # Specifies:
@@ -61,12 +61,12 @@ class SearchControlSchema(ObjectSchema):
     arg_name_to_prop_name_map = fields.List(
         fields.Dict(
             # `arg_name`:
-            keys = fields.String(),
+            keys=fields.String(),
             # `prop_name`:
-            values = fields.String(),
-            required = True,
+            values=fields.String(),
+            required=True,
         ),
-        required = True,
+        required=True,
     )
 
     @validates_schema
@@ -82,9 +82,9 @@ class SearchControlSchema(ObjectSchema):
 
 
 search_control_desc = TypeDesc(
-    dict_schema = SearchControlSchema(),
-    ref_name = SearchControlSchema.__name__,
-    dict_example = {
+    dict_schema=SearchControlSchema(),
+    ref_name=SearchControlSchema.__name__,
+    dict_example={
         collection_name_: ReservedEnvelopeClass.class_function.name,
         props_to_values_dict_: {
             "prop_name_a": "prop_value_a",
@@ -99,7 +99,7 @@ search_control_desc = TypeDesc(
             },
         ],
     },
-    default_file_path = "",
+    default_file_path="",
 )
 
 

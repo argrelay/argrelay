@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    envelope_payload_,
+)
 from offline_tests.mongo_query.MongoClientTestClass import (
     MongoClientTestClass,
     object_name_,
@@ -56,12 +58,14 @@ class ThisTestClass(MongoClientTestClass):
             ServicePropName.code_maturity.name: "prod",
         }
 
-        self.col_proxy.insert_many([
-            envelope_001,
-            envelope_002,
-            envelope_003,
-            envelope_004,
-        ])
+        self.col_proxy.insert_many(
+            [
+                envelope_001,
+                envelope_002,
+                envelope_003,
+                envelope_004,
+            ]
+        )
 
         self.index_props(self.col_proxy, index_props)
 

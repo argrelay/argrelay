@@ -1,4 +1,6 @@
-from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
+from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import (
+    DelegatorSingleFuncAbstract,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
@@ -28,8 +30,8 @@ class DelegatorError(DelegatorSingleFuncAbstract):
         ]
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = delegator_plugin_entry,
-            custom_plugin_data = {},
+            delegator_plugin_entry=delegator_plugin_entry,
+            custom_plugin_data={},
         )
         return invocation_input
 

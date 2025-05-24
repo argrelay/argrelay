@@ -3,7 +3,9 @@ from copy import deepcopy
 from typing import Type
 
 from argrelay_lib_root.enum_desc.PluginType import PluginType
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import PluginEntry
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import (
+    PluginEntry,
+)
 
 
 class AbstractPlugin:

@@ -91,8 +91,8 @@ but there are `argrelay`-specific differences
 *   `command_arg`-s is a higher-level (composite) concept
 
 See also:
-*  `command_arg`
-*  `token_bucket`
+*   `command_arg`
+*   `token_bucket`
 
 ### `cpos`
 
@@ -141,7 +141,7 @@ A wrapper providing data for a MongoDB collection:
 *   set of `data_envelope`-s
 
 See also:
-*    FS_56_43_05_79 search in different collections
+*   FS_56_43_05_79 search in different collections
 *   `EnvelopeCollection`
 
 ### `envelope_payload`

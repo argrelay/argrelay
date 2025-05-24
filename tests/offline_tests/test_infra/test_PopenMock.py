@@ -29,10 +29,13 @@ class ThisTestClass(BaseTestClass):
                 },
                 lambda: subprocess.run(
                     ["true"],
-                    capture_output = True,
+                    capture_output=True,
                 ),
                 (
-                    ["true"], 0, b"", b"",
+                    ["true"],
+                    0,
+                    b"",
+                    b"",
                 ),
                 "Execute (basic) real external command successfully",
             ),
@@ -43,22 +46,29 @@ class ThisTestClass(BaseTestClass):
                 },
                 lambda: subprocess.run(
                     ["false"],
-                    capture_output = True,
+                    capture_output=True,
                 ),
                 (
-                    ["false"], 1, b"", b"",
+                    ["false"],
+                    1,
+                    b"",
+                    b"",
                 ),
                 "Execute (basic) real external command unsuccessfully",
             ),
             (
                 line_no(),
                 {
-                    ("ls",): (0, "some ls stdout", "some ls stderr",),
+                    ("ls",): (
+                        0,
+                        "some ls stdout",
+                        "some ls stderr",
+                    ),
                     ("ls", "-1", "../exe"): None,
                 },
                 lambda: subprocess.run(
                     ["ls", "-1", "../exe"],
-                    capture_output = True,
+                    capture_output=True,
                 ),
                 (
                     ["ls", "-1", "../exe"],
@@ -81,6 +91,7 @@ run_max_tests.bash
 script_plugin.d
 shell_env.bash
 squash_and_push_branch.bash
+update_pre_commit.bash
 upgrade_env_packages.bash
 """,
                     b"",
@@ -90,11 +101,23 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls",): (0, "some ls stdout", "some ls stderr",),
-                    ("ls", "-1", "missing_dir_entry",): None,
+                    ("ls",): (
+                        0,
+                        "some ls stdout",
+                        "some ls stderr",
+                    ),
+                    (
+                        "ls",
+                        "-1",
+                        "missing_dir_entry",
+                    ): None,
                 },
                 lambda: subprocess.run(
-                    ["ls", "-1", "missing_dir_entry", ],
+                    [
+                        "ls",
+                        "-1",
+                        "missing_dir_entry",
+                    ],
                     # Not capturing output (stderr may vary a lot depending on the target machine).
                 ),
                 (
@@ -136,13 +159,20 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls",): (0, "some ls stdout", "some ls stderr",),
+                    ("ls",): (
+                        0,
+                        "some ls stdout",
+                        "some ls stderr",
+                    ),
                 },
                 lambda: subprocess.run(
                     ["ls"],
                 ),
                 (
-                    ["ls"], 0, "some ls stdout", "some ls stderr",
+                    ["ls"],
+                    0,
+                    "some ls stdout",
+                    "some ls stderr",
                 ),
                 None,
                 "Basic call to `subprocess.run(...)` to succeed because of matching CLI.",
@@ -150,7 +180,11 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls",): (0, "some ls stdout", "some ls stderr",),
+                    ("ls",): (
+                        0,
+                        "some ls stdout",
+                        "some ls stderr",
+                    ),
                 },
                 lambda: subprocess.run(
                     ["ls", "-lrt"],
@@ -170,7 +204,7 @@ upgrade_env_packages.bash
                 },
                 lambda: subprocess.Popen(
                     "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data",
-                    shell = True,
+                    shell=True,
                 ),
                 (
                     "~/argrelay.git/tmp/mongo/mongodb-linux-x86_64-rhel80-6.0.3/bin/mongod --dbpath ~/argrelay.git/tmp/mongo/data",
@@ -184,14 +218,33 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls", "-lrt", "1",): (0, "1 stdout", "1 stderr",),
-                    ("ls", "-lrt", "2",): (0, "2 stdout", "2 stderr",),
+                    (
+                        "ls",
+                        "-lrt",
+                        "1",
+                    ): (
+                        0,
+                        "1 stdout",
+                        "1 stderr",
+                    ),
+                    (
+                        "ls",
+                        "-lrt",
+                        "2",
+                    ): (
+                        0,
+                        "2 stdout",
+                        "2 stderr",
+                    ),
                 },
                 lambda: subprocess.run(
                     ["ls", "-lrt", "1"],
                 ),
                 (
-                    ["ls", "-lrt", "1"], 0, "1 stdout", "1 stderr",
+                    ["ls", "-lrt", "1"],
+                    0,
+                    "1 stdout",
+                    "1 stderr",
                 ),
                 None,
                 "Basic call to `subprocess.run(...)` multiple expected input to succeed because of matching CLI 1.",
@@ -199,14 +252,33 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls", "-lrt", "1",): (0, "1 stdout", "1 stderr",),
-                    ("ls", "-lrt", "2",): (0, "2 stdout", "2 stderr",),
+                    (
+                        "ls",
+                        "-lrt",
+                        "1",
+                    ): (
+                        0,
+                        "1 stdout",
+                        "1 stderr",
+                    ),
+                    (
+                        "ls",
+                        "-lrt",
+                        "2",
+                    ): (
+                        0,
+                        "2 stdout",
+                        "2 stderr",
+                    ),
                 },
                 lambda: subprocess.run(
                     ["ls", "-lrt", "2"],
                 ),
                 (
-                    ["ls", "-lrt", "2"], 0, "2 stdout", "2 stderr",
+                    ["ls", "-lrt", "2"],
+                    0,
+                    "2 stdout",
+                    "2 stderr",
                 ),
                 None,
                 "Basic call to `subprocess.run(...)` multiple expected input to succeed because of matching CLI 2.",
@@ -214,8 +286,24 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls", "-lrt", "1",): (0, "1 stdout", "1 stderr",),
-                    ("ls", "-lrt", "2",): (0, "2 stdout", "2 stderr",),
+                    (
+                        "ls",
+                        "-lrt",
+                        "1",
+                    ): (
+                        0,
+                        "1 stdout",
+                        "1 stderr",
+                    ),
+                    (
+                        "ls",
+                        "-lrt",
+                        "2",
+                    ): (
+                        0,
+                        "2 stdout",
+                        "2 stderr",
+                    ),
                 },
                 lambda: subprocess.run(
                     ["ls", "-lrt", "3"],
@@ -267,13 +355,20 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls",): (0, "some ls stdout", "some ls stderr",),
+                    ("ls",): (
+                        0,
+                        "some ls stdout",
+                        "some ls stderr",
+                    ),
                 },
                 lambda: subprocess.call(
                     ["ls"],
                 ),
                 (
-                    ["ls"], 0, "some ls stdout", "some ls stderr",
+                    ["ls"],
+                    0,
+                    "some ls stdout",
+                    "some ls stderr",
                 ),
                 None,
                 "Basic call to `subprocess.call(...)` to succeed because of matching CLI: 0 exit code.",
@@ -281,13 +376,20 @@ upgrade_env_packages.bash
             (
                 line_no(),
                 {
-                    ("ls",): (1, "some ls stdout", "some ls stderr",),
+                    ("ls",): (
+                        1,
+                        "some ls stdout",
+                        "some ls stderr",
+                    ),
                 },
                 lambda: subprocess.call(
                     ["ls"],
                 ),
                 (
-                    ["ls"], 1, "some ls stdout", "some ls stderr",
+                    ["ls"],
+                    1,
+                    "some ls stdout",
+                    "some ls stderr",
                 ),
                 None,
                 "Basic call to `subprocess.call(...)` to succeed because of matching CLI: 1 exit code.",
@@ -327,7 +429,11 @@ upgrade_env_packages.bash
     def test_PopenMock_via_check_call_with_0_exit_code(self):
 
         expected_args_to_output = {
-            ("ls",): (0, "some ls stdout", "some ls stderr",),
+            ("ls",): (
+                0,
+                "some ls stdout",
+                "some ls stderr",
+            ),
         }
 
         with mock_subprocess_popen(expected_args_to_output) as popen_mock:
@@ -341,7 +447,11 @@ upgrade_env_packages.bash
     def test_PopenMock_via_check_call_with_1_exit_code(self):
 
         expected_args_to_output = {
-            ("ls",): (1, "some ls stdout", "some ls stderr",),
+            ("ls",): (
+                1,
+                "some ls stdout",
+                "some ls stderr",
+            ),
         }
 
         with mock_subprocess_popen(expected_args_to_output) as popen_mock:

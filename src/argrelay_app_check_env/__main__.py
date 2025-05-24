@@ -6,8 +6,12 @@ import os
 import sys
 
 from argrelay_api_plugin_check_env_abstract.CheckEnvResult import CheckEnvResult
-from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import PluginCheckEnvAbstract
-from argrelay_api_plugin_client_abstract.PluginClientAbstract import instantiate_client_plugin
+from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import (
+    PluginCheckEnvAbstract,
+)
+from argrelay_api_plugin_client_abstract.PluginClientAbstract import (
+    instantiate_client_plugin,
+)
 from argrelay_app_client.relay_client.client_utils import handle_main_exception
 from argrelay_lib_root import misc_helper_common
 from argrelay_lib_root.enum_desc.OutputCategory import OutputCategory
@@ -15,11 +19,15 @@ from argrelay_lib_root.enum_desc.PluginSide import PluginSide
 from argrelay_lib_root.enum_desc.PluginType import PluginType
 from argrelay_lib_root.enum_desc.ResultCategory import ResultCategory
 from argrelay_lib_root.enum_desc.TermColor import TermColor
-from argrelay_schema_config_check_env.runtime_data_check_env_app.CheckEnvPluginConfig import CheckEnvPluginConfig
+from argrelay_schema_config_check_env.runtime_data_check_env_app.CheckEnvPluginConfig import (
+    CheckEnvPluginConfig,
+)
 from argrelay_schema_config_check_env.schema_config_check_env_app.CheckEnvPluginConfigSchema import (
     check_env_plugin_config_desc,
 )
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import PluginEntry
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import (
+    PluginEntry,
+)
 
 # Standard color scheme has to be synced with `@/exe/check_env.bash`:
 success_color = f"{TermColor.back_dark_green.value}{TermColor.fore_dark_black.value}"
@@ -67,20 +75,23 @@ def check_env_logic():
     else:
         online_mode = None
 
-    plugin_config: CheckEnvPluginConfig = check_env_plugin_config_desc.obj_from_default_file()
+    plugin_config: CheckEnvPluginConfig = (
+        check_env_plugin_config_desc.obj_from_default_file()
+    )
 
     total_success: bool = True
 
     for plugin_instance_id in plugin_config.check_env_plugin_instance_id_activate_list:
-        plugin_entry: PluginEntry = plugin_config.check_env_plugin_instances[plugin_instance_id]
+        plugin_entry: PluginEntry = plugin_config.check_env_plugin_instances[
+            plugin_instance_id
+        ]
 
         if not plugin_entry.plugin_enabled:
             continue
 
         if (
             plugin_entry.plugin_side != PluginSide.PluginClientSideOnly
-            and
-            plugin_entry.plugin_side != PluginSide.PluginAnySide
+            and plugin_entry.plugin_side != PluginSide.PluginAnySide
         ):
             continue
 
@@ -105,6 +116,7 @@ def check_env_logic():
 
     if not total_success:
         from argrelay_lib_root.enum_desc.ClientExitCode import ClientExitCode
+
         exit(ClientExitCode.GeneralError.value)
 
 
@@ -114,8 +126,7 @@ def print_output_line(
 ):
     if (
         check_env_result.result_category is ResultCategory.ExecutionFailure
-        or
-        check_env_result.result_category is ResultCategory.VerificationFailure
+        or check_env_result.result_category is ResultCategory.VerificationFailure
     ):
         output_category = OutputCategory.is_failure
     elif check_env_result.result_category is ResultCategory.ServerOffline:
@@ -141,17 +152,17 @@ def print_output_line(
     else:
         level_color = success_color
         level_name = "INFO"
-    print(f"{level_color}{level_name}:{reset_style}", end = " ")
+    print(f"{level_color}{level_name}:{reset_style}", end=" ")
 
     # Print field:
     if check_env_result.result_key is not None:
-        print(f"{field_color}{check_env_result.result_key}:{reset_style}", end = " ")
+        print(f"{field_color}{check_env_result.result_key}:{reset_style}", end=" ")
     else:
         pass
 
     # Print value:
     if check_env_result.result_value is not None:
-        print(f"{check_env_result.result_value}", end = " ")
+        print(f"{check_env_result.result_value}", end=" ")
     else:
         pass
 
@@ -165,7 +176,9 @@ def print_output_line(
             message_color = warning_message
         else:
             message_color = success_message
-        print(f"{message_color}# {check_env_result.result_message}{reset_style}", end = " ")
+        print(
+            f"{message_color}# {check_env_result.result_message}{reset_style}", end=" "
+        )
     else:
         pass
 

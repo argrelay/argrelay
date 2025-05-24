@@ -2,16 +2,22 @@ from __future__ import annotations
 
 import subprocess
 
-from argrelay_api_plugin_server_abstract.DelegatorAbstract import get_func_id_from_invocation_input
+from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
+    get_func_id_from_invocation_input,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_lib_root.misc_helper_common import eprint
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigBase import DelegatorConfigBase
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigBase import (
+    DelegatorConfigBase,
+)
 from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import (
     command_template_,
     config_only_delegator_config_desc,
     echo_command_on_stderr_,
 )
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
 )
@@ -64,6 +70,6 @@ class DelegatorConfigOnly(DelegatorConfigBase):
 
         sub_proc = subprocess.run(
             command_line,
-            shell = True,
+            shell=True,
         )
         exit(sub_proc.returncode)

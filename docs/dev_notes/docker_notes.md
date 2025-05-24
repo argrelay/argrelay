@@ -39,4 +39,3 @@ To play with creating of image manually starting from the base one, run:
 ```sh
 docker run --name=argrelay -ti fedora
 ```
-

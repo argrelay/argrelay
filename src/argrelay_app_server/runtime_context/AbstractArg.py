@@ -27,9 +27,7 @@ class ArgCommandValue(ArgCommand):
     Represents any `command_arg` with `arg_value`.
     """
 
-    def get_arg_value(
-        self
-    ) -> str:
+    def get_arg_value(self) -> str:
         raise NotImplementedError
 
 
@@ -38,9 +36,7 @@ class ArgCommandName(ArgCommand):
     Represents any `command_arg` with `arg_name`.
     """
 
-    def get_arg_name(
-        self
-    ) -> str:
+    def get_arg_name(self) -> str:
         raise NotImplementedError
 
 

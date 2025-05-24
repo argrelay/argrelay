@@ -5,8 +5,12 @@ from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
@@ -54,9 +58,13 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.class_host.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
                         ServicePropName.geo_region.name: None,
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.explicit_offered_arg),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.explicit_offered_arg
+                        ),
                         ServicePropName.cluster_name.name: None,
                         ServicePropName.host_name.name: None,
                     },
@@ -97,9 +105,15 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.class_host.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("amer", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "amer", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.explicit_offered_arg
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-amer-downstream",
                             ValueSource.implicit_value,
@@ -135,9 +149,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("amer", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "amer", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.explicit_offered_arg
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-amer-downstream",
                             ValueSource.implicit_value,
@@ -173,9 +193,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("amer", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "amer", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.explicit_offered_arg
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-amer-downstream",
                             ValueSource.implicit_value,
@@ -211,14 +237,22 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("amer", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "amer", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.explicit_offered_arg
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-amer-downstream",
                             ValueSource.implicit_value,
                         ),
-                        ServicePropName.host_name.name: AssignedValue("amer", ValueSource.explicit_offered_arg),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "amer", ValueSource.explicit_offered_arg
+                        ),
                     },
                     2: {
                         # ServiceEnvelopeClass.class_access_type.name

@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-from argrelay_api_plugin_server_abstract.DelegatorAbstract import get_func_id_from_invocation_input
+from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
+    get_func_id_from_invocation_input,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_lib_root.enum_desc.FuncState import FuncState
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
-from argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoBase import DelegatorGitRepoBase
-from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoBase import (
+    DelegatorGitRepoBase,
+)
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import (
+    GitRepoEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoPropName import GitRepoPropName
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
@@ -16,7 +22,9 @@ from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstance
     func_id_,
     search_control_list_,
 )
-from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import populate_search_control
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
+    populate_search_control,
+)
 
 func_id_desc_git_tag_ = "func_id_desc_git_tag"
 
@@ -39,15 +47,12 @@ class DelegatorGitRepoDescTag(DelegatorGitRepoBase):
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                 {"class": ReservedPropName.envelope_class.name},
-
                 {"category": GitRepoPropName.git_repo_object_category.name},
-
                 {"alias": GitRepoPropName.git_repo_alias.name},
                 {"content": GitRepoPropName.git_repo_content_type.name},
                 {"name": GitRepoPropName.git_repo_root_base_name.name},
                 {"path": GitRepoPropName.git_repo_root_rel_path.name},
                 {"base": GitRepoPropName.git_repo_root_abs_path.name},
-
                 {"date": GitRepoPropName.git_repo_commit_date.name},
                 {"tag": GitRepoPropName.git_repo_tag_name.name},
                 {"time": GitRepoPropName.git_repo_commit_time.name},
@@ -78,5 +83,7 @@ class DelegatorGitRepoDescTag(DelegatorGitRepoBase):
     def invoke_action(
         invocation_input: InvocationInput,
     ) -> None:
-        assert get_func_id_from_invocation_input(invocation_input) == func_id_desc_git_tag_
+        assert (
+            get_func_id_from_invocation_input(invocation_input) == func_id_desc_git_tag_
+        )
         raise RuntimeError("ERROR: not implemented for demo")

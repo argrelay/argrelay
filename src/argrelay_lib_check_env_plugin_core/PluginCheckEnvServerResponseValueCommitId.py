@@ -16,7 +16,9 @@ from argrelay_lib_server_plugin_demo.demo_git.git_utils import (
 _commit_id_display_length = 8
 
 
-class PluginCheckEnvServerResponseValueCommitId(PluginCheckEnvServerResponseValueAbstract):
+class PluginCheckEnvServerResponseValueCommitId(
+    PluginCheckEnvServerResponseValueAbstract
+):
 
     def __init__(
         self,
@@ -25,7 +27,8 @@ class PluginCheckEnvServerResponseValueCommitId(PluginCheckEnvServerResponseValu
     ):
         super().__init__(
             plugin_instance_id,
-            plugin_config_dict = plugin_config_dict or {
+            plugin_config_dict=plugin_config_dict
+            or {
                 field_values_to_command_lines_: {
                     CheckEnvField.server_git_commit_id.name: "argrelay.check_env server_commit",
                 },
@@ -49,23 +52,23 @@ class PluginCheckEnvServerResponseValueCommitId(PluginCheckEnvServerResponseValu
 
         if client_commit_id is None:
             return CheckEnvResult(
-                result_category = ResultCategory.ExecutionFailure,
-                result_key = field_name,
-                result_value = field_value,
-                result_message = "Failed on getting client commit id",
+                result_category=ResultCategory.ExecutionFailure,
+                result_key=field_name,
+                result_value=field_value,
+                result_message="Failed on getting client commit id",
             )
         else:
             if client_commit_id == field_value:
                 return CheckEnvResult(
-                    result_category = ResultCategory.VerificationSuccess,
-                    result_key = field_name,
-                    result_value = field_value[:_commit_id_display_length],
-                    result_message = f"The runtime server commit id matches client one [{client_commit_id[:_commit_id_display_length]}]",
+                    result_category=ResultCategory.VerificationSuccess,
+                    result_key=field_name,
+                    result_value=field_value[:_commit_id_display_length],
+                    result_message=f"The runtime server commit id matches client one [{client_commit_id[:_commit_id_display_length]}]",
                 )
             else:
                 return CheckEnvResult(
-                    result_category = ResultCategory.VerificationWarning,
-                    result_key = field_name,
-                    result_value = field_value[:_commit_id_display_length],
-                    result_message = f"The runtime server commit id does not match client one [{client_commit_id[:_commit_id_display_length]}]",
+                    result_category=ResultCategory.VerificationWarning,
+                    result_key=field_name,
+                    result_value=field_value[:_commit_id_display_length],
+                    result_message=f"The runtime server commit id does not match client one [{client_commit_id[:_commit_id_display_length]}]",
                 )

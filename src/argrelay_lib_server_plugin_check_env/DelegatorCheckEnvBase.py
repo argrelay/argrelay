@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
+from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import (
+    DelegatorSingleFuncAbstract,
+)
 
 
 class DelegatorCheckEnvBase(DelegatorSingleFuncAbstract):

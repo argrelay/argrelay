@@ -13,7 +13,7 @@ from argrelay_lib_root.enum_desc.TermColor import TermColor
 from argrelay_lib_root.misc_helper_common import eprint
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class ParsedContext(CallContext):
     """
     Internal immutable parsed view of :class:`InputContext`
@@ -23,24 +23,24 @@ class ParsedContext(CallContext):
     `tan_token_*` = `tangent_token`, see FS_23_62_89_43.
     """
 
-    all_tokens: list[str] = field(init = False)
+    all_tokens: list[str] = field(init=False)
     """
     List of all token values.
 
     This list is where each token ipos (index) refers to.
     """
 
-    prev_token_ipos: int = field(init = False)
+    prev_token_ipos: int = field(init=False)
     """
     Token ipos (index) for the token before the cursor.
     """
 
-    tan_token_ipos: int = field(init = False)
-    tan_token_l_cpos: int = field(init = False)
-    tan_token_r_cpos: int = field(init = False)
-    tan_token_value: str = field(init = False)
-    tan_token_l_part: str = field(init = False)
-    tan_token_r_part: str = field(init = False)
+    tan_token_ipos: int = field(init=False)
+    tan_token_l_cpos: int = field(init=False)
+    tan_token_r_cpos: int = field(init=False)
+    tan_token_value: str = field(init=False)
+    tan_token_l_part: str = field(init=False)
+    tan_token_r_part: str = field(init=False)
 
     def __post_init__(self):
         (
@@ -191,8 +191,8 @@ class ParsedContext(CallContext):
         if not self.is_debug_enabled:
             return
         super().print_debug("")
-        eprint(TermColor.debug_output.value, end = "")
-        eprint(f"tan_token_l_part: \"{self.tan_token_l_part}\"", end = " ")
-        eprint(f"tan_token_r_part: \"{self.tan_token_r_part}\"", end = " ")
-        eprint(f"comp_scope: {self.comp_scope.name}", end = " ")
-        eprint(TermColor.reset_style.value, end = end_str)
+        eprint(TermColor.debug_output.value, end="")
+        eprint(f'tan_token_l_part: "{self.tan_token_l_part}"', end=" ")
+        eprint(f'tan_token_r_part: "{self.tan_token_r_part}"', end=" ")
+        eprint(f"comp_scope: {self.comp_scope.name}", end=" ")
+        eprint(TermColor.reset_style.value, end=end_str)

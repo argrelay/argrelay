@@ -1,4 +1,6 @@
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import mongo_id_
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    mongo_id_,
+)
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass
 
 
@@ -109,22 +111,24 @@ class ThisTestClass(MongoClientTestClass):
             "price": 25,
         }
 
-        self.col_proxy.insert_many([
-            envelope_1,
-            envelope_2,
-            envelope_3,
-            envelope_4,
-            envelope_5,
-            envelope_6,
-            envelope_7,
-            envelope_8,
-            envelope_9,
-            envelope_10,
-            envelope_11,
-            envelope_12,
-            envelope_13,
-            envelope_14,
-        ])
+        self.col_proxy.insert_many(
+            [
+                envelope_1,
+                envelope_2,
+                envelope_3,
+                envelope_4,
+                envelope_5,
+                envelope_6,
+                envelope_7,
+                envelope_8,
+                envelope_9,
+                envelope_10,
+                envelope_11,
+                envelope_12,
+                envelope_13,
+                envelope_14,
+            ]
+        )
 
         self.col_proxy.create_index("category")
 

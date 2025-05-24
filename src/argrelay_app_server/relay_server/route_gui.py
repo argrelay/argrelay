@@ -10,7 +10,9 @@ from argrelay_api_server_cli.server_spec.const_int import (
     API_SPEC_PATH,
     ARGRELAY_GUI_PATH,
 )
-from argrelay_schema_config_server.runtime_data_server_app.GuiBannerConfig import GuiBannerConfig
+from argrelay_schema_config_server.runtime_data_server_app.GuiBannerConfig import (
+    GuiBannerConfig,
+)
 
 
 def create_blueprint_gui(
@@ -32,8 +34,8 @@ def create_blueprint_gui(
         default_gui_command = default_gui_command.strip()
 
     blueprint_gui = Blueprint(
-        name = "blueprint_gui",
-        import_name = __name__,
+        name="blueprint_gui",
+        import_name=__name__,
     )
 
     @blueprint_gui.route(f"{ARGRELAY_GUI_PATH}")
@@ -47,22 +49,22 @@ def create_blueprint_gui(
             command_line += " "
         return render_template(
             "argrelay_main.html",
-            project_title = project_title,
-            project_page_url = project_page_url,
-            argrelay_version = argrelay_version,
-            argrelay_api_docs_path = API_DOCS_PATH,
-            argrelay_api_spec_path = API_SPEC_PATH,
-            server_start_time = unix_time_to_iso_utc(server_start_time),
-            project_git_commit_time = unix_time_to_iso_utc(project_git_commit_time),
-            project_git_commit_url = project_git_commit_url,
-            project_git_commit_display_string = project_git_commit_display_string,
-            project_git_conf_dir_url = project_git_conf_dir_url,
-            project_git_conf_dir_display_string = project_git_conf_dir_display_string,
-            meter_html = gui_banner_config.meter_html,
-            tagline_html = gui_banner_config.tagline_html,
-            header_html = gui_banner_config.header_html,
-            footer_html = gui_banner_config.footer_html,
-            command_line = command_line,
+            project_title=project_title,
+            project_page_url=project_page_url,
+            argrelay_version=argrelay_version,
+            argrelay_api_docs_path=API_DOCS_PATH,
+            argrelay_api_spec_path=API_SPEC_PATH,
+            server_start_time=unix_time_to_iso_utc(server_start_time),
+            project_git_commit_time=unix_time_to_iso_utc(project_git_commit_time),
+            project_git_commit_url=project_git_commit_url,
+            project_git_commit_display_string=project_git_commit_display_string,
+            project_git_conf_dir_url=project_git_conf_dir_url,
+            project_git_conf_dir_display_string=project_git_conf_dir_display_string,
+            meter_html=gui_banner_config.meter_html,
+            tagline_html=gui_banner_config.tagline_html,
+            header_html=gui_banner_config.header_html,
+            footer_html=gui_banner_config.footer_html,
+            command_line=command_line,
         )
 
     return blueprint_gui

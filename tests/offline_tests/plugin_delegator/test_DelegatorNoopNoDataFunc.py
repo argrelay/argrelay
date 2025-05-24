@@ -1,8 +1,12 @@
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopNoDataFunc import DelegatorNoopNoDataFunc
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopNoDataFunc import (
+    DelegatorNoopNoDataFunc,
+)
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
 from argrelay_test_infra.test_infra import (
     assert_test_module_name_embeds_prod_class_name,
     line_no,
@@ -27,8 +31,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 "some_command no_data |",
                 CompType.PrefixShown,
-                [
-                ],
+                [],
                 None,
                 None,
                 "Func `no_data` suggests nothing.",
@@ -49,8 +52,7 @@ class ThisTestClass(LocalTestClass):
                             ValueSource.explicit_offered_arg,
                         ),
                     },
-                    1: {
-                    },
+                    1: {},
                     2: None,
                 },
                 None,

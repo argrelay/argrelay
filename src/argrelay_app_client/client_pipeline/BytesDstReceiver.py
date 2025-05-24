@@ -1,4 +1,6 @@
-from argrelay_app_client.client_pipeline.BytesHandlerAbstract import BytesHandlerAbstract
+from argrelay_app_client.client_pipeline.BytesHandlerAbstract import (
+    BytesHandlerAbstract,
+)
 from argrelay_app_client.relay_client.proc_spinner import child_data_chunks
 from argrelay_app_client.relay_client.proc_splitter import (
     get_child_exit_code,
@@ -13,8 +15,7 @@ class BytesDstReceiver:
         self,
         bytes_handler: BytesHandlerAbstract,
     ):
-        super().__init__(
-        )
+        super().__init__()
         self.bytes_handler = bytes_handler
 
     def receive_bytes(
@@ -24,7 +25,9 @@ class BytesDstReceiver:
             self.handle_bytes(b"".join(child_data_chunks))
         else:
             client_exit_code = ClientExitCode(get_child_exit_code())
-            exc_message = f"child exit_code: {client_exit_code} = {client_exit_code.name}"
+            exc_message = (
+                f"child exit_code: {client_exit_code} = {client_exit_code.name}"
+            )
             if client_exit_code is ClientExitCode.ConnectionError:
                 raise ConnectionError(exc_message)
             else:

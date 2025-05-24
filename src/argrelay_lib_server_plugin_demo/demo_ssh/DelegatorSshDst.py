@@ -11,7 +11,9 @@ from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
     get_func_id_from_interp_ctx,
     get_func_id_from_invocation_input,
 )
-from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
+from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import (
+    DelegatorSingleFuncAbstract,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
@@ -20,7 +22,9 @@ from argrelay_lib_root.enum_desc.FuncState import FuncState
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.misc_helper_common import eprint
-from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import prohibit_unconsumed_args
+from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import (
+    prohibit_unconsumed_args,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
@@ -30,7 +34,9 @@ from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstance
     func_id_,
     search_control_list_,
 )
-from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import populate_search_control
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
+    populate_search_control,
+)
 
 func_id_ssh_dst_ = "func_id_ssh_dst"
 
@@ -64,11 +70,11 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
                     delegator_plugin_instance_id_: self.plugin_instance_id,
                     search_control_list_: [
                         populate_search_control(
-                            collection_name = class_ssh_dst_,
-                            props_to_values_dict = {
+                            collection_name=class_ssh_dst_,
+                            props_to_values_dict={
                                 ReservedPropName.envelope_class.name: class_ssh_dst_,
                             },
-                            arg_name_to_prop_name_map = [
+                            arg_name_to_prop_name_map=[
                                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                                 {"class": ReservedPropName.envelope_class.name},
                                 # ---
@@ -114,9 +120,7 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
         # Search `data_envelope`-s based on existing args on command line:
         vararg_container = interp_ctx.envelope_containers[ssh_dst_container_ipos_]
         vararg_container.data_envelopes = (
-            local_server
-            .get_query_engine()
-            .query_data_envelopes_for(vararg_container)
+            local_server.get_query_engine().query_data_envelopes_for(vararg_container)
         )
 
         # Plugin to invoke on client side:
@@ -124,10 +128,10 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
         # Package into `InvocationInput` payload object:
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
+            delegator_plugin_entry=local_server.plugin_config.server_plugin_instances[
                 delegator_plugin_instance_id
             ],
-            custom_plugin_data = {},
+            custom_plugin_data={},
         )
         return invocation_input
 
@@ -140,7 +144,9 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
 
         prohibit_unconsumed_args(invocation_input)
 
-        ssh_dst_data_envelopes = invocation_input.envelope_containers[ssh_dst_container_ipos_].data_envelopes
+        ssh_dst_data_envelopes = invocation_input.envelope_containers[
+            ssh_dst_container_ipos_
+        ].data_envelopes
 
         if len(ssh_dst_data_envelopes) > 1:
             for ssh_dst_data_envelope in ssh_dst_data_envelopes:
@@ -154,7 +160,9 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
             exit(ClientExitCode.GeneralError.value)
 
         elif len(ssh_dst_data_envelopes) == 0:
-            eprint("ERROR: `ssh` destination not found based on given command line input.")
+            eprint(
+                "ERROR: `ssh` destination not found based on given command line input."
+            )
             exit(ClientExitCode.GeneralError.value)
 
         else:
@@ -167,7 +175,7 @@ def _data_envelope_to_str(
 ) -> str:
     return json.dumps(
         data_envelope,
-        indent = 4,
+        indent=4,
     )
 
 
@@ -192,7 +200,7 @@ def _run_ssh(
             "ssh",
             "-t",
             f"{user_name}@{host_name}",
-            f"cd \"{dir_path}\" ; bash --login",
+            f'cd "{dir_path}" ; bash --login',
         ],
     )
     exit_code = sub_proc.returncode

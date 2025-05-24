@@ -3,13 +3,19 @@ from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import DelegatorError
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import (
+    DelegatorError,
+)
 from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
     func_envelope_path_step_prop_name,
     tree_step_arg_name_prefix_,
 )
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceGoto import DelegatorServiceInstanceGoto
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceGoto import (
+    DelegatorServiceInstanceGoto,
+)
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_test_infra.test_infra import (
     assert_test_func_name_embeds_prod_class_name,
@@ -58,7 +64,9 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "some_command -|", comp_type,
+                line_no(),
+                "some_command -|",
+                comp_type,
                 [
                     "-id",
                     "-state",
@@ -69,13 +77,18 @@ class ThisTestClass(LocalTestClass):
                 # Only `CompType.InvokeAction` fails (because function is not selected):
                 DelegatorError if comp_type == CompType.InvokeAction else None,
                 "FS_20_88_05_60 CASE_A: dictated_args: suggest (remaining) list of `dictated_arg`-s for func search",
-            ) for comp_type in CompType if comp_type not in [
+            )
+            for comp_type in CompType
+            if comp_type
+            not in [
                 # `SubsequentHelp` list full list of `arg_name`-s:
                 CompType.SubsequentHelp
             ]
         ] + [
             (
-                line_no(), "some_command -|", CompType.SubsequentHelp,
+                line_no(),
+                "some_command -|",
+                CompType.SubsequentHelp,
                 [
                     "-class",
                     "-id",
@@ -102,16 +115,18 @@ class ThisTestClass(LocalTestClass):
                 ) = test_case
 
                 self.verify_output_via_local_client(
-                    test_data = self.__class__.same_test_data_per_class,
-                    test_line = test_line,
-                    comp_type = comp_type,
-                    expected_suggestions = expected_suggestions,
-                    container_ipos_to_expected_assignments = None,
-                    container_ipos_to_options_hidden_by_default_value = None,
-                    delegator_class = delegator_class,
-                    envelope_ipos_to_prop_values = None,
-                    expected_container_ipos_to_used_token_bucket = None,
-                    init_env_mock_builder = LocalClientEnvMockBuilder().set_reset_local_server(False),
+                    test_data=self.__class__.same_test_data_per_class,
+                    test_line=test_line,
+                    comp_type=comp_type,
+                    expected_suggestions=expected_suggestions,
+                    container_ipos_to_expected_assignments=None,
+                    container_ipos_to_options_hidden_by_default_value=None,
+                    delegator_class=delegator_class,
+                    envelope_ipos_to_prop_values=None,
+                    expected_container_ipos_to_used_token_bucket=None,
+                    init_env_mock_builder=LocalClientEnvMockBuilder().set_reset_local_server(
+                        False
+                    ),
                 )
 
     def test_consumption_and_suggestion_of_dictated_args(self):
@@ -124,8 +139,7 @@ class ThisTestClass(LocalTestClass):
                 line_no(),
                 "some_command goto service -ip ip.172.16.1.2 |",
                 CompType.InvokeAction,
-                [
-                ],
+                [],
                 {
                     0: {
                         # TODO: Use `explicit_offered_arg` for the first arg instead of `init_value`:
@@ -184,15 +198,13 @@ class ThisTestClass(LocalTestClass):
                     3: 0,
                 },
                 "CASE_A: (with empty tangent token) Consume FS_20_88_05_60 `dictated_arg` with `arg_name` `ip` and `arg_value` `ip.172.16.1.2` - "
-                "this singles out service (there is only one for that `ip`)."
+                "this singles out service (there is only one for that `ip`).",
             ),
             (
                 line_no(),
                 "some_command goto service -ip ip.172.16.1.2|",
                 CompType.InvokeAction,
-                [
-
-                ],
+                [],
                 {
                     0: {
                         # TODO: Use `explicit_offered_arg` for the first arg instead of `init_value`:
@@ -227,8 +239,8 @@ class ThisTestClass(LocalTestClass):
                     },
                     3: None,
                 },
-                    # As of now, `DelegatorServiceInstanceGoto` redirects all
-                    # invocations to `DelegatorError` unconditionally:
+                # As of now, `DelegatorServiceInstanceGoto` redirects all
+                # invocations to `DelegatorError` unconditionally:
                 DelegatorServiceInstanceGoto if False else DelegatorError,
                 {
                     0: {
@@ -251,7 +263,7 @@ class ThisTestClass(LocalTestClass):
                     3: 0,
                 },
                 "CASE_B: (with non-empty tangent token) Consume FS_20_88_05_60 `dictated_arg` with `arg_name` `ip` and `arg_value` `ip.172.16.1.2` - "
-                "this singles out service (there is only one for that `ip`)."
+                "this singles out service (there is only one for that `ip`).",
             ),
             (
                 line_no(),
@@ -297,8 +309,7 @@ class ThisTestClass(LocalTestClass):
                             ValueSource.init_value,
                         ),
                     },
-                    2: {
-                    },
+                    2: {},
                     3: None,
                 },
                 # As of now, `DelegatorServiceInstanceGoto` redirects all
@@ -322,7 +333,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "(with empty tangent token) Propose for (incomplete) FS_20_88_05_60 `dictated_arg` with "
                 "`arg_name` `ip` and missing `arg_value` - "
-                "this should propose all known `ip_address`-es."
+                "this should propose all known `ip_address`-es.",
             ),
             (
                 line_no(),
@@ -339,7 +350,7 @@ class ThisTestClass(LocalTestClass):
                 DelegatorServiceInstanceGoto if False else DelegatorError,
                 None,
                 None,
-                "(with empty tangent token) Propose for `prop_value`-s from next remaining `prop_name`."
+                "(with empty tangent token) Propose for `prop_value`-s from next remaining `prop_name`.",
             ),
         ]
 
@@ -363,14 +374,16 @@ class ThisTestClass(LocalTestClass):
                 )
 
                 self.verify_output_via_local_client(
-                    test_data = self.__class__.same_test_data_per_class,
-                    test_line = test_line,
-                    comp_type = comp_type,
-                    expected_suggestions = expected_suggestions,
-                    container_ipos_to_expected_assignments = container_ipos_to_expected_assignments,
-                    container_ipos_to_options_hidden_by_default_value = None,
-                    delegator_class = delegator_class,
-                    envelope_ipos_to_prop_values = envelope_ipos_to_prop_values,
-                    expected_container_ipos_to_used_token_bucket = expected_container_ipos_to_used_token_bucket,
-                    init_env_mock_builder = LocalClientEnvMockBuilder().set_reset_local_server(False),
+                    test_data=self.__class__.same_test_data_per_class,
+                    test_line=test_line,
+                    comp_type=comp_type,
+                    expected_suggestions=expected_suggestions,
+                    container_ipos_to_expected_assignments=container_ipos_to_expected_assignments,
+                    container_ipos_to_options_hidden_by_default_value=None,
+                    delegator_class=delegator_class,
+                    envelope_ipos_to_prop_values=envelope_ipos_to_prop_values,
+                    expected_container_ipos_to_used_token_bucket=expected_container_ipos_to_used_token_bucket,
+                    init_env_mock_builder=LocalClientEnvMockBuilder().set_reset_local_server(
+                        False
+                    ),
                 )

@@ -2,6 +2,7 @@
 This doc is supposed to explain idea behind simple multi-word search filter syntax used by `argrelay`.
 
 <a name="argrelay-story"></a>
+
 # Syntax: origin story
 
 When an interface is limited...

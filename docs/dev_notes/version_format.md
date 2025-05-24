@@ -10,7 +10,7 @@ The format is according to PEP440 (which conflicts with `semver` - see below):
 | `dev`        | `X.Y.Z.devN`        | `vX.Y.Z.devN`  |
 | `final`      | `X.Y.Z`             | `vX.Y.Z.final` |
 
-#  `final`-release
+# `final`-release
 
 A `final`-release version `X.Y.Z` in Python (as in `setup.py`) follows `semver` spec.
 

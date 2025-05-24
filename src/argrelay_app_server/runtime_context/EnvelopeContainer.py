@@ -19,12 +19,12 @@ class EnvelopeContainer:
     See also :class:`EnvelopeContainerSchema`.
     """
 
-    search_control: SearchControl = field(default_factory = lambda: SearchControl())
+    search_control: SearchControl = field(default_factory=lambda: SearchControl())
     """
     A specs how to query `data_envelope` for this `EnvelopeContainer`.
     """
 
-    data_envelopes: list[dict] = field(default_factory = lambda: [])
+    data_envelopes: list[dict] = field(default_factory=lambda: [])
     """
     These `data_envelope`-s are based on `search_control` for this `EnvelopeContainer` (and command line input).
 
@@ -37,26 +37,30 @@ class EnvelopeContainer:
     See `QueryResult.data_envelopes`.
     """
 
-    found_count: int = field(default = 0)
+    found_count: int = field(default=0)
     """
     Counter of `data_envelope`-s found in the last query.
     """
 
-    used_token_bucket: Union[int, None] = field(default = None)
+    used_token_bucket: Union[int, None] = field(default=None)
     """
     FS_97_64_39_94 `token_bucket` (index) where args were consumed from for the current `envelope_container`.
     """
 
     # TODO: TODO_55_51_89_92: review and update `args_context`
     # TODO: Part of (or actually is?) `args_context`: FS_62_25_92_06:
-    assigned_prop_name_to_prop_value: dict[str, AssignedValue] = field(default_factory = lambda: {})
+    assigned_prop_name_to_prop_value: dict[str, AssignedValue] = field(
+        default_factory=lambda: {}
+    )
     """
     All assigned args (from interpreted tokens) mapped as type:value which belong to `data_envelope`.
     """
 
     # TODO: TODO_55_51_89_92: review and update `args_context`
     # TODO: Part of (or not?) `args_context` (FS_62_25_92_06) to support FS_13_51_07_97 (single out implicit values):
-    remaining_prop_name_to_prop_value: dict[str, list[str]] = field(default_factory = lambda: {})
+    remaining_prop_name_to_prop_value: dict[str, list[str]] = field(
+        default_factory=lambda: {}
+    )
     """
     All `prop_value`-s per `prop_name` left as options to match `arg_value` given on the command line.
 
@@ -64,7 +68,9 @@ class EnvelopeContainer:
     this `prop_name` moves to `assigned_prop_name_to_prop_value`.
     """
 
-    filled_prop_values_hidden_by_defaults: dict[str, list[str]] = field(default_factory = lambda: {})
+    filled_prop_values_hidden_by_defaults: dict[str, list[str]] = field(
+        default_factory=lambda: {}
+    )
     """
     FS_72_53_55_13: values hidden by defaults:
     This dict stores values which were hidden by applying defaults (see FS_72_40_53_00 fill control).
@@ -102,10 +108,12 @@ class EnvelopeContainer:
 
                     if len(prop_values) == 1:
                         del self.remaining_prop_name_to_prop_value[prop_name]
-                        self.assigned_prop_name_to_prop_value[prop_name] = AssignedValue(
-                            # single value:
-                            prop_values[0],
-                            ValueSource.implicit_value,
+                        self.assigned_prop_name_to_prop_value[prop_name] = (
+                            AssignedValue(
+                                # single value:
+                                prop_values[0],
+                                ValueSource.implicit_value,
+                            )
                         )
                         any_assigned = True
         return any_assigned

@@ -6,7 +6,9 @@ from datetime import datetime
 from typing import Union
 
 from argrelay_api_plugin_check_env_abstract.CheckEnvResult import CheckEnvResult
-from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import PluginCheckEnvAbstract
+from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import (
+    PluginCheckEnvAbstract,
+)
 from argrelay_lib_check_env_plugin_core.check_env_utils import format_time_to_relative
 from argrelay_lib_root.enum_desc.ResultCategory import ResultCategory
 
@@ -39,12 +41,14 @@ class PluginCheckEnvDevShell(PluginCheckEnvAbstract):
                 )
                 result_message = f"~ {rel_time}: the env var is set => inside `@/exe/dev_shell.bash`."
 
-        return [CheckEnvResult(
-            result_category = ResultCategory.VerificationSuccess,
-            result_key = self.env_var_name,
-            result_value = str(env_var_value),
-            result_message = result_message,
-        )]
+        return [
+            CheckEnvResult(
+                result_category=ResultCategory.VerificationSuccess,
+                result_key=self.env_var_name,
+                result_value=str(env_var_value),
+                result_message=result_message,
+            )
+        ]
 
 
 def convert_iso_str_date_to_ms(

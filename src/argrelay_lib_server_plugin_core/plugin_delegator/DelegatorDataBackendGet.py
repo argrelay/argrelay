@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 
-from argrelay_api_plugin_server_abstract.delegator_utils import redirect_to_not_disambiguated_error
+from argrelay_api_plugin_server_abstract.delegator_utils import (
+    redirect_to_not_disambiguated_error,
+)
 from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
     get_func_id_from_interp_ctx,
     get_func_id_from_invocation_input,
@@ -14,13 +16,15 @@ from argrelay_lib_root.enum_desc.FuncState import FuncState
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
-from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import prohibit_unconsumed_args
+from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import (
+    prohibit_unconsumed_args,
+)
 from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorDataBackendBase import (
     DelegatorDataBackendBase,
     get_collection_search_control,
 )
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
-    instance_data_
+    instance_data_,
 )
 from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
@@ -41,8 +45,7 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
         self,
     ) -> list[dict]:
 
-        collection_search_control = get_collection_search_control(
-        )
+        collection_search_control = get_collection_search_control()
 
         func_envelopes = []
 
@@ -89,9 +92,7 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
         # All what is left to do is to query objects.
         # Search `data_envelope`-s based on existing args on command line:
         vararg_container.data_envelopes = (
-            local_server
-            .get_query_engine()
-            .query_data_envelopes_for(vararg_container)
+            local_server.get_query_engine().query_data_envelopes_for(vararg_container)
         )
 
         # Plugin to invoke on client side:
@@ -99,10 +100,10 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
         # Package into `InvocationInput` payload object:
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
+            delegator_plugin_entry=local_server.plugin_config.server_plugin_instances[
                 delegator_plugin_instance_id
             ],
-            custom_plugin_data = {},
+            custom_plugin_data={},
         )
         return invocation_input
 
@@ -115,5 +116,7 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
 
         prohibit_unconsumed_args(invocation_input)
 
-        for data_envelope in invocation_input.envelope_containers[data_envelope_container_ipos_].data_envelopes:
+        for data_envelope in invocation_input.envelope_containers[
+            data_envelope_container_ipos_
+        ].data_envelopes:
             print(json.dumps(data_envelope))

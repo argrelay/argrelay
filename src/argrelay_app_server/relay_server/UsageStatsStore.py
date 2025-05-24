@@ -2,7 +2,9 @@ import json
 import os
 
 from argrelay_app_server.relay_server.UsageStatsEntry import UsageStatsEntry
-from argrelay_app_server.relay_server.UsageStatsEntrySchema import usage_stats_entry_desc
+from argrelay_app_server.relay_server.UsageStatsEntrySchema import (
+    usage_stats_entry_desc,
+)
 from argrelay_lib_root.enum_desc.TopDir import TopDir
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
 
@@ -21,12 +23,14 @@ class UsageStatsStore:
         )
         os.makedirs(
             store_dir_path,
-            exist_ok = True,
+            exist_ok=True,
         )
-        self.store_file_path: str = str(os.path.join(
-            store_dir_path,
-            "usage_stats",
-        ))
+        self.store_file_path: str = str(
+            os.path.join(
+                store_dir_path,
+                "usage_stats",
+            )
+        )
 
     def store_usage_stats_entry(
         self,

@@ -4,7 +4,9 @@ import contextlib
 from copy import deepcopy
 from typing import Union
 
-from argrelay_app_server.composite_forest.CompositeForestExtractor import extract_interp_tree
+from argrelay_app_server.composite_forest.CompositeForestExtractor import (
+    extract_interp_tree,
+)
 from argrelay_app_server.composite_forest.CompositeInfoType import CompositeInfoType
 from argrelay_app_server.composite_forest.DictTreeWalker import (
     DictTreeWalker,
@@ -24,7 +26,9 @@ from argrelay_lib_server_plugin_core.plugin_interp.AbstractInterpFactory import 
 from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactoryConfigSchema import (
     tree_path_interp_factory_config_desc,
 )
-from argrelay_lib_server_plugin_core.plugin_interp.NoopInterpFactory import NoopInterpFactory
+from argrelay_lib_server_plugin_core.plugin_interp.NoopInterpFactory import (
+    NoopInterpFactory,
+)
 from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
     assert_plugin_instance_id,
     ServerConfig,
@@ -57,7 +61,9 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
         self,
         plugin_config_dict,
     ) -> dict:
-        return tree_path_interp_factory_config_desc.dict_from_input_dict(plugin_config_dict)
+        return tree_path_interp_factory_config_desc.dict_from_input_dict(
+            plugin_config_dict
+        )
 
     def load_interp_tree_abs_paths(
         self,
@@ -72,18 +78,26 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             self.interp_selector_tree,
         )
         # Walk configured interp tree and call `load_interp_tree_abs_paths` with `interp_tree_abs_path` for each interp.
-        all_interp_tree_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
+        all_interp_tree_abs_paths: dict[str, list[list[str]]] = (
+            dict_tree_walker.build_str_leaves_paths()
+        )
         for interp_factory_instance_id in all_interp_tree_abs_paths:
             assert_plugin_instance_id(
                 self.server_config,
                 interp_factory_instance_id,
                 PluginType.InterpFactoryPlugin,
             )
-            interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_factory_instance_id]
-            interp_factory.load_interp_tree_abs_paths([
-                tuple(list_abs_path)
-                for list_abs_path in all_interp_tree_abs_paths[interp_factory_instance_id]
-            ])
+            interp_factory: AbstractInterpFactory = self.server_config.interp_factories[
+                interp_factory_instance_id
+            ]
+            interp_factory.load_interp_tree_abs_paths(
+                [
+                    tuple(list_abs_path)
+                    for list_abs_path in all_interp_tree_abs_paths[
+                        interp_factory_instance_id
+                    ]
+                ]
+            )
 
     def load_func_envelopes(
         self,
@@ -146,10 +160,16 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
             self.interp_selector_tree,
         )
         # Walk configured interp tree and call `load_func_envelopes` with `interp_tree_abs_path` for each interp.
-        all_interp_tree_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
+        all_interp_tree_abs_paths: dict[str, list[list[str]]] = (
+            dict_tree_walker.build_str_leaves_paths()
+        )
         for interp_factory_instance_id in all_interp_tree_abs_paths:
-            for sub_interp_tree_abs_path in all_interp_tree_abs_paths[interp_factory_instance_id]:
-                if not sequence_starts_with(sub_interp_tree_abs_path, interp_tree_abs_path):
+            for sub_interp_tree_abs_path in all_interp_tree_abs_paths[
+                interp_factory_instance_id
+            ]:
+                if not sequence_starts_with(
+                    sub_interp_tree_abs_path, interp_tree_abs_path
+                ):
                     # skip: other `interp_tree_abs_path`-s are going to be separate calls to this func:
                     continue
                 assert_plugin_instance_id(
@@ -157,7 +177,9 @@ class InterpTreeInterpFactory(AbstractInterpFactory):
                     interp_factory_instance_id,
                     PluginType.InterpFactoryPlugin,
                 )
-                interp_factory: AbstractInterpFactory = self.server_config.interp_factories[interp_factory_instance_id]
+                interp_factory: AbstractInterpFactory = (
+                    self.server_config.interp_factories[interp_factory_instance_id]
+                )
 
                 (
                     extra_mapped_func_ids,
@@ -281,7 +303,9 @@ class InterpTreeInterp(AbstractInterp):
                 return any_consumed
 
             # Always consume next remaining `offered_arg`:
-            offered_arg: Union[ArgCommandValueOffered, None] = self._next_remaining_offered_arg_from_first_bucket()
+            offered_arg: Union[ArgCommandValueOffered, None] = (
+                self._next_remaining_offered_arg_from_first_bucket()
+            )
 
             if offered_arg is None:
                 self.set_default_factory_id(curr_sub_tree)
@@ -292,15 +316,23 @@ class InterpTreeInterp(AbstractInterp):
                     # Consume one more arg into path:
                     self.interp_tree_abs_path.append(offered_arg.get_arg_value())
 
-                    bucket_index = self.interp_ctx.token_ipos_to_token_bucket_map[offered_arg.get_arg_token()]
+                    bucket_index = self.interp_ctx.token_ipos_to_token_bucket_map[
+                        offered_arg.get_arg_token()
+                    ]
                     # Always consume from the first `token_bucket` (ipos = 0):
                     assert bucket_index == 0
                     # TODO: TODO_66_09_41_16: clarify command line processing
                     #       Use helper functions which ensure consistency
                     #       (like in this case, if one is removed, another is removed)
-                    self.interp_ctx.consumed_token_buckets[bucket_index].append(offered_arg.get_arg_token())
-                    self.interp_ctx.remaining_token_buckets[bucket_index].remove(offered_arg.get_arg_token())
-                    self.interp_ctx.remaining_offered_args_per_bucket[bucket_index].remove(offered_arg)
+                    self.interp_ctx.consumed_token_buckets[bucket_index].append(
+                        offered_arg.get_arg_token()
+                    )
+                    self.interp_ctx.remaining_token_buckets[bucket_index].remove(
+                        offered_arg.get_arg_token()
+                    )
+                    self.interp_ctx.remaining_offered_args_per_bucket[
+                        bucket_index
+                    ].remove(offered_arg)
 
                     curr_sub_tree = curr_sub_tree[offered_arg.get_arg_value()]
                     any_consumed = True
@@ -352,17 +384,19 @@ class InterpTreeInterp(AbstractInterp):
         )
         if isinstance(curr_sub_tree, dict):
             for proposed_value in [
-                x for x in curr_sub_tree
+                x
+                for x in curr_sub_tree
                 if (
                     isinstance(x, str)
-                    and
-                    x != surrogate_node_id_
+                    and x != surrogate_node_id_
                     and
                     # FS_32_05_46_00: using `startswith`:
                     x.startswith(self.interp_ctx.parsed_ctx.tan_token_l_part)
                 )
             ]:
-                insert_unique_to_sorted_list(self.interp_ctx.comp_suggestions, proposed_value)
+                insert_unique_to_sorted_list(
+                    self.interp_ctx.comp_suggestions, proposed_value
+                )
 
     def is_eligible_for_suggestion(self):
         """

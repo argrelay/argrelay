@@ -5,10 +5,12 @@ from dataclasses import (
     field,
 )
 
-from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import (
+    CompositeForest,
+)
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class ServerPluginControl:
     """
     Configures (controls) usage of plugins by the server.

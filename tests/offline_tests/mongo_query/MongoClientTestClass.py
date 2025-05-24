@@ -5,7 +5,9 @@ from pymongo.collection import Collection
 from pymongo.database import Database
 
 from argrelay_app_server.mongo_data.MongoClientWrapper import get_mongo_client
-from argrelay_schema_config_server.schema_config_server_app.MongoConfigSchema import mongo_config_desc
+from argrelay_schema_config_server.schema_config_server_app.MongoConfigSchema import (
+    mongo_config_desc,
+)
 from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 
 object_name_ = "object_name"
@@ -48,7 +50,9 @@ class MongoClientTestClass(BaseTestClass):
         # To connect to real mongo server, change this to False:
         # mongo_config_desc.dict_example[use_mongomock_] = False
 
-        mongo_config = mongo_config_desc.obj_from_input_dict(mongo_config_desc.dict_example)
+        mongo_config = mongo_config_desc.obj_from_input_dict(
+            mongo_config_desc.dict_example
+        )
 
         # Overwrite default config example to use real MongoDB (`pymongo`) or not (`mongomock`):
         mongo_config.use_mongomock = self.use_mongomock

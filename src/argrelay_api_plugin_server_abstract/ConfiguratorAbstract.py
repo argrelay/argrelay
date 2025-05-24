@@ -1,6 +1,8 @@
 from typing import Union
 
-from argrelay_api_plugin_server_abstract.AbstractPluginServer import AbstractPluginServer
+from argrelay_api_plugin_server_abstract.AbstractPluginServer import (
+    AbstractPluginServer,
+)
 from argrelay_lib_root.enum_desc.PluginType import PluginType
 
 

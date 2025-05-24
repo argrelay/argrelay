@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
+from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import (
+    DelegatorSingleFuncAbstract,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_app_server.runtime_context.InterpContext import (
@@ -34,15 +36,14 @@ class DelegatorGitRepoBase(DelegatorSingleFuncAbstract):
         # The first envelope (`DataEnvelopeSchema`) is assumed to be of
         # `ReservedEnvelopeClass.class_function` with `FunctionEnvelopeInstanceDataSchema` for its `instance_data`:
         function_container = interp_ctx.envelope_containers[function_container_ipos_]
-        delegator_plugin_instance_id = (
-            function_container.data_envelopes[0][instance_data_]
-            [delegator_plugin_instance_id_]
-        )
+        delegator_plugin_instance_id = function_container.data_envelopes[0][
+            instance_data_
+        ][delegator_plugin_instance_id_]
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
+            delegator_plugin_entry=local_server.plugin_config.server_plugin_instances[
                 delegator_plugin_instance_id
             ],
-            custom_plugin_data = {},
+            custom_plugin_data={},
         )
         return invocation_input

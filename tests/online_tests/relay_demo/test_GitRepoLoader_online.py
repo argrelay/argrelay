@@ -2,7 +2,9 @@ import os
 import subprocess
 import tempfile
 
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.relay_client import __main__
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_lib_root.enum_desc.CompType import CompType
@@ -16,7 +18,9 @@ from argrelay_lib_server_plugin_demo.demo_git.GitRepoEntryConfigSchema import (
     is_repo_enabled_,
     repo_rel_path_,
 )
-from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import (
+    GitRepoEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoaderConfigSchema import (
     load_git_commits_default_,
@@ -27,7 +31,9 @@ from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchem
     plugin_config_desc,
     server_plugin_instances_,
 )
-from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_config_
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_config_,
+)
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 from argrelay_test_infra.test_infra.EnvMockBuilder import (
@@ -53,7 +59,7 @@ class ThisTestClass(BaseTestClass):
         if not os.path.exists(test_configs_dir):
             os.makedirs(test_configs_dir)
 
-        self.temp_dir = tempfile.TemporaryDirectory(dir = f"{test_configs_dir}/")
+        self.temp_dir = tempfile.TemporaryDirectory(dir=f"{test_configs_dir}/")
 
         is_successful = False
         try:
@@ -74,7 +80,7 @@ class ThisTestClass(BaseTestClass):
             ]:
                 repo_path = os.path.join(self.temp_dir.name, repo_item["git_root_path"])
                 repo_url = repo_item["git_remote_url"]
-                print(f"clone from \"{repo_url}\" into \"{repo_path}\"")
+                print(f'clone from "{repo_url}" into "{repo_path}"')
                 subprocess.check_output(
                     [
                         "git",
@@ -97,7 +103,8 @@ class ThisTestClass(BaseTestClass):
     def test_loader(self):
         test_cases = [
             (
-                line_no(), f"`{GitRepoLoader.__name__}.default` enabled with random temp dir",
+                line_no(),
+                f"`{GitRepoLoader.__name__}.default` enabled with random temp dir",
                 {
                     load_git_commits_default_: True,
                     repo_entries_: {

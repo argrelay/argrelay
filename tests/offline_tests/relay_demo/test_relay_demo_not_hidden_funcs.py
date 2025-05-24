@@ -7,16 +7,28 @@ from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigOnly import DelegatorConfigOnly
-from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import func_envelope_
-from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import func_configs_
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigOnly import (
+    DelegatorConfigOnly,
+)
+from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import (
+    func_envelope_,
+)
+from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import (
+    func_configs_,
+)
 from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
     FuncTreeInterpFactory,
     tree_step_prop_name_prefix_,
 )
-from argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoDescTag import func_id_desc_git_tag_
-from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import CompositeNodeType
-from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import tree_roots_
+from argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoDescTag import (
+    func_id_desc_git_tag_,
+)
+from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import (
+    CompositeNodeType,
+)
+from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import (
+    tree_roots_,
+)
 from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import (
     func_id_,
     node_type_,
@@ -26,12 +38,16 @@ from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema i
     server_config_desc,
     server_plugin_control_,
 )
-from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import composite_forest_
+from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import (
+    composite_forest_,
+)
 from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
     plugin_config_desc,
     server_plugin_instances_,
 )
-from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_config_
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_config_,
+)
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.EnvMockBuilder import (
     EnvMockBuilder,
@@ -50,13 +66,19 @@ class ThisTestClass(LocalTestClass):
     def test_arg_assignments_does_not_hide_funcs(self):
         test_cases = [
             (
-                line_no(), "some_command desc |", CompType.DescribeArgs,
+                line_no(),
+                "some_command desc |",
+                CompType.DescribeArgs,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
                 {
                     0: {
-                        f"{tree_step_prop_name_prefix_}{0}": AssignedValue("some_command", ValueSource.init_value),
-                        f"{tree_step_prop_name_prefix_}{1}": AssignedValue("desc", ValueSource.explicit_offered_arg),
+                        f"{tree_step_prop_name_prefix_}{0}": AssignedValue(
+                            "some_command", ValueSource.init_value
+                        ),
+                        f"{tree_step_prop_name_prefix_}{1}": AssignedValue(
+                            "desc", ValueSource.explicit_offered_arg
+                        ),
                         f"{tree_step_prop_name_prefix_}{2}": [
                             "commit",
                             "host",
@@ -70,13 +92,19 @@ class ThisTestClass(LocalTestClass):
                 "TODO_39_25_11_76: Step 1: funcs are not hidden",
             ),
             (
-                line_no(), "some_command desc |", CompType.DescribeArgs,
+                line_no(),
+                "some_command desc |",
+                CompType.DescribeArgs,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
                 {
                     0: {
-                        f"{tree_step_prop_name_prefix_}{0}": AssignedValue("some_command", ValueSource.init_value),
-                        f"{tree_step_prop_name_prefix_}{1}": AssignedValue("desc", ValueSource.explicit_offered_arg),
+                        f"{tree_step_prop_name_prefix_}{0}": AssignedValue(
+                            "some_command", ValueSource.init_value
+                        ),
+                        f"{tree_step_prop_name_prefix_}{1}": AssignedValue(
+                            "desc", ValueSource.explicit_offered_arg
+                        ),
                         f"{tree_step_prop_name_prefix_}{2}": [
                             "commit",
                             "host",
@@ -108,8 +136,12 @@ class ThisTestClass(LocalTestClass):
                     case_comment,
                 ) = test_case
 
-                server_config_dict = deepcopy(server_config_desc.dict_from_default_file())
-                plugin_config_dict = deepcopy(plugin_config_desc.dict_from_default_file())
+                server_config_dict = deepcopy(
+                    server_config_desc.dict_from_default_file()
+                )
+                plugin_config_dict = deepcopy(
+                    plugin_config_desc.dict_from_default_file()
+                )
 
                 # TODO: clean this up after investigation:
                 if False:
@@ -119,7 +151,11 @@ class ThisTestClass(LocalTestClass):
                     ][plugin_config_][func_selector_tree_]["some_command"][""]
                     val_b = plugin_config_dict[server_plugin_instances_][
                         f"{FuncTreeInterpFactory.__name__}.default"
-                    ][plugin_config_][func_selector_tree_]["some_command"]["duplicates"][""]
+                    ][plugin_config_][func_selector_tree_]["some_command"][
+                        "duplicates"
+                    ][
+                        ""
+                    ]
                     print("1:", id(val_a))
                     print("2:", id(val_b))
                     # TODO: this is impossible (after deepcopy):
@@ -131,18 +167,22 @@ class ThisTestClass(LocalTestClass):
                     ][plugin_config_][func_selector_tree_]["some_command"][""]
                     val_b = plugin_config_dict[server_plugin_instances_][
                         f"{FuncTreeInterpFactory.__name__}.default"
-                    ][plugin_config_][func_selector_tree_]["some_command"]["duplicates"][""]
+                    ][plugin_config_][func_selector_tree_]["some_command"][
+                        "duplicates"
+                    ][
+                        ""
+                    ]
                     print("1:", id(val_a))
                     print("2:", id(val_b))
                     assert id(val_a) != id(val_b), "this should not happen but it does"
 
                 if is_func_hidden:
                     # Patch existing config with extra level:
-                    server_config_dict[
-                        server_plugin_control_
-                    ][composite_forest_][tree_roots_]["some_command"][sub_tree_][""][sub_tree_][
-                        "desc"
-                    ][sub_tree_]["retag"] = {
+                    server_config_dict[server_plugin_control_][composite_forest_][
+                        tree_roots_
+                    ]["some_command"][sub_tree_][""][sub_tree_]["desc"][sub_tree_][
+                        "retag"
+                    ] = {
                         node_type_: CompositeNodeType.tree_path_node.name,
                         sub_tree_: {
                             "qwer": {
@@ -168,7 +208,9 @@ class ThisTestClass(LocalTestClass):
                     .set_plugin_config_dict(plugin_config_dict),
                 )
 
-    def test_validation_for_plugin_search_control_with_func_envelope_having_missing_props(self):
+    def test_validation_for_plugin_search_control_with_func_envelope_having_missing_props(
+        self,
+    ):
         """
         This test relies on `DelegatorConfigOnly` to remove some `prop_name`-s in its `func_envelope`.
 
@@ -188,16 +230,10 @@ class ThisTestClass(LocalTestClass):
                 if is_missing_prop:
                     # Change config to cause validation error:
                     plugin_config_dict = plugin_config_desc.dict_from_default_file()
-                    func_envelope = plugin_config_dict[
-                        server_plugin_instances_
-                    ][
+                    func_envelope = plugin_config_dict[server_plugin_instances_][
                         # TODO: TODO_62_75_33_41: do not hardcode `plugin_instance_id`:
                         f"{DelegatorConfigOnly.__name__}.default"
-                    ][
-                        plugin_config_
-                    ][
-                        func_configs_
-                    ][
+                    ][plugin_config_][func_configs_][
                         # Any `func_id` from the config:
                         "func_id_print_with_severity_level"
                     ][

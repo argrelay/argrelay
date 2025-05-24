@@ -23,8 +23,12 @@ from argrelay_app_server.relay_server.route_api import create_blueprint_api
 from argrelay_app_server.relay_server.route_gui import create_blueprint_gui
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
 from argrelay_lib_server_plugin_demo.demo_git.git_utils import get_git_repo_root_path
-from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import server_config_desc
-from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
+    server_config_desc,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+)
 
 server_version = argrelay.__version__
 server_title = relay_server.__name__
@@ -38,15 +42,19 @@ class CustomFlaskApp(Flask):
     def __init__(
         self,
         import_name: str,
-        static_url_path = "/gui_static",
-        static_folder = pkg_resources.resource_filename(relay_server.__name__, "gui_static"),
-        template_folder = pkg_resources.resource_filename(relay_server.__name__, "gui_templates"),
+        static_url_path="/gui_static",
+        static_folder=pkg_resources.resource_filename(
+            relay_server.__name__, "gui_static"
+        ),
+        template_folder=pkg_resources.resource_filename(
+            relay_server.__name__, "gui_templates"
+        ),
     ):
         super().__init__(
-            import_name = import_name,
-            static_folder = static_folder,
-            template_folder = template_folder,
-            static_url_path = static_url_path,
+            import_name=import_name,
+            static_folder=static_folder,
+            template_folder=template_folder,
+            static_url_path=static_url_path,
         )
         self.local_server: LocalServer = LocalServer(
             server_config_desc.obj_from_default_file(),
@@ -64,9 +72,9 @@ class CustomFlaskApp(Flask):
             # Contrary to "debug" keyword, if IDE debug is needed, set `debug` to `False` to avoid reloader:
             # https://stackoverflow.com/a/53790400/441652
             # NOTE: Disabled debug to make sure reloader does not restart server (which does not work with Mongo DB):
-            debug = False,
-            host = self.local_server.server_config.connection_config.server_host_name,
-            port = self.local_server.server_config.connection_config.server_port_number,
+            debug=False,
+            host=self.local_server.server_config.connection_config.server_host_name,
+            port=self.local_server.server_config.connection_config.server_port_number,
         )
 
 
@@ -78,7 +86,7 @@ def create_app() -> CustomFlaskApp:
     """
 
     flask_app = CustomFlaskApp(
-        import_name = relay_server.__name__,
+        import_name=relay_server.__name__,
     )
 
     flask_app.local_server.start_local_server()
@@ -87,7 +95,7 @@ def create_app() -> CustomFlaskApp:
         "info": {
             "title": server_title,
             "version": server_version,
-            "description": f"See <a href=\"{ARGRELAY_GUI_PATH}\" target=\"_blank\">built-in GUI</a>.",
+            "description": f'See <a href="{ARGRELAY_GUI_PATH}" target="_blank">built-in GUI</a>.',
         },
     }
 
@@ -108,8 +116,8 @@ def create_app() -> CustomFlaskApp:
 
     Swagger(
         flask_app,
-        template = swagger_template,
-        config = swagger_config,
+        template=swagger_template,
+        config=swagger_config,
     )
 
     @flask_app.before_request
@@ -141,23 +149,39 @@ def create_app() -> CustomFlaskApp:
 
     @flask_app.route("/")
     def root_redirect():
-        return redirect(ARGRELAY_GUI_PATH, code = 302)
+        return redirect(ARGRELAY_GUI_PATH, code=302)
 
     flask_app.register_blueprint(create_blueprint_api(flask_app.local_server))
-    flask_app.register_blueprint(create_blueprint_gui(
-        configure_project_title(flask_app.local_server.server_config.server_configurators),
-        configure_project_page_url(flask_app.local_server.server_config.server_configurators),
-        server_version,
-        flask_app.local_server.server_config.gui_banner_config,
-        flask_app.local_server.server_config.default_gui_command,
-        flask_app.local_server.server_start_time,
-        # TODO: make AbstractConfiguration expose only these final methods (and any concatenation of strings, validation, should be hidden inside ConfiguratorDefault):
-        configure_project_git_commit_time(flask_app.local_server.server_config.server_configurators),
-        configure_project_git_commit_url(flask_app.local_server.server_config.server_configurators),
-        configure_project_git_commit_display_string(flask_app.local_server.server_config.server_configurators),
-        configure_project_git_conf_dir_url(flask_app.local_server.server_config.server_configurators),
-        configure_project_git_conf_dir_display_string(flask_app.local_server.server_config.server_configurators),
-    ))
+    flask_app.register_blueprint(
+        create_blueprint_gui(
+            configure_project_title(
+                flask_app.local_server.server_config.server_configurators
+            ),
+            configure_project_page_url(
+                flask_app.local_server.server_config.server_configurators
+            ),
+            server_version,
+            flask_app.local_server.server_config.gui_banner_config,
+            flask_app.local_server.server_config.default_gui_command,
+            flask_app.local_server.server_start_time,
+            # TODO: make AbstractConfiguration expose only these final methods (and any concatenation of strings, validation, should be hidden inside ConfiguratorDefault):
+            configure_project_git_commit_time(
+                flask_app.local_server.server_config.server_configurators
+            ),
+            configure_project_git_commit_url(
+                flask_app.local_server.server_config.server_configurators
+            ),
+            configure_project_git_commit_display_string(
+                flask_app.local_server.server_config.server_configurators
+            ),
+            configure_project_git_conf_dir_url(
+                flask_app.local_server.server_config.server_configurators
+            ),
+            configure_project_git_conf_dir_display_string(
+                flask_app.local_server.server_config.server_configurators
+            ),
+        )
+    )
 
     return flask_app
 
@@ -205,11 +229,7 @@ def configure_project_git_commit_url(
         lambda server_configurator: server_configurator.provide_project_git_commit_id(),
         None,
     )
-    if (
-        project_commit_id_url_prefix is not None
-        and
-        project_git_commit_id is not None
-    ):
+    if project_commit_id_url_prefix is not None and project_git_commit_id is not None:
         return f"{project_commit_id_url_prefix}{project_git_commit_id}"
     else:
         return ""
@@ -258,20 +278,18 @@ def configure_project_git_conf_dir_url(
 
     if (
         project_git_files_by_commit_id_url_prefix is None
-        or
-        project_git_commit_id is None
-        or
-        project_git_repo_relative_argrelay_dir is None
-        or
-        project_current_config_path is None
+        or project_git_commit_id is None
+        or project_git_repo_relative_argrelay_dir is None
+        or project_current_config_path is None
     ):
         return ""
 
     argrelay_dir_abs_path = os.path.realpath(os.path.abspath(get_argrelay_dir()))
-    project_current_config_abs_path = os.path.realpath(os.path.abspath(os.path.join(
-        argrelay_dir_abs_path,
-        project_current_config_path
-    )))
+    project_current_config_abs_path = os.path.realpath(
+        os.path.abspath(
+            os.path.join(argrelay_dir_abs_path, project_current_config_path)
+        )
+    )
 
     # This may happen even if paths were joined
     # if `project_current_config_path` is a symlink pointing outside `argrelay_dir_abs_path`:
@@ -279,15 +297,15 @@ def configure_project_git_conf_dir_url(
         return ""
 
     # This may happen if `@/conf` is a sub-dir, and it is another git repo:
-    if (
-        os.path.realpath(get_git_repo_root_path(argrelay_dir_abs_path))
-        !=
-        os.path.realpath(get_git_repo_root_path(project_current_config_abs_path))
-    ):
+    if os.path.realpath(
+        get_git_repo_root_path(argrelay_dir_abs_path)
+    ) != os.path.realpath(get_git_repo_root_path(project_current_config_abs_path)):
         return ""
 
     # Compose URL:
-    project_current_config_path = os.path.relpath(project_current_config_abs_path, argrelay_dir_abs_path)
+    project_current_config_path = os.path.relpath(
+        project_current_config_abs_path, argrelay_dir_abs_path
+    )
     return f"{project_git_files_by_commit_id_url_prefix}{project_git_commit_id}{project_git_repo_relative_argrelay_dir}{project_current_config_path}"
 
 

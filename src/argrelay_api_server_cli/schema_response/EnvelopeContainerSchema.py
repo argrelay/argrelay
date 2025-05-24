@@ -3,11 +3,15 @@ from marshmallow import (
     RAISE,
 )
 
-from argrelay_api_server_cli.schema_response.AssignedValueSchema import assigned_value_desc
+from argrelay_api_server_cli.schema_response.AssignedValueSchema import (
+    assigned_value_desc,
+)
 from argrelay_app_server.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay_lib_root.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import data_envelope_desc
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    data_envelope_desc,
+)
 from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
     search_control_desc,
 )
@@ -34,50 +38,50 @@ class EnvelopeContainerSchema(ObjectSchema):
 
     search_control = fields.Nested(
         search_control_desc.dict_schema,
-        required = True,
+        required=True,
     )
 
     data_envelopes = fields.List(
         fields.Nested(data_envelope_desc.dict_schema),
-        required = True,
+        required=True,
     )
 
     found_count = fields.Integer(
-        required = True,
+        required=True,
     )
 
     used_token_bucket = fields.Integer(
-        required = True,
-        allow_none = True,
+        required=True,
+        allow_none=True,
     )
 
     assigned_prop_name_to_prop_value = fields.Dict(
-        keys = fields.String(),
-        values = fields.Nested(assigned_value_desc.dict_schema),
-        required = True,
+        keys=fields.String(),
+        values=fields.Nested(assigned_value_desc.dict_schema),
+        required=True,
     )
 
     remaining_prop_name_to_prop_value = fields.Dict(
-        keys = fields.String(),
-        values = fields.List(
+        keys=fields.String(),
+        values=fields.List(
             fields.String(),
         ),
-        required = True,
+        required=True,
     )
 
     filled_prop_values_hidden_by_defaults = fields.Dict(
-        keys = fields.String(),
-        values = fields.List(
+        keys=fields.String(),
+        values=fields.List(
             fields.String(),
         ),
-        required = True,
+        required=True,
     )
 
 
 envelope_container_desc = TypeDesc(
-    dict_schema = EnvelopeContainerSchema(),
-    ref_name = EnvelopeContainerSchema.__name__,
-    dict_example = {
+    dict_schema=EnvelopeContainerSchema(),
+    ref_name=EnvelopeContainerSchema.__name__,
+    dict_example={
         search_control_: search_control_desc.dict_example,
         data_envelopes_: [
             data_envelope_desc.dict_example,
@@ -97,8 +101,7 @@ envelope_container_desc = TypeDesc(
                 "C_value_9",
             ],
         },
-        filled_prop_values_hidden_by_defaults_: {
-        },
+        filled_prop_values_hidden_by_defaults_: {},
     },
-    default_file_path = "",
+    default_file_path="",
 )

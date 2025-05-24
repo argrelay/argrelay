@@ -1,6 +1,8 @@
 from argrelay_api_server_cli.schema_response.ArgValues import ArgValues
 from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc
-from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
+from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import (
+    ClientResponseHandlerAbstract,
+)
 from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
 
 
@@ -16,8 +18,7 @@ class ClientResponseHandlerProposeArgValues(ClientResponseHandlerAbstract):
     def __init__(
         self,
     ):
-        super().__init__(
-        )
+        super().__init__()
 
     def handle_response(
         self,

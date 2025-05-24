@@ -26,7 +26,7 @@ class ArgCommandData(ArgCommand):
     token_ipos_list: list[int] = field()
     """
     List of all token ipos-es (indexes) belonging to that arg.
-    
+
     These ipos-es reference entries within `ParsedContext.all_tokens`.
     """
 
@@ -44,9 +44,7 @@ class ArgCommandDataValue(ArgCommandData):
 
     arg_value: str = field()
 
-    def get_arg_value(
-        self
-    ) -> str:
+    def get_arg_value(self) -> str:
         return self.arg_value
 
 
@@ -65,9 +63,7 @@ class ArgCommandDataValueDictated(ArgCommandDataValue, ArgCommandValueDictated):
 
     arg_name: str = field()
 
-    def get_arg_name(
-        self
-    ) -> str:
+    def get_arg_name(self) -> str:
         return self.arg_name
 
 
@@ -79,7 +75,5 @@ class ArgCommandDataIncomplete(ArgCommandData, ArgCommandIncomplete):
 
     arg_name: str = field()
 
-    def get_arg_name(
-        self
-    ) -> str:
+    def get_arg_name(self) -> str:
         return self.arg_name

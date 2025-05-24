@@ -10,7 +10,9 @@ from typing import Union
 import requests
 import responses
 
-from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
+from argrelay_api_server_cli.schema_response.InterpResultSchema import (
+    interp_result_desc,
+)
 from argrelay_api_server_cli.server_spec.const_int import BASE_URL_FORMAT
 from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerAbstract import (
     get_server_index_file_path,
@@ -21,8 +23,12 @@ from argrelay_lib_root.enum_desc.ClientExitCode import ClientExitCode
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ServerAction import ServerAction
 from argrelay_lib_root.schema_config.ConnectionConfig import ConnectionConfig
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
-from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import client_config_desc
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
+from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import (
+    client_config_desc,
+)
 from argrelay_test_infra.test_infra import parse_line_and_cpos
 from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 from argrelay_test_infra.test_infra.EnvMockBuilder import LiveServerEnvMockBuilder
@@ -40,73 +46,74 @@ class ThisTestClass(BaseTestClass):
     @responses.activate
     def test_client_leaves_no_server_index_file_on_connection_failure(self):
         self.verify_client_fail_over_scenario(
-            initial_file_content = None,
+            initial_file_content=None,
             # All failed:
-            failed_server_indexes = list(range(len(self.get_test_server_connection_configs()))),
-            residual_file_content = None,
+            failed_server_indexes=list(
+                range(len(self.get_test_server_connection_configs()))
+            ),
+            residual_file_content=None,
         )
 
     @responses.activate
     def test_client_leaves_server_index_file_on_successful_connection(self):
         residual_file_content = str(
             int.from_bytes(random_byte_value, "little")
-            %
-            len(self.get_test_server_connection_configs())
+            % len(self.get_test_server_connection_configs())
         )
         self.verify_client_fail_over_scenario(
-            initial_file_content = None,
-            failed_server_indexes = [],
-            residual_file_content = residual_file_content,
+            initial_file_content=None,
+            failed_server_indexes=[],
+            residual_file_content=residual_file_content,
         )
 
     @responses.activate
     def test_client_fail_over_to_next_server(self):
         self.verify_client_fail_over_scenario(
-            initial_file_content = "0",
-            failed_server_indexes = [0],
-            residual_file_content = "1",
+            initial_file_content="0",
+            failed_server_indexes=[0],
+            residual_file_content="1",
         )
 
     @responses.activate
     def test_successful_connections_do_not_fail_over(self):
         self.verify_client_fail_over_scenario(
-            initial_file_content = "1",
-            failed_server_indexes = [0, 2],
-            residual_file_content = "1",
+            initial_file_content="1",
+            failed_server_indexes=[0, 2],
+            residual_file_content="1",
         )
 
     @responses.activate
     def test_client_fail_over_with_negative_server_index_stored(self):
         self.verify_client_fail_over_scenario(
-            initial_file_content = "-100",
-            failed_server_indexes = [],
+            initial_file_content="-100",
+            failed_server_indexes=[],
             # Stores immediately successful:
             # -100 % 3 = 2:
-            residual_file_content = "2",
+            residual_file_content="2",
         )
         self.verify_client_fail_over_scenario(
-            initial_file_content = "-100",
+            initial_file_content="-100",
             # -100 % 3 = 2:
-            failed_server_indexes = [2],
+            failed_server_indexes=[2],
             # Stores next successful:
-            residual_file_content = "0",
+            residual_file_content="0",
         )
 
     @responses.activate
     def test_start_index_beyond_available_connections_range(self):
         self.verify_client_fail_over_scenario(
-            initial_file_content = "100",
-            failed_server_indexes = [],
+            initial_file_content="100",
+            failed_server_indexes=[],
             # Stores immediately successful:
             # 100 % 3 = 1:
-            residual_file_content = "1",
+            residual_file_content="1",
         )
         self.verify_client_fail_over_scenario(
-            initial_file_content = "100",
+            initial_file_content="100",
             # 100 % 3 = 1:
-            failed_server_indexes = [1],
+            failed_server_indexes=[1],
             # Stores next successful:
-            residual_file_content = "2"
+            residual_file_content="2",
         )
 
     # noinspection PyMethodMayBeStatic
@@ -118,16 +125,16 @@ class ThisTestClass(BaseTestClass):
         """
         return [
             ConnectionConfig(
-                server_host_name = "localhost",
-                server_port_number = 10000,
+                server_host_name="localhost",
+                server_port_number=10000,
             ),
             ConnectionConfig(
-                server_host_name = "localhost",
-                server_port_number = 10001,
+                server_host_name="localhost",
+                server_port_number=10001,
             ),
             ConnectionConfig(
-                server_host_name = "localhost",
-                server_port_number = 10002,
+                server_host_name="localhost",
+                server_port_number=10002,
             ),
         ]
 
@@ -143,7 +150,7 @@ class ThisTestClass(BaseTestClass):
         client_config_obj: ClientConfig = client_config_desc.obj_from_default_file()
         client_config_obj = replace(
             client_config_obj,
-            redundant_servers = self.get_test_server_connection_configs()
+            redundant_servers=self.get_test_server_connection_configs(),
         )
         client_config_dict = client_config_desc.dict_from_input_obj(client_config_obj)
 
@@ -173,11 +180,12 @@ class ThisTestClass(BaseTestClass):
         response_body: dict,
     ):
         return responses.Response(
-            method = responses.POST,
-            url = BASE_URL_FORMAT.format(**asdict(connection_config)) + server_action.value,
-            json = response_body,
-            status = 200,
-            content_type = "application/json",
+            method=responses.POST,
+            url=BASE_URL_FORMAT.format(**asdict(connection_config))
+            + server_action.value,
+            json=response_body,
+            status=200,
+            content_type="application/json",
         )
 
     # noinspection PyMethodMayBeStatic
@@ -187,10 +195,11 @@ class ThisTestClass(BaseTestClass):
         server_action: ServerAction,
     ):
         return responses.Response(
-            method = responses.POST,
-            url = BASE_URL_FORMAT.format(**asdict(connection_config)) + server_action.value,
-            body = requests.ConnectionError(),
-            content_type = "application/json",
+            method=responses.POST,
+            url=BASE_URL_FORMAT.format(**asdict(connection_config))
+            + server_action.value,
+            body=requests.ConnectionError(),
+            content_type="application/json",
         )
 
     def verify_client_fail_over_scenario(
@@ -213,31 +222,37 @@ class ThisTestClass(BaseTestClass):
 
         for failed_server_index in failed_server_indexes:
             # It should not reference non-existing connections:
-            self.assertTrue(failed_server_index < len(self.get_test_server_connection_configs()))
+            self.assertTrue(
+                failed_server_index < len(self.get_test_server_connection_configs())
+            )
         # All values should be unique:
         self.assertEqual(
             len(set(failed_server_indexes)),
             len(failed_server_indexes),
         )
 
-        for server_index, connection_config in enumerate(self.get_test_server_connection_configs()):
+        for server_index, connection_config in enumerate(
+            self.get_test_server_connection_configs()
+        ):
             if server_index in failed_server_indexes:
-                responses.add(self.get_mocked_failed_connection(
-                    connection_config,
-                    ServerAction.DescribeLineArgs,
-                ))
+                responses.add(
+                    self.get_mocked_failed_connection(
+                        connection_config,
+                        ServerAction.DescribeLineArgs,
+                    )
+                )
             else:
-                responses.add(self.get_mocked_successful_response(
-                    connection_config,
-                    ServerAction.DescribeLineArgs,
-                    response_dict,
-                ))
+                responses.add(
+                    self.get_mocked_successful_response(
+                        connection_config,
+                        ServerAction.DescribeLineArgs,
+                        response_dict,
+                    )
+                )
 
         # It should be successful unless all connection configs fail:
-        is_connection_successful: bool = (
-            set(failed_server_indexes)
-            !=
-            set(range(len(self.get_test_server_connection_configs())))
+        is_connection_successful: bool = set(failed_server_indexes) != set(
+            range(len(self.get_test_server_connection_configs()))
         )
 
         # when:

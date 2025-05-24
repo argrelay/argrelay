@@ -4,14 +4,22 @@ import json
 from typing import Union
 
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.relay_client import __main__
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorDataBackendSet import DelegatorDataBackendSet
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorDataBackendSet import (
+    DelegatorDataBackendSet,
+)
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    envelope_payload_,
+)
 from argrelay_test_infra.test_infra import (
     assert_test_module_name_embeds_prod_class_name,
     line_no_from_ctor,
@@ -146,9 +154,11 @@ class ThisTestClass(LocalTestClass):
                     .set_cursor_cpos(set_cursor_cpos)
                     # For `set` it is hard-coded to execute command:
                     .set_comp_type(CompType.InvokeAction)
-                    .set_test_data_ids_to_load([
-                        self.__class__.same_test_data_per_class,
-                    ])
+                    .set_test_data_ids_to_load(
+                        [
+                            self.__class__.same_test_data_per_class,
+                        ]
+                    )
                 )
                 with env_mock_builder.build():
                     command_obj = __main__.main()
@@ -169,9 +179,11 @@ class ThisTestClass(LocalTestClass):
                     .set_command_line(test_case.command_line)
                     .set_cursor_cpos(test_case.cursor_cpos)
                     .set_comp_type(test_case.comp_type)
-                    .set_test_data_ids_to_load([
-                        self.__class__.same_test_data_per_class,
-                    ])
+                    .set_test_data_ids_to_load(
+                        [
+                            self.__class__.same_test_data_per_class,
+                        ]
+                    )
                 )
                 with env_mock_builder.build():
                     command_obj = __main__.main()
@@ -189,13 +201,15 @@ class ThisTestCase(ShellInputTestCase):
         sever_action_verifier: ServerActionVerifier,
     ):
         super().__init__(
-            line_no = line_no_from_ctor(),
-            case_comment = case_comment,
+            line_no=line_no_from_ctor(),
+            case_comment=case_comment,
         )
         self.set_test_line(test_line)
         self.set_comp_type(comp_type)
 
-        self.container_ipos_to_expected_assignments = container_ipos_to_expected_assignments
+        self.container_ipos_to_expected_assignments = (
+            container_ipos_to_expected_assignments
+        )
         self.sever_action_verifier = sever_action_verifier
 
         self.expected_suggestions: Union[list[str], None] = None

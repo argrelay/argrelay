@@ -35,13 +35,13 @@ class ImportLinterTestClass(BaseTestClass):
         A helper which wraps each call to `import-linter` handling results and exceptions.
         """
 
-        registry.register(ForbiddenContract, name = "forbidden")
+        registry.register(ForbiddenContract, name="forbidden")
 
         settings.configure(
-            GRAPH_BUILDER = GraphBuilder(),
-            PRINTER = ClickPrinter(),
-            TIMER = SystemClockTimer(),
-            DEFAULT_CACHE_DIR = f"{get_argrelay_dir()}/tmp/import_linter_cache",
+            GRAPH_BUILDER=GraphBuilder(),
+            PRINTER=ClickPrinter(),
+            TIMER=SystemClockTimer(),
+            DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
         )
 
         lint_report: Report | None = None

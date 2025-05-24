@@ -3,7 +3,9 @@ from __future__ import annotations
 import dataclasses
 import sys
 
-from argrelay_api_plugin_server_abstract.delegator_utils import redirect_to_not_disambiguated_error
+from argrelay_api_plugin_server_abstract.delegator_utils import (
+    redirect_to_not_disambiguated_error,
+)
 from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
     get_func_id_from_interp_ctx,
     get_func_id_from_invocation_input,
@@ -19,14 +21,22 @@ from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeCl
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
 from argrelay_lib_root.misc_helper_common import eprint
-from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import prohibit_unconsumed_args
+from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import (
+    prohibit_unconsumed_args,
+)
 from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorDataBackendBase import (
     DelegatorDataBackendBase,
     get_collection_search_control,
 )
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
-from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import client_config_desc
-from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import EnvelopeCollection
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
+from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import (
+    client_config_desc,
+)
+from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import (
+    EnvelopeCollection,
+)
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     data_envelope_desc,
     instance_data_,
@@ -50,8 +60,7 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
         self,
     ) -> list[dict]:
 
-        collection_search_control = get_collection_search_control(
-        )
+        collection_search_control = get_collection_search_control()
 
         func_envelopes = []
 
@@ -93,7 +102,9 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
                 ReservedEnvelopeClass.class_collection.name,
             )
 
-        collection_container = interp_ctx.envelope_containers[collection_name_container_ipos_]
+        collection_container = interp_ctx.envelope_containers[
+            collection_name_container_ipos_
+        ]
         vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
 
         # FS_74_69_61_79 get set data envelope:
@@ -128,8 +139,8 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
                     continue
                 data_envelopes.append(data_envelope_desc.obj_from_yaml_str(json_line))
             envelope_collection = EnvelopeCollection(
-                collection_name = collection_name,
-                data_envelopes = data_envelopes,
+                collection_name=collection_name,
+                data_envelopes=data_envelopes,
             )
             eprint(f"envelope_collection: {envelope_collection}")
             progress_tracker = ProgressTracker()
@@ -153,10 +164,10 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
         # Package into `InvocationInput` payload object:
         invocation_input = InvocationInput.with_interp_context(
             interp_ctx,
-            delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
+            delegator_plugin_entry=local_server.plugin_config.server_plugin_instances[
                 delegator_plugin_instance_id
             ],
-            custom_plugin_data = {},
+            custom_plugin_data={},
         )
         return invocation_input
 
@@ -176,7 +187,7 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
                 invocation_input.call_ctx,
                 # FS_74_69_61_79 get set data envelope:
                 # Load data from stdin and call REST API to update data on the server:
-                input_data = sys.stdin.read(),
+                input_data=sys.stdin.read(),
             )
 
             if sys.stdin.isatty():
@@ -184,7 +195,9 @@ class DelegatorDataBackendSet(DelegatorDataBackendBase):
 
             client_config: ClientConfig = client_config_desc.obj_from_default_file()
             if len(client_config.redundant_servers) > 1:
-                eprint("WARN: this command may only update data for one of the `redundant_servers` in `client_config`")
+                eprint(
+                    "WARN: this command may only update data for one of the `redundant_servers` in `client_config`"
+                )
 
             run_client(
                 client_config,

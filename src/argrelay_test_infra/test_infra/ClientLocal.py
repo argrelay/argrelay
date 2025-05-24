@@ -1,6 +1,10 @@
 from argrelay_app_client.relay_client.ClientAbstract import ClientAbstract
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
-from argrelay_test_infra.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
+from argrelay_test_infra.test_infra.ClientCommandFactoryLocal import (
+    ClientCommandFactoryLocal,
+)
 
 
 class ClientLocal(ClientAbstract):

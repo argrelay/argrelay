@@ -22,7 +22,9 @@ class PopenMock:
 
     def __init__(
         self,
-        expected_args_to_output: dict[Union[str, tuple[str, ...]], tuple[int, str, str]],
+        expected_args_to_output: dict[
+            Union[str, tuple[str, ...]], tuple[int, str, str]
+        ],
         *args,
         **kwargs,
     ):

@@ -2,16 +2,24 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
+from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import (
+    DelegatorSingleFuncAbstract,
+)
 from argrelay_api_plugin_server_abstract.SchemaConfigDelegatorJumpAbstract import (
     abstract_jump_delegator_config_desc,
     single_func_id_,
 )
-from argrelay_app_server.composite_forest.CompositeForestExtractor import extract_tree_abs_path_to_interp_id
+from argrelay_app_server.composite_forest.CompositeForestExtractor import (
+    extract_tree_abs_path_to_interp_id,
+)
 from argrelay_app_server.composite_forest.CompositeInfoType import CompositeInfoType
 from argrelay_app_server.composite_forest.DictTreeWalker import DictTreeWalker
-from argrelay_lib_server_plugin_core.plugin_interp.AbstractInterpFactory import AbstractInterp
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_lib_server_plugin_core.plugin_interp.AbstractInterpFactory import (
+    AbstractInterp,
+)
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 
 
 class DelegatorJumpAbstract(DelegatorSingleFuncAbstract):
@@ -41,20 +49,31 @@ class DelegatorJumpAbstract(DelegatorSingleFuncAbstract):
             extracted_dict,
         )
         # Temporary (reversed) 1-to-N map of id to paths (instead of path to id):
-        temporary_id_to_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
+        temporary_id_to_paths: dict[str, list[list[str]]] = (
+            dict_tree_walker.build_str_leaves_paths()
+        )
 
         # Reverse temporary 1-to-N map of id to paths into 1-to-1 map of path to id:
-        self.tree_path_to_next_interp_plugin_instance_id: dict[tuple[str, ...], str] = {}
+        self.tree_path_to_next_interp_plugin_instance_id: dict[tuple[str, ...], str] = (
+            {}
+        )
         for interp_factory_instance_id, tree_abs_paths in temporary_id_to_paths.items():
             for tree_abs_path in tree_abs_paths:
-                assert tuple(tree_abs_path) not in self.tree_path_to_next_interp_plugin_instance_id
-                self.tree_path_to_next_interp_plugin_instance_id[tuple(tree_abs_path)] = interp_factory_instance_id
+                assert (
+                    tuple(tree_abs_path)
+                    not in self.tree_path_to_next_interp_plugin_instance_id
+                )
+                self.tree_path_to_next_interp_plugin_instance_id[
+                    tuple(tree_abs_path)
+                ] = interp_factory_instance_id
 
     def load_config(
         self,
         plugin_config_dict,
     ) -> dict:
-        return abstract_jump_delegator_config_desc.dict_from_input_dict(plugin_config_dict)
+        return abstract_jump_delegator_config_desc.dict_from_input_dict(
+            plugin_config_dict
+        )
 
     def run_interp_control(
         self,
@@ -74,7 +93,12 @@ class DelegatorJumpAbstract(DelegatorSingleFuncAbstract):
         Therefore, it should map `interp_tree_abs_path` (how it is accessed) to
         the next `interp_plugin_instance_id` (the single interp).
         """
-        if curr_interp.interp_ctx.interp_tree_abs_path in self.tree_path_to_next_interp_plugin_instance_id:
-            return self.tree_path_to_next_interp_plugin_instance_id[curr_interp.interp_ctx.interp_tree_abs_path]
+        if (
+            curr_interp.interp_ctx.interp_tree_abs_path
+            in self.tree_path_to_next_interp_plugin_instance_id
+        ):
+            return self.tree_path_to_next_interp_plugin_instance_id[
+                curr_interp.interp_ctx.interp_tree_abs_path
+            ]
         else:
             return None

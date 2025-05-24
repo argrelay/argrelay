@@ -12,12 +12,16 @@ from argrelay_api_server_cli.schema_response.InterpResultSchema import (
     all_tokens_,
     interp_result_desc,
 )
-from argrelay_api_server_cli.schema_response.InvocationInputSchema import custom_plugin_data_
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import (
+    custom_plugin_data_,
+)
 from argrelay_api_server_cli.server_spec.const_int import (
     API_DOCS_PATH,
     API_SPEC_PATH,
 )
-from argrelay_api_server_cli.server_spec.server_data_schema import server_op_data_schemas
+from argrelay_api_server_cli.server_spec.server_data_schema import (
+    server_op_data_schemas,
+)
 from argrelay_lib_root.enum_desc.ServerAction import ServerAction
 from argrelay_lib_server_plugin_core.plugin_delegator.SchemaCustomDataDelegatorError import (
     error_delegator_stub_custom_data_example,
@@ -36,10 +40,11 @@ class ThisTestClass(ServerOnlyTestClass):
         super().setUp()
 
         self.create_server_in_mocked_env(
-            ServerOnlyEnvMockBuilder()
-            .set_test_data_ids_to_load([
-                "TD_63_37_05_36",  # demo
-            ])
+            ServerOnlyEnvMockBuilder().set_test_data_ids_to_load(
+                [
+                    "TD_63_37_05_36",  # demo
+                ]
+            )
         )
         self.test_client = self.flask_app.test_client()
 
@@ -49,14 +54,16 @@ class ThisTestClass(ServerOnlyTestClass):
     def test_api_spec(self):
         response = self.test_client.get(
             API_SPEC_PATH,
-            content_type = "application/json",
+            content_type="application/json",
         )
         self.assertEqual(200, response.status_code)
         print(response.json)
 
         # JSON string to Python object:
         # https://stackoverflow.com/a/15882054/441652
-        schema_obj = json.loads(response.text, object_hook = lambda d: SimpleNamespace(**d))
+        schema_obj = json.loads(
+            response.text, object_hook=lambda d: SimpleNamespace(**d)
+        )
 
         # Ensure auto-magic schema generation provides example for Swagger GUI:
         self.assertEqual(
@@ -85,7 +92,8 @@ class ThisTestClass(ServerOnlyTestClass):
         schema_dict = json.loads(response.text)
         for request_path in [e.value for e in ServerAction]:
             self.assertTrue(
-                "examples" in schema_dict["paths"][request_path]["post"]["responses"]["200"],
+                "examples"
+                in schema_dict["paths"][request_path]["post"]["responses"]["200"],
             )
 
     ####################################################################################################################
@@ -98,9 +106,9 @@ class ThisTestClass(ServerOnlyTestClass):
     def test_no_headers_case_for_all(self):
         for server_request in ServerAction:
             server_response = self.make_post_request(
-                server_action = server_request,
-                api_path = server_request.value,
-                api_headers = {
+                server_action=server_request,
+                api_path=server_request.value,
+                api_headers={
                     # "Content-Type": None,
                     # "Accept": None,
                 },
@@ -109,9 +117,9 @@ class ThisTestClass(ServerOnlyTestClass):
 
     def test_propose_arg_values_via_send_none_recv_none(self):
         server_response = self.make_post_request(
-            server_action = ServerAction.ProposeArgValues,
-            api_path = ServerAction.ProposeArgValues.value,
-            api_headers = {
+            server_action=ServerAction.ProposeArgValues,
+            api_path=ServerAction.ProposeArgValues.value,
+            api_headers={
                 # "Content-Type": None,
                 # "Accept": None,
             },
@@ -119,7 +127,7 @@ class ThisTestClass(ServerOnlyTestClass):
         self.assertEqual(200, server_response.status_code)
         self.assertEqual(
             "dev\nprod\nqa",
-            server_response.get_data(as_text = True),
+            server_response.get_data(as_text=True),
         )
 
     def test_propose_arg_values_via_send_json_recv_none(self):
@@ -127,9 +135,9 @@ class ThisTestClass(ServerOnlyTestClass):
         Default response is "text/plain" - required for `ClientCommandRemoteWorkerTextProposeArgValuesOptimized`.
         """
         server_response = self.make_post_request(
-            server_action = ServerAction.ProposeArgValues,
-            api_path = ServerAction.ProposeArgValues.value,
-            api_headers = {
+            server_action=ServerAction.ProposeArgValues,
+            api_path=ServerAction.ProposeArgValues.value,
+            api_headers={
                 "Content-Type": "application/json",
                 # "Accept": None,
             },
@@ -137,7 +145,7 @@ class ThisTestClass(ServerOnlyTestClass):
         self.assertEqual(200, server_response.status_code)
         self.assertEqual(
             "dev\nprod\nqa",
-            server_response.get_data(as_text = True),
+            server_response.get_data(as_text=True),
         )
 
     def test_propose_arg_values_via_send_json_recv_text(self):
@@ -145,9 +153,9 @@ class ThisTestClass(ServerOnlyTestClass):
         Support "text/plain" response - required for `ClientCommandRemoteWorkerTextProposeArgValuesOptimized`.
         """
         server_response = self.make_post_request(
-            server_action = ServerAction.ProposeArgValues,
-            api_path = ServerAction.ProposeArgValues.value,
-            api_headers = {
+            server_action=ServerAction.ProposeArgValues,
+            api_path=ServerAction.ProposeArgValues.value,
+            api_headers={
                 "Content-Type": "application/json",
                 "Accept": "text/plain",
             },
@@ -155,7 +163,7 @@ class ThisTestClass(ServerOnlyTestClass):
         self.assertEqual(200, server_response.status_code)
         self.assertEqual(
             "dev\nprod\nqa",
-            server_response.get_data(as_text = True),
+            server_response.get_data(as_text=True),
         )
 
     ####################################################################################################################
@@ -164,7 +172,6 @@ class ThisTestClass(ServerOnlyTestClass):
     def test_server_responses(self):
 
         http_status_to_headers = {
-
             # HTTP 415 Unsupported Media Type
             # The server refuses to accept the request because the payload format is in an unsupported format:
             415: [
@@ -177,7 +184,6 @@ class ThisTestClass(ServerOnlyTestClass):
                     "Accept": "application/json",
                 },
             ],
-
             # HTTP 406 Not Acceptable
             # The server cannot produce a response matching the list of acceptable types by client:
             406: [
@@ -190,7 +196,6 @@ class ThisTestClass(ServerOnlyTestClass):
                     "Accept": "application/xml",
                 },
             ],
-
             # HTTP 200 OK
             200: [
                 {
@@ -208,15 +213,14 @@ class ThisTestClass(ServerOnlyTestClass):
                 {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
-                }
+                },
             ],
         }
 
         extra_data_verifiers = {
             200: {
                 ServerAction.ProposeArgValues: [
-                    lambda response_data:
-                    self.assertEqual(
+                    lambda response_data: self.assertEqual(
                         [
                             "dev",
                             "prod",
@@ -226,8 +230,7 @@ class ThisTestClass(ServerOnlyTestClass):
                     ),
                 ],
                 ServerAction.DescribeLineArgs: [
-                    lambda response_data:
-                    self.assertEqual(
+                    lambda response_data: self.assertEqual(
                         [
                             "some_command",
                             "goto",
@@ -237,12 +240,11 @@ class ThisTestClass(ServerOnlyTestClass):
                     ),
                 ],
                 ServerAction.RelayLineArgs: [
-                    lambda response_data:
-                    self.assertEqual(
+                    lambda response_data: self.assertEqual(
                         error_delegator_stub_custom_data_example,
                         response_data[custom_plugin_data_],
                     )
-                ]
+                ],
             },
         }
 
@@ -265,34 +267,50 @@ class ThisTestClass(ServerOnlyTestClass):
 
                     if server_action is ServerAction.ProposeArgValues:
                         func_ref = None
-                        if api_headers.get("Accept") is None and api_headers.get("Content-Type") is None:
-                            func_ref = self.test_propose_arg_values_via_send_none_recv_none
-                        if api_headers.get("Accept") is None and api_headers.get("Content-Type") == "application/json":
-                            func_ref = self.test_propose_arg_values_via_send_json_recv_none
+                        if (
+                            api_headers.get("Accept") is None
+                            and api_headers.get("Content-Type") is None
+                        ):
+                            func_ref = (
+                                self.test_propose_arg_values_via_send_none_recv_none
+                            )
+                        if (
+                            api_headers.get("Accept") is None
+                            and api_headers.get("Content-Type") == "application/json"
+                        ):
+                            func_ref = (
+                                self.test_propose_arg_values_via_send_json_recv_none
+                            )
                         if api_headers.get("Accept") == "text/plain":
-                            func_ref = self.test_propose_arg_values_via_send_json_recv_text
+                            func_ref = (
+                                self.test_propose_arg_values_via_send_json_recv_text
+                            )
                         if func_ref:
-                            test_cases.append((
-                                line_no(),
-                                f"Special case: {func_ref}",
-                                api_headers,
-                                server_action,
-                                200,
-                                # No extra data verifications - it is done in special case functions instead:
-                                [],
-                            ))
+                            test_cases.append(
+                                (
+                                    line_no(),
+                                    f"Special case: {func_ref}",
+                                    api_headers,
+                                    server_action,
+                                    200,
+                                    # No extra data verifications - it is done in special case functions instead:
+                                    [],
+                                )
+                            )
                             continue
 
                     # General cases:
 
-                    test_cases.append((
-                        line_no(),
-                        f"General case",
-                        api_headers,
-                        server_action,
-                        status_code,
-                        get_extra_data_verifiers(status_code, server_action)
-                    ))
+                    test_cases.append(
+                        (
+                            line_no(),
+                            f"General case",
+                            api_headers,
+                            server_action,
+                            status_code,
+                            get_extra_data_verifiers(status_code, server_action),
+                        )
+                    )
 
         for test_case in test_cases:
             with self.subTest(test_case):
@@ -325,7 +343,7 @@ class ThisTestClass(ServerOnlyTestClass):
         """
         response = self.test_client.get(
             API_SPEC_PATH,
-            content_type = "application/json",
+            content_type="application/json",
         )
         self.assertEqual(200, response.status_code)
         response_dict = json.loads(response.text)["definitions"]
@@ -352,12 +370,12 @@ class ThisTestClass(ServerOnlyTestClass):
         """
         data_obj = dataclasses.replace(
             call_context_desc.dict_schema.load(call_context_desc.dict_example),
-            server_action = server_action,
+            server_action=server_action,
         )
         server_response = self.test_client.post(
             api_path,
-            data = call_context_desc.dict_schema.dumps(data_obj),
-            headers = api_headers,
+            data=call_context_desc.dict_schema.dumps(data_obj),
+            headers=api_headers,
         )
         return server_response
 
@@ -375,7 +393,7 @@ class ThisTestClass(ServerOnlyTestClass):
         )
         self.assertEqual(expected_status_code, server_response.status_code)
         if data_verifiers:
-            response_data = json.loads(server_response.get_data(as_text = True))
+            response_data = json.loads(server_response.get_data(as_text=True))
             interp_result_desc.dict_schema.validate(response_data)
             for data_verifier in data_verifiers:
                 data_verifier(response_data)

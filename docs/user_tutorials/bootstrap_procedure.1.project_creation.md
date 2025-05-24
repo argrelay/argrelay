@@ -73,7 +73,7 @@ To keep config files under version control:
     cd path/to/project/root_dir
     cat .gitignore
     ```
-    
+
     ```
     # Ignore local config:
     /conf

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerJson import ClientCommandRemoteWorkerJson
+from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerJson import (
+    ClientCommandRemoteWorkerJson,
+)
 from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized import (
     ClientCommandRemoteWorkerTextProposeArgValuesOptimized,
 )
@@ -19,7 +21,9 @@ from argrelay_test_infra.test_infra.RemoteTestClass import RemoteTestClass
 
 class ThisTestClass(RemoteTestClass):
 
-    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_is_functionally_equivalent_to_non_optimized(self):
+    def test_ClientCommandRemoteWorkerTextProposeArgValuesOptimized_is_functionally_equivalent_to_non_optimized(
+        self,
+    ):
         """
         Makes sure these two classes work the same way:
         *   ClientCommandRemoteWorkerTextProposeArgValuesOptimized
@@ -29,7 +33,9 @@ class ThisTestClass(RemoteTestClass):
         # @formatter:off
         test_cases = [
             (
-                line_no(), "some_command upstream goto host |", CompType.PrefixHidden,
+                line_no(),
+                "some_command upstream goto host |",
+                CompType.PrefixHidden,
                 """dev
 prod
 qa
@@ -37,7 +43,9 @@ qa
                 "Sample 1",
             ),
             (
-                line_no(), "some_command host goto upstream a|", CompType.SubsequentHelp,
+                line_no(),
+                "some_command host goto upstream a|",
+                CompType.SubsequentHelp,
                 """amer
 apac
 """,
@@ -70,7 +78,9 @@ apac
                         .set_client_config_dict()
                         .set_show_pending_spinner(False)
                         .set_mock_client_config_file_read(True)
-                        .set_client_config_to_optimize_completion_request(optimize_completion_request)
+                        .set_client_config_to_optimize_completion_request(
+                            optimize_completion_request
+                        )
                         .set_capture_stdout(True)
                         .set_capture_stderr(True)
                     )

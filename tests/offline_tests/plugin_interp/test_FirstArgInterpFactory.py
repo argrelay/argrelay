@@ -2,9 +2,13 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.relay_client import __main__
-from argrelay_app_server.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
+from argrelay_app_server.composite_forest.CompositeForestExtractor import (
+    extract_zero_arg_interp_tree,
+)
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
 from argrelay_lib_server_plugin_core.plugin_interp.FirstArgInterpFactory import (
@@ -17,13 +21,19 @@ from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory impor
     InterpTreeInterp,
     InterpTreeInterpFactory,
 )
-from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import tree_roots_
-from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import sub_tree_
+from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import (
+    tree_roots_,
+)
+from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import (
+    sub_tree_,
+)
 from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
     server_config_desc,
     server_plugin_control_,
 )
-from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import composite_forest_
+from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import (
+    composite_forest_,
+)
 from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
     plugin_config_desc,
     server_plugin_instances_,
@@ -68,15 +78,9 @@ class ThisTestClass(LocalTestClass):
         # Patch server config to plug given command with the same config as `some_command`:
         for first_command_name in first_command_names:
             composite_tree_root = deepcopy(
-                server_config_dict[
-                    server_plugin_control_
-                ][
-                    composite_forest_
-                ][
+                server_config_dict[server_plugin_control_][composite_forest_][
                     tree_roots_
-                ][
-                    "some_command"
-                ]
+                ]["some_command"]
             )
             # Remove unnecessary:
             del composite_tree_root[sub_tree_]["intercept"]
@@ -84,13 +88,7 @@ class ThisTestClass(LocalTestClass):
             del composite_tree_root[sub_tree_]["enum"]
             del composite_tree_root[sub_tree_]["duplicates"]
 
-            server_config_dict[
-                server_plugin_control_
-            ][
-                composite_forest_
-            ][
-                tree_roots_
-            ][
+            server_config_dict[server_plugin_control_][composite_forest_][tree_roots_][
                 first_command_name
             ] = composite_tree_root
 
@@ -121,16 +119,16 @@ class ThisTestClass(LocalTestClass):
                 server_config.server_plugin_control.composite_forest,
             )
             interp_factory_id = zero_arg_interp_tree[first_token_value]
-            interp_factory_instance: InterpTreeInterpFactory = interp_ctx.interp_factories[interp_factory_id]
+            interp_factory_instance: InterpTreeInterpFactory = (
+                interp_ctx.interp_factories[interp_factory_id]
+            )
             prev_interp: InterpTreeInterp = interp_ctx.prev_interp
 
             self.assertTrue(
                 (
                     prev_interp.interp_factory_id
-                    ==
-                    interp_factory_instance.plugin_instance_id
-                    ==
-                    f"{InterpTreeInterpFactory.__name__}.default"
+                    == interp_factory_instance.plugin_instance_id
+                    == f"{InterpTreeInterpFactory.__name__}.default"
                 ),
                 "config instructs to name interp instance as the first token it binds to",
             )
@@ -152,7 +150,9 @@ class ThisTestClass(LocalTestClass):
     def test_propose_command_id(self):
         test_cases = [
             (
-                line_no(), "|", CompType.PrefixHidden,
+                line_no(),
+                "|",
+                CompType.PrefixHidden,
                 [
                     "ar_ssh",
                     "argrelay.check_env",
@@ -165,7 +165,9 @@ class ThisTestClass(LocalTestClass):
                 "Suggest registered command_id-s.",
             ),
             (
-                line_no(), "so|", CompType.PrefixHidden,
+                line_no(),
+                "so|",
+                CompType.PrefixHidden,
                 [
                     "some_command",
                 ],
@@ -173,7 +175,9 @@ class ThisTestClass(LocalTestClass):
                 "Suggest registered command_id-s.",
             ),
             (
-                line_no(), " qwer|", CompType.PrefixHidden,
+                line_no(),
+                " qwer|",
+                CompType.PrefixHidden,
                 [],
                 "This will not be called from shell - shell will suggest when command_id is already selected. "
                 "Suggest registered command_id-s.",

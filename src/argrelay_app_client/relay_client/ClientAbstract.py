@@ -1,8 +1,12 @@
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
 from argrelay_app_client.relay_client import ClientCommandAbstract
-from argrelay_app_client.relay_client.ClientCommandFactoryAbstract import ClientCommandFactoryAbstract
+from argrelay_app_client.relay_client.ClientCommandFactoryAbstract import (
+    ClientCommandFactoryAbstract,
+)
 from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
 
 
 class ClientAbstract:
@@ -11,9 +15,7 @@ class ClientAbstract:
     """
 
     def __init__(
-        self,
-        client_config: ClientConfig,
-        command_factory: ClientCommandFactoryAbstract
+        self, client_config: ClientConfig, command_factory: ClientCommandFactoryAbstract
     ):
         self.client_config: ClientConfig = client_config
         self.command_factory: ClientCommandFactoryAbstract = command_factory

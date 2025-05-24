@@ -9,12 +9,16 @@ from argrelay_api_plugin_server_abstract.DelegatorAbstract import DelegatorAbstr
 from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.relay_client import __main__
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_test_infra.test_infra import parse_line_and_cpos
-from argrelay_test_infra.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
+from argrelay_test_infra.test_infra.ClientCommandFactoryLocal import (
+    ClientCommandFactoryLocal,
+)
 from argrelay_test_infra.test_infra.EnvMockBuilder import (
     EnvMockBuilder,
     LocalClientEnvMockBuilder,
@@ -47,7 +51,9 @@ class LocalTestClass(InOutTestClass):
         test_line: str,
         comp_type: CompType,
         expected_suggestions: Union[list[str], None],
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
+        container_ipos_to_expected_assignments: Union[
+            dict[int, dict[str, AssignedValue]], None
+        ],
         delegator_class: Union[Type[DelegatorAbstract], None],
         envelope_ipos_to_prop_values: Union[dict[int, dict[str, str]], None],
     ):
@@ -70,11 +76,17 @@ class LocalTestClass(InOutTestClass):
         test_line: str,
         comp_type: CompType,
         expected_suggestions: Union[list[str], None],
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
-        container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
+        container_ipos_to_expected_assignments: Union[
+            dict[int, dict[str, AssignedValue]], None
+        ],
+        container_ipos_to_options_hidden_by_default_value: Union[
+            dict[int, dict[str, list[str]]], None
+        ],
         delegator_class: Union[Type[DelegatorAbstract], None],
         envelope_ipos_to_prop_values: Union[dict[int, dict[str, str]], None],
-        expected_container_ipos_to_used_token_bucket: Union[dict[int, Union[int, None]], None],
+        expected_container_ipos_to_used_token_bucket: Union[
+            dict[int, Union[int, None]], None
+        ],
         init_env_mock_builder: EnvMockBuilder,
     ):
         (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -83,16 +95,19 @@ class LocalTestClass(InOutTestClass):
             self.assertIsNotNone(delegator_class)
 
         if delegator_class is not None:
-            init_env_mock_builder.set_capture_delegator_invocation_input(delegator_class)
+            init_env_mock_builder.set_capture_delegator_invocation_input(
+                delegator_class
+            )
 
         env_mock_builder = (
-            init_env_mock_builder
-            .set_command_line(command_line)
+            init_env_mock_builder.set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)
-            .set_test_data_ids_to_load([
-                test_data,
-            ])
+            .set_test_data_ids_to_load(
+                [
+                    test_data,
+                ]
+            )
         )
         with env_mock_builder.build():
             command_obj = __main__.main()

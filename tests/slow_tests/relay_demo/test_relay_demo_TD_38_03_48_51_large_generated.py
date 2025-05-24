@@ -22,26 +22,43 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "lay goto host cm1 fs2 gr3 hs|", CompType.PrefixShown,
-                [f"hs{host_number}" for host_number in range(0, ServiceLoader.object_multiplier)],
+                line_no(),
+                "lay goto host cm1 fs2 gr3 hs|",
+                CompType.PrefixShown,
+                [
+                    f"hs{host_number}"
+                    for host_number in range(0, ServiceLoader.object_multiplier)
+                ],
                 {
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("cm1", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("fs2", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("gr3", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "cm1", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "fs2", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "gr3", ValueSource.explicit_offered_arg
+                        ),
                     },
                 },
                 "Ensure it suggests relevant hosts.",
             ),
             (
-                line_no(), "lay goto host cm1 fs2 gr3|", CompType.PrefixShown,
+                line_no(),
+                "lay goto host cm1 fs2 gr3|",
+                CompType.PrefixShown,
                 [
                     "gr3",
                 ],
                 {
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("cm1", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("fs2", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "cm1", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "fs2", ValueSource.explicit_offered_arg
+                        ),
                         ServicePropName.geo_region.name: None,
                     },
                 },

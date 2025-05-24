@@ -5,7 +5,9 @@ from subprocess import (
 )
 
 from argrelay_lib_root.misc_helper_common import eprint
-from argrelay_schema_config_server.runtime_data_server_app.MongoConfig import MongoConfig
+from argrelay_schema_config_server.runtime_data_server_app.MongoConfig import (
+    MongoConfig,
+)
 
 
 class MongoServerWrapper:
@@ -27,10 +29,14 @@ class MongoServerWrapper:
         eprint(f"start_server: {mongo_config.mongo_server.start_server}")
         eprint(f"is_started: {self.is_started}")
         if mongo_config.mongo_server.start_server and not self.is_started:
-            eprint(f"server_start_command: {mongo_config.mongo_server.server_start_command}")
-            self.mongo_proc = subprocess.Popen(mongo_config.mongo_server.server_start_command, shell = True)
+            eprint(
+                f"server_start_command: {mongo_config.mongo_server.server_start_command}"
+            )
+            self.mongo_proc = subprocess.Popen(
+                mongo_config.mongo_server.server_start_command, shell=True
+            )
             try:
-                self.mongo_proc.wait(timeout = 5)
+                self.mongo_proc.wait(timeout=5)
             except TimeoutExpired:
                 # Ignore: it probably started without issues. Or did it?
                 pass
@@ -52,7 +58,7 @@ class MongoServerWrapper:
             self.mongo_proc.kill()
         while self.is_started:
             try:
-                self.mongo_proc.wait(timeout = 5)
+                self.mongo_proc.wait(timeout=5)
             except TimeoutExpired:
                 eprint("still running: mongo_proc: ", self.mongo_proc)
             exit_code = self.mongo_proc.poll()

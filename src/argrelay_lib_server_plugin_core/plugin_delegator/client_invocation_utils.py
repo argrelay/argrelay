@@ -23,7 +23,9 @@ def load_client_plugin_config(
     See FS_83_23_99_90 client plugin config override.
     """
 
-    config_file_path = f"{get_argrelay_dir()}/conf/plugin_config/{plugin_instance_id}.yaml"
+    config_file_path = (
+        f"{get_argrelay_dir()}/conf/plugin_config/{plugin_instance_id}.yaml"
+    )
     if os.path.isfile(config_file_path):
         return type_desc.dict_from_yaml_file(config_file_path)
     else:
@@ -43,10 +45,8 @@ def filter_remaining_args(
 
     remaining_args = []
     for i, curr_token in enumerate(invocation_input.all_tokens):
-        if (
-            (i not in invocation_input.consumed_token_ipos_list())
-            and
-            (i not in invocation_input.excluded_tokens)
+        if (i not in invocation_input.consumed_token_ipos_list()) and (
+            i not in invocation_input.excluded_tokens
         ):
             remaining_args.append(curr_token)
     return remaining_args
@@ -64,10 +64,10 @@ def prohibit_unconsumed_args(
     unconsumed_args = filter_remaining_args(ii)
     if len(unconsumed_args) > 0:
         eprint(
-            f"ERROR: this function prohibits unrecognized args " +
-            f"(see {TermColor.remaining_token.value}highlighted{TermColor.reset_style.value} on Alt+Shift+Q results): " +
-            f"{TermColor.remaining_token.value}" +
-            " ".join(unconsumed_args) +
-            f"{TermColor.reset_style.value}"
+            f"ERROR: this function prohibits unrecognized args "
+            + f"(see {TermColor.remaining_token.value}highlighted{TermColor.reset_style.value} on Alt+Shift+Q results): "
+            + f"{TermColor.remaining_token.value}"
+            + " ".join(unconsumed_args)
+            + f"{TermColor.reset_style.value}"
         )
         exit(ClientExitCode.GeneralError.value)

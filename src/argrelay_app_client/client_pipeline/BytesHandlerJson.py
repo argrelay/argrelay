@@ -1,7 +1,11 @@
 import json
 
-from argrelay_app_client.client_pipeline.BytesHandlerAbstract import BytesHandlerAbstract
-from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
+from argrelay_app_client.client_pipeline.BytesHandlerAbstract import (
+    BytesHandlerAbstract,
+)
+from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import (
+    ClientResponseHandlerAbstract,
+)
 from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
 
 
@@ -11,8 +15,7 @@ class BytesHandlerJson(BytesHandlerAbstract):
         self,
         client_response_handler: ClientResponseHandlerAbstract,
     ):
-        super().__init__(
-        )
+        super().__init__()
         self.client_response_handler = client_response_handler
 
     def handle_bytes(

@@ -5,14 +5,22 @@ from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeCl
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
 from argrelay_lib_server_plugin_core.enum_desc.NoDataPropName import NoDataPropName
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopBase import DelegatorNoopBase
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import instance_data_
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopBase import (
+    DelegatorNoopBase,
+)
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    instance_data_,
+)
 from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
     search_control_list_,
 )
-from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import populate_search_control
-from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import func_id_
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
+    populate_search_control,
+)
+from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema import (
+    func_id_,
+)
 
 
 class DelegatorNoopNoDataFunc(DelegatorNoopBase):
@@ -28,7 +36,6 @@ class DelegatorNoopNoDataFunc(DelegatorNoopBase):
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                 {"class": ReservedPropName.envelope_class.name},
-
                 {"no_data_arg_name_one": NoDataPropName.no_data_prop_name_one.name},
                 {"no_data_arg_name_two": NoDataPropName.no_data_prop_name_two.name},
             ],

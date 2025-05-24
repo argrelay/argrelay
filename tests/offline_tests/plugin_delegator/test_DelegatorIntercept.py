@@ -10,7 +10,9 @@ from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorIntercept import 
     output_format_prop_name,
     OutputFormat,
 )
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_test_infra.test_infra import (
     assert_test_module_name_embeds_prod_class_name,
@@ -109,7 +111,7 @@ class ThisTestClass(LocalTestClass):
                 ],
                 None,
                 None,
-                "FS_13_51_07_97 list `arg_value` from different `data_envelope`-s combine."
+                "FS_13_51_07_97 list `arg_value` from different `data_envelope`-s combine.",
             ),
             (
                 line_no(),
@@ -132,8 +134,7 @@ class ThisTestClass(LocalTestClass):
                 ],
                 {},
                 None,
-                "For `intercept` any function is allowed - "
-                "`goto` is suggested.",
+                "For `intercept` any function is allowed - " "`goto` is suggested.",
             ),
             (
                 line_no(),
@@ -176,12 +177,20 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     3: {
-                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
-                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ValueSource.explicit_offered_arg),
+                        ServicePropName.service_name.name: AssignedValue(
+                            "s_b", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "prod", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "qwer-pd-2", ValueSource.explicit_offered_arg
+                        ),
                     },
                     4: {
-                        ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
+                        ServicePropName.access_type.name: AssignedValue(
+                            "ro", ValueSource.default_value
+                        ),
                     },
                     5: None,
                 },
@@ -229,12 +238,20 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     3: {
-                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
-                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ValueSource.explicit_offered_arg),
+                        ServicePropName.service_name.name: AssignedValue(
+                            "s_b", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "prod", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "qwer-pd-2", ValueSource.explicit_offered_arg
+                        ),
                     },
                     4: {
-                        ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
+                        ServicePropName.access_type.name: AssignedValue(
+                            "ro", ValueSource.default_value
+                        ),
                     },
                     5: None,
                 },
@@ -382,7 +399,7 @@ class ThisTestClass(LocalTestClass):
                         ReservedPropName.func_id.name: AssignedValue(
                             SpecialFunc.func_id_intercept_invocation.name,
                             ValueSource.explicit_offered_arg,
-                        )
+                        ),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(

@@ -1,5 +1,5 @@
-"""
-"""
+""" """
+
 import os
 from contextlib import contextmanager
 from inspect import (
@@ -81,14 +81,14 @@ def parse_line_and_cpos(test_line: str) -> (str, int):
     """
     Translate test line with pipe as cursor place into command line string and cursor char position (cpos)
     """
-    assert test_line.count('|') == 1
-    cursor_cpos = test_line.index('|')
-    command_line = test_line.replace('|', "")
+    assert test_line.count("|") == 1
+    cursor_cpos = test_line.index("|")
+    command_line = test_line.replace("|", "")
     return command_line, cursor_cpos
 
 
 @contextmanager
-def change_to_known_repo_path(path_from_repo_root = "./tests"):
+def change_to_known_repo_path(path_from_repo_root="./tests"):
     """
     This function changes current dir to known path within repo root.
 

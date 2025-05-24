@@ -13,8 +13,12 @@ from argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoaderConfigSchema 
     data_envelopes_,
     envelope_class_to_collection_name_map_,
 )
-from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import EnvelopeCollection
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import (
+    EnvelopeCollection,
+)
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 
 _primitive_types = (bool, str, int, float)
 
@@ -50,21 +54,25 @@ class ConfigOnlyLoader(AbstractLoader):
             plugin_instance_id,
             plugin_config_dict,
         )
-        self.plugin_config_dict = config_only_loader_config_desc.obj_from_input_dict(self.plugin_config_dict)
+        self.plugin_config_dict = config_only_loader_config_desc.obj_from_input_dict(
+            self.plugin_config_dict
+        )
 
     def list_index_models(
         self,
     ) -> list[IndexModel]:
 
-        collection_name_to_index_props_map: dict[str, list[str]] = self.plugin_config_dict[
-            collection_name_to_index_props_map_
-        ]
+        collection_name_to_index_props_map: dict[str, list[str]] = (
+            self.plugin_config_dict[collection_name_to_index_props_map_]
+        )
         index_models: list[IndexModel] = []
         for collection_name, index_props in collection_name_to_index_props_map.items():
-            index_models.append(IndexModel(
-                collection_name = collection_name,
-                index_props = index_props,
-            ))
+            index_models.append(
+                IndexModel(
+                    collection_name=collection_name,
+                    index_props=index_props,
+                )
+            )
 
         return index_models
 
@@ -91,13 +99,15 @@ class ConfigOnlyLoader(AbstractLoader):
                 ReservedPropName.envelope_class.name,
                 ReservedEnvelopeClass.ClassUnknown.name,
             )
-            collection_name = envelope_class_to_collection_name_map.get(class_name, class_name)
+            collection_name = envelope_class_to_collection_name_map.get(
+                class_name, class_name
+            )
 
             envelope_collection = envelope_collections.setdefault(
                 collection_name,
                 EnvelopeCollection(
-                    collection_name = collection_name,
-                    data_envelopes = [],
+                    collection_name=collection_name,
+                    data_envelopes=[],
                 ),
             )
 

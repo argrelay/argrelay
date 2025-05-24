@@ -9,15 +9,25 @@ from argrelay_app_server.composite_forest.CompositeForestExtractor import (
 )
 from argrelay_app_server.composite_forest.DictTreeWalker import normalize_tree
 from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
-from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
-from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
-from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import composite_forest_desc
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    FuncTreeInterpFactory,
+)
+from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import (
+    InterpTreeInterpFactory,
+)
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import (
+    CompositeForest,
+)
+from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import (
+    composite_forest_desc,
+)
 from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
     server_config_desc,
     server_plugin_control_,
 )
-from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import composite_forest_
+from argrelay_schema_config_server.schema_config_server_app.ServerPluginControlSchema import (
+    composite_forest_,
+)
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
@@ -472,7 +482,6 @@ class ThisTestClass(LocalTestClass):
                 },
                 f"{FuncTreeInterpFactory.__name__}.check_env",
             ),
-
         ]
 
         for test_case in test_cases:
@@ -485,10 +494,12 @@ class ThisTestClass(LocalTestClass):
 
                 normalized_expected_dict = normalize_tree(expected_func_tree)
 
-                normalized_actual_dict = normalize_tree(extract_func_tree(
-                    self.load_composite_forest(),
-                    plugin_instance_id,
-                ))
+                normalized_actual_dict = normalize_tree(
+                    extract_func_tree(
+                        self.load_composite_forest(),
+                        plugin_instance_id,
+                    )
+                )
 
                 self.assertEqual(
                     normalized_expected_dict,
@@ -496,8 +507,9 @@ class ThisTestClass(LocalTestClass):
                 )
 
     @staticmethod
-    def load_composite_forest(
-    ) -> CompositeForest:
+    def load_composite_forest() -> CompositeForest:
         return composite_forest_desc.obj_from_input_dict(
-            server_config_desc.dict_from_default_file()[server_plugin_control_][composite_forest_]
+            server_config_desc.dict_from_default_file()[server_plugin_control_][
+                composite_forest_
+            ]
         )

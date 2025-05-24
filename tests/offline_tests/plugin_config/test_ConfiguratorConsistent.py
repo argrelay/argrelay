@@ -1,16 +1,16 @@
-from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorConsistent import ConfiguratorConsistent
+from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorConsistent import (
+    ConfiguratorConsistent,
+)
 from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
-from argrelay_test_infra.test_infra.EnvMockBuilder import wrap_instance_method_on_instance
+from argrelay_test_infra.test_infra.EnvMockBuilder import (
+    wrap_instance_method_on_instance,
+)
 
 
 class ThisTestClass(BaseTestClass):
 
     def test_reply_consistently(self):
-        plugin_obj = ConfiguratorConsistent(
-            None,
-            "",
-            {}
-        )
+        plugin_obj = ConfiguratorConsistent(None, "", {})
         mocked_git_commit_id = "this commit does not exist"
         with wrap_instance_method_on_instance(
             plugin_obj,

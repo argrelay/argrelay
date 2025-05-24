@@ -3,7 +3,9 @@ from argrelay_api_server_cli.schema_response.InterpResultSchema import (
     interp_result_desc,
 )
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
-from argrelay_app_server.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
+from argrelay_app_server.handler_request.AbstractServerRequestHandler import (
+    AbstractServerRequestHandler,
+)
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_lib_root.enum_desc.ServerAction import ServerAction
 from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
@@ -16,7 +18,7 @@ class DescribeLineArgsServerRequestHandler(AbstractServerRequestHandler):
         local_server: LocalServer,
     ):
         super().__init__(
-            local_server = local_server,
+            local_server=local_server,
         )
 
     def handle_request(

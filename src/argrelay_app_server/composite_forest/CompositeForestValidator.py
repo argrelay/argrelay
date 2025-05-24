@@ -5,9 +5,15 @@ from argrelay_app_server.composite_forest.CompositeForestWalker import (
     TraverseDecision,
 )
 from argrelay_lib_root.enum_desc.PluginType import PluginType
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
-from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
-from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    FuncTreeInterpFactory,
+)
+from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import (
+    InterpTreeInterpFactory,
+)
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import (
+    CompositeForest,
+)
 from argrelay_schema_config_server.runtime_data_server_app.CompositeNode import (
     BaseNode,
     FuncTreeNode,
@@ -15,7 +21,9 @@ from argrelay_schema_config_server.runtime_data_server_app.CompositeNode import 
     TreePathNode,
     ZeroArgNode,
 )
-from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import CompositeNodeType
+from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import (
+    CompositeNodeType,
+)
 
 
 def validate_composite_forest(
@@ -88,7 +96,9 @@ class _CompositeForestValidator_zero_arg_node_is_root(CompositeForestValidatorAb
 
 
 # noinspection PyPep8Naming
-class _CompositeForestValidator_func_tree_node_is_leaf(CompositeForestValidatorAbstract):
+class _CompositeForestValidator_func_tree_node_is_leaf(
+    CompositeForestValidatorAbstract
+):
     """
     Validate that:
     *   all `CompositeNodeType.func_tree_node` are leaves only within the composite forest
@@ -117,7 +127,9 @@ class _CompositeForestValidator_func_tree_node_is_leaf(CompositeForestValidatorA
 
 
 # noinspection PyPep8Naming
-class _CompositeForestValidator_zero_arg_node_with_interp_tree_node(CompositeForestValidatorAbstract):
+class _CompositeForestValidator_zero_arg_node_with_interp_tree_node(
+    CompositeForestValidatorAbstract
+):
     """
     Validate that:
     *   Descendants of `CompositeNodeType.zero_arg_node` are `CompositeNodeType.interp_tree_node`
@@ -148,7 +160,10 @@ class _CompositeForestValidator_zero_arg_node_with_interp_tree_node(CompositeFor
 
     def _visit_tree_path_node(self, node: TreePathNode) -> None:
         if self.non_tree_path_ancestor_nodes_stack:
-            if self.non_tree_path_ancestor_nodes_stack[-1].node_type is CompositeNodeType.zero_arg_node:
+            if (
+                self.non_tree_path_ancestor_nodes_stack[-1].node_type
+                is CompositeNodeType.zero_arg_node
+            ):
                 self._assert_children_are_interp_tree_node_or_tree_path_node()
 
     ####################################################################################################################
@@ -181,13 +196,15 @@ class _CompositeForestValidator_zero_arg_node_with_interp_tree_node(CompositeFor
         for child_node in self.curr_node.sub_tree.values():
             assert (
                 child_node.node_type is CompositeNodeType.interp_tree_node
-                or
-                child_node.node_type is CompositeNodeType.tree_path_node
+                or child_node.node_type is CompositeNodeType.tree_path_node
             )
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
     def _assert_non_tree_path_node_ancestor_is_zero_arg_node(self):
-        assert self.non_tree_path_ancestor_nodes_stack[-1].node_type is CompositeNodeType.zero_arg_node
+        assert (
+            self.non_tree_path_ancestor_nodes_stack[-1].node_type
+            is CompositeNodeType.zero_arg_node
+        )
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
     def _push_non_tree_path_node_ancestor(self):
@@ -201,7 +218,9 @@ class _CompositeForestValidator_zero_arg_node_with_interp_tree_node(CompositeFor
 
 
 # noinspection PyPep8Naming
-class _CompositeForestValidator_interp_tree_node_with_func_tree_node(CompositeForestValidatorAbstract):
+class _CompositeForestValidator_interp_tree_node_with_func_tree_node(
+    CompositeForestValidatorAbstract
+):
     """
     Validate that:
     *   Descendants of `CompositeNodeType.interp_tree_node` are `CompositeNodeType.func_tree_node`
@@ -231,7 +250,10 @@ class _CompositeForestValidator_interp_tree_node_with_func_tree_node(CompositeFo
 
     def _visit_tree_path_node(self, node: TreePathNode) -> None:
         if self.non_tree_path_ancestor_nodes_stack:
-            if self.non_tree_path_ancestor_nodes_stack[-1].node_type is CompositeNodeType.interp_tree_node:
+            if (
+                self.non_tree_path_ancestor_nodes_stack[-1].node_type
+                is CompositeNodeType.interp_tree_node
+            ):
                 self._assert_children_are_func_tree_node_or_tree_path_node()
 
     ####################################################################################################################
@@ -265,13 +287,15 @@ class _CompositeForestValidator_interp_tree_node_with_func_tree_node(CompositeFo
         for child_node in self.curr_node.sub_tree.values():
             assert (
                 child_node.node_type is CompositeNodeType.func_tree_node
-                or
-                child_node.node_type is CompositeNodeType.tree_path_node
+                or child_node.node_type is CompositeNodeType.tree_path_node
             )
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
     def _assert_non_tree_path_node_ancestor_is_interp_tree_node(self):
-        assert self.non_tree_path_ancestor_nodes_stack[-1].node_type is CompositeNodeType.interp_tree_node
+        assert (
+            self.non_tree_path_ancestor_nodes_stack[-1].node_type
+            is CompositeNodeType.interp_tree_node
+        )
         self.visitor_decision = TraverseDecision.walk_sub_tree
 
     def _push_non_tree_path_node_ancestor(self):

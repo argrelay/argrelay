@@ -81,7 +81,9 @@ def _normalize_tree(
             if tree_depth != 0:
                 return input_tree
             else:
-                raise ValueError(f"`input_tree` with single leaf `{surrogate_node_id_}` is invalid.")
+                raise ValueError(
+                    f"`input_tree` with single leaf `{surrogate_node_id_}` is invalid."
+                )
         else:
             if tree_depth != 0:
                 return input_tree
@@ -94,7 +96,9 @@ def _normalize_tree(
         else:
             for node_id in input_tree:
                 # normalize next level:
-                output_tree[node_id] = _normalize_tree(input_tree[node_id], tree_depth + 1)
+                output_tree[node_id] = _normalize_tree(
+                    input_tree[node_id], tree_depth + 1
+                )
     else:
         raise ValueError(f"unexpected `input_tree` type: {type(input_tree)}")
 
@@ -213,9 +217,7 @@ class DictTreeWalker:
         )
         return tree_paths
 
-    def build_paths_to_paths(
-        self
-    ) -> dict[tuple[str, ...], tuple[str, ...]]:
+    def build_paths_to_paths(self) -> dict[tuple[str, ...], tuple[str, ...]]:
         """
         Map each path in the tree into path specified in the leaf (`list` in tree leaf becomes `tuple` key in the map).
 
@@ -244,8 +246,7 @@ class DictTreeWalker:
             [
                 list[str],
                 Union[str, list, dict],
-                dict[Union[str, tuple[str, ...]],
-                list[list[str]]],
+                dict[Union[str, tuple[str, ...]], list[list[str]]],
             ],
             None,
         ],

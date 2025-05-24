@@ -9,7 +9,9 @@ from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay_lib_root.schema_config.ConnectionConfig import ConnectionConfig
 
 
-class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemoteWorkerAbstract):
+class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(
+    ClientCommandRemoteWorkerAbstract
+):
     """
     This class optimizes what can otherwise be done via generic `ClientCommandRemoteWorkerJson`.
 
@@ -46,12 +48,14 @@ class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemote
         s,
         connection_config: ConnectionConfig,
     ):
-        s.connect((
-            connection_config.server_host_name,
-            connection_config.server_port_number,
-        ))
+        s.connect(
+            (
+                connection_config.server_host_name,
+                connection_config.server_port_number,
+            )
+        )
 
-        request_body_str = (f"""\
+        request_body_str = f"""\
 {{
     "client_version": {json.dumps(self.call_ctx.client_version)},
     "client_conf_target": {json.dumps(self.call_ctx.client_conf_target)},
@@ -63,17 +67,17 @@ class ClientCommandRemoteWorkerTextProposeArgValuesOptimized(ClientCommandRemote
     "client_pid": {self.call_ctx.client_pid},
     "is_debug_enabled": {'true' if self.call_ctx.is_debug_enabled else 'false'}
 }}
-""")
+"""
         request_body_len = len(request_body_str.encode())
 
-        request_str = (f"""\
+        request_str = f"""\
 POST {ServerAction.ProposeArgValues.value} HTTP/1.1\r
 Content-Type: application/json\r
 Content-Length: {request_body_len}\r
 Connection: close\r
 \r
 {request_body_str}
-""")
+"""
         ElapsedTime.measure("before_request")
 
         s.sendall(request_str.encode())
@@ -83,10 +87,10 @@ Connection: close\r
 
         # First line, second space-delimited substring:
         # HTTP/1.1 200 OK\r\n
-        response_status_line = response_str[:response_str.find("\r")]
+        response_status_line = response_str[: response_str.find("\r")]
         first_space_cpos = response_status_line.find(" ")
         response_status_code = int(
-            response_status_line[first_space_cpos + 1:first_space_cpos + 1 + 3]
+            response_status_line[first_space_cpos + 1 : first_space_cpos + 1 + 3]
         )
         # Content after headers (after empty line):
         content_cpos = response_str.find("\r\n\r\n") + 4

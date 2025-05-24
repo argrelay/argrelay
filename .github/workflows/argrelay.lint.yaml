@@ -1,0 +1,36 @@
+name: argrelay.lint.yaml
+run-name: "${{ github.workflow }}: ${{ github.actor }}: ${{ github.event_name }}: ${{ github.ref_name }}: ${{ github.ref_type }}"
+on:
+    push:
+        branches:
+        -   "*"
+jobs:
+    bootstrap_scenarios:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                # FS_84_11_73_28: supported python versions:
+                python-version:
+                    -   3.13
+        steps:
+            -   run: "echo runner.os: ${{ runner.os }}"
+            -   run: "echo github.repository: ${{ github.repository }}"
+            -   run: "echo github.ref: ${{ github.ref }}"
+
+            -   name: "matrix.python-version: ${{ matrix.python-version }}"
+                uses: actions/setup-python@v4
+                with:
+                    python-version: ${{ matrix.python-version }}
+
+            -   run: "python -c \"import sys; print(sys.version);\""
+
+            -   uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+
+            -   run: |
+                    cd "${{ github.workspace }}"
+                    ./exe/update_pre_commit.bash
+
+            -   run: "echo job.status: ${{ job.status }}"

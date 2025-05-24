@@ -8,7 +8,9 @@ from argrelay_app_server.composite_forest.CompositeForestWalker import (
 )
 from argrelay_app_server.composite_forest.CompositeInfoType import CompositeInfoType
 from argrelay_app_server.composite_forest.DictTreeWalker import surrogate_node_id_
-from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import (
+    CompositeForest,
+)
 from argrelay_schema_config_server.runtime_data_server_app.CompositeNode import (
     FuncTreeNode,
     InterpTreeNode,
@@ -141,7 +143,9 @@ class CompositeForestExtractorAbstract(CompositeForestWalkerAbstract):
 
 
 # noinspection PyPep8Naming
-class _CompositeForestWalker_tree_abs_path_to_interp_id(CompositeForestExtractorAbstract):
+class _CompositeForestWalker_tree_abs_path_to_interp_id(
+    CompositeForestExtractorAbstract
+):
 
     def __init__(
         self,

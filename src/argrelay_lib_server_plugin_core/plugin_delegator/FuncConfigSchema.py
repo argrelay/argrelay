@@ -26,11 +26,11 @@ class FuncConfigSchema(Schema):
 
     fill_control_list = fields.List(
         fields.Dict(
-            keys = fields.String(),
-            values = fields.String(),
-            required = True,
+            keys=fields.String(),
+            values=fields.String(),
+            required=True,
         ),
-        required = False,
+        required=False,
     )
     """
     FS_49_96_50_77 Config-only delegator implementation to compute default values:
@@ -44,14 +44,12 @@ class FuncConfigSchema(Schema):
 
 
 func_config_desc = TypeDesc(
-    dict_schema = FuncConfigSchema(),
-    ref_name = FuncConfigSchema.__name__,
-    dict_example = {
+    dict_schema=FuncConfigSchema(),
+    ref_name=FuncConfigSchema.__name__,
+    dict_example={
         fill_control_list_: [
-            {
-            },
-            {
-            },
+            {},
+            {},
             {
                 "severity_level": "{envelope_containers[1].data_envelopes[0]['severity_level']}",
                 "exit_code": "{envelope_containers[1].data_envelopes[0]['exit_code']}",
@@ -59,5 +57,5 @@ func_config_desc = TypeDesc(
         ],
         func_envelope_: func_envelope_desc.dict_example,
     },
-    default_file_path = "",
+    default_file_path="",
 )

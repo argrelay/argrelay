@@ -13,14 +13,26 @@ from argrelay_app_server.composite_forest.CompositeForestValidator import (
     CompositeForestValidatorAbstract,
     validate_composite_forest,
 )
-from argrelay_app_server.composite_forest.CompositeForestWalker import CompositeForestWalkerPrinter
+from argrelay_app_server.composite_forest.CompositeForestWalker import (
+    CompositeForestWalkerPrinter,
+)
 from argrelay_lib_root.enum_desc.PluginType import PluginType
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import FuncTreeInterpFactory
-from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import InterpTreeInterpFactory
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    FuncTreeInterpFactory,
+)
+from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory import (
+    InterpTreeInterpFactory,
+)
 from argrelay_lib_server_plugin_core.plugin_loader.NoopLoader import NoopLoader
-from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
-from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import CompositeNodeType
-from argrelay_schema_config_server.schema_config_interp.FuncEnvelopeSchema import func_id_some_func_
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import (
+    CompositeForest,
+)
+from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import (
+    CompositeNodeType,
+)
+from argrelay_schema_config_server.schema_config_interp.FuncEnvelopeSchema import (
+    func_id_some_func_,
+)
 from argrelay_schema_config_server.schema_config_server_app.CompositeForestSchema import (
     composite_forest_desc,
     tree_roots_,
@@ -31,12 +43,16 @@ from argrelay_schema_config_server.schema_config_server_app.CompositeNodeSchema 
     plugin_instance_id_,
     sub_tree_,
 )
-from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import server_config_desc
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
+    server_config_desc,
+)
 from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
     plugin_config_desc,
     server_plugin_instances_,
 )
-from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_config_
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_config_,
+)
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
@@ -65,31 +81,23 @@ class ThisTestClass(LocalTestClass):
 
         cls.plugin_instances = {
             cls.interp_tree_plugin_id: InterpTreeInterpFactory(
-                server_config = cls.server_config,
-                plugin_instance_id = cls.interp_tree_plugin_id,
-                plugin_config_dict = plugin_config_desc.dict_from_default_file()[
+                server_config=cls.server_config,
+                plugin_instance_id=cls.interp_tree_plugin_id,
+                plugin_config_dict=plugin_config_desc.dict_from_default_file()[
                     server_plugin_instances_
-                ][
-                    cls.interp_tree_plugin_id
-                ][
-                    plugin_config_
-                ]
+                ][cls.interp_tree_plugin_id][plugin_config_],
             ),
             cls.func_tree_plugin_id: FuncTreeInterpFactory(
-                server_config = cls.server_config,
-                plugin_instance_id = cls.func_tree_plugin_id,
-                plugin_config_dict = plugin_config_desc.dict_from_default_file()[
+                server_config=cls.server_config,
+                plugin_instance_id=cls.func_tree_plugin_id,
+                plugin_config_dict=plugin_config_desc.dict_from_default_file()[
                     server_plugin_instances_
-                ][
-                    cls.func_tree_plugin_id
-                ][
-                    plugin_config_
-                ]
+                ][cls.func_tree_plugin_id][plugin_config_],
             ),
             cls.loader_plugin_id: NoopLoader(
-                server_config = cls.server_config,
-                plugin_instance_id = cls.func_tree_plugin_id,
-                plugin_config_dict = {},
+                server_config=cls.server_config,
+                plugin_instance_id=cls.func_tree_plugin_id,
+                plugin_config_dict={},
             ),
         }
 
@@ -148,7 +156,9 @@ class ThisTestClass(LocalTestClass):
         Load simplified FS_33_76_82_84 composite forest to test its schema load and full validation.
         """
 
-        composite_forest: CompositeForest = composite_forest_desc.obj_from_input_dict(self.valid_composite_forest)
+        composite_forest: CompositeForest = composite_forest_desc.obj_from_input_dict(
+            self.valid_composite_forest
+        )
         assert composite_forest is not None
 
         composite_forest_printer = CompositeForestWalkerPrinter(
@@ -166,7 +176,9 @@ class ThisTestClass(LocalTestClass):
 
         def modify_to_have_zero_arg_node_at_tree_depth():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_1"][sub_tree_]["level_2_key_1"]
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_1"][
+                sub_tree_
+            ]["level_2_key_1"]
             local_composite_node[node_type_] = CompositeNodeType.zero_arg_node.name
 
             return local_composite_forest
@@ -222,16 +234,13 @@ class ThisTestClass(LocalTestClass):
 
         def modify_to_have_non_leaf_func_tree_node():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_2"
-            ][sub_tree_][
-                "level_2_key_2"
-            ][sub_tree_][
-                "level_3_key_2"
-            ][sub_tree_][
-                "level_4_key_2"
-            ]
-            assert local_composite_node[node_type_] == CompositeNodeType.func_tree_node.name
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_2"][
+                sub_tree_
+            ]["level_2_key_2"][sub_tree_]["level_3_key_2"][sub_tree_]["level_4_key_2"]
+            assert (
+                local_composite_node[node_type_]
+                == CompositeNodeType.func_tree_node.name
+            )
 
             # Adjust data to avoid schema validation error:
             local_composite_node[sub_tree_] = {
@@ -245,16 +254,13 @@ class ThisTestClass(LocalTestClass):
 
         def modify_to_have_non_func_tree_node_at_tree_leaf():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_2"
-            ][sub_tree_][
-                "level_2_key_2"
-            ][sub_tree_][
-                "level_3_key_2"
-            ][sub_tree_][
-                "level_4_key_2"
-            ]
-            assert local_composite_node[node_type_] == CompositeNodeType.func_tree_node.name
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_2"][
+                sub_tree_
+            ]["level_2_key_2"][sub_tree_]["level_3_key_2"][sub_tree_]["level_4_key_2"]
+            assert (
+                local_composite_node[node_type_]
+                == CompositeNodeType.func_tree_node.name
+            )
             local_composite_node[node_type_] = CompositeNodeType.tree_path_node.name
 
             # Adjust data to avoid schema validation error:
@@ -303,10 +309,10 @@ class ThisTestClass(LocalTestClass):
 
         def modify_parent_to_non_zero_arg_node():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_1"
-            ]
-            assert local_composite_node[node_type_] == CompositeNodeType.zero_arg_node.name
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_1"]
+            assert (
+                local_composite_node[node_type_] == CompositeNodeType.zero_arg_node.name
+            )
             local_composite_node[node_type_] = CompositeNodeType.func_tree_node.name
 
             # Adjust data to avoid schema validation error:
@@ -317,12 +323,13 @@ class ThisTestClass(LocalTestClass):
 
         def modify_child_to_non_interp_tree_node():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_2"
-            ][sub_tree_][
-                "level_2_key_2"
-            ]
-            assert local_composite_node[node_type_] == CompositeNodeType.interp_tree_node.name
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_2"][
+                sub_tree_
+            ]["level_2_key_2"]
+            assert (
+                local_composite_node[node_type_]
+                == CompositeNodeType.interp_tree_node.name
+            )
             local_composite_node[node_type_] = CompositeNodeType.tree_path_node.name
 
             # Adjust data to avoid schema validation error:
@@ -371,28 +378,26 @@ class ThisTestClass(LocalTestClass):
 
         def modify_parent_to_non_interp_tree_node():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_1"
-            ][sub_tree_][
-                "level_2_key_1"
-            ]
-            assert local_composite_node[node_type_] == CompositeNodeType.interp_tree_node.name
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_1"][
+                sub_tree_
+            ]["level_2_key_1"]
+            assert (
+                local_composite_node[node_type_]
+                == CompositeNodeType.interp_tree_node.name
+            )
             local_composite_node[node_type_] = CompositeNodeType.zero_arg_node.name
 
             return local_composite_forest
 
         def modify_child_to_non_func_tree_node():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_2"
-            ][sub_tree_][
-                "level_2_key_2"
-            ][sub_tree_][
-                "level_3_key_2"
-            ][sub_tree_][
-                "level_4_key_2"
-            ]
-            assert local_composite_node[node_type_] == CompositeNodeType.func_tree_node.name
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_2"][
+                sub_tree_
+            ]["level_2_key_2"][sub_tree_]["level_3_key_2"][sub_tree_]["level_4_key_2"]
+            assert (
+                local_composite_node[node_type_]
+                == CompositeNodeType.func_tree_node.name
+            )
             local_composite_node[node_type_] = CompositeNodeType.interp_tree_node.name
 
             # Adjust data to avoid schema validation error:
@@ -442,10 +447,10 @@ class ThisTestClass(LocalTestClass):
 
         def modify_zero_arg_node_tree_node_to_use_non_interp_factory_plugin():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_1"
-            ]
-            assert local_composite_node[plugin_instance_id_] == self.interp_tree_plugin_id
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_1"]
+            assert (
+                local_composite_node[plugin_instance_id_] == self.interp_tree_plugin_id
+            )
 
             local_composite_node[plugin_instance_id_] = self.loader_plugin_id
 
@@ -453,10 +458,10 @@ class ThisTestClass(LocalTestClass):
 
         def modify_zero_arg_node_tree_node_to_use_non_InterpTreeInterpFactory():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_1"
-            ]
-            assert local_composite_node[plugin_instance_id_] == self.interp_tree_plugin_id
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_1"]
+            assert (
+                local_composite_node[plugin_instance_id_] == self.interp_tree_plugin_id
+            )
 
             local_composite_node[plugin_instance_id_] = self.func_tree_plugin_id
 
@@ -464,11 +469,9 @@ class ThisTestClass(LocalTestClass):
 
         def modify_interp_tree_node_to_use_non_interp_factory_plugin():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_2"
-            ][sub_tree_][
-                "level_2_key_2"
-            ]
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_2"][
+                sub_tree_
+            ]["level_2_key_2"]
             assert local_composite_node[plugin_instance_id_] == self.func_tree_plugin_id
 
             local_composite_node[plugin_instance_id_] = self.loader_plugin_id
@@ -477,11 +480,9 @@ class ThisTestClass(LocalTestClass):
 
         def modify_interp_tree_node_to_use_non_FuncTreeInterpFactory():
             local_composite_forest = deepcopy(self.valid_composite_forest)
-            local_composite_node = local_composite_forest[tree_roots_][
-                "level_1_key_2"
-            ][sub_tree_][
-                "level_2_key_2"
-            ]
+            local_composite_node = local_composite_forest[tree_roots_]["level_1_key_2"][
+                sub_tree_
+            ]["level_2_key_2"]
             assert local_composite_node[plugin_instance_id_] == self.func_tree_plugin_id
 
             local_composite_node[plugin_instance_id_] = self.interp_tree_plugin_id
@@ -551,7 +552,9 @@ class ThisTestClass(LocalTestClass):
         expected_exception,
     ):
 
-        composite_forest: CompositeForest = composite_forest_desc.obj_from_input_dict(composite_forest_supplier())
+        composite_forest: CompositeForest = composite_forest_desc.obj_from_input_dict(
+            composite_forest_supplier()
+        )
 
         composite_forest_validator = validator_ctor(
             composite_forest,

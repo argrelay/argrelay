@@ -20,6 +20,7 @@ def print_full_stack_trace(given_exception):
     https://stackoverflow.com/a/16589622/441652
     """
     import traceback, sys
+
     exception_obj = sys.exc_info()[0]
     # Remove curr func frame:
     caller_stack = traceback.extract_stack()[:-1]
@@ -34,4 +35,4 @@ def print_full_stack_trace(given_exception):
     else:
         exc_line = f"{type(given_exception).__name__}: {str(given_exception)}"
         full_stack_str = caller_stack_str + exc_line
-    print(full_stack_str, file = sys.stderr)
+    print(full_stack_str, file=sys.stderr)

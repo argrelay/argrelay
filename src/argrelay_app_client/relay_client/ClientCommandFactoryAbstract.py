@@ -32,23 +32,27 @@ def select_client_response_handler(
         *   LocalClientEnvMockBuilder
         """
         from argrelay_app_client.handler_response.ClientResponseHandlerProposeArgValues import (
-            ClientResponseHandlerProposeArgValues
+            ClientResponseHandlerProposeArgValues,
         )
+
         return ClientResponseHandlerProposeArgValues()
     if server_action is ServerAction.DescribeLineArgs:
         from argrelay_app_client.handler_response.ClientResponseHandlerDescribeLineArgs import (
-            ClientResponseHandlerDescribeLineArgs
+            ClientResponseHandlerDescribeLineArgs,
         )
+
         return ClientResponseHandlerDescribeLineArgs()
     if server_action is ServerAction.RelayLineArgs:
         if proc_role == ProcRole.CheckEnvWorker:
             from argrelay_app_client.handler_response.ClientResponseHandlerCheckEnv import (
-                ClientResponseHandlerCheckEnv
+                ClientResponseHandlerCheckEnv,
             )
+
             return ClientResponseHandlerCheckEnv()
         else:
             from argrelay_app_client.handler_response.ClientResponseHandlerRelayLineArgs import (
-                ClientResponseHandlerRelayLineArgs
+                ClientResponseHandlerRelayLineArgs,
             )
+
             return ClientResponseHandlerRelayLineArgs()
     raise RuntimeError

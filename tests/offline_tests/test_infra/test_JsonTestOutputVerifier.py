@@ -1,7 +1,9 @@
 from icecream import ic
 from jsonpath_ng import DatumInContext
 
-from argrelay_api_server_cli.schema_response.InterpResultSchema import consumed_token_buckets_
+from argrelay_api_server_cli.schema_response.InterpResultSchema import (
+    consumed_token_buckets_,
+)
 from argrelay_api_server_cli.schema_response.InvocationInputSchema import (
     delegator_plugin_entry_,
     invocation_input_desc,
@@ -32,8 +34,7 @@ class ThisTestClass(BaseTestClass):
             (
                 line_no(),
                 sample_dict,
-                JsonTestOutputVerifier()
-                .add_verifier(
+                JsonTestOutputVerifier().add_verifier(
                     f"$.{delegator_plugin_entry_}.{plugin_module_name_}",
                     lambda m: self.print_m(m),
                     lambda m: self.assertEqual(1, len(m)),
@@ -59,8 +60,7 @@ class ThisTestClass(BaseTestClass):
             (
                 line_no(),
                 sample_dict,
-                JsonTestOutputVerifier()
-                .add_verifier(
+                JsonTestOutputVerifier().add_verifier(
                     f"$.{consumed_token_buckets_}.[*]",
                     lambda m: self.print_m(m),
                     lambda m: self.assertEqual(2, len(m)),

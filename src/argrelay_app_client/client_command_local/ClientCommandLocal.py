@@ -3,9 +3,13 @@ from __future__ import annotations
 from typing import Union
 
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
-from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
+from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import (
+    ClientResponseHandlerAbstract,
+)
 from argrelay_app_client.relay_client.ClientCommandAbstract import ClientCommandAbstract
-from argrelay_app_server.handler_request.AbstractServerRequestHandler import AbstractServerRequestHandler
+from argrelay_app_server.handler_request.AbstractServerRequestHandler import (
+    AbstractServerRequestHandler,
+)
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
 from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
@@ -23,9 +27,13 @@ class ClientCommandLocal(ClientCommandAbstract):
         super().__init__(
             call_ctx,
         )
-        self.client_response_handler: ClientResponseHandlerAbstract = client_response_handler
+        self.client_response_handler: ClientResponseHandlerAbstract = (
+            client_response_handler
+        )
         self.local_server: LocalServer = local_server
-        self.server_request_handler: AbstractServerRequestHandler = server_request_handler
+        self.server_request_handler: AbstractServerRequestHandler = (
+            server_request_handler
+        )
         self.response_dict: Union[dict, None] = None
         self.interp_ctx: Union[InterpContext, None] = None
 

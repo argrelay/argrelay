@@ -44,11 +44,13 @@ def construct_include(
     https://stackoverflow.com/a/9577670/441652
     """
 
-    file_name = os.path.abspath(os.path.join(
-        # All paths should be relative to `@/` = `argrelay_dir`:
-        get_argrelay_dir(),
-        yaml_loader.construct_scalar(yaml_node),
-    ))
+    file_name = os.path.abspath(
+        os.path.join(
+            # All paths should be relative to `@/` = `argrelay_dir`:
+            get_argrelay_dir(),
+            yaml_loader.construct_scalar(yaml_node),
+        )
+    )
 
     with open(file_name, "r") as file_stream:
         return yaml.load(file_stream, SafeLoader)
@@ -57,7 +59,7 @@ def construct_include(
 yaml.add_constructor("!include", construct_include, SafeLoader)
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class TypeDesc:
     """
     Type descriptor: schema, example, etc.

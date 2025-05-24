@@ -1,5 +1,7 @@
 import argrelay
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.client_spec.ShellContext import (
     get_client_conf_target,
     get_user_name,
@@ -7,7 +9,9 @@ from argrelay_app_client.client_spec.ShellContext import (
 )
 from argrelay_app_client.relay_client import __main__
 from argrelay_app_server.relay_server.UsageStatsEntry import UsageStatsEntry
-from argrelay_app_server.relay_server.UsageStatsEntrySchema import usage_stats_entry_desc
+from argrelay_app_server.relay_server.UsageStatsEntrySchema import (
+    usage_stats_entry_desc,
+)
 from argrelay_lib_root.enum_desc.CompScope import CompScope
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ServerAction import ServerAction
@@ -74,9 +78,11 @@ class ThisTestClass(LocalTestClass):
                         .set_cursor_cpos(test_case.cursor_cpos)
                         .set_comp_type(test_case.comp_type)
                         .set_mock_usage_stats_file_write(test_case.is_mocked_stats_file)
-                        .set_test_data_ids_to_load([
-                            self.__class__.same_test_data_per_class,
-                        ])
+                        .set_test_data_ids_to_load(
+                            [
+                                self.__class__.same_test_data_per_class,
+                            ]
+                        )
                     )
                     with env_mock_builder.build():
 
@@ -93,7 +99,9 @@ class ThisTestClass(LocalTestClass):
 
                             file_mock = env_mock_builder.get_usage_stats_mock()
 
-                            file_mock.assert_called_once_with(env_mock_builder.get_usage_stats_path(), "a")
+                            file_mock.assert_called_once_with(
+                                env_mock_builder.get_usage_stats_path(), "a"
+                            )
                             # Each JSON string per line is separated with new line:
                             file_mock().write.assert_called_with("\n")
 
@@ -105,24 +113,30 @@ class ThisTestClass(LocalTestClass):
                             # Assert file content:
 
                             # Get last JSON file line:
-                            with open(env_mock_builder.get_usage_stats_path()) as stats_usage_file:
+                            with open(
+                                env_mock_builder.get_usage_stats_path()
+                            ) as stats_usage_file:
                                 for file_line in stats_usage_file:
                                     pass
                                 last_line = file_line
 
-                            usage_stats_entry: UsageStatsEntry = usage_stats_entry_desc.obj_from_yaml_str(last_line)
+                            usage_stats_entry: UsageStatsEntry = (
+                                usage_stats_entry_desc.obj_from_yaml_str(last_line)
+                            )
 
                             self.assertEqual(
                                 usage_stats_entry,
                                 UsageStatsEntry(
-                                    server_action = test_case.expected_server_action,
-                                    comp_scope = CompScope.from_comp_type(test_case.comp_type),
-                                    server_ts_ns = usage_stats_entry.server_ts_ns,
-                                    client_conf_target = get_client_conf_target(),
-                                    client_version = argrelay.__version__,
-                                    client_user_id = get_user_name(),
-                                    command_line = test_case.command_line,
-                                    cursor_cpos = test_case.cursor_cpos,
+                                    server_action=test_case.expected_server_action,
+                                    comp_scope=CompScope.from_comp_type(
+                                        test_case.comp_type
+                                    ),
+                                    server_ts_ns=usage_stats_entry.server_ts_ns,
+                                    client_conf_target=get_client_conf_target(),
+                                    client_version=argrelay.__version__,
+                                    client_user_id=get_user_name(),
+                                    command_line=test_case.command_line,
+                                    cursor_cpos=test_case.cursor_cpos,
                                 ),
                             )
 
@@ -137,8 +151,8 @@ class ThisTestCase(ShellInputTestCase):
         expected_server_action: ServerAction,
     ):
         super().__init__(
-            line_no = line_no_from_ctor(),
-            case_comment = case_comment,
+            line_no=line_no_from_ctor(),
+            case_comment=case_comment,
         )
         self.set_test_line(test_line)
         self.set_comp_type(comp_type)

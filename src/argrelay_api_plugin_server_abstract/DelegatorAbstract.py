@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import Union
 
-from argrelay_api_plugin_server_abstract.AbstractPluginServer import AbstractPluginServer
+from argrelay_api_plugin_server_abstract.AbstractPluginServer import (
+    AbstractPluginServer,
+)
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_app_server.runtime_context.EnvelopeContainer import EnvelopeContainer
@@ -17,7 +19,9 @@ from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstance
     func_id_,
     search_control_list_,
 )
-from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import search_control_desc
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
+    search_control_desc,
+)
 
 
 def get_func_id_from_interp_ctx(
@@ -27,10 +31,13 @@ def get_func_id_from_interp_ctx(
     Used on the server-side of the plugin.
     """
 
-    func_data_envelope = interp_ctx.envelope_containers[(
-        # TODO: TODO_73_23_85_93: use helper to select container ipos:
-        interp_ctx.curr_interp.base_container_ipos + function_container_ipos_
-    )].data_envelopes[0]
+    func_data_envelope = interp_ctx.envelope_containers[
+        (
+            # TODO: TODO_73_23_85_93: use helper to select container ipos:
+            interp_ctx.curr_interp.base_container_ipos
+            + function_container_ipos_
+        )
+    ].data_envelopes[0]
     return func_data_envelope[instance_data_][func_id_]
 
 
@@ -99,8 +106,10 @@ class DelegatorAbstract(AbstractPluginServer):
         """
         Implements FS_31_70_49_15 `search_control`.
         """
-        search_control_list: list[SearchControl] = self.extract_search_control_from_function_data_envelope(
-            function_data_envelope,
+        search_control_list: list[SearchControl] = (
+            self.extract_search_control_from_function_data_envelope(
+                function_data_envelope,
+            )
         )
         if func_param_container_offset < len(search_control_list):
             return search_control_list[func_param_container_offset]
@@ -178,7 +187,9 @@ class DelegatorAbstract(AbstractPluginServer):
     ) -> list[SearchControl]:
         return [
             search_control_desc.dict_schema.load(search_control_dict)
-            for search_control_dict in function_data_envelope[instance_data_][search_control_list_]
+            for search_control_dict in function_data_envelope[instance_data_][
+                search_control_list_
+            ]
         ]
 
     @staticmethod
@@ -191,10 +202,11 @@ class DelegatorAbstract(AbstractPluginServer):
         (within `search_control` structures shared with FS_31_70_49_15 `search_control`).
         """
         curr_container = envelope_containers[curr_container_ipos]
-        for prop_name, prop_value in curr_container.search_control.props_to_values_dict.items():
-            curr_container.assigned_prop_name_to_prop_value[
-                prop_name
-            ] = AssignedValue(
+        for (
+            prop_name,
+            prop_value,
+        ) in curr_container.search_control.props_to_values_dict.items():
+            curr_container.assigned_prop_name_to_prop_value[prop_name] = AssignedValue(
                 prop_value,
                 ValueSource.init_value,
             )

@@ -3,7 +3,9 @@ from argrelay_api_server_cli.schema_response.ArgValuesSchema import (
     arg_values_,
     arg_values_desc,
 )
-from argrelay_api_server_cli.server_spec.server_data_schema import get_schema_definitions
+from argrelay_api_server_cli.server_spec.server_data_schema import (
+    get_schema_definitions,
+)
 
 spec_data = {
     "summary": "Propose `arg_value`-s for the given command line and cursor position",
@@ -36,9 +38,11 @@ spec_data = {
             },
         },
     },
-    "definitions": get_schema_definitions([
-        # TODO: provide `call_context_desc` with example of expected comp_type for propose_arg_values:
-        call_context_desc.ref_name,
-        arg_values_desc.ref_name,
-    ]),
+    "definitions": get_schema_definitions(
+        [
+            # TODO: provide `call_context_desc` with example of expected comp_type for propose_arg_values:
+            call_context_desc.ref_name,
+            arg_values_desc.ref_name,
+        ]
+    ),
 }

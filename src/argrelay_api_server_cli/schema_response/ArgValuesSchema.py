@@ -27,18 +27,18 @@ class ArgValuesSchema(ObjectSchema):
 
     arg_values = fields.List(
         fields.String(
-            load_default = "",
+            load_default="",
         ),
-        load_default = [],
-        metadata = {
+        load_default=[],
+        metadata={
             "example": _arg_values_example[arg_values_],
         },
     )
 
 
 arg_values_desc = TypeDesc(
-    dict_schema = ArgValuesSchema(),
-    ref_name = ArgValuesSchema.__name__,
-    dict_example = _arg_values_example,
-    default_file_path = "",
+    dict_schema=ArgValuesSchema(),
+    ref_name=ArgValuesSchema.__name__,
+    dict_example=_arg_values_example,
+    default_file_path="",
 )

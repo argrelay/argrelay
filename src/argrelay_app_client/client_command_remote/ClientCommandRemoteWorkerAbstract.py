@@ -3,8 +3,12 @@ from __future__ import annotations
 import os
 
 from argrelay_api_server_cli.server_spec.CallContext import CallContext
-from argrelay_app_client.client_command_remote.ClientCommandRemoteAbstract import ClientCommandRemoteAbstract
-from argrelay_app_client.client_command_remote.exception_utils import ServerResponseError
+from argrelay_app_client.client_command_remote.ClientCommandRemoteAbstract import (
+    ClientCommandRemoteAbstract,
+)
+from argrelay_app_client.client_command_remote.exception_utils import (
+    ServerResponseError,
+)
 from argrelay_app_client.client_pipeline import BytesSrcAbstract
 from argrelay_lib_root.enum_desc.ClientExitCode import ClientExitCode
 from argrelay_lib_root.enum_desc.ProcRole import ProcRole
@@ -24,8 +28,7 @@ def get_server_index_file_path() -> str:
     return str(os.path.join(get_var_dir_path(), server_index_file_name))
 
 
-def load_server_index(
-) -> int:
+def load_server_index() -> int:
     server_index_file_path = get_server_index_file_path()
     if os.path.isfile(server_index_file_path):
         with open(server_index_file_path, "r") as open_file:
@@ -40,7 +43,7 @@ def store_server_index(
 ) -> None:
     os.makedirs(
         get_var_dir_path(),
-        exist_ok = True,
+        exist_ok=True,
     )
     server_index_file_path = get_server_index_file_path()
     with open(server_index_file_path, "w") as open_file:
@@ -67,7 +70,9 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
             self.curr_connection_config: ConnectionConfig = self.redundant_servers[0]
             self.use_round_robin = True
         else:
-            self.curr_connection_config: ConnectionConfig = self.redundant_servers[server_index]
+            self.curr_connection_config: ConnectionConfig = self.redundant_servers[
+                server_index
+            ]
             self.use_round_robin = False
 
         self.server_index_file_path: str = get_server_index_file_path()
@@ -91,7 +96,9 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
         connections_count = len(self.redundant_servers)
         init_server_index = load_server_index()
         for curr_connection_offset in range(connections_count):
-            curr_server_index = (init_server_index + curr_connection_offset) % connections_count
+            curr_server_index = (
+                init_server_index + curr_connection_offset
+            ) % connections_count
             self.curr_connection_config = self.redundant_servers[curr_server_index]
 
             try:
@@ -112,6 +119,8 @@ class ClientCommandRemoteWorkerAbstract(ClientCommandRemoteAbstract):
 
         self._handle_exception_with_exit_code(
             True,
-            ConnectionError(f"Unable to connect to any of [{connections_count}] configured connections"),
+            ConnectionError(
+                f"Unable to connect to any of [{connections_count}] configured connections"
+            ),
             ClientExitCode.ConnectionError.value,
         )

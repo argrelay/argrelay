@@ -3,8 +3,12 @@ from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import (
+    GitRepoEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoPropName import GitRepoPropName
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
@@ -51,7 +55,9 @@ class ThisTestClass(LocalTestClass):
                             GitRepoEnvelopeClass.class_git_tag.name,
                             ValueSource.init_value,
                         ),
-                        GitRepoPropName.git_repo_alias.name: AssignedValue("argrelay", ValueSource.implicit_value),
+                        GitRepoPropName.git_repo_alias.name: AssignedValue(
+                            "argrelay", ValueSource.implicit_value
+                        ),
                     },
                     3: None,
                 },
@@ -90,7 +96,9 @@ class ThisTestClass(LocalTestClass):
                             GitRepoEnvelopeClass.class_git_tag.name,
                             ValueSource.init_value,
                         ),
-                        GitRepoPropName.git_repo_alias.name: AssignedValue("argrelay", ValueSource.implicit_value),
+                        GitRepoPropName.git_repo_alias.name: AssignedValue(
+                            "argrelay", ValueSource.implicit_value
+                        ),
                     },
                     3: None,
                 },

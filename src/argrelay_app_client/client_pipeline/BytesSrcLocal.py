@@ -1,4 +1,6 @@
-from argrelay_app_client.client_pipeline.BytesHandlerAbstract import BytesHandlerAbstract
+from argrelay_app_client.client_pipeline.BytesHandlerAbstract import (
+    BytesHandlerAbstract,
+)
 from argrelay_app_client.client_pipeline.BytesSrcAbstract import BytesSrcAbstract
 
 

@@ -7,7 +7,9 @@ from enum import (
 from typing import Union
 
 from argrelay_app_server.composite_forest.AbstractNodeVisitor import AbstractNodeVisitor
-from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import CompositeForest
+from argrelay_schema_config_server.runtime_data_server_app.CompositeForest import (
+    CompositeForest,
+)
 from argrelay_schema_config_server.runtime_data_server_app.CompositeNode import (
     BaseNode,
     FuncTreeNode,
@@ -41,7 +43,9 @@ class CompositeForestWalkerAbstract(AbstractNodeVisitor):
         # main input:
         self.tree_roots: dict[str, ZeroArgNode] = composite_forest.tree_roots
         self.curr_node_id: Union[str, None] = None
-        self.curr_node: Union[ZeroArgNode, InterpTreeNode, FuncTreeNode, TreePathNode, None] = None
+        self.curr_node: Union[
+            ZeroArgNode, InterpTreeNode, FuncTreeNode, TreePathNode, None
+        ] = None
         self.curr_path: list[str] = []
 
         # internal trackers:
@@ -106,7 +110,6 @@ class CompositeForestWalkerPrinter(CompositeForestWalkerAbstract):
     def __init__(
         self,
         composite_forest: CompositeForest,
-
     ):
         super().__init__(
             composite_forest,
@@ -125,7 +128,7 @@ class CompositeForestWalkerPrinter(CompositeForestWalkerAbstract):
         self._print_info()
 
     def _print_info(self):
-        print(" / ".join(self.curr_path), end = ": ")
+        print(" / ".join(self.curr_path), end=": ")
         print(self.curr_node.node_type.name)
         print()
         self.visitor_decision = TraverseDecision.walk_sub_tree

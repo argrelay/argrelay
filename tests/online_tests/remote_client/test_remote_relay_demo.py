@@ -5,10 +5,18 @@ from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import DelegatorError
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostList import DelegatorServiceHostList
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import (
+    DelegatorError,
+)
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostList import (
+    DelegatorServiceHostList,
+)
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.EnvMockBuilder import (
@@ -48,7 +56,9 @@ class ThisTestClass(RemoteTestClass):
                             ServiceEnvelopeClass.class_host.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
                     },
                     2: None,
                 },
@@ -84,7 +94,7 @@ class ThisTestClass(RemoteTestClass):
                     7: None,
                 },
                 "Basic test 1 that list multiple objects using remote connection "
-                "with `InvocationInput` are intercepted via `EnvMockBuilder`."
+                "with `InvocationInput` are intercepted via `EnvMockBuilder`.",
             ),
             (
                 line_no(),
@@ -109,9 +119,15 @@ class ThisTestClass(RemoteTestClass):
                             ServiceEnvelopeClass.class_service.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.implicit_value),
+                        ServicePropName.service_name.name: AssignedValue(
+                            "s_b", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "prod", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "apac", ValueSource.implicit_value
+                        ),
                     },
                     2: {
                         # Nothing is assigned for `ServicePropName.access_type`, but it exists.
@@ -136,7 +152,7 @@ class ThisTestClass(RemoteTestClass):
                     3: None,
                 },
                 "Basic test 2 that list multiple objects using remote connection "
-                "with `InvocationInput` intercept via `EnvMockBuilder`."
+                "with `InvocationInput` intercept via `EnvMockBuilder`.",
             ),
         ]
 

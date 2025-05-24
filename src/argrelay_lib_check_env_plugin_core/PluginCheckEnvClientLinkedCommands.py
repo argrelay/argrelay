@@ -5,7 +5,9 @@ import subprocess
 from typing import Union
 
 from argrelay_api_plugin_check_env_abstract.CheckEnvResult import CheckEnvResult
-from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import PluginCheckEnvAbstract
+from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import (
+    PluginCheckEnvAbstract,
+)
 from argrelay_lib_root.enum_desc.ResultCategory import ResultCategory
 from argrelay_lib_root.enum_desc.TopDir import TopDir
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
@@ -35,11 +37,11 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
         shell_var_value = None
         try:
             bash_proc = subprocess.run(
-                args = [
+                args=[
                     dev_shell_path,
                     f"echo ${{!argrelay_basename_to_client_path_map[@]}}",
                 ],
-                capture_output = True,
+                capture_output=True,
             )
             assert bash_proc.returncode == 0
             stdout_str = bash_proc.stdout.decode("utf-8")
@@ -48,12 +50,14 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
             shell_var_value = None
 
         if shell_var_value is None:
-            return [CheckEnvResult(
-                result_category = ResultCategory.ExecutionFailure,
-                result_key = "client_linked_command",
-                result_value = str(shell_var_value),
-                result_message = f"Unable to retrieve keys of `argrelay_basename_to_client_path_map` under started: {dev_shell_path}",
-            )]
+            return [
+                CheckEnvResult(
+                    result_category=ResultCategory.ExecutionFailure,
+                    result_key="client_linked_command",
+                    result_value=str(shell_var_value),
+                    result_message=f"Unable to retrieve keys of `argrelay_basename_to_client_path_map` under started: {dev_shell_path}",
+                )
+            ]
         else:
             linked_commands: list[str] = shell_var_value.split()
             check_env_results: list[CheckEnvResult] = []
@@ -62,11 +66,11 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
                 shell_var_value = None
                 try:
                     bash_proc = subprocess.run(
-                        args = [
+                        args=[
                             dev_shell_path,
                             f"echo ${{argrelay_basename_to_client_path_map[{linked_command}]}}",
                         ],
-                        capture_output = True,
+                        capture_output=True,
                     )
                     assert bash_proc.returncode == 0
                     stdout_str = bash_proc.stdout.decode("utf-8")
@@ -75,27 +79,36 @@ class PluginCheckEnvClientLinkedCommands(PluginCheckEnvAbstract):
                     shell_var_value = None
 
                 if shell_var_value is None:
-                    check_env_results.append(CheckEnvResult(
-                        result_category = ResultCategory.ExecutionFailure,
-                        result_key = f"client_linked_command[{command_index}]",
-                        result_value = str(linked_command),
-                        result_message = f"Unable to map `{linked_command}` to `@/exe/run_argrelay_client`",
-                    ))
+                    check_env_results.append(
+                        CheckEnvResult(
+                            result_category=ResultCategory.ExecutionFailure,
+                            result_key=f"client_linked_command[{command_index}]",
+                            result_value=str(linked_command),
+                            result_message=f"Unable to map `{linked_command}` to `@/exe/run_argrelay_client`",
+                        )
+                    )
                 else:
                     argrelay_client_path = shell_var_value
-                    if argrelay_client_path == f"{get_argrelay_dir()}/exe/run_argrelay_client":
-                        check_env_results.append(CheckEnvResult(
-                            result_category = ResultCategory.VerificationSuccess,
-                            result_key = f"client_linked_command[{command_index}]",
-                            result_value = str(linked_command),
-                            result_message = "Command is linked to `@/exe/run_argrelay_client` from this `argrelay_dir`",
-                        ))
+                    if (
+                        argrelay_client_path
+                        == f"{get_argrelay_dir()}/exe/run_argrelay_client"
+                    ):
+                        check_env_results.append(
+                            CheckEnvResult(
+                                result_category=ResultCategory.VerificationSuccess,
+                                result_key=f"client_linked_command[{command_index}]",
+                                result_value=str(linked_command),
+                                result_message="Command is linked to `@/exe/run_argrelay_client` from this `argrelay_dir`",
+                            )
+                        )
                     else:
-                        check_env_results.append(CheckEnvResult(
-                            result_category = ResultCategory.VerificationWarning,
-                            result_key = f"client_linked_command[{command_index}]",
-                            result_value = str(linked_command),
-                            result_message = f"Command is linked to another `argrelay_dir` with: {argrelay_client_path}",
-                        ))
+                        check_env_results.append(
+                            CheckEnvResult(
+                                result_category=ResultCategory.VerificationWarning,
+                                result_key=f"client_linked_command[{command_index}]",
+                                result_value=str(linked_command),
+                                result_message=f"Command is linked to another `argrelay_dir` with: {argrelay_client_path}",
+                            )
+                        )
 
             return check_env_results

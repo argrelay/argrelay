@@ -13,7 +13,9 @@ from argrelay_api_plugin_server_abstract.AbstractPluginServer import (
     instantiate_server_plugin,
 )
 from argrelay_api_plugin_server_abstract.DelegatorAbstract import DelegatorAbstract
-from argrelay_app_server.composite_forest.CompositeForestValidator import validate_composite_forest
+from argrelay_app_server.composite_forest.CompositeForestValidator import (
+    validate_composite_forest,
+)
 from argrelay_app_server.composite_forest.DictTreeWalker import contains_whitespace
 from argrelay_app_server.mongo_data import MongoClientWrapper
 from argrelay_app_server.mongo_data.MongoServerWrapper import MongoServerWrapper
@@ -32,17 +34,29 @@ from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeCl
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
 from argrelay_lib_root.misc_helper_common import eprint
-from argrelay_lib_server_plugin_core.plugin_interp.AbstractInterpFactory import AbstractInterpFactory
-from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import EnvelopeCollection
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import PluginConfig
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import PluginEntry
+from argrelay_lib_server_plugin_core.plugin_interp.AbstractInterpFactory import (
+    AbstractInterpFactory,
+)
+from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import (
+    EnvelopeCollection,
+)
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import (
+    PluginConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import (
+    PluginEntry,
+)
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     envelope_id_,
     envelope_payload_,
     instance_data_,
 )
-from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
+from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
+    search_control_list_,
+)
 from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
     arg_name_to_prop_name_map_,
     collection_name_,
@@ -69,7 +83,9 @@ class LocalServer:
         self.server_config: ServerConfig = server_config
         self.plugin_config: PluginConfig = plugin_config
         self.mongo_server: MongoServerWrapper = MongoServerWrapper()
-        self.mongo_client: MongoClient = MongoClientWrapper.get_mongo_client(self.server_config.mongo_config)
+        self.mongo_client: MongoClient = MongoClientWrapper.get_mongo_client(
+            self.server_config.mongo_config
+        )
         self.usage_stats_store = UsageStatsStore()
         self.query_engine: QueryEngine = QueryEngine(
             self.server_config.query_cache_config,
@@ -116,7 +132,9 @@ class LocalServer:
     def get_mongo_database(
         self,
     ):
-        return self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+        return self.mongo_client[
+            self.server_config.mongo_config.mongo_server.database_name
+        ]
 
     def get_query_engine(
         self,
@@ -139,15 +157,16 @@ class LocalServer:
         """
 
         for plugin_instance_id in self.plugin_config.plugin_instance_id_activate_list:
-            plugin_entry: PluginEntry = self.plugin_config.server_plugin_instances[plugin_instance_id]
+            plugin_entry: PluginEntry = self.plugin_config.server_plugin_instances[
+                plugin_instance_id
+            ]
 
             if not plugin_entry.plugin_enabled:
                 continue
 
             if (
                 plugin_entry.plugin_side != PluginSide.PluginServerSideOnly
-                and
-                plugin_entry.plugin_side != PluginSide.PluginAnySide
+                and plugin_entry.plugin_side != PluginSide.PluginAnySide
             ):
                 continue
 
@@ -171,19 +190,25 @@ class LocalServer:
             if plugin_type is PluginType.InterpFactoryPlugin:
                 plugin_instance: AbstractInterpFactory
                 # Store instance of `AbstractInterpFactory` under specified id for future use:
-                self.server_config.interp_factories[plugin_instance_id] = plugin_instance
+                self.server_config.interp_factories[plugin_instance_id] = (
+                    plugin_instance
+                )
                 continue
 
             if plugin_type is PluginType.DelegatorPlugin:
                 plugin_instance: DelegatorAbstract
                 # Store instance of `DelegatorAbstract` under specified id for future use:
-                self.server_config.action_delegators[plugin_instance_id] = plugin_instance
+                self.server_config.action_delegators[plugin_instance_id] = (
+                    plugin_instance
+                )
                 continue
 
             if plugin_type is PluginType.ConfiguratorPlugin:
                 plugin_instance: DelegatorAbstract
                 # Store instance of `ConfiguratorAbstract` under specified id for future use:
-                self.server_config.server_configurators[plugin_instance_id] = plugin_instance
+                self.server_config.server_configurators[plugin_instance_id] = (
+                    plugin_instance
+                )
                 continue
 
     def _activate_plugins(
@@ -192,10 +217,15 @@ class LocalServer:
         for plugin_instance_id in self.plugin_config.plugin_instance_id_activate_list:
             # Skip those which were not instantiated:
             if plugin_instance_id in self.server_config.plugin_instances:
-                self.server_config.plugin_instances[plugin_instance_id].activate_plugin()
+                self.server_config.plugin_instances[
+                    plugin_instance_id
+                ].activate_plugin()
 
         interp_factory: AbstractInterpFactory
-        for plugin_instance_id, interp_factory in self.server_config.interp_factories.items():
+        for (
+            plugin_instance_id,
+            interp_factory,
+        ) in self.server_config.interp_factories.items():
             if interp_factory.is_root_func_loader():
                 # There can only be one `root_func_loader`:
                 assert self.root_func_loader is None
@@ -221,7 +251,9 @@ class LocalServer:
     ):
         # Note that this is slow for large data sets:
         for envelope_collection_obj in envelope_collections:
-            envelope_collection_dict = envelope_collection_desc.dict_schema.dump(envelope_collection_obj)
+            envelope_collection_dict = envelope_collection_desc.dict_schema.dump(
+                envelope_collection_obj
+            )
             envelope_collection_desc.validate_dict(envelope_collection_dict)
 
     def _pre_validate_data_envelope_string_index_prop_values_per_step(
@@ -246,7 +278,9 @@ class LocalServer:
                 len(envelope_collection.data_envelopes),
             )
             for data_envelope in envelope_collection.data_envelopes:
-                index_props = self.index_model_per_collection[collection_name].index_props
+                index_props = self.index_model_per_collection[
+                    collection_name
+                ].index_props
                 for index_prop in index_props:
                     if index_prop not in data_envelope:
                         # Let the `data_envelope` load without some `prop_name`-s from `index_prop`-s
@@ -277,9 +311,13 @@ class LocalServer:
     ):
         if isinstance(prop_value, str):
             if not prop_value or not prop_value.strip():
-                raise ValueError(f"`{collection_name}.{index_prop}` [{prop_value}] has to be non-blank string")
+                raise ValueError(
+                    f"`{collection_name}.{index_prop}` [{prop_value}] has to be non-blank string"
+                )
             if contains_whitespace(prop_value):
-                raise ValueError(f"`{collection_name}.{index_prop}` [{prop_value}] cannot contain whitespace")
+                raise ValueError(
+                    f"`{collection_name}.{index_prop}` [{prop_value}] cannot contain whitespace"
+                )
         elif isinstance(prop_value, list):
             for prop_value_item in prop_value:
                 self._validate_string_prop_value(
@@ -289,7 +327,9 @@ class LocalServer:
                 )
         else:
             # FS_06_99_43_60: array `prop_value`:
-            raise ValueError(f"`{collection_name}.{index_prop}` has to be a `list` of `str` or `str`")
+            raise ValueError(
+                f"`{collection_name}.{index_prop}` has to be a `list` of `str` or `str`"
+            )
 
     def _post_validate_stored_data(
         self,
@@ -352,7 +392,9 @@ class LocalServer:
                 )
             else:
                 search_props = search_props_per_collection[collection_name]
-                index_props = self.index_model_per_collection[collection_name].index_props
+                index_props = self.index_model_per_collection[
+                    collection_name
+                ].index_props
                 dangling_search_props = []
                 for search_prop in search_props:
                     if search_prop not in index_props:
@@ -376,7 +418,9 @@ class LocalServer:
 
         plugin_search_controls: list[SearchControl] = []
         for plugin_instance in self.server_config.plugin_instances.values():
-            plugin_search_controls.extend(plugin_instance.provide_plugin_search_control())
+            plugin_search_controls.extend(
+                plugin_instance.provide_plugin_search_control()
+            )
 
         # Scan `search_control`-s of all plugins:
         for search_control in plugin_search_controls:
@@ -467,7 +511,9 @@ class LocalServer:
                 if prop_name not in data_envelope:
 
                     if prop_name not in prev_found_missing_prop_names:
-                        prev_found_missing_prop_names[prop_name] = deepcopy(data_envelope)
+                        prev_found_missing_prop_names[prop_name] = deepcopy(
+                            data_envelope
+                        )
 
                     if prop_name in prev_found_existing_prop_names:
                         self._raise_validation_error_for_missing_prop_name(
@@ -480,7 +526,9 @@ class LocalServer:
                 else:
 
                     if prop_name not in prev_found_existing_prop_names:
-                        prev_found_existing_prop_names[prop_name] = deepcopy(data_envelope)
+                        prev_found_existing_prop_names[prop_name] = deepcopy(
+                            data_envelope
+                        )
 
                     if prop_name in prev_found_missing_prop_names:
                         self._raise_validation_error_for_missing_prop_name(
@@ -561,8 +609,8 @@ class LocalServer:
 
         # At this moment, funcs have already been loaded on `AbstractPlugin.activate_plugin`.
         func_envelope_collection = EnvelopeCollection(
-            collection_name = ReservedEnvelopeClass.class_function.name,
-            data_envelopes = self.root_func_loader.get_func_data_envelopes(),
+            collection_name=ReservedEnvelopeClass.class_function.name,
+            data_envelopes=self.root_func_loader.get_func_data_envelopes(),
         )
         self._define_func_index_model(
             func_envelope_collection,
@@ -588,8 +636,10 @@ class LocalServer:
                     )
 
                 # Use loader to update data:
-                envelope_collections: list[EnvelopeCollection] = plugin_instance.load_envelope_collections(
-                    self.query_engine,
+                envelope_collections: list[EnvelopeCollection] = (
+                    plugin_instance.load_envelope_collections(
+                        self.query_engine,
+                    )
                 )
 
                 self.store_mongo_data_step(
@@ -617,8 +667,8 @@ class LocalServer:
         # Add generated `envelope_collection` (itself) for completeness:
         self._define_index_model_step(
             IndexModel(
-                collection_name = ReservedEnvelopeClass.class_collection.name,
-                index_props = [
+                collection_name=ReservedEnvelopeClass.class_collection.name,
+                index_props=[
                     # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                     ReservedPropName.envelope_class.name,
                     ReservedPropName.collection_name.name,
@@ -627,19 +677,21 @@ class LocalServer:
         )
 
         envelope_collection = EnvelopeCollection(
-            collection_name = ReservedEnvelopeClass.class_collection.name,
-            data_envelopes = []
+            collection_name=ReservedEnvelopeClass.class_collection.name,
+            data_envelopes=[],
         )
         for collection_name, index_model in self.index_model_per_collection.items():
-            envelope_collection.data_envelopes.append({
-                envelope_id_: f"{collection_name}",
-                ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_collection.name,
-                # TODO: May add loader plugin instance name as metadata:
-                ReservedPropName.collection_name.name: collection_name,
-                envelope_payload_: {
-                    index_props_: list(index_model.index_props),
-                },
-            })
+            envelope_collection.data_envelopes.append(
+                {
+                    envelope_id_: f"{collection_name}",
+                    ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_collection.name,
+                    # TODO: May add loader plugin instance name as metadata:
+                    ReservedPropName.collection_name.name: collection_name,
+                    envelope_payload_: {
+                        index_props_: list(index_model.index_props),
+                    },
+                }
+            )
 
         self.store_mongo_data_step(
             [envelope_collection],
@@ -657,7 +709,9 @@ class LocalServer:
         Unlike most of other data, func data is not loaded via loaders and its index model is defined here.
         """
 
-        func_index_props: list[str] = self.root_func_loader.get_func_dynamic_index_props()
+        func_index_props: list[str] = (
+            self.root_func_loader.get_func_dynamic_index_props()
+        )
 
         self._populate_func_missing_dynamic_props_(
             func_envelope_collection,
@@ -666,16 +720,18 @@ class LocalServer:
 
         # These added after `_populate_func_missing_dynamic_props_` to ensure that they are populated explicitly.
         # Extend `index_props` for funcs:
-        func_index_props.extend([
-            # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
-            ReservedPropName.envelope_class.name,
-            ReservedPropName.func_id.name,
-            ReservedPropName.func_state.name,
-        ])
+        func_index_props.extend(
+            [
+                # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
+                ReservedPropName.envelope_class.name,
+                ReservedPropName.func_id.name,
+                ReservedPropName.func_state.name,
+            ]
+        )
 
         func_index_model: IndexModel = IndexModel(
-            collection_name = ReservedEnvelopeClass.class_function.name,
-            index_props = func_index_props,
+            collection_name=ReservedEnvelopeClass.class_function.name,
+            index_props=func_index_props,
         )
 
         self._define_index_model_step(func_index_model)
@@ -717,7 +773,9 @@ class LocalServer:
         collection_name: str,
         query_dict: dict,
     ):
-        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+        mongo_db = self.mongo_client[
+            self.server_config.mongo_config.mongo_server.database_name
+        ]
         MongoClientWrapper.delete_data_envelopes(
             mongo_db,
             collection_name,
@@ -730,7 +788,9 @@ class LocalServer:
         step_name: str,
         progress_tracker: ProgressTracker,
     ):
-        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+        mongo_db = self.mongo_client[
+            self.server_config.mongo_config.mongo_server.database_name
+        ]
 
         eprint(f"step name: {step_name}:")
 
@@ -760,12 +820,16 @@ class LocalServer:
         self,
         envelope_collections: list[EnvelopeCollection],
     ):
-        mongo_db = self.mongo_client[self.server_config.mongo_config.mongo_server.database_name]
+        mongo_db = self.mongo_client[
+            self.server_config.mongo_config.mongo_server.database_name
+        ]
 
         for envelope_collection in envelope_collections:
             collection_name = envelope_collection.collection_name
 
-            index_props: list[str] = self.index_model_per_collection[collection_name].index_props
+            index_props: list[str] = self.index_model_per_collection[
+                collection_name
+            ].index_props
 
             MongoClientWrapper.create_index(
                 mongo_db,

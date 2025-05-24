@@ -31,9 +31,13 @@ def list_sub_dag(
 
     for node_id in id_sub_list:
         if node_id in curr_path:
-            raise ValueError(f"cyclic ref to plugin id in path `{curr_path}` -> `{node_id}`")
+            raise ValueError(
+                f"cyclic ref to plugin id in path `{curr_path}` -> `{node_id}`"
+            )
         if node_id not in entire_dag:
-            raise ValueError(f"plugin id in path `{curr_path}` -> `{node_id}` is not defined")
+            raise ValueError(
+                f"plugin id in path `{curr_path}` -> `{node_id}` is not defined"
+            )
         if node_id in entire_dag:
             # plugin has dependencies:
             sub_list = list_sub_dag(
@@ -45,7 +49,9 @@ def list_sub_dag(
                 if sub_node_id not in output_list:
                     output_list.append(sub_node_id)
         else:
-            raise ValueError(f"plugin id in path `{curr_path}` -> `{node_id}` is not included for activation")
+            raise ValueError(
+                f"plugin id in path `{curr_path}` -> `{node_id}` is not included for activation"
+            )
 
         if node_id not in output_list:
             output_list.append(node_id)

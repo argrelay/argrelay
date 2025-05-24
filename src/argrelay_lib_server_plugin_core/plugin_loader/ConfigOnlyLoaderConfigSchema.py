@@ -6,7 +6,9 @@ from marshmallow import (
     Schema,
 )
 
-from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import data_envelopes_
+from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import (
+    data_envelopes_,
+)
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
@@ -33,31 +35,31 @@ class ConfigOnlyLoaderConfigSchema(Schema):
     # By default, if mapping for `envelope_class` is not specified,
     # the same `collection_name` is used as `envelope_class`.
     envelope_class_to_collection_name_map = fields.Dict(
-        keys = fields.String(),
-        values = fields.String(),
-        required = False,
-        load_default = {},
+        keys=fields.String(),
+        values=fields.String(),
+        required=False,
+        load_default={},
     )
 
     collection_name_to_index_props_map = fields.Dict(
-        keys = fields.String(),
-        values = fields.List(
+        keys=fields.String(),
+        values=fields.List(
             fields.String(),
-            required = True,
+            required=True,
         ),
-        required = True,
+        required=True,
     )
 
     data_envelopes = fields.List(
         fields.Nested(data_envelope_desc.dict_schema),
-        required = True,
+        required=True,
     )
 
 
 config_only_loader_config_desc = TypeDesc(
-    dict_schema = ConfigOnlyLoaderConfigSchema(),
-    ref_name = ConfigOnlyLoaderConfigSchema.__name__,
-    dict_example = {
+    dict_schema=ConfigOnlyLoaderConfigSchema(),
+    ref_name=ConfigOnlyLoaderConfigSchema.__name__,
+    dict_example={
         envelope_class_to_collection_name_map_: {
             ReservedEnvelopeClass.class_function.name: ReservedEnvelopeClass.class_function.name,
         },
@@ -72,5 +74,5 @@ config_only_loader_config_desc = TypeDesc(
             data_envelope_desc.dict_example,
         ],
     },
-    default_file_path = "",
+    default_file_path="",
 )

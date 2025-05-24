@@ -5,7 +5,9 @@ from marshmallow import (
 
 from argrelay_lib_root.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
-from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorDefaultConfig import ConfiguratorDefaultConfig
+from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorDefaultConfig import (
+    ConfiguratorDefaultConfig,
+)
 
 """
 Schema for :class:`ConfiguratorDefaultConfig`
@@ -28,34 +30,34 @@ class ConfiguratorDefaultConfigSchema(ObjectSchema):
     model_class = ConfiguratorDefaultConfig
 
     project_title = fields.String(
-        required = False,
-        load_default = None,
+        required=False,
+        load_default=None,
     )
 
     project_page_url = fields.String(
-        required = False,
-        load_default = None,
+        required=False,
+        load_default=None,
     )
 
     git_files_by_commit_id_url_prefix = fields.String(
-        required = False,
-        load_default = None,
+        required=False,
+        load_default=None,
     )
 
     commit_id_url_prefix = fields.String(
-        required = False,
-        load_default = None,
+        required=False,
+        load_default=None,
     )
 
 
 configurator_default_config_desc = TypeDesc(
-    dict_schema = ConfiguratorDefaultConfigSchema(),
-    ref_name = ConfiguratorDefaultConfigSchema.__name__,
-    dict_example = {
+    dict_schema=ConfiguratorDefaultConfigSchema(),
+    ref_name=ConfiguratorDefaultConfigSchema.__name__,
+    dict_example={
         project_title_: "argrelay",
         project_page_url_: "https://argrelay.org",
         git_files_by_commit_id_url_prefix_: "https://github.com/argrelay/argrelay/tree/",
         commit_id_url_prefix_: "https://github.com/argrelay/argrelay/commit/",
     },
-    default_file_path = "",
+    default_file_path="",
 )

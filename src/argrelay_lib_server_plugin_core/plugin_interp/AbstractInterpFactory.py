@@ -2,11 +2,15 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-from argrelay_api_plugin_server_abstract.AbstractPluginServer import AbstractPluginServer
+from argrelay_api_plugin_server_abstract.AbstractPluginServer import (
+    AbstractPluginServer,
+)
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
 from argrelay_lib_root.enum_desc.InterpStep import InterpStep
 from argrelay_lib_root.enum_desc.PluginType import PluginType
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 
 
 class AbstractInterpFactory(AbstractPluginServer):
@@ -79,7 +83,9 @@ class AbstractInterpFactory(AbstractPluginServer):
         if interp_tree_abs_path in self.interp_tree_abs_paths_to_node_configs:
             raise RuntimeError(f"`{interp_tree_abs_path}` has already been loaded")
         else:
-            self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path] = deepcopy(self.plugin_config_dict)
+            self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path] = deepcopy(
+                self.plugin_config_dict
+            )
 
         return (
             [],

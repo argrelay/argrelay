@@ -16,7 +16,9 @@ from argrelay_lib_server_plugin_core.plugin_delegator.SchemaCustomDataDelegatorE
     error_delegator_stub_custom_data_example,
     error_message_,
 )
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceBase import get_access_search_control
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceBase import (
+    get_access_search_control,
+)
 from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostBase import (
     DelegatorServiceHostBase,
     get_host_search_control,
@@ -109,9 +111,7 @@ class DelegatorServiceHostGoto(DelegatorServiceHostBase):
         # Even if these functions do not support varargs, when `redirect_to_error`, query all:
         vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
         vararg_container.data_envelopes = (
-            local_server
-            .get_query_engine()
-            .query_data_envelopes_for(vararg_container)
+            local_server.get_query_engine().query_data_envelopes_for(vararg_container)
         )
 
         # Actual implementation is not defined for demo:

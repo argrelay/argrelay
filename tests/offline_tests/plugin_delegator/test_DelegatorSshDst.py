@@ -7,7 +7,9 @@ from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeCl
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_lib_server_plugin_demo.demo_ssh.DelegatorSshDst import (
     class_ssh_dst_,
@@ -71,8 +73,12 @@ class ThisTestClass(LocalTestClass):
                             class_ssh_dst_,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.run_mode.name: AssignedValue("active", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.run_mode.name: AssignedValue(
+                            "active", ValueSource.implicit_value
+                        ),
                     },
                     2: None,
                 },
@@ -94,7 +100,7 @@ class ThisTestClass(LocalTestClass):
                     1: 0,
                 },
                 f"Access `{func_id_ssh_dst_}` via `ar_ssh` command and "
-                f"ensure `{DelegatorSshDst.__name__}` works."
+                f"ensure `{DelegatorSshDst.__name__}` works.",
             ),
             (
                 line_no(),
@@ -132,9 +138,15 @@ class ThisTestClass(LocalTestClass):
                             class_ssh_dst_,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.run_mode.name: AssignedValue("passive", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.implicit_value),
-                        ServicePropName.service_name.name: AssignedValue("home", ValueSource.implicit_value),
+                        ServicePropName.run_mode.name: AssignedValue(
+                            "passive", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "apac", ValueSource.implicit_value
+                        ),
+                        ServicePropName.service_name.name: AssignedValue(
+                            "home", ValueSource.implicit_value
+                        ),
                         ServicePropName.dir_path.name: AssignedValue(
                             SpecialChar.NoPropValue.value,
                             ValueSource.implicit_value,
@@ -159,7 +171,7 @@ class ThisTestClass(LocalTestClass):
                     1: 0,
                 },
                 f"Access `{func_id_ssh_dst_}` via `some_command ssh` command and "
-                f"ensure `{DelegatorSshDst.__name__}` works."
+                f"ensure `{DelegatorSshDst.__name__}` works.",
             ),
             (
                 line_no(),
@@ -201,7 +213,9 @@ class ThisTestClass(LocalTestClass):
                             class_ssh_dst_,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.flow_stage.name: AssignedValue("backend", ValueSource.implicit_value),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "backend", ValueSource.implicit_value
+                        ),
                     },
                     2: None,
                 },
@@ -231,7 +245,7 @@ class ThisTestClass(LocalTestClass):
                     0: 0,
                     1: 0,
                 },
-                f"Run `{func_id_ssh_dst_}` without any args to ensure `{DelegatorSshDst.__name__}` works."
+                f"Run `{func_id_ssh_dst_}` without any args to ensure `{DelegatorSshDst.__name__}` works.",
             ),
         ]
 

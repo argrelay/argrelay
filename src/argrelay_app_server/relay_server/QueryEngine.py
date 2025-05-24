@@ -15,8 +15,12 @@ from argrelay_app_server.runtime_context.EnvelopeContainer import EnvelopeContai
 from argrelay_app_server.runtime_context.SearchControl import SearchControl
 from argrelay_lib_root.enum_desc.DistinctValuesQuery import DistinctValuesQuery
 from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
-from argrelay_schema_config_server.runtime_data_server_app.QueryCacheConfig import QueryCacheConfig
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import mongo_id_
+from argrelay_schema_config_server.runtime_data_server_app.QueryCacheConfig import (
+    QueryCacheConfig,
+)
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    mongo_id_,
+)
 
 
 class QueryEngine:
@@ -101,8 +105,10 @@ class QueryEngine:
 
         if self.enable_query_cache:
             ElapsedTime.measure("before_cache_lookup")
-            query_key = json.dumps(query_dict, separators = (",", ":"))
-            query_cache = self._get_query_cache_for_collection(search_control.collection_name)
+            query_key = json.dumps(query_dict, separators=(",", ":"))
+            query_cache = self._get_query_cache_for_collection(
+                search_control.collection_name
+            )
             query_result = query_cache.get(query_key)
             ElapsedTime.measure("after_cache_lookup")
             if query_result:
@@ -131,8 +137,8 @@ class QueryEngine:
         query_cache = self.query_caches.setdefault(
             collection_name,
             TTLCache(
-                maxsize = self.query_cache_max_size_bytes,
-                ttl = self.query_cache_ttl_sec,
+                maxsize=self.query_cache_max_size_bytes,
+                ttl=self.query_cache_ttl_sec,
             ),
         )
         return query_cache
@@ -207,7 +213,9 @@ class QueryEngine:
             if prop_name not in assigned_prop_name_to_prop_value:
 
                 ElapsedTime.measure(f"before_mongo_distinct.{prop_name}")
-                distinct_vals: list = self.mongo_db[search_control.collection_name].distinct(prop_name, query_dict)
+                distinct_vals: list = self.mongo_db[
+                    search_control.collection_name
+                ].distinct(prop_name, query_dict)
                 ElapsedTime.measure(f"after_mongo_distinct.{prop_name}")
 
                 if len(distinct_vals) > 0:
@@ -215,10 +223,14 @@ class QueryEngine:
 
                 ElapsedTime.measure(f"after_process_results.{prop_name}")
 
-        found_count = self.mongo_db[search_control.collection_name].count_documents(query_dict)
+        found_count = self.mongo_db[search_control.collection_name].count_documents(
+            query_dict
+        )
         ElapsedTime.measure("after_count_documents")
         if found_count == 1:
-            data_envelopes.append(self.mongo_db[search_control.collection_name].find_one(query_dict))
+            data_envelopes.append(
+                self.mongo_db[search_control.collection_name].find_one(query_dict)
+            )
             ElapsedTime.measure("after_find_one")
 
         query_result = QueryResult(
@@ -272,7 +284,9 @@ class QueryEngine:
         ]
 
         ElapsedTime.measure("before_mongo_aggregate")
-        mongo_result = self.mongo_db[search_control.collection_name].aggregate(aggregate_pipeline)
+        mongo_result = self.mongo_db[search_control.collection_name].aggregate(
+            aggregate_pipeline
+        )
         ElapsedTime.measure("after_mongo_aggregate")
 
         # Get the first (and the only) object from the result:
@@ -289,7 +303,9 @@ class QueryEngine:
                 remaining_prop_name_to_prop_value[prop_name] = sorted(prop_values)
 
         if found_count == 1:
-            data_envelopes.append(self.mongo_db[search_control.collection_name].find_one(query_dict))
+            data_envelopes.append(
+                self.mongo_db[search_control.collection_name].find_one(query_dict)
+            )
 
         ElapsedTime.measure("after_process_results")
 
@@ -336,9 +352,13 @@ class QueryEngine:
                     # If assigned/consumed, `prop_name` must not appear
                     # as an option in `remaining_prop_name_to_prop_value` again:
                     if prop_name not in assigned_prop_name_to_prop_value:
-                        prop_values_src = scalar_to_list_values(data_envelope[prop_name])
+                        prop_values_src = scalar_to_list_values(
+                            data_envelope[prop_name]
+                        )
 
-                        prop_values_dst = remaining_prop_name_to_prop_value.setdefault(prop_name, [])
+                        prop_values_dst = remaining_prop_name_to_prop_value.setdefault(
+                            prop_name, []
+                        )
 
                         # Deduplicate: ensure unique `prop_value`-s:
                         for prop_value in prop_values_src:
@@ -397,5 +417,7 @@ def populate_query_dict(
     # FS_31_70_49_15: populate `prop_value`-s to search from the context:
     for prop_name in envelope_container.search_control.prop_name_to_arg_name_dict:
         if prop_name in envelope_container.assigned_prop_name_to_prop_value:
-            query_dict[prop_name] = envelope_container.assigned_prop_name_to_prop_value[prop_name].prop_value
+            query_dict[prop_name] = envelope_container.assigned_prop_name_to_prop_value[
+                prop_name
+            ].prop_value
     return query_dict

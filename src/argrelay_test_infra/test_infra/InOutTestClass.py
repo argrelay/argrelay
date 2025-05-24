@@ -24,13 +24,19 @@ class InOutTestClass(BaseTestClass):
         self,
         call_ctx: CallContext,
         actual_suggestions: list[str],
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
-        container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
+        container_ipos_to_expected_assignments: Union[
+            dict[int, dict[str, AssignedValue]], None
+        ],
+        container_ipos_to_options_hidden_by_default_value: Union[
+            dict[int, dict[str, list[str]]], None
+        ],
         delegator_class: Union[Type[DelegatorAbstract], None],
         envelope_ipos_to_prop_values: Union[dict[int, dict[str, str]], None],
         expected_suggestions: Union[list[str], None],
         envelope_containers: list[EnvelopeContainer],
-        expected_container_ipos_to_used_token_bucket: Union[dict[int, Union[int, None]], None],
+        expected_container_ipos_to_used_token_bucket: Union[
+            dict[int, Union[int, None]], None
+        ],
     ):
         try:
 
@@ -51,12 +57,11 @@ class InOutTestClass(BaseTestClass):
 
             if (
                 container_ipos_to_expected_assignments is not None
-                and
-                container_ipos_to_options_hidden_by_default_value is not None
+                and container_ipos_to_options_hidden_by_default_value is not None
             ):
                 self.verify_expected_assignments_with_option_type_hidden_by_default(
                     container_ipos_to_expected_assignments,
-                    container_ipos_to_options_hidden_by_default_value
+                    container_ipos_to_options_hidden_by_default_value,
                 )
 
             if delegator_class is not None:
@@ -77,8 +82,14 @@ class InOutTestClass(BaseTestClass):
 
             if expected_container_ipos_to_used_token_bucket is not None:
                 # TODO: TODO_32_99_70_35: candidate for generic library of JSONPath verifiers:
-                for envelope_container_ipos, envelope_container in enumerate(envelope_containers):
-                    expected_used_token_bucket = expected_container_ipos_to_used_token_bucket[envelope_container_ipos]
+                for envelope_container_ipos, envelope_container in enumerate(
+                    envelope_containers
+                ):
+                    expected_used_token_bucket = (
+                        expected_container_ipos_to_used_token_bucket[
+                            envelope_container_ipos
+                        ]
+                    )
                     self.assertEqual(
                         expected_used_token_bucket,
                         envelope_container.used_token_bucket,
@@ -107,9 +118,14 @@ class InOutTestClass(BaseTestClass):
     def verify_envelope_containers(
         self,
         envelope_containers,
-        container_ipos_to_expected_assignments: Union[dict[int, dict[str, AssignedValue]], None],
+        container_ipos_to_expected_assignments: Union[
+            dict[int, dict[str, AssignedValue]], None
+        ],
     ):
-        for container_ipos, expected_assignments in container_ipos_to_expected_assignments.items():
+        for (
+            container_ipos,
+            expected_assignments,
+        ) in container_ipos_to_expected_assignments.items():
             try:
                 if expected_assignments is None:
                     self.assertFalse(0 <= container_ipos < len(envelope_containers))
@@ -119,24 +135,25 @@ class InOutTestClass(BaseTestClass):
                         try:
                             if assigned_value is None:
                                 self.assertTrue(
-                                    prop_name not in
-                                    envelope_containers
-                                    [container_ipos].assigned_prop_name_to_prop_value
+                                    prop_name
+                                    not in envelope_containers[
+                                        container_ipos
+                                    ].assigned_prop_name_to_prop_value
                                 )
                             elif isinstance(assigned_value, list):
                                 # A bit of hack: if `list`, then check if it matches `remaining_prop_name_to_prop_value`:
                                 self.assertEqual(
                                     assigned_value,
-                                    envelope_containers
-                                    [container_ipos].remaining_prop_name_to_prop_value
-                                    [prop_name]
+                                    envelope_containers[
+                                        container_ipos
+                                    ].remaining_prop_name_to_prop_value[prop_name],
                                 )
                             else:
                                 self.assertEqual(
                                     assigned_value,
-                                    envelope_containers
-                                    [container_ipos].assigned_prop_name_to_prop_value
-                                    [prop_name],
+                                    envelope_containers[
+                                        container_ipos
+                                    ].assigned_prop_name_to_prop_value[prop_name],
                                 )
                         except:
                             eprint(
@@ -150,33 +167,42 @@ class InOutTestClass(BaseTestClass):
     def verify_options_hidden_by_default_value(
         self,
         envelope_containers: list[EnvelopeContainer],
-        container_ipos_to_options_hidden_by_default_value: Union[dict[int, dict[str, list[str]]], None],
+        container_ipos_to_options_hidden_by_default_value: Union[
+            dict[int, dict[str, list[str]]], None
+        ],
     ):
         """
         Make sure that specified expected `options_hidden_by_default_value` list
         (per `envelope_container` ipos, per `prop_name`) match what is populated into
         `EnvelopeContainer.filled_prop_values_hidden_by_defaults`.
         """
-        for container_ipos, options_hidden_by_default_value_per_prop_name in container_ipos_to_options_hidden_by_default_value.items():
+        for (
+            container_ipos,
+            options_hidden_by_default_value_per_prop_name,
+        ) in container_ipos_to_options_hidden_by_default_value.items():
             try:
                 if options_hidden_by_default_value_per_prop_name is None:
                     self.assertFalse(0 <= container_ipos < len(envelope_containers))
                 else:
                     self.assertTrue(0 <= container_ipos < len(envelope_containers))
-                    for prop_name, options_hidden_by_default_value in options_hidden_by_default_value_per_prop_name.items():
+                    for (
+                        prop_name,
+                        options_hidden_by_default_value,
+                    ) in options_hidden_by_default_value_per_prop_name.items():
                         try:
                             if options_hidden_by_default_value is None:
                                 self.assertTrue(
-                                    prop_name not in
-                                    envelope_containers
-                                    [container_ipos].filled_prop_values_hidden_by_defaults
+                                    prop_name
+                                    not in envelope_containers[
+                                        container_ipos
+                                    ].filled_prop_values_hidden_by_defaults
                                 )
                             else:
                                 self.assertEqual(
                                     options_hidden_by_default_value,
-                                    envelope_containers
-                                    [container_ipos].filled_prop_values_hidden_by_defaults
-                                    [prop_name],
+                                    envelope_containers[
+                                        container_ipos
+                                    ].filled_prop_values_hidden_by_defaults[prop_name],
                                 )
                         except:
                             eprint(
@@ -190,7 +216,9 @@ class InOutTestClass(BaseTestClass):
     def verify_expected_assignments_with_option_type_hidden_by_default(
         self,
         container_ipos_to_expected_assignments: dict[int, dict[str, AssignedValue]],
-        container_ipos_to_options_hidden_by_default_value: dict[int, dict[str, list[str]]],
+        container_ipos_to_options_hidden_by_default_value: dict[
+            int, dict[str, list[str]]
+        ],
     ):
         """
         Make sure that, for given `container_ipos`, if there are both:
@@ -198,18 +226,32 @@ class InOutTestClass(BaseTestClass):
         *   assigned value
         then, the assigned value has `ValueSource.default_value`.
         """
-        for container_ipos, expected_assignments in container_ipos_to_expected_assignments.items():
+        for (
+            container_ipos,
+            expected_assignments,
+        ) in container_ipos_to_expected_assignments.items():
             try:
                 if expected_assignments is not None:
-                    if container_ipos in container_ipos_to_options_hidden_by_default_value:
+                    if (
+                        container_ipos
+                        in container_ipos_to_options_hidden_by_default_value
+                    ):
                         for prop_name, assigned_value in expected_assignments.items():
                             options_hidden_by_default_value_per_prop_name = (
                                 container_ipos_to_options_hidden_by_default_value[
                                     container_ipos
                                 ]
                             )
-                            if prop_name in options_hidden_by_default_value_per_prop_name:
-                                if options_hidden_by_default_value_per_prop_name[prop_name] is None:
+                            if (
+                                prop_name
+                                in options_hidden_by_default_value_per_prop_name
+                            ):
+                                if (
+                                    options_hidden_by_default_value_per_prop_name[
+                                        prop_name
+                                    ]
+                                    is None
+                                ):
                                     self.assertNotEqual(
                                         assigned_value.value_source,
                                         ValueSource.default_value,
@@ -244,15 +286,12 @@ class InOutTestClass(BaseTestClass):
                         (data_envelopes[envelope_ipos] is not None)
                     )
                 else:
-                    self.assertTrue(
-                        (0 <= envelope_ipos < len(data_envelopes))
-                    )
+                    self.assertTrue((0 <= envelope_ipos < len(data_envelopes)))
                     for prop_name, prop_value in prop_values.items():
                         try:
                             if prop_value is None:
                                 self.assertTrue(
-                                    prop_name not in
-                                    data_envelopes[envelope_ipos]
+                                    prop_name not in data_envelopes[envelope_ipos]
                                 )
                             else:
                                 self.assertEqual(

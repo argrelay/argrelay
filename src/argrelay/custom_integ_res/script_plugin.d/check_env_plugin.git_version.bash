@@ -3,7 +3,7 @@
 # Report `git_version`.
 #
 # Sample output for `git --version`:
-# git version 2.45.0 
+# git version 2.45.0
 full_git_version="$( git --version | sed -n 's/^git version \(.*\)$/\1/gp' )"
 
 major_git_version="$( echo "${full_git_version}" | sed -n 's/^\([^.]*\).*$/\1/gp' )"

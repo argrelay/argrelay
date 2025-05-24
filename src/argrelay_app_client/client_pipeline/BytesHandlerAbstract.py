@@ -3,8 +3,7 @@ class BytesHandlerAbstract:
     def __init__(
         self,
     ):
-        super().__init__(
-        )
+        super().__init__()
 
     def handle_bytes(
         self,

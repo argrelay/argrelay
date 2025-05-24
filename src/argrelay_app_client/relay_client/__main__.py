@@ -9,7 +9,9 @@ from argrelay_lib_root.enum_desc.ServerAction import ServerAction
 from argrelay_lib_root.misc_helper_common import get_config_path
 from argrelay_lib_root.misc_helper_common.ElapsedTime import ElapsedTime
 from argrelay_lib_root.schema_config.ConnectionConfig import ConnectionConfig
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
 
 ElapsedTime.measure("after_program_entry")
 
@@ -47,14 +49,12 @@ def run_client(
     is_split_mode: bool = (
         # FS_14_59_14_06 pending requests: at the moment the process is split only to provide spinner:
         client_config.show_pending_spinner
-        and
-        call_ctx.server_action is not ServerAction.RelayLineArgs
+        and call_ctx.server_action is not ServerAction.RelayLineArgs
     )
 
     is_optimized_completion = (
         call_ctx.server_action is ServerAction.ProposeArgValues
-        and
-        client_config.optimize_completion_request
+        and client_config.optimize_completion_request
     )
 
     w_pipe_end = None
@@ -67,6 +67,7 @@ def run_client(
         import encodings.idna
 
         from argrelay_app_client.relay_client.proc_splitter import split_process
+
         (
             is_parent,
             child_pid,
@@ -77,6 +78,7 @@ def run_client(
         if is_parent:
             proc_role: ProcRole = ProcRole.ParentProcSpinner
             from argrelay_app_client.relay_client.proc_spinner import spinner_main
+
             spinner_main(
                 call_ctx,
                 client_config,
@@ -91,6 +93,7 @@ def run_client(
         proc_role: ProcRole = ProcRole.SoleProcWorker
 
     from argrelay_app_client.relay_client.proc_worker import worker_main
+
     command_obj = worker_main(
         call_ctx,
         client_config,
@@ -104,6 +107,7 @@ def run_client(
 
 def load_client_config(file_path):
     import json
+
     with open(file_path) as config_file:
         client_config_dict = json.load(config_file)
     client_config = client_config_dict_to_object(client_config_dict)
@@ -116,17 +120,21 @@ def client_config_dict_to_object(client_config_dict):
     """
     redundant_servers: list[ConnectionConfig] = []
     for redundant_server in client_config_dict["redundant_servers"]:
-        redundant_servers.append(ConnectionConfig(
-            server_host_name = redundant_server["server_host_name"],
-            server_port_number = redundant_server["server_port_number"],
-        ))
+        redundant_servers.append(
+            ConnectionConfig(
+                server_host_name=redundant_server["server_host_name"],
+                server_port_number=redundant_server["server_port_number"],
+            )
+        )
     client_config = ClientConfig(
-        __comment__ = client_config_dict.get("use_local_requests", None),
-        use_local_requests = client_config_dict.get("use_local_requests", False),
-        optimize_completion_request = client_config_dict.get("optimize_completion_request", True),
-        redundant_servers = redundant_servers,
-        show_pending_spinner = client_config_dict.get("show_pending_spinner", True),
-        spinless_sleep_sec = client_config_dict.get("spinless_sleep_sec", 0.0),
+        __comment__=client_config_dict.get("use_local_requests", None),
+        use_local_requests=client_config_dict.get("use_local_requests", False),
+        optimize_completion_request=client_config_dict.get(
+            "optimize_completion_request", True
+        ),
+        redundant_servers=redundant_servers,
+        show_pending_spinner=client_config_dict.get("show_pending_spinner", True),
+        spinless_sleep_sec=client_config_dict.get("spinless_sleep_sec", 0.0),
     )
     return client_config
 

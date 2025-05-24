@@ -5,7 +5,9 @@ from typing import Union
 
 import argrelay
 from argrelay_api_plugin_check_env_abstract.CheckEnvResult import CheckEnvResult
-from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import PluginCheckEnvAbstract
+from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import (
+    PluginCheckEnvAbstract,
+)
 from argrelay_lib_root.enum_desc.ResultCategory import ResultCategory
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
 
@@ -30,27 +32,33 @@ class PluginCheckEnvArgrelayLocalVersionMismatch(PluginCheckEnvAbstract):
         module_version = argrelay.__version__
         env_packages_version = self.get_env_packages_version()
         if env_packages_version is None:
-            return [CheckEnvResult(
-                result_category = ResultCategory.VerificationWarning,
-                result_key = self.result_key,
-                result_value = env_packages_version,
-                result_message = f"File `@/{self.file_rel_path}` does not contain `argrelay` package => is `argrelay` installed in editable mode?",
-            )]
+            return [
+                CheckEnvResult(
+                    result_category=ResultCategory.VerificationWarning,
+                    result_key=self.result_key,
+                    result_value=env_packages_version,
+                    result_message=f"File `@/{self.file_rel_path}` does not contain `argrelay` package => is `argrelay` installed in editable mode?",
+                )
+            ]
         else:
             if env_packages_version == module_version:
-                return [CheckEnvResult(
-                    result_category = ResultCategory.VerificationSuccess,
-                    result_key = self.result_key,
-                    result_value = env_packages_version,
-                    result_message = f"It matches `argrelay_module_version`",
-                )]
+                return [
+                    CheckEnvResult(
+                        result_category=ResultCategory.VerificationSuccess,
+                        result_key=self.result_key,
+                        result_value=env_packages_version,
+                        result_message=f"It matches `argrelay_module_version`",
+                    )
+                ]
             else:
-                return [CheckEnvResult(
-                    result_category = ResultCategory.VerificationFailure,
-                    result_key = self.result_key,
-                    result_value = env_packages_version,
-                    result_message = f"It does not match `argrelay_module_version` => re-base and re-run `@/{self.bootstrap_rel_path}`",
-                )]
+                return [
+                    CheckEnvResult(
+                        result_category=ResultCategory.VerificationFailure,
+                        result_key=self.result_key,
+                        result_value=env_packages_version,
+                        result_message=f"It does not match `argrelay_module_version` => re-base and re-run `@/{self.bootstrap_rel_path}`",
+                    )
+                ]
 
     def get_env_packages_version(
         self,

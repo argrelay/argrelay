@@ -30,7 +30,8 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "basic sample",
+                line_no(),
+                "basic sample",
                 {
                     plugin_enabled_: True,
                     plugin_module_name_: NoopInterp.__module__,
@@ -44,7 +45,8 @@ class ThisTestClass(LocalTestClass):
                 None,
             ),
             (
-                line_no(), "demo test data: expanded (realistic) sample",
+                line_no(),
+                "demo test data: expanded (realistic) sample",
                 plugin_config_desc.dict_from_default_file()[server_plugin_instances_][
                     f"{GitRepoLoader.__name__}.default"
                 ],
@@ -54,7 +56,8 @@ class ThisTestClass(LocalTestClass):
                 None,
             ),
             (
-                line_no(), f"without required field `{plugin_module_name_}`",
+                line_no(),
+                f"without required field `{plugin_module_name_}`",
                 {
                     plugin_enabled_: True,
                     plugin_class_name_: NoopInterp.__name__,
@@ -63,7 +66,8 @@ class ThisTestClass(LocalTestClass):
                 ValidationError,
             ),
             (
-                line_no(), "with extra key (`whatever_extra_key`) which is not allowed",
+                line_no(),
+                "with extra key (`whatever_extra_key`) which is not allowed",
                 {
                     plugin_enabled_: True,
                     plugin_module_name_: NoopInterp.__module__,
@@ -88,7 +92,10 @@ class ThisTestClass(LocalTestClass):
 
                     # Assert those files which were specified in the `expected_dict_part`:
                     for key_to_verify in expected_dict_part:
-                        self.assertEqual(expected_dict_part[key_to_verify], getattr(static_data, key_to_verify))
+                        self.assertEqual(
+                            expected_dict_part[key_to_verify],
+                            getattr(static_data, key_to_verify),
+                        )
 
                 else:
                     self.assertIsNone(

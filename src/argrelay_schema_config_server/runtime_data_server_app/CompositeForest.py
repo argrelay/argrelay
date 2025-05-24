@@ -5,7 +5,9 @@ from dataclasses import (
     field,
 )
 
-from argrelay_schema_config_server.runtime_data_server_app.CompositeNode import ZeroArgNode
+from argrelay_schema_config_server.runtime_data_server_app.CompositeNode import (
+    ZeroArgNode,
+)
 
 
 @dataclass

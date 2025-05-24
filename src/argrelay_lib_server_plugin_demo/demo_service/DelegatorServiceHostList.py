@@ -12,12 +12,16 @@ from argrelay_app_server.runtime_context.InterpContext import InterpContext
 from argrelay_lib_root.enum_desc.FuncState import FuncState
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
-from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import prohibit_unconsumed_args
+from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import (
+    prohibit_unconsumed_args,
+)
 from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostBase import (
     DelegatorServiceHostBase,
     get_host_search_control,
 )
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     instance_data_,
 )
@@ -88,5 +92,7 @@ class DelegatorServiceHostList(DelegatorServiceHostBase):
 
         prohibit_unconsumed_args(invocation_input)
 
-        for data_envelope in invocation_input.envelope_containers[host_container_ipos_].data_envelopes:
+        for data_envelope in invocation_input.envelope_containers[
+            host_container_ipos_
+        ].data_envelopes:
             print(json.dumps(data_envelope))
