@@ -12,8 +12,12 @@ from argrelay_app_server.handler_request.ProposeArgValuesServerRequestHandler im
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.DistinctValuesQuery import DistinctValuesQuery
-from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import server_config_desc
-from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
+    server_config_desc,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+)
 from argrelay_test_infra.test_infra import (
     ClientCommandFactoryLocal,
     line_no,
@@ -39,14 +43,16 @@ class ThisTestClass(BaseTestClass):
         test_cases = [
             (
                 line_no(),
-                "some_command host goto e| dev", CompType.PrefixHidden,
+                "some_command host goto e| dev",
+                CompType.PrefixHidden,
                 [
                     "emea",
                 ],
             ),
             (
                 line_no(),
-                "some_command service goto prod a|", CompType.PrefixHidden,
+                "some_command service goto prod a|",
+                CompType.PrefixHidden,
                 [
                     "aaa",
                 ],
@@ -55,7 +61,9 @@ class ThisTestClass(BaseTestClass):
 
         # Extend test cases with generated data
         # (Cartesian product with all `DistinctValuesQuery` and enabled|disabled cache):
-        extended_test_cases: list[tuple[int, str, CompType, list[str], DistinctValuesQuery, bool]] = []
+        extended_test_cases: list[
+            tuple[int, str, CompType, list[str], DistinctValuesQuery, bool]
+        ] = []
         for test_case in test_cases:
             for extended_params in itertools.product(
                 # distinct_values_query:
@@ -99,7 +107,9 @@ class ThisTestClass(BaseTestClass):
                         plugin_config,
                     )
                     local_server.start_local_server()
-                    propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
+                    propose_arg_values_handler = ProposeArgValuesServerRequestHandler(
+                        local_server
+                    )
 
                     # 1st run:
                     actual_suggestions_1st_run = "1st"
@@ -109,12 +119,12 @@ class ThisTestClass(BaseTestClass):
                     ) as method_wrap_mock:
                         actual_suggestions_1st_run = self.run_completion(
                             ShellContext(
-                                command_line = command_line,
-                                cursor_cpos = cursor_cpos,
-                                comp_type = comp_type,
-                                is_debug_enabled = False,
-                                comp_key = UNKNOWN_COMP_KEY,
-                                input_data = None,
+                                command_line=command_line,
+                                cursor_cpos=cursor_cpos,
+                                comp_type=comp_type,
+                                is_debug_enabled=False,
+                                comp_key=UNKNOWN_COMP_KEY,
+                                input_data=None,
                             ).create_call_context(),
                             propose_arg_values_handler,
                             expected_suggestions,
@@ -130,12 +140,12 @@ class ThisTestClass(BaseTestClass):
                     ) as method_wrap_mock:
                         actual_suggestions_2nd_run = self.run_completion(
                             ShellContext(
-                                command_line = command_line,
-                                cursor_cpos = cursor_cpos,
-                                comp_type = comp_type,
-                                is_debug_enabled = False,
-                                comp_key = UNKNOWN_COMP_KEY,
-                                input_data = None,
+                                command_line=command_line,
+                                cursor_cpos=cursor_cpos,
+                                comp_type=comp_type,
+                                is_debug_enabled=False,
+                                comp_key=UNKNOWN_COMP_KEY,
+                                input_data=None,
                             ).create_call_context(),
                             propose_arg_values_handler,
                             expected_suggestions,
@@ -143,7 +153,9 @@ class ThisTestClass(BaseTestClass):
                             # 2nd time: not called when cache is enabled, called when cache is disabled:
                             not enable_query_cache,
                         )
-                    self.assertEqual(actual_suggestions_1st_run, actual_suggestions_2nd_run)
+                    self.assertEqual(
+                        actual_suggestions_1st_run, actual_suggestions_2nd_run
+                    )
 
     def run_completion(
         self,

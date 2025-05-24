@@ -7,10 +7,18 @@ from dataclasses import (
 
 from argrelay_lib_root.enum_desc.PluginType import PluginType
 from argrelay_lib_root.schema_config.ConnectionConfig import ConnectionConfig
-from argrelay_schema_config_server.runtime_data_server_app.GuiBannerConfig import GuiBannerConfig
-from argrelay_schema_config_server.runtime_data_server_app.MongoConfig import MongoConfig
-from argrelay_schema_config_server.runtime_data_server_app.QueryCacheConfig import QueryCacheConfig
-from argrelay_schema_config_server.runtime_data_server_app.ServerPluginControl import ServerPluginControl
+from argrelay_schema_config_server.runtime_data_server_app.GuiBannerConfig import (
+    GuiBannerConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_app.MongoConfig import (
+    MongoConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_app.QueryCacheConfig import (
+    QueryCacheConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_app.ServerPluginControl import (
+    ServerPluginControl,
+)
 from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
     plugin_dependencies_,
     plugin_enabled_,
@@ -27,34 +35,42 @@ class ServerConfig:
 
     server_plugin_control: ServerPluginControl = field()
 
-    plugin_instances: dict[str, "AbstractPluginServer"] = field(default_factory = lambda: {})
+    plugin_instances: dict[str, "AbstractPluginServer"] = field(
+        default_factory=lambda: {}
+    )
     """
     All plugin instances by their plugin instance id.
     """
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
-    data_loaders: dict[str, "AbstractLoader"] = field(default_factory = lambda: {})
+    data_loaders: dict[str, "AbstractLoader"] = field(default_factory=lambda: {})
     """
     Entries in `data_loaders` are not directly loaded from config.
     These are plugin instances created during plugin activation.
     """
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
-    interp_factories: dict[str, "AbstractInterpFactory"] = field(default_factory = lambda: {})
+    interp_factories: dict[str, "AbstractInterpFactory"] = field(
+        default_factory=lambda: {}
+    )
     """
     Entries in `interp_factories` are not directly loaded from config.
     These are plugin instances created during plugin activation.
     """
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
-    action_delegators: dict[str, "DelegatorAbstract"] = field(default_factory = lambda: {})
+    action_delegators: dict[str, "DelegatorAbstract"] = field(
+        default_factory=lambda: {}
+    )
     """
     Entries in `action_delegators` are not directly loaded from config.
     These are plugin instances created during plugin activation.
     """
 
     # TODO: Keep this runtime objects in separate (`ServerRuntime`?) class. Ensure/implement ServerConfig dumping on request (for troubleshooting).
-    server_configurators: dict[str, "ConfiguratorAbstract"] = field(default_factory = lambda: {})
+    server_configurators: dict[str, "ConfiguratorAbstract"] = field(
+        default_factory=lambda: {}
+    )
 
 
 # TODO: move to PluginConfig:

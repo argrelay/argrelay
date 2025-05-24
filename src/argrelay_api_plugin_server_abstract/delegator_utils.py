@@ -1,5 +1,5 @@
-"""
-"""
+""" """
+
 from __future__ import annotations
 
 from typing import (
@@ -8,19 +8,25 @@ from typing import (
     Union,
 )
 
-from argrelay_api_plugin_server_abstract.ConfiguratorAbstract import ConfiguratorAbstract
+from argrelay_api_plugin_server_abstract.ConfiguratorAbstract import (
+    ConfiguratorAbstract,
+)
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_lib_root.enum_desc.ClientExitCode import ClientExitCode
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import DelegatorError
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import (
+    DelegatorError,
+)
 from argrelay_lib_server_plugin_core.plugin_delegator.SchemaCustomDataDelegatorError import (
     error_code_,
     error_delegator_custom_data_desc,
     error_message_,
 )
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import PluginConfig
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import (
+    PluginConfig,
+)
 
 
 def set_default_to(
@@ -37,11 +43,16 @@ def set_default_to(
     if prop_name in envelope_container.search_control.prop_name_to_arg_name_dict:
         if prop_name not in envelope_container.assigned_prop_name_to_prop_value:
             if prop_name in envelope_container.remaining_prop_name_to_prop_value:
-                if prop_value in envelope_container.remaining_prop_name_to_prop_value[prop_name]:
+                if (
+                    prop_value
+                    in envelope_container.remaining_prop_name_to_prop_value[prop_name]
+                ):
                     del envelope_container.remaining_prop_name_to_prop_value[prop_name]
-                    envelope_container.assigned_prop_name_to_prop_value[prop_name] = AssignedValue(
-                        prop_value,
-                        ValueSource.default_value,
+                    envelope_container.assigned_prop_name_to_prop_value[prop_name] = (
+                        AssignedValue(
+                            prop_value,
+                            ValueSource.default_value,
+                        )
                     )
                     return True
         else:
@@ -87,8 +98,10 @@ def redirect_to_error(
     error_delegator_custom_data_desc.validate_dict(custom_plugin_data)
     invocation_input = InvocationInput.with_interp_context(
         interp_ctx,
-        delegator_plugin_entry = plugin_config.server_plugin_instances[delegator_plugin_instance_id],
-        custom_plugin_data = custom_plugin_data,
+        delegator_plugin_entry=plugin_config.server_plugin_instances[
+            delegator_plugin_instance_id
+        ],
+        custom_plugin_data=custom_plugin_data,
     )
     return invocation_input
 

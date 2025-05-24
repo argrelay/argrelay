@@ -16,27 +16,31 @@ class SearchControl:
     See also `SearchControlSchema`.
     """
 
-    collection_name: str = field(default_factory = lambda: None)
+    collection_name: str = field(default_factory=lambda: None)
     """
     MongoDB collection to search `data_envelope`-s in.
     """
 
-    props_to_values_dict: dict[str, str] = field(default_factory = lambda: {})
+    props_to_values_dict: dict[str, str] = field(default_factory=lambda: {})
 
     # FS_10_93_78_10: `arg_name_to_prop_name_map`:
     # A spec to query `data_envelope`-s for this `EnvelopeContainer`:
     # *   which `prop_name`-s to use in query
     # *   which `arg_name` is mapped into which `prop_name`
     # a `list` to preserve order:
-    arg_name_to_prop_name_map: list[dict[str, str]] = field(default_factory = lambda: [])
+    arg_name_to_prop_name_map: list[dict[str, str]] = field(default_factory=lambda: [])
 
     # `arg_name_to_prop_name_dict` is derived from `arg_name_to_prop_name_map`:
     # a `dict` for quick lookup:
-    arg_name_to_prop_name_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
+    arg_name_to_prop_name_dict: dict[str, str] = field(
+        init=False, default_factory=lambda: {}
+    )
 
     # `prop_name_to_arg_name_dict` is derived from `arg_name_to_prop_name_map`:
     # a `dict` for reverse lookup:
-    prop_name_to_arg_name_dict: dict[str, str] = field(init = False, default_factory = lambda: {})
+    prop_name_to_arg_name_dict: dict[str, str] = field(
+        init=False, default_factory=lambda: {}
+    )
 
     def __post_init__(self):
         self._init_derived_fields()
@@ -44,14 +48,15 @@ class SearchControl:
 
     def _init_derived_fields(self):
         # generate `dict`:
-        self.arg_name_to_prop_name_dict = self.convert_list_of_ordered_singular_dicts_to_unordered_dict(
-            self.arg_name_to_prop_name_map,
+        self.arg_name_to_prop_name_dict = (
+            self.convert_list_of_ordered_singular_dicts_to_unordered_dict(
+                self.arg_name_to_prop_name_map,
+            )
         )
 
         # generate reverse `dict`:
         self.prop_name_to_arg_name_dict = {
-            v: k for k, v in
-            self.arg_name_to_prop_name_dict.items()
+            v: k for k, v in self.arg_name_to_prop_name_dict.items()
         }
 
     def _verify_prop_names_consistency(self):

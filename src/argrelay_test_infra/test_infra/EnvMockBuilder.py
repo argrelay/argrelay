@@ -46,7 +46,9 @@ from argrelay_lib_root.enum_desc.TopDir import TopDir
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader
 from argrelay_lib_server_plugin_demo.demo_service.ServiceLoader import ServiceLoader
-from argrelay_lib_server_plugin_demo.demo_service.ServiceLoaderConfigSchema import test_data_ids_to_load_
+from argrelay_lib_server_plugin_demo.demo_service.ServiceLoaderConfigSchema import (
+    test_data_ids_to_load_,
+)
 from argrelay_schema_config_client.schema_config_client_app.ClientConfigSchema import (
     client_config_desc,
     optimize_completion_request_,
@@ -57,7 +59,9 @@ from argrelay_schema_config_server.schema_config_server_app.MongoConfigSchema im
     distinct_values_query_,
     use_mongomock_,
 )
-from argrelay_schema_config_server.schema_config_server_app.QueryCacheConfigSchema import enable_query_cache_
+from argrelay_schema_config_server.schema_config_server_app.QueryCacheConfigSchema import (
+    enable_query_cache_,
+)
 from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
     mongo_config_,
     query_cache_config_,
@@ -71,7 +75,9 @@ from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema
     plugin_config_,
     plugin_enabled_,
 )
-from argrelay_test_infra.test_infra.ClientCommandFactoryLocal import ClientCommandFactoryLocal
+from argrelay_test_infra.test_infra.ClientCommandFactoryLocal import (
+    ClientCommandFactoryLocal,
+)
 from argrelay_test_infra.test_infra.OpenFileMock import OpenFileMock
 from argrelay_test_infra.test_infra.PopenMock import PopenMock
 
@@ -122,41 +128,43 @@ class EnvMockBuilder:
     ####################################################################################################################
     # Client input
 
-    command_line: Union[str, None] = field(default = None)
-    command_args: Union[list[str], None] = field(default = None)
-    cursor_cpos: Union[int, None] = field(default = None)
-    comp_type: Union[CompType, None] = field(default = None)
+    command_line: Union[str, None] = field(default=None)
+    command_args: Union[list[str], None] = field(default=None)
+    cursor_cpos: Union[int, None] = field(default=None)
+    comp_type: Union[CompType, None] = field(default=None)
     # The `comp_key` value is not used at the moment (but it is provided by shell in case of `CallConv.EnvVarsConv`) -
     # using any default value for now to avoid setting it everywhere
     # (when it starts to matter, change default to `None` to force review and specifying it in all tests):
-    comp_key: str = field(default = UNKNOWN_COMP_KEY)
+    comp_key: str = field(default=UNKNOWN_COMP_KEY)
 
     # TODO: Keep default to False (to do the minimum by default) - one has to select pre-set builder class to get defaults instead:
-    _mock_client_input: bool = field(default = True)
+    _mock_client_input: bool = field(default=True)
 
     ####################################################################################################################
     # Client config
 
-    is_client_config_with_local_server: bool = field(default = True)
-    is_client_config_to_optimize_completion_request: bool = field(default = None)
-    show_pending_spinner: Union[bool, None] = field(default = False)
+    is_client_config_with_local_server: bool = field(default=True)
+    is_client_config_to_optimize_completion_request: bool = field(default=None)
+    show_pending_spinner: Union[bool, None] = field(default=False)
 
     ####################################################################################################################
     # Server config
 
-    test_data_ids_to_load: list[str] = field(default_factory = lambda: [
-        "TD_70_69_38_46",  # no data
-    ])
+    test_data_ids_to_load: list[str] = field(
+        default_factory=lambda: [
+            "TD_70_69_38_46",  # no data
+        ]
+    )
 
-    enable_demo_git_loader: bool = field(default = False)
-    use_mongomock: Union[bool, None] = field(default = None)
+    enable_demo_git_loader: bool = field(default=False)
+    use_mongomock: Union[bool, None] = field(default=None)
 
-    enable_query_cache: Union[bool, None] = field(default = None)
+    enable_query_cache: Union[bool, None] = field(default=None)
     """
     See `QueryCacheConfig.enable_query_cache`.
     """
 
-    distinct_values_query: Union[DistinctValuesQuery, None] = field(default = None)
+    distinct_values_query: Union[DistinctValuesQuery, None] = field(default=None)
     """
     See `DistinctValuesQuery`.
     """
@@ -164,50 +172,50 @@ class EnvMockBuilder:
     ####################################################################################################################
     # Input mocking
 
-    given_stdin: str = field(default = None)
+    given_stdin: str = field(default=None)
 
     ####################################################################################################################
     # Output capturing
 
-    actual_stdout: StringIO = field(default = None)
-    capture_stdout: bool = field(default = False)
+    actual_stdout: StringIO = field(default=None)
+    capture_stdout: bool = field(default=False)
 
-    actual_stderr: StringIO = field(default = None)
-    capture_stderr: bool = field(default = False)
+    actual_stderr: StringIO = field(default=None)
+    capture_stderr: bool = field(default=False)
 
     ####################################################################################################################
     # Config file mocking
 
-    client_config_dict: Union[dict, None] = field(default_factory = lambda: None)
-    server_config_dict: Union[dict, None] = field(default_factory = lambda: None)
-    plugin_config_dict: Union[dict, None] = field(default_factory = lambda: None)
+    client_config_dict: Union[dict, None] = field(default_factory=lambda: None)
+    server_config_dict: Union[dict, None] = field(default_factory=lambda: None)
+    plugin_config_dict: Union[dict, None] = field(default_factory=lambda: None)
 
-    mock_client_config_file_read: bool = field(default = False)
-    mock_server_config_file_read: bool = field(default = False)
-    mock_plugin_config_file_read: bool = field(default = False)
-    mock_usage_stats_file_write: bool = field(default = False)
+    mock_client_config_file_read: bool = field(default=False)
+    mock_server_config_file_read: bool = field(default=False)
+    mock_plugin_config_file_read: bool = field(default=False)
+    mock_usage_stats_file_write: bool = field(default=False)
 
     # Implement FS_63_63_14_08 generated test config for `out`-processes to read it (see FS_66_17_43_42 test infra):
-    generate_client_config_file: bool = field(default = False)
-    generate_server_config_file: bool = field(default = False)
-    generate_plugin_config_file: bool = field(default = False)
+    generate_client_config_file: bool = field(default=False)
+    generate_server_config_file: bool = field(default=False)
+    generate_plugin_config_file: bool = field(default=False)
     temp_test_config_dir: Union[tempfile.TemporaryDirectory, None] = None
 
     ####################################################################################################################
     # General mocking
 
-    file_mock: OpenFileMock = field(default_factory = lambda: OpenFileMock({}))
+    file_mock: OpenFileMock = field(default_factory=lambda: OpenFileMock({}))
 
-    assert_on_close: bool = field(default = True)
+    assert_on_close: bool = field(default=True)
 
     ####################################################################################################################
     # Intercept specific payload
 
-    invoke_action_func_full_name: str = field(default = None)
+    invoke_action_func_full_name: str = field(default=None)
     """
     Set by giving `delegator_class` to `set_capture_delegator_invocation_input`.
     """
-    invocation_input: InvocationInput = field(default = None)
+    invocation_input: InvocationInput = field(default=None)
     """
     Captured `InvocationInput` by using `capture_invocation_input` func on `ServerAction.RelayLineArgs`
     instead of calling client-side delegator.
@@ -216,13 +224,13 @@ class EnvMockBuilder:
     ####################################################################################################################
     # Server control
 
-    reset_local_server: bool = field(default = True)
+    reset_local_server: bool = field(default=True)
     """
     If true, (after build() context is over) next invocation via `ClientLocal` will trigger `LocalServer` restart (re-creation and re-load).
     Default is true because it is confusing to hold `test_data_ids_to_load` while not re-loading server by default.
     """
 
-    was_server_started_on_build: bool = field(default = False)
+    was_server_started_on_build: bool = field(default=False)
     """
     Avoids triggering verification of file access mock usage for server config
     when `ClientLocal` reuses already running server.
@@ -269,7 +277,9 @@ class EnvMockBuilder:
         self.is_client_config_with_local_server = given_val
         return self
 
-    def set_client_config_to_optimize_completion_request(self, given_val: Union[bool, None]):
+    def set_client_config_to_optimize_completion_request(
+        self, given_val: Union[bool, None]
+    ):
         self.is_client_config_to_optimize_completion_request = given_val
         return self
 
@@ -306,8 +316,7 @@ class EnvMockBuilder:
         return self
 
     def set_distinct_values_query(
-        self,
-        distinct_values_query: Union[distinct_values_query, None]
+        self, distinct_values_query: Union[distinct_values_query, None]
     ):
         self.distinct_values_query = distinct_values_query
         return self
@@ -437,7 +446,9 @@ class EnvMockBuilder:
     ####################################################################################################################
     # Intercept specific payload
 
-    def set_capture_delegator_invocation_input(self, delegator_class: Type[DelegatorAbstract]):
+    def set_capture_delegator_invocation_input(
+        self, delegator_class: Type[DelegatorAbstract]
+    ):
         """
         This func causes `DelegatorAbstract.invoke_action` to be mocked to capture `InvocationInput`
         inside `EnvMockBuilder.invocation_input` allowing tests to assert
@@ -477,16 +488,24 @@ class EnvMockBuilder:
         ################################################################################################################
         # Initial validation
 
-        self.was_server_started_on_build = ClientCommandFactoryLocal.local_server is not None
+        self.was_server_started_on_build = (
+            ClientCommandFactoryLocal.local_server is not None
+        )
 
         # Ensure there are no false expectations if conflicting setup is done:
-        assert self.command_line is None or self.command_args is None, "both cannot be set, at most one"
+        assert (
+            self.command_line is None or self.command_args is None
+        ), "both cannot be set, at most one"
 
         if self.command_line is not None:
-            assert self.cursor_cpos is not None, "setting command line (in CompletionMode) requires setting cursor cpos"
+            assert (
+                self.cursor_cpos is not None
+            ), "setting command line (in CompletionMode) requires setting cursor cpos"
 
         if self.command_args is not None:
-            assert self.cursor_cpos is None, "if args are set (in InvocationMode), cursor pos should not be set"
+            assert (
+                self.cursor_cpos is None
+            ), "if args are set (in InvocationMode), cursor pos should not be set"
 
         self.assert_config_substitution_mutually_exclusive()
 
@@ -537,23 +556,25 @@ class EnvMockBuilder:
 
             assert self.client_config_dict is not None
 
-            self.client_config_dict[use_local_requests_] = self.is_client_config_with_local_server
+            self.client_config_dict[use_local_requests_] = (
+                self.is_client_config_with_local_server
+            )
 
             if self.is_client_config_to_optimize_completion_request is not None:
-                self.client_config_dict[
-                    optimize_completion_request_
-                ] = self.is_client_config_to_optimize_completion_request
+                self.client_config_dict[optimize_completion_request_] = (
+                    self.is_client_config_to_optimize_completion_request
+                )
 
             if self.show_pending_spinner is not None:
-                self.client_config_dict[
-                    show_pending_spinner_
-                ] = self.show_pending_spinner
+                self.client_config_dict[show_pending_spinner_] = (
+                    self.show_pending_spinner
+                )
 
             # set mocked file content:
             if self.mock_client_config_file_read:
-                self.file_mock.path_to_data[client_config_desc.get_adjusted_file_path()] = json.dumps(
-                    self.client_config_dict
-                )
+                self.file_mock.path_to_data[
+                    client_config_desc.get_adjusted_file_path()
+                ] = json.dumps(self.client_config_dict)
 
         if self.mock_server_config_file_read or self.generate_server_config_file:
             """
@@ -562,19 +583,25 @@ class EnvMockBuilder:
             assert self.server_config_dict is not None
 
             if self.enable_query_cache is not None:
-                self.server_config_dict[query_cache_config_][enable_query_cache_] = self.enable_query_cache
+                self.server_config_dict[query_cache_config_][
+                    enable_query_cache_
+                ] = self.enable_query_cache
 
             if self.distinct_values_query is not None:
-                self.server_config_dict[mongo_config_][distinct_values_query_] = self.distinct_values_query.name
+                self.server_config_dict[mongo_config_][
+                    distinct_values_query_
+                ] = self.distinct_values_query.name
 
             if self.use_mongomock is not None:
-                self.server_config_dict[mongo_config_][use_mongomock_] = self.use_mongomock
+                self.server_config_dict[mongo_config_][
+                    use_mongomock_
+                ] = self.use_mongomock
 
             # set mocked file content:
             if self.mock_server_config_file_read:
-                self.file_mock.path_to_data[server_config_desc.get_adjusted_file_path()] = yaml.dump(
-                    self.server_config_dict
-                )
+                self.file_mock.path_to_data[
+                    server_config_desc.get_adjusted_file_path()
+                ] = yaml.dump(self.server_config_dict)
 
         if self.mock_plugin_config_file_read or self.generate_plugin_config_file:
             """
@@ -583,18 +610,24 @@ class EnvMockBuilder:
             assert self.plugin_config_dict is not None
 
             # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `GitRepoLoader`):
-            plugin_entry = self.plugin_config_dict[server_plugin_instances_][f"{GitRepoLoader.__name__}.default"]
+            plugin_entry = self.plugin_config_dict[server_plugin_instances_][
+                f"{GitRepoLoader.__name__}.default"
+            ]
             plugin_entry[plugin_enabled_] = self.enable_demo_git_loader
 
             # TODO: TODO_62_75_33_41: Do not hardcode plugin instance id (instance of `ServiceLoader`):
-            plugin_entry = self.plugin_config_dict[server_plugin_instances_][f"{ServiceLoader.__name__}.default"]
-            plugin_entry[plugin_config_][test_data_ids_to_load_] = self.test_data_ids_to_load
+            plugin_entry = self.plugin_config_dict[server_plugin_instances_][
+                f"{ServiceLoader.__name__}.default"
+            ]
+            plugin_entry[plugin_config_][
+                test_data_ids_to_load_
+            ] = self.test_data_ids_to_load
 
             # set mocked file content:
             if self.mock_plugin_config_file_read:
-                self.file_mock.path_to_data[plugin_config_desc.get_adjusted_file_path()] = yaml.dump(
-                    self.plugin_config_dict
-                )
+                self.file_mock.path_to_data[
+                    plugin_config_desc.get_adjusted_file_path()
+                ] = yaml.dump(self.plugin_config_dict)
 
         if self.mock_usage_stats_file_write:
             # set mocked file content:
@@ -610,118 +643,123 @@ class EnvMockBuilder:
 
             if self._mock_client_input:
 
-                assert self.comp_type is not None, "if mocking client input was requested, `comp_type` cannot be `None`"
+                assert (
+                    self.comp_type is not None
+                ), "if mocking client input was requested, `comp_type` cannot be `None`"
 
                 if CallConv.from_comp_type(self.comp_type) is CallConv.EnvVarsConv:
                     if self.command_line is not None and self.cursor_cpos is not None:
                         # TODO: make explicit function "mock_client_input_in_env_vars" with all three args required.
-                        yield_list.append(exit_stack.enter_context(
-                            _mock_client_input_in_env_vars(
-                                self.command_line,
-                                self.cursor_cpos,
-                                self.comp_type,
+                        yield_list.append(
+                            exit_stack.enter_context(
+                                _mock_client_input_in_env_vars(
+                                    self.command_line,
+                                    self.cursor_cpos,
+                                    self.comp_type,
+                                )
                             )
-                        ))
+                        )
                     else:
                         raise RuntimeError
                 elif CallConv.from_comp_type(self.comp_type) is CallConv.CliArgsConv:
                     # TODO: make explicit function "mock_client_input_in_cli_args" with just command_args.
                     if self.command_args is not None:
                         # TODO: do not branch here, branch on mock setup (in client tests) to make it explicit/conscious that InvocationMode is not about command_line, but command_args.
-                        yield_list.append(exit_stack.enter_context(
-                            _mock_client_input_in_invocation_mode_with_args(
-                                self.command_args,
+                        yield_list.append(
+                            exit_stack.enter_context(
+                                _mock_client_input_in_invocation_mode_with_args(
+                                    self.command_args,
+                                )
                             )
-                        ))
+                        )
                     elif self.command_line is not None:
                         # TODO: do not branch here, branch on mock setup (in client tests) to make it explicit/conscious that InvocationMode is not about command_line, but command_args.
-                        yield_list.append(exit_stack.enter_context(
-                            _mock_client_input_in_invocation_mode_with_line(
-                                self.command_line,
+                        yield_list.append(
+                            exit_stack.enter_context(
+                                _mock_client_input_in_invocation_mode_with_line(
+                                    self.command_line,
+                                )
                             )
-                        ))
+                        )
                     else:
                         raise RuntimeError
                 else:
                     raise RuntimeError
 
             if self.given_stdin is not None:
-                yield_list.append(exit_stack.enter_context(_mock_stdin(self.given_stdin)))
+                yield_list.append(
+                    exit_stack.enter_context(_mock_stdin(self.given_stdin))
+                )
 
             if self.capture_stdout:
                 self.actual_stdout = StringIO()
-                yield_list.append(exit_stack.enter_context(_capture_stdout(self.actual_stdout)))
+                yield_list.append(
+                    exit_stack.enter_context(_capture_stdout(self.actual_stdout))
+                )
 
             if self.capture_stderr:
                 self.actual_stderr = StringIO()
-                yield_list.append(exit_stack.enter_context(_capture_stderr(self.actual_stderr)))
+                yield_list.append(
+                    exit_stack.enter_context(_capture_stderr(self.actual_stderr))
+                )
 
             if self.assert_on_close:
                 yield_list.append(exit_stack.enter_context(self.assert_all_cm()))
 
             if self.invoke_action_func_full_name:
-                yield_list.append(exit_stack.enter_context(
-                    _mock_delegator_plugin(self.invoke_action_func_full_name)
-                ))
+                yield_list.append(
+                    exit_stack.enter_context(
+                        _mock_delegator_plugin(self.invoke_action_func_full_name)
+                    )
+                )
 
             if self.reset_local_server:
-                yield_list.append(exit_stack.enter_context(
-                    do_reset_local_server()
-                ))
+                yield_list.append(exit_stack.enter_context(do_reset_local_server()))
 
             if (
                 self.generate_client_config_file
-                or
-                self.generate_server_config_file
-                or
-                self.generate_plugin_config_file
+                or self.generate_server_config_file
+                or self.generate_plugin_config_file
             ):
-                yield_list.append(exit_stack.enter_context(
-                    self.generate_configs()
-                ))
+                yield_list.append(exit_stack.enter_context(self.generate_configs()))
 
             yield yield_list
 
     def assert_config_substitution_mutually_exclusive(self):
         assert (
             (
-                self.mock_client_config_file_read == self.generate_client_config_file == False
-                or
-                self.mock_client_config_file_read != self.generate_client_config_file
+                self.mock_client_config_file_read
+                == self.generate_client_config_file
+                == False
+                or self.mock_client_config_file_read != self.generate_client_config_file
             )
-            and
-            (
-                self.mock_server_config_file_read == self.generate_server_config_file == False
-                or
-                self.mock_server_config_file_read != self.generate_server_config_file
+            and (
+                self.mock_server_config_file_read
+                == self.generate_server_config_file
+                == False
+                or self.mock_server_config_file_read != self.generate_server_config_file
             )
-            and
-            (
-                self.mock_plugin_config_file_read == self.generate_plugin_config_file == False
-                or
-                self.mock_plugin_config_file_read != self.generate_plugin_config_file
+            and (
+                self.mock_plugin_config_file_read
+                == self.generate_plugin_config_file
+                == False
+                or self.mock_plugin_config_file_read != self.generate_plugin_config_file
             )
         ), "FS_63_63_14_08: generated test config: mocked config and generated test config are mutually exclusive"
 
     def assert_client_config_substitute_enabled(self):
         assert (
-            self.mock_client_config_file_read
-            or
-            self.generate_client_config_file
+            self.mock_client_config_file_read or self.generate_client_config_file
         ), "FS_63_63_14_08: generated test config: when enabled: either mocked config or generated test config"
 
     def assert_server_config_substitute_enabled(self):
         assert (
-            self.mock_server_config_file_read
-            or
-            self.generate_server_config_file
+            self.mock_server_config_file_read or self.generate_server_config_file
         ), "FS_63_63_14_08: generated test config: when enabled: either mocked config or generated test config"
 
     def assert_plugin_config_substitute_enabled(self):
         assert (
-            self.mock_plugin_config_file_read
-            or
-            self.generate_plugin_config_file
+            self.mock_plugin_config_file_read or self.generate_plugin_config_file
         ), "FS_63_63_14_08: generated test config: when enabled: either mocked config or generated test config"
 
     @contextlib.contextmanager
@@ -731,9 +769,15 @@ class EnvMockBuilder:
         finally:
             if self.mock_client_config_file_read:
                 self.assert_client_config_read()
-            if self.mock_server_config_file_read and not self.was_server_started_on_build:
+            if (
+                self.mock_server_config_file_read
+                and not self.was_server_started_on_build
+            ):
                 self.assert_server_config_read()
-            if self.mock_plugin_config_file_read and not self.was_server_started_on_build:
+            if (
+                self.mock_plugin_config_file_read
+                and not self.was_server_started_on_build
+            ):
                 self.assert_plugin_config_read()
 
     def assert_client_config_read(self):
@@ -774,7 +818,9 @@ class EnvMockBuilder:
         if not os.path.exists(test_configs_dir):
             os.makedirs(test_configs_dir)
 
-        self.temp_test_config_dir = tempfile.TemporaryDirectory(dir = f"{test_configs_dir}/")
+        self.temp_test_config_dir = tempfile.TemporaryDirectory(
+            dir=f"{test_configs_dir}/"
+        )
         try:
             with self.temp_test_config_dir:
                 os.environ["ARGRELAY_CONF_BASE_DIR"] = self.temp_test_config_dir.name
@@ -836,6 +882,7 @@ class EnvMockBuilder:
 
 ########################################################################################################################
 # Pre-configured mock builders
+
 
 @dataclass
 class EmptyEnvMockBuilder(EnvMockBuilder):
@@ -987,14 +1034,20 @@ class LiveServerEnvMockBuilder(EnvMockBuilder):
 ########################################################################################################################
 # Client input mocking
 
+
 @contextlib.contextmanager
-def _mock_client_input_in_env_vars(command_line: str, cursor_cpos: int, comp_type: CompType):
-    with mock.patch.dict(os.environ, {
-        COMP_LINE_env_var: command_line,
-        COMP_POINT_env_var: str(cursor_cpos),
-        COMP_TYPE_env_var: str(comp_type.value),
-        COMP_KEY_env_var: UNKNOWN_COMP_KEY,
-    }) as env_mock:
+def _mock_client_input_in_env_vars(
+    command_line: str, cursor_cpos: int, comp_type: CompType
+):
+    with mock.patch.dict(
+        os.environ,
+        {
+            COMP_LINE_env_var: command_line,
+            COMP_POINT_env_var: str(cursor_cpos),
+            COMP_TYPE_env_var: str(comp_type.value),
+            COMP_KEY_env_var: UNKNOWN_COMP_KEY,
+        },
+    ) as env_mock:
         yield env_mock
 
 
@@ -1012,6 +1065,7 @@ def _mock_client_input_in_invocation_mode_with_args(command_args: list[str]):
 ########################################################################################################################
 # Input mocking
 
+
 @contextlib.contextmanager
 def _mock_stdin(
     stdin_data: str,
@@ -1022,6 +1076,7 @@ def _mock_stdin(
 
 ########################################################################################################################
 # Output capturing
+
 
 @contextlib.contextmanager
 def _capture_stdout(stdout_f):
@@ -1038,9 +1093,12 @@ def _capture_stderr(stderr_f):
 ########################################################################################################################
 # Intercept specific payload
 
+
 @contextlib.contextmanager
 def _mock_delegator_plugin(path_to_invoke_action):
-    with mock.patch(path_to_invoke_action, capture_invocation_input) as invoke_action_mock:
+    with mock.patch(
+        path_to_invoke_action, capture_invocation_input
+    ) as invoke_action_mock:
         yield invoke_action_mock
 
 
@@ -1056,9 +1114,12 @@ def capture_invocation_input(invocation_input: InvocationInput):
 ########################################################################################################################
 # Stand-alone util mock funcs
 
+
 @contextlib.contextmanager
 def mock_subprocess_popen(expected_args_to_output):
-    with mock.patch("subprocess.Popen", PopenMock(expected_args_to_output)) as popen_mock:
+    with mock.patch(
+        "subprocess.Popen", PopenMock(expected_args_to_output)
+    ) as popen_mock:
         yield popen_mock
 
 
@@ -1075,7 +1136,7 @@ def wrap_instance_method_on_instance(
     with mock.patch.object(
         any_instance,
         callable_on_instance.__name__,
-        wraps = callable_on_instance,
+        wraps=callable_on_instance,
     ) as method_wrap_mock:
         yield method_wrap_mock
 
@@ -1092,8 +1153,8 @@ def wrap_instance_method_on_class(
     """
     with mock.patch(
         f"{any_class.__module__}.{any_class.__name__}.{callable_on_class.__name__}",
-        side_effect = callable_on_class,
-        autospec = True,
+        side_effect=callable_on_class,
+        autospec=True,
     ) as method_wrap_mock:
         yield method_wrap_mock
 
@@ -1108,6 +1169,7 @@ def do_reset_local_server():
 
 ########################################################################################################################
 # Test objects
+
 
 def default_test_parsed_context(
     command_line: str,
@@ -1129,10 +1191,10 @@ def default_test_call_context(
     comp_type: CompType = CompType.PrefixShown,
 ) -> CallContext:
     return ShellContext(
-        command_line = command_line,
-        cursor_cpos = cursor_cpos,
-        comp_type = comp_type,
-        comp_key = UNKNOWN_COMP_KEY,
-        is_debug_enabled = False,
-        input_data = None,
+        command_line=command_line,
+        cursor_cpos=cursor_cpos,
+        comp_type=comp_type,
+        comp_key=UNKNOWN_COMP_KEY,
+        is_debug_enabled=False,
+        input_data=None,
     ).create_call_context()

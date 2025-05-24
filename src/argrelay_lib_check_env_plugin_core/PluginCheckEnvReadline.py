@@ -5,11 +5,15 @@ import subprocess
 from typing import Union
 
 from argrelay_api_plugin_check_env_abstract.CheckEnvResult import CheckEnvResult
-from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import PluginCheckEnvAbstract
+from argrelay_api_plugin_check_env_abstract.PluginCheckEnvAbstract import (
+    PluginCheckEnvAbstract,
+)
 from argrelay_lib_root.enum_desc.ResultCategory import ResultCategory
 
 _common_banner = "Search about GNU Readline (`~/.inputrc`) or `bind` in Bash."
-_common_bell_explanation = "Bash sometimes gives terminal \"bell\" instead of showing auto-completion."
+_common_bell_explanation = (
+    'Bash sometimes gives terminal "bell" instead of showing auto-completion.'
+)
 
 
 class PluginCheckEnvReadlineAbstract(PluginCheckEnvAbstract):
@@ -61,12 +65,12 @@ class PluginCheckEnvReadlineAbstract(PluginCheckEnvAbstract):
     ) -> list[CheckEnvResult]:
         try:
             bash_proc = subprocess.run(
-                args = [
+                args=[
                     "bash",
                     "-c",
                     "bind -v",
                 ],
-                capture_output = True,
+                capture_output=True,
             )
             assert bash_proc.returncode == 0
             stdout_str = bash_proc.stdout.decode("utf-8")
@@ -81,33 +85,41 @@ class PluginCheckEnvReadlineAbstract(PluginCheckEnvAbstract):
             prop_value = None
 
         if "on" == prop_value:
-            return [CheckEnvResult(
-                result_category = self.if_on_category,
-                result_key = self.prop_name,
-                result_value = str(prop_value),
-                result_message = self.if_on_message,
-            )]
+            return [
+                CheckEnvResult(
+                    result_category=self.if_on_category,
+                    result_key=self.prop_name,
+                    result_value=str(prop_value),
+                    result_message=self.if_on_message,
+                )
+            ]
         elif "off" == prop_value:
-            return [CheckEnvResult(
-                result_category = self.if_off_category,
-                result_key = self.prop_name,
-                result_value = str(prop_value),
-                result_message = self.if_off_message,
-            )]
+            return [
+                CheckEnvResult(
+                    result_category=self.if_off_category,
+                    result_key=self.prop_name,
+                    result_value=str(prop_value),
+                    result_message=self.if_off_message,
+                )
+            ]
         elif prop_value is not None:
-            return [CheckEnvResult(
-                result_category = ResultCategory.ExecutionFailure,
-                result_key = self.prop_name,
-                result_value = str(prop_value),
-                result_message = f"Unknown value for `{prop_value}` in `bind -v` output.",
-            )]
+            return [
+                CheckEnvResult(
+                    result_category=ResultCategory.ExecutionFailure,
+                    result_key=self.prop_name,
+                    result_value=str(prop_value),
+                    result_message=f"Unknown value for `{prop_value}` in `bind -v` output.",
+                )
+            ]
         else:
-            return [CheckEnvResult(
-                result_category = ResultCategory.ExecutionFailure,
-                result_key = self.prop_name,
-                result_value = str(prop_value),
-                result_message = f"Unable to parse `bind -v` output and find `{prop_value}`.",
-            )]
+            return [
+                CheckEnvResult(
+                    result_category=ResultCategory.ExecutionFailure,
+                    result_key=self.prop_name,
+                    result_value=str(prop_value),
+                    result_message=f"Unable to parse `bind -v` output and find `{prop_value}`.",
+                )
+            ]
 
 
 class PluginCheckEnvReadlineShowAllIfAmbiguous(PluginCheckEnvReadlineAbstract):
@@ -124,11 +136,11 @@ class PluginCheckEnvReadlineShowAllIfAmbiguous(PluginCheckEnvReadlineAbstract):
         super().__init__(
             plugin_instance_id,
             plugin_config_dict,
-            prop_name = prop_name,
-            if_on_message = f"More convenient. {_common_banner}",
-            if_on_category = ResultCategory.VerificationSuccess,
-            if_off_message = f"Less convenient: if `{prop_name}` is off, {_common_bell_explanation} {_common_banner}",
-            if_off_category = ResultCategory.VerificationWarning,
+            prop_name=prop_name,
+            if_on_message=f"More convenient. {_common_banner}",
+            if_on_category=ResultCategory.VerificationSuccess,
+            if_off_message=f"Less convenient: if `{prop_name}` is off, {_common_bell_explanation} {_common_banner}",
+            if_off_category=ResultCategory.VerificationWarning,
         )
 
 
@@ -146,11 +158,11 @@ class PluginCheckEnvReadlineShowAllIfUnmodified(PluginCheckEnvReadlineAbstract):
         super().__init__(
             plugin_instance_id,
             plugin_config_dict,
-            prop_name = prop_name,
-            if_on_message = f"More convenient. {_common_banner}",
-            if_on_category = ResultCategory.VerificationSuccess,
-            if_off_message = f"Less convenient: if `{prop_name}` is off, {_common_bell_explanation} {_common_banner}",
-            if_off_category = ResultCategory.VerificationWarning,
+            prop_name=prop_name,
+            if_on_message=f"More convenient. {_common_banner}",
+            if_on_category=ResultCategory.VerificationSuccess,
+            if_off_message=f"Less convenient: if `{prop_name}` is off, {_common_bell_explanation} {_common_banner}",
+            if_off_category=ResultCategory.VerificationWarning,
         )
 
 
@@ -165,9 +177,9 @@ class PluginCheckEnvReadlineSkipCompletedText(PluginCheckEnvReadlineAbstract):
         super().__init__(
             plugin_instance_id,
             plugin_config_dict,
-            prop_name = prop_name,
-            if_on_message = f"More convenient. {_common_banner}",
-            if_on_category = ResultCategory.VerificationSuccess,
-            if_off_message = f"Less convenient: if `{prop_name}` is off, inserting completed CLI arg part will duplicate existing one. {_common_banner}",
-            if_off_category = ResultCategory.VerificationWarning,
+            prop_name=prop_name,
+            if_on_message=f"More convenient. {_common_banner}",
+            if_on_category=ResultCategory.VerificationSuccess,
+            if_off_message=f"Less convenient: if `{prop_name}` is off, inserting completed CLI arg part will duplicate existing one. {_common_banner}",
+            if_off_category=ResultCategory.VerificationWarning,
         )

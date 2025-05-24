@@ -17,11 +17,11 @@ class SchemaCustomDataDelegatorError(Schema):
         strict = True
 
     error_message = fields.String(
-        required = False,
+        required=False,
     )
 
     error_code = fields.Integer(
-        required = False,
+        required=False,
     )
 
 
@@ -30,8 +30,8 @@ error_delegator_stub_custom_data_example = {
     error_code_: 0,
 }
 error_delegator_custom_data_desc = TypeDesc(
-    dict_schema = SchemaCustomDataDelegatorError(),
-    ref_name = SchemaCustomDataDelegatorError.__name__,
-    dict_example = error_delegator_stub_custom_data_example,
-    default_file_path = "",
+    dict_schema=SchemaCustomDataDelegatorError(),
+    ref_name=SchemaCustomDataDelegatorError.__name__,
+    dict_example=error_delegator_stub_custom_data_example,
+    default_file_path="",
 )

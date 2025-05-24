@@ -13,11 +13,13 @@ def worker_main(
         # This branch with `use_local_requests` is used only for testing
         # (to inspect internal server data via `ClientLocal` and `LocalServer`):
         from argrelay_test_infra.test_infra.ClientLocal import ClientLocal
+
         abstract_client = ClientLocal(
             client_config,
         )
     else:
         from argrelay_app_client.relay_client.ClientRemote import ClientRemote
+
         abstract_client = ClientRemote(
             client_config,
             proc_role,

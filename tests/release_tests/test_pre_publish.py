@@ -4,11 +4,21 @@ import os
 from typing import Union
 from unittest import skipIf
 
-from argrelay_lib_server_plugin_demo.demo_git import GitRepoLoader as GitRepoLoader_module
-from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader as GitRepoLoader_class
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import PluginConfig
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import PluginEntry
-from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_lib_server_plugin_demo.demo_git import (
+    GitRepoLoader as GitRepoLoader_module,
+)
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import (
+    GitRepoLoader as GitRepoLoader_class,
+)
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import (
+    PluginConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import (
+    PluginEntry,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+)
 from argrelay_test_infra.test_infra import change_to_known_repo_path
 from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 from argrelay_test_infra.test_infra.EnvMockBuilder import ServerOnlyEnvMockBuilder
@@ -35,8 +45,7 @@ class ThisTestClass(BaseTestClass):
         env_mock_builder = (
             ServerOnlyEnvMockBuilder()
             # This test does not use server code and loads plugin config directly - disable mocking server config load:
-            .set_mock_server_config_file_read(False)
-            .clear_server_config_dict()
+            .set_mock_server_config_file_read(False).clear_server_config_dict()
         )
         with env_mock_builder.build():
 
@@ -44,22 +53,27 @@ class ThisTestClass(BaseTestClass):
             found_one = False
             git_loader_plugin_entry: Union[PluginEntry, None] = None
             for plugin_instance_id in plugin_config.plugin_instance_id_activate_list:
-                plugin_entry: PluginEntry = plugin_config.server_plugin_instances[plugin_instance_id]
+                plugin_entry: PluginEntry = plugin_config.server_plugin_instances[
+                    plugin_instance_id
+                ]
                 if (
                     plugin_entry.plugin_module_name == GitRepoLoader_module.__name__
-                    and
-                    plugin_entry.plugin_class_name == GitRepoLoader_class.__name__
+                    and plugin_entry.plugin_class_name == GitRepoLoader_class.__name__
                 ):
                     if ".self" in plugin_instance_id:
                         # Ignore ".self" - it is allowed:
                         pass
                     else:
                         if found_one:
-                            raise RuntimeError("two " + GitRepoLoader_class.__name__ + " plugins?")
+                            raise RuntimeError(
+                                "two " + GitRepoLoader_class.__name__ + " plugins?"
+                            )
                         found_one = True
                         git_loader_plugin_entry = plugin_entry
             if not found_one:
-                raise RuntimeError("missing " + GitRepoLoader_class.__name__ + " plugin?")
+                raise RuntimeError(
+                    "missing " + GitRepoLoader_class.__name__ + " plugin?"
+                )
 
             self.assertFalse(git_loader_plugin_entry.plugin_enabled)
 
@@ -88,10 +102,8 @@ class ThisTestClass(BaseTestClass):
     @skipIf(
         (
             (os.environ.get("ARGRELAY_DEV_SHELL", False))
-            or
-            (os.environ.get("ARGRELAY_BOOTSTRAP_ENV", False))
-            or
-            (os.environ.get("PYCHARM_HOSTED", False))
+            or (os.environ.get("ARGRELAY_BOOTSTRAP_ENV", False))
+            or (os.environ.get("PYCHARM_HOSTED", False))
         ),
         "To allow installed config files, skip when in `@/exe/dev_shell.bash` or in IDE.",
     )

@@ -15,7 +15,9 @@ has_error_happened = False
 def _signal_handler(signal_number, signal_frame):
     if signal_number == signal.SIGALRM:
         # Import hanged:
-        eprint("ERROR: `import` hanged, `Ctrl + C` and retry, details: https://github.com/argrelay/argrelay/issues/89")
+        eprint(
+            "ERROR: `import` hanged, `Ctrl + C` and retry, details: https://github.com/argrelay/argrelay/issues/89"
+        )
         global has_error_happened
         has_error_happened = True
 
@@ -25,9 +27,10 @@ class ClientCommandRemoteWorkerJson(ClientCommandRemoteWorkerAbstract):
     def _execute_remote_call(
         self,
     ):
-        server_url = BASE_URL_FORMAT.format(
-            **asdict(self.curr_connection_config)
-        ) + f"{self.call_ctx.server_action.value}"
+        server_url = (
+            BASE_URL_FORMAT.format(**asdict(self.curr_connection_config))
+            + f"{self.call_ctx.server_action.value}"
+        )
         headers_dict = {
             "Content-Type": "application/json",
             "Accept": "application/json",
@@ -44,13 +47,14 @@ class ClientCommandRemoteWorkerJson(ClientCommandRemoteWorkerAbstract):
         signal.signal(signal.SIGALRM, _signal_handler)
         signal.alarm(1)
         import requests
+
         signal.alarm(0)
 
         try:
             response_obj = requests.post(
                 server_url,
-                headers = headers_dict,
-                data = request_json,
+                headers=headers_dict,
+                data=request_json,
             )
         except requests.exceptions.ConnectionError as e:
             # translate to builtin:

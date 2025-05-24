@@ -24,8 +24,8 @@ class JsonTestOutputVerifier:
                 [list[DatumInContext]],
                 None,
             ]
-        ]
-    ] = field(default_factory = lambda: {})
+        ],
+    ] = field(default_factory=lambda: {})
     """
     JSON query `str` to list of verifiers as `Callable`-s.
 

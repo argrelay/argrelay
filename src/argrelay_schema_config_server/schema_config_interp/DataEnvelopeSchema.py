@@ -54,7 +54,7 @@ class DataEnvelopeSchema(Schema):
         strict = True
 
     envelope_id = fields.String(
-        required = False,
+        required=False,
     )
 
     """
@@ -64,7 +64,7 @@ class DataEnvelopeSchema(Schema):
     """
     # TODO: TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
     instance_data = fields.Dict(
-        required = False,
+        required=False,
     )
 
     """
@@ -73,7 +73,7 @@ class DataEnvelopeSchema(Schema):
     """
     # TODO: TODO_45_75_75_65: Merge `instance_data` into `envelop_payload`:
     envelope_payload = fields.Dict(
-        required = False,
+        required=False,
     )
 
     @validates_schema
@@ -82,10 +82,15 @@ class DataEnvelopeSchema(Schema):
         input_dict: dict,
         **kwargs,
     ):
-        if input_dict.get(ReservedPropName.envelope_class.name, None) == ReservedEnvelopeClass.class_function.name:
-            function_envelope_instance_data_desc.validate_dict(input_dict[instance_data_])
+        if (
+            input_dict.get(ReservedPropName.envelope_class.name, None)
+            == ReservedEnvelopeClass.class_function.name
+        ):
+            function_envelope_instance_data_desc.validate_dict(
+                input_dict[instance_data_]
+            )
 
-    @post_dump(pass_original = True)
+    @post_dump(pass_original=True)
     def keep_unknown_fields(
         self,
         output_dict: dict,
@@ -119,9 +124,9 @@ sample_prop_name_b_ = "sample_prop_name_b"
 sample_prop_name_c_ = "sample_prop_name_c"
 
 data_envelope_desc = TypeDesc(
-    dict_schema = DataEnvelopeSchema(),
-    ref_name = DataEnvelopeSchema.__name__,
-    dict_example = {
+    dict_schema=DataEnvelopeSchema(),
+    ref_name=DataEnvelopeSchema.__name__,
+    dict_example={
         envelope_id_: "sample_unique_id",
         instance_data_: function_envelope_instance_data_desc.dict_example,
         envelope_payload_: {},
@@ -130,5 +135,5 @@ data_envelope_desc = TypeDesc(
         sample_prop_name_b_: "sample_prop_value_2",
         sample_prop_name_c_: "sample_prop_value_3",
     },
-    default_file_path = "",
+    default_file_path="",
 )

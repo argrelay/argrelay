@@ -1,5 +1,5 @@
-"""
-"""
+""" """
+
 from __future__ import annotations
 
 import os
@@ -22,8 +22,8 @@ def get_git_repo_root_path(
             "rev-parse",
             "--show-toplevel",
         ],
-        cwd = git_repo_path,
-        capture_output = True,
+        cwd=git_repo_path,
+        capture_output=True,
     )
     exit_code = sub_proc.returncode
 
@@ -57,8 +57,8 @@ def get_full_commit_id(
             "rev-parse",
             "HEAD",
         ],
-        cwd = git_repo_path,
-        capture_output = True,
+        cwd=git_repo_path,
+        capture_output=True,
     )
     exit_code = sub_proc.returncode
 
@@ -79,8 +79,8 @@ def get_short_commit_id(
             "--short",
             "HEAD",
         ],
-        cwd = git_repo_path,
-        capture_output = True,
+        cwd=git_repo_path,
+        capture_output=True,
     )
     exit_code = sub_proc.returncode
 
@@ -105,8 +105,8 @@ def get_commit_time(
             "-1",
             "--format=%ct",
         ],
-        cwd = git_repo_path,
-        capture_output = True,
+        cwd=git_repo_path,
+        capture_output=True,
     )
     exit_code = sub_proc.returncode
 
@@ -127,8 +127,8 @@ def get_unversioned_file_list(
             "--others",
             "--exclude-standard",
         ],
-        cwd = base_dir,
-        capture_output = True,
+        cwd=base_dir,
+        capture_output=True,
     )
     exit_code = sub_proc.returncode
 

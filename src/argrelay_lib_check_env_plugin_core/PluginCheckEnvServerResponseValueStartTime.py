@@ -15,7 +15,9 @@ from argrelay_lib_check_env_plugin_core.SchemaPluginCheckEvnServerResponseValueA
 from argrelay_lib_root.enum_desc.CheckEnvField import CheckEnvField
 
 
-class PluginCheckEnvServerResponseValueStartTime(PluginCheckEnvServerResponseValueAbstract):
+class PluginCheckEnvServerResponseValueStartTime(
+    PluginCheckEnvServerResponseValueAbstract
+):
 
     def __init__(
         self,
@@ -24,7 +26,8 @@ class PluginCheckEnvServerResponseValueStartTime(PluginCheckEnvServerResponseVal
     ):
         super().__init__(
             plugin_instance_id,
-            plugin_config_dict = plugin_config_dict or {
+            plugin_config_dict=plugin_config_dict
+            or {
                 field_values_to_command_lines_: {
                     CheckEnvField.server_start_time.name: "argrelay.check_env server_start_time",
                 },

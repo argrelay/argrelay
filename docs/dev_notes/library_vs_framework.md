@@ -53,4 +53,3 @@ graph RL;
 | Modify CLI:    | modify `some.py`                                           | keep `some.py` intact,<br/> re-configure `argrelay` instead                    |
 | Prog lang:     | `some.py` has to be<br/> a Python script to use `argparse` | `some.py` can be anything<br/> somehow executable by `argrelay`                |
 | **Important:** | `some.py`/`argparse` have<br/> no domain data to query     | `relay2some` may access any<br/> domain data from `argrelay` server            |
-

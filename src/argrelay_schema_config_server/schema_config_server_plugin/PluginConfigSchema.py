@@ -9,13 +9,19 @@ from marshmallow import (
 )
 
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import PluginConfig
-from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import PluginEntry
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginConfig import (
+    PluginConfig,
+)
+from argrelay_schema_config_server.runtime_data_server_plugin.PluginEntry import (
+    PluginEntry,
+)
 from argrelay_schema_config_server.schema_config_server_plugin.BasePluginConfigSchema import (
     BasePluginConfigSchema,
     serialize_dag_to_list,
 )
-from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_entry_desc
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_entry_desc,
+)
 
 server_plugin_instances_ = "server_plugin_instances"
 server_plugin_instance_groups_ = "server_plugin_instance_groups"
@@ -31,10 +37,10 @@ class PluginConfigSchema(BasePluginConfigSchema):
     # TODO: consider removing this and using only `server_plugin_instance_groups`:
     # Plugin config data: key = `plugin_instance_id`, value = `plugin_entry`:
     server_plugin_instances = fields.Dict(
-        keys = fields.String(),
-        values = fields.Nested(plugin_entry_desc.dict_schema),
-        required = False,
-        load_default = {},
+        keys=fields.String(),
+        values=fields.Nested(plugin_entry_desc.dict_schema),
+        required=False,
+        load_default={},
     )
 
     # TODO: consider removing `server_plugin_instances` and using this:
@@ -43,14 +49,14 @@ class PluginConfigSchema(BasePluginConfigSchema):
     # This has no impact on the logic - it is purely a convenience for configuration
     # (e.g. to be able to `!include` entire group from another file - see FS_70_55_40_99 splitting config file).
     server_plugin_instance_groups = fields.Dict(
-        keys = fields.String(),
-        values = fields.Dict(
-            keys = fields.String(),
-            values = fields.Nested(plugin_entry_desc.dict_schema),
-            required = True,
+        keys=fields.String(),
+        values=fields.Dict(
+            keys=fields.String(),
+            values=fields.Nested(plugin_entry_desc.dict_schema),
+            required=True,
         ),
-        required = False,
-        load_default = {},
+        required=False,
+        load_default={},
     )
 
     @post_load
@@ -65,12 +71,16 @@ class PluginConfigSchema(BasePluginConfigSchema):
         # Build DAG:
         plugin_instance_id_activate_order_dag = {}
         for plugin_instance_id in input_dict[server_plugin_instances_]:
-            plugin_entry: PluginEntry = input_dict[server_plugin_instances_][plugin_instance_id]
-            plugin_instance_id_activate_order_dag[plugin_instance_id] = plugin_entry.plugin_dependencies
+            plugin_entry: PluginEntry = input_dict[server_plugin_instances_][
+                plugin_instance_id
+            ]
+            plugin_instance_id_activate_order_dag[plugin_instance_id] = (
+                plugin_entry.plugin_dependencies
+            )
 
         return type(self).model_class(
             **input_dict,
-            plugin_instance_id_activate_list = serialize_dag_to_list(
+            plugin_instance_id_activate_list=serialize_dag_to_list(
                 plugin_instance_id_activate_order_dag,
             ),
         )
@@ -100,14 +110,14 @@ class PluginConfigSchema(BasePluginConfigSchema):
 
 
 plugin_config_desc = TypeDesc(
-    dict_schema = PluginConfigSchema(),
-    ref_name = PluginConfigSchema.__name__,
-    dict_example = {
+    dict_schema=PluginConfigSchema(),
+    ref_name=PluginConfigSchema.__name__,
+    dict_example={
         server_plugin_instances_: {
             "some_plugin_instance_id": plugin_entry_desc.dict_example,
             "some_plugin_instance_id1": plugin_entry_desc.dict_example,
             "some_plugin_instance_id2": plugin_entry_desc.dict_example,
         },
     },
-    default_file_path = "argrelay_plugin.yaml",
+    default_file_path="argrelay_plugin.yaml",
 )

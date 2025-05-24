@@ -5,7 +5,9 @@ from marshmallow import (
 
 from argrelay_lib_root.misc_helper_common.ObjectSchema import ObjectSchema
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
-from argrelay_schema_config_server.runtime_data_server_app.MongoClientConfig import MongoClientConfig
+from argrelay_schema_config_server.runtime_data_server_app.MongoClientConfig import (
+    MongoClientConfig,
+)
 
 client_connection_string_ = "client_connection_string"
 
@@ -30,10 +32,10 @@ class MongoClientConfigSchema(ObjectSchema):
 
 
 mongo_client_config_desc = TypeDesc(
-    dict_schema = MongoClientConfigSchema(),
-    ref_name = MongoClientConfigSchema.__name__,
-    dict_example = {
+    dict_schema=MongoClientConfigSchema(),
+    ref_name=MongoClientConfigSchema.__name__,
+    dict_example={
         client_connection_string_: "mongodb://localhost",
     },
-    default_file_path = "",
+    default_file_path="",
 )

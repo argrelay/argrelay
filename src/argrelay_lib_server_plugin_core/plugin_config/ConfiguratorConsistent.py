@@ -1,8 +1,12 @@
 import inspect
 from typing import Union
 
-from argrelay_api_plugin_server_abstract.ConfiguratorAbstract import ConfiguratorAbstract
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_api_plugin_server_abstract.ConfiguratorAbstract import (
+    ConfiguratorAbstract,
+)
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 
 
 class ConfiguratorConsistent(ConfiguratorAbstract):

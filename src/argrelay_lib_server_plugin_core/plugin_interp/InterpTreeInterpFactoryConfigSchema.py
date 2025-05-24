@@ -35,8 +35,8 @@ class InterpTreeInterpFactoryConfigSchema(Schema):
     # To avoid the error, list such `func_id` in `ignored_func_ids_list`.
     ignored_func_ids_list = fields.List(
         fields.String(),
-        required = False,
-        load_default = [],
+        required=False,
+        load_default=[],
     )
 
 
@@ -46,8 +46,8 @@ tree_path_interp_factory_config_example = {
     ],
 }
 tree_path_interp_factory_config_desc = TypeDesc(
-    dict_schema = InterpTreeInterpFactoryConfigSchema(),
-    ref_name = InterpTreeInterpFactoryConfigSchema.__name__,
-    dict_example = tree_path_interp_factory_config_example,
-    default_file_path = "",
+    dict_schema=InterpTreeInterpFactoryConfigSchema(),
+    ref_name=InterpTreeInterpFactoryConfigSchema.__name__,
+    dict_example=tree_path_interp_factory_config_example,
+    default_file_path="",
 )

@@ -1,7 +1,13 @@
 from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
-from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc
-from argrelay_api_server_cli.server_spec.server_data_schema import get_schema_definitions
-from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_entry_desc
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import (
+    invocation_input_desc,
+)
+from argrelay_api_server_cli.server_spec.server_data_schema import (
+    get_schema_definitions,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_entry_desc,
+)
 
 spec_data = {
     "summary": "Provide input data to delegate execution of command on client side",
@@ -32,10 +38,12 @@ spec_data = {
             },
         },
     },
-    "definitions": get_schema_definitions([
-        # TODO: provide `call_context_desc` with example of expected comp_type for relay_line_args:
-        call_context_desc.ref_name,
-        invocation_input_desc.ref_name,
-        plugin_entry_desc.ref_name,
-    ]),
+    "definitions": get_schema_definitions(
+        [
+            # TODO: provide `call_context_desc` with example of expected comp_type for relay_line_args:
+            call_context_desc.ref_name,
+            invocation_input_desc.ref_name,
+            plugin_entry_desc.ref_name,
+        ]
+    ),
 }

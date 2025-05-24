@@ -1,4 +1,6 @@
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.relay_client import __main__
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
@@ -9,7 +11,9 @@ from argrelay_lib_server_plugin_demo.demo_git.GitRepoEntryConfigSchema import (
     load_tags_last_days_,
     repo_rel_path_,
 )
-from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import (
+    GitRepoEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoader import GitRepoLoader
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoLoaderConfigSchema import (
     load_git_commits_default_,
@@ -63,10 +67,8 @@ class ThisTestClass(LocalTestClass):
                         ],
                     },
                 },
-                {
-                },
-                {
-                },
+                {},
+                {},
             ),
             (
                 line_no(),
@@ -84,10 +86,8 @@ class ThisTestClass(LocalTestClass):
                         ],
                     },
                 },
-                {
-                },
-                {
-                },
+                {},
+                {},
             ),
             (
                 line_no(),
@@ -105,10 +105,8 @@ class ThisTestClass(LocalTestClass):
                         ],
                     },
                 },
-                {
-                },
-                {
-                },
+                {},
+                {},
             ),
             (
                 line_no(),
@@ -134,8 +132,7 @@ class ThisTestClass(LocalTestClass):
                     GitRepoEnvelopeClass.class_git_tag.name: False,
                     GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
-                {
-                },
+                {},
             ),
             (
                 line_no(),
@@ -162,8 +159,7 @@ class ThisTestClass(LocalTestClass):
                     GitRepoEnvelopeClass.class_git_tag.name: False,
                     GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
-                {
-                },
+                {},
             ),
             (
                 line_no(),
@@ -191,8 +187,7 @@ class ThisTestClass(LocalTestClass):
                     GitRepoEnvelopeClass.class_git_tag.name: False,
                     GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
-                {
-                },
+                {},
             ),
             (
                 line_no(),
@@ -220,8 +215,7 @@ class ThisTestClass(LocalTestClass):
                     GitRepoEnvelopeClass.class_git_tag.name: False,
                     GitRepoEnvelopeClass.class_git_commit.name: False,
                 },
-                {
-                },
+                {},
             ),
             (
                 line_no(),
@@ -429,16 +423,20 @@ class ThisTestClass(LocalTestClass):
                 # Make `GitRepoLoader` plugin depend on all other plugins (to make it the last):
                 plugin_config_dict = plugin_config_desc.dict_from_default_file()
                 all_plugin_instance_ids = []
-                for plugin_instance_id, plugin_instance_entry in plugin_config_dict[server_plugin_instances_].items():
+                for plugin_instance_id, plugin_instance_entry in plugin_config_dict[
+                    server_plugin_instances_
+                ].items():
                     if git_loader_plugin_instance_id != plugin_instance_id:
                         all_plugin_instance_ids.append(plugin_instance_id)
                 # Modify config to enable `GitRepoLoader` plugin:
-                git_loader_plugin_instance_entry = plugin_config_dict[server_plugin_instances_][
-                    git_loader_plugin_instance_id
-                ]
+                git_loader_plugin_instance_entry = plugin_config_dict[
+                    server_plugin_instances_
+                ][git_loader_plugin_instance_id]
                 git_loader_plugin_instance_entry[plugin_config_] = plugin_config
                 git_loader_plugin_instance_entry[plugin_enabled_] = True
-                git_loader_plugin_instance_entry[plugin_dependencies_] = all_plugin_instance_ids
+                git_loader_plugin_instance_entry[plugin_dependencies_] = (
+                    all_plugin_instance_ids
+                )
 
                 env_mock_builder = (
                     LocalClientEnvMockBuilder()
@@ -456,7 +454,10 @@ class ThisTestClass(LocalTestClass):
                     query_engine = command_obj.local_server.query_engine
 
                     # Verify `collection_name`-s:
-                    for collection_name, class_name_existence in expected_data_envelopes_existence_per_collection.items():
+                    for (
+                        collection_name,
+                        class_name_existence,
+                    ) in expected_data_envelopes_existence_per_collection.items():
 
                         data_envelopes = query_engine.query_data_envelopes(
                             collection_name,
@@ -469,18 +470,26 @@ class ThisTestClass(LocalTestClass):
                             assert len(data_envelopes) == 0
 
                     # Verify `prop_value`-s:
-                    for collection_name, prop_value_existence_dict in expected_prop_values_existence_per_collection.items():
+                    for (
+                        collection_name,
+                        prop_value_existence_dict,
+                    ) in expected_prop_values_existence_per_collection.items():
 
                         data_envelopes = query_engine.query_data_envelopes(
                             collection_name,
                             {},
                         )
 
-                        index_props = command_obj.local_server.index_model_per_collection[
-                            collection_name
-                        ].index_props
+                        index_props = (
+                            command_obj.local_server.index_model_per_collection[
+                                collection_name
+                            ].index_props
+                        )
 
-                        for prop_name, prop_value_existence in prop_value_existence_dict.items():
+                        for (
+                            prop_name,
+                            prop_value_existence,
+                        ) in prop_value_existence_dict.items():
 
                             is_empty = False
                             if prop_value_existence:
@@ -499,7 +508,9 @@ class ThisTestClass(LocalTestClass):
 
                             if len(prop_values) == 0:
                                 is_empty = True
-                            print(f"prop_name_to_prop_values: {prop_name}: {prop_values}")
+                            print(
+                                f"prop_name_to_prop_values: {prop_name}: {prop_values}"
+                            )
 
                             if prop_value_existence:
                                 assert not is_empty

@@ -61,8 +61,8 @@ class End2EndTestClass(ClientServerTestClass):
         See `CallConv.CliArgsConv`.
         """
         client_proc = subprocess.run(
-            args = command_line_args,
-            capture_output = True,
+            args=command_line_args,
+            capture_output=True,
         )
         if expected_exit_code is not None:
             self.assertEqual(
@@ -81,11 +81,11 @@ class End2EndTestClass(ClientServerTestClass):
         See `CallConv.EnvVarsConv`.
         """
         client_proc = subprocess.run(
-            args = [
+            args=[
                 command_name,
             ],
-            env = env_vars,
-            capture_output = True,
+            env=env_vars,
+            capture_output=True,
         )
         if expected_exit_code is not None:
             self.assertEqual(
@@ -101,9 +101,7 @@ class End2EndTestClass(ClientServerTestClass):
         server_action: ServerAction,
     ):
         self.assertEqual(
-            "",
-            stderr_str,
-            f"{server_action} should have nothing on STDERR."
+            "", stderr_str, f"{server_action} should have nothing on STDERR."
         )
 
     def assert_ProposeArgValues(
@@ -112,7 +110,7 @@ class End2EndTestClass(ClientServerTestClass):
         test_line,
         comp_type: CompType,
         expected_stdout_str: Union[str, None],
-        expected_exit_code = 0,
+        expected_exit_code=0,
         env_mock_builder: EnvMockBuilder = None,
     ):
         if env_mock_builder is None:

@@ -19,7 +19,9 @@ from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfi
     func_configs_,
     SchemaConfigDelegatorConfigBase,
 )
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    envelope_payload_,
+)
 from argrelay_schema_config_server.schema_config_interp.FuncEnvelopeSchema import (
     func_id_some_func_,
 )
@@ -38,19 +40,15 @@ class SchemaConfigDelegatorConfigOnly(SchemaConfigDelegatorConfigBase):
         strict = True
 
     @pre_load
-    def pre_load(
-        self,
-        input_dict: dict,
-        **kwargs
-    ) -> dict:
+    def pre_load(self, input_dict: dict, **kwargs) -> dict:
         """
         See `validate_data` why this has to be done:
         """
         for func_config in input_dict[func_configs_].values():
-            func_config[func_envelope_][
-                envelope_payload_
-            ] = config_only_delegator_envelope_payload_desc.dict_from_input_dict(
-                func_config[func_envelope_][envelope_payload_]
+            func_config[func_envelope_][envelope_payload_] = (
+                config_only_delegator_envelope_payload_desc.dict_from_input_dict(
+                    func_config[func_envelope_][envelope_payload_]
+                )
             )
         return input_dict
 
@@ -67,7 +65,9 @@ class SchemaConfigDelegatorConfigOnly(SchemaConfigDelegatorConfigBase):
         `SchemaConfigDelegatorConfigOnly` expects them to be of `DelegatorConfigOnlyEnvelopePayloadSchema`.
         """
         for func_config in input_dict[func_configs_].values():
-            config_only_delegator_envelope_payload_desc.validate_dict(func_config[func_envelope_][envelope_payload_])
+            config_only_delegator_envelope_payload_desc.validate_dict(
+                func_config[func_envelope_][envelope_payload_]
+            )
 
 
 class DelegatorConfigOnlyEnvelopePayloadSchema(Schema):
@@ -76,12 +76,12 @@ class DelegatorConfigOnlyEnvelopePayloadSchema(Schema):
         strict = True
 
     command_template = fields.String(
-        required = True,
+        required=True,
     )
 
     echo_command_on_stderr = fields.Boolean(
-        required = False,
-        load_default = True,
+        required=False,
+        load_default=True,
     )
 
     # TODO: TODO_54_68_18_12: Support defaults for config-only delegator:
@@ -94,24 +94,26 @@ class DelegatorConfigOnlyEnvelopePayloadSchema(Schema):
 
 
 _config_only_func_config_dict_example = deepcopy(func_config_desc.dict_example)
-_config_only_func_config_dict_example[func_envelope_][envelope_payload_].update({
-    command_template_: "echo",
-})
+_config_only_func_config_dict_example[func_envelope_][envelope_payload_].update(
+    {
+        command_template_: "echo",
+    }
+)
 
 config_only_delegator_envelope_payload_desc = TypeDesc(
-    dict_schema = DelegatorConfigOnlyEnvelopePayloadSchema(),
-    ref_name = DelegatorConfigOnlyEnvelopePayloadSchema.__name__,
-    dict_example = _config_only_func_config_dict_example,
-    default_file_path = "",
+    dict_schema=DelegatorConfigOnlyEnvelopePayloadSchema(),
+    ref_name=DelegatorConfigOnlyEnvelopePayloadSchema.__name__,
+    dict_example=_config_only_func_config_dict_example,
+    default_file_path="",
 )
 
 config_only_delegator_config_desc = TypeDesc(
-    dict_schema = SchemaConfigDelegatorConfigOnly(),
-    ref_name = SchemaConfigDelegatorConfigOnly.__name__,
-    dict_example = {
+    dict_schema=SchemaConfigDelegatorConfigOnly(),
+    ref_name=SchemaConfigDelegatorConfigOnly.__name__,
+    dict_example={
         func_configs_: {
             func_id_some_func_: config_only_delegator_envelope_payload_desc.dict_example,
         },
     },
-    default_file_path = "",
+    default_file_path="",
 )

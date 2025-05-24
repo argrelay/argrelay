@@ -12,7 +12,7 @@ constantly on a dev wish list for complex backend operations.
     Allegedly, such question "seeked recommendations" which, arguably, tend to be spammed by answers<br/>
     (but, counterintuitively, some spam may be more helpful than none in that case).
     -->
-  
+
 *   FEB 2023: The [explanation hangs on the appropriate site][later_stack_question] now -<br/>
     recommendations are still very welcome there.<br/>
     But, with some patience for integration, `argrelay` itself already became satisfying enough.

@@ -44,25 +44,25 @@ class CallContextSchema(ObjectSchema):
     model_class = CallContext
 
     client_version = fields.String(
-        required = False,
-        metadata = {
+        required=False,
+        metadata={
             "description": "client version of `argrelay` package (empty = not set)",
             "example": _call_context_example[client_version_],
         },
-        load_default = "",
+        load_default="",
     )
     client_conf_target = fields.String(
-        required = False,
-        metadata = {
+        required=False,
+        metadata={
             "description": "target path of `@/conf` symlink (empty = not set)",
             "example": _call_context_example[client_conf_target_],
         },
-        load_default = "",
+        load_default="",
     )
     server_action = fields.Enum(
         ServerAction,
-        required = True,
-        metadata = {
+        required=True,
+        metadata={
             "description": (
                 "Action to perform - see " + ServerAction.__name__ + " enum"
             ),
@@ -70,53 +70,55 @@ class CallContextSchema(ObjectSchema):
         },
     )
     command_line = fields.String(
-        required = True,
-        metadata = {
+        required=True,
+        metadata={
             "example": _call_context_example[command_line_],
         },
     )
     cursor_cpos = fields.Integer(
-        required = True,
-        metadata = {
+        required=True,
+        metadata={
             "description": "Cursor position within command line (0 = before the first char)",
             "example": _call_context_example[cursor_cpos_],
         },
     )
     comp_scope = fields.Enum(
         CompScope,
-        required = True,
-        metadata = {
-            "description": "Name for a completion scope - see " + CompScope.__name__ + " enum",
+        required=True,
+        metadata={
+            "description": "Name for a completion scope - see "
+            + CompScope.__name__
+            + " enum",
             "example": _call_context_example[comp_scope_],
         },
     )
     client_uid = fields.String(
-        required = False,
-        metadata = {
+        required=False,
+        metadata={
             "description": "UID (user name) of the client user according to OS (empty = not set)",
             "example": _call_context_example[client_uid_],
         },
-        load_default = "",
+        load_default="",
     )
     client_pid = fields.Integer(
-        required = False,
-        metadata = {
+        required=False,
+        metadata={
             "description": "PID of the client process local to the client host (0 = not set)",
             "example": _call_context_example[client_pid_],
         },
-        load_default = 0,
+        load_default=0,
     )
     is_debug_enabled = fields.Boolean(
-        required = True,
-        metadata = {
+        required=True,
+        metadata={
             "description": "Enable extra debug output",
             "example": _call_context_example[is_debug_enabled_],
         },
     )
     input_data = fields.String(
-        required = False,
-        load_default = None,
-        metadata = {
+        required=False,
+        load_default=None,
+        metadata={
             "description": "Enable extra debug output",
             "example": _call_context_example[input_data_],
         },
@@ -124,8 +126,8 @@ class CallContextSchema(ObjectSchema):
 
 
 call_context_desc = TypeDesc(
-    dict_schema = CallContextSchema(),
-    ref_name = CallContextSchema.__name__,
-    dict_example = _call_context_example,
-    default_file_path = "",
+    dict_schema=CallContextSchema(),
+    ref_name=CallContextSchema.__name__,
+    dict_example=_call_context_example,
+    default_file_path="",
 )

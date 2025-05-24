@@ -73,9 +73,9 @@ class ForbiddenContractReportBuilder:
 
     _contract_title: str | None = None
 
-    _source_module_specs: list[str] = field(default_factory = lambda: [])
+    _source_module_specs: list[str] = field(default_factory=lambda: [])
 
-    _forbidden_module_specs: list[str] = field(default_factory = lambda: [])
+    _forbidden_module_specs: list[str] = field(default_factory=lambda: [])
 
     def set_title(
         self,
@@ -103,13 +103,15 @@ class ForbiddenContractReportBuilder:
     ) -> Report:
         self._contract_title = self._contract_title or file_line_l_1()
         return create_report(
-            user_options = UserOptions(
-                session_options = session_options,
-                contracts_options = [{
-                    contract_title_: self._contract_title,
-                    contract_type_: self._contract_type,
-                    source_module_specs_: self._source_module_specs,
-                    forbidden_module_specs_: self._forbidden_module_specs,
-                }],
+            user_options=UserOptions(
+                session_options=session_options,
+                contracts_options=[
+                    {
+                        contract_title_: self._contract_title,
+                        contract_type_: self._contract_type,
+                        source_module_specs_: self._source_module_specs,
+                        forbidden_module_specs_: self._forbidden_module_specs,
+                    }
+                ],
             ),
         )

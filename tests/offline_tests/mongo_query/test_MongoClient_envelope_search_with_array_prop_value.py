@@ -4,7 +4,9 @@ from icecream import ic
 from pymongo.collection import Collection
 
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import envelope_payload_
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    envelope_payload_,
+)
 from offline_tests.mongo_query.MongoClientTestClass import (
     MongoClientTestClass,
     object_name_,
@@ -103,23 +105,27 @@ class ThisTestClass(MongoClientTestClass):
             ServicePropName.code_maturity.name: "prod",
         }
 
-        self.col_proxy.insert_many([
-            envelope_001,
-            envelope_002,
-            envelope_003,
-            envelope_004,
-            envelope_005,
-            envelope_006,
-            envelope_007,
-        ])
+        self.col_proxy.insert_many(
+            [
+                envelope_001,
+                envelope_002,
+                envelope_003,
+                envelope_004,
+                envelope_005,
+                envelope_006,
+                envelope_007,
+            ]
+        )
 
         self.index_props(self.col_proxy, index_props)
 
         self.find_and_assert(
             self.col_proxy,
-            ic({
-                ServicePropName.live_status.name: "red",
-            }),
+            ic(
+                {
+                    ServicePropName.live_status.name: "red",
+                }
+            ),
             [
                 "envelope_002",
                 "envelope_004",
@@ -129,9 +135,11 @@ class ThisTestClass(MongoClientTestClass):
 
         self.find_and_assert(
             self.col_proxy,
-            ic({
-                ServicePropName.live_status.name: "yellow",
-            }),
+            ic(
+                {
+                    ServicePropName.live_status.name: "yellow",
+                }
+            ),
             [
                 "envelope_004",
                 "envelope_007",
@@ -140,9 +148,11 @@ class ThisTestClass(MongoClientTestClass):
 
         self.find_and_assert(
             self.col_proxy,
-            ic({
-                ServicePropName.live_status.name: "blue",
-            }),
+            ic(
+                {
+                    ServicePropName.live_status.name: "blue",
+                }
+            ),
             [
                 "envelope_002",
                 "envelope_003",
@@ -153,9 +163,11 @@ class ThisTestClass(MongoClientTestClass):
 
         self.find_and_assert(
             self.col_proxy,
-            ic({
-                ServicePropName.live_status.name: "green",
-            }),
+            ic(
+                {
+                    ServicePropName.live_status.name: "green",
+                }
+            ),
             [
                 "envelope_005",
                 "envelope_006",
@@ -165,28 +177,30 @@ class ThisTestClass(MongoClientTestClass):
 
         self.find_and_assert(
             self.col_proxy,
-            ic({
-                ServicePropName.live_status.name: [
-                    "green",
-                    "blue",
-                ]
-            }),
+            ic(
+                {
+                    ServicePropName.live_status.name: [
+                        "green",
+                        "blue",
+                    ]
+                }
+            ),
             # NOTE: query with array of values does not work:
-            [
-            ],
+            [],
         )
 
         self.find_and_assert(
             self.col_proxy,
-            ic({
-                ServicePropName.live_status.name: [
-                    "green",
-                    "blue",
-                ]
-            }),
+            ic(
+                {
+                    ServicePropName.live_status.name: [
+                        "green",
+                        "blue",
+                    ]
+                }
+            ),
             # NOTE: query with array of values does not work:
-            [
-            ],
+            [],
         )
 
         self.remove_all_data(self.col_proxy)
@@ -209,4 +223,7 @@ class ThisTestClass(MongoClientTestClass):
     def extract_object_names(
         data_envelopes: list[dict],
     ):
-        return [data_envelope[envelope_payload_][object_name_] for data_envelope in data_envelopes]
+        return [
+            data_envelope[envelope_payload_][object_name_]
+            for data_envelope in data_envelopes
+        ]

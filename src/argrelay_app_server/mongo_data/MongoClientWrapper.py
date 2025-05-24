@@ -8,8 +8,12 @@ from pymongo.collection import Collection
 from pymongo.database import Database
 
 from argrelay_app_server.mongo_data.ProgressTracker import ProgressTracker
-from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import EnvelopeCollection
-from argrelay_schema_config_server.runtime_data_server_app.MongoConfig import MongoConfig
+from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import (
+    EnvelopeCollection,
+)
+from argrelay_schema_config_server.runtime_data_server_app.MongoConfig import (
+    MongoConfig,
+)
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     data_envelope_desc,
     envelope_id_,

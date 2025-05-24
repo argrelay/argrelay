@@ -33,10 +33,7 @@ class CypressTestClass(ClientServerTestClass):
                 raise RuntimeError
 
     @classmethod
-    def run_cypress_test_script(
-        cls,
-        script_name
-    ):
+    def run_cypress_test_script(cls, script_name):
         cls.run_cypress_test_scripts_in_paths(
             f"cypress/e2e/argrelay_gui/{script_name}",
         )

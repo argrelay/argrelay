@@ -41,9 +41,15 @@ from argrelay_lib_server_plugin_core.plugin_interp.AbstractInterpFactory import 
 from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactoryConfigSchema import (
     func_tree_interp_config_desc,
 )
-from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import EnvelopeCollection
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import instance_data_
+from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import (
+    EnvelopeCollection,
+)
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    instance_data_,
+)
 from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
     delegator_plugin_instance_id_,
 )
@@ -101,7 +107,9 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
                 self.server_config.server_plugin_control.composite_forest,
             ),
         )
-        self.paths_to_jump: dict[tuple[str, ...], tuple[str, ...]] = dict_tree_walker.build_paths_to_paths()
+        self.paths_to_jump: dict[tuple[str, ...], tuple[str, ...]] = (
+            dict_tree_walker.build_paths_to_paths()
+        )
         """
         Implements FS_91_88_07_23 jump tree:
         for given `interp_tree_abs_path` (FS_01_89_09_24) selects next `interp_tree_abs_path`.
@@ -158,21 +166,29 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             interp_tree_abs_path,
             func_ids_to_func_envelopes,
         )
-        interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[interp_tree_abs_path]
+        interp_tree_node_config_dict = self.interp_tree_abs_paths_to_node_configs[
+            interp_tree_abs_path
+        ]
 
-        func_selector_tree = normalize_tree(extract_func_tree(
-            self.server_config.server_plugin_control.composite_forest,
-            self.plugin_instance_id,
-        ))
+        func_selector_tree = normalize_tree(
+            extract_func_tree(
+                self.server_config.server_plugin_control.composite_forest,
+                self.plugin_instance_id,
+            )
+        )
 
         dict_tree_walker = DictTreeWalker(
             CompositeInfoType.func_tree,
             func_selector_tree,
         )
-        self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = dict_tree_walker.build_str_leaves_paths()
+        self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = (
+            dict_tree_walker.build_str_leaves_paths()
+        )
 
         # `func_envelope` (2-level map) per `func_id` per `func_abs_path`
-        func_id_to_func_abs_path_to_func_envelope: dict[str, dict[tuple[str, ...], dict]] = {}
+        func_id_to_func_abs_path_to_func_envelope: dict[
+            str, dict[tuple[str, ...], dict]
+        ] = {}
         # Loop through func `data_envelope`-s from all delegators:
         for func_id, func_envelope in func_ids_to_func_envelopes.items():
             if func_id not in self.func_ids_to_func_abs_paths:
@@ -184,15 +200,19 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             for func_abs_path in func_abs_paths:
                 assert (
                     func_id not in func_id_to_func_abs_path_to_func_envelope
-                    or
-                    tuple(func_abs_path) not in func_id_to_func_abs_path_to_func_envelope[func_id]
+                    or tuple(func_abs_path)
+                    not in func_id_to_func_abs_path_to_func_envelope[func_id]
                 )
-                if self._is_best_matching_abs_tree_path(func_abs_path, interp_tree_abs_path):
+                if self._is_best_matching_abs_tree_path(
+                    func_abs_path, interp_tree_abs_path
+                ):
                     # This `func_id` is mapped into the `func_tree` under this plugin:
                     func_id_to_func_abs_path_to_func_envelope.setdefault(
                         func_id,
                         {},
-                    )[tuple(func_abs_path)] = deepcopy(func_envelope)
+                    )[
+                        tuple(func_abs_path)
+                    ] = deepcopy(func_envelope)
                     mapped_func_ids.append(func_id)
 
         (
@@ -214,7 +234,9 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
     def populate_func_envelope_collection(
         self,
-        func_id_to_func_abs_path_to_func_envelope: dict[str, dict[tuple[str, ...], dict]],
+        func_id_to_func_abs_path_to_func_envelope: dict[
+            str, dict[tuple[str, ...], dict]
+        ],
         interp_tree_abs_path: tuple[str, ...],
         interp_tree_node_config_dict,
     ) -> tuple[
@@ -243,8 +265,8 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             func_id_to_func_abs_path_to_func_envelope,
         )
         envelope_collection = EnvelopeCollection(
-            collection_name = ReservedEnvelopeClass.class_function.name,
-            data_envelopes = interp_tree_abs_path_func_envelopes,
+            collection_name=ReservedEnvelopeClass.class_function.name,
+            data_envelopes=interp_tree_abs_path_func_envelopes,
         )
         return (
             prop_names,
@@ -286,9 +308,13 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
             init_types_to_values_: {},
         }
 
-        init_types_to_values = interp_tree_node_config_dict[func_init_control_][init_types_to_values_]
+        init_types_to_values = interp_tree_node_config_dict[func_init_control_][
+            init_types_to_values_
+        ]
         for sel_ipos, path_step in enumerate(interp_tree_abs_path):
-            init_types_to_values[f"{func_envelope_path_step_prop_name(sel_ipos)}"] = path_step
+            init_types_to_values[f"{func_envelope_path_step_prop_name(sel_ipos)}"] = (
+                path_step
+            )
 
     def populate_func_search_control(
         self,
@@ -310,25 +336,27 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
         )
 
         # `func_search_control` should include keys from the interp tree abs path:
-        arg_name_to_prop_name_map = plugin_search_control_dict[arg_name_to_prop_name_map_]
+        arg_name_to_prop_name_map = plugin_search_control_dict[
+            arg_name_to_prop_name_map_
+        ]
 
         # Include func tree path:
         max_len = max_path_len(self.func_ids_to_func_abs_paths)
         for sel_ipos in range(max_len):
-            arg_name_to_prop_name_map.append({
-                f"{tree_step_arg_name(sel_ipos)}": f"{func_envelope_path_step_prop_name(sel_ipos)}"
-            })
+            arg_name_to_prop_name_map.append(
+                {
+                    f"{tree_step_arg_name(sel_ipos)}": f"{func_envelope_path_step_prop_name(sel_ipos)}"
+                }
+            )
 
         # Include other fields:
-        arg_name_to_prop_name_map.append({
-            "state": ReservedPropName.func_state.name
-        })
-        arg_name_to_prop_name_map.append({
-            "id": ReservedPropName.func_id.name
-        })
+        arg_name_to_prop_name_map.append({"state": ReservedPropName.func_state.name})
+        arg_name_to_prop_name_map.append({"id": ReservedPropName.func_id.name})
 
         interp_tree_node_config_dict[func_search_control_] = plugin_search_control_dict
-        self.plugin_search_control = search_control_desc.obj_from_input_dict(plugin_search_control_dict)
+        self.plugin_search_control = search_control_desc.obj_from_input_dict(
+            plugin_search_control_dict
+        )
 
     def populate_func_tree_props(
         self,
@@ -350,8 +378,7 @@ class FuncTreeInterpFactory(AbstractInterpFactory):
 
                 if (
                     func_id not in func_envelopes_index
-                    or
-                    tuple(func_abs_path) not in func_envelopes_index[func_id]
+                    or tuple(func_abs_path) not in func_envelopes_index[func_id]
                 ):
                     continue
 
@@ -441,7 +468,9 @@ class FuncTreeInterp(AbstractInterp):
         self._apply_func_init_control()
         self._apply_func_search_control()
 
-        self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = func_ids_to_func_abs_paths
+        self.func_ids_to_func_abs_paths: dict[str, list[list[str]]] = (
+            func_ids_to_func_abs_paths
+        )
 
     def _apply_func_init_control(self):
         self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[
@@ -454,19 +483,28 @@ class FuncTreeInterp(AbstractInterp):
             self.interp_tree_node_config_dict[func_init_control_],
         )
         for prop_type, prop_value in func_init_control.init_types_to_values.items():
-            self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[prop_type] = AssignedValue(
+            self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[
+                prop_type
+            ] = AssignedValue(
                 prop_value,
                 ValueSource.init_value,
             )
-            if prop_type in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value:
-                del self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[prop_type]
+            if (
+                prop_type
+                in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value
+            ):
+                del self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[
+                    prop_type
+                ]
 
     def _apply_func_search_control(self):
         # Function `search_control` is populated based on
         # tree path (FS_01_89_09_24 interp tree + FS_26_43_73_72 func tree)
         # and plugin config (rather than data found in `data_envelope`):
-        self.interp_ctx.curr_container.search_control = search_control_desc.dict_schema.load(
-            self.interp_tree_node_config_dict[func_search_control_]
+        self.interp_ctx.curr_container.search_control = (
+            search_control_desc.dict_schema.load(
+                self.interp_tree_node_config_dict[func_search_control_]
+            )
         )
 
     def _select_next_token_bucket(self) -> None:
@@ -484,10 +522,14 @@ class FuncTreeInterp(AbstractInterp):
                 self.interp_ctx.last_token_bucket_used = 0
             else:
                 self.interp_ctx.last_token_bucket_used += 1
-                if self.interp_ctx.last_token_bucket_used == len(self.interp_ctx.included_token_buckets):
+                if self.interp_ctx.last_token_bucket_used == len(
+                    self.interp_ctx.included_token_buckets
+                ):
                     self.interp_ctx.last_token_bucket_used -= 1
 
-            self.interp_ctx.curr_container.used_token_bucket = self.interp_ctx.last_token_bucket_used
+            self.interp_ctx.curr_container.used_token_bucket = (
+                self.interp_ctx.last_token_bucket_used
+            )
 
     def consume_dictated_args(self) -> bool:
 
@@ -499,11 +541,11 @@ class FuncTreeInterp(AbstractInterp):
         self._select_next_token_bucket()
 
         any_consumed = self.consume_one_dictated_arg_from_token_bucket(
-            bucket_index = self.interp_ctx.curr_container.used_token_bucket,
-            dictated_args = self.interp_ctx.remaining_dictated_args_per_bucket[
+            bucket_index=self.interp_ctx.curr_container.used_token_bucket,
+            dictated_args=self.interp_ctx.remaining_dictated_args_per_bucket[
                 self.interp_ctx.curr_container.used_token_bucket
             ],
-            consumed_dictated_args = consumed_dictated_args,
+            consumed_dictated_args=consumed_dictated_args,
         )
 
         # perform list modifications out of the prev loop:
@@ -515,10 +557,16 @@ class FuncTreeInterp(AbstractInterp):
             # TODO: TODO_66_09_41_16: clarify command line processing
             #       Use helper functions which ensure consistency
             #       (like in this case, if one is removed, another is removed)
-            self.interp_ctx.remaining_dictated_args_per_bucket[token_bucket_ipos].remove(dictated_arg)
+            self.interp_ctx.remaining_dictated_args_per_bucket[
+                token_bucket_ipos
+            ].remove(dictated_arg)
             for token_ipos in dictated_arg.get_arg_tokens():
-                self.interp_ctx.consumed_token_buckets[token_bucket_ipos].append(token_ipos)
-                self.interp_ctx.remaining_token_buckets[token_bucket_ipos].remove(token_ipos)
+                self.interp_ctx.consumed_token_buckets[token_bucket_ipos].append(
+                    token_ipos
+                )
+                self.interp_ctx.remaining_token_buckets[token_bucket_ipos].remove(
+                    token_ipos
+                )
 
         return any_consumed
 
@@ -544,13 +592,21 @@ class FuncTreeInterp(AbstractInterp):
             #       Why not make it explicit?
 
             # See if `arg_name` matches any of `prop_name`-s:
-            if arg_name in self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict:
-                prop_name = self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict[arg_name]
-                if prop_name in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value:
+            if (
+                arg_name
+                in self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict
+            ):
+                prop_name = self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict[
+                    arg_name
+                ]
+                if (
+                    prop_name
+                    in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value
+                ):
                     self._assign_prop_name_as_explicit(
-                        prop_name = prop_name,
-                        arg_value = arg_value,
-                        value_source = ValueSource.explicit_dictated_arg,
+                        prop_name=prop_name,
+                        arg_value=arg_value,
+                        value_source=ValueSource.explicit_dictated_arg,
                     )
 
                     any_consumed = True
@@ -588,12 +644,12 @@ class FuncTreeInterp(AbstractInterp):
         self._select_next_token_bucket()
 
         any_consumed = self.consume_one_offered_arg_from_token_bucket(
-            bucket_index = self.interp_ctx.curr_container.used_token_bucket,
-            offered_args = self.interp_ctx.remaining_offered_args_per_bucket[
+            bucket_index=self.interp_ctx.curr_container.used_token_bucket,
+            offered_args=self.interp_ctx.remaining_offered_args_per_bucket[
                 self.interp_ctx.curr_container.used_token_bucket
             ],
-            consumed_ambiguous_value = consumed_ambiguous_value,
-            consumed_offered_args = consumed_offered_args,
+            consumed_ambiguous_value=consumed_ambiguous_value,
+            consumed_offered_args=consumed_offered_args,
         )
 
         # perform list modifications out of the prev loop:
@@ -605,9 +661,15 @@ class FuncTreeInterp(AbstractInterp):
             # TODO: TODO_66_09_41_16: clarify command line processing
             #       Use helper functions which ensure consistency
             #       (like in this case, if one is removed, another is removed)
-            self.interp_ctx.remaining_offered_args_per_bucket[token_bucket_ipos].remove(offered_arg)
-            self.interp_ctx.consumed_token_buckets[token_bucket_ipos].append(offered_arg.get_arg_token())
-            self.interp_ctx.remaining_token_buckets[token_bucket_ipos].remove(offered_arg.get_arg_token())
+            self.interp_ctx.remaining_offered_args_per_bucket[token_bucket_ipos].remove(
+                offered_arg
+            )
+            self.interp_ctx.consumed_token_buckets[token_bucket_ipos].append(
+                offered_arg.get_arg_token()
+            )
+            self.interp_ctx.remaining_token_buckets[token_bucket_ipos].remove(
+                offered_arg.get_arg_token()
+            )
 
         return any_consumed
 
@@ -633,17 +695,18 @@ class FuncTreeInterp(AbstractInterp):
             #       Why not make it explicit?
 
             # See if `arg_value` matches any of `prop_value`-s:
-            for prop_name, prop_values in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value.items():
+            for (
+                prop_name,
+                prop_values,
+            ) in (
+                self.interp_ctx.curr_container.remaining_prop_name_to_prop_value.items()
+            ):
                 if arg_value in prop_values:
-                    if (
-                        len(prop_values) == 1
-                        or
-                        not consumed_ambiguous_value
-                    ):
+                    if len(prop_values) == 1 or not consumed_ambiguous_value:
                         self._assign_prop_name_as_explicit(
-                            prop_name = prop_name,
-                            arg_value = arg_value,
-                            value_source = ValueSource.explicit_offered_arg,
+                            prop_name=prop_name,
+                            arg_value=arg_value,
+                            value_source=ValueSource.explicit_offered_arg,
                         )
 
                         if len(prop_values) > 1:
@@ -689,12 +752,13 @@ class FuncTreeInterp(AbstractInterp):
         # `prop_name` must be updated as assigned by one of the explicit `ValueSource.*`.
         assert (
             value_source is ValueSource.explicit_dictated_arg
-            or
-            value_source is ValueSource.explicit_offered_arg
+            or value_source is ValueSource.explicit_offered_arg
         )
-        self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[prop_name] = AssignedValue(
-            arg_value,
-            value_source,
+        self.interp_ctx.curr_container.assigned_prop_name_to_prop_value[prop_name] = (
+            AssignedValue(
+                arg_value,
+                value_source,
+            )
         )
 
     def try_iterate(self) -> InterpStep:
@@ -719,11 +783,15 @@ class FuncTreeInterp(AbstractInterp):
             # Func container or beyond:
             if self.interp_ctx.curr_container_ipos >= self.base_container_ipos:
                 # Func param envelopes beyond func envelope: 0 for the first func param:
-                func_param_container_offset = self.interp_ctx.curr_container_ipos - self.base_container_ipos
+                func_param_container_offset = (
+                    self.interp_ctx.curr_container_ipos - self.base_container_ipos
+                )
                 # TODO: optimize it:
                 #       *   we request one `search_control` from a list of them (internally)
                 #       *   then, we give this item to allocate `searchable_container` but it may have already been allocated before:
-                search_control: SearchControl = self.get_search_control(func_param_container_offset)
+                search_control: SearchControl = self.get_search_control(
+                    func_param_container_offset
+                )
                 while search_control is not None:
                     # Create `EnvelopeContainer`-s for next `data_envelope`-s to find:
                     self.interp_ctx.alloc_searchable_container(
@@ -732,7 +800,9 @@ class FuncTreeInterp(AbstractInterp):
                         search_control,
                     )
                     func_param_container_offset += 1
-                    search_control: SearchControl = self.get_search_control(func_param_container_offset)
+                    search_control: SearchControl = self.get_search_control(
+                        func_param_container_offset
+                    )
 
             if self.interp_ctx.is_last_container():
                 # Function does not need any envelopes:
@@ -784,10 +854,13 @@ class FuncTreeInterp(AbstractInterp):
             return False
 
     def get_found_func_data_envelope(self) -> Union[dict, None]:
-        func_envelope = self.interp_ctx.envelope_containers[(
-            # TODO: TODO_73_23_85_93: use helper to select container ipos:
-            self.base_container_ipos + function_container_ipos_
-        )]
+        func_envelope = self.interp_ctx.envelope_containers[
+            (
+                # TODO: TODO_73_23_85_93: use helper to select container ipos:
+                self.base_container_ipos
+                + function_container_ipos_
+            )
+        ]
         if func_envelope.found_count == 1:
             return func_envelope.data_envelopes[0]
         return None
@@ -795,8 +868,12 @@ class FuncTreeInterp(AbstractInterp):
     def get_func_delegator(self):
         func_data_envelope = self.get_found_func_data_envelope()
         if func_data_envelope:
-            delegator_plugin_instance_id = func_data_envelope[instance_data_][delegator_plugin_instance_id_]
-            delegator_plugin: DelegatorAbstract = self.interp_ctx.action_delegators[delegator_plugin_instance_id]
+            delegator_plugin_instance_id = func_data_envelope[instance_data_][
+                delegator_plugin_instance_id_
+            ]
+            delegator_plugin: DelegatorAbstract = self.interp_ctx.action_delegators[
+                delegator_plugin_instance_id
+            ]
             return delegator_plugin
         else:
             # func envelope hasn't been found yet:
@@ -820,7 +897,9 @@ class FuncTreeInterp(AbstractInterp):
     def select_next_interp_tree_abs_path(self):
         if self.interp_ctx.interp_tree_abs_path in self.paths_to_jump:
             # FS_91_88_07_23 jump tree: replace current `interp_tree_abs_path` with another one based on config:
-            self.interp_ctx.interp_tree_abs_path = self.paths_to_jump[self.interp_ctx.interp_tree_abs_path]
+            self.interp_ctx.interp_tree_abs_path = self.paths_to_jump[
+                self.interp_ctx.interp_tree_abs_path
+            ]
 
     def propose_arg_completion(self) -> None:
         comp_values = self.propose_auto_comp_list()
@@ -833,11 +912,18 @@ class FuncTreeInterp(AbstractInterp):
         #       This may simplify this condition:
         if self.interp_ctx.parsed_ctx.tan_token_ipos >= 0:
 
-            if self.interp_ctx.parsed_ctx.tan_token_ipos in self.interp_ctx.token_ipos_to_arg_map:
-                tangent_arg = self.interp_ctx.token_ipos_to_arg_map[self.interp_ctx.parsed_ctx.tan_token_ipos]
+            if (
+                self.interp_ctx.parsed_ctx.tan_token_ipos
+                in self.interp_ctx.token_ipos_to_arg_map
+            ):
+                tangent_arg = self.interp_ctx.token_ipos_to_arg_map[
+                    self.interp_ctx.parsed_ctx.tan_token_ipos
+                ]
                 if isinstance(tangent_arg, ArgCommandIncomplete):
                     incomplete_arg: ArgCommandIncomplete = tangent_arg
-                    return self._propose_for_incomplete_arg_with_tangent_token(incomplete_arg)
+                    return self._propose_for_incomplete_arg_with_tangent_token(
+                        incomplete_arg
+                    )
                 elif isinstance(tangent_arg, ArgCommandValueDictated):
                     dictated_arg: ArgCommandValueDictated = tangent_arg
                     return self._propose_for_dictated_arg(dictated_arg)
@@ -851,18 +937,28 @@ class FuncTreeInterp(AbstractInterp):
                 #       It makes sense to model every token as `command_arg` including `token_bucket` delimiter
                 #       instead of using `excluded_tokens`, no?
                 # This must be `token_bucket` delimiter.
-                assert self.interp_ctx.parsed_ctx.tan_token_value == SpecialChar.TokenBucketDelimiter.value
+                assert (
+                    self.interp_ctx.parsed_ctx.tan_token_value
+                    == SpecialChar.TokenBucketDelimiter.value
+                )
                 # TODO: TODO_66_09_41_16: clarify command line processing
                 #       `token_bucket` delimiter should be suggested everywhere where applicable
                 #       especially when `tan_token_l_part` starts with `SpecialChar.TokenBucketDelimiter.value`.
 
         elif self.interp_ctx.parsed_ctx.prev_token_ipos >= 0:
 
-            if self.interp_ctx.parsed_ctx.prev_token_ipos in self.interp_ctx.token_ipos_to_arg_map:
-                prev_arg = self.interp_ctx.token_ipos_to_arg_map[self.interp_ctx.parsed_ctx.prev_token_ipos]
+            if (
+                self.interp_ctx.parsed_ctx.prev_token_ipos
+                in self.interp_ctx.token_ipos_to_arg_map
+            ):
+                prev_arg = self.interp_ctx.token_ipos_to_arg_map[
+                    self.interp_ctx.parsed_ctx.prev_token_ipos
+                ]
                 if isinstance(prev_arg, ArgCommandIncomplete):
                     incomplete_arg: ArgCommandIncomplete = prev_arg
-                    return self._propose_for_incomplete_arg_with_prev_token(incomplete_arg)
+                    return self._propose_for_incomplete_arg_with_prev_token(
+                        incomplete_arg
+                    )
                 else:
                     return self._propose_remaining_prop_values_based_on_comp_scope()
 
@@ -884,8 +980,13 @@ class FuncTreeInterp(AbstractInterp):
         prop_name_token_ipos = incomplete_arg.get_arg_tokens()[0]
         assert self.interp_ctx.parsed_ctx.prev_token_ipos == prop_name_token_ipos
         arg_name = incomplete_arg.get_arg_name()
-        if arg_name in self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict:
-            prop_name = self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict[arg_name]
+        if (
+            arg_name
+            in self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict
+        ):
+            prop_name = self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict[
+                arg_name
+            ]
             return self._remaining_prop_values_from_given_prop_name(prop_name)
         else:
             return []
@@ -900,8 +1001,13 @@ class FuncTreeInterp(AbstractInterp):
             return self._propose_arg_names_based_on_comp_scope()
         elif self.interp_ctx.parsed_ctx.tan_token_ipos == prop_value_token_ipos:
             arg_name = dictated_arg.get_arg_name()
-            if arg_name in self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict:
-                prop_name = self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict[arg_name]
+            if (
+                arg_name
+                in self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict
+            ):
+                prop_name = self.interp_ctx.curr_container.search_control.arg_name_to_prop_name_dict[
+                    arg_name
+                ]
                 return self._remaining_prop_values_from_given_prop_name(prop_name)
             else:
                 return []
@@ -915,8 +1021,7 @@ class FuncTreeInterp(AbstractInterp):
         prop_value_token_ipos = offered_arg.get_arg_token()
         assert (
             self.interp_ctx.parsed_ctx.tan_token_ipos == prop_value_token_ipos
-            or
-            self.interp_ctx.parsed_ctx.prev_token_ipos == prop_value_token_ipos
+            or self.interp_ctx.parsed_ctx.prev_token_ipos == prop_value_token_ipos
         )
         return self._propose_remaining_prop_values_based_on_comp_scope()
 
@@ -941,28 +1046,34 @@ class FuncTreeInterp(AbstractInterp):
         ]:
             prefixed_arg_names = []
             for prop_name in selected_container.remaining_prop_name_to_prop_value:
-                arg_name = selected_container.search_control.prop_name_to_arg_name_dict[prop_name]
+                arg_name = selected_container.search_control.prop_name_to_arg_name_dict[
+                    prop_name
+                ]
                 if (
                     # TODO: TODO_66_09_41_16: clarify command line processing
                     #       What does this char mean? Put it into one of the `SpecialChar.*`.
                     not arg_name.startswith("_")
-                    and
-                    arg_name.startswith(arg_name_prefix)
+                    and arg_name.startswith(arg_name_prefix)
                 ):
-                    prefixed_arg_names.append(SpecialChar.ArgNamePrefix.value + arg_name)
+                    prefixed_arg_names.append(
+                        SpecialChar.ArgNamePrefix.value + arg_name
+                    )
             return prefixed_arg_names
 
         if self.interp_ctx.parsed_ctx.comp_scope is CompScope.ScopeSubsequent:
             prefixed_arg_names = []
-            for arg_name in selected_container.search_control.prop_name_to_arg_name_dict.values():
+            for (
+                arg_name
+            ) in selected_container.search_control.prop_name_to_arg_name_dict.values():
                 if (
                     # TODO: TODO_66_09_41_16: clarify command line processing
                     #       What does this char mean? Put it into one of the `SpecialChar.*`.
                     not arg_name.startswith("_")
-                    and
-                    arg_name.startswith(arg_name_prefix)
+                    and arg_name.startswith(arg_name_prefix)
                 ):
-                    prefixed_arg_names.append(SpecialChar.ArgNamePrefix.value + arg_name)
+                    prefixed_arg_names.append(
+                        SpecialChar.ArgNamePrefix.value + arg_name
+                    )
             return prefixed_arg_names
 
         return []
@@ -1001,17 +1112,29 @@ class FuncTreeInterp(AbstractInterp):
         proposed_values: list[str] = []
 
         # Return filtered value set from the next missing arg:
-        for prop_name in self.interp_ctx.curr_container.search_control.prop_name_to_arg_name_dict:
-            if prop_name in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value:
+        for (
+            prop_name
+        ) in self.interp_ctx.curr_container.search_control.prop_name_to_arg_name_dict:
+            if (
+                prop_name
+                in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value
+            ):
                 # TODO: TODO_66_09_41_16: clarify command line processing
                 #       only one condition should be enough:
                 #       `prop_name` is either in assigned or in remaining, not in both:
-                assert prop_name not in self.interp_ctx.curr_container.assigned_prop_name_to_prop_value
+                assert (
+                    prop_name
+                    not in self.interp_ctx.curr_container.assigned_prop_name_to_prop_value
+                )
 
                 proposed_values = [
                     # FS_71_87_33_52: `help_hint`:
-                    self.interp_ctx.help_hint_cache.get_value_with_help_hint(prop_name, x)
-                    for x in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[prop_name]
+                    self.interp_ctx.help_hint_cache.get_value_with_help_hint(
+                        prop_name, x
+                    )
+                    for x in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[
+                        prop_name
+                    ]
                     if (
                         # TODO: TODO_66_09_41_16: clarify command line processing
                         #       This does not make sense - only str are expected.
@@ -1047,16 +1170,24 @@ class FuncTreeInterp(AbstractInterp):
         proposed_values: list[str] = []
 
         # Return filtered value set from the next missing arg:
-        if prop_name in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value:
+        if (
+            prop_name
+            in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value
+        ):
             # TODO: TODO_66_09_41_16: clarify command line processing
             #       only one condition should be enough:
             #       `prop_name` is either in assigned or in remaining, not in both:
-            assert prop_name not in self.interp_ctx.curr_container.assigned_prop_name_to_prop_value
+            assert (
+                prop_name
+                not in self.interp_ctx.curr_container.assigned_prop_name_to_prop_value
+            )
 
             proposed_values = [
                 # FS_71_87_33_52: `help_hint`:
                 self.interp_ctx.help_hint_cache.get_value_with_help_hint(prop_name, x)
-                for x in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[prop_name]
+                for x in self.interp_ctx.curr_container.remaining_prop_name_to_prop_value[
+                    prop_name
+                ]
                 if (
                     # TODO: TODO_66_09_41_16: clarify command line processing
                     #       This does not make sense - only str are expected.

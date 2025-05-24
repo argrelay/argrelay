@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.handler_response.ClientResponseHandlerDescribeLineArgs import (
     ClientResponseHandlerDescribeLineArgs,
 )
@@ -37,18 +39,20 @@ class ThisTestClass(LocalTestClass):
 
         # TODO: Test why `lay` on query shows `some_command`?
         """
-lay 
+lay
 class_function: 20
 tree_step_0: some_command [init_value]
-*tree_step_1: ? intercept help subtree goto desc list 
-tree_step_2: ? intercept help goto desc list host service repo commit 
+*tree_step_1: ? intercept help subtree goto desc list
+tree_step_2: ? intercept help goto desc list host service repo commit
         """
 
         # TODO: Add test to run both `lay` and `some_command` and compare output is identical for identical requests.
 
         test_cases = [
             (
-                line_no(), "some_command |", CompType.PrefixHidden,
+                line_no(),
+                "some_command |",
+                CompType.PrefixHidden,
                 [
                     "config",
                     "data",
@@ -94,49 +98,65 @@ tree_step_2: ? intercept help goto desc list host service repo commit
     def test_describe_args(self):
         test_cases = [
             (
-                line_no(), "some_command |", CompType.DescribeArgs,
+                line_no(),
+                "some_command |",
+                CompType.DescribeArgs,
                 "Ensure it provides `some_command` as first `init_value` prop.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "some_command |", CompType.DescribeArgs,
+                line_no(),
+                "some_command |",
+                CompType.DescribeArgs,
                 "Ensure it provides `some_command` as first `init_value` prop.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "some_command intercept |", CompType.DescribeArgs,
+                line_no(),
+                "some_command intercept |",
+                CompType.DescribeArgs,
                 "Ensure `intercept` works for `CompType.DescribeArgs`.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "some_command intercept help |", CompType.DescribeArgs,
+                line_no(),
+                "some_command intercept help |",
+                CompType.DescribeArgs,
                 "Ensure `intercept` of `help` works for `CompType.DescribeArgs`.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "some_command intercept help |", CompType.DescribeArgs,
+                line_no(),
+                "some_command intercept help |",
+                CompType.DescribeArgs,
                 "Ensure `help` of `intercept` works for `CompType.DescribeArgs`.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "# some_command intercept help |", CompType.DescribeArgs,
+                line_no(),
+                "# some_command intercept help |",
+                CompType.DescribeArgs,
                 "Commented line: selecting `NoopInterpFactory` by default should not fail.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "some_command intercept intercept help |", CompType.DescribeArgs,
+                line_no(),
+                "some_command intercept intercept help |",
+                CompType.DescribeArgs,
                 "Doubling of `intercept` should work.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
             ),
             (
-                line_no(), "some_command subtree help |", CompType.DescribeArgs,
+                line_no(),
+                "some_command subtree help |",
+                CompType.DescribeArgs,
                 "Help for `subtree` should work.",
                 # TODO: TODO_42_81_01_90: implement asserting data for `CompType.DescribeArgs` to make it easier to assert:
                 None,
@@ -160,9 +180,11 @@ tree_step_2: ? intercept help goto desc list host service repo commit
                     .set_command_line(command_line)
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(comp_type)
-                    .set_test_data_ids_to_load([
-                        self.__class__.same_test_data_per_class,
-                    ])
+                    .set_test_data_ids_to_load(
+                        [
+                            self.__class__.same_test_data_per_class,
+                        ]
+                    )
                 )
                 with outer_env_mock_builder.build():
                     command_obj = __main__.main()
@@ -188,15 +210,17 @@ tree_step_2: ? intercept help goto desc list host service repo commit
                         .set_capture_stderr(True)
                     )
                     with inner_env_mock_builder.build():
-                        interp_result: InterpResult = InterpResult.from_interp_context(interp_ctx)
-                        ClientResponseHandlerDescribeLineArgs.render_result(interp_result)
-
-                        self.assertEqual(
-                            stdout_str,
-                            inner_env_mock_builder.actual_stdout.getvalue()
+                        interp_result: InterpResult = InterpResult.from_interp_context(
+                            interp_ctx
+                        )
+                        ClientResponseHandlerDescribeLineArgs.render_result(
+                            interp_result
                         )
 
                         self.assertEqual(
-                            "",
-                            inner_env_mock_builder.actual_stderr.getvalue()
+                            stdout_str, inner_env_mock_builder.actual_stdout.getvalue()
+                        )
+
+                        self.assertEqual(
+                            "", inner_env_mock_builder.actual_stderr.getvalue()
                         )

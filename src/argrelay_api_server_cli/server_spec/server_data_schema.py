@@ -11,8 +11,12 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 
 from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
 from argrelay_api_server_cli.schema_response.ArgValuesSchema import arg_values_desc
-from argrelay_api_server_cli.schema_response.InterpResultSchema import interp_result_desc
-from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc
+from argrelay_api_server_cli.schema_response.InterpResultSchema import (
+    interp_result_desc,
+)
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import (
+    invocation_input_desc,
+)
 from argrelay_api_server_cli.server_spec.const_int import (
     DEFAULT_OPEN_API_VERSION,
     UNUSED_TITLE,
@@ -24,13 +28,13 @@ from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
 # These data schemas are subsequently used in OAS specs for paths (which are defined manually).
 # All serialization/deserialization/validation is done using `marshmallow` schemas (instead of JSON Schemas below).
 server_op_data_schemas = APISpec(
-    title = UNUSED_TITLE,
-    version = UNUSED_VERSION,
-    openapi_version = DEFAULT_OPEN_API_VERSION,
-    plugins = [
+    title=UNUSED_TITLE,
+    version=UNUSED_VERSION,
+    openapi_version=DEFAULT_OPEN_API_VERSION,
+    plugins=[
         MarshmallowPlugin(
             # Override default resolver to preserve `Schema` postfix (keep full schema class name):
-            schema_name_resolver = lambda schema_obj: schema_obj.__class__.__name__
+            schema_name_resolver=lambda schema_obj: schema_obj.__class__.__name__
         )
     ],
 )
@@ -42,7 +46,7 @@ def add_type_desc_to_schema(type_desc: TypeDesc):
     """
     server_op_data_schemas.components.schema(
         type_desc.ref_name,
-        schema = type_desc.dict_schema,
+        schema=type_desc.dict_schema,
     )
 
 
@@ -61,7 +65,9 @@ def get_schema_definitions(ref_names: list[str]):
 
     schema_definitions = {}
     for ref_name in ref_names:
-        schema_definitions[ref_name] = server_op_data_schemas.components.schemas[ref_name]
+        schema_definitions[ref_name] = server_op_data_schemas.components.schemas[
+            ref_name
+        ]
     return schema_definitions
 
 

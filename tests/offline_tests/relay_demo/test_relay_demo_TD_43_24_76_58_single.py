@@ -19,29 +19,37 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "some_command host goto |", CompType.PrefixShown,
+                line_no(),
+                "some_command host goto |",
+                CompType.PrefixShown,
                 [
                     "apac",
                     "emea",
                 ],
                 1,
                 {
-                    ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.implicit_value),
+                    ServicePropName.code_maturity.name: AssignedValue(
+                        "dev", ValueSource.implicit_value
+                    ),
                 },
                 "No suggestion of `dev` as all `data_envelope`-s has the same `dev` `ServicePropName.code_maturity`",
             ),
             (
-                line_no(), "some_command host goto dev |", CompType.PrefixShown,
+                line_no(),
+                "some_command host goto dev |",
+                CompType.PrefixShown,
                 [
                     "apac",
                     "emea",
                 ],
                 1,
                 {
-                    ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
+                    ServicePropName.code_maturity.name: AssignedValue(
+                        "dev", ValueSource.explicit_offered_arg
+                    ),
                 },
                 "Even if all `data_envelope`-s has the same `dev` `ServicePropName.code_maturity`, "
-                "if it is provided, the value `dev` is still consumed."
+                "if it is provided, the value `dev` is still consumed.",
             ),
         ]
 

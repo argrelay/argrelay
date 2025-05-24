@@ -93,4 +93,3 @@ else
     # All args passed to `@/exe/dev_shell.bash` are executed as command line:
     exec bash -c "source ~/.bashrc && source ${argrelay_dir}/exe/init_shell_env.bash && ( ${*} )"
 fi
-

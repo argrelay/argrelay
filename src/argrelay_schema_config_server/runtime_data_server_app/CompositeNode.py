@@ -6,7 +6,9 @@ from dataclasses import (
 )
 from typing import Union
 
-from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import CompositeNodeType
+from argrelay_schema_config_server.runtime_data_server_app.CompositeNodeType import (
+    CompositeNodeType,
+)
 
 
 @dataclass

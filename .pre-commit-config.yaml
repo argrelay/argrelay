@@ -1,0 +1,32 @@
+
+repos:
+
+    -   repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: v4.5.0  # Use the latest compatible version
+        hooks:
+
+        -   id: trailing-whitespace
+            # Exclude `*.py` files (as some may contain test data with trailing whitespaces).additional_dependencies:
+            # Let `black` format them instead (which supports line-by-line `fmt: off`/`fmt: on` exclusion).
+            exclude: ^(.*\.py)$
+
+        -   id: end-of-file-fixer
+
+        -   id: check-yaml
+            # Exclude `argrelay_plugin.yaml` files because `check-yaml` complaints that:
+            # could not determine a constructor for the tag '!include'
+            exclude: ^(.*/argrelay_plugin\.yaml)$
+
+        -   id: check-json
+
+    -   repo: https://github.com/psf/black
+        rev: 25.1.0
+        hooks:
+
+        -   id: black
+
+    -   repo: https://github.com/igorshubovych/markdownlint-cli
+        rev: v0.45.0
+        hooks:
+
+        -   id: markdownlint

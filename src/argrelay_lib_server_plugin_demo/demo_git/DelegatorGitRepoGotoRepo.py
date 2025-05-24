@@ -2,19 +2,25 @@ from __future__ import annotations
 
 import subprocess
 
-from argrelay_api_plugin_server_abstract.DelegatorAbstract import get_func_id_from_invocation_input
+from argrelay_api_plugin_server_abstract.DelegatorAbstract import (
+    get_func_id_from_invocation_input,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_lib_root.enum_desc.ClientExitCode import ClientExitCode
 from argrelay_lib_root.enum_desc.FuncState import FuncState
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.misc_helper_common import eprint
-from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import prohibit_unconsumed_args
+from argrelay_lib_server_plugin_core.plugin_delegator.client_invocation_utils import (
+    prohibit_unconsumed_args,
+)
 from argrelay_lib_server_plugin_demo.demo_git.DelegatorGitRepoBase import (
     DelegatorGitRepoBase,
     repo_root_abs_path_,
 )
-from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import GitRepoEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_git.GitRepoEnvelopeClass import (
+    GitRepoEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_git.GitRepoPropName import GitRepoPropName
 from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
     envelope_payload_,
@@ -25,7 +31,9 @@ from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstance
     func_id_,
     search_control_list_,
 )
-from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import populate_search_control
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
+    populate_search_control,
+)
 
 func_id_goto_git_repo_ = "func_id_goto_git_repo"
 
@@ -49,7 +57,6 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
             [
                 # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
                 {"class": ReservedPropName.envelope_class.name},
-
                 {"category": GitRepoPropName.git_repo_object_category.name},
                 {"alias": GitRepoPropName.git_repo_alias.name},
                 {"content": GitRepoPropName.git_repo_content_type.name},
@@ -82,15 +89,29 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
     def invoke_action(
         invocation_input: InvocationInput,
     ) -> None:
-        assert get_func_id_from_invocation_input(invocation_input) == func_id_goto_git_repo_
+        assert (
+            get_func_id_from_invocation_input(invocation_input)
+            == func_id_goto_git_repo_
+        )
         prohibit_unconsumed_args(invocation_input)
         # TODO: TODO_20_61_16_31 `cardinality_hook`: run different funcs based on `data_envelope` set size
         # TODO: TODO_86_57_50_38: make this behavior (require singled-out `data_envelope`) configure-able for all plugins:
-        if len(invocation_input.envelope_containers[repo_container_ipos_].data_envelopes) != 1:
-            eprint(f"ERROR: single repo is not selected (not disambiguated from multiple candidates)")
+        if (
+            len(
+                invocation_input.envelope_containers[
+                    repo_container_ipos_
+                ].data_envelopes
+            )
+            != 1
+        ):
+            eprint(
+                f"ERROR: single repo is not selected (not disambiguated from multiple candidates)"
+            )
             exit(ClientExitCode.GeneralError.value)
 
-        repo_envelope = invocation_input.envelope_containers[repo_container_ipos_].data_envelopes[0]
+        repo_envelope = invocation_input.envelope_containers[
+            repo_container_ipos_
+        ].data_envelopes[0]
         repo_root_abs_path = repo_envelope[envelope_payload_][repo_root_abs_path_]
         eprint(f"INFO: starting subshell in: {repo_root_abs_path}")
         # List Git repo dir:
@@ -99,7 +120,7 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
                 "bash",
                 "-l",
             ],
-            cwd = repo_root_abs_path
+            cwd=repo_root_abs_path,
         )
         exit_code = sub_proc.returncode
         if exit_code != 0:

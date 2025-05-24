@@ -5,7 +5,7 @@ These are some guidelines for the code style = list of excuses with justificatio
 
 Names often go against what would sound "more English".
 Instead, the preferred name strings serve sorting and searching properties
-(especially across files with different syntax like *.py, *.bash, *.yaml, *.md, ...).
+(especially across files with different syntax like `*.py`, `*.bash`, `*.yaml`, `*.md`, ...).
 
 ## Specific guidelines
 
@@ -36,8 +36,8 @@ Instead, the preferred name strings serve sorting and searching properties
     TODO: TODO_78_94_31_68: split argrelay into multiple packages
           Due to ongoing package-splitting activity, the flatness (or depth) of the nesting
           is rather arbitrary:
-          *   simpler top-level modules have 0-level nesting
-          *   more complex top-level modules may have N-level nesting
+    *   simpler top-level modules have 0-level nesting
+    *   more complex top-level modules may have N-level nesting
 
     Until number of dirs in the list is excessively large, it is just simpler.
 

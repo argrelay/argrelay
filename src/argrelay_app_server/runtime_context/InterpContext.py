@@ -27,7 +27,9 @@ from argrelay_app_server.runtime_context.DataArg import (
 from argrelay_app_server.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay_app_server.runtime_context.ParsedContext import ParsedContext
 from argrelay_app_server.runtime_context.SearchControl import SearchControl
-from argrelay_app_server.runtime_context.token_bucket_utils import token_buckets_to_token_ipos_list
+from argrelay_app_server.runtime_context.token_bucket_utils import (
+    token_buckets_to_token_ipos_list,
+)
 from argrelay_lib_root.enum_desc.InterpStep import InterpStep
 from argrelay_lib_root.enum_desc.ServerAction import ServerAction
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
@@ -62,7 +64,7 @@ class InterpContext:
 
     help_hint_cache: HelpHintCache = field()
 
-    excluded_tokens: list[int] = field(init = False, default_factory = lambda: [])
+    excluded_tokens: list[int] = field(init=False, default_factory=lambda: [])
     """
     Tokens excluded by ways other than consumption into `consumed_token_buckets`.
     """
@@ -72,10 +74,12 @@ class InterpContext:
     FS_97_64_39_94: ipos of the `token_bucket` which was used by one of the `EnvelopeContainer`-s
     """
 
-    included_token_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
+    included_token_buckets: list[list[int]] = field(
+        init=False, default_factory=lambda: []
+    )
     """
     FS_97_64_39_94: `token_bucket`-s
-    
+
     If `included_token_buckets` are combined,
     the result will contain both `remaining_token_buckets` and `consumed_token_buckets`.
     Field `included_token_buckets` is a maximum set for `token_bucket`-s -
@@ -83,17 +87,21 @@ class InterpContext:
     but it cannot contain all tokens - it must exclude at least `SpecialChar.TokenBucketDelimiter` to start with.
     """
 
-    remaining_token_buckets: list[list[int]] = field(init = False)
+    remaining_token_buckets: list[list[int]] = field(init=False)
     """
     Same as `included_token_buckets` but for remaining tokens only.
     """
 
-    consumed_token_buckets: list[list[int]] = field(init = False, default_factory = lambda: [])
+    consumed_token_buckets: list[list[int]] = field(
+        init=False, default_factory=lambda: []
+    )
     """
     Same as `included_token_buckets` but for consumed tokens only.
     """
 
-    token_ipos_to_token_bucket_map: dict[int, int] = field(init = False, default_factory = lambda: {})
+    token_ipos_to_token_bucket_map: dict[int, int] = field(
+        init=False, default_factory=lambda: {}
+    )
     """
     Index reversed to `included_token_buckets` -
     for each `token_ipos` it gives the index of the `token_bucket` it is in.
@@ -101,51 +109,55 @@ class InterpContext:
     """
 
     remaining_dictated_args_per_bucket: list[list[ArgCommandValueDictated]] = field(
-        init = False,
-        default_factory = lambda: [],
+        init=False,
+        default_factory=lambda: [],
     )
     """
     Remaining `dictated_arg`-s for each bucket.
     """
 
     remaining_offered_args_per_bucket: list[list[ArgCommandValueOffered]] = field(
-        init = False,
-        default_factory = lambda: [],
+        init=False,
+        default_factory=lambda: [],
     )
     """
     Remaining `offered_arg`-s for each bucket.
     """
 
     remaining_incomplete_args_per_bucket: list[list[ArgCommandIncomplete]] = field(
-        init = False,
-        default_factory = lambda: [],
+        init=False,
+        default_factory=lambda: [],
     )
     """
     Remaining FS_08_58_30_24 `incomplete_arg`-s for each bucket.
     """
 
-    tangent_arg: Union[ArgCommand, None] = field(init = False, default = None)
+    tangent_arg: Union[ArgCommand, None] = field(init=False, default=None)
     """
     Similar to `tangent_token` but affects entire `command_arg` this `tangent_token` is part of.
     """
 
-    token_ipos_to_arg_map: dict[int, ArgCommand] = field(init = False, default_factory = lambda: {})
+    token_ipos_to_arg_map: dict[int, ArgCommand] = field(
+        init=False, default_factory=lambda: {}
+    )
     """
     Maps `token_ipos` into one of the args in
     either `remaining_offered_args_per_bucket` or `remaining_offered_args_per_bucket` (or `None`).
     """
 
-    envelope_containers: list[EnvelopeContainer] = field(init = False, default_factory = lambda: [])
+    envelope_containers: list[EnvelopeContainer] = field(
+        init=False, default_factory=lambda: []
+    )
     """
     Each `envelope_container` wraps `data_envelope`-s matching query and some associated data.
     """
 
-    curr_container: EnvelopeContainer = field(init = False, default = None)
+    curr_container: EnvelopeContainer = field(init=False, default=None)
     """
     One of the `envelope_containers` currently being searched.
     """
 
-    curr_container_ipos: int = field(init = False, default = -1)
+    curr_container_ipos: int = field(init=False, default=-1)
     """
     It is an `ipos` into `envelope_containers` to select `curr_container` (what is currently being searched for).
 
@@ -155,19 +167,19 @@ class InterpContext:
     (search procedure has not reached them yet).
     """
 
-    prev_interp: "AbstractInterp" = field(init = False, default = None)
+    prev_interp: "AbstractInterp" = field(init=False, default=None)
 
-    curr_interp: "AbstractInterp" = field(init = False, default = None)
+    curr_interp: "AbstractInterp" = field(init=False, default=None)
     """
     Current interpreter during command line interpretation.
     """
 
-    comp_suggestions: list[str] = field(init = False, default_factory = lambda: [])
+    comp_suggestions: list[str] = field(init=False, default_factory=lambda: [])
     """
     Sorted list of completion suggestions.
     """
 
-    interp_tree_abs_path: tuple[str, ...] = field(init = False, default = tuple([]))
+    interp_tree_abs_path: tuple[str, ...] = field(init=False, default=tuple([]))
     """
     Provides curr path within FS_01_89_09_24 interp tree.
     Takes part in implementation of FS_01_89_09_24 interp tree.
@@ -184,7 +196,10 @@ class InterpContext:
         for token_ipos in range(0, len(self.parsed_ctx.all_tokens)):
 
             # Split and populate FS_97_64_39_94 `token_bucket`-s:
-            if self.parsed_ctx.all_tokens[token_ipos] == SpecialChar.TokenBucketDelimiter.value:
+            if (
+                self.parsed_ctx.all_tokens[token_ipos]
+                == SpecialChar.TokenBucketDelimiter.value
+            ):
                 self.included_token_buckets.append([])
                 curr_bucket_index = len(self.included_token_buckets) - 1
                 curr_token_bucket = self.included_token_buckets[curr_bucket_index]
@@ -231,16 +246,16 @@ class InterpContext:
                         continue
                     else:
                         command_arg = ArgCommandDataValueOffered(
-                            token_ipos_list = [token_ipos],
-                            arg_value = token_value,
+                            token_ipos_list=[token_ipos],
+                            arg_value=token_value,
                         )
                         offered_args.append(command_arg)
                         self.token_ipos_to_arg_map[token_ipos] = command_arg
                 else:
                     command_arg = ArgCommandDataValueDictated(
-                        token_ipos_list = [arg_name_ipos, token_ipos],
-                        arg_name = arg_name_value,
-                        arg_value = token_value,
+                        token_ipos_list=[arg_name_ipos, token_ipos],
+                        arg_name=arg_name_value,
+                        arg_value=token_value,
                     )
                     dictated_args.append(command_arg)
                     self.token_ipos_to_arg_map[arg_name_ipos] = command_arg
@@ -252,8 +267,8 @@ class InterpContext:
             # it is registered as `incomplete_arg`.
             if arg_name_value is not None:
                 command_arg = ArgCommandDataIncomplete(
-                    token_ipos_list = [arg_name_ipos],
-                    arg_name = arg_name_value,
+                    token_ipos_list=[arg_name_ipos],
+                    arg_name=arg_name_value,
                 )
                 incomplete_args.append(command_arg)
                 self.token_ipos_to_arg_map[arg_name_ipos] = command_arg
@@ -265,13 +280,13 @@ class InterpContext:
             # Post-process `tangent_arg`:
             if (
                 self.parsed_ctx.server_action is ServerAction.ProposeArgValues
-                and
-                self.parsed_ctx.tan_token_ipos >= 0
-                and
-                self.parsed_ctx.tan_token_ipos in self.token_ipos_to_arg_map
+                and self.parsed_ctx.tan_token_ipos >= 0
+                and self.parsed_ctx.tan_token_ipos in self.token_ipos_to_arg_map
             ):
                 tangent_arg = self.token_ipos_to_arg_map[self.parsed_ctx.tan_token_ipos]
-                token_bucket_ipos = self.token_ipos_to_token_bucket_map[self.parsed_ctx.tan_token_ipos]
+                token_bucket_ipos = self.token_ipos_to_token_bucket_map[
+                    self.parsed_ctx.tan_token_ipos
+                ]
                 # FS_23_62_89_43 `tangent_token` completion:
                 # `ServerAction.ProposeArgValues` excludes tangent token from consumption because
                 # this action is not supposed to consume that tangent token (and complete it instead):
@@ -283,19 +298,31 @@ class InterpContext:
                     # TODO: TODO_66_09_41_16: clarify command line processing
                     #       Use helper functions which ensure consistency
                     #       (like in this case, if one is removed, another is removed)
-                    self.remaining_dictated_args_per_bucket[token_bucket_ipos].remove(dictated_arg)
+                    self.remaining_dictated_args_per_bucket[token_bucket_ipos].remove(
+                        dictated_arg
+                    )
                     for token_ipos in dictated_arg.get_arg_tokens():
-                        self.remaining_token_buckets[token_bucket_ipos].remove(token_ipos)
-                        self.included_token_buckets[token_bucket_ipos].remove(token_ipos)
+                        self.remaining_token_buckets[token_bucket_ipos].remove(
+                            token_ipos
+                        )
+                        self.included_token_buckets[token_bucket_ipos].remove(
+                            token_ipos
+                        )
                         self.excluded_tokens.append(token_ipos)
                 elif isinstance(tangent_arg, ArgCommandValueOffered):
                     offered_arg: ArgCommandValueOffered = tangent_arg
                     # TODO: TODO_66_09_41_16: clarify command line processing
                     #       Use helper functions which ensure consistency
                     #       (like in this case, if one is removed, another is removed)
-                    self.remaining_offered_args_per_bucket[token_bucket_ipos].remove(offered_arg)
-                    self.remaining_token_buckets[token_bucket_ipos].remove(offered_arg.get_arg_token())
-                    self.included_token_buckets[token_bucket_ipos].remove(offered_arg.get_arg_token())
+                    self.remaining_offered_args_per_bucket[token_bucket_ipos].remove(
+                        offered_arg
+                    )
+                    self.remaining_token_buckets[token_bucket_ipos].remove(
+                        offered_arg.get_arg_token()
+                    )
+                    self.included_token_buckets[token_bucket_ipos].remove(
+                        offered_arg.get_arg_token()
+                    )
                     self.excluded_tokens.append(offered_arg.get_arg_token())
                 else:
                     raise TypeError(f"unhandled argument type: {type(tangent_arg)}")
@@ -321,7 +348,9 @@ class InterpContext:
         func_param_container_offset: int,
         search_control: SearchControl,
     ):
-        if (base_container_ipos + func_param_container_offset + 1) >= len(self.envelope_containers):
+        if (base_container_ipos + func_param_container_offset + 1) >= len(
+            self.envelope_containers
+        ):
             envelope_container = EnvelopeContainer(search_control)
             self.envelope_containers.append(envelope_container)
 
@@ -331,36 +360,40 @@ class InterpContext:
     def is_func_found(self) -> bool:
         return (
             self.curr_container_ipos >= function_container_ipos_
-            and
-            self.envelope_containers[function_container_ipos_].found_count == 1
+            and self.envelope_containers[function_container_ipos_].found_count == 1
         )
 
     def query_prop_values(self):
         if not self.curr_container:
             return
 
-        ElapsedTime.measure(f"begin_query_envelopes: {self.curr_container.search_control.collection_name}")
+        ElapsedTime.measure(
+            f"begin_query_envelopes: {self.curr_container.search_control.collection_name}"
+        )
         query_dict = populate_query_dict(self.curr_container)
         query_result: QueryResult = self.query_engine.query_prop_values(
             query_dict,
             self.curr_container.search_control,
             self.curr_container.assigned_prop_name_to_prop_value,
         )
-        self.curr_container.remaining_prop_name_to_prop_value = query_result.remaining_prop_name_to_prop_value
+        self.curr_container.remaining_prop_name_to_prop_value = (
+            query_result.remaining_prop_name_to_prop_value
+        )
         self.curr_container.data_envelopes = query_result.data_envelopes
         self.curr_container.found_count = query_result.found_count
-        ElapsedTime.measure(f"end_query_envelopes: {query_dict} {self.curr_container.found_count}")
+        ElapsedTime.measure(
+            f"end_query_envelopes: {query_dict} {self.curr_container.found_count}"
+        )
 
-    def consume_args(
-        self,
-        interp_n: int
-    ):
+    def consume_args(self, interp_n: int):
         while True:
 
             # FS_44_36_84_88 consume args one by one:
             while True:
                 # Query envelope values only - they will be used for consumption of command line args:
-                ElapsedTime.measure(f"[i={interp_n}]: before_entry_query: {self.curr_interp}")
+                ElapsedTime.measure(
+                    f"[i={interp_n}]: before_entry_query: {self.curr_interp}"
+                )
                 self.query_prop_values()
                 # Reset to False as we just executed new query:
                 arg_was_consumed = False
@@ -373,10 +406,14 @@ class InterpContext:
                 # Note that Tab-completion and selection (via manual step by human) in separate requests to server and
                 # separate `interpret_command` calls is close to that logically better approach.
                 if not arg_was_consumed:
-                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_dictated_args: {self.curr_interp}")
+                    ElapsedTime.measure(
+                        f"[i={interp_n}]: before_consume_dictated_args: {self.curr_interp}"
+                    )
                     arg_was_consumed = self.curr_interp.consume_dictated_args()
                 if not arg_was_consumed:
-                    ElapsedTime.measure(f"[i={interp_n}]: before_consume_offered_args: {self.curr_interp}")
+                    ElapsedTime.measure(
+                        f"[i={interp_n}]: before_consume_offered_args: {self.curr_interp}"
+                    )
                     arg_was_consumed = self.curr_interp.consume_offered_args()
 
                 if arg_was_consumed:
@@ -398,7 +435,9 @@ class InterpContext:
             if self.curr_interp.has_fill_control():
                 # FS_72_53_55_13: options before defaults
                 # Describing args will need to show options except default - query values before applying defaults:
-                ElapsedTime.measure(f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}")
+                ElapsedTime.measure(
+                    f"[i={interp_n}]: before_query_without_defaults: {self.curr_interp}"
+                )
                 # This step may be optimized away and is only needed to detect non-default options for
                 # `ServerAction.DescribeLineArgs` but we perform it for all requests to
                 # ensure they have common view in case of possible data issues
@@ -411,9 +450,7 @@ class InterpContext:
 
                 # Apply defaults (they may apply more than single value at a time):
                 query_changed = (
-                    self.curr_interp.delegate_fill_control()
-                    or
-                    query_changed
+                    self.curr_interp.delegate_fill_control() or query_changed
                 )
                 self._leave_only_hidden_by_defaults()
 
@@ -456,9 +493,13 @@ class InterpContext:
 
             self.consume_args(interp_n)
 
-            ElapsedTime.measure(f"[i={interp_n}]: before_try_iterate: {self.curr_interp}")
+            ElapsedTime.measure(
+                f"[i={interp_n}]: before_try_iterate: {self.curr_interp}"
+            )
             interp_step: InterpStep = self.curr_interp.try_iterate()
-            ElapsedTime.measure(f"[i={interp_n}]: after_try_iterate: {self.curr_interp}: {interp_step}")
+            ElapsedTime.measure(
+                f"[i={interp_n}]: after_try_iterate: {self.curr_interp}: {interp_step}"
+            )
             if interp_step is InterpStep.NextEnvelope:
                 continue
             elif interp_step is InterpStep.StopAll:
@@ -496,10 +537,16 @@ class InterpContext:
         """
         if not self.curr_container:
             return
-        for remaining_prop_name in self.curr_container.remaining_prop_name_to_prop_value.keys():
+        for (
+            remaining_prop_name
+        ) in self.curr_container.remaining_prop_name_to_prop_value.keys():
             self.curr_container.filled_prop_values_hidden_by_defaults[
                 remaining_prop_name
-            ] = deepcopy(self.curr_container.remaining_prop_name_to_prop_value[remaining_prop_name])
+            ] = deepcopy(
+                self.curr_container.remaining_prop_name_to_prop_value[
+                    remaining_prop_name
+                ]
+            )
 
     def _leave_only_hidden_by_defaults(self):
         """
@@ -514,18 +561,26 @@ class InterpContext:
         if not self.curr_container:
             return
         types_not_hidden_by_defaults = []
-        for prop_name_potentially_hidden_by_defaults in self.curr_container.filled_prop_values_hidden_by_defaults.keys():
-            if prop_name_potentially_hidden_by_defaults in self.curr_container.assigned_prop_name_to_prop_value:
+        for (
+            prop_name_potentially_hidden_by_defaults
+        ) in self.curr_container.filled_prop_values_hidden_by_defaults.keys():
+            if (
+                prop_name_potentially_hidden_by_defaults
+                in self.curr_container.assigned_prop_name_to_prop_value
+            ):
                 if (
                     self.curr_container.assigned_prop_name_to_prop_value[
                         prop_name_potentially_hidden_by_defaults
                     ].value_source
-                    is not
-                    ValueSource.default_value
+                    is not ValueSource.default_value
                 ):
-                    types_not_hidden_by_defaults.append(prop_name_potentially_hidden_by_defaults)
+                    types_not_hidden_by_defaults.append(
+                        prop_name_potentially_hidden_by_defaults
+                    )
             else:
-                types_not_hidden_by_defaults.append(prop_name_potentially_hidden_by_defaults)
+                types_not_hidden_by_defaults.append(
+                    prop_name_potentially_hidden_by_defaults
+                )
         # Delete items outside the previous loop:
         for prop_name in types_not_hidden_by_defaults:
             del self.curr_container.filled_prop_values_hidden_by_defaults[prop_name]
@@ -539,7 +594,7 @@ class InterpContext:
         FS_71_87_33_52: remove `help_hint` (after first space) if there is only one option
         """
         if len(self.comp_suggestions) == 1:
-            first_space_ipos = self.comp_suggestions[0].find(' ')
+            first_space_ipos = self.comp_suggestions[0].find(" ")
             if first_space_ipos >= 0:
                 self.comp_suggestions[0] = self.comp_suggestions[0][:first_space_ipos]
         return self.comp_suggestions
@@ -548,7 +603,9 @@ class InterpContext:
         self,
         next_interp_factory_id: str,
     ) -> "AbstractInterp":
-        interp_factory: "AbstractInterpFactory" = self.interp_factories[next_interp_factory_id]
+        interp_factory: "AbstractInterpFactory" = self.interp_factories[
+            next_interp_factory_id
+        ]
         return interp_factory.create_interp(
             self,
         )
@@ -557,6 +614,6 @@ class InterpContext:
         if not self.parsed_ctx.is_debug_enabled:
             return
         self.parsed_ctx.print_debug("")
-        eprint(TermColor.debug_output.value, end = "")
-        eprint(f"comp_suggestions: {self.comp_suggestions}", end = " ")
-        eprint(TermColor.reset_style.value, end = end_str)
+        eprint(TermColor.debug_output.value, end="")
+        eprint(f"comp_suggestions: {self.comp_suggestions}", end=" ")
+        eprint(TermColor.reset_style.value, end=end_str)

@@ -3,8 +3,12 @@ from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorQueryEnum import DelegatorQueryEnum
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorQueryEnum import (
+    DelegatorQueryEnum,
+)
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_test_infra.test_infra import (
     assert_test_module_name_embeds_prod_class_name,
@@ -106,12 +110,20 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     2: {
-                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
-                        ServicePropName.host_name.name: AssignedValue("qwer-pd-2", ValueSource.explicit_offered_arg),
+                        ServicePropName.service_name.name: AssignedValue(
+                            "s_b", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "prod", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "qwer-pd-2", ValueSource.explicit_offered_arg
+                        ),
                     },
                     3: {
-                        ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
+                        ServicePropName.access_type.name: AssignedValue(
+                            "ro", ValueSource.default_value
+                        ),
                     },
                     4: None,
                 },
@@ -133,7 +145,9 @@ class ThisTestClass(LocalTestClass):
                             "some_command",
                             ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "enum", ValueSource.init_value
+                        ),
                     },
                     1: {
                         ReservedPropName.envelope_class.name: AssignedValue(
@@ -144,7 +158,9 @@ class ThisTestClass(LocalTestClass):
                             "some_command",
                             ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "enum", ValueSource.init_value
+                        ),
                     },
                     2: {
                         ReservedPropName.envelope_class.name: AssignedValue(
@@ -155,7 +171,9 @@ class ThisTestClass(LocalTestClass):
                             "some_command",
                             ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "enum", ValueSource.init_value
+                        ),
                     },
                     3: {
                         ReservedPropName.envelope_class.name: AssignedValue(
@@ -166,7 +184,9 @@ class ThisTestClass(LocalTestClass):
                             "some_command",
                             ValueSource.init_value,
                         ),
-                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue("enum", ValueSource.init_value),
+                        f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                            "enum", ValueSource.init_value
+                        ),
                     },
                     4: {
                         ReservedPropName.envelope_class.name: AssignedValue(

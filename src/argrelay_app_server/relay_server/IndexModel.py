@@ -8,7 +8,7 @@ from dataclasses import (
 index_props_ = "index_props"
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class IndexModel:
     """
     Defines index model for FS_45_08_22_15 index model API.

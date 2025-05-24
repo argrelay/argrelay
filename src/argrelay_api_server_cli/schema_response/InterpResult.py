@@ -8,7 +8,9 @@ from dataclasses import (
 from argrelay_api_server_cli.schema_response.ArgValues import ArgValues
 from argrelay_app_server.runtime_context.EnvelopeContainer import EnvelopeContainer
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
-from argrelay_app_server.runtime_context.token_bucket_utils import token_buckets_to_token_ipos_list
+from argrelay_app_server.runtime_context.token_bucket_utils import (
+    token_buckets_to_token_ipos_list,
+)
 
 
 @dataclass
@@ -54,13 +56,13 @@ class InterpResult(ArgValues):
         interp_ctx: InterpContext,
     ) -> InterpResult:
         return InterpResult(
-            arg_values = interp_ctx.comp_suggestions,
-            all_tokens = interp_ctx.parsed_ctx.all_tokens,
-            excluded_tokens = interp_ctx.excluded_tokens,
-            consumed_token_buckets = interp_ctx.consumed_token_buckets,
-            envelope_containers = interp_ctx.envelope_containers,
-            tan_token_ipos = interp_ctx.parsed_ctx.tan_token_ipos,
-            tan_token_l_part = interp_ctx.parsed_ctx.tan_token_l_part,
+            arg_values=interp_ctx.comp_suggestions,
+            all_tokens=interp_ctx.parsed_ctx.all_tokens,
+            excluded_tokens=interp_ctx.excluded_tokens,
+            consumed_token_buckets=interp_ctx.consumed_token_buckets,
+            envelope_containers=interp_ctx.envelope_containers,
+            tan_token_ipos=interp_ctx.parsed_ctx.tan_token_ipos,
+            tan_token_l_part=interp_ctx.parsed_ctx.tan_token_l_part,
         )
 
     def get_data_envelopes(self) -> list[dict]:

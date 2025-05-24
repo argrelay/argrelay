@@ -5,7 +5,9 @@ from argrelay_api_plugin_abstract.AbstractPlugin import (
     import_plugin_class,
 )
 from argrelay_app_server.runtime_context.SearchControl import SearchControl
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 
 
 class AbstractPluginServer(AbstractPlugin):

@@ -5,7 +5,9 @@ from argrelay_app_client.relay_client.ClientCommandFactoryAbstract import (
     select_client_response_handler,
 )
 from argrelay_lib_root.enum_desc.ProcRole import ProcRole
-from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import ClientConfig
+from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
+    ClientConfig,
+)
 
 
 class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
@@ -44,17 +46,24 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
                 from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerTextProposeArgValuesOptimized import (
                     ClientCommandRemoteWorkerTextProposeArgValuesOptimized,
                 )
+
                 command_cls = ClientCommandRemoteWorkerTextProposeArgValuesOptimized
                 if self.proc_role.is_split_mode:
-                    from argrelay_app_client.client_pipeline.BytesSrcSender import BytesSrcSender
+                    from argrelay_app_client.client_pipeline.BytesSrcSender import (
+                        BytesSrcSender,
+                    )
+
                     bytes_src = BytesSrcSender(
                         self.w_pipe_end,
                     )
                 else:
-                    from argrelay_app_client.client_pipeline.BytesSrcLocal import BytesSrcLocal
+                    from argrelay_app_client.client_pipeline.BytesSrcLocal import (
+                        BytesSrcLocal,
+                    )
                     from argrelay_app_client.client_pipeline.BytesHandlerTextProposeArgValuesOptimized import (
                         BytesHandlerTextProposeArgValuesOptimized,
                     )
+
                     bytes_src = BytesSrcLocal(
                         BytesHandlerTextProposeArgValuesOptimized(),
                     )
@@ -62,15 +71,24 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
                 from argrelay_app_client.client_command_remote.ClientCommandRemoteWorkerJson import (
                     ClientCommandRemoteWorkerJson,
                 )
+
                 command_cls = ClientCommandRemoteWorkerJson
                 if self.proc_role.is_split_mode:
-                    from argrelay_app_client.client_pipeline.BytesSrcSender import BytesSrcSender
+                    from argrelay_app_client.client_pipeline.BytesSrcSender import (
+                        BytesSrcSender,
+                    )
+
                     bytes_src = BytesSrcSender(
                         self.w_pipe_end,
                     )
                 else:
-                    from argrelay_app_client.client_pipeline.BytesSrcLocal import BytesSrcLocal
-                    from argrelay_app_client.client_pipeline.BytesHandlerJson import BytesHandlerJson
+                    from argrelay_app_client.client_pipeline.BytesSrcLocal import (
+                        BytesSrcLocal,
+                    )
+                    from argrelay_app_client.client_pipeline.BytesHandlerJson import (
+                        BytesHandlerJson,
+                    )
+
                     bytes_src = BytesSrcLocal(
                         BytesHandlerJson(
                             select_client_response_handler(
@@ -87,14 +105,21 @@ class ClientCommandFactoryRemote(ClientCommandFactoryAbstract):
                 bytes_src,
             )
         else:
-            from argrelay_app_client.client_command_remote.ClientCommandRemoteSpinner import ClientCommandRemoteSpinner
+            from argrelay_app_client.client_command_remote.ClientCommandRemoteSpinner import (
+                ClientCommandRemoteSpinner,
+            )
+
             if self.is_optimized_completion:
                 from argrelay_app_client.client_pipeline.BytesHandlerTextProposeArgValuesOptimized import (
                     BytesHandlerTextProposeArgValuesOptimized,
                 )
+
                 bytes_handler = BytesHandlerTextProposeArgValuesOptimized()
             else:
-                from argrelay_app_client.client_pipeline.BytesHandlerJson import BytesHandlerJson
+                from argrelay_app_client.client_pipeline.BytesHandlerJson import (
+                    BytesHandlerJson,
+                )
+
                 bytes_handler = BytesHandlerJson(
                     select_client_response_handler(
                         self.proc_role,

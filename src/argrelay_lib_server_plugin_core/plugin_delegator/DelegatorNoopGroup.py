@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopBase import DelegatorNoopBase
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopBase import (
+    DelegatorNoopBase,
+)
 
 
 class DelegatorNoopGroup(DelegatorNoopBase):

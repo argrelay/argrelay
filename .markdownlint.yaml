@@ -1,0 +1,71 @@
+
+# Start with default rules
+default: true
+
+# TODO: reformat and enable:
+# heading increment:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md001.md
+MD001: false
+
+# unordered list indentation:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md007.md
+MD007:
+    indent: 4
+
+# TODO: reformat and enable:
+# line length:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md013.md
+MD013: false
+
+# TODO: reformat and enable:
+# single title:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md025.md
+MD025: false
+
+# TODO: reformat and enable:
+# no trailing punctuation:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md026.md
+MD026: false
+
+# spaces after list markers:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md030.md
+MD030:
+    ol_multi: 2
+    ol_single: 2
+    ul_multi: 3
+    ul_single: 3
+
+# TODO: reformat and enable:
+# blank lines around fences:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md031.md
+MD031: false
+
+# TODO: reformat and enable:
+# blank lines around lists:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md032.md
+MD032: false
+
+# TODO: reformat and enable:
+# no bare urls:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md034.md
+MD034: false
+
+# TODO: reformat and enable:
+# no inline html:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md033.md
+MD033: false
+
+# TODO: reformat and enable:
+# fenced code language:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md040.md
+MD040: false
+
+# TODO: reformat and enable:
+# first line heading:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md041.md
+MD041: false
+
+# TODO: reformat and enable:
+# unused link:
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/md053.md
+MD053: false

@@ -5,14 +5,18 @@ from typing import Union
 from argrelay_api_server_cli.schema_request.CallContextSchema import call_context_desc
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.relay_client import __main__
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
 from argrelay_lib_root.enum_desc.SpecialFunc import SpecialFunc
 from argrelay_lib_root.enum_desc.TermColor import TermColor
 from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorHelp import DelegatorHelp
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceList import func_id_list_service_
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceList import (
+    func_id_list_service_,
+)
 from argrelay_test_infra.test_infra import (
     assert_test_module_name_embeds_prod_class_name,
     line_no,
@@ -75,8 +79,7 @@ class ThisTestClass(LocalTestClass):
                 CompType.PrefixShown,
                 {},
                 ProposeArgValuesVerifier(self),
-            )
-            .set_expected_suggestions(
+            ).set_expected_suggestions(
                 [
                     "intercept",
                 ]
@@ -119,17 +122,21 @@ class ThisTestClass(LocalTestClass):
                     .set_command_line(test_case.command_line)
                     .set_cursor_cpos(test_case.cursor_cpos)
                     .set_comp_type(test_case.comp_type)
-                    .set_test_data_ids_to_load([
-                        self.__class__.same_test_data_per_class,
-                    ])
+                    .set_test_data_ids_to_load(
+                        [
+                            self.__class__.same_test_data_per_class,
+                        ]
+                    )
                 )
                 with env_mock_builder.build():
                     command_obj = __main__.main()
                     assert isinstance(command_obj, ClientCommandLocal)
 
-                    test_case.sever_action_verifier.verify_all(call_context_desc.dict_schema.dumps(
-                        command_obj.interp_ctx.parsed_ctx,
-                    ))
+                    test_case.sever_action_verifier.verify_all(
+                        call_context_desc.dict_schema.dumps(
+                            command_obj.interp_ctx.parsed_ctx,
+                        )
+                    )
 
     def test_help_hint(self):
         """
@@ -138,7 +145,8 @@ class ThisTestClass(LocalTestClass):
         """
         test_cases = [
             (
-                line_no(), "some_command help goto |",
+                line_no(),
+                "some_command help goto |",
                 "FS_71_87_33_52 ensure ordered list of args in help output "
                 "(command name first, then function spec args)",
                 f"""some_command goto host ~ {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_goto_host {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}Go (log in) to remote host {TermColor.reset_style.value}
@@ -147,7 +155,8 @@ some_command goto service {SpecialChar.NoPropValue.value} {TermColor.known_envel
 """,
             ),
             (
-                line_no(), "some_command help list |",
+                line_no(),
+                "some_command help list |",
                 "FS_71_87_33_52 ensure ordered list of args in help output "
                 "(command name first, then function spec args)",
                 f"""some_command list host {SpecialChar.NoPropValue.value} {TermColor.known_envelope_id.value}# {TermColor.reset_style.value}{TermColor.known_envelope_id.value}func_id_list_host {TermColor.reset_style.value}{TermColor.help_hint.value}# {TermColor.reset_style.value}{TermColor.help_hint.value}List remote hosts matching search query {TermColor.reset_style.value}
@@ -173,9 +182,11 @@ some_command list service {SpecialChar.NoPropValue.value} {TermColor.known_envel
                     .set_cursor_cpos(cursor_cpos)
                     .set_comp_type(CompType.InvokeAction)
                     .set_capture_delegator_invocation_input(DelegatorHelp)
-                    .set_test_data_ids_to_load([
-                        self.__class__.same_test_data_per_class,
-                    ])
+                    .set_test_data_ids_to_load(
+                        [
+                            self.__class__.same_test_data_per_class,
+                        ]
+                    )
                 )
                 with outer_env_mock_builder.build():
                     command_obj = __main__.main()
@@ -223,13 +234,15 @@ class ThisTestCase(ShellInputTestCase):
         sever_action_verifier: ServerActionVerifier,
     ):
         super().__init__(
-            line_no = line_no_from_ctor(),
-            case_comment = case_comment,
+            line_no=line_no_from_ctor(),
+            case_comment=case_comment,
         )
         self.set_test_line(test_line)
         self.set_comp_type(comp_type)
 
-        self.container_ipos_to_expected_assignments = container_ipos_to_expected_assignments
+        self.container_ipos_to_expected_assignments = (
+            container_ipos_to_expected_assignments
+        )
         self.sever_action_verifier = sever_action_verifier
 
         self.expected_suggestions: Union[list[str], None] = None

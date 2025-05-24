@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import serialize_dag_to_list
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    serialize_dag_to_list,
+)
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
@@ -50,7 +52,7 @@ class ThisTestClass(LocalTestClass):
                     ],
                     "id_2": [
                         "id_1",
-                    ]
+                    ],
                 },
                 "cyclic ref to plugin id in path `['id_1', 'id_2']` -> `id_1`",
                 None,
@@ -74,8 +76,7 @@ class ThisTestClass(LocalTestClass):
                     "id_1": [
                         "id_2",
                     ],
-                    "id_6": [
-                    ],
+                    "id_6": [],
                 },
                 None,
                 [
@@ -94,8 +95,7 @@ class ThisTestClass(LocalTestClass):
                     "id_1": [
                         "id_2",
                     ],
-                    "id_2": [
-                    ],
+                    "id_2": [],
                 },
                 None,
                 [
@@ -107,8 +107,7 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "id_5": [
-                    ],
+                    "id_5": [],
                     "id_4": [
                         "id_5",
                         "id_3",
@@ -116,12 +115,11 @@ class ThisTestClass(LocalTestClass):
                     "id_1": [
                         "id_2",
                     ],
-                    "id_3": [
-                    ],
+                    "id_3": [],
                     "id_2": [
                         "id_3",
                         "id_4",
-                    ]
+                    ],
                 },
                 None,
                 [
@@ -139,8 +137,7 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "id_5": [
-                    ],
+                    "id_5": [],
                     "id_4": [
                         "id_5",
                         "id_3",
@@ -148,8 +145,7 @@ class ThisTestClass(LocalTestClass):
                     "id_1": [
                         "id_2",
                     ],
-                    "id_3": [
-                    ],
+                    "id_3": [],
                 },
                 "plugin id in path `['id_1']` -> `id_2` is not defined",
                 None,
@@ -158,13 +154,11 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "id_2": [
-                    ],
+                    "id_2": [],
                     "id_1": [
                         "id_2",
                     ],
-                    "id_3": [
-                    ],
+                    "id_3": [],
                 },
                 None,
                 [
@@ -198,7 +192,7 @@ class ThisTestClass(LocalTestClass):
                 else:
                     self.assertIsNone(
                         expected_plugin_id_list,
-                        "remove expected result to avoid confusion"
+                        "remove expected result to avoid confusion",
                     )
                     with self.assertRaises(Exception) as exc_context:
                         serialize_dag_to_list(

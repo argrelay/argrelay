@@ -5,8 +5,12 @@ from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.EnvMockBuilder import LocalClientEnvMockBuilder
@@ -55,9 +59,15 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.class_host.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("qa", ValueSource.implicit_value),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "qa", ValueSource.implicit_value
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "apac", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "qa-apac-downstream",
                             ValueSource.implicit_value,
@@ -99,9 +109,15 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.class_host.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("qa", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.implicit_value),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "qa", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "apac", ValueSource.implicit_value
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "qa-apac-downstream",
                             ValueSource.implicit_value,
@@ -135,9 +151,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.implicit_value),
-                        ServicePropName.geo_region.name: AssignedValue("emea", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.implicit_value
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "emea", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-emea-downstream",
                             ValueSource.implicit_value,
@@ -171,9 +193,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("emea", ValueSource.implicit_value),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "emea", ValueSource.implicit_value
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-emea-downstream",
                             ValueSource.implicit_value,
@@ -207,9 +235,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.implicit_value),
-                        ServicePropName.geo_region.name: AssignedValue("emea", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.implicit_value
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "emea", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-emea-downstream",
                             ValueSource.implicit_value,
@@ -247,9 +281,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("qa", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.implicit_value),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "qa", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "apac", ValueSource.implicit_value
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "qa-apac-downstream",
                             ValueSource.implicit_value,
@@ -287,9 +327,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("qa", ValueSource.implicit_value),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.explicit_offered_arg),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "qa", ValueSource.implicit_value
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "apac", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "qa-apac-downstream",
                             ValueSource.implicit_value,
@@ -327,9 +373,15 @@ class ThisTestClass(LocalTestClass):
                         ),
                     },
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("emea", ValueSource.implicit_value),
-                        ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "emea", ValueSource.implicit_value
+                        ),
+                        ServicePropName.flow_stage.name: AssignedValue(
+                            "downstream", ValueSource.implicit_value
+                        ),
                         ServicePropName.cluster_name.name: AssignedValue(
                             "dev-emea-downstream",
                             ValueSource.implicit_value,

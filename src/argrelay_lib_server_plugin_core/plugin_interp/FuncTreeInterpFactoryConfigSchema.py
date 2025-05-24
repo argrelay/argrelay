@@ -13,12 +13,11 @@ class FuncTreeInterpFactoryConfigSchema(Schema):
         strict = True
 
 
-func_tree_interp_config_example = {
-}
+func_tree_interp_config_example = {}
 
 func_tree_interp_config_desc = TypeDesc(
-    dict_schema = FuncTreeInterpFactoryConfigSchema(),
-    ref_name = FuncTreeInterpFactoryConfigSchema.__name__,
-    dict_example = func_tree_interp_config_example,
-    default_file_path = "",
+    dict_schema=FuncTreeInterpFactoryConfigSchema(),
+    ref_name=FuncTreeInterpFactoryConfigSchema.__name__,
+    dict_example=func_tree_interp_config_example,
+    default_file_path="",
 )

@@ -18,7 +18,9 @@ from argrelay_lib_server_plugin_demo.demo_service.ServiceLoader import ServiceLo
 from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
     server_config_desc,
 )
-from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+)
 from argrelay_test_infra.test_infra import (
     ClientCommandFactoryLocal,
     line_no,
@@ -76,20 +78,23 @@ class ThisTestClass(LocalTestClass):
         test_cases = [
             (
                 line_no(),
-                "some_command goto service cm0 gr0 fs0 hs0 sn0|", CompType.PrefixHidden,
+                "some_command goto service cm0 gr0 fs0 hs0 sn0|",
+                CompType.PrefixHidden,
             ),
         ]
 
         # Extend test cases with generated data
         # (Cartesian product with all `DistinctValuesQuery`, use_mongomock_values, ...):
-        extended_test_cases: list[tuple[
-            int,
-            str,
-            CompType,
-            int,
-            bool,
-            DistinctValuesQuery,
-        ]] = []
+        extended_test_cases: list[
+            tuple[
+                int,
+                str,
+                CompType,
+                int,
+                bool,
+                DistinctValuesQuery,
+            ]
+        ] = []
         for test_case in test_cases:
             for extended_params in itertools.product(
                 object_multiplier_values,
@@ -112,7 +117,8 @@ class ThisTestClass(LocalTestClass):
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
 
                 expected_suggestions = [
-                    f"sn0{index_value}" for index_value in range(object_multiplier)
+                    f"sn0{index_value}"
+                    for index_value in range(object_multiplier)
                     # Look up is set for `active` by default:
                     # Even (0, 2, ...) => active
                     # Odd (1, 3, ...) => passive
@@ -139,19 +145,21 @@ class ThisTestClass(LocalTestClass):
                         plugin_config,
                     )
                     local_server.start_local_server()
-                    propose_arg_values_handler = ProposeArgValuesServerRequestHandler(local_server)
+                    propose_arg_values_handler = ProposeArgValuesServerRequestHandler(
+                        local_server
+                    )
 
                     with wrap_instance_method_on_instance(
                         local_server.query_engine,
                         local_server.query_engine._query_prop_values,
                     ) as method_wrap_mock:
                         call_ctx = ShellContext(
-                            command_line = command_line,
-                            cursor_cpos = cursor_cpos,
-                            comp_type = comp_type,
-                            is_debug_enabled = False,
-                            comp_key = UNKNOWN_COMP_KEY,
-                            input_data = None,
+                            command_line=command_line,
+                            cursor_cpos=cursor_cpos,
+                            comp_type=comp_type,
+                            is_debug_enabled=False,
+                            comp_key=UNKNOWN_COMP_KEY,
+                            input_data=None,
                         ).create_call_context()
 
                         print("---")
@@ -160,7 +168,9 @@ class ThisTestClass(LocalTestClass):
                         print(f"object_multiplier: {object_multiplier}")
 
                         start_ns: int = time.time_ns()
-                        response_dict = propose_arg_values_handler.handle_request(call_ctx)
+                        response_dict = propose_arg_values_handler.handle_request(
+                            call_ctx
+                        )
                         stop_ns: int = time.time_ns()
 
                         # Assert it actually works:
@@ -170,7 +180,9 @@ class ThisTestClass(LocalTestClass):
                         diff_ns: int = stop_ns - start_ns
 
                         report_tables.setdefault(use_mongomock, {})
-                        report_tables[use_mongomock].setdefault(distinct_values_query, {})
+                        report_tables[use_mongomock].setdefault(
+                            distinct_values_query, {}
+                        )
 
                         report_row = report_tables[use_mongomock][distinct_values_query]
                         cell_value = diff_ns / 1_000_000_000
@@ -210,27 +222,27 @@ class ThisTestClass(LocalTestClass):
             print()
 
             # Header row:
-            print(f"{'object_multiplier':>32}", end = "")
+            print(f"{'object_multiplier':>32}", end="")
             for object_multiplier in object_multiplier_values:
-                print(f"{object_multiplier:>{number_cell_width}}", end = "")
+                print(f"{object_multiplier:>{number_cell_width}}", end="")
             print()
 
-            print(f"{'object_count':>32}", end = "")
+            print(f"{'object_count':>32}", end="")
             for object_multiplier in object_multiplier_values:
                 # There are 5 loops, each with `object_multiplier` items:
-                print(f"{object_multiplier ** 5:>{number_cell_width}}", end = "")
+                print(f"{object_multiplier ** 5:>{number_cell_width}}", end="")
             print()
 
             # delimiter:
-            print(f"{'-' * 32:>32}", end = "")
+            print(f"{'-' * 32:>32}", end="")
 
             print()
             for distinct_values_query in distinct_value_queries:
                 # Header column:
-                print(f"{distinct_values_query.name:>32}", end = "")
+                print(f"{distinct_values_query.name:>32}", end="")
                 for object_multiplier in object_multiplier_values:
                     print(
                         f"{report_tables[use_mongomock][distinct_values_query][object_multiplier]:>{number_cell_width}.3f}",
-                        end = "",
+                        end="",
                     )
                 print()

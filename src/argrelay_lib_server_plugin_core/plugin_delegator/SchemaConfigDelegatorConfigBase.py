@@ -7,7 +7,9 @@ from marshmallow import (
 )
 
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
-from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import func_config_desc
+from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import (
+    func_config_desc,
+)
 from argrelay_schema_config_server.schema_config_interp.FuncEnvelopeSchema import (
     func_id_some_func_,
 )
@@ -25,19 +27,19 @@ class SchemaConfigDelegatorConfigBase(Schema):
         strict = True
 
     func_configs = fields.Dict(
-        keys = fields.String(),
-        values = fields.Nested(func_config_desc.dict_schema),
-        required = True,
+        keys=fields.String(),
+        values=fields.Nested(func_config_desc.dict_schema),
+        required=True,
     )
 
 
 base_config_delegator_config_desc = TypeDesc(
-    dict_schema = SchemaConfigDelegatorConfigBase(),
-    ref_name = SchemaConfigDelegatorConfigBase.__name__,
-    dict_example = {
+    dict_schema=SchemaConfigDelegatorConfigBase(),
+    ref_name=SchemaConfigDelegatorConfigBase.__name__,
+    dict_example={
         func_configs_: {
             func_id_some_func_: func_config_desc.dict_example,
         },
     },
-    default_file_path = "",
+    default_file_path="",
 )

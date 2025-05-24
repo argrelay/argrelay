@@ -16,7 +16,7 @@ class SchemaConfigDelegatorJumpAbstract(Schema):
         strict = True
 
     single_func_id = fields.String(
-        required = True,
+        required=True,
     )
 
 
@@ -25,8 +25,8 @@ abstract_jump_delegator_config_example = {
 }
 
 abstract_jump_delegator_config_desc = TypeDesc(
-    dict_schema = SchemaConfigDelegatorJumpAbstract(),
-    ref_name = SchemaConfigDelegatorJumpAbstract.__name__,
-    dict_example = abstract_jump_delegator_config_example,
-    default_file_path = "",
+    dict_schema=SchemaConfigDelegatorJumpAbstract(),
+    ref_name=SchemaConfigDelegatorJumpAbstract.__name__,
+    dict_example=abstract_jump_delegator_config_example,
+    default_file_path="",
 )

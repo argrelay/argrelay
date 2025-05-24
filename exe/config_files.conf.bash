@@ -19,4 +19,3 @@ module_path_file_tuples=(
     argrelay_app_bootstrap sample_conf/check_env_plugin.conf.yaml conf/check_env_plugin.conf.yaml
 )
 ########################################################################################################################
-

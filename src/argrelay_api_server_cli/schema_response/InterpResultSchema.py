@@ -9,7 +9,9 @@ from argrelay_api_server_cli.schema_response.ArgValuesSchema import (
     arg_values_desc,
     ArgValuesSchema,
 )
-from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import envelope_container_desc
+from argrelay_api_server_cli.schema_response.EnvelopeContainerSchema import (
+    envelope_container_desc,
+)
 from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
 from argrelay_lib_root.misc_helper_common.TypeDesc import TypeDesc
@@ -39,24 +41,24 @@ class InterpResultSchema(ArgValuesSchema):
 
     all_tokens = fields.List(
         fields.String(),
-        required = True,
+        required=True,
     )
 
     excluded_tokens = fields.List(
         fields.Integer(),
-        required = True,
+        required=True,
     )
 
     consumed_token_buckets = fields.List(
         fields.List(
             fields.Integer(),
         ),
-        required = True,
+        required=True,
     )
 
     envelope_containers = fields.List(
         fields.Nested(envelope_container_desc.dict_schema),
-        required = True,
+        required=True,
     )
 
     tan_token_ipos = fields.Integer()
@@ -65,37 +67,39 @@ class InterpResultSchema(ArgValuesSchema):
 
 
 _interp_result_example = deepcopy(arg_values_desc.dict_example)
-_interp_result_example.update({
-    all_tokens_: [
-        "some_command",
-        "unrecognized_token",
-        "goto",
-        "host",
-        "prod",
-        SpecialChar.TokenBucketDelimiter.value,
-    ],
-    excluded_tokens_: [
-        5,
-    ],
-    consumed_token_buckets_: [
-        [
-            0,
-            2,
-            3,
-            4,
+_interp_result_example.update(
+    {
+        all_tokens_: [
+            "some_command",
+            "unrecognized_token",
+            "goto",
+            "host",
+            "prod",
+            SpecialChar.TokenBucketDelimiter.value,
         ],
-        [],
-    ],
-    envelope_containers_: [
-        envelope_container_desc.dict_example,
-    ],
-    tan_token_ipos_: 1,
-    tan_token_l_part_: "unrecognized_",
-})
+        excluded_tokens_: [
+            5,
+        ],
+        consumed_token_buckets_: [
+            [
+                0,
+                2,
+                3,
+                4,
+            ],
+            [],
+        ],
+        envelope_containers_: [
+            envelope_container_desc.dict_example,
+        ],
+        tan_token_ipos_: 1,
+        tan_token_l_part_: "unrecognized_",
+    }
+)
 
 interp_result_desc = TypeDesc(
-    dict_schema = InterpResultSchema(),
-    ref_name = InterpResultSchema.__name__,
-    dict_example = _interp_result_example,
-    default_file_path = "",
+    dict_schema=InterpResultSchema(),
+    ref_name=InterpResultSchema.__name__,
+    dict_example=_interp_result_example,
+    default_file_path="",
 )

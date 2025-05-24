@@ -429,8 +429,8 @@ sequenceDiagram
 ### Past stage:
 
 It grew:
-*    out of an attempt to solve the [original use case][original_use_case]
-*    into an attempt to make it generic
+*   out of an attempt to solve the [original use case][original_use_case]
+*   into an attempt to make it generic
 
 All the core features has already been added:
 *   search logic

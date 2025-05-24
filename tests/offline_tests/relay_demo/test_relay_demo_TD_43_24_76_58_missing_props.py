@@ -22,30 +22,38 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "lay goto host zxcv |", CompType.PrefixShown,
+                line_no(),
+                "lay goto host zxcv |",
+                CompType.PrefixShown,
                 ValueError,
                 [],
                 None,
-                "See Step 1 in the next test case."
+                "See Step 1 in the next test case.",
             ),
             (
-                line_no(), "lay goto host zxcv |", CompType.DescribeArgs,
+                line_no(),
+                "lay goto host zxcv |",
+                CompType.DescribeArgs,
                 ValueError,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
                 {
                     1: {
-                        ServicePropName.geo_region.name: [
-                            "emea"
-                        ],
+                        ServicePropName.geo_region.name: ["emea"],
                         ServicePropName.cluster_name.name: [
                             "dev-emea-downstream",
                         ],
-                        ServicePropName.host_name.name: AssignedValue("zxcv", ValueSource.explicit_offered_arg),
-                        ServicePropName.live_status.name: AssignedValue("red", ValueSource.implicit_value),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "zxcv", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.live_status.name: AssignedValue(
+                            "red", ValueSource.implicit_value
+                        ),
                     },
                     2: {
-                        ServicePropName.access_type.name: AssignedValue("rw", ValueSource.default_value),
+                        ServicePropName.access_type.name: AssignedValue(
+                            "rw", ValueSource.default_value
+                        ),
                     },
                     3: None,
                 },
@@ -55,7 +63,6 @@ class ThisTestClass(LocalTestClass):
                 "but there is no suggestions because `apac` host does not have `ServicePropName.live_status` property "
                 "which is assigned as `ValueSource.implicit_value` now from the single value available in `emea` - "
                 "this hides existence of the host in `apac`. "
-
                 "Also, `ServicePropName.geo_region` and `ServicePropName.cluster_name` are not singled out "
                 "even though there is only single value - this happens because "
                 "`EnvelopeContainer.populate_implicit_arg_values` is sets `ServicePropName.live_status` to "
@@ -63,17 +70,21 @@ class ThisTestClass(LocalTestClass):
                 "for `ServicePropName.geo_region` and `ServicePropName.cluster_name`.",
             ),
             (
-                line_no(), "lay goto host asdf |", CompType.PrefixShown,
+                line_no(),
+                "lay goto host asdf |",
+                CompType.PrefixShown,
                 ValueError,
                 [
                     "apac",
                     "emea",
                 ],
                 None,
-                "See Step 2 in the next test case."
+                "See Step 2 in the next test case.",
             ),
             (
-                line_no(), "lay goto host asdf |", CompType.DescribeArgs,
+                line_no(),
+                "lay goto host asdf |",
+                CompType.DescribeArgs,
                 ValueError,
                 # `CompType.DescribeArgs`: does not provide suggestion:
                 None,
@@ -87,8 +98,12 @@ class ThisTestClass(LocalTestClass):
                             "dev-apac-downstream",
                             "dev-emea-downstream",
                         ],
-                        ServicePropName.host_name.name: AssignedValue("asdf", ValueSource.explicit_offered_arg),
-                        ServicePropName.live_status.name: AssignedValue("yellow", ValueSource.implicit_value),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "asdf", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.live_status.name: AssignedValue(
+                            "yellow", ValueSource.implicit_value
+                        ),
                     },
                     2: {
                         ServicePropName.access_type.name: None,

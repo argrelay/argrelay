@@ -8,7 +8,7 @@ from dataclasses import (
 from argrelay_lib_root.enum_desc.PluginSide import PluginSide
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class PluginEntry:
     plugin_enabled: bool = field()
     plugin_side: PluginSide = field()

@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from argrelay_api_plugin_server_abstract.AbstractPluginServer import AbstractPluginServer
+from argrelay_api_plugin_server_abstract.AbstractPluginServer import (
+    AbstractPluginServer,
+)
 from argrelay_app_server.relay_server.IndexModel import IndexModel
 from argrelay_app_server.relay_server.QueryEngine import QueryEngine
 from argrelay_lib_root.enum_desc.PluginType import PluginType
-from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import EnvelopeCollection
+from argrelay_schema_config_server.runtime_data_server_app.EnvelopeCollection import (
+    EnvelopeCollection,
+)
 
 
 class AbstractLoader(AbstractPluginServer):

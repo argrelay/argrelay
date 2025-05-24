@@ -1,5 +1,4 @@
 
-
 <!--
 
 # Features
@@ -193,5 +192,5 @@ standby server also naturally supports dynamic data updates.
 [IDEA_terminal]: https://www.jetbrains.com/help/idea/terminal-emulator.html
 [argcomplete_github]: https://github.com/kislyuk/argcomplete
 [completion_perf_notes.md]: docs/dev_notes/completion_perf_notes.md
-[how_search_works.md]: docs/dev_notes/how_search_works.md
+[how_search_works.md]: how_search_works.md
 [later_stack_question]: https://softwarerecs.stackexchange.com/questions/85247/

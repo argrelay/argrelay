@@ -13,8 +13,12 @@ from argrelay_app_server.runtime_context.DataArg import (
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
-from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import server_config_desc
-from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import plugin_config_desc
+from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
+    server_config_desc,
+)
+from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
+    plugin_config_desc,
+)
 from argrelay_test_infra.test_infra import line_no_from_ctor
 from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 from argrelay_test_infra.test_infra.CustomTestCase import ShellInputTestCase
@@ -34,37 +38,51 @@ class ThisTestCase(ShellInputTestCase):
         expected_excluded_tokens: list[int],
         expected_token_ipos_to_token_bucket_map: dict[int, int],
         expected_remaining_offered_args_per_bucket: list[list[ArgCommandValueOffered]],
-        expected_remaining_dictated_args_per_bucket: list[list[ArgCommandValueDictated]],
-        expected_remaining_incomplete_args_per_bucket: list[list[ArgCommandDataIncomplete]],
+        expected_remaining_dictated_args_per_bucket: list[
+            list[ArgCommandValueDictated]
+        ],
+        expected_remaining_incomplete_args_per_bucket: list[
+            list[ArgCommandDataIncomplete]
+        ],
         case_comment: str,
     ):
         super().__init__(
-            line_no = line_no_from_ctor(),
-            case_comment = case_comment,
+            line_no=line_no_from_ctor(),
+            case_comment=case_comment,
         )
         self.set_test_line(test_line)
         self.set_comp_type(comp_type)
         self.expected_token_buckets = expected_token_buckets
         self.expected_excluded_tokens = expected_excluded_tokens
-        self.expected_token_ipos_to_token_bucket_map = expected_token_ipos_to_token_bucket_map
-        self.expected_remaining_offered_args_per_bucket = expected_remaining_offered_args_per_bucket
-        self.expected_remaining_dictated_args_per_bucket = expected_remaining_dictated_args_per_bucket
-        self.expected_remaining_incomplete_args_per_bucket = expected_remaining_incomplete_args_per_bucket
+        self.expected_token_ipos_to_token_bucket_map = (
+            expected_token_ipos_to_token_bucket_map
+        )
+        self.expected_remaining_offered_args_per_bucket = (
+            expected_remaining_offered_args_per_bucket
+        )
+        self.expected_remaining_dictated_args_per_bucket = (
+            expected_remaining_dictated_args_per_bucket
+        )
+        self.expected_remaining_incomplete_args_per_bucket = (
+            expected_remaining_incomplete_args_per_bucket
+        )
 
     def __iter__(self):
-        return iter((
-            self.line_no,
-            self.case_comment,
-            self.command_line,
-            self.cursor_cpos,
-            self.comp_type,
-            self.expected_token_buckets,
-            self.expected_excluded_tokens,
-            self.expected_token_ipos_to_token_bucket_map,
-            self.expected_remaining_offered_args_per_bucket,
-            self.expected_remaining_dictated_args_per_bucket,
-            self.expected_remaining_incomplete_args_per_bucket,
-        ))
+        return iter(
+            (
+                self.line_no,
+                self.case_comment,
+                self.command_line,
+                self.cursor_cpos,
+                self.comp_type,
+                self.expected_token_buckets,
+                self.expected_excluded_tokens,
+                self.expected_token_ipos_to_token_bucket_map,
+                self.expected_remaining_offered_args_per_bucket,
+                self.expected_remaining_dictated_args_per_bucket,
+                self.expected_remaining_incomplete_args_per_bucket,
+            )
+        )
 
 
 class ThisTestClass(BaseTestClass):
@@ -77,11 +95,10 @@ class ThisTestClass(BaseTestClass):
         # *   initialize mock once
         # *   start server once
         # *   reuse that for all tests
-        env_mock_builder = (
-            ServerOnlyEnvMockBuilder()
-            .set_test_data_ids_to_load([
+        env_mock_builder = ServerOnlyEnvMockBuilder().set_test_data_ids_to_load(
+            [
                 "TD_63_37_05_36",  # demo
-            ])
+            ]
         )
         with env_mock_builder.build():
             # Init `LocalServer` with data:
@@ -92,7 +109,9 @@ class ThisTestClass(BaseTestClass):
                 dummy_plugin_config,
             )
 
-            assert "%" == SpecialChar.TokenBucketDelimiter.value, "if not `%`, update test cases"
+            assert (
+                "%" == SpecialChar.TokenBucketDelimiter.value
+            ), "if not `%`, update test cases"
 
             test_cases = [
                 ThisTestCase(
@@ -115,7 +134,8 @@ class ThisTestClass(BaseTestClass):
                     "empty line",
                 ),
                 ThisTestCase(
-                    "a|", CompType.PrefixShown,
+                    "a|",
+                    CompType.PrefixShown,
                     [
                         [],
                     ],
@@ -147,8 +167,8 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [0],
-                                arg_value = "a",
+                                token_ipos_list=[0],
+                                arg_value="a",
                             ),
                         ],
                     ],
@@ -176,8 +196,8 @@ class ThisTestClass(BaseTestClass):
                         [],
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [1],
-                                arg_value = "a",
+                                token_ipos_list=[1],
+                                arg_value="a",
                             ),
                         ],
                     ],
@@ -205,8 +225,8 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [0],
-                                arg_value = "a",
+                                token_ipos_list=[0],
+                                arg_value="a",
                             ),
                         ],
                         [],
@@ -234,8 +254,8 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [0],
-                                arg_value = "%a",
+                                token_ipos_list=[0],
+                                arg_value="%a",
                             ),
                         ],
                     ],
@@ -260,8 +280,8 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [0],
-                                arg_value = "a%",
+                                token_ipos_list=[0],
+                                arg_value="a%",
                             ),
                         ],
                     ],
@@ -293,20 +313,20 @@ class ThisTestClass(BaseTestClass):
                         [],
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [1],
-                                arg_value = "qwer",
+                                token_ipos_list=[1],
+                                arg_value="qwer",
                             ),
                         ],
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [3],
-                                arg_value = "asdf",
+                                token_ipos_list=[3],
+                                arg_value="asdf",
                             ),
                         ],
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [5],
-                                arg_value = "zxcv",
+                                token_ipos_list=[5],
+                                arg_value="zxcv",
                             ),
                         ],
                         [],
@@ -350,32 +370,32 @@ class ThisTestClass(BaseTestClass):
                         [],
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [1],
-                                arg_value = "qwer",
+                                token_ipos_list=[1],
+                                arg_value="qwer",
                             ),
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [2],
-                                arg_value = "asdf",
+                                token_ipos_list=[2],
+                                arg_value="asdf",
                             ),
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [3],
-                                arg_value = "zxcv",
-                            ),
-                        ],
-                        [
-                            ArgCommandDataValueOffered(
-                                token_ipos_list = [5],
-                                arg_value = "qwer",
-                            ),
-                            ArgCommandDataValueOffered(
-                                token_ipos_list = [6],
-                                arg_value = "asdf",
+                                token_ipos_list=[3],
+                                arg_value="zxcv",
                             ),
                         ],
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [8],
-                                arg_value = "zxcv",
+                                token_ipos_list=[5],
+                                arg_value="qwer",
+                            ),
+                            ArgCommandDataValueOffered(
+                                token_ipos_list=[6],
+                                arg_value="asdf",
+                            ),
+                        ],
+                        [
+                            ArgCommandDataValueOffered(
+                                token_ipos_list=[8],
+                                arg_value="zxcv",
                             ),
                         ],
                         [],
@@ -411,17 +431,17 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [2],
-                                arg_value = "offered_arg_value1",
+                                token_ipos_list=[2],
+                                arg_value="offered_arg_value1",
                             ),
                         ],
                     ],
                     [
                         [
                             ArgCommandDataValueDictated(
-                                token_ipos_list = [0, 1],
-                                arg_value = "dictated_arg_value1",
-                                arg_name = "dictated_arg_name1",
+                                token_ipos_list=[0, 1],
+                                arg_value="dictated_arg_value1",
+                                arg_name="dictated_arg_name1",
                             ),
                         ],
                     ],
@@ -449,17 +469,17 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueDictated(
-                                token_ipos_list = [0, 1],
-                                arg_value = "dictated_arg_value1",
-                                arg_name = "dictated_arg_name1",
+                                token_ipos_list=[0, 1],
+                                arg_value="dictated_arg_value1",
+                                arg_name="dictated_arg_name1",
                             ),
                         ],
                     ],
                     [
                         [
                             ArgCommandDataIncomplete(
-                                token_ipos_list = [2],
-                                arg_name = "incomplete_arg_name2",
+                                token_ipos_list=[2],
+                                arg_name="incomplete_arg_name2",
                             ),
                         ],
                     ],
@@ -481,17 +501,17 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [2],
-                                arg_value = "offered_arg_value2",
+                                token_ipos_list=[2],
+                                arg_value="offered_arg_value2",
                             ),
                         ],
                     ],
                     [
                         [
                             ArgCommandDataValueDictated(
-                                token_ipos_list = [0, 1],
-                                arg_value = "-dictated_arg_value1",
-                                arg_name = "dictated_arg_name1",
+                                token_ipos_list=[0, 1],
+                                arg_value="-dictated_arg_value1",
+                                arg_name="dictated_arg_name1",
                             ),
                         ],
                     ],
@@ -521,8 +541,8 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataIncomplete(
-                                token_ipos_list = [0],
-                                arg_name = "incomplete_arg_name1",
+                                token_ipos_list=[0],
+                                arg_name="incomplete_arg_name1",
                             ),
                         ],
                     ],
@@ -551,14 +571,14 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataIncomplete(
-                                token_ipos_list = [0],
-                                arg_name = "incomplete_arg_name1",
+                                token_ipos_list=[0],
+                                arg_name="incomplete_arg_name1",
                             ),
                         ],
                         [
                             ArgCommandDataIncomplete(
-                                token_ipos_list = [2],
-                                arg_name = "incomplete_arg_name2",
+                                token_ipos_list=[2],
+                                arg_name="incomplete_arg_name2",
                             ),
                         ],
                     ],
@@ -582,8 +602,8 @@ class ThisTestClass(BaseTestClass):
                     [
                         [
                             ArgCommandDataValueOffered(
-                                token_ipos_list = [0],
-                                arg_value = "offered_arg_value1",
+                                token_ipos_list=[0],
+                                arg_value="offered_arg_value1",
                             ),
                         ],
                         [],
@@ -592,23 +612,23 @@ class ThisTestClass(BaseTestClass):
                         [],
                         [
                             ArgCommandDataValueDictated(
-                                token_ipos_list = [3, 4],
-                                arg_value = "dictated_arg_value3",
-                                arg_name = "dictated_arg_name3",
+                                token_ipos_list=[3, 4],
+                                arg_value="dictated_arg_value3",
+                                arg_name="dictated_arg_name3",
                             ),
                         ],
                     ],
                     [
                         [
                             ArgCommandDataIncomplete(
-                                token_ipos_list = [1],
-                                arg_name = "incomplete_arg_name2",
+                                token_ipos_list=[1],
+                                arg_name="incomplete_arg_name2",
                             ),
                         ],
                         [
                             ArgCommandDataIncomplete(
-                                token_ipos_list = [5],
-                                arg_name = "incomplete_arg_name4",
+                                token_ipos_list=[5],
+                                arg_name="incomplete_arg_name4",
                             ),
                         ],
                     ],
@@ -639,11 +659,11 @@ class ThisTestClass(BaseTestClass):
                         comp_type,
                     )
                     interp_ctx: InterpContext = InterpContext(
-                        parsed_ctx = parsed_ctx,
-                        interp_factories = dummy_local_server.server_config.interp_factories,
-                        action_delegators = dummy_local_server.server_config.action_delegators,
-                        query_engine = dummy_local_server.get_query_engine(),
-                        help_hint_cache = dummy_local_server.help_hint_cache,
+                        parsed_ctx=parsed_ctx,
+                        interp_factories=dummy_local_server.server_config.interp_factories,
+                        action_delegators=dummy_local_server.server_config.action_delegators,
+                        query_engine=dummy_local_server.get_query_engine(),
+                        help_hint_cache=dummy_local_server.help_hint_cache,
                     )
                     self.assertEqual(
                         expected_token_buckets,
@@ -673,10 +693,8 @@ class ThisTestClass(BaseTestClass):
                         list(range(0, len(parsed_ctx.all_tokens))),
                         sorted(
                             interp_ctx.consumed_token_ipos_list()
-                            +
-                            interp_ctx.remaining_token_ipos_list()
-                            +
-                            interp_ctx.excluded_tokens
+                            + interp_ctx.remaining_token_ipos_list()
+                            + interp_ctx.excluded_tokens
                         ),
                     )
                     self.assertEqual(

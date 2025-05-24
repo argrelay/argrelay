@@ -2,7 +2,9 @@ import os
 from typing import Union
 
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
-from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorConsistent import ConfiguratorConsistent
+from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorConsistent import (
+    ConfiguratorConsistent,
+)
 from argrelay_lib_server_plugin_core.plugin_config.ConfiguratorDefaultConfigSchema import (
     commit_id_url_prefix_,
     configurator_default_config_desc,
@@ -90,11 +92,15 @@ class ConfiguratorDefault(ConfiguratorConsistent):
         self,
     ) -> Union[str, None]:
         argrelay_dir_abs_path = os.path.realpath(os.path.abspath(get_argrelay_dir()))
-        git_repo_root_abs_path = os.path.realpath(os.path.abspath(get_git_repo_root_path(get_argrelay_dir())))
+        git_repo_root_abs_path = os.path.realpath(
+            os.path.abspath(get_git_repo_root_path(get_argrelay_dir()))
+        )
         # Make sure argrelay_dir is not outside the git repo:
         if not argrelay_dir_abs_path.startswith(git_repo_root_abs_path):
             return None
-        argrelay_dir_rel_path = os.path.relpath(argrelay_dir_abs_path, git_repo_root_abs_path)
+        argrelay_dir_rel_path = os.path.relpath(
+            argrelay_dir_abs_path, git_repo_root_abs_path
+        )
         if argrelay_dir_rel_path == ".":
             # Separator for concatenated path:
             return "/"
@@ -111,11 +117,15 @@ class ConfiguratorDefault(ConfiguratorConsistent):
             if os.path.isdir(conf_path):
                 argrelay_dir_abs_path = os.path.abspath(get_argrelay_dir())
                 project_current_config_path = os.readlink(conf_path)
-                project_current_config_abs_path = os.path.abspath(os.path.join(
-                    argrelay_dir_abs_path,
-                    project_current_config_path,
-                ))
-                if not project_current_config_abs_path.startswith(argrelay_dir_abs_path):
+                project_current_config_abs_path = os.path.abspath(
+                    os.path.join(
+                        argrelay_dir_abs_path,
+                        project_current_config_path,
+                    )
+                )
+                if not project_current_config_abs_path.startswith(
+                    argrelay_dir_abs_path
+                ):
                     return None
                 else:
                     return project_current_config_path

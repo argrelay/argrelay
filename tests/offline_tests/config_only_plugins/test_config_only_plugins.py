@@ -1,26 +1,44 @@
 from __future__ import annotations
 
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.relay_client import __main__
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigOnly import DelegatorConfigOnly
-from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import func_envelope_
-from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import func_configs_
-from argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoader import ConfigOnlyLoader
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorConfigOnly import (
+    DelegatorConfigOnly,
+)
+from argrelay_lib_server_plugin_core.plugin_delegator.FuncConfigSchema import (
+    func_envelope_,
+)
+from argrelay_lib_server_plugin_core.plugin_delegator.SchemaConfigDelegatorConfigOnly import (
+    func_configs_,
+)
+from argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoader import (
+    ConfigOnlyLoader,
+)
 from argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoaderConfigSchema import (
     envelope_class_to_collection_name_map_,
 )
-from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import instance_data_
-from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import search_control_list_
-from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import arg_name_to_prop_name_map_
+from argrelay_schema_config_server.schema_config_interp.DataEnvelopeSchema import (
+    instance_data_,
+)
+from argrelay_schema_config_server.schema_config_interp.FunctionEnvelopeInstanceDataSchema import (
+    search_control_list_,
+)
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
+    arg_name_to_prop_name_map_,
+)
 from argrelay_schema_config_server.schema_config_server_plugin.PluginConfigSchema import (
     plugin_config_desc,
     server_plugin_instances_,
 )
-from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import plugin_config_
+from argrelay_schema_config_server.schema_config_server_plugin.PluginEntrySchema import (
+    plugin_config_,
+)
 from argrelay_test_infra.test_infra import (
     line_no,
     parse_line_and_cpos,
@@ -49,7 +67,9 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "some_command config |", CompType.PrefixHidden,
+                line_no(),
+                "some_command config |",
+                CompType.PrefixHidden,
                 [
                     "double_execution",
                     "print_with_exit",
@@ -59,7 +79,9 @@ class ThisTestClass(LocalTestClass):
                 "Suggest next step in path to select existing config-only function",
             ),
             (
-                line_no(), "some_command config print_with_level |", CompType.PrefixHidden,
+                line_no(),
+                "some_command config print_with_level |",
+                CompType.PrefixHidden,
                 [
                     "ERROR",
                     "INFO",
@@ -68,7 +90,9 @@ class ThisTestClass(LocalTestClass):
                 "Suggest next step in path to select existing config-only function",
             ),
             (
-                line_no(), "some_command config ERROR print_with_exit |", CompType.PrefixHidden,
+                line_no(),
+                "some_command config ERROR print_with_exit |",
+                CompType.PrefixHidden,
                 [
                     "1",
                     "2",
@@ -100,18 +124,25 @@ class ThisTestClass(LocalTestClass):
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
-
     def test_FS_49_96_50_77_config_only_with_FS_72_53_55_13_default_overrides(self):
         test_cases = [
             (
-                line_no(), "some_command config double_execution ERROR 1 |", CompType.DescribeArgs,
+                line_no(),
+                "some_command config double_execution ERROR 1 |",
+                CompType.DescribeArgs,
                 {
                     1: {
-                        "severity_level": AssignedValue("ERROR", ValueSource.explicit_offered_arg),
-                        "exit_code": AssignedValue("1", ValueSource.explicit_offered_arg),
+                        "severity_level": AssignedValue(
+                            "ERROR", ValueSource.explicit_offered_arg
+                        ),
+                        "exit_code": AssignedValue(
+                            "1", ValueSource.explicit_offered_arg
+                        ),
                     },
                     2: {
-                        "severity_level": AssignedValue("ERROR", ValueSource.default_value),
+                        "severity_level": AssignedValue(
+                            "ERROR", ValueSource.default_value
+                        ),
                         "exit_code": AssignedValue("1", ValueSource.default_value),
                     },
                     3: None,
@@ -167,7 +198,9 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "some_command config ERROR print_with_level 1 |", CompType.InvokeAction,
+                line_no(),
+                "some_command config ERROR print_with_level 1 |",
+                CompType.InvokeAction,
                 {
                     """
 echo \"ERROR: text message C\"
@@ -180,7 +213,9 @@ echo \"ERROR: text message C\"
                 "Assert (mocked) command execution with exit code == 0",
             ),
             (
-                line_no(), "some_command config ERROR print_with_exit 2 |", CompType.InvokeAction,
+                line_no(),
+                "some_command config ERROR print_with_exit 2 |",
+                CompType.InvokeAction,
                 {
                     """
 echo \"text message D\"
@@ -195,7 +230,9 @@ exit 2
                 "Assert (mocked) command execution with exit code != 0",
             ),
             (
-                line_no(), "some_command config print_with_io_redirect ERROR 1 |", CompType.InvokeAction,
+                line_no(),
+                "some_command config print_with_io_redirect ERROR 1 |",
+                CompType.InvokeAction,
                 {
                     """
 if [[ 1 -eq 0 ]]
@@ -277,23 +314,15 @@ exit 1
                         plugin_config_
                     ]
 
-                    instance_config_dict[
-                        func_configs_
-                    ][
+                    instance_config_dict[func_configs_][
                         "func_id_print_with_severity_level"
-                    ][
-                        func_envelope_
-                    ][
-                        instance_data_
-                    ][
-                        search_control_list_
-                    ][
-                        0
-                    ][
+                    ][func_envelope_][instance_data_][search_control_list_][0][
                         arg_name_to_prop_name_map_
-                    ].append({
-                        "some_arg_name": UNKNOWN_INDEX_PROP_NAME,
-                    })
+                    ].append(
+                        {
+                            "some_arg_name": UNKNOWN_INDEX_PROP_NAME,
+                        }
+                    )
 
                     env_mock_builder.set_plugin_config_dict(plugin_config_dict)
 
@@ -343,8 +372,7 @@ exit 1
             (
                 line_no(),
                 "class_output_format",
-                {
-                },
+                {},
                 4,
                 f"Query `data_envelope` of `class_output_format` (without any query criteria).",
             ),
@@ -370,9 +398,9 @@ exit 1
                 ][
                     plugin_config_
                 ]
-                envelope_class_to_collection_name_map: dict[str, str] = instance_config_dict[
-                    envelope_class_to_collection_name_map_
-                ]
+                envelope_class_to_collection_name_map: dict[str, str] = (
+                    instance_config_dict[envelope_class_to_collection_name_map_]
+                )
 
                 test_line = "some_command config |"
                 (command_line, cursor_cpos) = parse_line_and_cpos(test_line)
@@ -390,7 +418,9 @@ exit 1
                     assert isinstance(command_obj, ClientCommandLocal)
                     query_engine = command_obj.local_server.query_engine
 
-                    collection_name = envelope_class_to_collection_name_map.get(class_name)
+                    collection_name = envelope_class_to_collection_name_map.get(
+                        class_name
+                    )
                     data_envelopes = query_engine.query_data_envelopes(
                         collection_name,
                         query_dict,

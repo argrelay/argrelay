@@ -32,8 +32,8 @@ class ObjectSchema(Schema):
 
 
 object_desc = TypeDesc(
-    dict_schema = ObjectSchema(),
-    ref_name = ObjectSchema.__name__,
-    dict_example = {},
-    default_file_path = "",
+    dict_schema=ObjectSchema(),
+    ref_name=ObjectSchema.__name__,
+    dict_example={},
+    default_file_path="",
 )

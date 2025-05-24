@@ -4,18 +4,23 @@ from argrelay_api_plugin_server_abstract.delegator_utils import (
     redirect_to_not_disambiguated_error,
     set_default_to,
 )
-from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import DelegatorSingleFuncAbstract
+from argrelay_api_plugin_server_abstract.DelegatorSingleFuncAbstract import (
+    DelegatorSingleFuncAbstract,
+)
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
-from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import populate_search_control
+from argrelay_schema_config_server.schema_config_interp.SearchControlSchema import (
+    populate_search_control,
+)
 
 
-def get_access_search_control(
-) -> dict:
+def get_access_search_control() -> dict:
     return populate_search_control(
         ServiceEnvelopeClass.class_access_type.name,
         {
@@ -24,7 +29,6 @@ def get_access_search_control(
         [
             # TODO: TODO_61_99_68_90: figure out what to do with explicit `envelope_class` `search_prop`:
             {"class": ReservedPropName.envelope_class.name},
-
             {"access": ServicePropName.access_type.name},
         ],
     )
@@ -40,16 +44,21 @@ class DelegatorServiceBase(DelegatorSingleFuncAbstract):
     ):
         if (
             # TODO: TODO_73_23_85_93: use helper to select container ipos:
-            interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + object_container_ipos
+            interp_ctx.curr_container_ipos
+            == interp_ctx.curr_interp.base_container_ipos + object_container_ipos
         ):
-            service_container = interp_ctx.envelope_containers[(
-                # TODO: TODO_73_23_85_93: use helper to select container ipos:
-                interp_ctx.curr_interp.base_container_ipos + object_container_ipos
-            )]
+            service_container = interp_ctx.envelope_containers[
+                (
+                    # TODO: TODO_73_23_85_93: use helper to select container ipos:
+                    interp_ctx.curr_interp.base_container_ipos
+                    + object_container_ipos
+                )
+            ]
             any_assignment = (
-                set_default_to(ServicePropName.run_mode.name, "active", service_container)
-                or
-                any_assignment
+                set_default_to(
+                    ServicePropName.run_mode.name, "active", service_container
+                )
+                or any_assignment
             )
         return any_assignment
 
@@ -62,17 +71,26 @@ class DelegatorServiceBase(DelegatorSingleFuncAbstract):
     ):
         # If we need to specify `access_type` `data_envelope`:
         # TODO: TODO_73_23_85_93: use helper to select container ipos:
-        if interp_ctx.curr_container_ipos == interp_ctx.curr_interp.base_container_ipos + access_container_ipos:
+        if (
+            interp_ctx.curr_container_ipos
+            == interp_ctx.curr_interp.base_container_ipos + access_container_ipos
+        ):
             # Take object found so far:
-            data_envelope = interp_ctx.envelope_containers[(
-                # TODO: TODO_73_23_85_93: use helper to select container ipos:
-                interp_ctx.curr_interp.base_container_ipos + object_container_ipos
-            )].data_envelopes[0]
+            data_envelope = interp_ctx.envelope_containers[
+                (
+                    # TODO: TODO_73_23_85_93: use helper to select container ipos:
+                    interp_ctx.curr_interp.base_container_ipos
+                    + object_container_ipos
+                )
+            ].data_envelopes[0]
 
-            access_container = interp_ctx.envelope_containers[(
-                # TODO: TODO_73_23_85_93: use helper to select container ipos:
-                interp_ctx.curr_interp.base_container_ipos + access_container_ipos
-            )]
+            access_container = interp_ctx.envelope_containers[
+                (
+                    # TODO: TODO_73_23_85_93: use helper to select container ipos:
+                    interp_ctx.curr_interp.base_container_ipos
+                    + access_container_ipos
+                )
+            ]
 
             # Select default value to search `access_type` `data_envelope` based on `code_maturity`:
             code_prop_name = ServicePropName.code_maturity.name
@@ -80,15 +98,17 @@ class DelegatorServiceBase(DelegatorSingleFuncAbstract):
                 code_arg_val = data_envelope[code_prop_name]
                 if code_arg_val == "prod":
                     any_assignment = (
-                        set_default_to(ServicePropName.access_type.name, "ro", access_container)
-                        or
-                        any_assignment
+                        set_default_to(
+                            ServicePropName.access_type.name, "ro", access_container
+                        )
+                        or any_assignment
                     )
                 else:
                     any_assignment = (
-                        set_default_to(ServicePropName.access_type.name, "rw", access_container)
-                        or
-                        any_assignment
+                        set_default_to(
+                            ServicePropName.access_type.name, "rw", access_container
+                        )
+                        or any_assignment
                     )
 
         return any_assignment
@@ -105,9 +125,9 @@ class DelegatorServiceBase(DelegatorSingleFuncAbstract):
             # Search `data_envelope`-s based on existing args on command line:
             vararg_container = interp_ctx.envelope_containers[vararg_container_ipos]
             vararg_container.data_envelopes = (
-                local_server
-                .get_query_engine()
-                .query_data_envelopes_for(vararg_container)
+                local_server.get_query_engine().query_data_envelopes_for(
+                    vararg_container
+                )
             )
 
             # Plugin to invoke on client side:
@@ -115,10 +135,10 @@ class DelegatorServiceBase(DelegatorSingleFuncAbstract):
             # Package into `InvocationInput` payload object:
             invocation_input = InvocationInput.with_interp_context(
                 interp_ctx,
-                delegator_plugin_entry = local_server.plugin_config.server_plugin_instances[
+                delegator_plugin_entry=local_server.plugin_config.server_plugin_instances[
                     delegator_plugin_instance_id
                 ],
-                custom_plugin_data = {},
+                custom_plugin_data={},
             )
             return invocation_input
         else:

@@ -55,18 +55,17 @@ def spin_wait_for_child(
         # Ensure first that no input is ready.
         # Child block on pipe write (and never exits) if parent does not read it:
         is_read_successful
-        or
-        not has_child_exited()
+        or not has_child_exited()
     ):
         # Print spinner state chars:
-        eprint(next(pending_cursor), end = "", flush = True)
+        eprint(next(pending_cursor), end="", flush=True)
         if not is_read_successful:
             # Sleep only while read failed -
             # if child is still running and read is successful,
             # keep pumping data out of the pipe without sleeping:
             time.sleep(spinner_frame_sec)
         # Step backward:
-        eprint("\b" * spinner_length, end = "")
+        eprint("\b" * spinner_length, end="")
         is_read_successful: bool = read_next_child_data_chunk(r_pipe_end)
         if has_child_exited():
             # Pump out the rest of data without spinner:
@@ -78,9 +77,9 @@ def spin_wait_for_child(
     last_cpos = shell_ctx.cursor_cpos + spinner_length
     line_portion = shell_ctx.command_line[first_cpos:last_cpos]
     pad_length = spinner_length - len(line_portion)
-    eprint(line_portion + " " * pad_length, end = "")
+    eprint(line_portion + " " * pad_length, end="")
     # Step backward:
-    eprint("\b" * spinner_length, end = "", flush = True)
+    eprint("\b" * spinner_length, end="", flush=True)
 
 
 def generate_pending_cursor():

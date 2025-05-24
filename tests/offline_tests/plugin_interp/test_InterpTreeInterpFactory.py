@@ -17,11 +17,9 @@ class ThisTestClass(LocalTestClass):
                 "x": {
                     "1": "bingo",
                 },
-                "y": {
-                },
+                "y": {},
             },
-            "b": {
-            },
+            "b": {},
             "c": None,
         }
         test_cases = [

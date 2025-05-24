@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import Union
 
 from argrelay_api_plugin_check_env_abstract.CheckEnvResult import CheckEnvResult
-from argrelay_api_plugin_client_abstract.PluginClientAbstract import PluginClientAbstract
+from argrelay_api_plugin_client_abstract.PluginClientAbstract import (
+    PluginClientAbstract,
+)
 from argrelay_lib_root.enum_desc.PluginType import PluginType
 
 

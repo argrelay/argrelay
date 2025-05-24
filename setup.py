@@ -45,7 +45,9 @@ def list_dir(
     List files recursively from `top_dir_abs_path` with paths relative to `top_dir_abs_path`.
     """
     file_rel_paths = []
-    for (parent_dir_abs_path, child_dir_names, child_file_names) in os.walk(top_dir_abs_path):
+    for parent_dir_abs_path, child_dir_names, child_file_names in os.walk(
+        top_dir_abs_path
+    ):
         for child_file_name in child_file_names:
             file_abs_path = os.path.join(
                 parent_dir_abs_path,
@@ -92,47 +94,42 @@ argrelay_data_files = prefix_file_rel_paths(
 )
 
 setuptools.setup(
-    name = "argrelay",
-    version = version_string,
-    author = "uvsmtid",
-    author_email = "uvsmtid@gmail.com",
-    description = "A data server to CLI tools with attribute search & Tab-completion in Bash shell",
-    long_description = """
+    name="argrelay",
+    version=version_string,
+    author="uvsmtid",
+    author_email="uvsmtid@gmail.com",
+    description="A data server to CLI tools with attribute search & Tab-completion in Bash shell",
+    long_description="""
 See: https://github.com/argrelay/argrelay
     """,
-    long_description_content_type = "text/markdown",
-    keywords = "argparse, argcomplete, bash, complete",
-    url = "https://github.com/argrelay/argrelay",
-    project_urls = {
+    long_description_content_type="text/markdown",
+    keywords="argparse, argcomplete, bash, complete",
+    url="https://github.com/argrelay/argrelay",
+    project_urls={
         "Bug Tracker": "https://github.com/argrelay/argrelay/issues",
     },
-    classifiers = [
+    classifiers=[
         "Development Status :: 3 - Alpha",
-
         "Environment :: Console",
         "Framework :: Flask",
         "Intended Audience :: Information Technology",
-
         "Topic :: Terminals",
         "Topic :: System :: Shells",
         "Topic :: Scientific/Engineering :: Human Machine Interfaces",
         "Topic :: Text Processing :: Indexing",
-
         "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
         "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
-
         "Programming Language :: Python :: 3",
-
         "License :: OSI Approved :: Apache Software License",
-
         "Operating System :: POSIX :: Linux",
     ],
     # See sample layout:
     # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
     # List all packages/sub-packages (so that they are taken by `package_dir` below):
-    packages = setuptools.find_packages(
-        where = f"{distrib_root}/src/",
-    ) + [
+    packages=setuptools.find_packages(
+        where=f"{distrib_root}/src/",
+    )
+    + [
         "argrelay_docs",
         "argrelay_data",
     ],
@@ -142,7 +139,8 @@ See: https://github.com/argrelay/argrelay
     #     and an empty package name stands for the root package.
     #     The values are directory names relative to your distribution root.
     #     See "distribution root" above - during
-    package_dir = {
+    package_dir={
+        # fmt: off
         "argrelay":
             "./src/argrelay/",
         "argrelay_api_plugin_abstract":
@@ -185,13 +183,14 @@ See: https://github.com/argrelay/argrelay
             "./src/argrelay_schema_config_server/",
         "argrelay_test_infra":
             "./src/argrelay_test_infra/",
+        # fmt: on
     },
     # See:
     # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
     #     The paths are interpreted as relative to the directory containing the package
     #     (information from the `package_dir` mapping is used if appropriate);
     #     that is, the files are expected to be part of the package in the source directories.
-    package_data = {
+    package_data={
         "argrelay": [
             # Other resource files:
             "custom_integ_res/argrelay_common_lib.bash",
@@ -201,12 +200,10 @@ See: https://github.com/argrelay/argrelay
             "custom_integ_res/dev_shell.bash",
             "custom_integ_res/init_shell_env.bash",
             "custom_integ_res/upgrade_env_packages.bash",
-
             # Files in `script_plugin.d`:
             "custom_integ_res/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash",
             "custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash",
             "custom_integ_res/script_plugin.d/check_env_plugin.git_version.bash",
-
         ],
         "argrelay_app_bootstrap": [
             # Config files:
@@ -227,16 +224,16 @@ See: https://github.com/argrelay/argrelay
         "argrelay_docs": argrelay_docs_files,
         "argrelay_data": argrelay_data_files,
     },
-    include_package_data = True,
+    include_package_data=True,
     # Because `argrelay_docs` and `argrelay_data` share the same `package_dir` config,
     # exclude overlapping files explicitly (opposite of `package_data` config):
-    exclude_package_data = {
+    exclude_package_data={
         "argrelay_docs": argrelay_data_files,
         "argrelay_data": argrelay_docs_files,
     },
     # FS_84_11_73_28: supported python versions:
-    python_requires = ">=3.9",
-    install_requires = [
+    python_requires=">=3.9",
+    install_requires=[
         "Flask",
         "Werkzeug",
         "PyYaml",
@@ -252,5 +249,5 @@ See: https://github.com/argrelay/argrelay
         "requests",
         "cachetools",
     ],
-    extras_require = extras_require,
+    extras_require=extras_require,
 )

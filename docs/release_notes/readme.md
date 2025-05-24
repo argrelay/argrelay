@@ -41,4 +41,3 @@ This is enough because lexicographical sort for Git tag format matches the relea
 (see [`version_format.md`][version_format.md] for details).
 
 [version_format.md]: ../dev_notes/version_format.md
-

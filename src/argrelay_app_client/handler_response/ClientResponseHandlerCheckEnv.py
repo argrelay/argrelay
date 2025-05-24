@@ -1,8 +1,12 @@
 from typing import Union
 
 from argrelay_api_server_cli.schema_response.InvocationInput import InvocationInput
-from argrelay_api_server_cli.schema_response.InvocationInputSchema import invocation_input_desc
-from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import ClientResponseHandlerAbstract
+from argrelay_api_server_cli.schema_response.InvocationInputSchema import (
+    invocation_input_desc,
+)
+from argrelay_app_client.handler_response.ClientResponseHandlerAbstract import (
+    ClientResponseHandlerAbstract,
+)
 
 
 class ClientResponseHandlerCheckEnv(ClientResponseHandlerAbstract):
@@ -19,8 +23,7 @@ class ClientResponseHandlerCheckEnv(ClientResponseHandlerAbstract):
     def __init__(
         self,
     ):
-        super().__init__(
-        )
+        super().__init__()
         self.invocation_input: Union[InvocationInput, None] = None
 
     def handle_response(

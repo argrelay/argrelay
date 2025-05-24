@@ -8,7 +8,7 @@ from dataclasses import (
 from argrelay_lib_root.schema_config.ConnectionConfig import ConnectionConfig
 
 
-@dataclass(frozen = True)
+@dataclass(frozen=True)
 class ClientConfig:
     __comment__: str = field()
     use_local_requests: bool = field()

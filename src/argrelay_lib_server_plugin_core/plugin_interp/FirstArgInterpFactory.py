@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from argrelay_app_server.composite_forest.CompositeForestExtractor import extract_zero_arg_interp_tree
+from argrelay_app_server.composite_forest.CompositeForestExtractor import (
+    extract_zero_arg_interp_tree,
+)
 from argrelay_app_server.runtime_context.InterpContext import InterpContext
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_server_plugin_core.plugin_interp.FirstArgInterpFactoryConfigSchema import (
@@ -10,7 +12,9 @@ from argrelay_lib_server_plugin_core.plugin_interp.InterpTreeInterpFactory impor
     InterpTreeInterp,
     InterpTreeInterpFactory,
 )
-from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import ServerConfig
+from argrelay_schema_config_server.runtime_data_server_app.ServerConfig import (
+    ServerConfig,
+)
 
 
 class FirstArgInterpFactory(InterpTreeInterpFactory):
@@ -33,7 +37,9 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
         )
         # Unlike base `InterpTreeInterpFactory` which uses `CompositeInfoType.interp_tree` for `interp_selector_tree`,
         # `interp_selector_tree` for `FirstArgInterpFactory` is `CompositeInfoType.zero_arg_interp_tree`:
-        assert self.interp_selector_tree == {}, "`InterpTreeInterpFactory` is supposed to extract nothing by `plugin_instance_id` for `FirstArgInterpFactory`."
+        assert (
+            self.interp_selector_tree == {}
+        ), "`InterpTreeInterpFactory` is supposed to extract nothing by `plugin_instance_id` for `FirstArgInterpFactory`."
         self.interp_selector_tree = extract_zero_arg_interp_tree(
             server_config.server_plugin_control.composite_forest,
         )
@@ -68,7 +74,10 @@ class FirstArgInterpFactory(InterpTreeInterpFactory):
 
         # Build a map from `func_id` to `func_envelope`:
         func_ids_to_func_envelopes: dict[str, dict] = {}
-        for delegator_plugin_id, action_delegator in self.server_config.action_delegators.items():
+        for (
+            delegator_plugin_id,
+            action_delegator,
+        ) in self.server_config.action_delegators.items():
             func_envelopes = action_delegator.get_supported_func_envelopes()
             for func_envelope in func_envelopes:
                 func_id = func_envelope[ReservedPropName.func_id.name]

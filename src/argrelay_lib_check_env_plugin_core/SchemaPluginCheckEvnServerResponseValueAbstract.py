@@ -26,19 +26,19 @@ class SchemaPluginCheckEvnServerResponseValueAbstract(Schema):
 
     # Configures field name to retrieve in response from command line.
     field_values_to_command_lines = fields.Dict(
-        keys = fields.String(),
-        values = fields.String(),
-        required = True,
+        keys=fields.String(),
+        values=fields.String(),
+        required=True,
     )
 
 
 schema_plugin_check_evn_server_response_abstract_desc = TypeDesc(
-    dict_schema = SchemaPluginCheckEvnServerResponseValueAbstract(),
-    ref_name = SchemaPluginCheckEvnServerResponseValueAbstract.__name__,
-    dict_example = {
+    dict_schema=SchemaPluginCheckEvnServerResponseValueAbstract(),
+    ref_name=SchemaPluginCheckEvnServerResponseValueAbstract.__name__,
+    dict_example={
         field_values_to_command_lines_: {
             func_id_some_func_: CheckEnvField.server_git_commit_id.name,
         },
     },
-    default_file_path = "",
+    default_file_path="",
 )

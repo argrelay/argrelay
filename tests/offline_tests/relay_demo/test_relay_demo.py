@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_api_server_cli.schema_response.InterpResult import InterpResult
-from argrelay_app_client.client_command_local.ClientCommandLocal import ClientCommandLocal
+from argrelay_app_client.client_command_local.ClientCommandLocal import (
+    ClientCommandLocal,
+)
 from argrelay_app_client.handler_response.ClientResponseHandlerDescribeLineArgs import (
     ClientResponseHandlerDescribeLineArgs,
     indent_size,
@@ -16,13 +18,27 @@ from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
 from argrelay_lib_root.enum_desc.SpecialChar import SpecialChar
 from argrelay_lib_root.enum_desc.TermColor import TermColor
 from argrelay_lib_root.enum_desc.ValueSource import ValueSource
-from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import DelegatorError
-from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import func_envelope_path_step_prop_name
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostGoto import func_id_goto_host_
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostList import DelegatorServiceHostList
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceGoto import func_id_goto_service_
-from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceList import DelegatorServiceInstanceList
-from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import ServiceEnvelopeClass
+from argrelay_lib_server_plugin_core.plugin_delegator.DelegatorError import (
+    DelegatorError,
+)
+from argrelay_lib_server_plugin_core.plugin_interp.FuncTreeInterpFactory import (
+    func_envelope_path_step_prop_name,
+)
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostGoto import (
+    func_id_goto_host_,
+)
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceHostList import (
+    DelegatorServiceHostList,
+)
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceGoto import (
+    func_id_goto_service_,
+)
+from argrelay_lib_server_plugin_demo.demo_service.DelegatorServiceInstanceList import (
+    DelegatorServiceInstanceList,
+)
+from argrelay_lib_server_plugin_demo.demo_service.ServiceEnvelopeClass import (
+    ServiceEnvelopeClass,
+)
 from argrelay_lib_server_plugin_demo.demo_service.ServicePropName import ServicePropName
 from argrelay_test_infra.test_infra import (
     line_no,
@@ -44,9 +60,10 @@ class ThisTestClass(LocalTestClass):
         """
         test_cases = [
             # TODO: Test that even multiple envelopes can set `ValueSource.implicit_value` when one of the `prop_name` has single `prop_value` among all those envelopes. Add special test data.
-
             (
-                line_no(), "some_command |", CompType.PrefixHidden,
+                line_no(),
+                "some_command |",
+                CompType.PrefixHidden,
                 [
                     "config",
                     "data",
@@ -65,7 +82,9 @@ class ThisTestClass(LocalTestClass):
                 "Suggest from the set of values for the first unassigned `prop_name`.",
             ),
             (
-                line_no(), "some_command goto host dev amer upstream qwer|  ", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host dev amer upstream qwer|  ",
+                CompType.PrefixShown,
                 [],
                 "FS_23_62_89_43: `tangent_token` "
                 "Host `qwer` is already singled out `data_envelope` "
@@ -73,35 +92,45 @@ class ThisTestClass(LocalTestClass):
                 "therefore, it is not suggested.",
             ),
             (
-                line_no(), "some_command goto host qa prod|", CompType.SubsequentHelp,
+                line_no(),
+                "some_command goto host qa prod|",
+                CompType.SubsequentHelp,
                 [],
                 "Another value from the same dimension with `SubsequentHelp` "
                 "yet prefix not matching any from other dimensions => no suggestions",
             ),
             (
-                line_no(), "some_command goto host prod apac|", CompType.SubsequentHelp,
+                line_no(),
+                "some_command goto host prod apac|",
+                CompType.SubsequentHelp,
                 [],
                 "FS_23_62_89_43: `tangent_token` "
                 "`ServicePropName.code_maturity` = `prod` singles out `ServiceEnvelopeClass.class_cluster` which "
                 "skips suggestion for `ServicePropName.geo_region`",
             ),
             (
-                line_no(), "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |", CompType.PrefixShown,
+                line_no(),
+                "some_command host qa upstream amer qw goto ro s_c green rtyu-qu |",
+                CompType.PrefixShown,
                 [],
-                "No more suggestions when all \"coordinates\" specified",
+                'No more suggestions when all "coordinates" specified',
             ),
             (
-                line_no(), "some_command upstream goto host |", CompType.PrefixHidden,
+                line_no(),
+                "some_command upstream goto host |",
+                CompType.PrefixHidden,
                 [
                     "dev",
                     "prod",
                     "qa",
                 ],
                 "`PrefixHidden`: `prop_value`-s for `cluster_name` search is specified ahead function query "
-                "but order is \"ignored\"",
+                'but order is "ignored"',
             ),
             (
-                line_no(), "some_command upstream goto host |", CompType.SubsequentHelp,
+                line_no(),
+                "some_command upstream goto host |",
+                CompType.SubsequentHelp,
                 [
                     "dev",
                     "prod",
@@ -110,7 +139,9 @@ class ThisTestClass(LocalTestClass):
                 "`SubsequentHelp` behaves the same way as `PrefixHidden`",
             ),
             (
-                line_no(), "some_command host goto upstream a|", CompType.SubsequentHelp,
+                line_no(),
+                "some_command host goto upstream a|",
+                CompType.SubsequentHelp,
                 [
                     "amer",
                     "apac",
@@ -119,7 +150,8 @@ class ThisTestClass(LocalTestClass):
             ),
             (
                 line_no(),
-                "some_command goto upstream dev amer desc host |", CompType.SubsequentHelp,
+                "some_command goto upstream dev amer desc host |",
+                CompType.SubsequentHelp,
                 [],
                 "FS_23_62_89_43: `tangent_token` "
                 "`ServicePropName.code_maturity` = `dev` and `ServicePropName.geo_region` = `amer` "
@@ -128,47 +160,61 @@ class ThisTestClass(LocalTestClass):
                 "leading to no suggestions at all.",
             ),
             (
-                line_no(), "some_command service goto upstream|", CompType.PrefixHidden,
+                line_no(),
+                "some_command service goto upstream|",
+                CompType.PrefixHidden,
                 [
                     "upstream",
                 ],
                 "Suggest tangent arg (shell should normally place a space on Tab after the arg to complete the arg).",
             ),
             (
-                line_no(), "some_command de|", CompType.PrefixHidden,
+                line_no(),
+                "some_command de|",
+                CompType.PrefixHidden,
                 [
                     "desc",
                 ],
                 "Suggest from the set of values for the first unassigned `prop_name` (with matching prefix)",
             ),
             (
-                line_no(), "some_command host goto e| dev", CompType.PrefixHidden,
+                line_no(),
+                "some_command host goto e| dev",
+                CompType.PrefixHidden,
                 [
                     "emea",
                 ],
-                "FS_13_51_07_97: Suggestion for a value from other spaces which do not have \"coordinate\" specified yet.",
+                'FS_13_51_07_97: Suggestion for a value from other spaces which do not have "coordinate" specified yet.',
             ),
             (
-                line_no(), "some_command pro|", CompType.PrefixHidden,
+                line_no(),
+                "some_command pro|",
+                CompType.PrefixHidden,
                 [],
                 "Do not suggest a value (prod) from other spaces until "
                 "they are available for query for next envelope to search (current one is func).",
             ),
             (
-                line_no(), "some_command goto host pro| dev", CompType.PrefixHidden,
+                line_no(),
+                "some_command goto host pro| dev",
+                CompType.PrefixHidden,
                 [],
                 "FS_13_51_07_97: No suggestion for another value `prod` from a space which "
-                "already have \"coordinate\" `dev` specified.",
+                'already have "coordinate" `dev` specified.',
             ),
             (
-                line_no(), "some_command goto service q| whatever", CompType.PrefixHidden,
+                line_no(),
+                "some_command goto service q| whatever",
+                CompType.PrefixHidden,
                 [
                     "qa",
                 ],
                 "Unrecognized value does not obstruct suggestion.",
             ),
             (
-                line_no(), "some_command goto host ip.192.168.1|", CompType.PrefixHidden,
+                line_no(),
+                "some_command goto host ip.192.168.1|",
+                CompType.PrefixHidden,
                 [
                     "ip.192.168.1.1 # zxcv-du",
                     "ip.192.168.1.3 # poiu-dd",
@@ -177,7 +223,9 @@ class ThisTestClass(LocalTestClass):
                 "options are returned with hints",
             ),
             (
-                line_no(), "some_command host goto upstream \"x\" a|", CompType.PrefixShown,
+                line_no(),
+                'some_command host goto upstream "x" a|',
+                CompType.PrefixShown,
                 [
                     "amer",
                     "apac",
@@ -186,20 +234,26 @@ class ThisTestClass(LocalTestClass):
                 "are at least not causing problem in (A) remaining (B) non-tangent arg for (C) local server test.",
             ),
             (
-                line_no(), "some_command host goto upstream \"a\"|", CompType.PrefixShown,
+                line_no(),
+                'some_command host goto upstream "a"|',
+                CompType.PrefixShown,
                 # TODO: Fix this: it has to be "apac\namer":
                 [],
                 "FS_92_75_93_01: Register bug that double quotes (which are used as special char in JSON format) "
                 "are at causing interpretation problem to suggest completion options for tangent arg.",
             ),
             (
-                line_no(), "some_command goto host dev downstream amer amer|", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host dev downstream amer amer|",
+                CompType.PrefixShown,
                 [],
-                "Step 1: No suggestions because FS_23_62_89_43 `tangent_token`narrows down selection to 0 options."
+                "Step 1: No suggestions because FS_23_62_89_43 `tangent_token`narrows down selection to 0 options.",
             ),
             (
-                line_no(), "some_command goto host dev downstream amer amer |", CompType.PrefixShown,
-                ['apac', 'emea'],
+                line_no(),
+                "some_command goto host dev downstream amer amer |",
+                CompType.PrefixShown,
+                ["apac", "emea"],
                 "Step 2: Some suggestions exists because FS_23_62_89_43 `tangent_token` is not present and "
                 "the logic skips remaining args suggesting what is missing for the next `prop_name`. ",
             ),
@@ -262,7 +316,9 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.class_host.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
                     },
                     2: None,
                 },
@@ -302,7 +358,7 @@ class ThisTestClass(LocalTestClass):
                     1: 0,
                     2: None,
                 },
-                "FS_18_64_57_18: Basic test that list multiple objects"
+                "FS_18_64_57_18: Basic test that list multiple objects",
             ),
             (
                 line_no(),
@@ -332,9 +388,15 @@ class ThisTestClass(LocalTestClass):
                             ServiceEnvelopeClass.class_service.name,
                             ValueSource.init_value,
                         ),
-                        ServicePropName.service_name.name: AssignedValue("s_b", ValueSource.explicit_offered_arg),
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
-                        ServicePropName.geo_region.name: AssignedValue("apac", ValueSource.implicit_value),
+                        ServicePropName.service_name.name: AssignedValue(
+                            "s_b", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "prod", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.geo_region.name: AssignedValue(
+                            "apac", ValueSource.implicit_value
+                        ),
                     },
                     2: None,
                 },
@@ -425,7 +487,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "FS_97_64_39_94: Case A1: `token_bucket` before the one with `some_command` is not consumed by anything "
                 "because it is empty - this causes FS_01_89_09_24 interp tree interp consume nothing via tree path. "
-                "So no progress can be made beyond the first `token_bucket` (ipos = 0)."
+                "So no progress can be made beyond the first `token_bucket` (ipos = 0).",
             ),
             (
                 line_no(),
@@ -449,8 +511,7 @@ class ThisTestClass(LocalTestClass):
                     "no_data",
                     "ssh",
                 ],
-                {
-                },
+                {},
                 DelegatorError,
                 {
                     0: None,
@@ -566,21 +627,28 @@ class ThisTestClass(LocalTestClass):
     def test_describe_args(self):
         test_cases = [
             (
-                line_no(), "some_command list service dev upstream amer |", CompType.DescribeArgs,
+                line_no(),
+                "some_command list service dev upstream amer |",
+                CompType.DescribeArgs,
                 "Not only `goto`, also `list` and anything else should work.",
                 None,
             ),
             (
-                line_no(), "some_command goto service s_b prod qwer-pd-2 |", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service s_b prod qwer-pd-2 |",
+                CompType.DescribeArgs,
                 "If current command search results in ambiguous results (more than one `data_envelope`), "
                 "it should still work.",
                 # TODO: TODO_32_99_70_35: Use generalized validator asserting payload (for this case it is fine) instead of entire stdout str - JSONPath?
                 None,
             ),
             (
-                line_no(), "some_command |", CompType.DescribeArgs,
+                line_no(),
+                "some_command |",
+                CompType.DescribeArgs,
                 # TODO: FS_41_40_39_44: There must be a special line/field which lists `arg_value`-s based on FS_01_89_09_24 (interp tree) or maybe not? Not because interp tree path is part of the func lookup anyway:
                 "FS_41_40_39_44: TODO: suggest from interp tree.",
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_n.value}43{TermColor.reset_style.value}
@@ -592,11 +660,15 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_state.name}: ?{TermColor.reset_style.value} {FuncState.fs_alpha} {FuncState.fs_beta} {FuncState.fs_demo} {FuncState.fs_gamma} {FuncState.fs_ignorable} 
 {" " * indent_size}{TermColor.remaining_value.value}{ReservedPropName.func_id.name}: ?{TermColor.reset_style.value} func_id_desc_git_commit func_id_desc_git_tag func_id_desc_host func_id_desc_service func_id_diff_service func_id_double_execution func_id_echo_args func_id_get_data_envelopes func_id_goto_git_repo func_id_goto_host func_id_goto_service func_id_help_hint func_id_intercept_invocation func_id_list_host func_id_list_service func_id_no_data func_id_print_with_exit_code func_id_print_with_io_redirect func_id_print_with_severity_level func_id_query_enum_items func_id_set_data_envelopes func_id_ssh_dst 
 """,
+                # fmt: on
             ),
             (
-                line_no(), "some_command goto service dev emea upstream s_|  ", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service dev emea upstream s_|  ",
+                CompType.DescribeArgs,
                 # TODO: make another test where set of suggestion listed for `tangent_token` is reduced to those matching this token as prefix (currently selected includes all because all match that prefix).
                 "FS_23_62_89_43: `tangent_token` is taken into account in describe.",
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}emea{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}s_{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -624,11 +696,15 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}{ReservedPropName.envelope_class.name}: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
+                # fmt: on
             ),
             (
-                line_no(), "some_command goto host upstream |", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto host upstream |",
+                CompType.DescribeArgs,
                 "Regular description with some props specified (flow_stage) and many still to be narrowed down.",
                 # TODO: show differently `{SpecialChar.NoPropValue.value}` values: those in envelopes which haven't been searched yet, and those which were searched, but no values found in data.
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}host{TermColor.reset_style.value} {TermColor.consumed_token.value}upstream{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -652,10 +728,14 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}{ReservedPropName.envelope_class.name}: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
+                # fmt: on
             ),
             (
-                line_no(), "some_command goto service qwer-p|d-1 s_", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service qwer-p|d-1 s_",
+                CompType.DescribeArgs,
                 "FS_11_87_76_73: Highlight `token_left_part` (prefix) of `tangent_token` in description.",
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}qwer-p{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}d-1{TermColor.reset_style.value} {TermColor.remaining_token.value}s_{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -683,6 +763,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}{ReservedPropName.envelope_class.name}: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
+                # fmt: on
             ),
         ]
 
@@ -693,12 +774,20 @@ class ThisTestClass(LocalTestClass):
     def test_arg_assignments_for_completion_on_single_data_envelope(self):
         test_cases = [
             (
-                line_no(), "some_command goto host dev-emea-downstream |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host dev-emea-downstream |",
+                CompType.PrefixShown,
                 1,
                 {
-                    ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.implicit_value),
-                    ServicePropName.geo_region.name: AssignedValue("emea", ValueSource.implicit_value),
-                    ServicePropName.flow_stage.name: AssignedValue("downstream", ValueSource.implicit_value),
+                    ServicePropName.code_maturity.name: AssignedValue(
+                        "dev", ValueSource.implicit_value
+                    ),
+                    ServicePropName.geo_region.name: AssignedValue(
+                        "emea", ValueSource.implicit_value
+                    ),
+                    ServicePropName.flow_stage.name: AssignedValue(
+                        "downstream", ValueSource.implicit_value
+                    ),
                     ServicePropName.cluster_name.name: AssignedValue(
                         "dev-emea-downstream",
                         ValueSource.explicit_offered_arg,
@@ -707,31 +796,45 @@ class ThisTestClass(LocalTestClass):
                 "Implicit assignment of all cluster categories when cluster name is specified",
             ),
             (
-                line_no(), "some_command goto host prod-apac-downstream wert-pd-1 |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host prod-apac-downstream wert-pd-1 |",
+                CompType.PrefixShown,
                 2,
                 {
-                    ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
+                    ServicePropName.access_type.name: AssignedValue(
+                        "ro", ValueSource.default_value
+                    ),
                 },
                 "Default `ro` for `prod`",
             ),
             (
-                line_no(), "some_command goto host prod-apac-downstream wert-pd-1 rw |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host prod-apac-downstream wert-pd-1 rw |",
+                CompType.PrefixShown,
                 2,
                 {
-                    ServicePropName.access_type.name: AssignedValue("rw", ValueSource.explicit_offered_arg),
+                    ServicePropName.access_type.name: AssignedValue(
+                        "rw", ValueSource.explicit_offered_arg
+                    ),
                 },
                 "Override default `ro` for `prod` to `rw`",
             ),
             (
-                line_no(), "some_command goto host dev-apac-upstream zxcv-du |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host dev-apac-upstream zxcv-du |",
+                CompType.PrefixShown,
                 2,
                 {
-                    ServicePropName.access_type.name: AssignedValue("rw", ValueSource.default_value),
+                    ServicePropName.access_type.name: AssignedValue(
+                        "rw", ValueSource.default_value
+                    ),
                 },
                 "Default `rw` for non-`prod`",
             ),
             (
-                line_no(), "some_command goto|", CompType.PrefixShown,
+                line_no(),
+                "some_command goto|",
+                CompType.PrefixShown,
                 0,
                 {
                     # TODO: TODO_32_99_70_35: How to specify that some specific props are not assigned?
@@ -739,12 +842,20 @@ class ThisTestClass(LocalTestClass):
                 "No assignment for `incomplete_token` (token pointed by the cursor) in completion mode",
             ),
             (
-                line_no(), "some_command desc host zxcv|", CompType.PrefixShown,
+                line_no(),
+                "some_command desc host zxcv|",
+                CompType.PrefixShown,
                 0,
                 {
-                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ValueSource.init_value),
-                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("desc", ValueSource.explicit_offered_arg),
-                    f"{func_envelope_path_step_prop_name(2)}": AssignedValue("host", ValueSource.explicit_offered_arg),
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                        "some_command", ValueSource.init_value
+                    ),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                        "desc", ValueSource.explicit_offered_arg
+                    ),
+                    f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
+                        "host", ValueSource.explicit_offered_arg
+                    ),
                     ServicePropName.access_type.name: None,
                 },
                 # TODO: Test assertion has nothing to do with `incomplete_token` - it asserts first (func) envelope, but not the `zxcv`-related one.
@@ -752,21 +863,33 @@ class ThisTestClass(LocalTestClass):
                 "`incomplete_token` (pointed by the cursor) is complete in invocation mode.",
             ),
             (
-                line_no(), "some_command goto |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto |",
+                CompType.PrefixShown,
                 0,
                 {
-                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ValueSource.init_value),
-                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ValueSource.explicit_offered_arg),
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                        "some_command", ValueSource.init_value
+                    ),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                        "goto", ValueSource.explicit_offered_arg
+                    ),
                     f"{func_envelope_path_step_prop_name(2)}": None,
                 },
                 "Explicit assignment for complete token",
             ),
             (
-                line_no(), "some_command goto service |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto service |",
+                CompType.PrefixShown,
                 0,
                 {
-                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ValueSource.init_value),
-                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ValueSource.explicit_offered_arg),
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                        "some_command", ValueSource.init_value
+                    ),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                        "goto", ValueSource.explicit_offered_arg
+                    ),
                     f"{func_envelope_path_step_prop_name(2)}": AssignedValue(
                         "service",
                         ValueSource.explicit_offered_arg,
@@ -775,18 +898,26 @@ class ThisTestClass(LocalTestClass):
                 "Explicit assignment for complete token",
             ),
             (
-                line_no(), "some_command goto \"service\" |", CompType.PrefixShown,
+                line_no(),
+                'some_command goto "service" |',
+                CompType.PrefixShown,
                 0,
                 {
-                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue("some_command", ValueSource.init_value),
-                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue("goto", ValueSource.explicit_offered_arg),
+                    f"{func_envelope_path_step_prop_name(0)}": AssignedValue(
+                        "some_command", ValueSource.init_value
+                    ),
+                    f"{func_envelope_path_step_prop_name(1)}": AssignedValue(
+                        "goto", ValueSource.explicit_offered_arg
+                    ),
                     # TODO: TODO_32_99_70_35: How to specify that some specific props are not assigned?
                 },
                 # TODO: Fix this: "service" must be recognized even if in double quotes:
-                "FS_92_75_93_01: Register a bug that \"service\" token is not recognized while in double quotes.",
+                'FS_92_75_93_01: Register a bug that "service" token is not recognized while in double quotes.',
             ),
             (
-                line_no(), "some_command goto host prod|", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host prod|",
+                CompType.PrefixShown,
                 1,
                 {
                     ServicePropName.code_maturity.name: None,
@@ -795,13 +926,17 @@ class ThisTestClass(LocalTestClass):
                 "No implicit assignment for `incomplete_token`",
             ),
             (
-                line_no(), "some_command goto host prod |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host prod |",
+                CompType.PrefixShown,
                 1,
                 {
-                    ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
+                    ServicePropName.code_maturity.name: AssignedValue(
+                        "prod", ValueSource.explicit_offered_arg
+                    ),
                     ServicePropName.access_type.name: None,
                 },
-                "No implicit assignment of access type to \"ro\" when code maturity is \"prod\" in completion",
+                'No implicit assignment of access type to "ro" when code maturity is "prod" in completion',
             ),
             # TODO: re-implement functionality via data - see `code_maturityProcessor`:
             # (
@@ -814,13 +949,17 @@ class ThisTestClass(LocalTestClass):
             #     "Implicit assignment of access type to \"ro\" when code maturity is \"prod\" in invocation",
             # ),
             (
-                line_no(), "some_command goto host dev |", CompType.PrefixShown,
+                line_no(),
+                "some_command goto host dev |",
+                CompType.PrefixShown,
                 1,
                 {
-                    ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
+                    ServicePropName.code_maturity.name: AssignedValue(
+                        "dev", ValueSource.explicit_offered_arg
+                    ),
                     ServicePropName.access_type.name: None,
                 },
-                "No implicit assignment of access type to \"rw\" when code maturity is \"dev\" in completion",
+                'No implicit assignment of access type to "rw" when code maturity is "dev" in completion',
             ),
             # TODO: re-implement functionality via data - see `code_maturityProcessor`:
             # (
@@ -862,14 +1001,22 @@ class ThisTestClass(LocalTestClass):
     def test_arg_assignments_for_completion_on_multiple_data_envelopes(self):
         test_cases = [
             (
-                line_no(), "some_command goto host prod wert-pd-1|", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto host prod wert-pd-1|",
+                CompType.DescribeArgs,
                 {
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("prod", ValueSource.explicit_offered_arg),
-                        ServicePropName.host_name.name: AssignedValue("wert-pd-1", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "prod", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "wert-pd-1", ValueSource.explicit_offered_arg
+                        ),
                     },
                     2: {
-                        ServicePropName.access_type.name: AssignedValue("ro", ValueSource.default_value),
+                        ServicePropName.access_type.name: AssignedValue(
+                            "ro", ValueSource.default_value
+                        ),
                     },
                     3: None,
                 },
@@ -877,14 +1024,22 @@ class ThisTestClass(LocalTestClass):
                 "Implicit assignment even for tangent token (token pointed by cursor)",
             ),
             (
-                line_no(), "some_command goto service tt|", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service tt|",
+                CompType.DescribeArgs,
                 {
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.implicit_value),
-                        ServicePropName.service_name.name: AssignedValue("tt", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.implicit_value
+                        ),
+                        ServicePropName.service_name.name: AssignedValue(
+                            "tt", ValueSource.explicit_offered_arg
+                        ),
                     },
                     2: {
-                        ServicePropName.access_type.name: AssignedValue("rw", ValueSource.default_value),
+                        ServicePropName.access_type.name: AssignedValue(
+                            "rw", ValueSource.default_value
+                        ),
                     },
                     3: None,
                 },
@@ -895,7 +1050,9 @@ class ThisTestClass(LocalTestClass):
                 "on Alt+Shift+Q as on Tab (see next test).",
             ),
             (
-                line_no(), "some_command goto service tt|", CompType.PrefixShown,
+                line_no(),
+                "some_command goto service tt|",
+                CompType.PrefixShown,
                 None,
                 [
                     "tt",
@@ -934,7 +1091,8 @@ class ThisTestClass(LocalTestClass):
 
         test_cases = [
             (
-                line_no(), "some_command goto service prod downstream wert-pd-1 |",
+                line_no(),
+                "some_command goto service prod downstream wert-pd-1 |",
                 DelegatorError,
                 {
                     1: {
@@ -947,7 +1105,8 @@ class ThisTestClass(LocalTestClass):
                 f"Verify invocation input when `{DelegatorError.__name__}` is used.",
             ),
             (
-                line_no(), "some_command list service dev upstream emea |",
+                line_no(),
+                "some_command list service dev upstream emea |",
                 DelegatorServiceInstanceList,
                 {
                     # vararg_ipos + 0
@@ -990,7 +1149,9 @@ class ThisTestClass(LocalTestClass):
                     LocalClientEnvMockBuilder().set_reset_local_server(False),
                 )
 
-    def test_FS_72_53_55_13_show_non_default_options_data_only_with_FS_97_64_39_94_token_buckets(self):
+    def test_FS_72_53_55_13_show_non_default_options_data_only_with_FS_97_64_39_94_token_buckets(
+        self,
+    ):
         """
         Test all 3 working together:
         *   FS_72_40_53_00 fill control
@@ -999,14 +1160,22 @@ class ThisTestClass(LocalTestClass):
         """
         test_cases = [
             (
-                line_no(), "some_command goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service dev downstream apac poiu-dd |",
+                CompType.DescribeArgs,
                 {
                     1: {
-                        ServicePropName.code_maturity.name: AssignedValue("dev", ValueSource.explicit_offered_arg),
-                        ServicePropName.host_name.name: AssignedValue("poiu-dd", ValueSource.explicit_offered_arg),
+                        ServicePropName.code_maturity.name: AssignedValue(
+                            "dev", ValueSource.explicit_offered_arg
+                        ),
+                        ServicePropName.host_name.name: AssignedValue(
+                            "poiu-dd", ValueSource.explicit_offered_arg
+                        ),
                     },
                     2: {
-                        ServicePropName.access_type.name: AssignedValue("rw", ValueSource.default_value),
+                        ServicePropName.access_type.name: AssignedValue(
+                            "rw", ValueSource.default_value
+                        ),
                     },
                     3: None,
                 },
@@ -1028,13 +1197,19 @@ class ThisTestClass(LocalTestClass):
                 f"and `{EnvelopeContainer.used_token_bucket}` stays None.",
             ),
             (
-                line_no(), "some_command diff % prod downstream rrr tt1 % passive tt1 |", CompType.DescribeArgs,
+                line_no(),
+                "some_command diff % prod downstream rrr tt1 % passive tt1 |",
+                CompType.DescribeArgs,
                 {
                     1: {
-                        ServicePropName.run_mode.name: AssignedValue("active", ValueSource.default_value),
+                        ServicePropName.run_mode.name: AssignedValue(
+                            "active", ValueSource.default_value
+                        ),
                     },
                     2: {
-                        ServicePropName.run_mode.name: AssignedValue("passive", ValueSource.explicit_offered_arg),
+                        ServicePropName.run_mode.name: AssignedValue(
+                            "passive", ValueSource.explicit_offered_arg
+                        ),
                     },
                     3: None,
                 },
@@ -1064,13 +1239,19 @@ class ThisTestClass(LocalTestClass):
                 "while 2nd/right service `envelope_container` accepts that override, not using default.",
             ),
             (
-                line_no(), "some_command diff % prod downstream rrr tt1 % tt1 % passive |", CompType.DescribeArgs,
+                line_no(),
+                "some_command diff % prod downstream rrr tt1 % tt1 % passive |",
+                CompType.DescribeArgs,
                 {
                     1: {
-                        ServicePropName.run_mode.name: AssignedValue("active", ValueSource.default_value),
+                        ServicePropName.run_mode.name: AssignedValue(
+                            "active", ValueSource.default_value
+                        ),
                     },
                     2: {
-                        ServicePropName.run_mode.name: AssignedValue("active", ValueSource.default_value),
+                        ServicePropName.run_mode.name: AssignedValue(
+                            "active", ValueSource.default_value
+                        ),
                     },
                     3: None,
                 },
@@ -1096,7 +1277,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 "Case A2: "
                 "Similar to case A1, but now FS_97_64_39_94 `token_bucket` with override is not used by any of the "
-                "two service `envelope_container`-s (both 1st/left and 2nd/right have no default overrides)."
+                "two service `envelope_container`-s (both 1st/left and 2nd/right have no default overrides).",
             ),
         ]
 
@@ -1127,8 +1308,11 @@ class ThisTestClass(LocalTestClass):
     def test_FS_72_53_55_13_show_non_default_options_print_out_only(self):
         test_cases = [
             (
-                line_no(), "some_command goto service dev downstream apac poiu-dd |", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service dev downstream apac poiu-dd |",
+                CompType.DescribeArgs,
                 "FS_72_53_55_13: shows options hidden by default.",
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1156,10 +1340,14 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ServiceEnvelopeClass.class_access_type.name} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: rw {TermColor.other_assigned_arg_value.value}[{ValueSource.default_value.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{ClientResponseHandlerDescribeLineArgs.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}ro{TermColor.reset_style.value} {TermColor.value_hidden_by_default.value}rw{TermColor.reset_style.value} 
 """,
+                # fmt: on
             ),
             (
-                line_no(), "some_command goto service dev downstream apac poiu-dd r|", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service dev downstream apac poiu-dd r|",
+                CompType.DescribeArgs,
                 "FS_72_53_55_13: shows `ro` option hidden by default and FS_11_87_76_73 highlights them by prefix.",
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}dev{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}apac{TermColor.reset_style.value} {TermColor.consumed_token.value}poiu-dd{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1187,10 +1375,14 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}{ReservedPropName.envelope_class.name}: {ServiceEnvelopeClass.class_access_type.name} {TermColor.other_assigned_arg_value.value}[{ValueSource.init_value.name}]{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.other_assigned_arg_value.value}access_type: {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} {TermColor.other_assigned_arg_value.value}[{ValueSource.default_value.name}]{TermColor.reset_style.value} {TermColor.caption_hidden_by_default.value}{ClientResponseHandlerDescribeLineArgs.default_overrides_caption}:{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}o{TermColor.reset_style.value} {TermColor.prefix_highlight.value}{TermColor.tangent_token_l_part.value}r{TermColor.reset_style.value}{TermColor.tangent_token_r_part.value}w{TermColor.reset_style.value} 
 """,
+                # fmt: on
             ),
             (
-                line_no(), "some_command goto service prod downstream rrr |", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service prod downstream rrr |",
+                CompType.DescribeArgs,
                 f"FS_72_53_55_13: non-default options with `{ClientResponseHandlerDescribeLineArgs.default_overrides_caption}` is only specified for {ValueSource.default_value}.",
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}prod{TermColor.reset_style.value} {TermColor.consumed_token.value}downstream{TermColor.reset_style.value} {TermColor.consumed_token.value}rrr{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1218,10 +1410,14 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}{ReservedPropName.envelope_class.name}: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
+                # fmt: on
             ),
             (
-                line_no(), "some_command goto service -ip ip.192.168.7.1 |", CompType.DescribeArgs,
+                line_no(),
+                "some_command goto service -ip ip.192.168.7.1 |",
+                CompType.DescribeArgs,
                 "FS_20_88_05_60: `dictated_arg` should be colored as `TermColor.explicit_offered_arg_value`",
+                # fmt: off
                 f"""
 {TermColor.consumed_token.value}some_command{TermColor.reset_style.value} {TermColor.consumed_token.value}goto{TermColor.reset_style.value} {TermColor.consumed_token.value}service{TermColor.reset_style.value} {TermColor.consumed_token.value}-ip{TermColor.reset_style.value} {TermColor.consumed_token.value}ip.192.168.7.1{TermColor.reset_style.value} 
 {ReservedEnvelopeClass.class_function.name}: {TermColor.found_count_1.value}1{TermColor.reset_style.value}
@@ -1249,6 +1445,7 @@ class ThisTestClass(LocalTestClass):
 {" " * indent_size}{TermColor.no_option_to_suggest.value}{ReservedPropName.envelope_class.name}: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 {" " * indent_size}{TermColor.no_option_to_suggest.value}access_type: {SpecialChar.NoPropValue.value}{TermColor.reset_style.value}
 """,
+                # fmt: on
             ),
         ]
 
@@ -1275,9 +1472,11 @@ class ThisTestClass(LocalTestClass):
             .set_command_line(command_line)
             .set_cursor_cpos(cursor_cpos)
             .set_comp_type(comp_type)
-            .set_test_data_ids_to_load([
-                self.__class__.same_test_data_per_class,
-            ])
+            .set_test_data_ids_to_load(
+                [
+                    self.__class__.same_test_data_per_class,
+                ]
+            )
         )
         with outer_env_mock_builder.build():
             command_obj = __main__.main()
@@ -1298,12 +1497,12 @@ class ThisTestClass(LocalTestClass):
             #       Alternatively, run this test via `ClientRemote` (see `RemoteTestClass`) where output
             #       of the server is not captured (as it is a separate process).
             inner_env_mock_builder = (
-                EmptyEnvMockBuilder()
-                .set_capture_stdout(True)
-                .set_capture_stderr(True)
+                EmptyEnvMockBuilder().set_capture_stdout(True).set_capture_stderr(True)
             )
             with inner_env_mock_builder.build():
-                interp_result: InterpResult = InterpResult.from_interp_context(interp_ctx)
+                interp_result: InterpResult = InterpResult.from_interp_context(
+                    interp_ctx
+                )
                 ClientResponseHandlerDescribeLineArgs.render_result(interp_result)
 
                 self.assertEqual(

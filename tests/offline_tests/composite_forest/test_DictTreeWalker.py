@@ -32,12 +32,10 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "l1_k1": {
-                    },
+                    "l1_k1": {},
                 },
                 {
-                    "l1_k1": {
-                    },
+                    "l1_k1": {},
                 },
                 f"Ensure empty `dict` remain unchanged.",
             ),
@@ -91,15 +89,13 @@ class ThisTestClass(LocalTestClass):
                     surrogate_node_id_: {
                         "l2_k1": "some_value",
                     },
-                    "l1_k1": {
-                    },
+                    "l1_k1": {},
                 },
                 {
                     surrogate_node_id_: {
                         "l2_k1": "some_value",
                     },
-                    "l1_k1": {
-                    },
+                    "l1_k1": {},
                 },
                 f"Ensure no collapse of `{surrogate_node_id_}` if there are other nodes on the same level.",
             ),
@@ -159,8 +155,7 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     "leaf_1": [
-                        [
-                        ],
+                        [],
                     ],
                 },
                 "Single leaf.",
@@ -173,8 +168,7 @@ class ThisTestClass(LocalTestClass):
                 None,
                 {
                     "leaf_1": [
-                        [
-                        ],
+                        [],
                     ],
                 },
                 f"Dict with `{surrogate_tree_leaf_}` leaf.",
@@ -252,8 +246,7 @@ class ThisTestClass(LocalTestClass):
                         [
                             "l1_1",
                         ],
-                        [
-                        ],
+                        [],
                     ],
                     "leaf_2": [
                         [
@@ -335,7 +328,9 @@ class ThisTestClass(LocalTestClass):
                 )
 
                 if expected_exception is None:
-                    actual_leaf_paths: dict[str, list[list[str]]] = tree_walker.build_str_leaves_paths()
+                    actual_leaf_paths: dict[str, list[list[str]]] = (
+                        tree_walker.build_str_leaves_paths()
+                    )
                     self.assertEqual(
                         expected_leaf_paths,
                         actual_leaf_paths,
@@ -384,8 +379,7 @@ class ThisTestClass(LocalTestClass):
                         "path_step_1",
                         "path_step_2",
                     ): [
-                        [
-                        ],
+                        [],
                     ],
                 },
                 "Single leaf.",
@@ -393,13 +387,11 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "l1_1": [
-                    ],
+                    "l1_1": [],
                 },
                 None,
                 {
-                    (
-                    ): [
+                    (): [
                         [
                             "l1_1",
                         ],
@@ -554,8 +546,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     "l1_3": {
                         "l2_1": {
-                            "l3_1": [
-                            ],
+                            "l3_1": [],
                         },
                         "l2_2": [
                             "path_step_6",
@@ -585,16 +576,13 @@ class ThisTestClass(LocalTestClass):
                             "l3_1",
                         ],
                     ],
-                    (
-                        "path_step_5",
-                    ): [
+                    ("path_step_5",): [
                         [
                             "l1_2",
                             "l2_2",
                         ],
                     ],
-                    (
-                    ): [
+                    (): [
                         [
                             "l1_3",
                             "l2_1",
@@ -633,7 +621,9 @@ class ThisTestClass(LocalTestClass):
                 )
 
                 if expected_exception is None:
-                    actual_leaf_paths: dict[tuple[str, ...], list[list[str]]] = tree_walker.build_tuple_leaves_paths()
+                    actual_leaf_paths: dict[tuple[str, ...], list[list[str]]] = (
+                        tree_walker.build_tuple_leaves_paths()
+                    )
                     self.assertEqual(
                         expected_leaf_paths,
                         actual_leaf_paths,
@@ -678,8 +668,7 @@ class ThisTestClass(LocalTestClass):
                 ],
                 None,
                 {
-                    (
-                    ): (
+                    (): (
                         "path_step_1",
                         "path_step_2",
                     ),
@@ -689,15 +678,11 @@ class ThisTestClass(LocalTestClass):
             (
                 line_no(),
                 {
-                    "l1_1": [
-                    ],
+                    "l1_1": [],
                 },
                 None,
                 {
-                    (
-                        "l1_1",
-                    ): (
-                    ),
+                    ("l1_1",): (),
                 },
                 "Empty list leaf",
             ),
@@ -711,9 +696,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 None,
                 {
-                    (
-                        "l1_1",
-                    ): (
+                    ("l1_1",): (
                         "path_step_1",
                         "path_step_2",
                     ),
@@ -752,9 +735,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 None,
                 {
-                    (
-                        "l1_1",
-                    ): (
+                    ("l1_1",): (
                         "path_step_1",
                         "path_step_2",
                     ),
@@ -765,8 +746,7 @@ class ThisTestClass(LocalTestClass):
                         "path_step_1",
                         "path_step_2",
                     ),
-                    (
-                    ): (
+                    (): (
                         "path_step_1",
                         "path_step_2",
                         "path_step_3",
@@ -797,9 +777,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 None,
                 {
-                    (
-                        "l1_1",
-                    ): (
+                    ("l1_1",): (
                         "path_step_1",
                         "path_step_2",
                     ),
@@ -842,8 +820,7 @@ class ThisTestClass(LocalTestClass):
                     },
                     "l1_3": {
                         "l2_1": {
-                            "l3_1": [
-                            ],
+                            "l3_1": [],
                         },
                         "l2_2": [
                             "path_step_6",
@@ -855,9 +832,7 @@ class ThisTestClass(LocalTestClass):
                 },
                 None,
                 {
-                    (
-                        "l1_1",
-                    ): (
+                    ("l1_1",): (
                         "path_step_1",
                         "path_step_2",
                     ),
@@ -872,15 +847,12 @@ class ThisTestClass(LocalTestClass):
                     (
                         "l1_2",
                         "l2_2",
-                    ): (
-                        "path_step_5",
-                    ),
+                    ): ("path_step_5",),
                     (
                         "l1_3",
                         "l2_1",
                         "l3_1",
-                    ): (
-                    ),
+                    ): (),
                     (
                         "l1_3",
                         "l2_2",
@@ -911,7 +883,9 @@ class ThisTestClass(LocalTestClass):
                 )
 
                 if expected_exception is None:
-                    actual_leaf_paths: dict[tuple[str, ...], tuple[str, ...]] = tree_walker.build_paths_to_paths()
+                    actual_leaf_paths: dict[tuple[str, ...], tuple[str, ...]] = (
+                        tree_walker.build_paths_to_paths()
+                    )
                     self.assertEqual(
                         expected_leaf_paths,
                         actual_leaf_paths,

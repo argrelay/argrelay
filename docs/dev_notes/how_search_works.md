@@ -114,4 +114,3 @@ TODO: Merge this section of the doc with FS_55_57_45_04 enum selector.
     *   Assign command line args to `search_control` structure by matching if `arg_value` belongs to enum set.
     *   TODO: Invoke `fill_control` now on func impl to select default values.
     *   Perform final search to see if `data_envelope` is uniquely identified (only one fits the criteria).
-

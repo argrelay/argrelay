@@ -11,4 +11,3 @@ updates:
         # https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#scheduleinterval
         schedule:
             interval: "weekly"
-
