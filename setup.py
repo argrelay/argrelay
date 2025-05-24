@@ -242,12 +242,12 @@ See: https://github.com/argrelay/argrelay
         "PyYaml",
         "jsonschema",
         "flasgger",
-        "marshmallow<5.0.0",
+        "marshmallow>=3.0.0,<5.0.0",
         "marshmallow-oneofschema",
         "apispec",
         "pymongo",
         "GitPython",
-        # Use `mongomock` as replacement for Mongo DB in simple prod cases:
+        # Use `mongomock` as a replacement for Mongo DB in simple prod cases:
         "mongomock",
         "requests",
         "cachetools",

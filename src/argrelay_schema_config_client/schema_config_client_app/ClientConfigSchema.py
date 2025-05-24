@@ -59,7 +59,7 @@ class ClientConfigSchema(ObjectSchema):
         load_default = False,
     )
 
-    spinless_sleep_sec = fields.Number(
+    spinless_sleep_sec = fields.Float(
         required = False,
         # Noticeable threshold is around 200 ms, but default to spin immediately:
         load_default = 0.0,
