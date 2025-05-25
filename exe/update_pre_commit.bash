@@ -38,4 +38,8 @@ cd "${argrelay_dir}" || exit 1
 
 pip install pre-commit
 
+echo "INFO: \`pre-commit\` is installed in this dir: $(which pre-commit)"
+
+pre-commit install
+
 pre-commit run --all-files
