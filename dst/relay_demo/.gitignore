@@ -6,3 +6,5 @@
 /argrelay_plugin.yaml
 /check_env_plugin.conf.bash
 /check_env_plugin.conf.yaml
+/python_env.path_to_python.conf.txt
+/python_env.path_to_venv.conf.txt

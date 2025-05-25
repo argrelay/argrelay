@@ -75,6 +75,7 @@ class ThisTestClass(BaseTestClass):
                     0,
                     b"""argrelay_common_lib.bash
 bootstrap_env.bash
+bootstrap_env.py
 build_project.bash
 check_env.bash
 config_files.conf.bash
