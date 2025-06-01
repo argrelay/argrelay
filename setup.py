@@ -29,6 +29,7 @@ tests_require = [
     "icecream",
     "jsonpath-ng",
     "import-linter",
+    "pyfakefs",
 ]
 
 # To install these extra dev dependencies:

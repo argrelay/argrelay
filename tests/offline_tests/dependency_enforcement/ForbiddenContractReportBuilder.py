@@ -30,7 +30,7 @@ import argrelay_schema_config_check_env
 import argrelay_schema_config_client
 import argrelay_schema_config_server
 import argrelay_test_infra
-from argrelay_test_infra.test_infra import file_line_l_1
+from argrelay_test_infra.test_infra import _file_line_l_1
 
 session_options = {
     "root_packages": [
@@ -101,7 +101,7 @@ class ForbiddenContractReportBuilder:
     def build(
         self,
     ) -> Report:
-        self._contract_title = self._contract_title or file_line_l_1()
+        self._contract_title = self._contract_title or _file_line_l_1()
         return create_report(
             user_options=UserOptions(
                 session_options=session_options,
