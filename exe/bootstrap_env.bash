@@ -13,12 +13,18 @@
 #     called by sourcing
 # The first unrecognized arg is treated as `config_path` (see usage).
 
+# TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
+#       Optional - may or may not support debug.
+
 # Define with `s` in value to debug:
 if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
 then
     set -x
     set -v
 fi
+
+# TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
+#       `bash`-specific.
 
 if [[ -n "${bootstrap_env_old_opts+x}" ]] ; then exit 1 ; fi
 
@@ -34,6 +40,9 @@ case "${-}" in
 esac
 
 ########################################################################################################################
+
+# TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
+#       `bash`-specific.
 
 # Keep output-related `set`-able options same when this script is sourced
 # (otherwise, full debug output for bootstrap is adequate as it runs in hardly predictable target environment):
@@ -57,6 +66,9 @@ set -u
 
 ########################################################################################################################
 
+# TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
+#       `bash`-specific.
+
 if [[ "${0}" != "${BASH_SOURCE[0]}" ]]
 then
     # sourced from another script:
@@ -67,6 +79,9 @@ else
 fi
 
 ########################################################################################################################
+
+# TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
+#       `bash`-specific.
 
 # Bash does not allow `return` if the script is not sourced (`exit` must be used):
 # https://stackoverflow.com/a/49857550/441652
@@ -82,6 +97,9 @@ else
 fi
 
 ########################################################################################################################
+
+# TODO: TODO_11_66_62_70: python_bootstrap: DONE:
+#       Support color on success/failure.
 
 success_color="\e[42m\e[30m"
 failure_color="\e[41m\e[97m"
@@ -105,12 +123,18 @@ function color_failure_and_success_bootstrap_env {
 
 trap color_failure_and_success_bootstrap_env EXIT
 
+# TODO: TODO_11_66_62_70: python_bootstrap: TODO:
+#       This may be needed...
+
 # Let some code know that it runs under `@/exe/bootstrap_env.bash` (e.g to run some tests conditionally):
 if [[ "${is_script_sourced}" != "true" ]]
 then
     ARGRELAY_BOOTSTRAP_ENV="$(date)"
     export ARGRELAY_BOOTSTRAP_ENV
 fi
+
+# TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
+#       `bash`-specific
 
 script_source="${BASH_SOURCE[0]}"
 # shellcheck disable=SC2034
@@ -130,6 +154,9 @@ argrelay_dir="$( realpath "$( dirname "." )" )"
 
 # Ensure it is called from project root (which should contain `@/exe/` dir):
 test -d "${argrelay_dir}/exe/"
+
+# TODO: TODO_11_66_62_70: python_bootstrap: DONE:
+#       Use `argparse` instead.
 
 # Collect flags from command line args:
 unused_input_args=()
@@ -156,12 +183,19 @@ done
 
 ########################################################################################################################
 
+# TODO: TODO_11_66_62_70: python_bootstrap: TODO:
+#       Run generically as a hook.
+
 function run_disabled_check_env {
     echo "INFO: Starting \`@/exe/check_env.bash\` but ignoring its exit code - FYI:" 1>&2
     "${argrelay_dir}/exe/check_env.bash" || true
 }
 
 ########################################################################################################################
+
+# TODO: TODO_11_66_62_70: python_bootstrap: DONE:
+#       Symlink is already created.
+
 # Bootstrap with `path/to/config` arg (if any) triggers this special logic:
 # *   if `@/conf/` is missing:
 #     *   set `@/conf/` symlink to the specified config dir (e.g. one of `@/dst/*`)
@@ -219,6 +253,9 @@ test -d "${argrelay_dir}/conf/"
 
 ########################################################################################################################
 # Init Python.
+
+# TODO: TODO_11_66_62_70: python_bootstrap: TODO:
+#       Use single bootstrap config.
 
 if [[ ! -f "${argrelay_dir}/conf/python_env.conf.bash" ]]
 then
