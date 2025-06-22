@@ -25,6 +25,11 @@ repos:
 
         -   id: black
 
+            args: [
+                "--force-exclude",
+                "protoprimer/cmd/proto_copy.py",
+            ]
+
     -   repo: https://github.com/igorshubovych/markdownlint-cli
         rev: v0.45.0
         hooks:
