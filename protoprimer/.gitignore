@@ -1,0 +1,10 @@
+
+# Python (recursively):
+#__pycache__/
+
+# Typical Python `venv` location:
+/venv/
+
+# Target environment config
+# (no trailing slash `/` because it can be a symlink):
+/conf_env

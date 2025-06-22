@@ -160,7 +160,8 @@ def _assert_test_name_embeds_prod_name(
     This function ensures that names in prod code and test code do not diverge due to refactoring.
 
     That programmatically establishes relationship between prod code and test code via cross-references.
-    The function should not be called directly (with strings which defeats the purpose as strings easily diverge).
-    Instead, an appropriate wrapper function should be called with references (e.g. to classes).
+    This function should not be called directly (with its `str` args) -
+    that defeat the purpose as strings easily diverge.
+    Instead, an appropriate wrapper function should be called with references (e.g., to classes).
     """
     assert prod_name in test_name

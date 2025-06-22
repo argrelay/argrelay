@@ -2,10 +2,10 @@ import os
 
 import re
 
-# The "distribution root" refers to the top-level directory where your project code resides,
-# is the root directory that contains the `setup.py` file itself.
-# In case of `argrelay`, it may confusingly appear it is equivalent to `argrelay_dir`
-# (because it contains `setup.py`), but it is not - when installed, `setup.py` will run from extracted archive:
+# The "distribution root" refers to the top-level directory where your project code resides.
+# It is the root directory that contains the `setup.py` file itself.
+# In the case of `argrelay`, it may confusingly appear it is equivalent to `argrelay_dir`
+# (because it contains `setup.py`), but it is not - when installed, `setup.py` will run from the extracted archive:
 distrib_root = os.path.dirname(os.path.abspath(__file__))
 
 # Implements this:
@@ -124,7 +124,7 @@ See: https://github.com/argrelay/argrelay
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: POSIX :: Linux",
     ],
-    # See sample layout:
+    # See the sample layout:
     # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
     # List all packages/sub-packages (so that they are taken by `package_dir` below):
     packages=setuptools.find_packages(
@@ -139,7 +139,7 @@ See: https://github.com/argrelay/argrelay
     #     The keys to this dictionary are package names,
     #     and an empty package name stands for the root package.
     #     The values are directory names relative to your distribution root.
-    #     See "distribution root" above - during
+    #     See "distribution root" above - during installation, `setup.py` will run from the extracted archive.
     package_dir={
         # fmt: off
         "argrelay":
