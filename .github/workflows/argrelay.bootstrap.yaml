@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
 
         strategy:
-            # When one of the job fails, this prevents canceling another job (for another Python version):
+            # When one of the jobs fails, this prevents canceling another job (for another Python version):
             fail-fast: false
             matrix:
                 # FS_84_11_73_28: supported python versions:
