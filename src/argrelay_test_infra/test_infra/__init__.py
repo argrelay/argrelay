@@ -77,13 +77,13 @@ def _file_line_l_1() -> str:
     return f"{stack_frame.f_code.co_filename}:{stack_frame.f_lineno}"
 
 
-def parse_line_and_cpos(test_line: str) -> (str, int):
+def parse_line_and_cpos(test_line: str) -> tuple[str, int]:
     """
     Translate test line with pipe as cursor place into command line string and cursor char position (cpos)
     """
     assert test_line.count("|") == 1
-    cursor_cpos = test_line.index("|")
-    command_line = test_line.replace("|", "")
+    cursor_cpos: int = test_line.index("|")
+    command_line: str = test_line.replace("|", "")
     return command_line, cursor_cpos
 
 

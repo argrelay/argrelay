@@ -82,6 +82,9 @@ dev_shell.bash
 init_shell_env.bash
 install_project.bash
 play_x_server_demo.bash
+proto_kernel.conf_client.json
+proto_kernel.conf_primer.json
+proto_kernel.py
 publish_package.bash
 relay_demo.bash
 resource_files.conf.bash

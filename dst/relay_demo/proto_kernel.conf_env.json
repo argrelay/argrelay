@@ -1,0 +1,9 @@
+{
+    "env_local_python_file_abs_path": "/usr/bin/python",
+    "env_local_venv_dir_rel_path": "venv",
+    "env_project_descriptors": [
+        {
+            "env_build_root_dir_rel_path": "."
+        }
+    ]
+}

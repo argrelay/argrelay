@@ -27,7 +27,7 @@ repos:
 
             args: [
                 "--force-exclude",
-                "protoprimer/cmd/proto_copy.py",
+                "exe/proto_kernel.py",
             ]
 
     -   repo: https://github.com/igorshubovych/markdownlint-cli

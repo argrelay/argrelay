@@ -23,7 +23,7 @@ Supported:
 See: docs/dev_notes/screencast_notes.md
 -->
 
-<a name="argrelay-about"></a>
+<a id="argrelay-about"></a>
 
 # What is `argrelay`?
 
@@ -58,8 +58,8 @@ It solves **the single most annoying problem** to know what to type next **in th
 `argrelay`-registered functions are **queryable** - they use schemas with<br/>
 loaded data to contextually limit possible options to locate or auto-complete them.
 
-<a name="argrelay-general-dilemma"></a>
-<a name="argrelay-purpose"></a>
+<a id="argrelay-general-dilemma"></a>
+<a id="argrelay-purpose"></a>
 
 # Why is it for shell?
 
@@ -86,7 +86,7 @@ Make CLI more human-efficient by reducing manual and guess work:
 
 See also ["general dilemma"][general_dilemma].
 
-<a name="argrelay-execution"></a>
+<a id="argrelay-execution"></a>
 
 # How does it work?
 
@@ -94,7 +94,7 @@ It employs the same shell API as auto-completion for any other (e.g. `ls` or `gi
 except that requests go to the server with its **plugin**-s to run search logic against **indexed** data<br/>
 (instead of processing requests locally by querying the file system).
 
-<a name="argrelay-name"></a>
+<a id="argrelay-name"></a>
 
 ### It is in the name:
 
@@ -127,7 +127,7 @@ sequenceDiagram
 
 See ["full picture"][full_picture] below.
 
-<a name="argrelay-scenario"></a>
+<a id="argrelay-scenario"></a>
 
 ### Typical scenario:
 
@@ -143,7 +143,7 @@ See ["full picture"][full_picture] below.
 
 Try ["interactive demo"][interactive_demo] below.
 
-<a name="argrelay-request-hotkeys"></a>
+<a id="argrelay-request-hotkeys"></a>
 
 ### Request hotkeys:
 
@@ -176,7 +176,7 @@ see how CLI arguments are matched against properties of the `ssh` destinations l
 Ultimately, `argrelay` can be used as dependency for a [separate project][bootstrap_procedure.1.project_creation.md]
 (in its own another repo).
 
-<a name="argrelay-demo"></a>
+<a id="argrelay-demo"></a>
 
 # Interactive demo: starting and stopping
 
@@ -251,7 +251,7 @@ While still in the started ["interactive demo"][interactive_demo] sub-shell:
 
     A lot of the functions are stubs and tests for demo purposes only.
 
-<a name="argrelay-changes-to-code-and-data"></a>
+<a id="argrelay-changes-to-code-and-data"></a>
 
 # Interactive demo: changes to code & data
 
@@ -279,7 +279,7 @@ While still in the started ["interactive demo"][interactive_demo] sub-shell:
 
 You may apply many examples from [`the_problem_argrelay_solves.md`][the_problem_argrelay_solves.md] to this `ssh`-wrapper.
 
-<a name="argrelay-data-access"></a>
+<a id="argrelay-data-access"></a>
 
 # Interactive demo: browse and replace server data
 
@@ -338,7 +338,7 @@ While still in the started ["interactive demo"][interactive_demo] sub-shell:
 
 See [`project_walkthrough.md`][project_walkthrough.md] for more details.
 
-<a name="primary-executables"></a>
+<a id="primary-executables"></a>
 
 # Primary executables
 
@@ -355,7 +355,7 @@ This table summarizes all executables most users ever need to know:
 
 See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for details.
 
-<a name="argrelay-backend"></a>
+<a id="argrelay-backend"></a>
 
 # Data backend
 
@@ -381,7 +381,7 @@ Quantitative comparison tables between the two can be seen in docstring for `Dis
 
 -->
 
-<a name="argrelay-full-picture"></a>
+<a id="argrelay-full-picture"></a>
 
 # Full picture
 
@@ -422,7 +422,7 @@ sequenceDiagram
     deactivate P
 ```
 
-<a name="argrelay-feedback"></a>
+<a id="argrelay-feedback"></a>
 
 # Project status
 
