@@ -17,7 +17,7 @@ Supported:
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
 -->
 
-[![youtube](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://www.youtube.com/shorts/ZjPcOBy3cbU)
+[![youtube](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://www.youtube.com/shorts/mnKrgPi0KUM)
 
 <!--
 See: docs/dev_notes/screencast_notes.md
