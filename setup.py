@@ -251,7 +251,7 @@ See: https://github.com/argrelay/argrelay
         "cachetools",
         # NOTE: URL spec to use from remote git repo directly:
         # "protoprimer @ git+https://github.com/uvsmtid/protoprimer.git@branch_name#subdirectory=src/protoprimer&egg=protoprimer",
-        "protoprimer==0.0.5",
+        "protoprimer==0.0.6",
     ],
     extras_require=extras_require,
 )
