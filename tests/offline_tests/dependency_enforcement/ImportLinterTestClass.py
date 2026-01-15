@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Callable
 
 from importlinter.adapters.building import GraphBuilder
-from importlinter.adapters.printing import RichPrinter
 from importlinter.adapters.timing import SystemClockTimer
 from importlinter.application.app_config import settings
 from importlinter.application.ports.reporting import Report
@@ -21,7 +20,7 @@ from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 # noinspection PyMethodMayBeStatic
 class ImportLinterTestClass(BaseTestClass):
     """
-    This base test class allows running `import-linter` as library for unit tests.
+    This base test class allows running `import-linter` as a library for unit tests.
 
     See:
     https://github.com/seddonym/import-linter/issues/246
@@ -39,7 +38,6 @@ class ImportLinterTestClass(BaseTestClass):
 
         settings.configure(
             GRAPH_BUILDER=GraphBuilder(),
-            PRINTER=RichPrinter(),
             TIMER=SystemClockTimer(),
             DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
         )
