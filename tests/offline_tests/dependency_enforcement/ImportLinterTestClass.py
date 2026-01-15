@@ -9,7 +9,7 @@ from importlinter.adapters.building import GraphBuilder
 
 if Version(importlinter.__version__) < Version("2.7"):
     # `PRINTER` was removed in `importlinter==2.7`:
-    from importlinter.adapters.printing import RichPrinter
+    from importlinter.adapters.printing import ClickPrinter
 
 from importlinter.adapters.timing import SystemClockTimer
 from importlinter.application.app_config import settings
@@ -48,7 +48,7 @@ class ImportLinterTestClass(BaseTestClass):
             # `PRINTER` was removed in `importlinter==2.7`:
             settings.configure(
                 GRAPH_BUILDER=GraphBuilder(),
-                PRINTER=RichPrinter(),
+                PRINTER=ClickPrinter(),
                 TIMER=SystemClockTimer(),
                 DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
             )
