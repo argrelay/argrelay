@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from typing import Callable
 
+from packaging.version import Version
+
+import importlinter
 from importlinter.adapters.building import GraphBuilder
+
+if Version(importlinter.__version__) < Version("2.7"):
+    # `PRINTER` was removed in `importlinter==2.7`:
+    from importlinter.adapters.printing import RichPrinter
+
 from importlinter.adapters.timing import SystemClockTimer
 from importlinter.application.app_config import settings
 from importlinter.application.ports.reporting import Report
@@ -36,11 +44,20 @@ class ImportLinterTestClass(BaseTestClass):
 
         registry.register(ForbiddenContract, name="forbidden")
 
-        settings.configure(
-            GRAPH_BUILDER=GraphBuilder(),
-            TIMER=SystemClockTimer(),
-            DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
-        )
+        if Version(importlinter.__version__) < Version("2.7"):
+            # `PRINTER` was removed in `importlinter==2.7`:
+            settings.configure(
+                GRAPH_BUILDER=GraphBuilder(),
+                PRINTER=RichPrinter(),
+                TIMER=SystemClockTimer(),
+                DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
+            )
+        else:
+            settings.configure(
+                GRAPH_BUILDER=GraphBuilder(),
+                TIMER=SystemClockTimer(),
+                DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
+            )
 
         lint_report: Report | None = None
         try:
