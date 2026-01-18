@@ -2,7 +2,7 @@ import logging
 import os.path
 from typing import Union
 
-import pkg_resources
+import importlib.resources
 from flasgger import Swagger
 from flask import (
     Flask,
@@ -43,11 +43,11 @@ class CustomFlaskApp(Flask):
         self,
         import_name: str,
         static_url_path="/gui_static",
-        static_folder=pkg_resources.resource_filename(
-            relay_server.__name__, "gui_static"
+        static_folder=str(
+            importlib.resources.files(relay_server.__name__).joinpath("gui_static")
         ),
-        template_folder=pkg_resources.resource_filename(
-            relay_server.__name__, "gui_templates"
+        template_folder=str(
+            importlib.resources.files(relay_server.__name__).joinpath("gui_templates")
         ),
     ):
         super().__init__(

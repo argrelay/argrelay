@@ -2,8 +2,17 @@ from __future__ import annotations
 
 from typing import Callable
 
+from packaging.version import Version
+
+import importlinter
 from importlinter.adapters.building import GraphBuilder
-from importlinter.adapters.printing import ClickPrinter
+
+# FS_84_11_73_28: supported python versions:
+# `importlinter==2.6` is installed for `python==3.9`:
+if Version(importlinter.__version__) < Version("2.7"):
+    # `PRINTER` was removed in `importlinter==2.7`:
+    from importlinter.adapters.printing import ClickPrinter
+
 from importlinter.adapters.timing import SystemClockTimer
 from importlinter.application.app_config import settings
 from importlinter.application.ports.reporting import Report
@@ -21,7 +30,7 @@ from argrelay_test_infra.test_infra.BaseTestClass import BaseTestClass
 # noinspection PyMethodMayBeStatic
 class ImportLinterTestClass(BaseTestClass):
     """
-    This base test class allows running `import-linter` as library for unit tests.
+    This base test class allows running `import-linter` as a library for unit tests.
 
     See:
     https://github.com/seddonym/import-linter/issues/246
@@ -37,12 +46,22 @@ class ImportLinterTestClass(BaseTestClass):
 
         registry.register(ForbiddenContract, name="forbidden")
 
-        settings.configure(
-            GRAPH_BUILDER=GraphBuilder(),
-            PRINTER=ClickPrinter(),
-            TIMER=SystemClockTimer(),
-            DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
-        )
+        # FS_84_11_73_28: supported python versions:
+        # `importlinter==2.6` is installed for `python==3.9`:
+        if Version(importlinter.__version__) < Version("2.7"):
+            # `PRINTER` was removed in `importlinter==2.7`:
+            settings.configure(
+                GRAPH_BUILDER=GraphBuilder(),
+                PRINTER=ClickPrinter(),
+                TIMER=SystemClockTimer(),
+                DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
+            )
+        else:
+            settings.configure(
+                GRAPH_BUILDER=GraphBuilder(),
+                TIMER=SystemClockTimer(),
+                DEFAULT_CACHE_DIR=f"{get_argrelay_dir()}/tmp/import_linter_cache",
+            )
 
         lint_report: Report | None = None
         try:

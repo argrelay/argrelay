@@ -1,0 +1,17 @@
+{
+    "__protoprimer==0.5.1__leap_primer__": "",
+
+    "ref_root_dir_rel_path": "../..",
+    "global_conf_dir_rel_path": "exe/proto_code",
+
+    "__protoprimer==0.5.1__leap_client__": "",
+
+    "local_conf_symlink_rel_path": "conf",
+    "default_env_dir_rel_path": "dst/relay_demo",
+
+    "package_driver": "driver_pip",
+
+    "local_log_dir_rel_path": "logs",
+    "local_tmp_dir_rel_path": "tmp",
+    "local_cache_dir_rel_path": "tmp"
+}

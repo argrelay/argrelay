@@ -64,14 +64,9 @@ then
     input_path="$(pwd)/${input_path}"
 fi
 
-# Note for `discover`:
-# `--top-level-directory` is what imports are relative to.
-# `--start-directory` is the starting root for test scanning.
-# Current directory `.` is what the above path should be relative to.
-
 if [[ -d "${input_path}" ]]
 then
-    python -m unittest discover --failfast --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${input_path}"
+    python -m pytest --verbose --exitfirst "${input_path}"
     # Unreachable, if test fail:
     exit 0
 fi
@@ -93,9 +88,9 @@ then
         # Neet to switch to the test dir to let test module name lookup work:
         cd "${default_test_dir}"
         # Assuming all test classes named as `ThisTestClass`:
-        python -m unittest --failfast "${module_name}.ThisTestClass.${method_name}"
+        python -m pytest --verbose --exitfirst -k "${module_name}.ThisTestClass.${method_name}" "${path_dirname}"
     else
-        python -m unittest discover --failfast --verbose --top-level-directory "${argrelay_dir}/tests" --start-directory "${path_dirname}" --pattern "${path_basename}"
+        python -m pytest --verbose --exitfirst -k "${path_basename}" "${path_dirname}"
     fi
     # Unreachable, if test fail:
     exit 0

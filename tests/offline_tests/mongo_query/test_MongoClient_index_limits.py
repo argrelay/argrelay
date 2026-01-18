@@ -8,7 +8,7 @@ from enum import (
 from offline_tests.mongo_query.MongoClientTestClass import MongoClientTestClass
 
 
-class TestSize(Enum):
+class MongoTestSize(Enum):
     SmallSize = auto()
     """
     Works for both `pymongo` and `mongomock`.
@@ -41,9 +41,9 @@ class ThisTestClass(MongoClientTestClass):
             **kwargs,
         )
 
-        self.test_size = TestSize.SmallSize
+        self.test_size = MongoTestSize.SmallSize
 
-        if self.test_size == TestSize.SmallSize:
+        if self.test_size == MongoTestSize.SmallSize:
             self.prop_count = 17
             self.envelope_count = 163
             self.max_value_ordinal = 11
@@ -55,7 +55,7 @@ class ThisTestClass(MongoClientTestClass):
                 "prop_3": "array_value_3",
             }
 
-        if self.test_size == TestSize.MediumSize:
+        if self.test_size == MongoTestSize.MediumSize:
             # Maximum number of indexes in MongoDB = 64:
             # https://www.mongodb.com/docs/manual/reference/limits/#mongodb-limit-Number-of-Indexes-per-Collection
             self.prop_count = 63
@@ -70,7 +70,7 @@ class ThisTestClass(MongoClientTestClass):
                 "prop_51": "array_value_26",
             }
 
-        if self.test_size == TestSize.LargeSize:
+        if self.test_size == MongoTestSize.LargeSize:
             self.prop_count = 263
             self.envelope_count = 7057
             self.max_value_ordinal = 379

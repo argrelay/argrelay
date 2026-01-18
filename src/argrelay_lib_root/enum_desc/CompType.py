@@ -21,7 +21,7 @@ class CompType(IntEnum):
     This part of `~/.inputrc` configures Tab to do `complete` and Shift-Tab to do `menu-complete` completion actions:
     ```
     "\t": complete
-    "\e[Z": menu-complete
+    "\\e[Z": menu-complete
     ```
 
     Other recommended settings for Readline:

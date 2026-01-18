@@ -332,7 +332,7 @@ class ThisTestClass(BaseTestClass):
         self,
     ):
         """
-        Scan imported modules on the way from client entry point to sending data.
+        Scan imported modules on the way from the client entry point to sending data.
 
         Test failure should bring attention to review of the imports and keep them to the minimum.
         This is an attempt to ensure performance is not degraded because of accidental unwanted extra imports.

@@ -1,46 +1,16 @@
 import os
 
-import re
+import setuptools
 
 # The "distribution root" refers to the top-level directory where your project code resides.
 # It is the root directory that contains the `setup.py` file itself.
-# In the case of `argrelay`, it may confusingly appear it is equivalent to `argrelay_dir`
+# In the case of `argrelay`, it may confusingly appear it is an equivalent to `argrelay_dir`
 # (because it contains `setup.py`), but it is not - when installed, `setup.py` will run from the extracted archive:
 distrib_root = os.path.dirname(os.path.abspath(__file__))
 
-# Implements this:
-# https://stackoverflow.com/a/7071358/441652
-version_file = f"{distrib_root}/src/argrelay/_version.py"
-version_content = open(version_file, "rt").read()
-version_regex = r"^__version__ = ['\"]([^'\"]*)['\"]"
-regex_match = re.search(version_regex, version_content, re.M)
-if regex_match:
-    version_string = regex_match.group(1)
-else:
-    raise RuntimeError(f"Unable to find version string: ${version_file}")
-
-import setuptools
-
-tests_require = [
-    "tox",
-    "responses",
-    "mongomock",
-    "pandas",
-    "icecream",
-    "jsonpath-ng",
-    "import-linter",
-    "pyfakefs",
-]
-
-# To install these extra dev dependencies:
-# pip install --editable "${argrelay_dir}/"[tests]
-extras_require = {
-    "tests": tests_require,
-}
-
 
 def list_dir(
-    top_dir_abs_path,
+    top_dir_abs_path: str,
 ) -> list[str]:
     """
     List files recursively from `top_dir_abs_path` with paths relative to `top_dir_abs_path`.
@@ -50,7 +20,7 @@ def list_dir(
         top_dir_abs_path
     ):
         for child_file_name in child_file_names:
-            file_abs_path = os.path.join(
+            file_abs_path: str = os.path.join(
                 parent_dir_abs_path,
                 child_file_name,
             )
@@ -94,36 +64,10 @@ argrelay_data_files = prefix_file_rel_paths(
     list_dir(f"{distrib_root}/data/"),
 )
 
+# All static metadata (`name`, `version`, `dependencies`, etc.) is now defined in `pyproject.toml`.
+# This `setup.py` only exists to handle the imperative logic for packaging data files,
+# which cannot be expressed declaratively in `pyproject.toml` (until later conversion).
 setuptools.setup(
-    name="argrelay",
-    version=version_string,
-    author="uvsmtid",
-    author_email="uvsmtid@gmail.com",
-    description="A data server to CLI tools with attribute search & Tab-completion in Bash shell",
-    long_description="""
-See: https://github.com/argrelay/argrelay
-    """,
-    long_description_content_type="text/markdown",
-    keywords="argparse, argcomplete, bash, complete",
-    url="https://github.com/argrelay/argrelay",
-    project_urls={
-        "Bug Tracker": "https://github.com/argrelay/argrelay/issues",
-    },
-    classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Environment :: Console",
-        "Framework :: Flask",
-        "Intended Audience :: Information Technology",
-        "Topic :: Terminals",
-        "Topic :: System :: Shells",
-        "Topic :: Scientific/Engineering :: Human Machine Interfaces",
-        "Topic :: Text Processing :: Indexing",
-        "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
-        "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: Apache Software License",
-        "Operating System :: POSIX :: Linux",
-    ],
     # See the sample layout:
     # https://docs.python.org/3.8/distutils/setupscript.html#installing-package-data
     # List all packages/sub-packages (so that they are taken by `package_dir` below):
@@ -232,26 +176,4 @@ See: https://github.com/argrelay/argrelay
         "argrelay_docs": argrelay_data_files,
         "argrelay_data": argrelay_docs_files,
     },
-    # FS_84_11_73_28: supported python versions:
-    python_requires=">=3.9",
-    install_requires=[
-        "Flask",
-        "Werkzeug",
-        "PyYaml",
-        "jsonschema",
-        "flasgger",
-        "marshmallow>=3.0.0,<5.0.0",
-        "marshmallow-oneofschema",
-        "apispec",
-        "pymongo",
-        "GitPython",
-        # Use `mongomock` as a replacement for Mongo DB in simple prod cases:
-        "mongomock",
-        "requests",
-        "cachetools",
-        # NOTE: URL spec to use from remote git repo directly:
-        # "protoprimer @ git+https://github.com/uvsmtid/protoprimer.git@branch_name#subdirectory=src/protoprimer&egg=protoprimer",
-        "protoprimer==0.5.0",
-    ],
-    extras_require=extras_require,
 )
