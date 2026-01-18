@@ -1,0 +1,12 @@
+{
+    "required_python_file_abs_path": "/usr/bin/python",
+    "local_venv_dir_rel_path": "venv",
+    "project_descriptors": [
+        {
+            "build_root_dir_rel_path": ".",
+            "install_extras": [
+                "tests"
+            ]
+        }
+    ]
+}

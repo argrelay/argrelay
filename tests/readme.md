@@ -22,12 +22,16 @@ The only useful practical difference between them are these directories:
 
 *   `online_tests`
 
+    Disabled by default until env var `CI` is set to `true`.
+
     Tests which use network resources (e.g. internet services, databases, etc.).
 
     They are not supposed to run during build process,
     but could be easily run in some environments without steps to set them up.
 
 *   `env_tests`
+
+    Disabled by default until env var `ENV_TEST` is set to `true`.
 
     Similar to `online_tests`, but these tests require special setup and normally run on demand
     (rely on some running service, need some files, etc.).
@@ -39,6 +43,8 @@ The only useful practical difference between them are these directories:
 
 *   `slow_tests`
 
+    Disabled by default until env var `CI` is set to `true`.
+
     Same as `offline_tests`, but run longer and not that important for quick feedback cycles.
 
 *   `release_tests`
@@ -48,6 +54,8 @@ The only useful practical difference between them are these directories:
     but they will eventually need to pass before the release.
 
 *   `gui_tests`
+
+    Disabled by default until env var `GUI_TEST` is set to `true`.
 
     Cypress tests for built-in GUI - they are started manually and separately at the moment.
 

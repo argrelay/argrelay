@@ -1,4 +1,80 @@
 [build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
-requires = ['setuptools>=42']
-build-backend = 'setuptools.build_meta'
+[project]
+name = "argrelay"
+dynamic = ["version"]
+authors = [
+    { name = "uvsmtid", email = "uvsmtid@gmail.com" },
+]
+description = "A data server to CLI tools with attribute search & Tab-completion in Bash shell"
+readme = "readme.md"
+keywords = ["argparse", "argcomplete", "bash", "complete"]
+license = { file = "LICENSE" }
+# FS_84_11_73_28: supported python versions:
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: Flask",
+    "Intended Audience :: Information Technology",
+    "Topic :: Terminals",
+    "Topic :: System :: Shells",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Text Processing :: Indexing",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+    "Flask",
+    "Werkzeug",
+    "PyYaml",
+    "jsonschema",
+    "flasgger",
+    "marshmallow>=3.0.0,<5.0.0",
+    "marshmallow-oneofschema",
+    "apispec",
+    "pymongo",
+    "GitPython",
+    "mongomock",
+    "requests",
+    "cachetools",
+    # NOTE: URL spec to use from remote git repo directly:
+    # "protoprimer @ git+https://github.com/uvsmtid/protoprimer.git@branch_name#subdirectory=src/protoprimer&egg=protoprimer",
+    "protoprimer==0.5.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/argrelay/argrelay"
+"Bug Tracker" = "https://github.com/argrelay/argrelay/issues"
+
+[project.optional-dependencies]
+tests = [
+    "pytest",
+    "tox",
+    "responses",
+    # Use `mongomock` as a replacement for Mongo DB in simple prod cases:
+    "mongomock",
+    "pandas",
+    "icecream",
+    "jsonpath-ng",
+    "import-linter",
+    "pyfakefs",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "argrelay._version.__version__" }
+
+[tool.pytest.ini_options]
+# Add `src` and `tests` as source roots (prod and test respectively):
+pythonpath = [
+    "src",
+    "tests",
+]
+norecursedirs = [
+    "tmp",
+]

@@ -1,4 +1,8 @@
 class TestCase:
+
+    # This is not a test:
+    __test__ = False
+
     """
     1.
     The input data provided by the `TestCase` (and its derived classes)
