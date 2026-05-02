@@ -9,7 +9,7 @@ you use CLI (command line interface) to craft commands for both cases:
 # The problem
 
 ```
-some_warehouse_coomand retrive 2020-11-12 e04b X15 ▋
+some_warehouse_command retrieve 2020-11-12 e04b X15 ▋
 ```
 
 **Your single most annoying problem** is to know what to type next **in the middle of typing**.
@@ -34,10 +34,10 @@ The warehouse stores items with single search property `item_id`:
 | `e04a`    |
 | `e04b`    |
 
-If you want to run `some_warehouse_coomand` against an item, you execute:
+If you want to run `some_warehouse_command` against an item, you execute:
 
 ```
-some_warehouse_coomand df3a ▋
+some_warehouse_command df3a ▋
 ```
 
 However, normally, you don't remember `item_id`-s.
@@ -50,7 +50,7 @@ You can load all `item_id`-s into a stand-by `argrelay` server and use `Tab`-com
 
 ```
 # Tab:
-some_warehouse_coomand ▋
+some_warehouse_command ▋
 
 df3a df3b df3c ef0a ef0b
 ```
@@ -59,7 +59,7 @@ You can limit the list of options by prefix - just start typing initial characte
 
 ```
 # Tab:
-some_warehouse_coomand ef0▋
+some_warehouse_command ef0▋
 
 ef0a ef0b
 ```
@@ -84,7 +84,7 @@ Item may have, for example, `expiration_date`-s:
 Now, you can select them by `expiration_date` if you do not remember its `item_id`:
 
 ```
-some_warehouse_coomand 2021-02-04 ▋
+some_warehouse_command 2021-02-04 ▋
 ```
 
 If there are many items with the same `expiration_date`,
@@ -94,7 +94,7 @@ In that case, `Tab`-completion will suggest only `item_id`-s matching the given 
 
 ```
 # Tab:
-some_warehouse_coomand 2020-11-12 ▋
+some_warehouse_command 2020-11-12 ▋
 
 df3a e04b
 ```
@@ -137,7 +137,7 @@ When `Thu` is specified, you still need to disambiguate items by `item_id`
 
 ```
 # Tab:
-some_warehouse_coomand Thu ▋
+some_warehouse_command Thu ▋
 
 df3a e04b
 ```
@@ -157,7 +157,7 @@ When `FEB` is specified, there are multiple properties to disambiguate items -
 
 ```
 # Tab:
-some_warehouse_coomand FEB ▋
+some_warehouse_command FEB ▋
 
 Fri Wed
 ```
@@ -177,7 +177,7 @@ for example, prefix `202` matches values in `expiration_date` instead of `exp_we
 
 ```
 # Tab:
-some_warehouse_coomand FEB 202▋
+some_warehouse_command FEB 202▋
 
 2021-02-05 2022-02-09
 ```
@@ -229,8 +229,8 @@ Let's use `Alt+Shift+Q`-query with the same data index from the previous section
 <br/>
 
 The following output tells you:
-*   The number of `wharehouse_item`-s matching the command line is `2`.
-*   All matching `wharehouse_item`-s have:
+*   The number of `warehouse_item`-s matching the command line is `2`.
+*   All matching `warehouse_item`-s have:
     *   `exp_month` property equal to `FEB` which was `explicit`-ly specified.
 *   To disambiguate there are:
     *   `exp_weekday` property with two values to select from `Fri` and `Wed`
@@ -239,9 +239,9 @@ The following output tells you:
 
 ```
 # Alt+Shift+Q:
-some_warehouse_coomand FEB ▋
+some_warehouse_command FEB ▋
 
-wharehouse_item: 2
+warehouse_item: 2
   exp_weekday: ? Fri Wed
   exp_month: FEB [explicit]
   expiration_date: ? 2021-02-05 2022-02-09
@@ -258,8 +258,8 @@ wharehouse_item: 2
 <br/>
 
 The following output tells you:
-*   The number of `wharehouse_item`-s matching the command line is `2`.
-*   All matching `wharehouse_item`-s have:
+*   The number of `warehouse_item`-s matching the command line is `2`.
+*   All matching `warehouse_item`-s have:
     *   `exp_weekday` property equal to `Thu` which was `explicit`-ly specified.
     *   `exp_month` property equal to `NOV` which was `implicit`-ly deduced.
     *   `expiration_date` property equal to `2020-11-12` which was `implicit`-ly deduced.
@@ -267,9 +267,9 @@ The following output tells you:
 
 ```
 # Alt+Shift+Q:
-some_warehouse_coomand Thu ▋
+some_warehouse_command Thu ▋
 
-wharehouse_item: 2
+warehouse_item: 2
   exp_weekday: Thu [explicit]
   exp_month: NOV [implicit]
   expiration_date: 2020-11-12 [implicit]
@@ -286,18 +286,18 @@ wharehouse_item: 2
 <br/>
 
 The following output tells you:
-*   The number of `wharehouse_item`-s matching the command line is `1`.
-*   The matching `wharehouse_item` has:
+*   The number of `warehouse_item`-s matching the command line is `1`.
+*   The matching `warehouse_item` has:
     *   `exp_weekday` property equal to `Wed` which was `implicit`-ly deduced.
     *   `exp_month` property equal to `MAY` which was `implicit`-ly deduced.
     *   `expiration_date` property equal to `2022-05-18` which was `explicit`-ly specified.
-*   The selected `wharehouse_item` is completely disambiguated (singled out) - there is no more input required.
+*   The selected `warehouse_item` is completely disambiguated (singled out) - there is no more input required.
 
 ```
 # Alt+Shift+Q:
-some_warehouse_coomand 2022-05-18 ▋
+some_warehouse_command 2022-05-18 ▋
 
-wharehouse_item: 1
+warehouse_item: 1
   exp_weekday: Wed [implicit]
   exp_month: MAY [implicit]
   expiration_date: 2022-05-18 [explicit]
@@ -339,7 +339,7 @@ Example:
 
 <br/>
 
-Before selecting `wharehouse_item`-s, you need to select a function (action):
+Before selecting `warehouse_item`-s, you need to select a function (action):
 *   If you have only one function, no selection is needed (it is deduced `implicit`-ly).
 *   If you have multiple functions, you need to disambiguate them (specify `explicit`-ly).
 
@@ -348,24 +348,24 @@ Naturally, `argrelay` searches functions via search properties (like any other d
 For example, selecting a function by matching `retrieve` or `dispose` values:
 
 ```
-some_warehouse_coomand retrieve 2020-11-12 e04b ▋
+some_warehouse_command retrieve 2020-11-12 e04b ▋
 ```
 
 ```
-some_warehouse_coomand dispose 2020-11-12 e04b ▋
+some_warehouse_command dispose 2020-11-12 e04b ▋
 ```
 
 Obviously, `Tab`-completion and `Alt+Shift+Q`-query would work in the similar way:
 
 ```
 # Alt+Shift+Q:
-some_warehouse_coomand dispose 2020-11-12 e04b ▋
+some_warehouse_command dispose 2020-11-12 e04b ▋
 
 class_function: 1
-  tree_step_0: some_warehouse_coomand [explicit]
+  tree_step_0: some_warehouse_command [explicit]
   tree_step_1: dispose [explicit]
   func_id: func_id_dispose_warehouse_item [implicit]
-wharehouse_item: 1
+warehouse_item: 1
   exp_weekday: Thu [implicit]
   exp_month: NOV [implicit]
   expiration_date: 2020-11-12 [explicit]
@@ -387,31 +387,31 @@ Example:
 
 So far, our functions required single object class `warehouse_item`.
 
-We can also think of selecting a `warehouse_dron` which is supposed to execute the action:
+We can also think of selecting a `warehouse_drone` which is supposed to execute the action:
 
 For example:
 
 ```
 # Alt+Shift+Q:
-some_warehouse_coomand dispose 2020-11-12 e04b X15 ▋
+some_warehouse_command dispose 2020-11-12 e04b X15 ▋
 
 class_function: 1
-  tree_step_0: some_warehouse_coomand [explicit]
+  tree_step_0: some_warehouse_command [explicit]
   tree_step_1: dispose [explicit]
   func_id: func_id_dispose_warehouse_item [implicit]
-wharehouse_item: 1
+warehouse_item: 1
   exp_weekday: Thu [implicit]
   exp_month: NOV [implicit]
   expiration_date: 2020-11-12 [explicit]
   item_id: e04b [explicit]
-warehouse_dron: 5
-  dron_model: X15 [explicit]
-  dron_id: ? a2119085 a2119086 a2119087 a2119088 a2119089
+warehouse_drone: 5
+  drone_model: X15 [explicit]
+  drone_id: ? a2119085 a2119086 a2119087 a2119088 a2119089
 ```
 
 The function has a choice:
-*   may require disambiguating `warehouse_dron` to specific one (by `dron_id`)
-*   may be able to automatically select specific drone (from those already narrowed down by `dron_model` = `X15`)
+*   may require disambiguating `warehouse_drone` to specific one (by `drone_id`)
+*   may be able to automatically select specific drone (from those already narrowed down by `drone_model` = `X15`)
 
 </details>
 
@@ -452,10 +452,10 @@ Apart from assistance **in the middle of typing**, `argrelay` supplies functions
 
 ```
 # Enter:
-some_warehouse_coomand 2022-05-18 ▋
+some_warehouse_command 2022-05-18 ▋
 ```
 
-The single argument `2022-05-18` retrieves entire `wharehouse_item` object with arbitrary data in `envelope_payload` -
+The single argument `2022-05-18` retrieves entire `warehouse_item` object with arbitrary data in `envelope_payload` -
 similar to specifying a file name and receiving the entire file content:
 
 ```json
@@ -478,7 +478,7 @@ When user hits `Enter`:
 *   client passes control and all data to the local function
 
 In case of `argrelay` client, from the shell point of view, it is a regular command -
-the shell does not know `argrely` server exists.
+the shell does not know `argrelay` server exists.
 
 # Feature: generic structured data search
 
@@ -500,7 +500,7 @@ But you should immediately see many problems with `grep`-ing approach.
 
 <details>
 <summary>
-And <code>argrelay`</code> <b>solves many of them:</b>
+And <code>argrelay</code> <b>solves many of them:</b>
 </summary>
 
 <br/>

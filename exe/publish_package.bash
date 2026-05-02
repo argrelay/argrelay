@@ -62,7 +62,7 @@ fi
 # TODO: TODO_64_79_28_85: use upgrade_env_packages.bash
 
 # Clear venv (only to be restored in the next step):
-pip uninstall -y -r <( pip freeze )
+pip freeze | grep -v '^-e' | xargs -r pip uninstall -y
 # Restore only saved dev packages
 # (if fresh dependencies are required, clear `@/conf/env_packages.txt` first):
 pip install -r "${argrelay_dir}/conf/env_packages.txt"
@@ -195,10 +195,9 @@ fi
 rm -rf         "${argrelay_dir}/tmp/venv.twine"
 python -m venv "${argrelay_dir}/tmp/venv.twine"
 source         "${argrelay_dir}/tmp/venv.twine/bin/activate"
-pip install setuptools
+pip install build
 
-# The following are the staps found in majority of the web resources.
-python "${argrelay_dir}/setup.py" sdist
+python -m build --sdist
 
 pip install twine
 # This will prompt for login credentials:

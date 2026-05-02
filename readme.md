@@ -11,7 +11,7 @@ Supported:
 *   Bash >= 4.0
 *   Python >= 3.9
 
-<a name="argrelay-secreencast"></a>
+<a name="argrelay-screencast"></a>
 
 <!--
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
@@ -23,40 +23,65 @@ Supported:
 See: docs/dev_notes/screencast_notes.md
 -->
 
+# TL;DR
+
+*   Start [interactive demo][interactive_demo]:
+
+    ```sh
+    docker run -it argrelay/demo
+    ```
+
+    Here, the `shell` runs in the `docker` container.
+
+    Eventually, the goal is to configure your default `shell`.
+
+*   Try [request hotkeys][interactive_demo_test_data]:
+
+    ```sh
+    lay goto                 # press `Alt+Shift+Q` to describe available options
+    ```
+
+    ```sh
+    lay goto host            # press `Tab` one or multiple times
+    ```
+
+    ```sh
+    lay goto host dev        # press `Alt+Shift+Q` to observe changes in the output
+    ```
+
 <a id="argrelay-about"></a>
 
 # What is `argrelay`?
 
-A **human interface** into "automation arsenal" with built-in search for scripts & their input data.
+A CLI search for scripts & their input args via data server **without leaving** your shell.
 
 ### A longer answer:
 
-A wrapper for command line interface (CLI) tools to simplify input selection.<br/>
-It integrates shell + client + server to search loaded **custom data**<br/>
-navigating **custom schema** via CLI args directly in the **standard shell**.
+A wrapper for CLI tools to simplify input selection.<br/>
+It integrates shell + client + server to search **custom indexed data**<br/>
+navigating **custom input schema** via CLI args directly in the **standard shell**.
 
-*   Although its initial purpose was command **auto-completion**, that become a trivial byproduct of...
+*   Think of it initially as command **auto-completion** which is a byproduct of...
 *   Its primary feature: (tag|label|keyword|attribute)-based **structured data search**.
 
-### Probably the best answer:
+### Examples:
 
-:star: :star: :star: :star: :star:
-
-You may find it easier to **get the idea through examples** in [`the_problem_argrelay_solves.md`][the_problem_argrelay_solves.md]<br/>
-and ignore the rest of this `readme.md` (to avoid reading distilled claims).
+You may find it easier to **get the idea through examples** in [`the_problem_argrelay_solves.md`][the_problem_argrelay_solves.md].
 
 # When is it needed?
+
+When you have many options.
 
 It solves **the single most annoying problem** to know what to type next **in the middle of typing**.
 
 *   When command args relate to sizeable data **incomprehensible or difficult** to<br/>
     review, select, browse, discover on the spot.
 
-*   When knowledge about ( non-standard | undocumented ) "enterprise automation" scripts is<br/>
-    constantly **invalidated** by frequent updates of code & data.
+*   When knowledge about ( non-standard | undocumented ) automation scripts is<br/>
+    constantly **invalidated** by frequent evolution of code & data.
 
 `argrelay`-registered functions are **queryable** - they use schemas with<br/>
-loaded data to contextually limit possible options to locate or auto-complete them.
+loaded data to **contextually limit** possible options to locate or auto-complete them.
 
 <a id="argrelay-general-dilemma"></a>
 <a id="argrelay-purpose"></a>
@@ -70,7 +95,7 @@ but there is an **oversupply** of GUI-s (and they do not integrate with scripts)
 
 CLI is indispensable for **rapidly evolving custom tools**:
 *   [A] **ubiquitous automation** (any command is effectively **replay-able code**)
-*   [B] **quick implementation** (get it done "in the afternoon" without **drilling fullstack** API whole month)
+*   [B] **quick implementation** (get it done "in the afternoon" without **drilling fullstack** API the whole month)
 *   [C] ultimate **manual intervention** (when everything else is already failed and unavailable)
 
 ### Accepting the problem:
@@ -81,8 +106,8 @@ Achieving all three [A, B, C] is **nearly impossible without** CLI.
 
 Make CLI more human-efficient by reducing manual and guess work:
 *   enable **inline search directly in shell** (without copying-and-pasting args from other apps)
-*   reduce cognitive load via feedback **eliminating syntax and options memorization**
-*   unify interaction for all registered commands via **data-driven** framework
+*   reduce the cognitive load via feedback **eliminating syntax and options memorization**
+*   unify interaction for all registered commands via a **data-driven** framework
 
 See also ["general dilemma"][general_dilemma].
 
@@ -141,7 +166,7 @@ See ["full picture"][full_picture] below.
 
     *   What **else** machine needs from human to **disambiguate** and select the remaining command args.
 
-Try ["interactive demo"][interactive_demo] below.
+Try [interactive demo][interactive_demo] below.
 
 <a id="argrelay-request-hotkeys"></a>
 
@@ -170,7 +195,7 @@ The simplest way is to fork|branch the repo and wrap the intended logic followin
     For example, `ssh` wrapper may use selected destinations,<br/>
     see `invoke_action` func in [`DelegatorSshDst.py`][ssh_delegator_code].
 
-Try ["interactive demo"][interactive_demo] while changing code and data from that example to<br/>
+Try [interactive demo][interactive_demo] while changing code and data from that example to<br/>
 see how CLI arguments are matched against properties of the `ssh` destinations loaded by the loader.
 
 Ultimately, `argrelay` can be used as dependency for a [separate project][bootstrap_procedure.1.project_creation.md]
@@ -180,9 +205,9 @@ Ultimately, `argrelay` can be used as dependency for a [separate project][bootst
 
 # Interactive demo: starting and stopping
 
-There are two ways to start demo:
+There are two ways to start the demo:
 
-*   Using `docker` image:
+*   Using `docker` (temporarily, just to try):
 
     ```sh
     docker run -it argrelay/demo
@@ -200,9 +225,11 @@ There are two ways to start demo:
     ./exe/relay_demo.bash
     ```
 
-    This sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
+    The started sub-shell configures request hotkeys to bind `lay` command with `@/exe/run_argrelay_client`.
 
-Optionally, review env state (any time):
+Try [request hotkeys][interactive_demo_test_data] (next section).
+
+Optionally, review the env state (any time):
 
 ```sh
 ./exe/check_env.bash
@@ -220,9 +247,11 @@ exit
 
 See [`project_walkthrough.md`][project_walkthrough.md] for more details.
 
-# Interactive demo: elaborated test data
+<a id="argrelay-demo-test-data"></a>
 
-While still in the started ["interactive demo"][interactive_demo] sub-shell:
+# Interactive demo: test data
+
+While still in the started [interactive demo][interactive_demo] sub-shell:
 
 *   Try [request hotkeys][request_hotkeys] with `lay` command (which uses [demo test data][TD_63_37_05_36.demo_services_data.md]):
 
@@ -257,7 +286,7 @@ While still in the started ["interactive demo"][interactive_demo] sub-shell:
 
 The following `ssh`-related command is intentionally added to demo simple changes to code & data.
 
-While still in the started ["interactive demo"][interactive_demo] sub-shell:
+While still in the started [interactive demo][interactive_demo] sub-shell:
 
 *   For `ssh` wrapper example, try `lay ssh` or `ar_ssh` commands:
 
@@ -275,7 +304,7 @@ While still in the started ["interactive demo"][interactive_demo] sub-shell:
     *   **Data** from [`ConfigOnlyLoader.ssh_dst_group.data.yaml`][ssh_loder_data].
     *   **Code** from [`DelegatorSshDst.py`][ssh_delegator_code].
 
-*   Restart ["interactive demo"][interactive_demo] and try `lay ssh` or `ar_ssh` command again to see the changes.
+*   Restart [interactive demo][interactive_demo] and try `lay ssh` or `ar_ssh` command again to see the changes.
 
 You may apply many examples from [`the_problem_argrelay_solves.md`][the_problem_argrelay_solves.md] to this `ssh`-wrapper.
 
@@ -291,7 +320,7 @@ The data sub-set (sub-snapshot) is defined by search properties within the data.
 
 For consistency, all entries added/deleted/replaced should have the same values for the specified search properties.
 
-While still in the started ["interactive demo"][interactive_demo] sub-shell:
+While still in the started [interactive demo][interactive_demo] sub-shell:
 
 *   Browse and retrieve data used by `ssh` wrapper:
 
@@ -481,6 +510,7 @@ Feel free to raise [issues][repo_issues] or [discussions][repo_discussions].
 
 [full_picture]: #argrelay-full-picture
 [interactive_demo]: #argrelay-demo
+[interactive_demo_test_data]: #argrelay-demo-test-data
 [request_hotkeys]: #argrelay-request-hotkeys
 
 [readline_config]: https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
