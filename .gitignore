@@ -7,7 +7,7 @@ __pycache__/
 /.tox/
 /build/
 /dist/
-/argrelay.egg-info/
+/src/argrelay.egg-info/
 
 # Typical Python `venv` location:
 /venv/

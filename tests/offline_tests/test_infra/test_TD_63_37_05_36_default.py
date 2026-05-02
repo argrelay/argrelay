@@ -42,7 +42,7 @@ class ThisTestClass(BaseTestClass):
 
         with change_to_known_repo_path():
             # Filter out only table lines from Markdown file:
-            table_regex = re.compile("^\|")
+            table_regex = re.compile(r"^\|")
             test_data = ""
             with open(
                 "../docs/test_data/TD_63_37_05_36.demo_services_data.md"

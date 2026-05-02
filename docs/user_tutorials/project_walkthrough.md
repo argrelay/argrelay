@@ -10,7 +10,7 @@ deployed instance describing their purposes.
 
 # Beyond the demo
 
-Start with the ["interactive demo"][interactive_demo] from the main readme.
+Start with the [interactive demo][interactive_demo] from the main readme.
 
 *   While inside the sub-shell, inspect how auto-completion is configured for `relay_demo`:
 
