@@ -1,7 +1,27 @@
 #!/usr/bin/env bash
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 
+# TODO: FS_59_19_34_39.supported_shell.md:
+# TODO: TODO_11_66_62_70.python_bootstrap.md:
+#       Currently, when this file is executed directly, it is `bash`-only.
+#       When this file is `source`-ed, it ban be both `zsh` and `bash`.
+
 # This script should ALWAYS be called with current dir = project dir `@/` (see `argrelay_dir` below).
+
+# FS_59_19_34_39.supported_shell.md:
+# Shell compatibility shim - must run before any Bash/Zsh-specific code:
+if [[ -n "${BASH_SOURCE+x}" ]]; then
+    _current_script="${BASH_SOURCE[0]}"
+    [[ "${0}" != "${BASH_SOURCE[0]}" ]] && _is_sourced="true" || _is_sourced="false"
+    _array_base=0
+    _errtrace_opt="set -E"
+else
+    # Zsh
+    _current_script="${(%):-%x}"
+    [[ "${ZSH_EVAL_CONTEXT}" == *:file* ]] && _is_sourced="true" || _is_sourced="false"
+    _array_base=1
+    _errtrace_opt="setopt ERR_RETURN"
+fi
 
 # This script sets up dev env (re-installs packages in Python `venv`, sets up symlinks, and so on).
 # It is also sourced by `@/exe/init_shell_env.bash` to activate Python `venv`.
@@ -46,7 +66,7 @@ esac
 
 # Keep output-related `set`-able options same when this script is sourced
 # (otherwise, full debug output for bootstrap is adequate as it runs in hardly predictable target environment):
-if [[ "${0}" == "${BASH_SOURCE[0]}" ]] ; then
+if [[ "${_is_sourced}" != "true" ]] ; then
 
 # Debug: Print commands before execution:
 set -x
@@ -59,8 +79,8 @@ fi
 set -o pipefail
 # Exit on non-zero exit code from a command:
 set -e
-# Inherit trap on ERR by sub-shells:
-set -E
+# Inherit trap on ERR by sub-shells (Bash: set -E; Zsh: setopt ERR_RETURN):
+eval "${_errtrace_opt}"
 # Error on undefined variables:
 set -u
 
@@ -69,14 +89,7 @@ set -u
 # TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
 #       `bash`-specific.
 
-if [[ "${0}" != "${BASH_SOURCE[0]}" ]]
-then
-    # sourced from another script:
-    is_script_sourced="true"
-else
-    # executed directly in its own shell:
-    is_script_sourced="false"
-fi
+is_script_sourced="${_is_sourced}"
 
 ########################################################################################################################
 
@@ -111,12 +124,12 @@ function color_failure_and_success_bootstrap_env {
     if [[ "${exit_code}" == "0" ]]
     then
         # Only if this script is NOT sourced by another:
-        if [[ "${0}" == "${BASH_SOURCE[0]}" ]]
+        if [[ "${_is_sourced}" != "true" ]]
         then
-            echo -e "${success_color}SUCCESS:${reset_color} ${BASH_SOURCE[0]}" 1>&2
+            echo -e "${success_color}SUCCESS:${reset_color} ${_current_script}" 1>&2
         fi
     else
-        echo -e "${failure_color}FAILURE:${reset_color} ${BASH_SOURCE[0]}: exit_code: ${exit_code}" 1>&2
+        echo -e "${failure_color}FAILURE:${reset_color} ${_current_script}: exit_code: ${exit_code}" 1>&2
         "${ret_command}" "${exit_code}"
     fi
 }
@@ -136,7 +149,7 @@ fi
 # TODO: TODO_11_66_62_70: python_bootstrap: SKIP:
 #       `bash`-specific
 
-script_source="${BASH_SOURCE[0]}"
+script_source="${_current_script}"
 # shellcheck disable=SC2034
 script_name="$( basename -- "${script_source}" )"
 # The dir of this script:
@@ -208,7 +221,7 @@ if [[ "${#unused_input_args[@]}" -gt "0" ]]
 then
 
     # Ensure dir exists:
-    config_path="${unused_input_args[0]}"
+    config_path="${unused_input_args[$(( 0 + _array_base ))]}"
     test -d "${config_path}"
 
     if [[ -d "${argrelay_dir}/conf" ]]
@@ -570,13 +583,13 @@ function run_install_procedure {
         "${ret_command}" 1
     fi
 
-    for i in "${!module_path_file_tuples[@]}"
+    for i in $( seq 0 $(( ${#module_path_file_tuples[@]} - 1 )) )
     do
         if [[ "$((i%3))" == "0" ]]
         then
-            module_name="${module_path_file_tuples[i+0]}"
-            module_dir_src_path="${module_path_file_tuples[i+1]}"
-            argrelay_dir_dst_path="${module_path_file_tuples[i+2]}"
+            module_name="${module_path_file_tuples[$(( i + 0 + _array_base ))]}"
+            module_dir_src_path="${module_path_file_tuples[$(( i + 1 + _array_base ))]}"
+            argrelay_dir_dst_path="${module_path_file_tuples[$(( i + 2 + _array_base ))]}"
 
             # Python `venv` has to be activated.
             # Get path of `argrelay` module:
@@ -721,6 +734,9 @@ module_path_file_tuples=(
     argrelay custom_integ_res/shell_env.bash exe/shell_env.bash
     argrelay custom_integ_res/dev_shell.bash exe/dev_shell.bash
     argrelay custom_integ_res/init_shell_env.bash exe/init_shell_env.bash
+    argrelay custom_integ_res/shell_env.zsh exe/shell_env.zsh
+    argrelay custom_integ_res/dev_shell.zsh exe/dev_shell.zsh
+    argrelay custom_integ_res/init_shell_env.zsh exe/init_shell_env.zsh
     argrelay custom_integ_res/upgrade_env_packages.bash exe/upgrade_env_packages.bash
     argrelay custom_integ_res/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash exe/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash
     argrelay custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash exe/script_plugin.d/check_env_plugin.bash_version.bash

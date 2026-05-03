@@ -99,7 +99,7 @@ gui_banner_config:
             }
         </style>
         <span id="forkongithub">
-            <a href="https://github.com/argrelay/argrelay" target="_blank">Boost it on GitHub</a>
+            <a href="https://github.com/argrelay/argrelay" target="_blank">View it on GitHub</a>
         </span>
 
         <br/>

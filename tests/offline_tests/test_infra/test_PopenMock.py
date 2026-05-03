@@ -80,7 +80,9 @@ build_project.bash
 check_env.bash
 config_files.conf.bash
 dev_shell.bash
+dev_shell.zsh
 init_shell_env.bash
+init_shell_env.zsh
 install_project.bash
 play_x_server_demo.bash
 proto_code
@@ -92,6 +94,7 @@ run_argrelay_server
 run_max_tests.bash
 script_plugin.d
 shell_env.bash
+shell_env.zsh
 squash_and_push_branch.bash
 update_pre_commit.bash
 upgrade_env_packages.bash

@@ -18,6 +18,9 @@
 /shell_env.bash
 /dev_shell.bash
 /init_shell_env.bash
+/shell_env.zsh
+/dev_shell.zsh
+/init_shell_env.zsh
 /upgrade_env_packages.bash
 /script_plugin.d/
 /script_plugin.d/check_env_plugin.all_argrelay_plugins.bash
