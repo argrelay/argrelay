@@ -3,12 +3,18 @@
 [![GitHub build](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml/badge.svg?branch=main)](https://github.com/argrelay/argrelay/actions/workflows/argrelay.bootstrap.yaml)
 
 <!--
+
+    FS_59_19_34_39.supported_shell.md
+
     FS_84_11_73_28: supported python versions:
+
 -->
 
 Supported:
 *   Linux
+*   macOS
 *   Bash >= 4.0
+*   Zsh >= 5.0
 *   Python >= 3.9
 
 <a name="argrelay-screencast"></a>
@@ -17,7 +23,7 @@ Supported:
 [![asciicast](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P)
 -->
 
-[![youtube](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://www.youtube.com/shorts/mnKrgPi0KUM)
+[![youtube](https://asciinema.org/a/LTHj0DHN2kfXJCHCGuJugNG4P.svg)](https://www.youtube.com/shorts/OtBSoOvojZU)
 
 <!--
 See: docs/dev_notes/screencast_notes.md
