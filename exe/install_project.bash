@@ -6,10 +6,8 @@
 
 # Normally, for integration project, the install scripts like this should pip-install itself (in the editable mode).
 
-# Saved env dependencies (if clean install is required, make `@/conf/env_packages.txt` file empty):
-python -m pip install -r "${argrelay_dir}/conf/env_packages.txt"
-
-# Use editable mode:
+# Use version constraints and editable mode:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
-python -m pip install --editable "${argrelay_dir}/"[tests]
+# (if clean install is required, make `@/conf/env_packages.txt` file empty):
+python -m pip install --constraint "${argrelay_dir}/conf/env_packages.txt" --editable "${argrelay_dir}/"[tests]
 ########################################################################################################################

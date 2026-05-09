@@ -4,3 +4,6 @@
 
 # Created by `@/exe/bootstrap_env.py`:
 /bootstrap_env.py.*
+
+# Actually, any log:
+/*.log

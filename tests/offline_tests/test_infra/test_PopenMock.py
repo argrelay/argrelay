@@ -78,6 +78,7 @@ bootstrap_env.bash
 bootstrap_env.py
 build_project.bash
 check_env.bash
+compare_bootstrap
 config_files.conf.bash
 dev_shell.bash
 dev_shell.zsh

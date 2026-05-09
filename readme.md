@@ -80,11 +80,9 @@ When you have many options.
 
 It solves **the single most annoying problem** to know what to type next **in the middle of typing**.
 
-*   When command args relate to sizeable data **incomprehensible or difficult** to<br/>
-    review, select, browse, discover on the spot.
+*   When command args = sizeable data **difficult** to review, select, browse, discover on the spot.
 
-*   When knowledge about ( non-standard | undocumented ) automation scripts is<br/>
-    constantly **invalidated** by frequent evolution of code & data.
+*   When knowledge about CLI commands is constantly **invalidated** by frequent releases.
 
 `argrelay`-registered functions are **queryable** - they use schemas with<br/>
 loaded data to **contextually limit** possible options to locate or auto-complete them.

@@ -30,6 +30,11 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
 ]
 dependencies = [
+    # TODO: Remove <82 constraint and make everything work after upgrade.
+    #       This avoids error on `import pkg_resources`:
+    #       ModuleNotFoundError: No module named 'pkg_resources'
+    "setuptools>=61.0,<82",
+    #
     "Flask",
     "Werkzeug",
     "PyYaml",
@@ -45,7 +50,7 @@ dependencies = [
     "cachetools",
     # NOTE: URL spec to use from remote git repo directly:
     # "protoprimer @ git+https://github.com/uvsmtid/protoprimer.git@branch_name#subdirectory=src/protoprimer&egg=protoprimer",
-    "protoprimer==0.11.1",
+    "protoprimer==0.12.0",
 ]
 
 [project.urls]
@@ -64,6 +69,7 @@ tests = [
     "jsonpath-ng",
     "import-linter",
     "pyfakefs",
+    "freezegun",
 ]
 
 [tool.setuptools.dynamic]
@@ -92,6 +98,9 @@ where = ["src"]
     "custom_integ_res/check_env.bash",
     "custom_integ_res/dev_shell.bash",
     "custom_integ_res/init_shell_env.bash",
+    "custom_integ_res/shell_env.zsh",
+    "custom_integ_res/dev_shell.zsh",
+    "custom_integ_res/init_shell_env.zsh",
     "custom_integ_res/upgrade_env_packages.bash",
     # Files in `script_plugin.d`:
     "custom_integ_res/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash",

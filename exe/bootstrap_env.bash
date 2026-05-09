@@ -410,9 +410,6 @@ fi
 # Continue with Python from `"${path_to_pythonX}"`:
 # - Use latest `pip`:
 python -m pip install --upgrade pip
-# - This avoids error on `import pkg_resources`:
-#   ModuleNotFoundError: No module named 'pkg_resources'
-python -m pip install --upgrade setuptools
 
 # Ensure `@/conf/env_packages.txt` exists:
 touch "${argrelay_dir}/conf/env_packages.txt"
@@ -438,12 +435,10 @@ then
 
 # Normally, for integration project, the install scripts like this should pip-install itself (in the editable mode).
 
-# Saved env dependencies (if clean install is required, make `@/conf/env_packages.txt` file empty):
-python -m pip install -r "${argrelay_dir}/conf/env_packages.txt"
-
-# Use editable mode:
+# Use version constraints and editable mode:
 # https://pip.pypa.io/en/latest/topics/local-project-installs/
-python -m pip install --editable "${argrelay_dir}/"[tests]
+# (if clean install is required, make `@/conf/env_packages.txt` file empty):
+python -m pip install --constraint "${argrelay_dir}/conf/env_packages.txt" --editable "${argrelay_dir}/"[tests]
 ########################################################################################################################
 install_project_EOF
     "${ret_command}" 1
@@ -914,17 +909,10 @@ source "${argrelay_dir}/exe/build_project.bash"
 ########################################################################################################################
 # Capture dependencies.
 
-# Update `@/conf/env_packages.txt` to know what was there at the time of bootstrapping:
-cat << 'REQUIREMENTS_EOF' > "${argrelay_dir}/conf/env_packages.txt"
-###############################################################################
-# Note that these dependencies are not necessarily required ones,
-# those required are listed in `setup.py` script and can be installed as:
-# pip install --editable "${argrelay_dir}/"
-###############################################################################
-REQUIREMENTS_EOF
+# Update `@/conf/env_packages.txt` to pin versions as they were at the time of bootstrapping:
 # FS_85_33_46_53 bootstrap package management:
 # Ignore `argrelay` itself (or anything installed in editable mode):
-pip freeze --exclude-editable >> "${argrelay_dir}/conf/env_packages.txt"
+pip freeze --exclude-editable > "${argrelay_dir}/conf/env_packages.txt"
 
 ########################################################################################################################
 

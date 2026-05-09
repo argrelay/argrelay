@@ -63,13 +63,12 @@ fi
 
 # Clear venv (only to be restored in the next step):
 pip freeze | grep -v '^-e' | xargs -r pip uninstall -y
-# Restore only saved dev packages
-# (if fresh dependencies are required, clear `@/conf/env_packages.txt` first):
-pip install -r "${argrelay_dir}/conf/env_packages.txt"
+# Restore dev packages using version constraints:
+# (if fresh dependencies are required, make `@/conf/env_packages.txt` file empty first):
+pip install --constraint "${argrelay_dir}/conf/env_packages.txt" --editable "${argrelay_dir}/"[tests]
 # Packages installed by `@/exe/bootstrap_env.bash` depend on
 # `@/exe/install_project.bash`, but normally it:
-# *  installs only those missing in `@/conf/env_packages.txt`
-#    (specifically those with editable mode like `argrelay` itself)
+# *  installs editable mode packages like `argrelay` itself constrained by `@/conf/env_packages.txt`
 # *  restores missing transitive dependencies
 "${argrelay_dir}/exe/bootstrap_env.bash"
 
