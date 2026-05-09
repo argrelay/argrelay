@@ -1,3 +1,5 @@
+from freezegun import freeze_time
+
 from argrelay_api_server_cli.schema_response.AssignedValue import AssignedValue
 from argrelay_lib_root.enum_desc.CompType import CompType
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
@@ -14,6 +16,8 @@ from argrelay_test_infra.test_infra import line_no
 from argrelay_test_infra.test_infra.LocalTestClass import LocalTestClass
 
 
+# Set specific time to make test stable:
+@freeze_time("2025-01-01")
 class ThisTestClass(LocalTestClass):
     same_test_data_per_class = "TD_63_37_05_36"  # demo
 

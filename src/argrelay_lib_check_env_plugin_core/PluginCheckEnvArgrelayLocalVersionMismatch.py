@@ -22,7 +22,7 @@ class PluginCheckEnvArgrelayLocalVersionMismatch(PluginCheckEnvAbstract):
     # TODO: TODO_69_59_78_78: register known files as enum with metadata:
     file_rel_path = "conf/env_packages.txt"
     bootstrap_rel_path = "exe/bootstrap_env.bash"
-    result_key = "env_packages_version"
+    result_key = "constraints_version"
 
     # noinspection PyMethodMayBeStatic
     def execute_check(
@@ -30,7 +30,7 @@ class PluginCheckEnvArgrelayLocalVersionMismatch(PluginCheckEnvAbstract):
         online_mode: Union[bool, None],
     ) -> list[CheckEnvResult]:
         module_version = argrelay.__version__
-        env_packages_version = self.get_env_packages_version()
+        env_packages_version = self.get_constraints_version()
         if env_packages_version is None:
             return [
                 CheckEnvResult(
@@ -60,7 +60,7 @@ class PluginCheckEnvArgrelayLocalVersionMismatch(PluginCheckEnvAbstract):
                     )
                 ]
 
-    def get_env_packages_version(
+    def get_constraints_version(
         self,
     ):
         file_content = open(f"{get_argrelay_dir()}/{self.file_rel_path}", "rt").read()
