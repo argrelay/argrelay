@@ -14,7 +14,26 @@
     "venv_driver": "venv_pip",
     "version_constraints_file_basename": "env_packages.txt",
 
+    "local_venv_dir_rel_path": "venv",
     "local_log_dir_rel_path": "logs",
     "local_tmp_dir_rel_path": "tmp",
-    "local_cache_dir_rel_path": "tmp"
+    "local_cache_dir_rel_path": "tmp",
+
+    "project_descriptors": [
+        {
+            "build_root_dir_rel_path": ".",
+            "install_extras": [
+                "tests"
+            ],
+            "install_group": "install_main"
+        }
+    ],
+
+    "install_specs": [
+        {
+            "install_main": {
+                "extra_command_args": []
+            }
+        }
+    ]
 }

@@ -137,7 +137,10 @@ fi
 
 ########################################################################################################################
 # Report `python_version`:
-# shellcheck disable=SC2154 # `path_to_pythonX` is assigned by bootstrap:
+# `path_to_pythonX` is not set by bootstrap anymore
+# (new `protoprimer` approach runs bootstrap as subprocess, not sourced),
+# so derive it from the activated venv:
+path_to_pythonX="${path_to_pythonX:-"${VIRTUAL_ENV}/bin/python"}"
 curr_python_version="$( "${path_to_pythonX}" --version 2>&1 | sed 's/^[^[:digit:]]*\([^[:space:]]*\).*$/\1/g' )"
 echo -e "${success_color}INFO:${reset_style} ${field_color}python_version:${reset_style} ${curr_python_version}"
 

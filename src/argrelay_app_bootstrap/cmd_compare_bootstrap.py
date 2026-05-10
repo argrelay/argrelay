@@ -46,6 +46,9 @@ _exclude_paths: list[re.Pattern] = [
     # Git working-tree index: modified by bootstrap operations:
     re.compile(r"^\.git/index$"),
     #
+    # Reflog timestamps differ between clones done at different times:
+    re.compile(r"^\.git/logs(/|$)"),
+    #
     # The scripts differ in venv prompt:
     re.compile(r"^venv/pyvenv\.cfg$"),
     #
