@@ -74,17 +74,13 @@ class ThisTestClass(BaseTestClass):
                     ["ls", "-1", "../exe"],
                     0,
                     b"""argrelay_common_lib.bash
-bootstrap_env.bash
 bootstrap_env.py
-build_project.bash
 check_env.bash
-compare_bootstrap
 config_files.conf.bash
 dev_shell.bash
 dev_shell.zsh
 init_shell_env.bash
 init_shell_env.zsh
-install_project.bash
 play_x_server_demo.bash
 proto_code
 publish_package.bash

@@ -94,7 +94,7 @@ where = ["src"]
     # Other resource files:
     "custom_integ_res/argrelay_common_lib.bash",
     "custom_integ_res/shell_env.bash",
-    "custom_integ_res/bootstrap_env.bash",
+
     "custom_integ_res/check_env.bash",
     "custom_integ_res/dev_shell.bash",
     "custom_integ_res/init_shell_env.bash",

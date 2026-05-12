@@ -22,7 +22,7 @@ class PluginCheckEnvArgrelayUnversionedSymlinks(PluginCheckEnvAbstract):
     Some common files are normally installed as symlinks rather than a copy.
 
     It is likely that those unversioned and unignored symlinks are leftover of upgrades
-    (via `@/exe/bootstrap_env.bash`) from one version to another because
+    (via `@/exe/bootstrap_env.py`) from one version to another because
     such upgrade procedures are NOT complicated by tracking what was in
     multitude of old versions to be changed on upgrade to multiple of new versions.
     """
@@ -65,7 +65,7 @@ class PluginCheckEnvArgrelayUnversionedSymlinks(PluginCheckEnvAbstract):
                             result_category=ResultCategory.VerificationWarning,
                             result_key=f"{self.field_name}[{len(results_per_file)}]",
                             result_value=full_path,
-                            result_message="Running `@/exe/bootstrap_env.bash` may leave unversioned unignored symlinks - review and decide to remove or ignore them manually.",
+                            result_message="Running `@/exe/bootstrap_env.py` may leave unversioned unignored symlinks - review and decide to remove or ignore them manually.",
                         )
                     )
 

@@ -11,7 +11,7 @@ Directory `@/conf/` should be either|or:
 *   (optionally) simply contain required files
 
 Note that, depending on the project, there could be no initial config required -<br/>
-in this case `@/exe/bootstrap_env.bash` simply creates default config files.
+in this case `@/exe/bootstrap_env.py` simply creates default config files.
 
 The documents follow the first conventional symlink approach (which allows all configs be stored under `@/dst`).
 
@@ -27,10 +27,10 @@ Modify files under `@/conf/` if necessary.
 
 # Running bootstrap
 
-Re-run `@/exe/bootstrap_env.bash` until it succeeds (exit with non-0 code):
+Re-run `@/exe/bootstrap_env.py` until it succeeds (exit with non-0 code):
 
 ```sh
-./exe/bootstrap_env.bash
+./exe/bootstrap_env.py
 ```
 
 There could be many things to fix if something wrong with the config or dependencies -<br/>

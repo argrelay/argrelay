@@ -5,7 +5,7 @@
 # Instead, run `@/exe/dev_shell.bash`.
 
 # The steps this script implements FS_58_61_77_69 dev_shell:
-# *   Runs `@/exe/bootstrap_env.bash` to activate Python `venv`.
+# *   Activates `python` `venv` via `@/exe/bootstrap_env.py`.
 # *   Runs `@/exe/shell_env.bash` to configure auto-completion for this shell session.
 
 # Note that enabling exit on error (like `set -e` below) will exit parent
@@ -22,7 +22,9 @@ if [[ -n "${init_shell_env_old_opts+x}" ]] ; then exit 1 ; fi
 
 # Save `set`-able options to restore them at the end of this source-able script:
 # https://unix.stackexchange.com/a/383581/23886
-# See `@/exe/bootstrap_env.bash` regarding `history`:
+# This script sets strict opts (set -eEu -o pipefail) for its own execution safety.
+# Without save/restore they would leak into the interactive shell after sourcing completes.
+# Not saving history (not modified here, should not be restored in non-interactive files):
 init_shell_env_old_opts="$( set +o | grep -v "[[:space:]]history$" )"
 case "${-}" in
     *e*) init_shell_env_old_opts="${init_shell_env_old_opts}; set -e" ;;
@@ -54,9 +56,16 @@ argrelay_dir="$( dirname "${script_dir}" )"
 
 # It is expected that `@/exe/dev_shell.bash` switches to the target project dir itself (not this script).
 
-# FS_85_33_46_53: a copy of script `@/exe/bootstrap_env.bash` has to be stored within the project
-# as the creator of everything:
-source "${argrelay_dir}/exe/bootstrap_env.bash" activate_venv_only_flag
+# Activate `python` `venv` via `bootstrap_env.py`:
+_eval_env_args=()
+if [[ -L "${argrelay_dir}/conf" ]]
+then
+    _eval_env_args=( "--env" "$( readlink "${argrelay_dir}/conf" )" )
+fi
+path_to_venvX="$( "${argrelay_dir}/exe/bootstrap_env.py" eval "${_eval_env_args[@]+"${_eval_env_args[@]}"}" | jq -r '.leap_derived.state_local_venv_dir_abs_path_inited // empty' )"
+unset _eval_env_args
+source "${path_to_venvX}/bin/activate"
+unset path_to_venvX
 
 # Collect info about `@/conf/`:
 if [[ -L "${argrelay_dir}/conf" ]]

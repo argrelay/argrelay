@@ -1,7 +1,7 @@
 ########################################################################################################################
 # `argrelay` integration file: https://github.com/argrelay/argrelay
 # This config file is supposed to be owned and version-controlled by target project integrated with `argrelay`.
-# It is *sourced* by `@/exe/bootstrap_env.bash` to configure `module_path_file_tuples` below.
+# It is *sourced* by `@/exe/bootstrap_env.py` to configure `module_path_file_tuples` below.
 
 # Tuples specifying config files, format:
 # module_name module_dir_src_path argrelay_dir_dst_path

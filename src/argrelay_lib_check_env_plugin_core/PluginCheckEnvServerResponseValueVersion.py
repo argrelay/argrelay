@@ -14,7 +14,7 @@ class PluginCheckEnvServerResponseValueVersion(
     PluginCheckEnvServerResponseValueAbstract
 ):
     # TODO: TODO_69_59_78_78: register known files as enum with metadata:
-    bootstrap_rel_path = "exe/bootstrap_env.bash"
+    bootstrap_rel_path = "exe/bootstrap_env.py"
 
     def __init__(
         self,

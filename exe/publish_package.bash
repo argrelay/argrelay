@@ -45,7 +45,7 @@ argrelay_dir="$( dirname "${script_dir}" )"
 # Switch to `@/` to avoid creating temporary dirs somewhere else:
 cd "${argrelay_dir}" || exit 1
 
-# Run `@/exe/bootstrap_env.bash` if this file does not exits:
+# Run `@/exe/bootstrap_env.py` if this file does not exits:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ensure_inside_dev_shell
 
@@ -66,11 +66,7 @@ pip freeze | grep -v '^-e' | xargs -r pip uninstall -y
 # Restore dev packages using version constraints:
 # (if fresh dependencies are required, make `@/conf/env_packages.txt` file empty first):
 pip install --constraint "${argrelay_dir}/conf/env_packages.txt" --editable "${argrelay_dir}/"[tests]
-# Packages installed by `@/exe/bootstrap_env.bash` depend on
-# `@/exe/install_project.bash`, but normally it:
-# *  installs editable mode packages like `argrelay` itself constrained by `@/conf/env_packages.txt`
-# *  restores missing transitive dependencies
-"${argrelay_dir}/exe/bootstrap_env.bash"
+"${argrelay_dir}/exe/bootstrap_env.py" -vvv
 
 # Ensure all changes are committed (after boostrap):
 # https://stackoverflow.com/a/3879077/441652

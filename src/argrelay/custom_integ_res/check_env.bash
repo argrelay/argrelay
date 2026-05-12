@@ -65,18 +65,20 @@ trap color_failure_and_success_check_env EXIT
 
 ########################################################################################################################
 
-# This wrapper function is required to avoid `@/exe/bootstrap_env.bash` exiting this script
-# (otherwise this script will miss the chance to provide detailed error description).
-# The problem is that `return` command executed within boostrap are actually executed here -
-# when wrapped into a func, `return` within bootstrap will exist just that func:
 function activate_venv {
     # Bootstrap should be run from `argrelay_dir`:
     cd "${argrelay_dir}"
-    # Run bootstrap to activate venv only:
     set +e
-    source "${argrelay_dir}/exe/bootstrap_env.bash" activate_venv_only_flag
+    _eval_env_args=()
+    if [[ -L "${argrelay_dir}/conf" ]]
+    then
+        _eval_env_args=( "--env" "$( readlink "${argrelay_dir}/conf" )" )
+    fi
+    path_to_venvX="$( "${argrelay_dir}/exe/bootstrap_env.py" eval "${_eval_env_args[@]+"${_eval_env_args[@]}"}" | jq -r '.leap_derived.state_local_venv_dir_abs_path_inited // empty' )"
+    unset _eval_env_args
+    source "${path_to_venvX}/bin/activate"
     exit_code="${?}"
-    # Restore trap (overridden by bootstrap):
+    unset path_to_venvX
     trap color_failure_and_success_check_env EXIT
     set -e
     return "${exit_code}"
@@ -87,10 +89,10 @@ function activate_venv {
 echo -e "${success_color}INFO:${reset_style} ${field_color}script_dir:${reset_style} ${script_dir}"
 
 ########################################################################################################################
-# Report `argrelay_dir` by verifying that `argrelay_dir` contains `@/exe/bootstrap_env.bash`:
-if [[ ! -f "${argrelay_dir}/exe/bootstrap_env.bash" ]]
+# Report `argrelay_dir` by verifying that `argrelay_dir` contains `@/exe/bootstrap_env.py`:
+if [[ ! -f "${argrelay_dir}/exe/bootstrap_env.py" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_dir:${reset_style} ${failure_message}# \`argrelay_dir\` must have \`@/exe/bootstrap_env.bash\` script, but it is missing: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_dir:${reset_style} ${failure_message}# \`argrelay_dir\` must have \`@/exe/bootstrap_env.py\` script, but it is missing: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
     exit 1
 fi
 echo -e "${success_color}INFO:${reset_style} ${field_color}argrelay_dir:${reset_style} ${argrelay_dir}"
@@ -121,7 +123,7 @@ echo -e "${success_color}INFO:${reset_style} ${field_color}@/conf:${reset_style}
 # Report `venv_path`:
 if ! activate_venv
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}venv_path:${reset_style} ${failure_message}# \`venv\` activation via \`@/exe/bootstrap_env.bash\` script failed - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}venv_path:${reset_style} ${failure_message}# \`venv\` activation failed - re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
     exit 1
 fi
 echo -e "${success_color}INFO:${reset_style} ${field_color}venv_path:${reset_style} ${VIRTUAL_ENV}"
@@ -150,7 +152,7 @@ if ( python -m pip --version 1> /dev/null )
 then
     echo -e "${success_color}INFO:${reset_style} ${field_color}is_pip_installed:${reset_style} True ${success_message}# Module \`pip\` is present."
 else
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}is_pip_installed:${reset_style} False ${failure_message}# Module \`pip\` is missing - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}is_pip_installed:${reset_style} False ${failure_message}# Module \`pip\` is missing - re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
     exit 1
 fi
 
@@ -162,7 +164,7 @@ exit_code="${?}"
 set -e
 if [[ "${exit_code}" != "0" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_pip_version:${reset_style} ${failure_message}# Unable to detect version of \`argrelay\` package via \`pip show argrelay\` - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}argrelay_pip_version:${reset_style} ${failure_message}# Unable to detect version of \`argrelay\` package via \`pip show argrelay\` - re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
     exit 1
 fi
 # Check if `argrelay_pip_version` string matches semver version format:
@@ -198,10 +200,10 @@ then
 else
     if [[ -e "${argrelay_dir}/exe/argrelay_common_lib.bash" ]]
     then
-        echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/exe/argrelay_common_lib.bash:${reset_style} ${argrelay_dir}/exe/argrelay_common_lib.bash ${failure_message}# Not a symlink - remove manually and re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+        echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/exe/argrelay_common_lib.bash:${reset_style} ${argrelay_dir}/exe/argrelay_common_lib.bash ${failure_message}# Not a symlink - remove manually and re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
         exit 1
     else
-        echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/exe/argrelay_common_lib.bash:${reset_style} ${argrelay_dir}/exe/argrelay_common_lib.bash ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+        echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/exe/argrelay_common_lib.bash:${reset_style} ${argrelay_dir}/exe/argrelay_common_lib.bash ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
         exit 1
     fi
 fi
@@ -213,7 +215,7 @@ source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 
 if [[ ! -e "${argrelay_dir}/conf/check_env_plugin.conf.bash" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/conf/check_env_plugin.conf.bash:${reset_style} ${argrelay_dir}/conf/check_env_plugin.conf.bash ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/conf/check_env_plugin.conf.bash:${reset_style} ${argrelay_dir}/conf/check_env_plugin.conf.bash ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
     exit 1
 fi
 
@@ -224,7 +226,7 @@ source "${argrelay_dir}/conf/check_env_plugin.conf.bash"
 
 if [[ ! -e "${argrelay_dir}/conf/check_env_plugin.conf.yaml" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/conf/check_env_plugin.conf.yaml:${reset_style} ${argrelay_dir}/conf/check_env_plugin.conf.yaml ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}@/conf/check_env_plugin.conf.yaml:${reset_style} ${argrelay_dir}/conf/check_env_plugin.conf.yaml ${failure_message}# Does not exist - re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
     exit 1
 fi
 
@@ -237,7 +239,7 @@ exit_code="${?}"
 set -e
 if [[ "${exit_code}" != "0" ]]
 then
-    echo -e "${failure_color}ERROR:${reset_style} ${field_color}check_env_python:${reset_style} ${failure_message}# Unable to run Python \`check_env\` in \`dry_run\` mode - re-try after re-running \`@/exe/bootstrap_env.bash\`: ${argrelay_dir}/exe/bootstrap_env.bash${reset_style}"
+    echo -e "${failure_color}ERROR:${reset_style} ${field_color}check_env_python:${reset_style} ${failure_message}# Unable to run Python \`check_env\` in \`dry_run\` mode - re-try after re-running \`@/exe/bootstrap_env.py\`: ${argrelay_dir}/exe/bootstrap_env.py${reset_style}"
     exit 1
 fi
 
