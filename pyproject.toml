@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0,<82"]
+requires = ["setuptools>=61.0,<83"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -33,7 +33,7 @@ dependencies = [
     # TODO: Remove <82 constraint and make everything work after upgrade.
     #       This avoids error on `import pkg_resources`:
     #       ModuleNotFoundError: No module named 'pkg_resources'
-    "setuptools>=61.0,<82",
+    "setuptools>=61.0,<83",
     #
     "Flask",
     "Werkzeug",
