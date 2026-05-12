@@ -26,10 +26,10 @@ Upgrade `argrelay` package to newer version:
 pip install --upgrade --force-reinstall argrelay
 ```
 
-Re-run `@/exe/bootstrap_env.bash`:
+Re-run `@/exe/bootstrap_env.py`:
 
 ```sh
-./exe/bootstrap_env.bash
+./exe/bootstrap_env.py
 ```
 
 # Upgrading project customization

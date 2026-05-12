@@ -2,14 +2,13 @@
 
 # This script upgrades all Python packages in `venv`.
 #
-# If Python has to be upgraded as well based on the latest version in `@/conf/python_env.conf.bash`,
-# remove the `venv` first and re-run `@/exe/bootstrap_env.bash`.
+# If `python` has to be upgraded as well, remove the `venv` first and re-run `@/exe/bootstrap_env.py`.
 #
 # The basic steps are:
 # *   remove all package version records in `@/conf/env_packages.txt`
 # *   optionally, set user-specified `argrelay` version in `@/conf/env_packages.txt`
 # *   uninstall everything from `venv`
-# *   let `@/exe/bootstrap_env.bash` re-install all (transitive) dependencies at their latest versions
+# *   let `@/exe/bootstrap_env.py` re-install all (transitive) dependencies at their latest versions
 
 # Define with `s` in value to debug:
 if [[ "${ARGRELAY_DEBUG-}" == *s* ]]
@@ -51,7 +50,7 @@ fi
 # Switch to `@/` to avoid creating temporary dirs somewhere else:
 cd "${argrelay_dir}" || exit 1
 
-# Run `@/exe/bootstrap_env.bash` if this file does not exits:
+# Run `@/exe/bootstrap_env.py` if this file does not exits:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"
 ensure_inside_dev_shell
 
@@ -75,6 +74,4 @@ fi
 # Clear `venv` (only to be restored in the next step):
 pip uninstall -y -r <( pip freeze )
 
-# Bootstrap to let `@/exe/install_project.bash` install all packages
-# via transitive dependencies and at their latest versions:
-"${argrelay_dir}/exe/bootstrap_env.bash"
+"${argrelay_dir}/exe/bootstrap_env.py" -vvv

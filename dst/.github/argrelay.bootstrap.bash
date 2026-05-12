@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# GitHub job script to run `@/exe/bootstrap_env.bash` in different modes directly or via `@/exe/relay_demo.bash`.
+# GitHub job script to run `@/exe/bootstrap_env.py` in different modes directly or via `@/exe/relay_demo.bash`.
 
 # Debug: Print commands before execution:
 set -x
@@ -56,11 +56,8 @@ do
             # Configure `@/conf/` (make it existing) before running bootstrap with no args:
             ln -sn "dst/.github" "conf"
 
-            # TODO: TODO_11_66_62_70.python_bootstrap.md
-            #       protoprimer: HACK: untils TODO_41_10_50_01.implement_env_selector.md implemented:
-            #       There should not be arg "dst/.github".
-            #       Instead, `bootstrap_env.py` should select "dst/.github" automatically:
-            "${argrelay_dir}/exe/bootstrap_env.bash" "dst/.github"
+            # TODO: protoprimer: TODO_41_10_50_01.implement_env_selector.md: detect the env automatically (no `--env` arg needed):
+            "${argrelay_dir}/exe/bootstrap_env.py" -vvv --env "dst/.github"
 
             # Run selected set of tests:
             "${argrelay_dir}/dst/.github/run_build_tests.bash"

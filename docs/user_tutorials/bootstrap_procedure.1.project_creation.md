@@ -13,8 +13,8 @@ See [`FS_29_54_67_86.dir_structure.md`][FS_29_54_67_86.dir_structure.md]:
 
 # Download bootstrap script
 
-Obtain (copy and paste or download) [`bootstrap_env.bash`][bootstrap_env.bash] into temporary path,<br/>
-for example, `/tmp/bootstrap_env.bash`.
+Obtain (copy and paste or download) [`bootstrap_env.py`][bootstrap_env.py] into temporary path,<br/>
+for example, `/tmp/bootstrap_env.py`.
 
 # Bootstrap dependencies
 
@@ -28,7 +28,7 @@ Run bootstrap **from the project root directory `@/`**:
 
 ```sh
 cd path/to/project/root_dir
-bash /tmp/bootstrap_env.bash
+python /tmp/bootstrap_env.py
 ```
 
 The script will likely fail for the first time (exits with code other than 0) due to missing dependencies,<br/>
@@ -85,7 +85,7 @@ Keep re-running bootstrap until it succeeds (until it exits with code 0) address
 
 ```sh
 cd path/to/project/root_dir
-bash /tmp/bootstrap_env.bash
+python /tmp/bootstrap_env.py
 ```
 
 If it is a new `argrelay`-based project created from scratch,<br/>
@@ -155,7 +155,7 @@ This is a non-exhaustive list of reasons and clues how to address them (trying t
 # When bootstrap succeeds
 
 Eventually, when bootstrap succeeds (exits with code 0),<br/>
-its copy will be stored into `@/exe/bootstrap_env.bash` (it should be version-controlled).
+its copy will be stored into `@/exe/bootstrap_env.py` (it should be version-controlled).
 
 To see how it works, try [`FS_58_61_77_69.dev_shell.md`][FS_58_61_77_69.dev_shell.md].
 
@@ -166,5 +166,5 @@ To see how it works, try [`FS_58_61_77_69.dev_shell.md`][FS_58_61_77_69.dev_shel
 [FS_85_33_46_53.bootstrap_env.md]: ../feature_stories/FS_85_33_46_53.bootstrap_env.md
 [FS_29_54_67_86.dir_structure.md]: ../feature_stories/FS_29_54_67_86.dir_structure.md
 [FS_58_61_77_69.dev_shell.md]: ../feature_stories/FS_58_61_77_69.dev_shell.md
-[bootstrap_env.bash]: ../../exe/bootstrap_env.bash
+[bootstrap_env.py]: ../../exe/bootstrap_env.py
 [root_readme.md]: ../../readme.md

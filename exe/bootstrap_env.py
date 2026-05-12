@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# FT_85_17_35_21.boot_env.md: see also `@/exe/bootstrap_env.bash`
+# FT_85_17_35_21.boot_env.md: see also `@/exe/bootstrap_env.py`
 
 
 def import_proto_kernel(proto_kernel_rel_path):

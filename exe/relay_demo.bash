@@ -52,7 +52,8 @@ log_file="${argrelay_dir}/logs/${script_name}.log"
 
 # Use bootstrap to set `@/conf/` to `@/dst/relay_demo`:
 cd "${argrelay_dir}" || exit 1
-"${argrelay_dir}/exe/bootstrap_env.bash" "dst/relay_demo"
+# TODO: protoprimer: TODO_41_10_50_01.implement_env_selector.md: detect the env automatically (no `--env` arg needed):
+"${argrelay_dir}/exe/bootstrap_env.py" -vvv --env "dst/relay_demo"
 
 # Bootstrap finished, now we can source the lib:
 source "${argrelay_dir}/exe/argrelay_common_lib.bash"

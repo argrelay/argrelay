@@ -21,7 +21,7 @@ class PluginCheckEnvArgrelayLocalVersionMismatch(PluginCheckEnvAbstract):
 
     # TODO: TODO_69_59_78_78: register known files as enum with metadata:
     file_rel_path = "conf/env_packages.txt"
-    bootstrap_rel_path = "exe/bootstrap_env.bash"
+    bootstrap_rel_path = "exe/bootstrap_env.py"
     result_key = "constraints_version"
 
     # noinspection PyMethodMayBeStatic
