@@ -94,7 +94,6 @@ shell_env.bash
 shell_env.zsh
 squash_and_push_branch.bash
 update_pre_commit.bash
-upgrade_env_packages.bash
 """,
                     b"",
                 ),

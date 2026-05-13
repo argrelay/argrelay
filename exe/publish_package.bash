@@ -59,14 +59,8 @@ then
 fi
 
 # TODO: TODO_64_79_28_85: switch to `dst/release_env`
-# TODO: TODO_64_79_28_85: use upgrade_env_packages.bash
 
-# Clear venv (only to be restored in the next step):
-pip freeze | grep -v '^-e' | xargs -r pip uninstall -y
-# Restore dev packages using version constraints:
-# (if fresh dependencies are required, make `@/conf/env_packages.txt` file empty first):
-pip install --constraint "${argrelay_dir}/conf/env_packages.txt" --editable "${argrelay_dir}/"[tests]
-"${argrelay_dir}/exe/bootstrap_env.py" -vvv
+"${argrelay_dir}/exe/bootstrap_env.py" reboot -vvv
 
 # Ensure all changes are committed (after boostrap):
 # https://stackoverflow.com/a/3879077/441652

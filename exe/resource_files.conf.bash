@@ -13,7 +13,6 @@ module_path_file_tuples=(
     argrelay custom_integ_res/shell_env.zsh exe/shell_env.zsh
     argrelay custom_integ_res/dev_shell.zsh exe/dev_shell.zsh
     argrelay custom_integ_res/init_shell_env.zsh exe/init_shell_env.zsh
-    argrelay custom_integ_res/upgrade_env_packages.bash exe/upgrade_env_packages.bash
     argrelay custom_integ_res/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash exe/script_plugin.d/check_env_plugin.all_argrelay_plugins.bash
     argrelay custom_integ_res/script_plugin.d/check_env_plugin.bash_version.bash exe/script_plugin.d/check_env_plugin.bash_version.bash
     argrelay custom_integ_res/script_plugin.d/check_env_plugin.git_version.bash exe/script_plugin.d/check_env_plugin.git_version.bash
