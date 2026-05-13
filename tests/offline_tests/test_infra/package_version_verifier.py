@@ -1,4 +1,4 @@
-import importlib
+import importlib.metadata
 
 
 def verify_package_version(

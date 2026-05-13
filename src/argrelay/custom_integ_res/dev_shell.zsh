@@ -89,7 +89,8 @@ then
     echo -e "${banner_color}INFO: avoid starting nested \`@/exe/dev_shell.zsh\` on demand by \`source\`-ing this config in \`~/.zshrc\` by default: ${argrelay_dir}/exe/shell_env.zsh${reset_color}" 1>&2
     ZDOTDIR_TEMP="$( mktemp -d )"
     echo "source ~/.zshrc && source ${argrelay_dir}/exe/init_shell_env.zsh" > "${ZDOTDIR_TEMP}/.zshrc"
-    ZDOTDIR="${ZDOTDIR_TEMP}" exec zsh
+    ZDOTDIR="${ZDOTDIR_TEMP}" zsh
+    rm -rf "${ZDOTDIR_TEMP}"
 else
     # Non-interactive:
     # All args passed to `@/exe/dev_shell.zsh` are executed as command line:

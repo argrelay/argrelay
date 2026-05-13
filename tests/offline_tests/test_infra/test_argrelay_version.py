@@ -5,5 +5,5 @@ from offline_tests.test_infra.package_version_verifier import verify_package_ver
 
 class ThisTestClass(BaseTestClass):
 
-    def test_protoprimer_version(self):
+    def test_argrelay_version(self):
         self.assertTrue(verify_package_version(argrelay))
