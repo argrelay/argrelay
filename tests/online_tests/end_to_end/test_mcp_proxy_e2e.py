@@ -21,15 +21,14 @@ class ThisTestClass(ClientServerTestClass):
     ) -> subprocess.CompletedProcess:
         proxy_stdin = "\n".join(stdin_lines) + "\n"
         return subprocess.run(
-            args=[
-                f"{get_argrelay_dir()}/exe/argrelay_mcp_proxy",
-            ],
+            args=[f"{get_argrelay_dir()}/exe/argrelay_mcp_proxy"],
             input=proxy_stdin.encode("utf-8"),
             capture_output=True,
             timeout=timeout_sec,
         )
 
     def test_mcp_proxy_responds_to_initialize(self):
+        # given:
         init_msg = json.dumps(
             {
                 "jsonrpc": "2.0",
@@ -46,20 +45,20 @@ class ThisTestClass(ClientServerTestClass):
             }
         )
 
+        # when:
         proxy_proc = self._run_proxy_with_stdin([init_msg])
 
+        # then:
         stdout_text = proxy_proc.stdout.decode("utf-8").strip()
-        self.assertTrue(
-            len(stdout_text) > 0,
-            "Expected at least one JSON-RPC response on stdout",
-        )
+        assert len(stdout_text) > 0, "Expected at least one JSON-RPC response on stdout"
         first_line = stdout_text.splitlines()[0]
         response = json.loads(first_line)
-        self.assertEqual("2.0", response["jsonrpc"])
-        self.assertIn("result", response)
-        self.assertEqual(1, response.get("id"))
+        assert response["jsonrpc"] == "2.0"
+        assert "result" in response
+        assert response.get("id") == 1
 
     def test_mcp_proxy_initialize_result_has_capabilities(self):
+        # given:
         init_msg = json.dumps(
             {
                 "jsonrpc": "2.0",
@@ -76,15 +75,18 @@ class ThisTestClass(ClientServerTestClass):
             }
         )
 
+        # when:
         proxy_proc = self._run_proxy_with_stdin([init_msg])
 
+        # then:
         first_line = proxy_proc.stdout.decode("utf-8").strip().splitlines()[0]
         response = json.loads(first_line)
         result = response["result"]
-        self.assertIn("capabilities", result)
-        self.assertIn("serverInfo", result)
+        assert "capabilities" in result
+        assert "serverInfo" in result
 
     def test_mcp_proxy_tools_list_returns_argrelay_tools(self):
+        # given:
         init_msg = json.dumps(
             {
                 "jsonrpc": "2.0",
@@ -114,6 +116,7 @@ class ThisTestClass(ClientServerTestClass):
             }
         )
 
+        # when:
         proxy_proc = self._run_proxy_with_stdin(
             [
                 init_msg,
@@ -122,6 +125,7 @@ class ThisTestClass(ClientServerTestClass):
             ]
         )
 
+        # then:
         stdout_lines = proxy_proc.stdout.decode("utf-8").strip().splitlines()
         # First response is for initialize (id=1), second is for tools/list (id=2):
         tools_list_response = None
@@ -131,14 +135,13 @@ class ThisTestClass(ClientServerTestClass):
                 tools_list_response = parsed
                 break
 
-        self.assertIsNotNone(
-            tools_list_response,
-            "Expected tools/list response (id=2) in proxy stdout",
-        )
-        self.assertIn("result", tools_list_response)
+        assert (
+            tools_list_response is not None
+        ), "Expected tools/list response (id=2) in proxy stdout"
+        assert "result" in tools_list_response
         tools = tools_list_response["result"]["tools"]
-        self.assertIsInstance(tools, list)
-        self.assertGreater(len(tools), 0)
+        assert isinstance(tools, list)
+        assert len(tools) > 0
         tool_names = [t["name"] for t in tools]
         # At minimum, demo functions must be present:
-        self.assertIn("goto_service", tool_names)
+        assert "goto_service" in tool_names

@@ -44,11 +44,7 @@ class ThisTestClass(ServerOnlyTestClass):
     def setUp(self):
         super().setUp()
         self.create_server_in_mocked_env(
-            ServerOnlyEnvMockBuilder().set_test_data_ids_to_load(
-                [
-                    "TD_63_37_05_36",  # demo
-                ]
-            )
+            ServerOnlyEnvMockBuilder().set_test_data_ids_to_load(["TD_63_37_05_36"])
         )
         self.test_client = self.flask_app.test_client()
 
@@ -73,58 +69,77 @@ class ThisTestClass(ServerOnlyTestClass):
         return proxy
 
     def test_start_populates_tools(self):
+        # given:
         proxy = self._make_proxy()
 
+        # when:
         proxy.start()
 
-        self.assertGreater(len(proxy.tools), 0)
+        # then:
+        assert len(proxy.tools) > 0
 
     def test_start_populates_tool_map(self):
+        # given:
         proxy = self._make_proxy()
 
+        # when:
         proxy.start()
 
-        self.assertGreater(len(proxy._tool_map), 0)
+        # then:
+        assert len(proxy._tool_map) > 0
 
     def test_start_tool_map_keys_match_tool_names(self):
+        # given:
         proxy = self._make_proxy()
 
+        # when:
         proxy.start()
 
+        # then:
         for tool_desc in proxy.tools:
-            self.assertIn(tool_desc.name, proxy._tool_map)
-            self.assertEqual(tool_desc.name, proxy._tool_map[tool_desc.name].name)
+            assert tool_desc.name in proxy._tool_map
+            assert proxy._tool_map[tool_desc.name].name == tool_desc.name
 
     def test_start_tools_are_tool_desc_instances(self):
+        # given:
         proxy = self._make_proxy()
 
+        # when:
         proxy.start()
 
+        # then:
         for tool_desc in proxy.tools:
-            self.assertIsInstance(tool_desc, ToolDesc)
+            assert isinstance(tool_desc, ToolDesc)
 
     def test_start_tool_names_have_no_func_id_prefix(self):
+        # given:
         proxy = self._make_proxy()
 
+        # when:
         proxy.start()
 
+        # then:
         for tool_desc in proxy.tools:
-            self.assertFalse(
-                tool_desc.name.startswith(_func_id_prefix),
-                f"tool name must not start with {_func_id_prefix!r}: {tool_desc.name!r}",
-            )
+            assert not tool_desc.name.startswith(
+                _func_id_prefix
+            ), f"tool name must not start with {_func_id_prefix!r}: {tool_desc.name!r}"
 
     def test_start_tool_desc_has_command_path(self):
+        # given:
         proxy = self._make_proxy()
 
+        # when:
         proxy.start()
 
+        # then:
         for tool_desc in proxy.tools:
-            self.assertIsInstance(tool_desc.command_path, list)
-            self.assertGreater(len(tool_desc.command_path), 0)
+            assert isinstance(tool_desc.command_path, list)
+            assert len(tool_desc.command_path) > 0
 
     def test_register_handlers_does_not_throw(self):
+        # given:
         proxy = self._make_proxy()
         proxy.start()
 
+        # when/then:
         proxy.register_handlers()
