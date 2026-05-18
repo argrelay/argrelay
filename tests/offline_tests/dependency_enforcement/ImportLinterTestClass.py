@@ -8,7 +8,7 @@ import importlinter
 from importlinter.adapters.building import GraphBuilder
 
 # FS_84_11_73_28: supported python versions:
-# `importlinter==2.6` is installed for `python==3.9`:
+# `importlinter==2.6` is installed for `python==3.10`:
 if Version(importlinter.__version__) < Version("2.7"):
     # `PRINTER` was removed in `importlinter==2.7`:
     from importlinter.adapters.printing import ClickPrinter
@@ -47,7 +47,7 @@ class ImportLinterTestClass(BaseTestClass):
         registry.register(ForbiddenContract, name="forbidden")
 
         # FS_84_11_73_28: supported python versions:
-        # `importlinter==2.6` is installed for `python==3.9`:
+        # `importlinter==2.6` is installed for `python==3.10`:
         if Version(importlinter.__version__) < Version("2.7"):
             # `PRINTER` was removed in `importlinter==2.7`:
             settings.configure(

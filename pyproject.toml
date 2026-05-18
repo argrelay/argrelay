@@ -13,7 +13,7 @@ readme = "readme.md"
 keywords = ["argparse", "argcomplete", "bash", "complete"]
 license = { file = "LICENSE" }
 # FS_84_11_73_28: supported python versions:
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",

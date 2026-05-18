@@ -15,7 +15,7 @@ Supported:
 *   macOS
 *   Bash >= 4.0
 *   Zsh >= 5.0
-*   Python >= 3.9
+*   Python >= 3.10
 
 <a name="argrelay-screencast"></a>
 
