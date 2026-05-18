@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 
 import mcp.server
 import mcp.server.stdio
@@ -26,13 +25,16 @@ from argrelay_schema_config_client.runtime_data_client_app.ClientConfig import (
 
 class ArgrelayMcpProxy:
 
-    def __init__(self, client_config: ClientConfig):
-        conn = client_config.redundant_servers[0]
+    def __init__(
+        self,
+        client_config: ClientConfig,
+    ):
+        server_conn = client_config.redundant_servers[0]
         from argrelay_api_server_cli.server_spec.const_int import BASE_URL_FORMAT
 
         self.server_url = BASE_URL_FORMAT.format(
-            server_host_name=conn.server_host_name,
-            server_port_number=conn.server_port_number,
+            server_host_name=server_conn.server_host_name,
+            server_port_number=server_conn.server_port_number,
         )
         self.http = requests.Session()
         self.mcp_server = mcp.server.Server("argrelay")
@@ -40,39 +42,45 @@ class ArgrelayMcpProxy:
         self._tool_map: dict[str, ToolDesc] = {}
 
     def start(self) -> None:
-        resp = self.http.get(self.server_url + MCP_TOOLS_PATH)
-        resp.raise_for_status()
-        self.tools = parse_mcp_tools_response(resp.json())
-        self._tool_map = {t.name: t for t in self.tools}
+        mcp_tools_resp = self.http.get(self.server_url + MCP_TOOLS_PATH)
+        mcp_tools_resp.raise_for_status()
+        self.tools = parse_mcp_tools_response(mcp_tools_resp.json())
+        self._tool_map = {tool_desc.name: tool_desc for tool_desc in self.tools}
 
     def register_handlers(self) -> None:
 
         @self.mcp_server.list_tools()
         async def list_tools() -> list[types.Tool]:
-            return [build_mcp_tool(t) for t in self.tools]
+            return [build_mcp_tool(tool_desc) for tool_desc in self.tools]
 
         @self.mcp_server.call_tool()
-        async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
-            tool = self._tool_map.get(name)
-            if tool is None:
+        async def call_tool(
+            name: str,
+            arguments: dict,
+        ) -> list[types.TextContent]:
+            tool_desc = self._tool_map.get(name)
+            if tool_desc is None:
                 raise ValueError(f"Unknown tool: {name!r}")
-            command_line = build_command_line(tool, arguments or {})
-            payload = {
+            command_line = build_command_line(tool_desc, arguments or {})
+            relay_payload = {
                 "server_action": ServerAction.RelayLineArgs.name,
                 "command_line": command_line,
                 "cursor_cpos": len(command_line),
                 "comp_scope": CompScope.ScopeInitial.name,
                 "is_debug_enabled": False,
             }
-            resp = self.http.post(
+            relay_resp = self.http.post(
                 self.server_url + ServerAction.RelayLineArgs.value,
-                json=payload,
+                json=relay_payload,
             )
-            resp.raise_for_status()
-            result = resp.json()
-            remaining = extract_remaining(result, tool)
-            text = format_tool_result(result.get("custom_plugin_data", {}), remaining)
-            return [types.TextContent(type="text", text=text)]
+            relay_resp.raise_for_status()
+            relay_result = relay_resp.json()
+            remaining_args = extract_remaining(relay_result, tool_desc)
+            result_text = format_tool_result(
+                relay_result.get("custom_plugin_data", {}),
+                remaining_args,
+            )
+            return [types.TextContent(type="text", text=result_text)]
 
     async def run_stdio(self) -> None:
         async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):

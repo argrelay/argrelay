@@ -22,6 +22,9 @@ def create_blueprint_mcp(local_server: LocalServer):
     @blueprint_mcp.route(MCP_TOOLS_PATH, methods=["get"])
     def mcp_tools():
         response_dict = mcp_tools_handler.handle_request()
-        return Response(dumps(response_dict), mimetype="application/json")
+        return Response(
+            dumps(response_dict),
+            mimetype="application/json",
+        )
 
     return blueprint_mcp

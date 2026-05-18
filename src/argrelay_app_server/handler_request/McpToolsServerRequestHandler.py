@@ -27,19 +27,19 @@ class McpToolsServerRequestHandler:
 
     def handle_request(self) -> dict:
         mongo_db = self.local_server.get_mongo_database()
-        collection = mongo_db[ReservedEnvelopeClass.class_function.name]
+        func_collection = mongo_db[ReservedEnvelopeClass.class_function.name]
 
-        tools = []
-        for envelope in collection.find(
+        tool_list = []
+        for envelope in func_collection.find(
             {
                 ReservedPropName.envelope_class.name: ReservedEnvelopeClass.class_function.name
             }
         ):
-            tool = _build_tool_descriptor(envelope)
-            if tool is not None:
-                tools.append(tool)
+            tool_descriptor = _build_tool_descriptor(envelope)
+            if tool_descriptor is not None:
+                tool_list.append(tool_descriptor)
 
-        return {"tools": tools}
+        return {"tools": tool_list}
 
 
 def _build_tool_descriptor(envelope: dict) -> dict | None:
@@ -54,25 +54,28 @@ def _build_tool_descriptor(envelope: dict) -> dict | None:
         else raw_func_id
     )
 
-    description = envelope.get("help_hint", raw_func_id)
+    tool_description = envelope.get("help_hint", raw_func_id)
 
     step_keys = sorted(k for k in envelope if k.startswith(tree_step_prop_name_prefix_))
     command_path = [envelope[k] for k in step_keys if envelope[k] != _no_prop_value]
 
-    properties = {}
-    for sc in instance_data.get(search_control_list_, []):
-        for mapping in sc.get("arg_name_to_prop_name_map", []):
-            for arg_name, prop_name in mapping.items():
+    tool_properties = {}
+    for search_control in instance_data.get(search_control_list_, []):
+        for arg_mapping in search_control.get("arg_name_to_prop_name_map", []):
+            for arg_name, prop_name in arg_mapping.items():
                 if arg_name == "class":
                     continue
-                properties[arg_name] = {"type": "string", "description": prop_name}
+                tool_properties[arg_name] = {
+                    "type": "string",
+                    "description": prop_name,
+                }
 
     return {
         "name": tool_name,
-        "description": description,
+        "description": tool_description,
         "command_path": command_path,
         "inputSchema": {
             "type": "object",
-            "properties": properties,
+            "properties": tool_properties,
         },
     }
