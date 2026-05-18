@@ -288,7 +288,7 @@ src/argrelay_app_mcp_proxy/
                               #   build MCP tool objects, build command lines
 ```
 
-### 4.5 Executable generation
+### 4.5 Executable generation and CLI usage
 
 Bootstrap (`src/argrelay_app_bootstrap/cmd_bootstrap_env.py`) generates
 `exe/argrelay_mcp_proxy` via `_generate_runner_script()` -- same pattern as
@@ -310,6 +310,25 @@ if __name__ == '__main__':
 
 Server connection read from `@/conf/argrelay_client.json` (same config as
 `exe/run_argrelay_client`), resolved via `set_argrelay_dir` set by the shebang.
+Connection config reuses `load_client_config` from
+`argrelay_app_client.relay_client.__main__` directly -- no duplication.
+`client_config.redundant_servers[0]` provides `server_host_name` and
+`server_port_number`; proxy builds server URL from those via `BASE_URL_FORMAT`.
+
+The proxy can also be invoked directly from the CLI for testing. It reads MCP
+JSON-RPC 2.0 messages from stdin and writes responses to stdout:
+
+```bash
+# run interactively (blocks waiting for MCP messages on stdin):
+exe/argrelay_mcp_proxy
+
+# pipe a single MCP initialize message for smoke-testing:
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"0"}}}' \
+  | exe/argrelay_mcp_proxy
+```
+
+No separate `--server-url` CLI flag is needed -- the URL comes from
+`argrelay_client.json` which is already environment-specific.
 
 ### 4.6 MCP library dependency
 
@@ -443,7 +462,8 @@ Create `src/argrelay_app_mcp_proxy/mcp_proxy/ToolBuilder.py`:
 
 Create `src/argrelay_app_mcp_proxy/mcp_proxy/ArgrelayMcpProxy.py`:
 
--   `__init__(client_config, server_url)`: init `requests.Session`, MCP `Server`.
+-   `__init__(client_config: ClientConfig)`: derive server URL from
+    `client_config.redundant_servers[0]`, init `requests.Session`, MCP `Server`.
 -   `start()`: `GET /mcp_tools/` -> `parse_mcp_tools_response` -> store tool list.
 -   `register_tools()`: register `list_tools` and `call_tool` callbacks on MCP server.
 -   `_call_tool(name, arguments)`: `build_command_line` -> `POST /relay_line_args/`
@@ -452,8 +472,9 @@ Create `src/argrelay_app_mcp_proxy/mcp_proxy/ArgrelayMcpProxy.py`:
 
 Create `src/argrelay_app_mcp_proxy/mcp_proxy/__main__.py`:
 
--   Load `argrelay_client.json` via `get_config_path`.
--   Parse `--server-url` override (optional; default from config).
+-   Load `argrelay_client.json` via `load_client_config(get_config_path(...))` --
+    reuse `load_client_config` from `argrelay_app_client.relay_client.__main__`.
+-   Derive server URL from `client_config.redundant_servers[0]` + `BASE_URL_FORMAT`.
 -   Instantiate `ArgrelayMcpProxy`, call `start()`, `register_tools()`, `run_stdio()`.
 
 ### Phase 4: Bootstrap integration
