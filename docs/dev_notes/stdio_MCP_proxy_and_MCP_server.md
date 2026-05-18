@@ -487,7 +487,7 @@ Create `src/argrelay_app_mcp_proxy/mcp_proxy/ArgrelayMcpProxy.py`:
 -   `__init__(client_config: ClientConfig)`: derive server URL from
     `client_config.redundant_servers[0]`, init `requests.Session`, MCP `Server`.
 -   `start()`: `GET /mcp_tools/` -> `parse_mcp_tools_response` -> store tool list.
--   `register_tools()`: register `list_tools` and `call_tool` callbacks on MCP server.
+-   `register_handlers()`: register `list_tools` and `call_tool` callbacks on MCP server.
 -   `_call_tool(name, arguments)`: `build_command_line` -> `POST /relay_line_args/`
     -> extract result + remaining -> return `TextContent`.
 -   `run_stdio()`: `async with stdio_server()` -> `mcp_server.run(...)`.
@@ -497,7 +497,7 @@ Create `src/argrelay_app_mcp_proxy/mcp_proxy/__main__.py`:
 -   Load `argrelay_client.json` via `load_client_config(get_config_path(...))` --
     reuse `load_client_config` from `argrelay_app_client.relay_client.__main__`.
 -   Derive server URL from `client_config.redundant_servers[0]` + `BASE_URL_FORMAT`.
--   Instantiate `ArgrelayMcpProxy`, call `start()`, `register_tools()`, `run_stdio()`.
+-   Instantiate `ArgrelayMcpProxy`, call `start()`, `register_handlers()`, `run_stdio()`.
 
 ### Phase 4: Bootstrap integration
 

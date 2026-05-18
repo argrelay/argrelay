@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from argrelay_api_server_cli.server_spec.const_int import MCP_TOOLS_PATH
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_lib_root.enum_desc.ReservedEnvelopeClass import ReservedEnvelopeClass
 from argrelay_lib_root.enum_desc.ReservedPropName import ReservedPropName
