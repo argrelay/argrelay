@@ -24,3 +24,6 @@ __pycache__/
 
 # Temporary files - generated or (not super-costly) recoverable.
 /tmp/
+
+# MCP config (environment-specific absolute path to venv):
+/.mcp.json

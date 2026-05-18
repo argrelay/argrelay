@@ -227,6 +227,12 @@ class Bootstrapper_state_scripts_generated(AbstractCachingStateNode[int]):
             script_rel="exe/run_argrelay_client",
             main_import="from argrelay_app_client.relay_client.__main__ import main",
         )
+        _generate_runner_script(
+            path=os.path.join(argrelay_dir, "exe/argrelay_mcp_proxy"),
+            python_path=python_path,
+            script_rel="exe/argrelay_mcp_proxy",
+            main_import="from argrelay_app_mcp_proxy.mcp_proxy.__main__ import main",
+        )
 
         # Create bin/ symlinks from shell_env.conf.bash:
         shell_env_conf = os.path.join(argrelay_dir, "conf/shell_env.conf.bash")

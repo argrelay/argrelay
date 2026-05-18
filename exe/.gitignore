@@ -2,6 +2,7 @@
 # Generated files:
 /run_argrelay_server
 /run_argrelay_client
+/argrelay_mcp_proxy
 
 # DO NOT IGNORE: see FS_85_33_46_53 `bootstrap_env` for explanation:
 !/bootstrap_env.bash
