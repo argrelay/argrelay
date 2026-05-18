@@ -21,5 +21,7 @@ DEFAULT_PORT_NUMBER = 8787
 
 API_SPEC_PATH = "/argrelay_server_api_spec.json"
 
+MCP_TOOLS_PATH = "/mcp_tools/"
+
 # noinspection HttpUrlsUsage
 BASE_URL_FORMAT = "http://{server_host_name}:{server_port_number}"

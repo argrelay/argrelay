@@ -13,7 +13,7 @@ readme = "readme.md"
 keywords = ["argparse", "argcomplete", "bash", "complete"]
 license = { file = "LICENSE" }
 # FS_84_11_73_28: supported python versions:
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -43,6 +43,7 @@ dependencies = [
     "mongomock",
     "requests",
     "cachetools",
+    "mcp>=1.0",
     # NOTE: URL spec to use from remote git repo directly:
     # "protoprimer @ git+https://github.com/uvsmtid/protoprimer.git@branch_name#subdirectory=src/protoprimer&egg=protoprimer",
     "protoprimer==0.12.1",

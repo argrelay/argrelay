@@ -18,8 +18,8 @@ jobs:
             matrix:
                 # FS_84_11_73_28: supported python versions:
                 python-version:
-                    -   3.9
-                    -   3.14
+                    -   "3.10"
+                    -   "3.14"
         steps:
             -   run: "echo runner.os: ${{ runner.os }}"
             -   run: "echo github.repository: ${{ github.repository }}"

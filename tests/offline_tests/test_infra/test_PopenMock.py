@@ -74,6 +74,7 @@ class ThisTestClass(BaseTestClass):
                     ["ls", "-1", "../exe"],
                     0,
                     b"""argrelay_common_lib.bash
+argrelay_mcp_proxy
 bootstrap_env.py
 check_env.bash
 config_files.conf.bash

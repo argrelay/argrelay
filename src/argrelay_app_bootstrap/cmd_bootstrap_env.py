@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import enum
 import importlib
+import json
 import logging
 import os
 import shlex
@@ -109,6 +110,21 @@ def _generate_runner_script(
     with open(path, "w") as f:
         f.write(content)
     os.chmod(path, os.stat(path).st_mode | 0o100)
+
+
+def _generate_mcp_json(argrelay_dir: str) -> None:
+    mcp_proxy_abs = os.path.join(argrelay_dir, "exe/argrelay_mcp_proxy")
+    content = {
+        "mcpServers": {
+            "argrelay": {
+                "command": mcp_proxy_abs,
+            }
+        }
+    }
+    path = os.path.join(argrelay_dir, ".mcp.json")
+    with open(path, "w") as f:
+        json.dump(content, f, indent=2)
+        f.write("\n")
 
 
 def _install_command_symlinks(argrelay_dir: str, command_names: List[str]) -> None:
@@ -227,6 +243,13 @@ class Bootstrapper_state_scripts_generated(AbstractCachingStateNode[int]):
             script_rel="exe/run_argrelay_client",
             main_import="from argrelay_app_client.relay_client.__main__ import main",
         )
+        _generate_runner_script(
+            path=os.path.join(argrelay_dir, "exe/argrelay_mcp_proxy"),
+            python_path=python_path,
+            script_rel="exe/argrelay_mcp_proxy",
+            main_import="from argrelay_app_mcp_proxy.mcp_proxy.__main__ import main",
+        )
+        _generate_mcp_json(argrelay_dir)
 
         # Create bin/ symlinks from shell_env.conf.bash:
         shell_env_conf = os.path.join(argrelay_dir, "conf/shell_env.conf.bash")

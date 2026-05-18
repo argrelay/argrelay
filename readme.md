@@ -15,7 +15,7 @@ Supported:
 *   macOS
 *   Bash >= 4.0
 *   Zsh >= 5.0
-*   Python >= 3.9
+*   Python >= 3.10
 
 <a name="argrelay-screencast"></a>
 
@@ -385,8 +385,21 @@ This table summarizes all executables most users ever need to know:
 | `shell_env.bash`                                        | script `source`-able by `~/.bashrc` to avoid starting `dev_shell.bash`       |
 | `run_argrelay_server`                                   | runs `argrelay` server (in foreground)                                       |
 | `run_argrelay_client`                                   | **not** used directly (invoked by `Alt+Shift+Q`-query and `Tab`-completion)  |
+| `argrelay_mcp_proxy`                                    | exposes `argrelay` functions as MCP tools for AI clients                     |
 
 See [FS_29_54_67_86.dir_structure.md][FS_29_54_67_86.dir_structure.md] for details.
+
+<a id="argrelay-mcp"></a>
+
+# AI / MCP integration
+
+`argrelay` functions are accessible to AI clients via the MCP proxy (`exe/argrelay_mcp_proxy`).
+
+Bootstrap generates both the proxy executable and `.mcp.json` automatically.
+
+```
+[AI client] -- stdio MCP --> [argrelay_mcp_proxy] -- HTTP --> [argrelay_server]
+```
 
 <a id="argrelay-backend"></a>
 

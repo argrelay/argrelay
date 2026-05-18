@@ -21,6 +21,7 @@ from argrelay_app_server import relay_server
 from argrelay_app_server.relay_server.LocalServer import LocalServer
 from argrelay_app_server.relay_server.route_api import create_blueprint_api
 from argrelay_app_server.relay_server.route_gui import create_blueprint_gui
+from argrelay_app_server.relay_server.route_mcp import create_blueprint_mcp
 from argrelay_lib_root.misc_helper_common import get_argrelay_dir
 from argrelay_lib_server_plugin_demo.demo_git.git_utils import get_git_repo_root_path
 from argrelay_schema_config_server.schema_config_server_app.ServerConfigSchema import (
@@ -152,6 +153,7 @@ def create_app() -> CustomFlaskApp:
         return redirect(ARGRELAY_GUI_PATH, code=302)
 
     flask_app.register_blueprint(create_blueprint_api(flask_app.local_server))
+    flask_app.register_blueprint(create_blueprint_mcp(flask_app.local_server))
     flask_app.register_blueprint(
         create_blueprint_gui(
             configure_project_title(
