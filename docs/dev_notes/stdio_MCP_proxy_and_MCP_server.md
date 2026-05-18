@@ -129,7 +129,9 @@ The new endpoint is a 4th Flask route (`route_mcp.py` blueprint), outside the
 ### 3.2 Server logic for GET /mcp_tools/
 
 ```python
-# step 1: one query -- all registered functions
+# step 1: one query -- all registered functions regardless of func_state
+# No func_state filter: alpha/beta/gamma/ignorable/demo functions are all exposed.
+# func_state is a display/maturity hint, not an access-control gate for MCP.
 func_envelopes = db["class_function"].find(
     {"envelope_class": "class_function"}
 )
@@ -163,7 +165,25 @@ for envelope in func_envelopes:
     # prop_name_for_arg  -> {"code": "code_maturity", "stage": "flow_stage", ...}
 ```
 
-### 3.3 Why no enum value queries at startup
+### 3.3 Why no func_state filter
+
+`func_state` (`fs_alpha`, `fs_beta`, `fs_gamma`, `fs_demo`, `fs_ignorable`) is a
+display/maturity annotation used by the CLI help system to decide which functions
+to surface to human users.  It is **not** an access-control mechanism.
+
+`GET /mcp_tools/` exposes all functions in `class_function` regardless of
+`func_state`.  Reasons:
+
+-   AI clients benefit from access to all callable functions including alpha/beta
+    ones -- they can always be filtered by the AI or the user downstream.
+-   `func_state` meaning is CLI-context-specific; MCP has no equivalent concept.
+-   Filtering by state would silently hide callable functions, creating a
+    confusing gap between what the server can do and what MCP exposes.
+
+The only skip criterion is a missing `func_id` in `instance_data` -- that
+indicates a malformed/incomplete envelope, not a maturity gate.
+
+### 3.4 Why no enum value queries at startup
 
 Enum values could be fetched with `collection.distinct(prop_name, filter)` per
 arg -- one `distinct` call per arg per function (N functions x M args each).
@@ -179,7 +199,7 @@ However, this is skipped intentionally for the short-lived proxy:
 -   Keeping `GET /mcp_tools/` as a single `class_function` query keeps it fast
     and simple.
 
-### 3.4 Response format
+### 3.5 Response format
 
 ```json
 {
@@ -209,7 +229,7 @@ dimensions are left unfiltered).
 `func_id_goto_service` -> `goto_service`). Names are globally unique within
 argrelay, so no collision possible.
 
-### 3.5 Key source files for server extension
+### 3.6 Key source files for server extension
 
 | File | Role |
 |---|---|
@@ -430,8 +450,10 @@ descriptor so the AI sees the same names it used in the original call.
 
 1.  Create `src/argrelay_app_server/handler_request/MCPToolsServerRequestHandler.py`:
     -   Constructor takes `LocalServer`.
-    -   `handle_request()`: queries `class_function`, builds tool descriptor list,
-        returns dict matching Section 3.4 format.
+    -   `handle_request()`: queries `class_function` with no `func_state` filter --
+        all registered functions exposed (see Section 3.3). Builds tool descriptor
+        list, returns dict matching Section 3.5 format.
+    -   Skips only envelopes with missing `func_id` in `instance_data` (malformed).
     -   Pure logic: no Flask imports, testable in isolation.
 
 2.  Create `src/argrelay_app_server/relay_server/route_mcp.py`:
@@ -536,7 +558,7 @@ in its response (needed by proxy for command line construction), or should the
 proxy reconstruct it from `tree_step_*` fields?
 Decision: include `command_path` as a pre-computed field in the response.
 
-Q2 -- RESOLVED by Section 3.4: `prop_name_for_arg` map is already present in
+Q2 -- RESOLVED by Section 3.5: `prop_name_for_arg` map is already present in
 the response -- `inputSchema.properties[arg_name].description` IS the `prop_name`
 (e.g. `"code": {"description": "code_maturity"}`). Proxy inverts that to remap
 `remaining` keys: `prop_name_for_arg = {prop.description: arg for arg, prop in
