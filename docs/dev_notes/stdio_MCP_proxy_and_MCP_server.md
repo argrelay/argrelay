@@ -46,9 +46,9 @@ All accept `CallContext` JSON body
 
 | Endpoint | HTTP | Purpose |
 |---|---|---|
-| `POST /propose_arg_values/` | Tab-completion: returns `arg_values: list[str]` |
-| `POST /describe_line_args/` | Parsed state: returns `InterpResult` with remaining values |
-| `POST /relay_line_args/`    | Execute: returns `InvocationInput` with `custom_plugin_data` |
+| `POST /propose_arg_values/` | POST | Tab-completion: returns `arg_values: list[str]` |
+| `POST /describe_line_args/` | POST | Parsed state: returns `InterpResult` with remaining values |
+| `POST /relay_line_args/`    | POST | Execute: returns `InvocationInput` with `custom_plugin_data` |
 
 URL prefix defined in `src/argrelay_lib_root/enum_desc/ServerAction.py`.
 Routes wired in `src/argrelay_app_server/relay_server/route_api.py`.
@@ -134,19 +134,33 @@ func_envelopes = db["class_function"].find(
     {"envelope_class": "class_function"}
 )
 
-# step 2: for each function, extract command_path and arg_names
+# step 2: for each function, extract all fields needed for MCP tool descriptor
 for envelope in func_envelopes:
+    # tool name: strip "func_id_" prefix from func_id
+    func_id = envelope["instance_data"]["func_id"]
+    tool_name = func_id[len("func_id_"):] if func_id.startswith("func_id_") else func_id
+    # tool_name -> "goto_service"
+
+    # description from help_hint field on the envelope
+    description = envelope.get("help_hint", func_id)
+    # description -> "Go (log in) to remote host and dir path with specified service"
+
+    # command path: tree_step_* values, excluding wildcard "~"
     step_keys = sorted(k for k in envelope if k.startswith("tree_step_"))
     command_path = [envelope[k] for k in step_keys if envelope[k] != "~"]
     # command_path -> ["relay_demo", "goto", "service"]
 
+    # arg names and their prop names (for remaining remapping)
     arg_names = []
+    prop_name_for_arg = {}
     for sc in envelope["instance_data"]["search_control_list"]:
         for mapping in sc["arg_name_to_prop_name_map"]:
-            for arg_name in mapping:
+            for arg_name, prop_name in mapping.items():
                 if arg_name != "class":
                     arg_names.append(arg_name)
-    # arg_names -> ["code", "stage", "region", "service"]
+                    prop_name_for_arg[arg_name] = prop_name
+    # arg_names          -> ["code", "stage", "region", "service"]
+    # prop_name_for_arg  -> {"code": "code_maturity", "stage": "flow_stage", ...}
 ```
 
 ### 3.3 Why no enum value queries at startup
@@ -269,7 +283,7 @@ src/argrelay_app_mcp_proxy/
 +-- mcp_proxy/
     +-- __init__.py
     +-- __main__.py           # entry point: load config, run proxy
-    +-- ArgrelaymMCPProxy.py  # core: session init, MCP handler callbacks
+    +-- ArgrelayMcpProxy.py  # core: session init, MCP handler callbacks
     +-- ToolBuilder.py        # pure functions: parse /mcp_tools/ response,
                               #   build MCP tool objects, build command lines
 ```
@@ -305,7 +319,8 @@ Use the official `mcp` Python package. Provides:
 -   `mcp.server.stdio.stdio_server()` -- stdio transport (async context manager)
 -   `mcp.types.Tool`, `mcp.types.TextContent` -- type definitions
 
-Add `mcp>=1.0` and `anyio` to `pyproject.toml` dependencies.
+Add `mcp>=1.0` to `pyproject.toml` dependencies. Do NOT add `anyio` separately --
+`mcp>=1.0` already depends on `anyio`; a duplicate explicit pin risks version conflicts.
 
 The proxy does NOT need to implement JSON-RPC 2.0 framing manually.
 
@@ -325,13 +340,21 @@ The proxy does NOT need to implement JSON-RPC 2.0 framing manually.
 
 The absolute path carries the venv Python shebang, so no venv activation needed.
 
+`.mcp.json` contains an environment-specific absolute path and must be added to
+`.gitignore` -- it is local-only, analogous to `exe/argrelay_mcp_proxy` itself.
+
 ---
 
-## 5. Ambiguity feedback loop (replaces upfront enum enumeration)
+## 5. Error feedback loop (replaces upfront enum enumeration)
 
-When the AI provides insufficient or incorrect arg values, argrelay returns an
-error via `custom_plugin_data` and includes `remaining_prop_name_to_prop_value`
-in the `envelope_containers`. The proxy surfaces both to the AI:
+Two distinct error cases arise from `relay_line_args`. The proxy surfaces both
+`custom_plugin_data` and the `remaining` dict to the AI in both cases.
+
+### 5.1 More than one match (ambiguity)
+
+Too few arg values provided -- multiple data envelopes match. Argrelay returns
+a non-zero `error_code` and `remaining_prop_name_to_prop_value` is non-empty
+(lists the values that would narrow the search):
 
 ```json
 {
@@ -346,12 +369,39 @@ in the `envelope_containers`. The proxy surfaces both to the AI:
 }
 ```
 
-The AI reads `remaining`, selects a value, retries. This is the live enum set at
-call time -- always current, never a stale startup snapshot.
+AI action: pick a value from `remaining`, retry. Live enum set at call time --
+always current, never a stale startup snapshot.
+
+### 5.2 Zero matches
+
+Arg values provided do not match any data envelope (typo, invalid value, or
+impossible combination). Argrelay returns a non-zero `error_code` and
+`remaining_prop_name_to_prop_value` is empty (nothing to pick from):
+
+```json
+{
+  "custom_plugin_data": {
+    "error_message": "ERROR: zero matches",
+    "error_code": 1
+  },
+  "remaining": {}
+}
+```
+
+AI action: cannot self-correct from `remaining` -- must ask the user to clarify
+the intended value. The proxy should signal this case explicitly in its response
+so the AI does not retry blindly with the same (invalid) values.
+
+### 5.3 Collection of remaining values
+
+The proxy collects `remaining_prop_name_to_prop_value` from
+`envelope_containers[1:]` only -- `envelope_containers[0]` is the function
+container (`class_function` match) and does not hold param remaining values.
+All param containers (`[1:]`) are merged into a single flat dict.
 
 The proxy maps `prop_name` keys back to `arg_name` keys using
-`arg_name_to_prop_name_map` (inverted) from the tool descriptor so the AI sees
-the same names it used in the original call.
+`inputSchema.properties[arg_name].description` (inverted) from the tool
+descriptor so the AI sees the same names it used in the original call.
 
 ---
 
@@ -391,7 +441,7 @@ Create `src/argrelay_app_mcp_proxy/mcp_proxy/ToolBuilder.py`:
 
 ### Phase 3: Proxy core
 
-Create `src/argrelay_app_mcp_proxy/mcp_proxy/ArgrelaymMCPProxy.py`:
+Create `src/argrelay_app_mcp_proxy/mcp_proxy/ArgrelayMcpProxy.py`:
 
 -   `__init__(client_config, server_url)`: init `requests.Session`, MCP `Server`.
 -   `start()`: `GET /mcp_tools/` -> `parse_mcp_tools_response` -> store tool list.
@@ -404,7 +454,7 @@ Create `src/argrelay_app_mcp_proxy/mcp_proxy/__main__.py`:
 
 -   Load `argrelay_client.json` via `get_config_path`.
 -   Parse `--server-url` override (optional; default from config).
--   Instantiate `ArgrelaymMCPProxy`, call `start()`, `register_tools()`, `run_stdio()`.
+-   Instantiate `ArgrelayMcpProxy`, call `start()`, `register_tools()`, `run_stdio()`.
 
 ### Phase 4: Bootstrap integration
 
@@ -434,7 +484,7 @@ src/argrelay_app_server/handler_request/MCPToolsServerRequestHandler.py
 src/argrelay_app_mcp_proxy/__init__.py
 src/argrelay_app_mcp_proxy/mcp_proxy/__init__.py
 src/argrelay_app_mcp_proxy/mcp_proxy/__main__.py
-src/argrelay_app_mcp_proxy/mcp_proxy/ArgrelaymMCPProxy.py
+src/argrelay_app_mcp_proxy/mcp_proxy/ArgrelayMcpProxy.py
 src/argrelay_app_mcp_proxy/mcp_proxy/ToolBuilder.py
 ```
 
@@ -444,7 +494,7 @@ src/argrelay_app_mcp_proxy/mcp_proxy/ToolBuilder.py
 src/argrelay_app_server/relay_server/CustomFlaskApp.py  -- register route_mcp blueprint
 src/argrelay_api_server_cli/server_spec/const_int.py    -- add MCP_TOOLS_PATH constant
 src/argrelay_app_bootstrap/cmd_bootstrap_env.py         -- generate exe/argrelay_mcp_proxy
-pyproject.toml                                          -- add mcp>=1.0, anyio deps
+pyproject.toml                                          -- add mcp>=1.0, mcp dep
 ```
 
 ### Generated file (not version-controlled)
@@ -462,9 +512,11 @@ in its response (needed by proxy for command line construction), or should the
 proxy reconstruct it from `tree_step_*` fields?
 Decision: include `command_path` as a pre-computed field in the response.
 
-Q2 -- `prop_name_for_arg` map: needed by proxy to remap `remaining` keys.
-Include in response or recompute proxy-side from `arg_name_to_prop_name_map`?
-Decision: include in response to keep proxy logic minimal.
+Q2 -- RESOLVED by Section 3.4: `prop_name_for_arg` map is already present in
+the response -- `inputSchema.properties[arg_name].description` IS the `prop_name`
+(e.g. `"code": {"description": "code_maturity"}`). Proxy inverts that to remap
+`remaining` keys: `prop_name_for_arg = {prop.description: arg for arg, prop in
+properties.items()}`. No separate field needed.
 
 Q3 -- Auth / access control: `GET /mcp_tools/` is unauthenticated (same as
 existing 3 endpoints). Acceptable for local deployment.
