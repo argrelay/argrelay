@@ -54,7 +54,7 @@ class ArgrelayMcpProxy:
         @self.mcp_server.call_tool()
         async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
             tool = self._tool_map[name]
-            command_line = build_command_line(tool, arguments)
+            command_line = build_command_line(tool, arguments or {})
             payload = {
                 "server_action": ServerAction.RelayLineArgs.name,
                 "command_line": command_line,
