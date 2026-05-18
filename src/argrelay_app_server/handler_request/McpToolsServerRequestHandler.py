@@ -18,7 +18,7 @@ _func_id_prefix = "func_id_"
 _no_prop_value = SpecialChar.NoPropValue.value
 
 
-class MCPToolsServerRequestHandler:
+class McpToolsServerRequestHandler:
 
     def __init__(
         self,

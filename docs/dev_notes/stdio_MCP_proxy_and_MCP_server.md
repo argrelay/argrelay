@@ -223,7 +223,7 @@ New files:
 | File | Role |
 |---|---|
 | `src/argrelay_app_server/relay_server/route_mcp.py` | New Flask blueprint for MCP routes |
-| `src/argrelay_app_server/handler_request/MCPToolsServerRequestHandler.py` | Handler that queries class_function |
+| `src/argrelay_app_server/handler_request/McpToolsServerRequestHandler.py` | Handler that queries class_function |
 
 ---
 
@@ -345,7 +345,7 @@ The proxy does NOT need to implement JSON-RPC 2.0 framing manually.
 
 ### 4.7 Integration with Claude Code / Claude Desktop
 
-`.mcp.json` in project root:
+`.mcp.json` is generated automatically by bootstrap alongside `exe/argrelay_mcp_proxy`:
 
 ```json
 {
@@ -359,7 +359,7 @@ The proxy does NOT need to implement JSON-RPC 2.0 framing manually.
 
 The absolute path carries the venv Python shebang, so no venv activation needed.
 
-`.mcp.json` contains an environment-specific absolute path and must be added to
+`.mcp.json` contains an environment-specific absolute path and is added to
 `.gitignore` -- it is local-only, analogous to `exe/argrelay_mcp_proxy` itself.
 
 ---
@@ -482,6 +482,8 @@ Create `src/argrelay_app_mcp_proxy/mcp_proxy/__main__.py`:
 Extend `src/argrelay_app_bootstrap/cmd_bootstrap_env.py`:
 
 -   Add `_generate_runner_script(path=".../exe/argrelay_mcp_proxy", ...)` call.
+-   Add `_generate_mcp_json(argrelay_dir)` call -- writes `.mcp.json` at project
+    root with the absolute path to `exe/argrelay_mcp_proxy`.
 
 ### Phase 5: End-to-end test
 
@@ -491,7 +493,7 @@ Extend `src/argrelay_app_bootstrap/cmd_bootstrap_env.py`:
 4.  Send MCP `tools/call goto_service {code: prod, region: apac}` -- verify
     `custom_plugin_data` in response.
 5.  Send with wrong value -- verify `remaining` in response with correct enum values.
-6.  Configure `.mcp.json`, restart Claude Code, verify argrelay tools available.
+6.  Restart Claude Code (bootstrap already generated `.mcp.json`) -- verify argrelay tools available.
 
 ---
 
@@ -501,7 +503,7 @@ Extend `src/argrelay_app_bootstrap/cmd_bootstrap_env.py`:
 
 ```
 src/argrelay_app_server/relay_server/route_mcp.py
-src/argrelay_app_server/handler_request/MCPToolsServerRequestHandler.py
+src/argrelay_app_server/handler_request/McpToolsServerRequestHandler.py
 src/argrelay_app_mcp_proxy/__init__.py
 src/argrelay_app_mcp_proxy/mcp_proxy/__init__.py
 src/argrelay_app_mcp_proxy/mcp_proxy/__main__.py
@@ -514,14 +516,15 @@ src/argrelay_app_mcp_proxy/mcp_proxy/ToolBuilder.py
 ```
 src/argrelay_app_server/relay_server/CustomFlaskApp.py  -- register route_mcp blueprint
 src/argrelay_api_server_cli/server_spec/const_int.py    -- add MCP_TOOLS_PATH constant
-src/argrelay_app_bootstrap/cmd_bootstrap_env.py         -- generate exe/argrelay_mcp_proxy
+src/argrelay_app_bootstrap/cmd_bootstrap_env.py         -- generate exe/argrelay_mcp_proxy and .mcp.json
 pyproject.toml                                          -- add mcp>=1.0, mcp dep
 ```
 
-### Generated file (not version-controlled)
+### Generated files (not version-controlled)
 
 ```
 exe/argrelay_mcp_proxy   -- produced by bootstrap, differs per environment
+.mcp.json                -- produced by bootstrap, differs per environment
 ```
 
 ---
