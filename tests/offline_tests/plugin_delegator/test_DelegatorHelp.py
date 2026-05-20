@@ -210,7 +210,7 @@ some_command list service {SpecialChar.NoPropValue.value} {TermColor.known_envel
                     .set_capture_stderr(True)
                 )
                 with inner_env_mock_builder.build():
-                    DelegatorHelp.invoke_action(invocation_input)
+                    DelegatorHelp.run_invoke_action(invocation_input)
 
                     self.assertEqual(
                         stdout_str,

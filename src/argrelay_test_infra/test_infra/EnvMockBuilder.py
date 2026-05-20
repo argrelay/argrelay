@@ -215,6 +215,13 @@ class EnvMockBuilder:
     """
     Set by giving `delegator_class` to `set_capture_delegator_invocation_input`.
     """
+
+    allow_invoke_action_exit: bool = field(default=False)
+    """
+    When True, skips the base-class `invoke_action` mock that would otherwise prevent
+    SystemExit in tests with CompType.InvokeAction and no specific delegator mock.
+    Set this when the test explicitly expects SystemExit (e.g. to verify exit codes).
+    """
     invocation_input: InvocationInput = field(default=None)
     """
     Captured `InvocationInput` by using `capture_invocation_input` func on `ServerAction.RelayLineArgs`
@@ -464,6 +471,15 @@ class EnvMockBuilder:
         )
         return self
 
+    def set_allow_invoke_action_exit(self):
+        """
+        Opt out of the automatic base-class `invoke_action` mock.
+        Use when the test explicitly expects `SystemExit` from `CompType.InvokeAction`
+        (e.g. to verify that the correct exit code is propagated).
+        """
+        self.allow_invoke_action_exit = True
+        return self
+
     ####################################################################################################################
     # Server control
 
@@ -710,6 +726,24 @@ class EnvMockBuilder:
                 yield_list.append(
                     exit_stack.enter_context(
                         _mock_delegator_plugin(self.invoke_action_func_full_name)
+                    )
+                )
+            elif (
+                self.comp_type is CompType.InvokeAction
+                and not self.allow_invoke_action_exit
+            ):
+                # When no specific delegator is mocked but comp_type is InvokeAction,
+                # mock the base class to prevent SystemExit from reaching test code.
+                # Skip when allow_invoke_action_exit=True (test explicitly expects SystemExit).
+                yield_list.append(
+                    exit_stack.enter_context(
+                        _mock_delegator_plugin(
+                            f"{DelegatorAbstract.__module__}"
+                            "."
+                            f"{DelegatorAbstract.__name__}"
+                            "."
+                            "invoke_action"
+                        )
                     )
                 )
 

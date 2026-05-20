@@ -67,6 +67,7 @@ class ThisTestClass(LocalTestClass):
                     "intercept",
                     "list",
                     "no_data",
+                    "sleep",
                     "ssh",
                 ],
                 {},

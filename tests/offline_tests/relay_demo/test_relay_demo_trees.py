@@ -66,6 +66,7 @@ tree_step_2: ? intercept help goto desc list host service repo commit
                     "intercept",
                     "list",
                     "no_data",
+                    "sleep",
                     "ssh",
                 ],
                 "Basic test.",

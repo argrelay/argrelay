@@ -111,7 +111,7 @@ class DelegatorServiceInstanceDiff(DelegatorServiceInstanceBase):
         )
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
     ) -> None:
         func_id = get_func_id_from_invocation_input(invocation_input)

@@ -283,6 +283,9 @@ server_plugin_control:
                             "ssh":
                                 node_type: func_tree_node
                                 func_id: func_id_ssh_dst
+                            "sleep":
+                                node_type: func_tree_node
+                                func_id: func_id_sleep
                     "duplicates":
                         node_type: tree_path_node
                         sub_tree:

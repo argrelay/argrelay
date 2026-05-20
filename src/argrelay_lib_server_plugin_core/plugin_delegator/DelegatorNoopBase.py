@@ -28,8 +28,7 @@ class DelegatorNoopBase(DelegatorSingleFuncAbstract):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
-        # Do nothing:
-        pass
+    ) -> int:
+        return 0

@@ -1,0 +1,4 @@
+{
+    "__comment__": "argrelay MCP proxy config",
+    "log_dir_rel_path": "./logs"
+}

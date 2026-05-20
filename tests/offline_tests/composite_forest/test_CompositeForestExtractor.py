@@ -417,6 +417,7 @@ class ThisTestClass(LocalTestClass):
                 "double_execution": "func_id_double_execution",
             },
             "ssh": "func_id_ssh_dst",
+            "sleep": "func_id_sleep",
         }
 
         test_cases = [

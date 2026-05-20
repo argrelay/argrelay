@@ -44,9 +44,9 @@ class DelegatorConfigOnly(DelegatorConfigBase):
         )
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         # TODO: TODO_74_73_60_93: Support expected envelope count in config-only delegator:
         #       Use common static functions in `DelegatorConfigBase`.
 
@@ -72,4 +72,4 @@ class DelegatorConfigOnly(DelegatorConfigBase):
             command_line,
             shell=True,
         )
-        exit(sub_proc.returncode)
+        return sub_proc.returncode

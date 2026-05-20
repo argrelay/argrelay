@@ -74,12 +74,13 @@ class DelegatorCheckEnvServerVersion(DelegatorCheckEnvBase):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         func_id = get_func_id_from_invocation_input(invocation_input)
         assert func_id == CheckEnvFunc.func_id_get_server_argrelay_version.name
 
         print(
             f"{invocation_input.custom_plugin_data[CheckEnvField.server_version.name]}"
         )
+        return 0
