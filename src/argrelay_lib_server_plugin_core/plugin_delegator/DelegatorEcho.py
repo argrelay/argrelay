@@ -60,7 +60,8 @@ class DelegatorEcho(DelegatorSingleFuncAbstract):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         print(" ".join(invocation_input.all_tokens))
+        return 0

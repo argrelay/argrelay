@@ -100,9 +100,9 @@ class DelegatorHelp(DelegatorJumpAbstract):
             )
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         if (
             get_func_id_from_invocation_input(invocation_input)
             == SpecialFunc.func_id_help_hint.name
@@ -153,3 +153,4 @@ class DelegatorHelp(DelegatorJumpAbstract):
                     print(TermColor.reset_style.value, end="")
 
                 print()
+        return 0

@@ -80,7 +80,7 @@ class DelegatorGitRepoDescTag(DelegatorGitRepoBase):
         return func_envelopes
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
     ) -> None:
         assert (

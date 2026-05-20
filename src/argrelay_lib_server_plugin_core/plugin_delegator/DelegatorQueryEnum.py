@@ -71,7 +71,8 @@ class DelegatorQueryEnum(DelegatorJumpAbstract):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         ClientResponseHandlerDescribeLineArgs.render_result(invocation_input)
+        return 0

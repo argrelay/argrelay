@@ -36,9 +36,9 @@ class DelegatorError(DelegatorSingleFuncAbstract):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         error_message = "ERROR: unknown error"
         error_code = ClientExitCode.GeneralError.value
         if invocation_input.custom_plugin_data:
@@ -47,4 +47,4 @@ class DelegatorError(DelegatorSingleFuncAbstract):
             if error_code_ in invocation_input.custom_plugin_data:
                 error_code = invocation_input.custom_plugin_data[error_code_]
         eprint(error_message)
-        exit(error_code)
+        return error_code

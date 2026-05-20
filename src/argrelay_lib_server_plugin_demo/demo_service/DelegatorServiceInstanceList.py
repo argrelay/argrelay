@@ -80,9 +80,9 @@ class DelegatorServiceInstanceList(DelegatorServiceInstanceBase):
         )
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         """
         Print `data_envelope`-s received from server on client side.
         """
@@ -96,3 +96,4 @@ class DelegatorServiceInstanceList(DelegatorServiceInstanceBase):
             service_container_ipos_
         ].data_envelopes:
             print(json.dumps(data_envelope))
+        return 0

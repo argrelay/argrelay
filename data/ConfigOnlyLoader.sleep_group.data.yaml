@@ -1,0 +1,9 @@
+-
+    envelope_class: class_sleep
+    time_delay: 4s
+-
+    envelope_class: class_sleep
+    time_delay: 16s
+-
+    envelope_class: class_sleep
+    time_delay: 64s

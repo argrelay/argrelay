@@ -279,7 +279,9 @@ exit 1
                             None,
                             None,
                             None,
-                            LocalClientEnvMockBuilder().set_reset_local_server(False),
+                            LocalClientEnvMockBuilder()
+                            .set_reset_local_server(False)
+                            .set_allow_invoke_action_exit(),
                         )
                     expected_exit_code = next(iter(popen_mock_config.values()))[0]
                     self.assertEqual(cm.exception.code, expected_exit_code)

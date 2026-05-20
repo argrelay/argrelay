@@ -86,9 +86,9 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
         return func_envelopes
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         assert (
             get_func_id_from_invocation_input(invocation_input)
             == func_id_goto_git_repo_
@@ -107,7 +107,7 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
             eprint(
                 f"ERROR: single repo is not selected (not disambiguated from multiple candidates)"
             )
-            exit(ClientExitCode.GeneralError.value)
+            return ClientExitCode.GeneralError.value
 
         repo_envelope = invocation_input.envelope_containers[
             repo_container_ipos_
@@ -125,3 +125,4 @@ class DelegatorGitRepoGotoRepo(DelegatorGitRepoBase):
         exit_code = sub_proc.returncode
         if exit_code != 0:
             raise RuntimeError
+        return exit_code

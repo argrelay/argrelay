@@ -150,9 +150,9 @@ class DelegatorIntercept(DelegatorJumpAbstract):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         # TODO: Print without first function `data_envelope` belonging to `intercept` function:
         func_id = get_func_id_from_invocation_input(invocation_input)
         if func_id == SpecialFunc.func_id_intercept_invocation.name:
@@ -174,3 +174,4 @@ class DelegatorIntercept(DelegatorJumpAbstract):
                 raise RuntimeError(f"not implemented: {output_format}")
         else:
             raise RuntimeError(f"unknown func_id: {func_id}")
+        return 0

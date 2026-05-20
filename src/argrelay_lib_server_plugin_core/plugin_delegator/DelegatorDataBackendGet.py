@@ -108,9 +108,9 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         func_id = get_func_id_from_invocation_input(invocation_input)
         assert func_id == SpecialFunc.func_id_get_data_envelopes.name
 
@@ -120,3 +120,4 @@ class DelegatorDataBackendGet(DelegatorDataBackendBase):
             data_envelope_container_ipos_
         ].data_envelopes:
             print(json.dumps(data_envelope))
+        return 0

@@ -58,7 +58,7 @@ class DelegatorAbstract(AbstractPluginServer):
     """
     `DelegatorPlugin` implements two sides:
     *   server-side `invoke_control` prepares data in :class:`InvocationInput` (whatever is necessary)
-    *   client-side `invoke_action` uses data in :class:`InvocationInput` to execute the action anyway it can
+    *   client-side `run_invoke_action` / `invoke_action` uses data in :class:`InvocationInput` to execute the action
 
     To simplify reasoning, ensure that both server-side and client-side:
     *   have access to the same code (non-breaking differences are possible, but same code version ensures that)
@@ -167,11 +167,12 @@ class DelegatorAbstract(AbstractPluginServer):
         pass
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         """
         Execute command on client side based on data received from server side.
+        Returns exit code. Does not call exit() — safe for long-lived callers (MCP proxy, tests).
 
         Implements FS_98_55_40_77 `invoke_control` on client side.
         There is no plugin instance on client side -
@@ -179,7 +180,19 @@ class DelegatorAbstract(AbstractPluginServer):
         *   without instantiating a plugin instance (it is a `@staticmethod`)
         *   specifically, without calling `AbstractPlugin.activate_plugin` (as it is non-static)
         """
-        pass
+        return 0
+
+    @classmethod
+    def invoke_action(
+        cls,
+        invocation_input: InvocationInput,
+    ) -> None:
+        """
+        CLI entry point: calls run_invoke_action then exits with the returned exit code.
+        Terminates the process — correct for short-lived CLI client processes.
+        """
+        exit_code = cls.run_invoke_action(invocation_input)
+        exit(exit_code if exit_code is not None else 0)
 
     @staticmethod
     def extract_search_control_from_function_data_envelope(

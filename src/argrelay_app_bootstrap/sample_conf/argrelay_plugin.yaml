@@ -24,6 +24,7 @@ server_plugin_instance_groups:
                 -   DelegatorNoopGroup.special_func_group
                 -   DelegatorNoopGroup.check_env_command_group
                 -   DelegatorNoopGroup.ssh_dst_group
+                -   DelegatorNoopGroup.sleep_group
                 -   DelegatorNoopGroup.demo_service_group
                 -   DelegatorNoopGroup.generic_git_group
                 -   DelegatorConfigOnly.default
@@ -205,6 +206,31 @@ server_plugin_instance_groups:
             plugin_class_name: DelegatorNoopGroup
             plugin_dependencies:
                 -   DelegatorSshDst.default
+
+    "sleep_group":
+
+        ConfigOnlyLoader.sleep_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_loader.ConfigOnlyLoader
+            plugin_class_name: ConfigOnlyLoader
+            plugin_config:
+                envelope_class_to_collection_name_map:
+                    class_sleep: class_sleep
+                collection_name_to_index_props_map:
+                    class_sleep:
+                        -   envelope_class
+                        -   time_delay
+                data_envelopes:
+                  !include "data/ConfigOnlyLoader.sleep_group.data.yaml"
+
+        DelegatorSleep.default:
+            plugin_module_name: argrelay_lib_server_plugin_demo.demo_sleep.DelegatorSleep
+            plugin_class_name: DelegatorSleep
+
+        DelegatorNoopGroup.sleep_group:
+            plugin_module_name: argrelay_lib_server_plugin_core.plugin_delegator.DelegatorNoopGroup
+            plugin_class_name: DelegatorNoopGroup
+            plugin_dependencies:
+                -   DelegatorSleep.default
 
     "demo_service_group":
 

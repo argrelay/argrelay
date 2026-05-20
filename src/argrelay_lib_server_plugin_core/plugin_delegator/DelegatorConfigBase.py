@@ -200,7 +200,7 @@ class DelegatorConfigBase(DelegatorSingleFuncAbstract):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         raise NotImplementedError("Extend: not implemented intentionally")

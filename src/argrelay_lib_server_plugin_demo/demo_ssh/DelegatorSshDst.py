@@ -136,9 +136,9 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
         return invocation_input
 
     @staticmethod
-    def invoke_action(
+    def run_invoke_action(
         invocation_input: InvocationInput,
-    ) -> None:
+    ) -> int:
         func_id = get_func_id_from_invocation_input(invocation_input)
         assert func_id == func_id_ssh_dst_
 
@@ -157,17 +157,17 @@ class DelegatorSshDst(DelegatorSingleFuncAbstract):
                 "ERROR: `ssh` destination is ambiguous "
                 "(multiple candidates based on given command line input)"
             )
-            exit(ClientExitCode.GeneralError.value)
+            return ClientExitCode.GeneralError.value
 
         elif len(ssh_dst_data_envelopes) == 0:
             eprint(
                 "ERROR: `ssh` destination not found based on given command line input."
             )
-            exit(ClientExitCode.GeneralError.value)
+            return ClientExitCode.GeneralError.value
 
         else:
             ssh_dst_data_envelope = ssh_dst_data_envelopes[0]
-            _run_ssh(ssh_dst_data_envelope)
+            return _run_ssh(ssh_dst_data_envelope)
 
 
 def _data_envelope_to_str(
@@ -181,7 +181,7 @@ def _data_envelope_to_str(
 
 def _run_ssh(
     ssh_dst_data_envelope: dict,
-) -> None:
+) -> int:
     eprint(_data_envelope_to_str(ssh_dst_data_envelope))
 
     user_name = clean_prop_value(ssh_dst_data_envelope[ServicePropName.user_name.name])
@@ -203,5 +203,4 @@ def _run_ssh(
             f'cd "{dir_path}" ; bash --login',
         ],
     )
-    exit_code = sub_proc.returncode
-    exit(exit_code)
+    return sub_proc.returncode
