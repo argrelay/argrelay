@@ -77,7 +77,7 @@ def build_mcp_tool(tool_desc: ToolDesc) -> types.Tool:
     return types.Tool(
         name=tool_desc.name,
         description=tool_desc.description,
-        inputSchema={
+        input_schema={
             "type": "object",
             "properties": tool_properties,
         },

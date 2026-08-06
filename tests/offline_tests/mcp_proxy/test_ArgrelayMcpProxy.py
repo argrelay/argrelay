@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import mcp.types as types
+import pytest
 
 from argrelay_app_mcp_proxy.mcp_proxy.ArgrelayMcpProxy import ArgrelayMcpProxy
 from argrelay_app_mcp_proxy.mcp_proxy.McpProxyConfig import McpProxyConfig
@@ -197,8 +198,7 @@ class ThisTestClass(ServerOnlyTestClass):
         tool_arguments: dict,
     ):
         """Invoke call_tool handler with mocked subprocess and request context."""
-        from mcp.server.lowlevel.server import request_ctx
-        from mcp.shared.context import RequestContext
+        from mcp.server.context import ServerRequestContext
 
         proxy._invoke_lock = asyncio.Lock()
 
@@ -208,38 +208,36 @@ class ThisTestClass(ServerOnlyTestClass):
         mock_proc.returncode = 0
 
         mock_session = MagicMock()
-        mock_ctx = RequestContext(
-            request_id="test-1",
-            meta=None,
+        mock_request_ctx = ServerRequestContext(
             session=mock_session,
             lifespan_context=None,
+            protocol_version="test",
+            method="tools/call",
+            request_id="test-1",
+            meta=None,
         )
-        ctx_token = request_ctx.set(mock_ctx)
-        try:
-            with patch(
-                "asyncio.create_subprocess_exec",
-                new=AsyncMock(return_value=mock_proc),
-            ):
-                req = types.CallToolRequest(
-                    params=types.CallToolRequestParams(
-                        name=tool_name,
-                        arguments=tool_arguments,
-                    ),
-                )
-                handler = proxy.mcp_server.request_handlers[types.CallToolRequest]
-                return await handler(req)
-        finally:
-            request_ctx.reset(ctx_token)
+        with patch(
+            "asyncio.create_subprocess_exec",
+            new=AsyncMock(return_value=mock_proc),
+        ):
+            params = types.CallToolRequestParams(
+                name=tool_name,
+                arguments=tool_arguments,
+            )
+            handler_entry = proxy.mcp_server.get_request_handler("tools/call")
+            return await handler_entry.handler(mock_request_ctx, params)
 
     def test_call_tool_unknown_tool_is_error(self):
         with tempfile.TemporaryDirectory() as log_dir:
             proxy = self._make_started_proxy(log_dir)
 
-            server_result = asyncio.run(
-                self._run_call_tool(proxy, "nonexistent_tool_xyz", {})
-            )
-
-        assert server_result.root.isError is True
+            # `ArgrelayMcpProxy.call_tool` raises for an unknown tool
+            # (per `mcp` >= 2.0 `CallToolResult` contract: "errors in finding
+            # the tool ... should be reported as an MCP error response",
+            # not via `CallToolResult.is_error`; the framework's dispatch
+            # layer maps the raised exception to a wire-level error):
+            with pytest.raises(ValueError):
+                asyncio.run(self._run_call_tool(proxy, "nonexistent_tool_xyz", {}))
 
     def test_call_tool_known_tool_is_not_error(self):
         with tempfile.TemporaryDirectory() as log_dir:
@@ -248,7 +246,7 @@ class ThisTestClass(ServerOnlyTestClass):
 
             server_result = asyncio.run(self._run_call_tool(proxy, tool_name, {}))
 
-        assert server_result.root.isError is False
+        assert server_result.is_error is False
 
     def test_call_tool_activity_log_records_name_and_arguments(self):
         with tempfile.TemporaryDirectory() as log_dir:

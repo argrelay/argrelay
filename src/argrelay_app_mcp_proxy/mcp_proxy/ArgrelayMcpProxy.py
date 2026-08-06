@@ -93,15 +93,26 @@ class ArgrelayMcpProxy:
 
     def register_handlers(self) -> None:
 
-        @self.mcp_server.list_tools()
-        async def list_tools() -> list[types.Tool]:
-            return [build_mcp_tool(tool_desc) for tool_desc in self.tools]
+        async def list_tools(
+            request_ctx,
+            params: types.PaginatedRequestParams | None,
+        ) -> types.ListToolsResult:
+            return types.ListToolsResult(
+                tools=[build_mcp_tool(tool_desc) for tool_desc in self.tools]
+            )
 
-        @self.mcp_server.call_tool()
+        self.mcp_server.add_request_handler(
+            "tools/list",
+            types.PaginatedRequestParams,
+            list_tools,
+        )
+
         async def call_tool(
-            name: str,
-            arguments: dict,
-        ) -> list[types.TextContent]:
+            request_ctx,
+            params: types.CallToolRequestParams,
+        ) -> types.CallToolResult:
+            name = params.name
+            arguments = params.arguments
             self._proxy_logger.info("call_tool: name=%r arguments=%r", name, arguments)
             tool_desc = self._tool_map.get(name)
             if tool_desc is None:
@@ -143,9 +154,8 @@ class ArgrelayMcpProxy:
             try:
                 invoke_logger.info("call_tool: name=%r arguments=%r", name, arguments)
                 invoke_logger.info("call_tool: command_line=%r", command_line)
-                request_ctx = self.mcp_server.request_context
                 progress_token = (
-                    request_ctx.meta.progressToken if request_ctx.meta else None
+                    request_ctx.meta.get("progress_token") if request_ctx.meta else None
                 )
                 invoke_logger.info(
                     "call_tool: acquiring invoke_lock; progress_token=%r heartbeat_interval_sec=%r stdout_log=%s stderr_log=%s activity_log=%s",
@@ -224,8 +234,14 @@ class ArgrelayMcpProxy:
             is_error = exit_code != 0
             return types.CallToolResult(
                 content=[types.TextContent(type="text", text=result_text)],
-                isError=is_error,
+                is_error=is_error,
             )
+
+        self.mcp_server.add_request_handler(
+            "tools/call",
+            types.CallToolRequestParams,
+            call_tool,
+        )
 
     async def run_stdio(self) -> None:
         # Create lock here — inside asyncio.run() — so it binds to the correct event loop.
