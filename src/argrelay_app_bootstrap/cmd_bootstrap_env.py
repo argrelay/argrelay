@@ -13,8 +13,8 @@ from typing import List
 
 from protoprimer.primer_kernel import (
     AbstractCachingStateNode,
+    ContextBuilder,
     EntryFunc,
-    EnvContext,
     EnvState,
     run_process,
     TargetState,
@@ -280,15 +280,18 @@ def custom_main():
 
 def customize_env_context():
 
-    env_ctx = EnvContext()
-    env_ctx.graph_coordinates.entry_func = EntryFunc.func_boot_env
-
-    env_ctx.state_graph.register_factory(
-        CustomEnvState.state_scripts_generated.name,
-        Bootstrapper_state_scripts_generated(env_ctx),
+    env_ctx = (
+        ContextBuilder()
+        .entry_func(EntryFunc.func_boot_env)
+        .forced_final_state(CustomEnvState.state_scripts_generated.name)
+        #
+        .build_context()
     )
 
-    env_ctx.final_state = CustomEnvState.state_scripts_generated.name
+    env_ctx.register_factory(
+        CustomEnvState.state_scripts_generated.name,
+        Bootstrapper_state_scripts_generated,
+    )
 
     return env_ctx
 
