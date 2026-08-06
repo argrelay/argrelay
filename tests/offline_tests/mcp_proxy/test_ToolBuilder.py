@@ -424,9 +424,9 @@ def test_build_mcp_tool_input_schema_properties():
     result = build_mcp_tool(tool_desc)
 
     # then:
-    assert "code" in result.inputSchema["properties"]
-    assert "region" in result.inputSchema["properties"]
-    assert result.inputSchema["properties"]["code"]["description"] == "code_maturity"
+    assert "code" in result.input_schema["properties"]
+    assert "region" in result.input_schema["properties"]
+    assert result.input_schema["properties"]["code"]["description"] == "code_maturity"
 
 
 ########################################################################################################################
