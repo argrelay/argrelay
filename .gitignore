@@ -27,3 +27,6 @@ __pycache__/
 
 # MCP config (environment-specific absolute path to venv):
 /.mcp.json
+
+# Temporary (until the repo is refactored into multi-module):
+/src/local_auth/main/local_auth.egg-info/
