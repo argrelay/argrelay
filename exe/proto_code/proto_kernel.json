@@ -21,6 +21,11 @@
 
     "project_descriptors": [
         {
+            "build_root_dir_rel_path": "local_auth",
+            "install_extras": [],
+            "install_group": "install_auth"
+        },
+        {
             "build_root_dir_rel_path": ".",
             "install_extras": [
                 "tests"
@@ -31,8 +36,18 @@
 
     "install_specs": [
         {
-            "install_main": {
+            "install_auth": {
                 "extra_command_args": []
+            }
+        },
+        {
+            "install_main": {
+                "extra_command_args": [
+                    "--keyring-provider",
+                    "import",
+                    "--extra-index-url",
+                    "https://oauth2accesstoken@asia-southeast1-python.pkg.dev/protoprimer/test-python-repo/simple"
+                ]
             }
         }
     ]

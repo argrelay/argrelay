@@ -282,7 +282,11 @@ def customize_env_context():
 
     env_ctx = (
         ContextBuilder()
+        #
         .entry_func(EntryFunc.func_boot_env)
+        #
+        .is_app(True)
+        #
         .forced_final_state(CustomEnvState.state_scripts_generated.name)
         #
         .build_context()
