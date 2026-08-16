@@ -40,7 +40,7 @@ import typing
 
 # The release process ensures that content in this file matches the version below while tagging the release commit
 # (otherwise, if the file comes from a different commit, the version is irrelevant):
-__version__ = "0.13.0.dev2"
+__version__ = "0.13.0.dev3"
 ########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
 logger: logging.Logger = logging.getLogger()
 
@@ -751,6 +751,35 @@ class VenvDriverBase:
     ) -> list[str]:
         raise NotImplementedError()
 
+    @staticmethod
+    def _list_installed_pkg_names(
+        venv_python_file_abs_path: str,
+    ) -> list[str]:
+        """
+        Returns names (without versions) of all packages currently
+        installed in the `venv` behind `venv_python_file_abs_path`.
+########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
+        Used to re-pin with `--constraint` whatever
+        a `venv`-seeding mechanism (`ensurepip`, `uv --seed`, ...)
+        happens to install (e.g. `pip`/`setuptools`/`wheel`).
+        """
+        freeze_output = subprocess.check_output(
+            [
+                venv_python_file_abs_path,
+                "-m",
+                "pip",
+                "list",
+                "--format=freeze",
+                "--exclude-editable",
+            ]
+        )
+        return [
+            #
+            output_line.split("==")[0]
+            for output_line in freeze_output.decode().splitlines()
+            if output_line.strip()
+        ]
+########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
     def pin_versions(
         self,
         venv_python_file_abs_path: str,
@@ -762,7 +791,7 @@ class VenvDriverBase:
                 self._get_pin_versions_cmd(venv_python_file_abs_path),
                 stdout=f,
             )
-########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
+
     def _get_pin_versions_cmd(
         self,
         venv_python_file_abs_path: str,
@@ -771,7 +800,7 @@ class VenvDriverBase:
 
 
 class VenvDriverPip(VenvDriverBase):
-
+########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
     def __init__(
         self,
         required_python_version: str,
@@ -784,7 +813,7 @@ class VenvDriverPip(VenvDriverBase):
 
     def get_type(self) -> VenvDriverType:
         return VenvDriverType.venv_pip
-########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
+
     def _create_venv_impl(
         self,
         # TODO: Do we need this arg if we have `state_local_venv_dir_abs_path_inited`?
@@ -809,14 +838,15 @@ class VenvDriverPip(VenvDriverBase):
             "-m",
             "pip",
             "install",
+            "--no-input",
             "--upgrade",
-            "pip",
-        ]
-        # Respect the committed constraints (if any) so a fresh `venv` does not
-        # silently drift `pip` itself past the pinned version:
+        ] + self._list_installed_pkg_names(venv_python_executable)
         if os.path.exists(constraints_file_abs_path):
             pip_upgrade_cmd.extend(
                 [
+                    # Respect the committed constraints (if any)
+                    # so a fresh `venv` does not silently drift
+                    # seeded packages past the pinned version:
                     "--constraint",
                     constraints_file_abs_path,
                 ]
@@ -948,9 +978,6 @@ class VenvDriverUv(VenvDriverBase):
             ]
         )
 ########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
-        # `--seed` installs whatever `pip` `uv` currently considers current, ignoring any
-        # committed constraints - re-pin it explicitly so a fresh `venv` does not silently
-        # drift `pip` itself past the pinned version:
         if os.path.exists(constraints_file_abs_path):
             seeded_venv_python_abs_path = os.path.join(
                 local_venv_dir_abs_path,
@@ -963,10 +990,13 @@ class VenvDriverUv(VenvDriverBase):
                     "install",
                     "--python",
                     seeded_venv_python_abs_path,
+                    # Respect the committed constraints (if any)
+                    # so a fresh `venv` does not silently drift
+                    # seeded packages past the pinned version:
                     "--constraint",
                     constraints_file_abs_path,
-                    "pip",
                 ]
+                + self._list_installed_pkg_names(seeded_venv_python_abs_path)
             )
 ########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
     def get_install_dependencies_cmd(
@@ -4798,6 +4828,8 @@ class EnvState(enum.Enum):
 
     state_default_file_log_handler_configured = Bootstrapper_state_default_file_log_handler_configured
 
+    # TODO: Add a (replaceable) env_check step to execute before switching to `StateStride.stride_py_required`.
+
     # restart: `StateStride.stride_py_arbitrary` -> `StateStride.stride_py_required`:
     state_stride_py_required_reached = Factory_state_stride_py_required_reached
 
@@ -4809,9 +4841,9 @@ class EnvState(enum.Enum):
     state_stride_py_venv_reached = Factory_state_stride_py_venv_reached
 
     state_protoprimer_package_installed = Factory_state_protoprimer_package_installed
-
-    state_version_constraints_generated = Factory_state_version_constraints_generated
 ########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
+    state_version_constraints_generated = Factory_state_version_constraints_generated
+
     # restart: `StateStride.stride_py_venv` -> `StateStride.stride_deps_updated`:
     # TODO: rename - "reached" sounds weird (and makes no sense):
     state_stride_deps_updated_reached = Factory_state_stride_deps_updated_reached
@@ -4831,10 +4863,10 @@ class TargetState(enum.Enum):
     """
     Special `EnvState`-s.
     """
-
+########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
     # A special state that triggers execution of everything else:
     target_everything_executed = EnvState.state_everything_executed
-########### !!!!! GENERATED CONTENT - ANY CHANGES WILL BE LOST !!!!! ###########
+
     # FT_85_17_35_21.call_lib.md
     # FT_00_22_19_59.derived_config.md
     target_derived_config_loaded = EnvState.state_derived_conf_data_loaded
