@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local_auth"
+version = "0.0.0"
+
+classifiers = [
+    # This package is local and is never published:
+    "Private :: Do Not Upload",
+]
+
+# FT_84_11_73_28.supported_python_versions.md:
+requires-python = ">=3.7"
+
+dependencies = [
+    "setuptools",
+
+    # See: FT_17_41_51_83.private_artifact_repo.md:
+    "keyring",
+    "keyrings.google-artifactregistry-auth",
+]
+
+[tool.setuptools.packages.find]
+where = ["./main"]
+
+[tool.setuptools.package-dir]
+local_auth = "./main/local_auth"
